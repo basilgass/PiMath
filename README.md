@@ -9,4 +9,9 @@ Fraction will create... fraction !
 ```
 let A = new Pi.Fraction().parse('2/3');
 console.log(A.frac) // -> \frac{ 2 }{ 3 }
+
+// Add another fraction
+let B = new Pi.Fraction().parse('2/5');
+A.add(B);
+console.log(A.frac) // -> \frac{ 16 }{ 15 }
 ```
