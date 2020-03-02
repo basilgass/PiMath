@@ -4,9 +4,14 @@ export class Fraction {
     private _numerator: number;
     private _denominator: number;
 
-    constructor() {
+    constructor(fractionStr?:string) {
         this._numerator = 1;
         this._denominator = 1;
+
+        if(fractionStr!==undefined){
+            this.parse(fractionStr);
+        }
+
         return this;
     }
 
@@ -147,6 +152,11 @@ export class Fraction {
         return this.reduce();
     };
 
+    multiplyByInt = (n: number): Fraction => {
+        this._numerator = this._numerator * n;
+        return this.reduce();
+    };
+
     amplify = (k: number): Fraction => {
         if (Number.isSafeInteger(k)) {
             this._numerator *= k;
@@ -223,7 +233,7 @@ export class Fraction {
      * Get the sign of the fraction: 1 if positive, -1 if negative
      */
     sign = (): number => {
-        return (this._numerator * this._denominator > 0) ? 1 : -1;
+        return (this._numerator * this._denominator >= 0) ? 1 : -1;
     };
 
     /**

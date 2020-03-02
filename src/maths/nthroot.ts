@@ -2,18 +2,23 @@ export class Nthroot {
     private _radical: number;
     private _nth: number;
     private _coefficient: number;
+    private _isValid:boolean;
 
     constructor() {
         this._radical = 1;
         this._coefficient = 1;
         this._nth = 2;
+        this._isValid = true;
     }
 
-    parse = (radical: number, nthroot: number, coefficient: number): Nthroot => {
+    parse = (radical: number, nthroot?: number, coefficient?: number): Nthroot => {
         this._coefficient = (coefficient === undefined) ? 1 : coefficient;
         this._nth = (nthroot === undefined) ? 2 : nthroot;
         this._radical = (radical === undefined) ? 1 : radical;
 
+        if(this._nth%2===0 && this._radical<0){
+            this._isValid = false;
+        }
         return this;
     };
 
@@ -33,6 +38,10 @@ export class Nthroot {
             V--;
         }
         return this;
+    };
+
+    hasRadical = ():boolean => {
+        return !(this._radical===1 || this._radical===0 || this._isValid===false)
     };
 
     multiply = (N: Nthroot): Nthroot => {

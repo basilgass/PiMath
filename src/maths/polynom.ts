@@ -1,13 +1,32 @@
+/**
+ * Polynom module contains everythin necessary to handle polynoms.
+ * @module Polynom
+ */
+
 import {Monom} from "./monom";
 import {Shutingyard} from "./shutingyard";
 import {Fraction} from "./fraction";
 import {Numeric} from "./numeric";
 
+/**
+ * Polynom class can handle polynoms, reorder, resolve, ...
+ */
 export class Polynom {
     private _monoms: Monom[];
+    private _factors: Polynom[];
+    private _texString: string;
+    private _rawString: string;
 
-    constructor() {
+    /**
+     *
+     * @param {string} polynomString (optional) Default polynom to parse on class creation
+     */
+    constructor(polynomString?: string) {
         this._monoms = [];
+        this._factors = [];
+        if(polynomString!==undefined){
+            this.parse(polynomString);
+        }
     }
 
     /**
@@ -17,11 +36,13 @@ export class Polynom {
         return true;
     };
 
+
     /**
      * Parse a string to a polynom.
      * @param inputStr
      */
     parse = (inputStr: string): Polynom => {
+        this._rawString = inputStr;
         return this.shutingYardToReducedPolynom(inputStr);
     };
 
@@ -30,6 +51,10 @@ export class Polynom {
         return this;
     };
 
+    /**
+     * Set the polynom to zero.
+     * @returns {this}
+     */
     zero = (): Polynom => {
         this._monoms = [];
         this._monoms.push(new Monom().zero());
@@ -48,7 +73,7 @@ export class Polynom {
         return P;
     };
 
-    rndSimple = (degree: number = 1, letters: string = 'x', unit: boolean = false, withFraction: boolean = false, allowZero: boolean = true): Polynom => {
+    rndSimple = (degree: number = 1, unit: boolean = false, withFraction: boolean = false, letters: string = 'x', allowZero: boolean = true, numberOfMonoms:number = -1): Polynom => {
         // If the current polynom (this) is already created, initialise it!
         this.empty();
 
@@ -62,12 +87,95 @@ export class Polynom {
             }
             this.addMonom(M);
         }
+
+        // Remove randomly the monoms to match the numer of monoms.
+        if(numberOfMonoms>0 && numberOfMonoms<this.length){
+            this.reorder();
+            // Keep the greatest degree monom.
+            // But remove randomly the next monoms.
+            while(this.length>numberOfMonoms){
+                this._monoms.splice(Numeric.randomInt(1, this.length-1), 1);
+            }
+        }
         return this;
     };
-    rndFactorable = (): Polynom => {
-        this.empty();
+    rndFactorable = (degree:number = 2, unit: boolean = false, letters: string = 'x'): Polynom => {
+        this._factors = [];
+        for(let i=0; i<degree; i++){
+            this._factors.push(new Polynom().rndSimple(1, unit, false, letters));
+        }
+
+        this.empty().monoms = this._factors[0].monoms;
+        for(let i=1; i<this._factors.length; i++){
+            this.multiply(this._factors[i]);
+        }
         return this;
     };
+
+    /**
+     * This will genereate a not reduced tex string of the polynom.
+     * @param complexity : Number of iteration to increase the complexity.
+     */
+    makeItComplicate = (complexity:number = 1): Polynom => {
+        this._texString = '';
+
+        // The poylnom must be at least of the first degree.
+        if(this.degree()<1){return this;}
+
+        let mDegree = Numeric.randomInt(0, this.degree()-1),
+            A = new Polynom().rndSimple(mDegree, false, complexity>1, 'x', false, complexity>1?-1:1),
+            B = new Polynom().rndSimple(1, false, complexity>1),
+            C = this.clone().substract(A.clone().multiply(B));
+
+        // Try to factorize a little bit the C polynom.
+        C.factorizePartial(true);
+        this._texString = `${A.genDisplay('tex', false, true)} \\cdot ${B.genDisplay('tex', false, true)} ${C.texString} `;
+
+        return this;
+    };
+
+    factorizePartial = (forceSign?:boolean): Polynom => {
+        this._texString = '';
+        // Try to find two monoms with a common coefficient.
+        if(this.length<=1){return this;}
+
+        let mMain: Monom,
+            mCheck: Monom,
+            mFactor:Monom,
+            pFactor:Polynom,
+            pRemain: Polynom,
+            g:number, sign:string;
+
+        for(let i=0; i<this.length; i++){
+            mMain = this._monoms[i].clone();
+            // We factorize only if the main coefficient isn't a fraction
+            //if(mMain.coefficient.denominator!==1){continue;}
+            for(let j=i+1; j<this.length; j++){
+                mCheck = this._monoms[j].clone();
+                //if(mCheck.coefficient.denominator!==1){continue;}
+
+                g = Numeric.gcd(mMain.coefficient.numerator, mCheck.coefficient.numerator);
+                if(g!==1){
+                    //mFactor = mMain.clone().divide(mCheck); // This gets the litteral part.
+                    //mFactor.coefficient = new Fraction().parseByInteger(g, 1); // Set the coefficient to the gcd.
+                    mFactor = Monom.lcm(mMain, mCheck);
+                    sign = mMain.coefficient.sign()===1?'+':'-';
+                    this._texString = `${forceSign===true?sign:(sign==='+'?'':sign)}${mFactor.tex}`;
+
+                    pFactor = new Polynom().addMonom(mMain.divide(mFactor)).addMonom(mCheck.divide(mFactor));
+                    this._texString += pFactor.genDisplay('tex', false, true);
+
+                    this._texString += this.clone().substract(pFactor.clone().multiplyByMonom(mFactor)).genDisplay('tex', true, false);
+                    return this;
+                }
+            }
+        }
+
+        this._texString = this.genDisplay('tex', forceSign);
+
+        return this;
+    };
+
 
     /**
      * Add one or more monoms to the polynoms.
@@ -75,7 +183,14 @@ export class Polynom {
      */
     addMonom = (...M: Monom[]): Polynom => {
         for (let m of M) {
-            this._monoms.push(m);
+            this._monoms.push(m.clone());
+        }
+        return this.reduce();
+    };
+
+    substractMonom = (...M:Monom[]):Polynom => {
+        for (let m of M) {
+            this._monoms.push(m.clone().opposed());
         }
         return this.reduce();
     };
@@ -162,10 +277,17 @@ export class Polynom {
      * reduce the coefficient value as if the polynom was equal to zero.
      */
     minify = (): Polynom => {
-        // First multiply by the common denominoatr.
+        // First multiply by the common denominator.
         this.multiplyByInteger(this.lcmDenominator()).divideByInteger(this.gcdNumerator()).reduce();
         return this.reduce();
     };
+
+    factorize = (): Polynom => {
+        this._factors = [];
+        // TODO: Calculte the factorize system
+        return this;
+    };
+
 
     reorder = (letter: string = 'x'): Polynom => {
         // TODO: Must handle multiple letter reorder system
@@ -202,13 +324,16 @@ export class Polynom {
         return this.reduce();
     };
 
-    multiplyByInteger = (nb: number): Polynom => {
-        let nbF = new Fraction().parseByInteger(nb);
+    multiplyByFraction = (F:Fraction): Polynom => {
         for (let m of this._monoms) {
-            m.coefficient.multiply(nbF);
+            m.coefficient.multiply(F);
         }
 
         return this.reduce();
+    };
+
+    multiplyByInteger = (nb: number): Polynom => {
+        return this.multiplyByFraction(new Fraction().parseByInteger(nb));
     };
 
     multiplyByMonom = (M: Monom): Polynom => {
@@ -218,11 +343,45 @@ export class Polynom {
         return this.reduce();
     };
 
+    mutliplyByFraction = (F:Fraction):Polynom => {
+        for (let m of this._monoms) {
+            m.coefficient.multiply(F);
+        }
+
+        return this;
+    };
+
     divideByInteger = (nb: number): Polynom => {
         let nbF = new Fraction().parseByInteger(nb);
         for (let m of this._monoms) {
             m.coefficient.divide(nbF);
         }
+        return this;
+    };
+
+    divideByFraction = (F: Fraction): Polynom => {
+        for (let m of this._monoms) {
+            m.coefficient.divide(F);
+        }
+        return this;
+    };
+
+    replaceBy = (letter:string, P:Polynom): Polynom => {
+        let pow:number, resultPolynom: Polynom = new Polynom().zero();
+        for(let m of this.monoms){
+            if(m.literal[letter]===undefined || m.literal[letter]===0){
+                resultPolynom.addMonom(m.clone());
+            }else{
+                // We have found a letter.
+                // Get the power and reset it.
+                pow = +m.literal[letter];
+                delete m.literal[letter];
+
+                resultPolynom.add(P.clone().pow(pow).multiplyByMonom(m));
+            }
+        }
+
+        this._monoms = resultPolynom.reduce().reorder().monoms;
         return this;
     };
 
@@ -306,7 +465,7 @@ export class Polynom {
         let r = new Fraction().zero();
 
         this._monoms.forEach(monom => {
-            console.log(monom.display, values, monom.evaluate(values).display);
+            console.log('Evaluate polynom: ', monom.display, values, monom.evaluate(values).display);
             r.add(monom.evaluate(values));
         });
         return r;
@@ -434,17 +593,27 @@ export class Polynom {
         return this.isSameAs(P.clone().opposed());
     };
 
-    private genDisplay = (output?: string): string => {
+    private genDisplay = (output?: string, forceSign?: boolean, wrapParentheses?: boolean): string => {
         let P: string = '';
         for (let k of this._monoms) {
             if (k.coefficient.value === 0) {
                 continue;
             }
-            if (k.coefficient.sign() === 1 && P !== '') {
+            if (k.coefficient.sign() === 1 && (P !== '' || forceSign===true)) {
                 P += '+';
             }
             P += (output === 'tex') ? k.tex : k.display;
         }
+
+        if(wrapParentheses===true && this.length>1){
+            if(output==='tex') {
+                P = `\\left( ${P} \\right)`;
+            }else{
+                P = `(${P})`;
+            }
+        }
+
+        if(P===''){P = '0';}
         return P;
     };
 
@@ -462,15 +631,51 @@ export class Polynom {
         this._monoms = M;
     }
 
-    get display() {
+    get display():string {
         return this.genDisplay();
     }
 
-    get tex() {
+    get tex():string {
         return this.genDisplay('tex');
     }
 
-    get isTrivial() {
+    get texString():string {
+        return this._texString;
+    }
+
+    get isTrivial():boolean {
         return this._monoms.length === 0 && this._monoms[0].coefficient.value === 0;
     }
+
+    get isMultiVariable():boolean {
+        let B = false;
+        for(let m of this._monoms){
+            if(m.isMultiVariable){return true;}
+        }
+        return B;
+    }
+
+    get factors():Polynom[] {
+        return this._factors;
+    }
+
+    set factors(value:Polynom[]){
+        this._factors = value;
+    }
+
+    get variables():string[] {
+        let V:string[] = [];
+
+        for(let m of this._monoms){
+            V = V.concat(m.variables);
+        }
+
+        // Remove duplicates.
+        V = [...new Set(V)];
+
+        return V;
+    }
+    get numberOfVars():number {
+        return this.variables.length;
+    };
 }

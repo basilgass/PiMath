@@ -41,6 +41,13 @@ export class Monom {
         return this;
     };
 
+    clean = (): Monom => {
+        for(let letter in this._literal){
+            if(this._literal[letter]===0){delete this._literal[letter];}
+        }
+
+        return this;
+    }
     /**
      * Cretate a zero value monom
      */
@@ -180,6 +187,43 @@ export class Monom {
             // A letter is given -> get the corresponding power.
             return this._literal[letter] === undefined ? 0 : this._literal[letter];
         }
+    };
+
+    hasLetter = (letter?:string):boolean => {
+        if(letter===undefined){
+            letter = 'x';
+        }
+
+        if(this._literal[letter]===undefined){return false;}
+        return this._literal[letter]!==0;
+    }
+
+    static lcm = (...monoms:Monom[]):Monom => {
+        let M = new Monom(),
+            coeffN: number[] = monoms.map(value => value.coefficient.numerator),
+            coeffD: number[] = monoms.map(value => value.coefficient.denominator),
+            n = Numeric.gcd(...coeffN),
+            d = Numeric.lcm(...coeffD);
+
+        // Get the coefficient.
+        M.coefficient = new Fraction().parseByInteger(n, d).reduce();
+
+        // Set the litteral parts - go through each monoms litteral parts and get only the lowest degree of each letters.
+        for(let m of monoms){
+            // Remove the inexistant letters from the resulting monom
+            for(let letter in M.literal){
+                if(!(letter in m.literal)){M.literal[letter] = 0;}
+            }
+            for(let letter in m.literal){
+                if(M.literal[letter]===undefined && m.literal[letter]>0){
+                    M.literal[letter] = m.literal[letter];
+                }else{
+                    M.literal[letter] = Math.min(m.literal[letter], M.literal[letter]);
+                }
+            }
+        }
+
+        return M;
     };
 
     /**
@@ -324,6 +368,26 @@ export class Monom {
 
     get isZero(): boolean {
         return this._coefficient.value === 0;
+    }
+
+    get isMultiVariable(): boolean {
+        let n:number=0;
+
+        for(let letter in this._literal){
+            if(this._literal[letter]!=0){
+                n++;
+            }
+        }
+
+        return n>1;
+    }
+
+    get variables():string[] {
+        this.clean();
+        return Object.keys(this._literal)
+    }
+    get numberOfVar(): number {
+        return this.variables.length;
     }
 
     /**

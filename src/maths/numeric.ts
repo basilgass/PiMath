@@ -13,6 +13,28 @@ export class Numeric{
     }
 
     /**
+     * Get the list of all dividers of a number.
+     * @param value
+     */
+    static dividers(value:number):number[]{
+        let D: number[];
+        const maxV = Math.sqrt(value);
+
+        // Initialize the list of dividers.
+        D = [];
+
+        for(let i=1; i<maxV; i++){
+            if(value%i===0){
+                D.push(i);
+                D.push(value/i);
+            }
+        }
+
+        // Order numbers.
+        D.sort(function(a, b){return a-b;});
+        return D;
+    }
+    /**
      * Great Common Divisor
      * @param values : number values
      */
@@ -49,7 +71,7 @@ export class Numeric{
             if(g===1){break;}
         }
 
-        return g;
+        return Math.abs(g);
     }
 
     /**
