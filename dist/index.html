@@ -1,0 +1,101 @@
+<html>
+<head>
+    <title>Getting Started</title>
+    <script src="pi.js"></script>
+</head>
+<body>
+
+<div id="output"></div>
+
+<script>
+
+
+    let S = new Pi.LinearSystem().parse(
+        'x-3y=-2',
+        '4x+7x=1'
+    );
+    S.solve();
+    document.getElementById('output').innerHTML = `<p>${S.tex}</p>`;
+    document.getElementById('output').innerHTML += `<p>${S.texSolution}</p>`;
+
+    /*
+    let S = new Pi.LinearSystem().generate(3,-5,2);
+    document.getElementById('output').innerHTML = `<p>${S.tex}</p>`;
+    S.solve();
+    S.log;
+    S.tex;
+
+    S = new Pi.LinearSystem().generate(-1,8,-2);
+    document.getElementById('output').innerHTML += `<p>${S.tex}</p>`;
+    S.solve();
+    S.log;
+
+    let P = new Pi.Polynom('3x^2+5yx-2');
+    console.log(P.tex);
+    console.log(P.numberOfVars);
+    P.replaceBy('y', new Pi.Polynom('2x+1'));
+    console.log(P.tex);
+
+    let A = new Pi.Equation('2x+3y=5');
+    console.log(A.tex);
+
+    A.isolate('x');
+    console.log(A.tex);
+
+    A.isolate('y');
+    console.log(A.tex);
+
+    let P = new Pi.Polynom().rndSimple(2).makeItComplicate();
+    console.log(P.tex);
+    console.log(P.texString);
+
+    let A = new Pi.Fraction().parse('2/5');
+    console.log(A.frac);
+
+    let F = new Pi.Fraction().parse('18/5');
+    let N = new Pi.Root().parse(F).reduce();
+    console.log(N.tex);
+
+    let E = new Pi.Equation().create(new Pi.Polynom().parse('x^2+6x-8'), new Pi.Polynom().zero());
+    E.solve();
+    console.log(E.solutions);
+
+    let D = 42;
+    console.log(Pi.Numeric.dividers(D));
+
+    let X = new Pi.Polynom().rndFactorable(2, false);
+    console.log(X.tex);
+    X.factors.forEach(function(P, i){
+        console.log(P.tex);
+    });
+
+    let EQ = new Pi.Equation('2x+3>=5x-2');
+    EQ.solve();
+    console.log(EQ.solution);
+
+    EQ.parseString('2x+3<5x-2');
+    EQ.solve();
+    console.log(EQ.solution);
+
+    EQ.parseString('7x+3>5x-2');
+    EQ.solve();
+    console.log(EQ.solution);
+
+    EQ.parseString('7x+3=<5x-2');
+    EQ.solve();
+    console.log(EQ.solution);
+
+    EQ.parseString('7x+3=<7x-2');
+    EQ.solve();
+    console.log(EQ.solution);
+
+    EQ.parseString('7x+3>7x-2');
+    EQ.solve();
+    console.log(EQ.solution);
+
+    EQ.parseString('x^2+6x+9>=0');
+    EQ.solve();
+    console.log(EQ.solution);*/
+</script>
+</body>
+</html>
