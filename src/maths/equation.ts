@@ -2,6 +2,7 @@ import {Polynom} from "./polynom";
 import {Fraction} from "./fraction";
 import {Nthroot} from "./nthroot";
 import {Numeric} from "./numeric";
+// eslint-disable-next-line no-unused-vars
 import {Monom} from "./monom";
 
 export class Equation {
@@ -200,8 +201,8 @@ export class Equation {
     };
 
     private _solveDegree1 = (letter?:string):string[] => {
-        const m1 = this._polynom.monomByDegree(1).coefficient,
-            m0 = this._polynom.monomByDegree(0).coefficient,
+        const m1 = this._polynom.monomByDegree(1, letter).coefficient,
+            m0 = this._polynom.monomByDegree(0, letter).coefficient,
             v = m0.clone().opposed().divide(m1).display;
         let s:string;
 
@@ -243,9 +244,9 @@ export class Equation {
     };
 
     private _solveDegree2 = (letter?:string):string[] => {
-        let aF = this._polynom.monomByDegree(2).coefficient,
-            bF = this._polynom.monomByDegree(1).coefficient,
-            cF = this._polynom.monomByDegree(0).coefficient,
+        let aF = this._polynom.monomByDegree(2, letter).coefficient,
+            bF = this._polynom.monomByDegree(1, letter).coefficient,
+            cF = this._polynom.monomByDegree(0, letter).coefficient,
             delta:number, nthDelta:Nthroot,
             lcm = Numeric.lcm(aF.denominator, bF.denominator, cF.denominator),
             a = aF.multiplyByInt(lcm).value,
@@ -267,7 +268,8 @@ export class Equation {
                 let gcd = Numeric.gcd(b, 2 * a, nthDelta.coefficient);
                 nthDelta.coefficient = nthDelta.coefficient / gcd;
 
-                let deltaC = nthDelta.coefficient, deltaR = nthDelta.radical;
+                // TODO: Can i delete the next line ?
+                // let deltaC = nthDelta.coefficient, deltaR = nthDelta.radical;
                 if (2 * a / gcd === 1) {
                     this._solutions = [
                         `${-b / gcd} - ${nthDelta.tex}`,
@@ -338,15 +340,12 @@ export class Equation {
 
     private _solveDegree3plus = (letter?:string):string[] => {
         // TODO: try to resolve equations with a degree superior than 2.
+        this._solutions = [letter];  // ESLint remove system :(
         return this._solutions;
     };
 
     generate = (opts?:{}, sign?:string):Equation => {
-        let P1 = new Polynom(),
-            P2 = new Polynom(),
-            E = new Equation().create(P1, P2, sign);
-
-        return E;
+        return new Equation().create(new Polynom(), new Polynom(), sign);
     };
 
     // Mathematical operations

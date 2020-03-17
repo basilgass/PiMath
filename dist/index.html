@@ -8,19 +8,28 @@
 <div id="output"></div>
 
 <script>
-    let S = new Pi.LinearSystem().create(
-        new Pi.Equation('3x-2y+z=2'),
-        new Pi.Equation('x+y-z=2'),
-        new Pi.Equation('-x+2y+z=1')
-    );
 
+
+    let S = new Pi.LinearSystem().parse(
+        'x-3y=-2',
+        '4x+7x=1'
+    );
+    S.solve();
+    document.getElementById('output').innerHTML = `<p>${S.tex}</p>`;
+    document.getElementById('output').innerHTML += `<p>${S.texSolution}</p>`;
+
+    /*
+    let S = new Pi.LinearSystem().generate(3,-5,2);
+    document.getElementById('output').innerHTML = `<p>${S.tex}</p>`;
+    S.solve();
+    S.log;
+    S.tex;
+
+    S = new Pi.LinearSystem().generate(-1,8,-2);
+    document.getElementById('output').innerHTML += `<p>${S.tex}</p>`;
     S.solve();
     S.log;
 
-    console.log(S.texSolution);
-
-
-    /*
     let P = new Pi.Polynom('3x^2+5yx-2');
     console.log(P.tex);
     console.log(P.numberOfVars);

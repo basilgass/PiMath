@@ -89,7 +89,7 @@ export class Numeric{
      * @param percent
      */
     static randomBool(percent:number=0.5):boolean{
-        return Math.random()<percent?true:false;
+        return Math.random()<percent;
     }
 
     /**

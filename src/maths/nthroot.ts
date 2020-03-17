@@ -81,8 +81,7 @@ export class Nthroot {
     }
 
     get tex(): string {
-        let tex = '',
-            C: string;
+        let C: string;
 
         if (this._coefficient === 1) {
             C = '';

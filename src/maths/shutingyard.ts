@@ -7,7 +7,7 @@ export class Shutingyard {
      * @param token
      */
     isOperation(token: string): boolean {
-        if (token[0].match(/[\+\-\*\/\^]/g)) {
+        if (token[0].match(/[+\-*/^]/g)) {
             return true;
         }
         if (token.match(/^sin|cos|tan/g)) {
@@ -23,17 +23,17 @@ export class Shutingyard {
      * @param start (number) CUrrent position in the expr string.
      */
     NextToken(expr: string, start: number): [string, number, string] {
-        let tokenMatch: string[], token: string = '', tokenType: string = 'monom';
+        let tokenMatch: string[], token: string, tokenType: string;
 
         // Detect a fraction monoms or return empty array
-        tokenMatch = (expr.substr(start).match(/^[0-9\/a-z\^]+/g)) || [];
+        tokenMatch = (expr.substr(start).match(/^[0-9/a-z^]+/g)) || [];
 
         if (tokenMatch.length > 0) {
             token = tokenMatch[0];
             tokenType = 'monom';
         }
         // It's an operation !
-        else if (expr[start].match(/[\+\-\*\/\^]/g)) {
+        else if (expr[start].match(/[+\-*/^]/g)) {
             token = expr[start];
             tokenType = 'operation';
         }

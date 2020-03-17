@@ -124,5 +124,14 @@ export class Matrix {
 
     get isSquared(): boolean {
         return this._dimX === this._dimY;
-    };
+    }
+
+
+    get dimX(): number {
+        return this._dimX;
+    }
+
+    get dimY(): number {
+        return this._dimY;
+    }
 }

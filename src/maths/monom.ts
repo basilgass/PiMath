@@ -47,7 +47,7 @@ export class Monom {
         }
 
         return this;
-    }
+    };
     /**
      * Cretate a zero value monom
      */
@@ -196,7 +196,7 @@ export class Monom {
 
         if(this._literal[letter]===undefined){return false;}
         return this._literal[letter]!==0;
-    }
+    };
 
     static lcm = (...monoms:Monom[]):Monom => {
         let M = new Monom(),
@@ -453,6 +453,5 @@ export class Monom {
                 return `${this._coefficient.dfrac}${L}`;
             }
         }
-        return '';
     }
 }
