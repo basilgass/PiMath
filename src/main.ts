@@ -15,3 +15,9 @@ import {LinearSystem} from "./maths/linearSystem";
     Equation: Equation,
     LinearSystem: LinearSystem
 };
+
+export class Pi {
+    constructor() {
+        alert('here');
+    }
+}
