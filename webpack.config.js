@@ -19,5 +19,7 @@ module.exports = {
     output: {
         filename: 'pi.js',
         path: path.resolve(__dirname, 'dist'),
+        library: 'Pi',
+        libraryTarget: "umd"
     },
 };

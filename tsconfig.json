@@ -6,8 +6,8 @@
     "target": "esnext",
     "allowJs": true,
     "jsx": "react",
-    "sourceMap": true
-    //"declaration": true
+    "sourceMap": true,
+    "declaration": true
   },
   "exclude": [
     "node_modules"

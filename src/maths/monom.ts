@@ -423,6 +423,10 @@ export class Monom {
             }
         }
     }
+    get displayWithSign(): string {
+        let d:String = this.display;
+        return (d[0]!=='-'?'+':'') + d;
+    }
 
     get tex(): string {
         let L: string = '';

@@ -270,16 +270,30 @@ export class Equation {
 
                 // TODO: Can i delete the next line ?
                 // let deltaC = nthDelta.coefficient, deltaR = nthDelta.radical;
-                if (2 * a / gcd === 1) {
-                    this._solutions = [
-                        `${-b / gcd} - ${nthDelta.tex}`,
-                        `${-b / gcd} + ${nthDelta.tex}`,
-                    ]
-                } else {
-                    this._solutions = [
-                        `\\dfrac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                        `\\dfrac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                    ]
+                if(b!==0) {
+                    if (2 * a / gcd === 1) {
+                        this._solutions = [
+                            `${-b / gcd} - ${nthDelta.tex}`,
+                            `${-b / gcd} + ${nthDelta.tex}`,
+                        ]
+                    } else {
+                        this._solutions = [
+                            `\\dfrac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                            `\\dfrac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                        ]
+                    }
+                }else{
+                    if (2 * a / gcd === 1) {
+                        this._solutions = [
+                            `- ${nthDelta.tex}`,
+                            `${nthDelta.tex}`,
+                        ]
+                    } else {
+                        this._solutions = [
+                            `\\dfrac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                            `\\dfrac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                        ]
+                    }
                 }
             } else {
                 // -b +- d / 2a

@@ -8,7 +8,8 @@
 <div id="output"></div>
 
 <script>
-
+    let M = new Pi.Monom().random('x', 2, false, false);
+    console.log(M.displayWithSign);
 
     let S = new Pi.LinearSystem().parse(
         'x-3y=-2',

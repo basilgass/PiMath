@@ -45,6 +45,20 @@ export class Polynom {
       return this.shutingYardToReducedPolynom(inputStr);
     };
 
+    parseByCoefficient = (letter: String, ...values:Fraction[]): Polynom => {
+        this.empty();
+
+        let n = values.length-1;
+        for(let F of values){
+            let m = new Monom()
+            m.coefficient = F.clone();
+            m.literalStr = `${letter}^${n}`
+            this.addMonom(m);
+            n--;
+        }
+        return this;
+    };
+
     empty = (): Polynom => {
       this._monoms = [];
       return this;
@@ -646,6 +660,9 @@ export class Polynom {
       return this.genDisplay();
     }
 
+    get raw ():string {
+        return this._rawString
+    }
     get tex ():string {
       return this.genDisplay('tex');
     }
