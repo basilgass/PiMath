@@ -1,13 +1,20 @@
 <html>
 <head>
     <title>Getting Started</title>
-    <script src="pi.js"></script>
+    <script src="dist/pi.js"></script>
 </head>
 <body>
 
 <div id="output"></div>
 
 <script>
+
+    let p;
+    p = new Pi.Polynom('3x(6x+9)+6(6x+9)');
+    document.getElementById('output').innerHTML = `<p>${p.raw}</p>`;
+    document.getElementById('output').innerHTML += `<p>${p.display}</p>`;
+
+    /*
     let M = new Pi.Monom().random('x', 2, false, false);
     console.log(M.displayWithSign);
 
@@ -18,8 +25,6 @@
     S.solve();
     document.getElementById('output').innerHTML = `<p>${S.tex}</p>`;
     document.getElementById('output').innerHTML += `<p>${S.texSolution}</p>`;
-
-    /*
     let S = new Pi.LinearSystem().generate(3,-5,2);
     document.getElementById('output').innerHTML = `<p>${S.tex}</p>`;
     S.solve();

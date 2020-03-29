@@ -431,13 +431,16 @@ export class Equation {
         return `${this._left.tex}${this.signAsTex}${this._right.tex}`;
     }
 
+    get raw(): string {
+        return `${this._left.raw}${this.signAsTex}${this._right.raw}`;
+    }
+
     get variables(): string[] {
         return [...new Set(this._right.variables.concat(this._left.variables))];
     }
     get numberOfVars(): number {
         return this.variables.length;
     }
-
 
     get left(): Polynom {
         return this._left;

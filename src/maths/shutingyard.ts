@@ -195,6 +195,11 @@ export class Shutingyard {
                     break;
                 case '(':
                     opStack.push(token);
+                    // Add an empty value if next element is negative.
+                    console.log(token, tokenPos, expr[tokenPos], expr[tokenPos+1]);
+                    if(expr[tokenPos]==='-') {
+                        outQueue.push('0');
+                    }
                     break;
                 case ')':
                     securityLoopLvl2 = +securityLoopLvl2_default;

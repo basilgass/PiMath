@@ -71,6 +71,7 @@ export class Polynom {
     zero = (): Polynom => {
       this._monoms = [];
       this._monoms.push(new Monom().zero());
+      this._rawString = '0';
       return this;
     };
 
@@ -216,7 +217,6 @@ export class Polynom {
       // Get the RPN array of the current expression
       const SY: Shutingyard = new Shutingyard().parse(inputStr);
       const rpn: string[] = SY.rpn;
-
       const m: Polynom[] = []; let m1: Polynom; let m2: Polynom;
 
       for (const token of rpn) {
@@ -227,7 +227,7 @@ export class Polynom {
             m1 = (m.pop()) || new Polynom().zero();
           } else {
             // Nothing is in the stack - create an empty polynom
-            m1 = new Polynom();
+            m1 = new Polynom().zero();
           }
 
           // console.log(m1.polynom, m2.polynom, token);
