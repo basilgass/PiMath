@@ -5,6 +5,7 @@ import {Numeric} from "./maths/numeric";
 import {Equation} from "./maths/equation";
 import {Nthroot} from "./maths/nthroot";
 import {LinearSystem} from "./maths/linearSystem";
+import {Vector} from "./maths/vector";
 
 // Expose as global
 (<any>window).Pi = {
@@ -14,7 +15,8 @@ import {LinearSystem} from "./maths/linearSystem";
     Monom: Monom,
     Polynom: Polynom,
     Equation: Equation,
-    LinearSystem: LinearSystem
+    LinearSystem: LinearSystem,
+    Vector: Vector
 };
 
 export var Pi = {
@@ -24,5 +26,6 @@ export var Pi = {
     Monom: Monom,
     Polynom: Polynom,
     Equation: Equation,
-    LinearSystem: LinearSystem
+    LinearSystem: LinearSystem,
+    Vector: Vector
 }

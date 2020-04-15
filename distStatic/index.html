@@ -1,7 +1,7 @@
 <html>
 <head>
     <title>Getting Started</title>
-    <script src="dist/pi.js"></script>
+    <script src="pi.js"></script>
 </head>
 <body>
 
@@ -13,6 +13,13 @@
     p = new Pi.Polynom('3x(6x+9)+6(6x+9)');
     document.getElementById('output').innerHTML = `<p>${p.raw}</p>`;
     document.getElementById('output').innerHTML += `<p>${p.display}</p>`;
+
+    let v1 = new Pi.Vector('3 4'),
+        v2 = new Pi.Vector('-2 5');
+
+    console.log(v1);
+    console.log(v2);
+    console.log(Pi.Vector.scalarProduct(v1, v2));
 
     /*
     let M = new Pi.Monom().random('x', 2, false, false);
