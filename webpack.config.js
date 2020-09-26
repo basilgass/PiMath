@@ -22,5 +22,5 @@ module.exports = {
         //globalObject: "this",
         filename: 'pi.js',
         path: path.resolve(__dirname, 'distStatic')
-    },
+    }
 };

@@ -1,9 +1,10 @@
 const path = require('path');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
     mode: 'production',
     entry: './src/main.ts',
-    devtool: 'inline-source-map',
+    /*devtool: 'inline-source-map',*/
     module: {
         rules: [
             {
@@ -22,4 +23,7 @@ module.exports = {
         library: 'Pi',
         libraryTarget: "umd"
     },
+    plugins: [
+        new BundleAnalyzerPlugin()
+    ]
 };

@@ -1,4 +1,8 @@
 export class Numeric{
+    static round(value:number, decimals:number=2):number {
+        return Number(Math.round(Number(value+'e'+decimals))+'e-'+decimals);
+    }
+
     /**
      * Get the list of the nth first prime numbers.
      * @param nb : number of primes to choose from

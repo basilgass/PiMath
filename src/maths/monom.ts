@@ -2,14 +2,222 @@ import {Fraction} from "./fraction";
 import {Numeric} from "./numeric";
 
 export class Monom {
-    private _coefficient: Fraction;
-    private _literal: { [Key: string]: number };
-
     constructor() {
         this._coefficient = new Fraction().zero();
         this._literal = {};
         return this;
     }
+
+    private _coefficient: Fraction;
+
+    /**
+     * Get the coefficient as fraction
+     */
+    get coefficient(): Fraction {
+        return this._coefficient;
+    }
+
+    /**
+     * Set the coefficient value of the monom
+     * @param F     Fraction
+     */
+    set coefficient(F: Fraction) {
+        this._coefficient = F;
+    }
+
+    private _literal: { [Key: string]: number };
+
+    /**
+     * Get the litteral part, as dictionnary
+     */
+    get literal(): { [Key: string]: number } {
+        return this._literal;
+    }
+
+    /**
+     * Set the litteral part of the monom
+     * @param L     Literal part as dictionnary: <letter: exposant>
+     */
+    set literal(L: { [Key: string]: number }) {
+        this._literal = L;
+    }
+
+    /**
+     * Set the litteral part of the monom from a string
+     * @param inputStr  String like x^2y^3
+     */
+    set literalStr(inputStr: string) {
+        // Match all x^n
+        for (const v of [...inputStr.matchAll(/([a-z])\^([+-]?[0-9]+)/g)]) {
+            if (!(v[1] in this._literal)) {
+                this._literal[v[1]] = 0;
+            }
+            this._literal[v[1]] += +v[2];
+        }
+        // Match all single letters
+        for (const v of [...inputStr.matchAll(/([a-z](?!\^))/g)]) {
+            if (!(v[1] in this._literal)) {
+                this._literal[v[1]] = 0;
+            }
+            this._literal[v[1]] += 1;
+        }
+    }
+
+    /**
+     * Determine if the monom is null
+     */
+    get isZero(): boolean {
+        return this._coefficient.value === 0;
+    }
+
+    /**
+     * Determine if the monom has more than one letter
+     */
+    get isMultiVariable(): boolean {
+        let n: number = 0;
+
+        for (let letter in this._literal) {
+            if (this._literal[letter] != 0) {
+                n++;
+            }
+        }
+
+        return n > 1;
+    }
+
+    /**
+     * Get the variables letters
+     */
+    get variables(): string[] {
+        this.clean();
+        return Object.keys(this._literal)
+    }
+
+    /**
+     * Get the number of variables
+     */
+    get numberOfVar(): number {
+        return this.variables.length;
+    }
+
+    /**
+     * This display getter is to be used in the polynom display getter
+     */
+    get display(): string {
+        let L: string = '';
+        for (let letter in this._literal) {
+            if (this._literal[letter] !== 0) {
+                L += `${letter}`;
+                if (this._literal[letter] > 1) {
+                    L += `^${this._literal[letter]}`;
+                }
+            }
+        }
+
+        if (L === '') {
+            // No letter - means it's only a number !
+            if (this._coefficient.value != 0) {
+                return `${this._coefficient.display}`;
+            } else {
+                return '';
+            }
+        } else {
+            if (this._coefficient.value === 1) {
+                return L;
+            } else if (this._coefficient.value === -1) {
+                return `-${L}`;
+            } else if (this._coefficient.value === 0) {
+                return '0';
+            } else {
+                return `${this._coefficient.display}${L}`;
+            }
+        }
+    }
+
+    /**
+     * Display the monom, forcing the '+' sign to appear
+     */
+    get displayWithSign(): string {
+        let d: String = this.display;
+        return (d[0] !== '-' ? '+' : '') + d;
+    }
+
+    /**
+     * Get the tex output of the monom
+     */
+    get tex(): string {
+        let L: string = '';
+        for (let letter in this._literal) {
+            if (this._literal[letter] !== 0) {
+                L += `${letter}`;
+                if (this._literal[letter] > 1) {
+                    L += `^${this._literal[letter]}`;
+                }
+            }
+        }
+
+        if (L === '') {
+            // No letter - means it's only a number !
+            if (this._coefficient.value != 0) {
+                return `${this._coefficient.dfrac}`;
+            } else {
+                return '';
+            }
+        } else {
+            if (this._coefficient.value === 1) {
+                return L;
+            } else if (this._coefficient.value === -1) {
+                return `-${L}`;
+            } else if (this._coefficient.value === 0) {
+                return '0';
+            } else {
+                return `${this._coefficient.dfrac}${L}`;
+            }
+        }
+    }
+
+    /**
+     * Get the least common multiple of monomes
+     * @param monoms    Arrqy of monoms
+     */
+    static lcm = (...monoms: Monom[]): Monom => {
+        let M = new Monom(),
+            coeffN: number[] = monoms.map(value => value.coefficient.numerator),
+            coeffD: number[] = monoms.map(value => value.coefficient.denominator),
+            n = Numeric.gcd(...coeffN),
+            d = Numeric.lcm(...coeffD);
+
+        // Get the coefficient.
+        M.coefficient = new Fraction().parseByInteger(n, d).reduce();
+
+        // Set the litteral parts - go through each monoms litteral parts and get only the lowest degree of each letters.
+        for (let m of monoms) {
+            // Remove the inexistant letters from the resulting monom
+            for (let letter in M.literal) {
+                if (!(letter in m.literal)) {
+                    M.literal[letter] = 0;
+                }
+            }
+            for (let letter in m.literal) {
+                if (M.literal[letter] === undefined && m.literal[letter] > 0) {
+                    M.literal[letter] = m.literal[letter];
+                } else {
+                    M.literal[letter] = Math.min(m.literal[letter], M.literal[letter]);
+                }
+            }
+        }
+
+        return M;
+    };
+
+    /**
+     * Multiply two monoms and return a NEW monom.
+     * @param M1
+     * @param M2
+     */
+    static xmultiply = (M1: Monom, M2: Monom): Monom => {
+        return M1.clone().multiply(M2);
+    };
 
     /**
      * Determine if object is a monom.
@@ -41,13 +249,19 @@ export class Monom {
         return this;
     };
 
+    /**
+     * Clean the monom by removing each letters.
+     */
     clean = (): Monom => {
-        for(let letter in this._literal){
-            if(this._literal[letter]===0){delete this._literal[letter];}
+        for (let letter in this._literal) {
+            if (this._literal[letter] === 0) {
+                delete this._literal[letter];
+            }
         }
 
         return this;
     };
+
     /**
      * Cretate a zero value monom
      */
@@ -72,7 +286,14 @@ export class Monom {
         return F;
     };
 
-    random = (letters: string = 'x', degree: number = 1, withFraction: boolean = false, allowZero: boolean = true): Monom => {
+    /**
+     * Randomize a monom
+     * @param letters       Letters to use, as a string
+     * @param degree        Max degree (default 1)
+     * @param withFraction  Allows fraction as coefficient (default false)
+     * @param allowZero     Allows null monom (default false)
+     */
+    random = (letters: string = 'x', degree: number = 1, withFraction: boolean = false, allowZero: boolean = false): Monom => {
         this.coefficient.parseByInteger(Numeric.randomIntSym(10, allowZero), (withFraction) ? Numeric.randomInt(1, 10) : 1);
 
         for (let L of letters.split('')) {
@@ -123,6 +344,9 @@ export class Monom {
         // All are positive check - the monoms are the sames.
         return true;
     };
+
+    // Setter
+
     /**
      * Determine if multiple monoms are similar
      * @param M
@@ -140,6 +364,7 @@ export class Monom {
         // All check passed -> all the monoms are similar.
         return result;
     };
+
     /**
      * Determine if two monoms are equals
      * @param M
@@ -150,6 +375,7 @@ export class Monom {
         }
         return this._coefficient.isEqual(M.coefficient);
     };
+
     /**
      * Determine if mutliple monoms are equals
      * @param M
@@ -171,6 +397,8 @@ export class Monom {
         return true;
     };
 
+    // Getter
+
     /**
      * Get the degree of a monom. If no letter is given, the result will be the global degree.
      * @param letter (string) Letter to get to degree (power)
@@ -189,41 +417,19 @@ export class Monom {
         }
     };
 
-    hasLetter = (letter?:string):boolean => {
-        if(letter===undefined){
+    /**
+     * Determine if a monom contains a letter in it's litteral part
+     * @param letter
+     */
+    hasLetter = (letter?: string): boolean => {
+        if (letter === undefined) {
             letter = 'x';
         }
 
-        if(this._literal[letter]===undefined){return false;}
-        return this._literal[letter]!==0;
-    };
-
-    static lcm = (...monoms:Monom[]):Monom => {
-        let M = new Monom(),
-            coeffN: number[] = monoms.map(value => value.coefficient.numerator),
-            coeffD: number[] = monoms.map(value => value.coefficient.denominator),
-            n = Numeric.gcd(...coeffN),
-            d = Numeric.lcm(...coeffD);
-
-        // Get the coefficient.
-        M.coefficient = new Fraction().parseByInteger(n, d).reduce();
-
-        // Set the litteral parts - go through each monoms litteral parts and get only the lowest degree of each letters.
-        for(let m of monoms){
-            // Remove the inexistant letters from the resulting monom
-            for(let letter in M.literal){
-                if(!(letter in m.literal)){M.literal[letter] = 0;}
-            }
-            for(let letter in m.literal){
-                if(M.literal[letter]===undefined && m.literal[letter]>0){
-                    M.literal[letter] = m.literal[letter];
-                }else{
-                    M.literal[letter] = Math.min(m.literal[letter], M.literal[letter]);
-                }
-            }
+        if (this._literal[letter] === undefined) {
+            return false;
         }
-
-        return M;
+        return this._literal[letter] !== 0;
     };
 
     /**
@@ -281,9 +487,6 @@ export class Monom {
         return this;
     };
 
-    static xmultiply = (M1: Monom, M2: Monom): Monom => {
-        return M1.clone().multiply(M2);
-    };
     /**
      * Divide the current monoms by multiple monoms
      * @param M (Monom[])
@@ -319,6 +522,10 @@ export class Monom {
         return this;
     };
 
+    /**
+     * Evaluate a monom. Each letter must be assigned to a Fraction.
+     * @param values    Dictionnary of <letter: Fraction>
+     */
     evaluate = (values: { [key: string]: Fraction }): Fraction => {
         let r = this.coefficient.clone();
 
@@ -330,132 +537,4 @@ export class Monom {
         }
         return r;
     };
-
-    // Setter
-    set coefficient(F: Fraction) {
-        this._coefficient = F;
-    }
-
-    set literal(L: { [Key: string]: number }) {
-        this._literal = L;
-    }
-
-    set literalStr(inputStr: string) {
-        // Match all x^n
-        for (const v of [...inputStr.matchAll(/([a-z])\^([+-]?[0-9]+)/g)]) {
-            if (!(v[1] in this._literal)) {
-                this._literal[v[1]] = 0;
-            }
-            this._literal[v[1]] += +v[2];
-        }
-        // Match all single letters
-        for (const v of [...inputStr.matchAll(/([a-z](?!\^))/g)]) {
-            if (!(v[1] in this._literal)) {
-                this._literal[v[1]] = 0;
-            }
-            this._literal[v[1]] += 1;
-        }
-    }
-
-    // Getter
-    get coefficient(): Fraction {
-        return this._coefficient;
-    }
-
-    get literal(): { [Key: string]: number } {
-        return this._literal;
-    }
-
-    get isZero(): boolean {
-        return this._coefficient.value === 0;
-    }
-
-    get isMultiVariable(): boolean {
-        let n:number=0;
-
-        for(let letter in this._literal){
-            if(this._literal[letter]!=0){
-                n++;
-            }
-        }
-
-        return n>1;
-    }
-
-    get variables():string[] {
-        this.clean();
-        return Object.keys(this._literal)
-    }
-    get numberOfVar(): number {
-        return this.variables.length;
-    }
-
-    /**
-     * This display getter is to be used in the polynom display getter
-     */
-    get display(): string {
-        let L: string = '';
-        for (let letter in this._literal) {
-            if (this._literal[letter] !== 0) {
-                L += `${letter}`;
-                if (this._literal[letter] > 1) {
-                    L += `^${this._literal[letter]}`;
-                }
-            }
-        }
-
-        if (L === '') {
-            // No letter - means it's only a number !
-            if (this._coefficient.value != 0) {
-                return `${this._coefficient.display}`;
-            } else {
-                return '';
-            }
-        } else {
-            if (this._coefficient.value === 1) {
-                return L;
-            } else if (this._coefficient.value === -1) {
-                return `-${L}`;
-            } else if (this._coefficient.value === 0) {
-                return '0';
-            } else {
-                return `${this._coefficient.display}${L}`;
-            }
-        }
-    }
-    get displayWithSign(): string {
-        let d:String = this.display;
-        return (d[0]!=='-'?'+':'') + d;
-    }
-
-    get tex(): string {
-        let L: string = '';
-        for (let letter in this._literal) {
-            if (this._literal[letter] !== 0) {
-                L += `${letter}`;
-                if (this._literal[letter] > 1) {
-                    L += `^${this._literal[letter]}`;
-                }
-            }
-        }
-
-        if (L === '') {
-            // No letter - means it's only a number !
-            if (this._coefficient.value != 0) {
-                return `${this._coefficient.dfrac}`;
-            } else {
-                return '';
-            }
-        } else {
-            if (this._coefficient.value === 1) {
-                return L;
-            } else if (this._coefficient.value === -1) {
-                return `-${L}`;
-            } else if (this._coefficient.value === 0) {
-                return '0';
-            } else {
-                return `${this._coefficient.dfrac}${L}`;
-            }
-        }
-    }
 }

@@ -5,14 +5,19 @@
 </head>
 <body>
 
-<div id="output"></div>
+<h1>Fractions</h1>
+<div id="fraction"></div>
+
+<h1>Equations</h1>
+<div id="equation"></div>
+
 
 <script>
-
     let p;
-    p = new Pi.Polynom('3x(6x+9)+6(6x+9)');
-    document.getElementById('output').innerHTML = `<p>${p.raw}</p>`;
-    document.getElementById('output').innerHTML += `<p>${p.display}</p>`;
+    p = new Pi.Polynom('3/2x(6x+9)+6(6x+9)');
+    document.getElementById('equation').innerHTML = `<p>${p.raw}</p>`;
+    document.getElementById('equation').innerHTML += `<p>${p.display}</p>`;
+    document.getElementById('equation').innerHTML += `<p>${p.tex}</p>`;
 
     let v1 = new Pi.Vector('3 4'),
         v2 = new Pi.Vector('-2 5');
