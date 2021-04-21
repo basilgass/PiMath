@@ -1,7 +1,7 @@
 <html>
 <head>
-    <title>Getting Started</title>
-    <script src="pi.js"></script>
+	<title>Getting Started</title>
+	<script src="pi.js"></script>
 </head>
 <body>
 
@@ -13,107 +13,185 @@
 
 
 <script>
-    let p;
-    p = new Pi.Polynom('3/2x(6x+9)+6(6x+9)');
-    document.getElementById('equation').innerHTML = `<p>${p.raw}</p>`;
-    document.getElementById('equation').innerHTML += `<p>${p.display}</p>`;
-    document.getElementById('equation').innerHTML += `<p>${p.tex}</p>`;
 
-    let v1 = new Pi.Vector('3 4'),
-        v2 = new Pi.Vector('-2 5');
+	let T = new Pi.Geometry.Triangle(6,-1,-4,3,-2,-3);
 
-    console.log(v1);
-    console.log(v2);
-    console.log(Pi.Vector.scalarProduct(v1, v2));
+	console.log(T.lines.AB.tex.canonical);
+	console.log(T.lines.AC.tex.canonical);
+	console.log(T.lines.BC.tex.canonical);
+	console.log(T.remarquables.medianes.A.tex.canonical);
+	console.log(T.remarquables.medianes.B.tex.canonical);
+	console.log(T.remarquables.medianes.C.tex.canonical);
 
-    /*
-    let M = new Pi.Monom().random('x', 2, false, false);
-    console.log(M.displayWithSign);
+	console.log(T.remarquables.mediators.AB.tex.canonical);
+	console.log(T.remarquables.mediators.AC.tex.canonical);
+	console.log(T.remarquables.mediators.BC.tex.canonical);
 
-    let S = new Pi.LinearSystem().parse(
-        'x-3y=-2',
-        '4x+7x=1'
-    );
-    S.solve();
-    document.getElementById('output').innerHTML = `<p>${S.tex}</p>`;
-    document.getElementById('output').innerHTML += `<p>${S.texSolution}</p>`;
-    let S = new Pi.LinearSystem().generate(3,-5,2);
-    document.getElementById('output').innerHTML = `<p>${S.tex}</p>`;
-    S.solve();
-    S.log;
-    S.tex;
+	console.log(T.remarquables.heights.A.tex.canonical);
+	console.log(T.remarquables.heights.B.tex.canonical);
+	console.log(T.remarquables.heights.C.tex.canonical);
 
-    S = new Pi.LinearSystem().generate(-1,8,-2);
-    document.getElementById('output').innerHTML += `<p>${S.tex}</p>`;
-    S.solve();
-    S.log;
+	console.log(T.remarquables.bissectors.A.canonicalAsFloatCoefficient());
+	console.log(T.remarquables.bissectors.B.canonicalAsFloatCoefficient());
+	console.log(T.remarquables.bissectors.C.canonicalAsFloatCoefficient());
+	// let P = new Pi.Equation("3x-6y+12=0");
+	// console.log(P)
+	// P.simplify()
+	// console.log(P)
+	// document.getElementById('equation').innerText = P.tex;
 
-    let P = new Pi.Polynom('3x^2+5yx-2');
-    console.log(P.tex);
-    console.log(P.numberOfVars);
-    P.replaceBy('y', new Pi.Polynom('2x+1'));
-    console.log(P.tex);
+	// let LS = new Pi.LinearSystem(
+	// 	// "3x+5y-4=0",
+	// 	"-8x+15y+17=0",
+	// 	"6x+8y+10=0"
+	// )
+	// LS.solve()
+	//
+	// document.getElementById('equation').innerText = LS.texSolution
+	// E = new Pi.Equation('5x-3y+5=0');
+	// let L = new Pi.Geometry.Line(E);
+	//
+	//
+	// console.log('DONE')
+	// console.log(L.tex.canonical)
 
-    let A = new Pi.Equation('2x+3y=5');
-    console.log(A.tex);
 
-    A.isolate('x');
-    console.log(A.tex);
+	// let P = new Pi.Polynom('3x-1');
+    // console.log(P.tex);
+    // let Q = new Pi.Polynom();
+    // console.log(Q.tex)
+	//
+	// let E = new Pi.Equation(P, 0);
+	// console.log(E.tex);
 
-    A.isolate('y');
-    console.log(A.tex);
 
-    let P = new Pi.Polynom().rndSimple(2).makeItComplicate();
-    console.log(P.tex);
-    console.log(P.texString);
+	// let LS = new Pi.LinearSystem(
+	// 	'4a+2b+c=9',
+	// 	'36a-6b+c=-7',
+	// 	'a+b+c=0'
+	// );
+	// LS.solve()
+	// console.log(LS.texSolution)
+    //
+	// let LS2 = new Pi.LinearSystem(
+	// 	'3a+2b=5',
+	// 	'6a+3b=11'
+	// )
+	// LS2.solve();
+	// console.log(LS2.texSolution)
+    //
+	// let LS3 = new Pi.LinearSystem().defineLetters('abc').setCoefficient(
+	// 	3 * 3, 3, 1, 26,
+	// 	2 * 2, 2, 1, 10,
+	// 	1, -1, 1, -2
+	// )
+	// LS3.solve();
+	// console.log(LS3.texSolution)
+	// console.log(LS.tex);
+	/*
 
-    let A = new Pi.Fraction().parse('2/5');
-    console.log(A.frac);
+		let p;
+		p = new Pi.Polynom('3/2x(6x+9)+6(6x+9)');
+		document.getElementById('equation').innerHTML = `<p>${p.raw}</p>`;
+		document.getElementById('equation').innerHTML += `<p>${p.display}</p>`;
+		document.getElementById('equation').innerHTML += `<p>${p.tex}</p>`;
 
-    let F = new Pi.Fraction().parse('18/5');
-    let N = new Pi.Root().parse(F).reduce();
-    console.log(N.tex);
+		let v1 = new Pi.Vector('3 4'),
+			v2 = new Pi.Vector('-2 5');
 
-    let E = new Pi.Equation().create(new Pi.Polynom().parse('x^2+6x-8'), new Pi.Polynom().zero());
-    E.solve();
-    console.log(E.solutions);
+		console.log(v1);
+		console.log(v2);
+		console.log(Pi.Vector.scalarProduct(v1, v2));
+	*/
 
-    let D = 42;
-    console.log(Pi.Numeric.dividers(D));
+	/*
+	let M = new Pi.Monom().random('x', 2, false, false);
+	console.log(M.displayWithSign);
 
-    let X = new Pi.Polynom().rndFactorable(2, false);
-    console.log(X.tex);
-    X.factors.forEach(function(P, i){
-        console.log(P.tex);
-    });
+	let S = new Pi.LinearSystem().parse(
+		'x-3y=-2',
+		'4x+7x=1'
+	);
+	S.solve();
+	document.getElementById('output').innerHTML = `<p>${S.tex}</p>`;
+	document.getElementById('output').innerHTML += `<p>${S.texSolution}</p>`;
+	let S = new Pi.LinearSystem().generate(3,-5,2);
+	document.getElementById('output').innerHTML = `<p>${S.tex}</p>`;
+	S.solve();
+	S.log;
+	S.tex;
 
-    let EQ = new Pi.Equation('2x+3>=5x-2');
-    EQ.solve();
-    console.log(EQ.solution);
+	S = new Pi.LinearSystem().generate(-1,8,-2);
+	document.getElementById('output').innerHTML += `<p>${S.tex}</p>`;
+	S.solve();
+	S.log;
 
-    EQ.parseString('2x+3<5x-2');
-    EQ.solve();
-    console.log(EQ.solution);
+	let P = new Pi.Polynom('3x^2+5yx-2');
+	console.log(P.tex);
+	console.log(P.numberOfVars);
+	P.replaceBy('y', new Pi.Polynom('2x+1'));
+	console.log(P.tex);
 
-    EQ.parseString('7x+3>5x-2');
-    EQ.solve();
-    console.log(EQ.solution);
+	let A = new Pi.Equation('2x+3y=5');
+	console.log(A.tex);
 
-    EQ.parseString('7x+3=<5x-2');
-    EQ.solve();
-    console.log(EQ.solution);
+	A.isolate('x');
+	console.log(A.tex);
 
-    EQ.parseString('7x+3=<7x-2');
-    EQ.solve();
-    console.log(EQ.solution);
+	A.isolate('y');
+	console.log(A.tex);
 
-    EQ.parseString('7x+3>7x-2');
-    EQ.solve();
-    console.log(EQ.solution);
+	let P = new Pi.Polynom().rndSimple(2).makeItComplicate();
+	console.log(P.tex);
+	console.log(P.texString);
 
-    EQ.parseString('x^2+6x+9>=0');
-    EQ.solve();
-    console.log(EQ.solution);*/
+	let A = new Pi.Fraction().parse('2/5');
+	console.log(A.frac);
+
+	let F = new Pi.Fraction().parse('18/5');
+	let N = new Pi.Root().parse(F).reduce();
+	console.log(N.tex);
+
+	let E = new Pi.Equation().create(new Pi.Polynom().parse('x^2+6x-8'), new Pi.Polynom().zero());
+	E.solve();
+	console.log(E.solutions);
+
+	let D = 42;
+	console.log(Pi.Numeric.dividers(D));
+
+	let X = new Pi.Polynom().rndFactorable(2, false);
+	console.log(X.tex);
+	X.factors.forEach(function(P, i){
+		console.log(P.tex);
+	});
+
+	let EQ = new Pi.Equation('2x+3>=5x-2');
+	EQ.solve();
+	console.log(EQ.solution);
+
+	EQ.parseString('2x+3<5x-2');
+	EQ.solve();
+	console.log(EQ.solution);
+
+	EQ.parseString('7x+3>5x-2');
+	EQ.solve();
+	console.log(EQ.solution);
+
+	EQ.parseString('7x+3=<5x-2');
+	EQ.solve();
+	console.log(EQ.solution);
+
+	EQ.parseString('7x+3=<7x-2');
+	EQ.solve();
+	console.log(EQ.solution);
+
+	EQ.parseString('7x+3>7x-2');
+	EQ.solve();
+	console.log(EQ.solution);
+
+	EQ.parseString('x^2+6x+9>=0');
+	EQ.solve();
+	console.log(EQ.solution);*/
 </script>
 </body>
 </html>

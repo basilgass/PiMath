@@ -2,15 +2,20 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
-    "module": "esnext",
+    "module": "commonjs",
     "target": "esnext",
     "allowJs": true,
     "jsx": "react",
     "sourceMap": true,
     "moduleResolution": "node",
-    "declaration": true
+    "declaration": true,
+    "removeComments": true
   },
   "exclude": [
-    "node_modules"
+    "./tests/",
+    "/node_modules/",
+    "./dist/",
+    "./distProduction/",
+    "./distStatic/"
   ]
 }

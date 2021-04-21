@@ -1,11 +1,15 @@
-import {Fraction} from "./maths/fraction";
-import {Polynom} from "./maths/polynom";
-import {Monom} from "./maths/monom";
+import {Fraction} from "./maths/coefficients/fraction";
 import {Numeric} from "./maths/numeric";
-import {Equation} from "./maths/equation";
-import {Nthroot} from "./maths/nthroot";
-import {LinearSystem} from "./maths/linearSystem";
-import {Vector} from "./maths/vector";
+import {Nthroot} from "./maths/coefficients/nthroot";
+import {Monom} from "./maths/algebra/monom";
+import {Polynom} from "./maths/algebra/polynom";
+import {Equation} from "./maths/algebra/equation";
+import {LinearSystem} from "./maths/algebra/linearSystem";
+import {Rational} from "./maths/algebra/rational";
+import {Vector} from "./maths/geometry/vector";
+import {Line} from "./maths/geometry/line";
+import {Point} from "./maths/geometry/point";
+import {Triangle} from "./maths/geometry/triangle";
 
 // Expose as global
 (<any>window).Pi = {
@@ -16,7 +20,13 @@ import {Vector} from "./maths/vector";
     Polynom: Polynom,
     Equation: Equation,
     LinearSystem: LinearSystem,
-    Vector: Vector
+    Rational: Rational,
+    Geometry: {
+        Vector: Vector,
+        Point: Point,
+        Line: Line,
+        Triangle: Triangle
+    }
 };
 
 export var Pi = {
@@ -27,5 +37,11 @@ export var Pi = {
     Polynom: Polynom,
     Equation: Equation,
     LinearSystem: LinearSystem,
-    Vector: Vector
-}
+    Rational: Rational,
+    Geometry: {
+        Vector: Vector,
+        Point: Point,
+        Line: Line,
+        Triangle: Triangle
+    }
+};

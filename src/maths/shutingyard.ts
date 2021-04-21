@@ -88,7 +88,7 @@ export class Shutingyard {
         // Replace missing multiplication between two parenthese
         expr2 = expr.replace(/\)\(/g, ')*(');
 
-        // Replace missing multiplication between number or letter and parenthese.
+        // Replace missing multiplication between number or setLetter and parenthese.
         expr2 = expr2.replace(/([\da-z])(\()/g, "$1*$2");
         expr2 = expr2.replace(/(\))([\da-z])/g, "$1*$2");
 
@@ -196,7 +196,7 @@ export class Shutingyard {
                 case '(':
                     opStack.push(token);
                     // Add an empty value if next element is negative.
-                    console.log(token, tokenPos, expr[tokenPos], expr[tokenPos+1]);
+                    // console.log(token, tokenPos, expr[tokenPos], expr[tokenPos+1]);
                     if(expr[tokenPos]==='-') {
                         outQueue.push('0');
                     }

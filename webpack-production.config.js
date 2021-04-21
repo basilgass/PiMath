@@ -2,7 +2,7 @@ const path = require('path');
 
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: './src/main.ts',
     devtool: 'source-map',
     module: {
@@ -19,9 +19,9 @@ module.exports = {
     },
     output: {
         filename: 'pi.js',
-        path: path.resolve(__dirname, 'distStatic'),
+        path: path.resolve(__dirname, 'distProduction'),
     },
     optimization: {
-        minimize: false
+        minimize: true
     }
 };
