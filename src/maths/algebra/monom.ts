@@ -5,6 +5,7 @@
  */
 import {Fraction} from "../coefficients/fraction";
 import {Numeric} from "../numeric";
+import lookupFiles = Mocha.utils.lookupFiles;
 
 
 export class Monom {
@@ -53,6 +54,19 @@ export class Monom {
      */
     get literal(): { [Key: string]: number } {
         return this._literal;
+    }
+
+    get literalSqrt(): { [Key: string]: number } {
+
+        if (this.isLitteralSquare()) {
+            let L: { [Key: string]: number } = {}
+            for (let key in this._literal) {
+                L[key] = this._literal[key] / 2
+            }
+            return L;
+        } else {
+            return this._literal;
+        }
     }
 
     /**
@@ -126,6 +140,75 @@ export class Monom {
                 return `${this._coefficient.display}${L}`;
             }
         }
+    }
+
+    get dividers(): Monom[] {
+        // Decompose only if the coefficient it a complet value
+        if (this.coefficient.denominator !== 1) {
+            return [this.clone()]
+        }
+
+        // Security : do not do this if greater than 10000
+        if (this.coefficient.numerator > 10000) {
+            return [this.clone()]
+        }
+        const dividers = Numeric.dividers(Math.abs(this.coefficient.numerator))
+
+        // Decompose the litterals parts.
+        let litterals: { [key: string]: number }[] = [];
+        for (let L in this.literal) {
+            // L is the letter.
+            litterals = this._getLitteralDividers(litterals, L)
+        }
+
+        const monomDividers: Monom[] = [];
+        if (litterals.length > 0 && dividers.length>0) {
+            for (let N of dividers) {
+                for (let L of litterals) {
+                    let M = new Monom();
+                    M.coefficient = new Fraction(N)
+                    M.literal = L
+                    monomDividers.push(M)
+                }
+            }
+        }else if (dividers.length===0) {
+            for (let L of litterals) {
+                let M = new Monom();
+                M.coefficient = new Fraction().one()
+                M.literal = L
+                monomDividers.push(M)
+            }
+        } else {
+            for (let N of dividers) {
+                let M = new Monom();
+                M.coefficient = new Fraction(N)
+                monomDividers.push(M)
+            }
+        }
+
+        return monomDividers.length===0? [new Monom().one()]: monomDividers;
+    }
+
+    private _getLitteralDividers(arr: { [key: string]: number }[], letter: string): { [key: string]: number }[] {
+        let tmpList: { [key: string]: number }[] = [];
+
+        for (let d = 0; d <= this.literal[letter]; d++) {
+            if (arr.length === 0) {
+                let litt: { [key: string]: number } = {}
+                litt[letter] = d
+                tmpList.push(litt)
+            } else {
+                for (let item of arr) {
+                    let litt: { [key: string]: number } = {}
+                    for(let currentLetter in item){
+                        litt[currentLetter] = item[currentLetter]
+                    }
+                    litt[letter] = d
+                    tmpList.push(litt)
+                }
+            }
+        }
+        return tmpList;
     }
 
     /**
@@ -321,6 +404,11 @@ export class Monom {
         return this;
     };
 
+    multiplyByNumber = (F: Fraction | number): Monom => {
+        this._coefficient.multiply(F);
+        return this;
+    }
+
     /**
      * Divide the current monoms by multiple monoms
      * @param M (Monom[])
@@ -369,6 +457,12 @@ export class Monom {
      * Return the square root of a monom
      */
     sqrt = (): Monom => {
+        if (this.isSquare()) {
+            this._coefficient.sqrt();
+            for (let letter in this._literal) {
+                this._literal[letter] /= 2;
+            }
+        }
         return this.root(2);
     }
 
@@ -445,6 +539,21 @@ export class Monom {
         return this.compare(M, 'same');
     };
 
+    isSquare = (): boolean => {
+        if (!this.coefficient.isSquare()) {
+            return false;
+        }
+        return this.isLitteralSquare();
+    }
+
+    isLitteralSquare = (): boolean => {
+        for (let letter in this.literal) {
+            if (this.literal[letter] % 2 !== 0) {
+                return false;
+            }
+        }
+        return true;
+    }
     // ------------------------------------------
     // Misc monoms functions
     // -------------------------------------
@@ -480,7 +589,6 @@ export class Monom {
         if (this.variables.length === 0) {
             return 0;
         }
-
         if (letter === undefined) {
             // Not setLetter given -> we get the global monom degree (sum of all the letters).
             return Object.values(this._literal).reduce((t, n) => t + n);
@@ -576,16 +684,12 @@ export class Monom {
     static xmultiply = (...monoms: Monom[]): Monom => {
         let M = new Monom().one();
 
-        for(let m of monoms){
+        for (let m of monoms) {
             M.multiply(m);
         }
 
         return M;
     };
-
-
-
-
 
 
     // TODO: The rest of the functions are not used or unnecessary ?

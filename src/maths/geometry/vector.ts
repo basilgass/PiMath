@@ -3,6 +3,7 @@
  * @module Vector
  */
 import {Fraction} from "../coefficients/fraction";
+import {Numeric} from "../numeric";
 
 export class Vector {
     private _x: Fraction;   // 1st component
@@ -175,9 +176,27 @@ export class Vector {
     isNormalTo = (v: Vector): boolean => {
         return this.scalarProductWithVector(v).isZero()
     }
+
+    multiplyByScalar = (k: any): Vector => {
+        let scalar = new Fraction(k);
+        this._x.multiply(scalar);
+        this._y.multiply(scalar);
+        return this;
+    }
+
+    divideByScalar = (k:any): Vector => {
+        return this.multiplyByScalar(new Fraction(k).invert());
+    }
     // ------------------------------------------
     // Vector functions
     // ------------------------------------------
+
+    simplify = (): Vector => {
+        // Multiply by the lcm of denominators.
+        return this.multiplyByScalar(Numeric.lcm(this._x.denominator, this._y.denominator))
+            .divideByScalar(Numeric.gcd(this._x.numerator, this._y.numerator));
+    }
+
     angleWith = (V: Vector, sharp?: Boolean, radian?: Boolean): number => {
         let scalar = this.scalarProductWithVector(V).value,
             toDegree = radian ? 1 : 180 / Math.PI;

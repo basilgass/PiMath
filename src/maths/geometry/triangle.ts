@@ -2,9 +2,10 @@ import {Point} from "./point";
 import {Fraction} from "../coefficients/fraction";
 import {Vector} from "./vector";
 import {Line} from "./line";
+import {Equation} from "../algebra/equation";
 
 interface remarquableLines {
-    'medianes': {
+    'medians': {
         'A': Line,
         'B': Line,
         'C': Line,
@@ -22,7 +23,7 @@ interface remarquableLines {
         'C': Line,
         'intersection': Point
     },
-    'bissectors': {
+    'bisectors': {
         'A': Line,
         'B': Line,
         'C': Line,
@@ -55,9 +56,24 @@ export class Triangle {
         return this;
     }
 
+    get isTriangle():boolean {return true;}
+
     // ------------------------------------------
     // Getter and setters
     // ------------------------------------------
+
+    get A(): Point {
+        return this._A;
+    }
+
+    get B(): Point {
+        return this._B;
+    }
+
+    get C(): Point {
+        return this._C;
+    }
+
     get AB(): Vector {
         return this.getSegment('A', 'B');
     }
@@ -136,19 +152,60 @@ export class Triangle {
                 new Point(v[4], v[5]),
             )
         } else if (values.length === 3) {
-            // At least, one of the value is not a point.
-            if (values.reduce((x: any) => x.isPoint === true).length < 3) {
-                return this.parse(
-                    new Point(values[0]),
-                    new Point(values[1]),
-                    new Point(values[2])
-                )
-            }
+            // Possibilities:
+            // - Three points (or part of points, only dict for example, or array (TODO: Add the array syntax for point)
+            // - Three lines
+            // - Three lines as text.
+            if(values.filter((x:any) => typeof x === 'string').length===3) {
+                return this.parse( ...values.map((x:string) => new Line(x)) )
+            }else if(values.filter((x:any) => x.isLine === true).length===3) {
+                // We have three lines
+                this._lines = {
+                    'AB': values[0],
+                    'BC': values[1],
+                    'AC': values[2]
+                };
 
-            // We have three points.
-            this._A = values[0].clone();
-            this._B = values[1].clone();
-            this._C = values[2].clone();
+                // Get the intersection points -> build the triangle using these intersection points.
+                let intersect = values[0].intersection(values[1]);
+                if (intersect.hasIntersection) {
+                    this._B = intersect.point.clone();
+                } else {
+                    return this;
+                }
+                intersect = values[1].intersection(values[2]);
+                if (intersect.hasIntersection) {
+                    this._C = intersect.point.clone();
+                } else {
+                    return this;
+                }
+                intersect = values[2].intersection(values[0]);
+                if (intersect.hasIntersection) {
+                    this._A = intersect.point.clone();
+                } else {
+                    return this;
+                }
+            }else {
+                // At least, one of the value is not a point.
+                if (values.filter((x: any) => x.isPoint === true).length < 3) {
+                    return this.parse(
+                        new Point(values[0]),
+                        new Point(values[1]),
+                        new Point(values[2])
+                    )
+                }
+
+                // We have three points.
+                this._A = values[0].clone();
+                this._B = values[1].clone();
+                this._C = values[2].clone();
+
+                this._lines = {
+                    'AB': new Line(this._A, this._B),
+                    'BC': new Line(this._B, this._C),
+                    'AC': new Line(this._A, this._C)
+                };
+            }
         } else if (values.length === 1) {
             if (values[0].isTriangle === true) {
                 return values[0].clone();
@@ -167,6 +224,12 @@ export class Triangle {
         this._B = this._B.clone();
         this._C = this._C.clone();
 
+        this._lines = {
+            'AB': this._lines.AB.clone(),
+            'BC': this._lines.BC.clone(),
+            'AC': this._lines.AC.clone()
+        }
+
         this._updateTriangle();
         return this;
     }
@@ -180,12 +243,6 @@ export class Triangle {
      * Generate the Line object for the three segments of the triangle
      */
     private _updateTriangle = () => {
-        this._lines = {
-            'AB': new Line(this._A, this._B),
-            'BC': new Line(this._B, this._C),
-            'AC': new Line(this._A, this._C)
-        };
-
         this._middles = {
             'AB': new Point().middleOf(this._A, this._B),
             'AC': new Point().middleOf(this._A, this._C),
@@ -226,16 +283,8 @@ export class Triangle {
     }
 
     private _calculateRemarquableLines = (): remarquableLines => {
-
-        // TODO: How to handle the best the bissectors lines ?
-
-        let barycenter = new Point(
-            (this.AB.norm*this._C.x.value + this.AC.norm*this._B.x.value + this.BC.norm*this._A.x.value)/(this.AB.norm+this.AC.norm+this.BC.norm),
-            (this.AB.norm*this._C.y.value + this.AC.norm*this._B.y.value + this.BC.norm*this._A.y.value)/(this.AB.norm+this.AC.norm+this.BC.norm)
-        )
-
         let remarquables: remarquableLines = {
-            'medianes': {
+            'medians': {
                 'A': new Line(this._A, this._middles.BC),
                 'B': new Line(this._B, this._middles.AC),
                 'C': new Line(this._C, this._middles.AB),
@@ -253,21 +302,53 @@ export class Triangle {
                 'C': new Line(this._C, new Vector(this._A, this._B).normal()),
                 'intersection': null
             },
-            'bissectors': {
-                'A': new Line(this._A, barycenter),
-                'B': new Line(this._B, barycenter),
-                'C': new Line(this._C, barycenter),
-                'intersection': barycenter
+            'bisectors': {
+                'A': this._calculateBisectors('A'),
+                'B': this._calculateBisectors('B'),
+                'C': this._calculateBisectors('C'),
+                'intersection': null
             }
         }
 
         // As it's a triangle, we assume the lines are intersecting and aren't parallel or superposed.
-        remarquables.medianes.intersection = remarquables.medianes.A.intersection(remarquables.medianes.B).point;
+        remarquables.medians.intersection = remarquables.medians.A.intersection(remarquables.medians.B).point;
         remarquables.mediators.intersection = remarquables.mediators.AB.intersection(remarquables.mediators.BC).point;
         remarquables.heights.intersection = remarquables.heights.A.intersection(remarquables.heights.B).point;
-        // remarquables.bissectors.intersection = remarquables.bissectors.A.intersection(remarquables.bissectors.B).point;
+        remarquables.bisectors.intersection = remarquables.bisectors.A.intersection(remarquables.bisectors.B).point;
 
-        // Everything was calculated for the remaruqable lines.
+        // Everything was calculated for the remarquable lines.
         return remarquables;
+    }
+
+    private _calculateBisectors = (pt: string): Line => {
+        let tlines = this.lines, d1, d2;
+
+        if(pt==='A'){
+            d1 = tlines.AB;
+            d2 = tlines.AC;
+        }else if(pt==='B'){
+            d1 = tlines.AB;
+            d2 = tlines.BC;
+        }else if(pt==='C'){
+            d1 = tlines.BC;
+            d2 = tlines.AC;
+        }
+
+        let b1 = new Line(new Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm)).reorder(true).simplify()),
+            b2 = new Line(new Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm).opposed()).reorder(true).simplify());
+
+        // Must determine which bisectors is in the triangle
+        if(pt==='A'){
+            return b1.hitSegment(this.B, this.C)?b1:b2;
+        }
+        if(pt==='B'){
+            return b1.hitSegment(this.A, this.C)?b1:b2;
+        }
+        if(pt==='C'){
+            return b1.hitSegment(this.B, this.A)?b1:b2;
+        }
+
+        // Default returns the first bisector
+        return b1;
     }
 }

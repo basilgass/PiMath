@@ -5,6 +5,10 @@
 </head>
 <body>
 
+<h1>Output</h1>
+<div id="math-output"></div>
+<div id="math-output-2"></div>
+
 <h1>Fractions</h1>
 <div id="fraction"></div>
 
@@ -13,27 +17,92 @@
 
 
 <script>
+	const mathOutput = document.getElementById('math-output');
+	const mathOutput2 = document.getElementById('math-output-2');
+	//
+	// let P = new Pi.Polynom('x^4-y^4-2x^3y+2xy^3');
+	// console.log(P.tex)
+	// P.factorize();
+	// let result = P.euclidian(new Pi.Polynom('x-y'));
+	// console.log(result.quotient.tex, result.reminder.tex)
+	// mathOutput.innerHTML = P.factors.map(x=>x.tex);
+	//
+	//
+	// const P = new Pi.Polynom('(2x-yzt)(x+3yt)');
+	// mathOutput.innerHTML = P.tex
+	// let F = P.factorize2('x')
+	// mathOutput2.innerHTML = F.map(x=>x.tex);
+	let R = new Pi.Rational(
+		new Pi.Polynom('x'),
+		new Pi.Polynom('x+y')
+	)
+	let R2 = new Pi.Rational(
+		new Pi.Polynom('y'),
+		new Pi.Polynom('x-y')
+	)
+	let R3 = new Pi.Rational(
+		new Pi.Polynom('2xy'),
+		new Pi.Polynom('x^2-y^2')
+	)
 
-	let T = new Pi.Geometry.Triangle(6,-1,-4,3,-2,-3);
+	R.add(R2).subtract(R3).reduce()
+	console.log(R.numerator)
+	mathOutput.innerHTML = R.texFactors
+	//
+	// let P = new Pi.Polynom('4x^2y^2-12xy^3+9y^4');
+	// mathOutput.innerHTML = P.monomsByDegree(2, 'x').map(x=>x.tex)
 
-	console.log(T.lines.AB.tex.canonical);
-	console.log(T.lines.AC.tex.canonical);
-	console.log(T.lines.BC.tex.canonical);
-	console.log(T.remarquables.medianes.A.tex.canonical);
-	console.log(T.remarquables.medianes.B.tex.canonical);
-	console.log(T.remarquables.medianes.C.tex.canonical);
-
-	console.log(T.remarquables.mediators.AB.tex.canonical);
-	console.log(T.remarquables.mediators.AC.tex.canonical);
-	console.log(T.remarquables.mediators.BC.tex.canonical);
-
-	console.log(T.remarquables.heights.A.tex.canonical);
-	console.log(T.remarquables.heights.B.tex.canonical);
-	console.log(T.remarquables.heights.C.tex.canonical);
-
-	console.log(T.remarquables.bissectors.A.canonicalAsFloatCoefficient());
-	console.log(T.remarquables.bissectors.B.canonicalAsFloatCoefficient());
-	console.log(T.remarquables.bissectors.C.canonicalAsFloatCoefficient());
+	// let P = new Pi.Polynom('3x^2'),
+	// 	Q = new Pi.Polynom(Math.log(5)/Math.log(3))
+	//
+	// console.log(Q.tex);
+	//
+	// let E = new Pi.Equation(P, Q);
+	// console.log(E.tex);
+	//
+	// E.solve();
+	// console.log(E.solution)
+	// document.getElementById('equation').innerText = P.tex;
+	// let T2 = new Pi.Geometry.Triangle(
+	// 	'y-1=0',
+	// 	'4x-3y+15=0',
+	// 	'12x+5y-33=0'
+	// )
+	//
+	// console.log('A', T2.A.x.value, T2.A.y.value)
+	// console.log('B', T2.B.x.value, T2.B.y.value)
+	// console.log('C', T2.C.x.value, T2.C.y.value)
+	//
+	// console.log('RESULT')
+	// console.log(T2.remarquables.bisectors.A.tex.canonical)
+	// console.log(T2.remarquables.bisectors.B.tex.canonical)
+	// console.log(T2.remarquables.bisectors.C.tex.canonical)
+	//
+	// console.log('INTERSECTION')
+	// console.log(T2.remarquables.bisectors.intersection.tex)
+	//
+	// console.log('Distance')
+	// console.log(T2.lines.AB.distanceTo(T2.remarquables.bisectors.intersection).tex, '=', T2.lines.AB.distanceTo(T2.remarquables.bisectors.intersection).value.toFixed(2))
+	//	let T = new Pi.Geometry.Triangle(6,-1,-4,3,-2,-3);
+	//
+	//	console.log(T.lines.AB.tex.canonical);
+	//	console.log(T.lines.AC.tex.canonical);
+	//	console.log(T.lines.BC.tex.canonical);
+	//	console.log(T.remarquables.medianes.A.tex.canonical);
+	//	console.log(T.remarquables.medianes.B.tex.canonical);
+	//	console.log(T.remarquables.medianes.C.tex.canonical);
+	//
+	//	console.log(T.remarquables.mediators.AB.tex.canonical);
+	//	console.log(T.remarquables.mediators.AC.tex.canonical);
+	//	console.log(T.remarquables.mediators.BC.tex.canonical);
+	//
+	//	console.log(T.remarquables.heights.A.tex.canonical);
+	//	console.log(T.remarquables.heights.B.tex.canonical);
+	//	console.log(T.remarquables.heights.C.tex.canonical);
+	//
+	//	console.log(T.remarquables.bissectors.A.canonicalAsFloatCoefficient());
+	//	console.log(T.remarquables.bissectors.B.canonicalAsFloatCoefficient());
+	//	console.log(T.remarquables.bissectors.C.canonicalAsFloatCoefficient());
 	// let P = new Pi.Equation("3x-6y+12=0");
 	// console.log(P)
 	// P.simplify()
@@ -57,9 +126,9 @@
 
 
 	// let P = new Pi.Polynom('3x-1');
-    // console.log(P.tex);
-    // let Q = new Pi.Polynom();
-    // console.log(Q.tex)
+	// console.log(P.tex);
+	// let Q = new Pi.Polynom();
+	// console.log(Q.tex)
 	//
 	// let E = new Pi.Equation(P, 0);
 	// console.log(E.tex);
@@ -72,14 +141,14 @@
 	// );
 	// LS.solve()
 	// console.log(LS.texSolution)
-    //
+	//
 	// let LS2 = new Pi.LinearSystem(
 	// 	'3a+2b=5',
 	// 	'6a+3b=11'
 	// )
 	// LS2.solve();
 	// console.log(LS2.texSolution)
-    //
+	//
 	// let LS3 = new Pi.LinearSystem().defineLetters('abc').setCoefficient(
 	// 	3 * 3, 3, 1, 26,
 	// 	2 * 2, 2, 1, 10,

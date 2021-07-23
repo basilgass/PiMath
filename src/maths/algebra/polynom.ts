@@ -20,12 +20,13 @@ export class Polynom {
     /**
      *
      * @param {string} polynomString (optional) Default polynom to parse on class creation
+     * @param values
      */
-    constructor(polynomString?: string) {
+    constructor(polynomString?: string, ...values: any[]) {
         this._monoms = [];
         this._factors = [];
         if (polynomString !== undefined) {
-            this.parse(polynomString);
+            this.parse(polynomString, ...values);
         }
         return this;
     }
@@ -52,6 +53,20 @@ export class Polynom {
 
     set factors(value: Polynom[]) {
         this._factors = value;
+    }
+
+    get texFactors(): string {
+        this.factorize()
+
+        let tex = ''
+        for (let f of this.factors) {
+            if (f.monoms.length > 1) {
+                tex += `(${f.tex})`
+            } else {
+                tex = f.tex + tex;
+            }
+        }
+        return tex;
     }
 
     get texString(): string {
@@ -138,13 +153,21 @@ export class Polynom {
      */
     parse = (inputStr: string, ...values: any[]): Polynom => {
         if (values === undefined || values.length === 0) {
-            // Parse the polynom using the shuting yard algorithm
-
-            // TODO: handle if the inputstr is a number.
-            inputStr = ''+inputStr;
-
+            inputStr = '' + inputStr;
             this._rawString = inputStr;
 
+            // Parse the polynom using the shuting yard algorithm
+            if (inputStr !== '' && !isNaN(Number(inputStr))) {
+                this.empty();
+                // It's a simple number.
+                let m = new Monom();
+                m.coefficient = new Fraction(inputStr);
+                m.literalStr = '';
+                this.add(m);
+                return this;
+            }
+
+            // Parse the string.
             return this.shutingYardToReducedPolynom(inputStr);
         } else if (/^[a-z]/.test(inputStr)) {
             // We assume the inputStr contains only letters.
@@ -200,17 +223,20 @@ export class Polynom {
                 // Polynom
                 m2 = (m.pop()) || new Polynom().zero();
 
-                if (m.length > 0) {
-                    // Get the first item from the stack
-                    m1 = (m.pop()) || new Polynom().zero();
+                if (token[0] !== '^') {
+                    if (m.length > 0) {
+                        // Get the first item from the stack
+                        m1 = (m.pop()) || new Polynom().zero();
+                    } else {
+                        // Nothing is in the stack - create an empty polynom
+                        m1 = new Polynom().zero();
+                    }
                 } else {
-                    // Nothing is in the stack - create an empty polynom
-                    m1 = new Polynom().zero();
+                    // tokenParam = parseInt(token.split('^')[1]);
+                    tokenParam = Number(token.substr(1));
+                    // m2.clone().pow(tokenParam);
                 }
 
-                if (token[0] === '^') {
-                    tokenParam = parseInt(token.split('^')[1]);
-                }
 
                 switch (token) {
                     case '+':
@@ -237,6 +263,7 @@ export class Polynom {
                 }
                 m.push(m1);
             } else {
+                // console.log('NOT OPERATION: ', token, new Monom(token).tex)
                 m.push(new Polynom().add(new Monom(token)));
             }
         }
@@ -318,7 +345,6 @@ export class Polynom {
         }
 
         // TODO: Build a more robust randomize function
-
         return P;
     }
 
@@ -472,15 +498,32 @@ export class Polynom {
      * returns {quotient: Polynom, reminder: Polynom}
      */
     euclidian = (P: Polynom): { quotient: Polynom, reminder: Polynom } => {
+        const letter: string = P.variables[0];
         const quotient: Polynom = new Polynom().zero();
-        const reminder: Polynom = this.clone();
-        const maxMP: Monom = P.monomByDegree();
+        const reminder: Polynom = this.clone().reorder(letter);
+
+        // There is no variable !
+        if (P.variables.length === 0) {
+            return {quotient, reminder}
+        }
+
+        // Get at least a letter
+
+        const maxMP: Monom = P.monomByDegree(undefined, letter);
+        const degreeP: number = P.degree(letter);
+
         let newM: Monom;
 
         // Make the euclidian division of the two polynoms.
-        while (reminder.degree() >= P.degree()) {
+        let MaxIteration = this.degree(letter) * 2;
+        while (reminder.degree(letter) >= degreeP && MaxIteration >= 0) {
+            // console.log('EUCLIDE Q', quotient.degree(letter), quotient.tex)
+            // console.log('EUCLIDE R', reminder.degree(letter), reminder.tex)
+            // console.log('ITERATION', MaxIteration)
+            MaxIteration--
+
             // Get the greatest monom divided by the max monom of the divider
-            newM = reminder.monomByDegree().clone().divide(maxMP);
+            newM = reminder.monomByDegree(undefined, letter).clone().divide(maxMP);
 
             if (newM.isZero()) {
                 break;
@@ -578,6 +621,8 @@ export class Polynom {
                         return false;
                     }
                 }
+
+                return true;
             default:
                 return false;
         }
@@ -600,8 +645,59 @@ export class Polynom {
     };
 
     isOpposedAt = (P: Polynom): boolean => {
-        return this.compare(P.opposed(), '=');
+        return this.compare(P.clone().opposed(), '=');
     };
+
+    isFactorized = (polynomString: string): boolean => {
+        let P = new Polynom(polynomString);
+
+        // Both polynom aren't the same (once developed and reduced => they cannot be equivalent)
+        if (!this.isEqual(P)) {
+            return false;
+        }
+
+        // Check if the provided (string) version is fully factorized.
+        // Run a regex on the string.
+        let polynomStringNormalized = polynomString.replaceAll('*', ''),
+            polynomStringReduced = '' + polynomStringNormalized,
+            factors: string[] = [];
+
+        for (let x of polynomStringNormalized.matchAll(/\(([a-z0-9+\-]+)\)(\^[0-9]*)?/g)) {
+            if (x[2] !== undefined) {
+                for (let i = 0; i < +x[2].substr(1); i++) {
+                    factors.push(x[1])
+                }
+            } else {
+                factors.push(x[1]);
+            }
+            polynomStringReduced = polynomStringReduced.replaceAll(x[0], '');
+        }
+        if (polynomStringReduced !== '') {
+            factors.push(polynomStringReduced);
+        }
+        let polyFactors = factors.map(x => new Polynom(x));
+
+        // Factorize the current polynom.
+        this.factorize();
+
+        // Compare the given factors with the generated factors
+        let sign = 1, maxNumberOfIteration = polyFactors.length * 2;
+        for (let f of this.factors) {
+            for (let i = 0; i < polyFactors.length; i++) {
+                if (f.isEqual(polyFactors[i])) {
+                    polyFactors.splice(i, 1);
+                    break;
+                } else if (f.isOpposedAt(polyFactors[i])) {
+                    polyFactors.splice(i, 1);
+                    sign = -sign;
+                    break;
+                }
+            }
+        }
+
+        // The polyfactors must be empty and the cumulative opposite factors must be 1.
+        return (polyFactors.length === 0 && sign === 1);
+    }
 
     // ------------------------------------------
     // Misc polynoms functions
@@ -649,9 +745,9 @@ export class Polynom {
     };
 
     letters = (): string[] => {
-        let L:string[] = [], S = new Set();
+        let L: string[] = [], S = new Set();
 
-        for(let m of this._monoms){
+        for (let m of this._monoms) {
             S = new Set([...S, ...m.variables]);
         }
 
@@ -714,7 +810,7 @@ export class Polynom {
      * Factorize a polynom and store the best results in factors.
      * @param maxValue Defines the greatest value to search to (default is 20).
      */
-    factorize = (maxValue?: number): Polynom => {
+    factorize_OLD = (maxValue?: number): Polynom => {
         // TODO: Must handle other letters than 'x'
         this._factors = [];
 
@@ -743,7 +839,9 @@ export class Polynom {
             nbFactorsFound = commonPolynom.degree();
         }
 
-        // Main loop. Do it only if degree is equal or less than one.
+        // Main loop.
+        //
+        // Do it only if degree is equal or less than one.
         if (P.degree() <= 1) {
             this._factors.push(P.clone());
         } else {
@@ -788,7 +886,229 @@ export class Polynom {
         return this;
     };
 
+    factorize = (letter?: string): Polynom[] => {
+        let factors: Polynom[] = [];
 
+        // Extract the common monom
+        let P = this.clone().reorder(),
+            M = P.commonMonom(),
+            tempPolynom: Polynom
+        // It has a common monom.
+        if (!M.isOne()) {
+            tempPolynom = new Polynom()
+            tempPolynom.monoms = [M]
+            factors = [tempPolynom.clone()]
+            P = P.euclidian(tempPolynom).quotient;
+        }
+
+        let securityLoop = P.degree() * 2
+        // securityLoop = 0
+        while (securityLoop >= 0) {
+            securityLoop--
+
+
+            if (P.monoms.length < 2) {
+                if (!P.isOne()) {
+                    factors.push(P.clone());
+                }
+                break;
+            } else {
+                // Get the first and last monom.
+                let m1 = P.monoms[0].dividers,
+                    m2 = P.monoms[P.monoms.length - 1].dividers
+
+                // console.log('CURRENT VALUE')
+                // console.log(P.tex)
+                // console.log('---------------------')
+                for (let m1d of m1) {
+                    for (let m2d of m2) {
+                        // if(m1d.degree()===m2d.degree()){continue}
+                        let dividerPolynom = new Polynom(),
+                            result
+                        dividerPolynom.monoms = [m1d.clone(), m2d.clone()]
+                        result = P.euclidian(dividerPolynom)
+
+                        // console.log(dividerPolynom.tex, '=>', result.reminder.tex, '|||||', result.quotient.tex)
+                        if (result.reminder.isZero()) {
+                            P = result.quotient.clone();
+                            factors.push(dividerPolynom)
+                            continue;
+                        }
+
+                        dividerPolynom.monoms = [m1d.clone(), m2d.clone().opposed()]
+                        result = P.euclidian(dividerPolynom)
+                        if (result.reminder.isZero()) {
+                            P = result.quotient.clone();
+                            factors.push(dividerPolynom)
+                        }
+                        // console.log(dividerPolynom.tex, '=>', result.reminder.tex)
+                    }
+                }
+            }
+
+        }
+
+        this.factors = factors
+        return factors;
+        // let securityLoop = P.degree() * 2;
+        // while (P.degree(letter) >= 2 && securityLoop >= 0) {
+        //     // Avoid infinite looping
+        //     securityLoop--;
+        //
+        //     console.log(letter, P.degree(letter))
+        //     if (P.degree(letter) === 1) {
+        //         factors.push(P.clone())
+        //         // We are done !
+        //         return factors;
+        //
+        //     } else if (P.degree(letter) === 2) {
+        //         if(P.monoms.length===3) {
+        //             // Resolve using delta.
+        //             factors = [...factors, ...P._factorize2ndDegree(letter)];
+        //             // We are done !
+        //             return factors;
+        //         }else if(P.degree(letter)===2 && P.monoms.length===4) {
+        //             // Resolve using groups
+        //             factors = [...factors, ...P._factorizeByGroups()]
+        //         }
+        //
+        //     }else {
+        //         console.log('NOTHING TO DO: ', this.tex)
+        //     }
+        //
+        // }
+
+
+        return [];
+    }
+
+    private _factorize2ndDegree = (letter: string): Polynom[] => {
+        let P1: Polynom, P2: Polynom,
+            a, b, c, delta, x1, x2, factor;
+
+        // One variable only
+        if (this.numberOfVars === 1) {
+            a = this.monomByDegree(2, letter).coefficient;
+            b = this.monomByDegree(1, letter).coefficient;
+            c = this.monomByDegree(0, letter).coefficient;
+            delta = b.clone().pow(2).subtract(a.clone().multiply(c).multiply(4));
+
+            if (delta.isZero()) {
+                x1 = b.clone().opposed().divide(a.clone().multiply(2))
+                P1 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator)
+                P2 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator)
+                factor = a.divide(x1.denominator).divide(x1.denominator);
+
+                if (!factor.isOne()) {
+                    // TODO: Update new Polynom to accept anything...
+                    return [new Polynom(factor.display), P1, P2]
+                } else {
+                    return [P1, P2]
+                }
+            } else if (delta.isPositive() && delta.isSquare()) {
+                x1 = b.clone().opposed()
+                    .add(delta.clone().sqrt())
+                    .divide(a.clone().multiply(2))
+                x2 = b.clone().opposed()
+                    .subtract(delta.clone().sqrt())
+                    .divide(a.clone().multiply(2))
+
+                // (2x+5)(3x-2)
+                // 6x^2+11x-10
+                // a = 6, b = 11, c = -10
+                // delta = 121-4*6*(-10) = 361= 19^2
+                // x1 = (-11 + 19)  / 12 = 8/12 = 2/3
+                // x2 = (-11 - 19)  / 12 = -30/12 = -5/2
+                factor = a.divide(x1.denominator).divide(x2.denominator);
+                if (factor.isOne()) {
+                    return [
+                        new Polynom(letter).subtract(x1.display).multiply(x1.denominator),
+                        new Polynom(letter).subtract(x2.display).multiply(x2.denominator),
+                    ]
+                } else {
+                    return [
+                        new Polynom(factor.display),
+                        new Polynom(letter).subtract(x1.display).multiply(x1.denominator),
+                        new Polynom(letter).subtract(x2.display).multiply(x2.denominator),
+                    ]
+
+                }
+            } else {
+                // No solution possible - return the complete value.
+                return [this.clone()]
+            }
+        } else {
+            // If multiple variables, only handle perfect squares...
+            a = this.monomByDegree(2, letter);
+            b = this.monomByDegree(1, letter);
+            c = this.monomByDegree(0, letter);
+
+
+            if (a.isLitteralSquare() && c.isLitteralSquare()) {
+                // Check the middle item is same as...
+                if (b.clone().pow(2).isSameAs(a.clone().multiply(c))) {
+                    // Determine if the coefficient values matches.
+
+                    // Search 4 values (r, s, t, u) that matches:
+                    // (r X + s Y)(t X + u Y) = rt X^2 + (ru + st) XY + su Y^2
+
+                    let xPolynom = new Polynom('x', a.coefficient, b.coefficient, c.coefficient);
+                    let xFactors = xPolynom._factorize2ndDegree('x');
+
+                    let factors = [], xyzPolynom: Polynom;
+
+                    if (xFactors.length >= 2) {
+                        for (let p of xFactors) {
+                            if (p.degree() === 0) {
+                                factors.push(p.clone())
+                            } else {
+                                xyzPolynom = p.clone();
+                                xyzPolynom.monoms[0].literal = a.literalSqrt
+                                xyzPolynom.monoms[1].literal = c.literalSqrt
+                                factors.push(xyzPolynom.clone())
+                            }
+                        }
+                        return factors
+                    }
+                }
+            }
+
+            return [this.clone()]
+            //
+            // console.log(a.tex, b.tex, c.tex)
+            // if (a.isSquare() && c.isSquare()) {
+            //     console.log('A C squares')
+            //     if (a.clone().sqrt().multiply(c.clone().sqrt()).multiplyByNumber(2).isSameAs(b)) {
+            //         console.log('HERE')
+            //         if (a.coefficient.sign() === b.coefficient.sign()) {
+            //             return []
+            //         }else{
+            //             return []
+            //         }
+            //     }
+            // } else if(a.isLitteralSquare() && c.isLitteralSquare()) {
+            //     console.log('A C litteral SQUARES')
+            //     // Check that the middle element is the product of a and c.
+            //
+            //     if(b.clone().pow(2).isSameAs(a.clone().multiply(c))){
+            //         console.log('SAME')
+            //
+            //     }else{
+            //         console.log('NOT SAME')
+            //     }
+            //
+            //     return [this.clone()]
+            // } else {
+            //     console.log('NOT SQUARES AT ALL !!!!')
+            // }
+
+        }
+    }
+
+    private _factorizeByGroups = (): Polynom[] => {
+        // TODO: Factorize by groups.
+        return [];
+    }
     // ------------------------------------------
     // Polynoms helpers functions
     // -------------------------------------
@@ -866,7 +1186,7 @@ export class Polynom {
     monomByDegree = (degree?: number, letter?: string): Monom => {
         if (degree === undefined) {
             // return the highest degree monom.
-            return this.monomByDegree(this.degree(letter));
+            return this.monomByDegree(this.degree(letter), letter);
         }
 
         // Reduce the polynom.
@@ -880,6 +1200,26 @@ export class Polynom {
         // Nothing was found - return the null monom.
         return new Monom().zero();
     };
+
+    monomsByDegree = (degree?: number, letter?: string): Monom[] => {
+        if (degree === undefined) {
+            // return the highest degree monom.
+            return this.monomsByDegree(this.degree(letter));
+        }
+
+        // Reduce the polynom.
+        let Ms: Monom[] = [];
+
+        const M = this.clone().reduce();
+        for (const m of M._monoms) {
+            if (m.degree(letter) === degree) {
+                Ms.push(m.clone())
+            }
+        }
+
+        return Ms
+        // Nothing was found - retur
+    }
 
     // Used in LinearSystem.tex
     monomByLetter = (letter: string): Monom => {

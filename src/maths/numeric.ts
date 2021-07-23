@@ -22,12 +22,12 @@ export class Numeric{
      */
     static dividers(value:number):number[]{
         let D: number[];
-        const maxV = Math.sqrt(value);
+        const maxV = Math.sqrt(Math.abs(value));
 
         // Initialize the list of dividers.
         D = [];
 
-        for(let i=1; i<maxV; i++){
+        for(let i=1; i<=maxV; i++){
             if(value%i===0){
                 D.push(i);
                 D.push(value/i);
@@ -36,7 +36,9 @@ export class Numeric{
 
         // Order numbers.
         D.sort(function(a, b){return a-b;});
-        return D;
+
+        // Make sure the array of value is unique.
+        return [...new Set(D)];
     }
     /**
      * Great Common Divisor

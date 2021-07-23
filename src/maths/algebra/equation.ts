@@ -3,6 +3,8 @@ import {Fraction} from "../coefficients/fraction";
 import {Nthroot} from "../coefficients/nthroot";
 import {Numeric} from "../numeric";
 import {Monom} from "./monom";
+import {Vector} from "../geometry/vector";
+import lookupFiles = Mocha.utils.lookupFiles;
 
 export class Equation {
     private _left: Polynom;  // Left part of the equation
@@ -396,7 +398,7 @@ export class Equation {
     // -----------------------------------------------
     // Equations solving algorithms
     // -----------------------------------------------
-    solve = (letter?: string) => {
+    solve = (letter?: string): Equation => {
         // Initialise the variables:
         this._solutions = [];
 
@@ -415,16 +417,16 @@ export class Equation {
             default:
                 this._solveDegree3plus(letter);
         }
+
+        return this;
     };
 
     private isGreater = (): boolean => {
         if (this._sign.indexOf('>') !== -1) {
             return true;
         }
-        if (this._sign.indexOf('geq') !== -1) {
-            return true;
-        }
-        return false;
+        return this._sign.indexOf('geq') !== -1;
+
     };
     private isStrictEqual = (): boolean => {
         return this._sign === '=';
@@ -501,48 +503,58 @@ export class Equation {
         if (delta > 0) {
             realX1 = (-b - Math.sqrt(delta)) / (2 * a);
             realX2 = (-b + Math.sqrt(delta)) / (2 * a);
-            nthDelta = new Nthroot().parse(delta).reduce();
-            if (nthDelta.hasRadical()) {
-                // -b +- coeff\sqrt{radical}
-                // -------------------------
-                //           2a
-                let gcd = Numeric.gcd(b, 2 * a, nthDelta.coefficient);
-                nthDelta.coefficient = nthDelta.coefficient / gcd;
 
-                // TODO: Can i delete the next line ?
-                // let deltaC = nthDelta.coefficient, deltaR = nthDelta.radical;
-                if (b !== 0) {
-                    if (2 * a / gcd === 1) {
-                        this._solutions = [
-                            `${-b / gcd} - ${nthDelta.tex}`,
-                            `${-b / gcd} + ${nthDelta.tex}`,
-                        ]
+            if(delta>1.0e5){
+                // The delta is too big to be parsed !
+                this._solutions = [
+                    ((-b - Math.sqrt(delta))/(2 * a)).toFixed(5),
+                    ((-b + Math.sqrt(delta))/(2 * a)).toFixed(5)
+                ]
+            }else {
+                nthDelta = new Nthroot().parse(delta).reduce();
+                if (nthDelta.hasRadical()) {
+                    // -b +- coeff\sqrt{radical}
+                    // -------------------------
+                    //           2a
+                    let gcd = Numeric.gcd(b, 2 * a, nthDelta.coefficient);
+                    nthDelta.coefficient = nthDelta.coefficient / gcd;
+
+                    // TODO: Can i delete the next line ?
+                    // let deltaC = nthDelta.coefficient, deltaR = nthDelta.radical;
+                    if (b !== 0) {
+                        if (2 * a / gcd === 1) {
+                            this._solutions = [
+                                `${-b / gcd} - ${nthDelta.tex}`,
+                                `${-b / gcd} + ${nthDelta.tex}`,
+                            ]
+                        } else {
+                            this._solutions = [
+                                `\\dfrac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                `\\dfrac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                            ]
+                        }
                     } else {
-                        this._solutions = [
-                            `\\dfrac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                            `\\dfrac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                        ]
+                        if (2 * a / gcd === 1) {
+                            this._solutions = [
+                                `- ${nthDelta.tex}`,
+                                `${nthDelta.tex}`,
+                            ]
+                        } else {
+                            this._solutions = [
+                                `\\dfrac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                `\\dfrac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                            ]
+                        }
                     }
                 } else {
-                    if (2 * a / gcd === 1) {
-                        this._solutions = [
-                            `- ${nthDelta.tex}`,
-                            `${nthDelta.tex}`,
-                        ]
-                    } else {
-                        this._solutions = [
-                            `\\dfrac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                            `\\dfrac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                        ]
-                    }
+                    // -b +- d / 2a
+                    this._solutions = [
+                        new Fraction(-b - nthDelta.coefficient, 2 * a).reduce().dfrac,
+                        new Fraction(-b + nthDelta.coefficient, 2 * a).reduce().dfrac
+                    ]
                 }
-            } else {
-                // -b +- d / 2a
-                this._solutions = [
-                    new Fraction(-b - nthDelta.coefficient, 2 * a).reduce().dfrac,
-                    new Fraction(-b + nthDelta.coefficient, 2 * a).reduce().dfrac
-                ]
             }
+
         } else if (delta === 0) {
             this._solutions = [new Fraction(-b, 2 * a).reduce().dfrac];
         } else {

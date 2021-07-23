@@ -116,8 +116,17 @@ export class Point {
 
         return this;
     }
+    // ------------------------------------------
+    // Display functions
+    // ------------------------------------------
+    texValues = (numberOfDigits: number): string => {
+        let pts = [];
 
+        pts.push(this._x.value.toFixed(numberOfDigits===undefined?2:numberOfDigits));
+        pts.push(this._y.value.toFixed(numberOfDigits===undefined?2:numberOfDigits));
 
+        return `\\left(${pts.join(';')}\\right)`
+    }
     // ------------------------------------------
     // Mathematical operations
     // ------------------------------------------

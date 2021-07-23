@@ -94,6 +94,11 @@ export class Fraction {
                 // Split the sting value in two parts: Numerator/Denominator
                 S = value.split('/');
 
+                // Security checks
+                    if (S.length > 2) throw "Two many divide signs";
+                    if (S.map(x => x === '' || isNaN(Number(x))).includes(true)) throw "Not a number"
+
+
                 if (S.length === 1) {
                     // No divide sign
                     return this.parse(+S[0]);

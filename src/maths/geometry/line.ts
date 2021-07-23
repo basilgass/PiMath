@@ -18,23 +18,34 @@ export class Line {
     private _OA: Point;
     private _d: Vector;
     private _n: Vector;
+    private _exists: boolean
 
     constructor(...values: any) {
+
+        this._exists = false;
 
         if (values !== undefined) {
             this.parse(...values);
         }
+
+        return this;
     }
+
+    get isLine():boolean {return true;}
+    get exists(): boolean {return this._exists; }
 
     // ------------------------------------------
     // Getter and setter
     // ------------------------------------------
+    get equation(): Equation {
+        return new Equation(new Polynom().parse('xy', this._a, this._b, this._c), new Polynom('0')).simplify();
+    }
     get tex(): { canonical: string, mxh: string, parametric: string } {
         // canonical    =>  ax + by + c = 0
         // mxh          =>  y = -a/b x - c/b
         // parametric   =>  (xy) = OA + k*d
 
-        let canonical = new Equation(new Polynom().parse('xy', this._a, this._b, this._c), new Polynom('0')).simplify()
+        let canonical = this.equation;
         // Make sur the first item is positive.
         if(this._a.isNegative()){
             canonical.multiply(-1);
@@ -87,6 +98,10 @@ export class Line {
         return this._n;
     }
 
+    get normal(): Vector {
+        return new Vector(this._a, this._b);
+    }
+
     set d(value: Vector) {
         this._d = value;
     }
@@ -103,6 +118,8 @@ export class Line {
     // Creation / parsing functions
     // ------------------------------------------
     parse = (...values: any): Line => {
+        this._exists = false;
+
         if (values.length === 3) {
             return this.parseByCoefficient(values[0], values[1], values[2]);
         } else if (values.length === 2) {
@@ -112,6 +129,11 @@ export class Line {
                 return this.parseByPointAndVector(values[0], new Vector(values[0], values[1]));
             }
         } else if (values.length === 1){
+            // It's a already a line - clone it !
+            if(values[0].isLine){
+                return values[0].clone();
+            }
+
             // Maybe it's a string or an equation
             let equ = new Equation(values[0]);
             if(equ.isEquation){
@@ -129,9 +151,10 @@ export class Line {
                     if(letters.has(elem)){
                         letters.delete(elem)}
                 }
+
                 if(letters.size>0){
                     console.log('Extra variable in the equation.')
-                    return;
+                    return this;
                 }
 
                 // Everything should be ok now...
@@ -140,7 +163,7 @@ export class Line {
         }
         // TODO: Add the ability to create line from a normal vector
         console.log('Someting wrong happend while creating the line')
-        return;
+        return this;
     }
 
     parseByCoefficient = (a: Fraction, b: Fraction, c: Fraction): Line => {
@@ -153,6 +176,7 @@ export class Line {
         this._OA = new Point(new Fraction().zero(), this._c.clone());
         this._n = this._d.clone().normal();
 
+        this._exists = true;
         return this;
     }
 
@@ -177,10 +201,21 @@ export class Line {
         this._d = d.clone();
         this._n = this._d.clone().normal();
 
+        this._exists = true;
         return this;
     }
 
+    clone = (): Line => {
+        this._a = this._a.clone();
+        this._b = this._b.clone();
+        this._c = this._c.clone();
 
+        this._d = this._d.clone();
+        this._OA = this._OA.clone();
+        this._n = this._n.clone();
+
+        return this;
+    }
     // ------------------------------------------
     // Mathematical operations
     // ------------------------------------------
@@ -249,7 +284,7 @@ export class Line {
         let numerator = pt.x.clone().multiply(this._a)
                 .add(pt.y.clone().multiply(this._b))
                 .add(this._c).abs(),
-            d2 = this._n.normSquare;
+            d2 = this.normal.normSquare;
 
         // The denominator is null - shouldn't be possible
         if (d2.isZero()) {
@@ -279,6 +314,20 @@ export class Line {
         };
     }
 
+    hitSegment(A: Point, B: Point): boolean {
+        let iPt = this.intersection(
+            new Line(A, B)
+        )
+
+        // There is an intersection point
+        if(iPt.hasIntersection) {
+            return iPt.point.x.value >= Math.min(A.x.value, B.x.value)
+                && iPt.point.x.value <= Math.max(A.x.value, B.x.value)
+                && iPt.point.y.value >= Math.min(A.y.value, B.y.value)
+                && iPt.point.y.value <= Math.max(A.y.value, B.y.value)
+        }
+        return false;
+    }
     // ------------------------------------------
     // Special functions
     // ------------------------------------------
