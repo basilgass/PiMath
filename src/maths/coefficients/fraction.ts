@@ -394,6 +394,9 @@ export class Fraction {
     isSquare = (): boolean => {
         return Math.sqrt(this._numerator) % 1 === 0 && Math.sqrt(this._denominator) % 1 === 0
     }
+    isReduced = (): boolean => {
+        return Math.abs(Numeric.gcd(this._numerator, this._denominator))===1
+    }
     sign = (): number => {
         return (this._numerator * this._denominator >= 0) ? 1 : -1;
     };

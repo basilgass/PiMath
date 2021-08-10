@@ -27,3 +27,13 @@ describe('Fraction operation', () => {
 		expect(F.denominator).to.be.equal(21);
 	})
 });
+
+describe('Fraction compare', () => {
+	it('Fraction is reduced', () => {
+		let F = new Fraction(2, 5),
+			Q = new Fraction(2, 6)
+
+		expect(F.isReduced()).to.be.true
+		expect(Q.isReduced()).to.be.false
+	})
+})
