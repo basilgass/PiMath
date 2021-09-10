@@ -7,6 +7,8 @@ import {Monom} from './monom';
 import {Shutingyard} from '../shutingyard';
 import {Numeric} from '../numeric';
 import {Fraction} from '../coefficients/fraction';
+import {AST} from "eslint";
+import TokenType = AST.TokenType;
 
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
@@ -212,64 +214,96 @@ export class Polynom {
     private shutingYardToReducedPolynom = (inputStr: string): Polynom => {
         // Get the RPN array of the current expression
         const SY: Shutingyard = new Shutingyard().parse(inputStr);
-        const rpn: string[] = SY.rpn;
+        const rpn: { token: string, tokenType: string }[] = SY.rpn;
         const m: Polynom[] = [];
         let m1: Polynom;
         let m2: Polynom;
         let tokenParam: number = null;
 
-        for (const token of rpn) {
-            if (SY.isOperation(token)) {
-                // Polynom
-                m2 = (m.pop()) || new Polynom().zero();
-
-                if (token[0] !== '^') {
-                    if (m.length > 0) {
-                        // Get the first item from the stack
-                        m1 = (m.pop()) || new Polynom().zero();
-                    } else {
-                        // Nothing is in the stack - create an empty polynom
-                        m1 = new Polynom().zero();
-                    }
-                } else {
-                    // tokenParam = parseInt(token.split('^')[1]);
-                    tokenParam = Number(token.substr(1));
-                    // m2.clone().pow(tokenParam);
-                }
-
-
-                switch (token) {
+        let stack:Polynom[] = [],
+            previousToken: string = null,
+            tempPolynom
+        for(const element of rpn){
+            if(element.tokenType==='coefficient' || element.tokenType==='variable'){
+                tempPolynom = new Polynom().zero();
+                tempPolynom.monoms = [new Monom(element.token)]
+                stack.push(tempPolynom.clone())
+            }else if(element.tokenType==='operation'){
+                m2 = (stack.pop()) || new Polynom().zero();
+                m1 = (stack.pop()) || new Polynom().zero();
+                switch (element.token){
                     case '+':
-                        m1.add(m2);
+                        stack.push(m1.add(m2))
                         break;
                     case '-':
-                        m1.subtract(m2);
+                        stack.push(m1.subtract(m2))
                         break;
                     case '*':
-                        m1.multiply(m2);
+                        stack.push(m1.multiply(m2))
                         break;
-                    // TODO: Shuting yard to polynom divide.
-                    // case '/': console.log(m1.display, m2.display);m1.divide(m2); break;
-                    // By default, all not operation value are converted to polynom. Therefore, the pow value must be converted to an integer.
-                    // TODO: Shuting yard to polynom pow : case '^': m1.pow(+m2.monoms[0].coefficient.numerator); break;
-                    default:
-                        if (tokenParam !== null) {
-                            if (token[0] === '^') {
-                                m1 = m2.clone().pow(tokenParam);
-                            }
-                        } else {
-                            console.log('Token not recognized in shuting yard to reduce polynom: ', token);
-                        }
+                    case '^':
+                        stack.push(m1.pow(+previousToken))
                 }
-                m.push(m1);
-            } else {
-                // console.log('NOT OPERATION: ', token, new Monom(token).tex)
-                m.push(new Polynom().add(new Monom(token)));
             }
+            previousToken = element.token;
         }
 
-        this._monoms = m[0].monoms;
+        this._monoms = stack[0].monoms;
         return this;
+        // for (const token of rpn) {
+        //     console.log(token)
+        //
+        //     if (token.tokenType==='operation') {
+        //         // Polynom
+        //         m2 = (m.pop()) || new Polynom().zero();
+        //
+        //         if (token.token !== '^') {
+        //             if (m.length > 0) {
+        //                 // Get the first item from the stack
+        //                 m1 = (m.pop()) || new Polynom().zero();
+        //             } else {
+        //                 // Nothing is in the stack - create an empty polynom
+        //                 m1 = new Polynom().zero();
+        //             }
+        //         } else {
+        //             // tokenParam = parseInt(token.split('^')[1]);
+        //             tokenParam = Number(token.token.substr(1));
+        //             // m2.clone().pow(tokenParam);
+        //         }
+        //
+        //
+        //         switch (token.token) {
+        //             case '+':
+        //                 m1.add(m2);
+        //                 break;
+        //             case '-':
+        //                 m1.subtract(m2);
+        //                 break;
+        //             case '*':
+        //                 m1.multiply(m2);
+        //                 break;
+        //             // TODO: Shuting yard to polynom divide.
+        //             // case '/': console.log(m1.display, m2.display);m1.divide(m2); break;
+        //             // By default, all not operation value are converted to polynom. Therefore, the pow value must be converted to an integer.
+        //             // TODO: Shuting yard to polynom pow : case '^': m1.pow(+m2.monoms[0].coefficient.numerator); break;
+        //             default:
+        //                 if (tokenParam !== null) {
+        //                     if (token.token[0] === '^') {
+        //                         m1 = m2.clone().pow(tokenParam);
+        //                     }
+        //                 } else {
+        //                     console.log('Token not recognized in shuting yard to reduce polynom: ', token);
+        //                 }
+        //         }
+        //         m.push(m1);
+        //     } else {
+        //         // console.log('NOT OPERATION: ', token, new Monom(token).tex)
+        //         m.push(new Polynom().add(new Monom(token.token)));
+        //     }
+        // }
+        //
+        // this._monoms = m[0].monoms;
+        // return this;
     }
 
     /**
@@ -798,7 +832,6 @@ export class Polynom {
         for (let m of this._monoms) {
             dP.add(m.derivative(letter));
         }
-
         return dP;
 
     }

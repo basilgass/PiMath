@@ -17,9 +17,13 @@
 
 
 <script>
+	const SY = new Pi.ShutingYard().parse('A&!(B|C)-A');
+	console.log(SY.rpn)
+
 	const mathOutput = document.getElementById('math-output');
 	const mathOutput2 = document.getElementById('math-output-2');
 	//
+
 	// let P = new Pi.Polynom('x^4-y^4-2x^3y+2xy^3');
 	// console.log(P.tex)
 	// P.factorize();
@@ -32,22 +36,22 @@
 	// mathOutput.innerHTML = P.tex
 	// let F = P.factorize2('x')
 	// mathOutput2.innerHTML = F.map(x=>x.tex);
-	let R = new Pi.Rational(
-		new Pi.Polynom('x'),
-		new Pi.Polynom('x+y')
-	)
-	let R2 = new Pi.Rational(
-		new Pi.Polynom('y'),
-		new Pi.Polynom('x-y')
-	)
-	let R3 = new Pi.Rational(
-		new Pi.Polynom('2xy'),
-		new Pi.Polynom('x^2-y^2')
-	)
-
-	R.add(R2).subtract(R3).reduce()
-	console.log(R.numerator)
-	mathOutput.innerHTML = R.texFactors
+	// let R = new Pi.Rational(
+	// 	new Pi.Polynom('x'),
+	// 	new Pi.Polynom('x+y')
+	// )
+	// let R2 = new Pi.Rational(
+	// 	new Pi.Polynom('y'),
+	// 	new Pi.Polynom('x-y')
+	// )
+	// let R3 = new Pi.Rational(
+	// 	new Pi.Polynom('2xy'),
+	// 	new Pi.Polynom('x^2-y^2')
+	// )
+	//
+	// R.add(R2).subtract(R3).reduce()
+	// console.log(R.numerator)
+	// mathOutput.innerHTML = R.texFactors
 	//
 	// let P = new Pi.Polynom('4x^2y^2-12xy^3+9y^4');
 	// mathOutput.innerHTML = P.monomsByDegree(2, 'x').map(x=>x.tex)

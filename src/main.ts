@@ -10,9 +10,11 @@ import {Vector} from "./maths/geometry/vector";
 import {Line} from "./maths/geometry/line";
 import {Point} from "./maths/geometry/point";
 import {Triangle} from "./maths/geometry/triangle";
+import {Shutingyard} from "./maths/shutingyard";
 
 // Expose as global
 (<any>window).Pi = {
+    ShutingYard: Shutingyard,
     Numeric: Numeric,
     Fraction: Fraction,
     Root: Nthroot,
@@ -30,6 +32,7 @@ import {Triangle} from "./maths/geometry/triangle";
 };
 
 export var Pi = {
+    ShutingYard: Shutingyard,
     Numeric: Numeric,
     Fraction: Fraction,
     Root: Nthroot,
