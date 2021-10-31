@@ -38,7 +38,8 @@ export class Shutingyard {
             this._tokenConfig = {
                 '&': {precedence: 3, associative: 'left'},
                 '|': {precedence: 3, associative: 'left'},
-                '!': {precedence: 4, associative: 'right'}
+                '!': {precedence: 4, associative: 'right'},
+                '-': {precedence: 2, associative: 'left'}
             }
             this._uniformize = false;
         } else {

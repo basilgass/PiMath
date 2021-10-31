@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import {Fraction} from "../../src/maths/coefficients/fraction";
 import exp = require("constants");
 import {Polynom} from "../../src/maths/algebra/polynom";
+import lookupFiles = Mocha.utils.lookupFiles;
 
 describe('Polynom display', () => { // the tests container
 	it('Tex display', () => { // the single test
@@ -14,6 +15,13 @@ describe('Polynom display', () => { // the tests container
 		options.reorder().reduce();
 		expect(options.tex).to.be.equal('2x^4+10x^3+6x^2-18x');
 	});
+
+	it('evaluate a polynom', function () {
+		const P = new Polynom('2x-3')
+
+		expect(P.evaluate(5).value).to.be.equal(7)
+		expect(P.evaluate(new Fraction('5/3')).display).to.be.equal('1/3')
+	});
 });
 
 describe('Polynom operation', () => {
@@ -25,3 +33,13 @@ describe('Polynom operation', () => {
 		expect(F.isEqual(P)).to.be.false;
 	})
 });
+
+describe('Polynom integration', ()=> {
+	it('Polynom integrate', ()=> {
+		let F = new Polynom('2x^3-3x^2+x-3'),
+			G = new Polynom('3/5x^2+4')
+
+		expect(F.integrate(0, 2).value).to.be.equal(-4)
+		expect(G.integrate(-3, 3).display).to.be.equal('174/5')
+	})
+})

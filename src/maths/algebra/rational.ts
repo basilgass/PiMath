@@ -4,6 +4,7 @@
  */
 
 import {Polynom} from "./polynom";
+import {Fraction} from "../coefficients/fraction";
 
 /**
  * Rational class can handle rational polynoms
@@ -116,5 +117,20 @@ export class Rational {
 
     subtract = (R: Rational): Rational => {
         return this.add(R.clone().opposed())
+    }
+
+    limits = (value: Fraction|number, letter?: string):Fraction|number => {
+        if(value===Infinity || value===-Infinity){
+            let N = this._numerator.monomByDegree(this._numerator.degree(letter), letter),
+                D = this._denominator.monomByDegree(this._denominator.degree(letter), letter)
+
+            N.divide(D)
+
+            if(N.degree(letter)>0){return N.coefficient.sign()*(Math.pow((value>0?1:-1),N.degree(letter)%2))===1?Infinity:-Infinity}
+            if(N.degree(letter)===0){return N.coefficient}
+            if(N.degree(letter)>0){return N.coefficient.sign()*(Math.pow(-1,N.degree(letter)%2))===1?0:-0}
+        }else{
+            return this._numerator.evaluate({letter: value}).divide(this._denominator.evaluate({letter: value}))
+        }
     }
 }

@@ -11,6 +11,7 @@ import {Line} from "./maths/geometry/line";
 import {Point} from "./maths/geometry/point";
 import {Triangle} from "./maths/geometry/triangle";
 import {Shutingyard} from "./maths/shutingyard";
+import {Logicalset} from "./maths/algebra/logicalset";
 
 // Expose as global
 (<any>window).Pi = {
@@ -23,6 +24,7 @@ import {Shutingyard} from "./maths/shutingyard";
     Equation: Equation,
     LinearSystem: LinearSystem,
     Rational: Rational,
+    Logicalset: Logicalset,
     Geometry: {
         Vector: Vector,
         Point: Point,
@@ -41,6 +43,7 @@ export var Pi = {
     Equation: Equation,
     LinearSystem: LinearSystem,
     Rational: Rational,
+    Logicalset: Logicalset,
     Geometry: {
         Vector: Vector,
         Point: Point,

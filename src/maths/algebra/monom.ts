@@ -602,14 +602,24 @@ export class Monom {
      * Evaluate a monom. Each setLetter must be assigned to a Fraction.
      * @param values    Dictionary of <setLetter: Fraction>
      */
-    evaluate = (values: { [key: string]: Fraction }): Fraction => {
+    evaluate = (values: { [key: string]: Fraction|number }|Fraction|number): Fraction => {
         let r = this.coefficient.clone();
 
-        for (let L in this._literal) {
-            if (values[L] === undefined) {
-                return new Fraction().zero();
+        if(typeof values === 'number' || values instanceof Fraction){
+            let tmpValues:{ [key: string]: Fraction|number } = {}
+
+            tmpValues[this.variables[0]] = new Fraction(values)
+            return this.evaluate(tmpValues);
+        }
+
+        if(typeof values === 'object') {
+            for (let L in this._literal) {
+                if (values[L] === undefined) {
+                    return new Fraction().zero();
+                }
+                let value = new Fraction(values[L])
+                r.multiply(value.pow(this._literal[L]));
             }
-            r.multiply(values[L].clone().pow(this._literal[L]));
         }
         return r;
     };
@@ -638,6 +648,26 @@ export class Monom {
         }
     };
 
+    primitive = (letter?: string): Monom => {
+        if(letter===undefined){letter = 'x'}
+
+        // Zero monom
+        let M = this.clone()
+
+        if(M.hasLetter(letter)){
+            M.coefficient = M.coefficient.clone().divide(M.degree(letter)+1)
+            M.setLetter(letter, M.degree(letter)+1)
+        }else{
+            // There is no letter.
+
+            // The coefficient might be zero (=> x) or a number a (=> ax)
+            if(M.coefficient.isZero()){
+                M.coefficient = new Fraction().one()
+            }
+            M.setLetter(letter, 1)
+        }
+        return M
+    }
     // ----------------------------------------
     // Static functions
     // ----------------------------------------

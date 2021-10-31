@@ -121,4 +121,32 @@ export class Numeric{
             return Numeric.randomInt(-max, max);
         }
     }
+
+    static randomArray(arr: any[], number?:number):any[]{
+        if(number===undefined){number = 1}
+
+        // Return a clone array
+        if(arr.length<=0){return Object.values(arr)}
+
+        // Randomize the array and return the n first elements.
+        return this.shuffleArray(arr).slice(0,number);
+    }
+
+    static randomItem(arr: any[]): any{
+        if(arr.length===0){return ''}
+        return this.randomArray(arr, 1)[0]
+    }
+
+    static shuffleArray(arr: any[]): any[] {
+        // The Fisher-Yates algorithm
+        let shuffleArray = Object.values(arr)
+        for (let i = shuffleArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = shuffleArray[i];
+            shuffleArray[i] = shuffleArray[j];
+            shuffleArray[j] = temp;
+        }
+
+        return shuffleArray;
+    }
 }

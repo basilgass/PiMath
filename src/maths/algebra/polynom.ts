@@ -683,7 +683,17 @@ export class Polynom {
     };
 
     isFactorized = (polynomString: string): boolean => {
-        let P = new Polynom(polynomString);
+        let P;
+
+        // Check if polynom is complete...
+        if(polynomString.match(/\(/g).length!==polynomString.match(/\)/g).length){return false}
+
+        // Try to build the polynom
+        try {
+            P = new Polynom(polynomString);
+        }catch (e){
+            return false;
+        }
 
         // Both polynom aren't the same (once developed and reduced => they cannot be equivalent)
         if (!this.isEqual(P)) {
@@ -733,6 +743,37 @@ export class Polynom {
         return (polyFactors.length === 0 && sign === 1);
     }
 
+    isDeveloped = (polynomString: string):Boolean => {
+        let P:Polynom;
+
+        // There is at least one parenthese - it is not developed.
+        if(polynomString.match(/\(/g).length+polynomString.match(/\)/g).length){return false}
+
+        // Try to build the polynom
+        try {
+            // Build the polynom
+            P = new Polynom(polynomString);
+        }catch (e){
+            return false;
+        }
+
+        // Both polynom aren't the same (once developed and reduced => they cannot be equivalent)
+        if (!this.isEqual(P)) {
+            return false;
+        }
+
+        // Check that everything is completely developed. Actually, there are no parentheses... so it is fully developed
+
+        // maybe it wasn't reduced and not ordered...
+        // compare polynom string.
+
+        // normalize the string
+        let polynomStringNormalized = polynomString.replaceAll('[*\s]', '')
+
+        // Determine if it's the exact same string.
+        // TODO: Maybe it's enough to just make this test !
+        return polynomStringNormalized===P.reduce().reorder().display
+    }
     // ------------------------------------------
     // Misc polynoms functions
     // -------------------------------------
@@ -816,7 +857,7 @@ export class Polynom {
     };
 
     // Evaluate a polynom.
-    evaluate = (values: { [key: string]: Fraction }): Fraction => {
+    evaluate = (values: { [key: string]: Fraction|number }|Fraction|number): Fraction => {
         const r = new Fraction().zero();
 
         this._monoms.forEach(monom => {
@@ -836,6 +877,27 @@ export class Polynom {
 
     }
 
+    primitive = (letter?: string): Polynom => {
+        let dP = new Polynom();
+
+        for(let m of this._monoms) {
+            dP.add(m.primitive(letter))
+        }
+        return dP
+    }
+
+    integrate = (a: Fraction|number, b: Fraction|number, letter?:string): Fraction => {
+        const primitive = this.primitive(letter)
+
+        if(letter===undefined){letter='x'}
+
+        let valuesA:{ [key: string]: Fraction|number } = {},
+            valuesB:{ [key: string]: Fraction|number } = {}
+        valuesA[letter] = a;
+        valuesB[letter] = b;
+
+        return primitive.evaluate(valuesB).subtract(primitive.evaluate(valuesA))
+    }
     // ------------------------------------------
     // Polynoms factorization functions
     // -------------------------------------

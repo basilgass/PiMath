@@ -24,7 +24,9 @@ describe('Shuting yard', () => { // the tests container
     })
 
 	it('Custom RPN', () => {
-		const SY: Shutingyard = new Shutingyard('set').parse('(A|B)&C');
-		expect(SY.rpn.map(x=>x.token)).to.have.all.members(['A', 'B', '|', 'C', '&'])
+		const SY1: Shutingyard = new Shutingyard('set').parse('(A|B)&C');
+        const SY2: Shutingyard = new Shutingyard('set').parse('(A-B)&!C');
+		expect(SY1.rpn.map(x=>x.token)).to.have.all.members(['A', 'B', '|', 'C', '&'])
+		expect(SY2.rpn.map(x=>x.token)).to.have.all.members(['A', 'B', '-', 'C', '!', '&'])
 	})
 });
