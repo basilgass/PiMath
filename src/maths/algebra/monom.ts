@@ -336,7 +336,7 @@ export class Monom {
      */
     random = (letters: string = 'x', degree: number = 1, withFraction: boolean = false, allowZero: boolean = false): Monom => {
         // TODO: Randomize monoms: options or make it subclass ?
-        this.coefficient.parse(Numeric.randomIntSym(10, allowZero), (withFraction) ? Numeric.randomInt(1, 10) : 1);
+        this.coefficient.parse(Numeric.randomIntSym(10, allowZero), (withFraction) ? Numeric.randomInt(1, 10) : 1).reduce();
 
         for (let L of letters.split('')) {
             this.setLetter(L, (letters.length > 1) ? Numeric.randomInt(degree) : degree);
