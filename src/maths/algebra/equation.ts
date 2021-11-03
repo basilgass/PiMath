@@ -3,8 +3,6 @@ import {Fraction} from "../coefficients/fraction";
 import {Nthroot} from "../coefficients/nthroot";
 import {Numeric} from "../numeric";
 import {Monom} from "./monom";
-import {Vector} from "../geometry/vector";
-import lookupFiles = Mocha.utils.lookupFiles;
 
 export class Equation {
     private _left: Polynom;  // Left part of the equation

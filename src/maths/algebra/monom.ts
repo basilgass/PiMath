@@ -5,8 +5,6 @@
  */
 import {Fraction} from "../coefficients/fraction";
 import {Numeric} from "../numeric";
-import lookupFiles = Mocha.utils.lookupFiles;
-
 
 export class Monom {
     private _coefficient: Fraction;
