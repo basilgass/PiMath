@@ -101,7 +101,7 @@ export class Monom {
      * Get the variables letters
      */
     get variables(): string[] {
-        let M = this.clone().clean();
+        this.clone().clean();
         return Object.keys(this._literal)
     }
 
@@ -320,24 +320,6 @@ export class Monom {
             if (this._literal[letter] === 0) {
                 delete this._literal[letter];
             }
-        }
-
-        return this;
-    };
-
-    /**
-     * Generate a random monom
-     * @param letters       Letters to use, as a string
-     * @param degree        Max degree (default 1)
-     * @param withFraction  Allows fraction as coefficient (default false)
-     * @param allowZero     Allows null monom (default false)
-     */
-    random = (letters: string = 'x', degree: number = 1, withFraction: boolean = false, allowZero: boolean = false): Monom => {
-        // TODO: Randomize monoms: options or make it subclass ?
-        this.coefficient.parse(Numeric.randomIntSym(10, allowZero), (withFraction) ? Numeric.randomInt(1, 10) : 1).reduce();
-
-        for (let L of letters.split('')) {
-            this.setLetter(L, (letters.length > 1) ? Numeric.randomInt(degree) : degree);
         }
 
         return this;
@@ -706,8 +688,7 @@ export class Monom {
 
     /**
      * Multiply two monoms and return a NEW monom.
-     * @param M1
-     * @param M2
+     * @param monoms
      */
     static xmultiply = (...monoms: Monom[]): Monom => {
         let M = new Monom().one();

@@ -7,8 +7,7 @@ import {Monom} from './monom';
 import {Shutingyard} from '../shutingyard';
 import {Numeric} from '../numeric';
 import {Fraction} from '../coefficients/fraction';
-import {AST} from "eslint";
-import TokenType = AST.TokenType;
+import {Random} from "../random/random";
 
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
@@ -215,23 +214,21 @@ export class Polynom {
         // Get the RPN array of the current expression
         const SY: Shutingyard = new Shutingyard().parse(inputStr);
         const rpn: { token: string, tokenType: string }[] = SY.rpn;
-        const m: Polynom[] = [];
         let m1: Polynom;
         let m2: Polynom;
-        let tokenParam: number = null;
 
-        let stack:Polynom[] = [],
+        let stack: Polynom[] = [],
             previousToken: string = null,
             tempPolynom
-        for(const element of rpn){
-            if(element.tokenType==='coefficient' || element.tokenType==='variable'){
+        for (const element of rpn) {
+            if (element.tokenType === 'coefficient' || element.tokenType === 'variable') {
                 tempPolynom = new Polynom().zero();
                 tempPolynom.monoms = [new Monom(element.token)]
                 stack.push(tempPolynom.clone())
-            }else if(element.tokenType==='operation'){
+            } else if (element.tokenType === 'operation') {
                 m2 = (stack.pop()) || new Polynom().zero();
                 m1 = (stack.pop()) || new Polynom().zero();
-                switch (element.token){
+                switch (element.token) {
                     case '+':
                         stack.push(m1.add(m2))
                         break;
@@ -250,60 +247,6 @@ export class Polynom {
 
         this._monoms = stack[0].monoms;
         return this;
-        // for (const token of rpn) {
-        //     console.log(token)
-        //
-        //     if (token.tokenType==='operation') {
-        //         // Polynom
-        //         m2 = (m.pop()) || new Polynom().zero();
-        //
-        //         if (token.token !== '^') {
-        //             if (m.length > 0) {
-        //                 // Get the first item from the stack
-        //                 m1 = (m.pop()) || new Polynom().zero();
-        //             } else {
-        //                 // Nothing is in the stack - create an empty polynom
-        //                 m1 = new Polynom().zero();
-        //             }
-        //         } else {
-        //             // tokenParam = parseInt(token.split('^')[1]);
-        //             tokenParam = Number(token.token.substr(1));
-        //             // m2.clone().pow(tokenParam);
-        //         }
-        //
-        //
-        //         switch (token.token) {
-        //             case '+':
-        //                 m1.add(m2);
-        //                 break;
-        //             case '-':
-        //                 m1.subtract(m2);
-        //                 break;
-        //             case '*':
-        //                 m1.multiply(m2);
-        //                 break;
-        //             // TODO: Shuting yard to polynom divide.
-        //             // case '/': console.log(m1.display, m2.display);m1.divide(m2); break;
-        //             // By default, all not operation value are converted to polynom. Therefore, the pow value must be converted to an integer.
-        //             // TODO: Shuting yard to polynom pow : case '^': m1.pow(+m2.monoms[0].coefficient.numerator); break;
-        //             default:
-        //                 if (tokenParam !== null) {
-        //                     if (token.token[0] === '^') {
-        //                         m1 = m2.clone().pow(tokenParam);
-        //                     }
-        //                 } else {
-        //                     console.log('Token not recognized in shuting yard to reduce polynom: ', token);
-        //                 }
-        //         }
-        //         m.push(m1);
-        //     } else {
-        //         // console.log('NOT OPERATION: ', token, new Monom(token).tex)
-        //         m.push(new Polynom().add(new Monom(token.token)));
-        //     }
-        // }
-        //
-        // this._monoms = m[0].monoms;
-        // return this;
     }
 
     /**
@@ -382,51 +325,17 @@ export class Polynom {
         return P;
     }
 
-
-    // TODO: Remove rndSimple and rndFactorable.
-    /**
-     * Polynom generator
-     * @param degree
-     * @param unit
-     * @param withFraction
-     * @param letters
-     * @param allowZero
-     * @param numberOfMonoms
-     */
-    rndSimple = (degree: number = 1, unit: boolean = false, withFraction: boolean = false, letters: string = 'x', allowZero: boolean = true, numberOfMonoms: number = -1): Polynom => {
-        // TODO: Make rndSimple polynom generator more user friendly
-        // If the current polynom (this) is already created, initialise it!
-        this.empty();
-
-        let M: Monom;
-        for (let i = degree; i >= 0; i--) {
-            M = new Monom().random(letters, i, withFraction, (i === degree) ? false : allowZero);
-
-            // We want to have the greatest degree monom coefficient to be unit.
-            if (unit && i === degree) {
-                M.coefficient = new Fraction().one();
-            }
-            this.add(M);
-        }
-
-        // Remove randomly the monoms to match the number of monoms.
-        if (numberOfMonoms > 0 && numberOfMonoms < this.length) {
-            this.reorder();
-            // Keep the greatest degree monom.
-            // But remove randomly the next monoms.
-            while (this.length > numberOfMonoms) {
-                this._monoms.splice(Numeric.randomInt(1, this.length - 1), 1);
-            }
-        }
-        return this;
-    };
-
     rndFactorable = (degree: number = 2, unit: boolean | number = false, letters: string = 'x'): Polynom => {
         // TODO: Make rndFactorable polynom generator more user friendly
         this._factors = [];
         for (let i = 0; i < degree; i++) {
             let factorUnit = unit === true || i >= unit,
-                p = new Polynom().rndSimple(1, factorUnit, false, letters);
+                p = new Random.polynom({
+                    degree: 1,
+                    unit: factorUnit,
+                    fraction: false,
+                    letters
+                }).generate();
 
             this._factors.push(p);
         }
@@ -618,7 +527,7 @@ export class Polynom {
     // ------------------------------------------
     /**
      * Compare the current coefficient with another coefficient
-     * @param F (Coefficient) The coefficient to compare
+     * @param P
      * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
      */
     compare = (P: Polynom, sign?: string): boolean => {
@@ -686,12 +595,14 @@ export class Polynom {
         let P;
 
         // Check if polynom is complete...
-        if(polynomString.match(/\(/g).length!==polynomString.match(/\)/g).length){return false}
+        if (polynomString.match(/\(/g).length !== polynomString.match(/\)/g).length) {
+            return false
+        }
 
         // Try to build the polynom
         try {
             P = new Polynom(polynomString);
-        }catch (e){
+        } catch (e) {
             return false;
         }
 
@@ -725,7 +636,7 @@ export class Polynom {
         this.factorize();
 
         // Compare the given factors with the generated factors
-        let sign = 1, maxNumberOfIteration = polyFactors.length * 2;
+        let sign = 1;
         for (let f of this.factors) {
             for (let i = 0; i < polyFactors.length; i++) {
                 if (f.isEqual(polyFactors[i])) {
@@ -743,17 +654,19 @@ export class Polynom {
         return (polyFactors.length === 0 && sign === 1);
     }
 
-    isDeveloped = (polynomString: string):Boolean => {
-        let P:Polynom;
+    isDeveloped = (polynomString: string): Boolean => {
+        let P: Polynom;
 
         // There is at least one parenthese - it is not developed.
-        if(polynomString.match(/\(/g).length+polynomString.match(/\)/g).length){return false}
+        if (polynomString.match(/\(/g).length + polynomString.match(/\)/g).length) {
+            return false
+        }
 
         // Try to build the polynom
         try {
             // Build the polynom
             P = new Polynom(polynomString);
-        }catch (e){
+        } catch (e) {
             return false;
         }
 
@@ -772,7 +685,7 @@ export class Polynom {
 
         // Determine if it's the exact same string.
         // TODO: Maybe it's enough to just make this test !
-        return polynomStringNormalized===P.reduce().reorder().display
+        return polynomStringNormalized === P.reduce().reorder().display
     }
     // ------------------------------------------
     // Misc polynoms functions
@@ -857,7 +770,7 @@ export class Polynom {
     };
 
     // Evaluate a polynom.
-    evaluate = (values: { [key: string]: Fraction|number }|Fraction|number): Fraction => {
+    evaluate = (values: { [key: string]: Fraction | number } | Fraction | number): Fraction => {
         const r = new Fraction().zero();
 
         this._monoms.forEach(monom => {
@@ -880,19 +793,21 @@ export class Polynom {
     primitive = (letter?: string): Polynom => {
         let dP = new Polynom();
 
-        for(let m of this._monoms) {
+        for (let m of this._monoms) {
             dP.add(m.primitive(letter))
         }
         return dP
     }
 
-    integrate = (a: Fraction|number, b: Fraction|number, letter?:string): Fraction => {
+    integrate = (a: Fraction | number, b: Fraction | number, letter?: string): Fraction => {
         const primitive = this.primitive(letter)
 
-        if(letter===undefined){letter='x'}
+        if (letter === undefined) {
+            letter = 'x'
+        }
 
-        let valuesA:{ [key: string]: Fraction|number } = {},
-            valuesB:{ [key: string]: Fraction|number } = {}
+        let valuesA: { [key: string]: Fraction | number } = {},
+            valuesB: { [key: string]: Fraction | number } = {}
         valuesA[letter] = a;
         valuesB[letter] = b;
 
@@ -1045,36 +960,6 @@ export class Polynom {
 
         this.factors = factors
         return factors;
-        // let securityLoop = P.degree() * 2;
-        // while (P.degree(letter) >= 2 && securityLoop >= 0) {
-        //     // Avoid infinite looping
-        //     securityLoop--;
-        //
-        //     console.log(letter, P.degree(letter))
-        //     if (P.degree(letter) === 1) {
-        //         factors.push(P.clone())
-        //         // We are done !
-        //         return factors;
-        //
-        //     } else if (P.degree(letter) === 2) {
-        //         if(P.monoms.length===3) {
-        //             // Resolve using delta.
-        //             factors = [...factors, ...P._factorize2ndDegree(letter)];
-        //             // We are done !
-        //             return factors;
-        //         }else if(P.degree(letter)===2 && P.monoms.length===4) {
-        //             // Resolve using groups
-        //             factors = [...factors, ...P._factorizeByGroups()]
-        //         }
-        //
-        //     }else {
-        //         console.log('NOTHING TO DO: ', this.tex)
-        //     }
-        //
-        // }
-
-
-        return [];
     }
 
     private _factorize2ndDegree = (letter: string): Polynom[] => {
@@ -1396,15 +1281,17 @@ export class Polynom {
             return this;
         }
 
-        const mDegree = Numeric.randomInt(0, this.degree() - 1);
-        const A = new Polynom().rndSimple(mDegree, false, complexity > 1, 'x', false, complexity > 1 ? -1 : 1);
-        const B = new Polynom().rndSimple(1, false, complexity > 1);
-        const C = this.clone().subtract(A.clone().multiply(B));
+        // TODO: update this function !
+
+        const mDegree = Random.number(0, this.degree() - 1);
+        // const A = new Polynom().rndSimple(mDegree, false, complexity > 1, 'x', false, complexity > 1 ? -1 : 1);
+        // const B = new Polynom().rndSimple(1, false, complexity > 1);
+        // const C = this.clone().subtract(A.clone().multiply(B));
 
         // Try to factorize a little bit the C polynom.
-        C.factorizePartial(true);
-        this._texString = `${A.genDisplay('tex', false, true)} \\cdot ${B.genDisplay('tex', false, true)} ${C.texString} `;
-
+        // C.factorizePartial(true);
+        // this._texString = `${A.genDisplay('tex', false, true)} \\cdot ${B.genDisplay('tex', false, true)} ${C.texString} `;
+        //
         return this;
     };
     factorizePartial = (forceSign?: boolean): Polynom => {

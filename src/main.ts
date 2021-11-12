@@ -33,7 +33,7 @@ import {Logicalset} from "./maths/algebra/logicalset";
     }
 };
 
-export var Pi = {
+export let Pi = {
     ShutingYard: Shutingyard,
     Numeric: Numeric,
     Fraction: Fraction,

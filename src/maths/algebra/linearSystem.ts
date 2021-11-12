@@ -1,8 +1,8 @@
 import {Fraction} from "../coefficients/fraction";
 import {Equation} from "./equation";
-import {Numeric} from "../numeric";
 import {Monom} from "./monom";
 import {Polynom} from "./polynom";
+import {Random} from "../random/random";
 
 
 export class LinearSystem {
@@ -15,13 +15,16 @@ export class LinearSystem {
         this._equations = [];
         this._letters = 'xy'.split('');
 
-        if(equationStrings!==undefined && equationStrings.length>0){
+        if (equationStrings !== undefined && equationStrings.length > 0) {
             this.parse(...equationStrings);
         }
 
         return this;
     }
-    get isLinerarSystem(){return true; }
+
+    get isLinerarSystem() {
+        return true;
+    }
 
     // ------------------------------------------
     // Getter and setter
@@ -34,9 +37,13 @@ export class LinearSystem {
         this._equations = value;
     }
 
-    get letters(): string {return this._letters.join('')}
+    get letters(): string {
+        return this._letters.join('')
+    }
 
-    set letters(value:string){this._letters = value.split('');}
+    set letters(value: string) {
+        this._letters = value.split('');
+    }
 
     get isSolvable(): boolean {
         let V = this.variables;
@@ -149,7 +156,7 @@ export class LinearSystem {
         return new LinearSystem().parse(...this._equations.map(equ => equ.clone()));
     };
 
-    setLetters = (...letters:string[]): LinearSystem => {
+    setLetters = (...letters: string[]): LinearSystem => {
         this._letters = letters;
         return this
     }
@@ -157,7 +164,7 @@ export class LinearSystem {
         // Find all letters used.
         let variables = new Set();
 
-        for(let equ of this._equations){
+        for (let equ of this._equations) {
             variables = new Set([...variables, ...equ.variables]);
         }
 
@@ -194,7 +201,7 @@ export class LinearSystem {
             letters: string[] = ['x', 'y', 'z', 't', 'u', 'v', 'w', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'],
             equString: string = '', equ: Equation;
         for (let i = 0; i < solutions.length; i++) {
-            coeff.push(Numeric.randomIntSym(5));
+            coeff.push(Random.numberSym(5));
             leftValue.add(solutions[i].clone().multiply(coeff[i]));
             equString += `${(coeff[i] < 0) ? coeff[i] : '+' + coeff[i]}${letters[i]}`
         }
@@ -227,7 +234,7 @@ export class LinearSystem {
         return this.mergeEquations(eq1, eq2, c2, c1);
     }
 
-    mergeEquations = (eq1: Equation, eq2: Equation, factor1: any, factor2: any):Equation => {
+    mergeEquations = (eq1: Equation, eq2: Equation, factor1: any, factor2: any): Equation => {
         // Set and clone the equations.
 
         let eq1multiplied = eq1.clone().multiply(new Fraction(factor1)),

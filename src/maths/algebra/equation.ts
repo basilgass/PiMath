@@ -18,7 +18,7 @@ export class Equation {
 
     /**
      * Create an Equation using two polynoms.
-     * @param equation Equation string
+     * @param equations
      */
     constructor(...equations: any) {
         // Default equation
@@ -339,7 +339,7 @@ export class Equation {
 
     /**
      * Multiple an equation by a fraction value.
-     * @param F
+     * @param value
      */
     multiply = (value: any): Equation => {
 

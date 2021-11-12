@@ -7,7 +7,7 @@ type tokenType = {
 
 export class Shutingyard {
     private _rpn: { token: string, tokenType: string }[] = [];
-    private _mode: 'polynom' | 'set';
+    readonly _mode: 'polynom' | 'set';
     private _tokenConfig: tokenType;
     private _uniformize: boolean;
 
@@ -212,6 +212,7 @@ export class Shutingyard {
      * Parse an expression using the shutting yard tree algorithms
      * @param expr (string) Expression to analyse
      * Returns a RPN list of items.
+     * @param operators
      */
     parse(expr: string, operators?: string[]): Shutingyard {
         let outQueue: {token:string, tokenType: string}[] = [],    // Output queue

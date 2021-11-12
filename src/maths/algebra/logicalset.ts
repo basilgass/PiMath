@@ -15,7 +15,6 @@ export class Logicalset {
     /**
      *
      * @param {string} value (optional) Default polynom to parse on class creation
-     * @param values
      */
     constructor(value: string) {
         this._rawString = value
@@ -39,7 +38,7 @@ export class Logicalset {
     evaluate(tokenSets: { [key: string]: any[] }, reference?: any[]): any[] {
         let varStack: (Set<unknown>)[] = []
 
-        let referenceSet: Set<unknown> = new Set()
+        let referenceSet: Set<unknown>
         if (reference === undefined) {
             referenceSet = new Set()
             for (let key in tokenSets) {
