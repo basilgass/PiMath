@@ -6,7 +6,6 @@
     "test": "mocha -r ts-node/register 'tests/**/*.test.ts'",
     "dev": "webpack --watch --config webpack.config.js",
     "production": "webpack --config webpack-production.config.js",
-    "module": "webpack --config webpackmodule.config.js",
     "docs": "typedoc"
   },
   "keywords": [

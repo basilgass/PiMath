@@ -4,7 +4,7 @@
     "out": "docs",
   },
   "compilerOptions": {
-    "outDir": "./dist/",
+    "outDir": "./esm/",
     "noImplicitAny": true,
     "module": "ESNext",
     "target": "esnext",
