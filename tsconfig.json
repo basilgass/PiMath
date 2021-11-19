@@ -6,7 +6,7 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
-    "module": "ES2020",
+    "module": "CommonJS",
     "target": "esnext",
     "allowJs": true,
     "jsx": "react",
