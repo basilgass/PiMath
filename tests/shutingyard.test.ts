@@ -23,6 +23,11 @@ describe('Shuting yard', () => { // the tests container
         expect(SY6.rpn.map(x=>x.token)).to.have.all.members(['x', '3', '^', 'y', '2', '^', '*', 'z', '*'])
     })
 
+    it('RPN for multi variable polynom', ()=> {
+        const SY: Shutingyard = new Shutingyard().parse('ax+by+c')
+        expect(SY.rpn.map(x=>x.token)).to.have.all.members(["a","x","*","b","y","*","+","c","+"])
+    })
+
 	it('Custom RPN', () => {
 		const SY1: Shutingyard = new Shutingyard('set').parse('(A|B)&C');
         const SY2: Shutingyard = new Shutingyard('set').parse('(A-B)&!C');

@@ -17,6 +17,8 @@ export class Point {
         if (values !== undefined) {
             this.parse(...values);
         }
+
+        return this
     };
 
     get isPoint() {
@@ -66,11 +68,24 @@ export class Point {
 
         // One element is given - might be already a point !
         if (values.length === 1) {
-            if (values[0].isPoint) {
-                return values.clone();
+            // it's already a point - clone it
+            if (values[0] instanceof Point) {
+                this._x = values[0].x.clone()
+                this._y = values[0].y.clone()
+                return this;
             }
 
-            // Value given as a dictionnary
+            // Value is given as string, comma separated.
+            if(typeof values[0] === 'string'){
+                let xy = values[0].split(',')
+                if(xy.length===2){
+                    this._x = new Fraction(xy[0]).reduce()
+                    this._y = new Fraction(xy[1]).reduce()
+                    return this;
+                }
+            }
+
+            // Value given as an object with {x: value, y: value}
             if (values[0].x !== undefined && values[0].y !== undefined) {
                 this._x = new Fraction(values[0].x).reduce()
                 this._y = new Fraction(values[0].y).reduce()
@@ -83,20 +98,14 @@ export class Point {
             this._y = new Fraction(values[1]).reduce()
         }
 
-
         return this;
     };
 
     clone = (): Point => {
-        let V = new Point();
+        this._x = this._x.clone()
+        this._y = this._y.clone()
 
-        if (this._x !== null) {
-            V.x = this._x.clone();
-        }
-        if (this._y !== null) {
-            V.y = this._y.clone();
-        }
-        return V;
+        return this
     }
 
     zero = (): Point => {

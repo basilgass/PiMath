@@ -1,16 +1,19 @@
 /**
- * Polynom module contains everything necessary to handle polynoms.
+ * Polynom module contains everything necessary to handle polynoms.*
  * @module Polynom
  */
 
 import {Monom} from './monom';
 import {Shutingyard} from '../shutingyard';
 import {Numeric} from '../numeric';
-import {Fraction} from '../coefficients/fraction';
-import {Random} from "../random/random";
+import {Fraction} from '../coefficients';
+import {Random} from "../random";
 
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
+ * ```
+ * let P = new Polynom('3x-4')
+ * ```
  */
 export class Polynom {
     private _rawString: string;
@@ -330,13 +333,12 @@ export class Polynom {
         this._factors = [];
         for (let i = 0; i < degree; i++) {
             let factorUnit = unit === true || i >= unit,
-                p = new Random.polynom({
+                p = Random.polynom({
                     degree: 1,
                     unit: factorUnit,
                     fraction: false,
                     letters
-                }).generate();
-
+                });
             this._factors.push(p);
         }
 

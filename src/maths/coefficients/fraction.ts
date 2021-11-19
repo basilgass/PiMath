@@ -83,7 +83,7 @@ export class Fraction {
         let S: string[];
 
         // A null value means a zero fraction.
-        if (value === null) {
+        if (value === null || value === "") {
             this._numerator = 0;
             this._denominator = 1;
             return this;

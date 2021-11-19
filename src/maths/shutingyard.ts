@@ -103,7 +103,7 @@ export class Shutingyard {
                     token = expr.substr(start).match(/^([a-zA-Z])/)[0]
                     tokenType = 'variable'
                 }else{
-                    console.log('Unidentified token', expr[start])
+                    console.log('Unidentified token', expr[start], expr, start)
                     token = expr[start]
                     tokenType = 'monom'
                 }
@@ -177,7 +177,9 @@ export class Shutingyard {
      * @constructor
      */
     Uniformizer(expr: string): string {
+        // Determiner if need to be uniformized
         if(!this._uniformize){return expr}
+
         let expr2;
         // Replace missing multiplication between two parenthese
         expr2 = expr.replace(/\)\(/g, ')*(');
@@ -191,15 +193,16 @@ export class Shutingyard {
         expr2 = expr2.replace(/(\))([\da-zA-Z])/g, "$1*$2");
 
         // Add multiplication between number and letters.
+        // 3x => 3*x
         expr2 = expr2.replace(/([0-9])([a-zA-Z])/g, "$1*$2");
         expr2 = expr2.replace(/([a-zA-Z])([0-9])/g, "$1*$2");
 
         // Add multiplication between letters ?
         // TODO: More robust solution to handle all letters ?
-        expr2 = expr2.replace(/([xyz])([xyz])/g, "$1*$2");
+        expr2 = expr2.replace(/([abcxyz])([abcxyz])/g, "$1*$2");
 
-
-        // Restore operation auto formating (prevent adding the mutliplcation star
+        // Restore operation auto formating (prevent adding the mutliplcation star)
+        // TODO: Accept list of functions
         let fnToken = ['sin', 'cos', 'tan']
         for (let token of fnToken) {
             expr2 = expr2.replace(new RegExp(token + '\\*', 'g'), token);

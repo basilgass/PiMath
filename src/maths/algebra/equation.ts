@@ -4,6 +4,9 @@ import {Nthroot} from "../coefficients/nthroot";
 import {Numeric} from "../numeric";
 import {Monom} from "./monom";
 
+/**
+ * Equation is a class to manage equations...
+ */
 export class Equation {
     private _left: Polynom;  // Left part of the equation
     private _right: Polynom; // Right part of the equation
@@ -262,6 +265,11 @@ export class Equation {
     /**
      * Reorder will move all monoms containing a letter on the left, all the other on the right.
      */
+    moveLeft = (): Equation => {
+        this._left = this._left.clone().subtract(this._right)
+        this._right.zero()
+        return this;
+    }
     reorder = (allLeft?: boolean): Equation => {
         // Move all monoms of degree greater than 0 to the left.
         // and all zero degree monoms to the right.
@@ -269,7 +277,7 @@ export class Equation {
         this._right.zero();
 
         if (allLeft) {
-            return this;
+            return this.moveLeft()
         }
         let mMove: Monom;
         for (let m of this._left.monoms) {
@@ -336,6 +344,12 @@ export class Equation {
         this._right.divide(cMove);
         return this;
     };
+
+    replaceBy = (letter: string, P: Polynom): Equation => {
+        this._left.replaceBy(letter, P)
+        this._right.replaceBy(letter, P)
+        return this;
+    }
 
     /**
      * Multiple an equation by a fraction value.

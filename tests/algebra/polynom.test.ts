@@ -1,7 +1,7 @@
 import {expect} from 'chai';
-import {Fraction} from "../../src/maths/coefficients/fraction";
-import {Polynom} from "../../src/maths/algebra/polynom";
-import {Random} from "../../src/maths/random/random";
+import {Fraction} from "../../src/maths/coefficients";
+import {Polynom} from "../../src/maths/algebra";
+import {Random} from "../../src/maths/random";
 
 describe('Polynom display', () => { // the tests container
     it('Tex display', () => { // the single test
@@ -43,12 +43,12 @@ describe('Polynom integration', () => {
     })
 })
 
-describe('Polynom creation', ()=>{
+describe('Polynom random creation', ()=>{
     it('should create a random Polynom of degree 5', function () {
-        let P = new Random.polynom({
+        let P = Random.polynom({
             degree: 6,
             numberOfMonoms: 3
-        }).generate()
+        })
 
         expect(P.length).to.be.equal(3)
         expect(P.degree()).to.be.lessThanOrEqual(6)

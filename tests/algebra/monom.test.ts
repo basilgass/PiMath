@@ -14,12 +14,12 @@ describe('Monom derivate and integrate', () => { // the tests container
     });
 
     it('should create random Monom', function () {
-        const M = new Random.monom({
+        const M = Random.monom({
             letters: 'xyz',
             degree: 5,
             fraction: false,
 			zero: false
-        }).generate();
+        });
 
         expect(M.coefficient.isZero()).to.be.false
         expect(M.degree()).to.be.greaterThan(0)
