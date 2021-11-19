@@ -1,14 +1,14 @@
 import randomCore from "./randomCore";
 import {randomPolynomConfig} from "./rndTypes";
-import {Polynom} from "../algebra";
-import {Monom} from "../algebra";
-import {rndMonom} from "./rndMonom";
+import rndMonom from "./rndMonom";
 import {Random} from "./random";
+import Polynom from "../algebra/polynom";
+import Monom from "../algebra/monom";
 
 /**
  * Random polynoms
  */
-export class rndPolynom extends randomCore {
+export default class rndPolynom extends randomCore {
     declare protected _config: randomPolynomConfig
     declare protected _defaultConfig: randomPolynomConfig
 

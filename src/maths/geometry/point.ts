@@ -2,10 +2,10 @@
  * Vector module contains everything necessary to handle 2d or 3d vectors.
  * @module Vector
  */
-import {Fraction} from "../coefficients/fraction";
+import Fraction from "../coefficients/fraction";
 
 //TODO: Ajouter une vérification si la droite existe.
-export class Point {
+export default class Point {
     private _x: Fraction;   // 1st component
     private _y: Fraction;   // 2nd component
     private _exist: Boolean;

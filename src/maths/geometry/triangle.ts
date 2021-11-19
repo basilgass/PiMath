@@ -1,8 +1,8 @@
-import {Point} from "./point";
-import {Fraction} from "../coefficients/fraction";
-import {Vector} from "./vector";
-import {Line} from "./line";
-import {Equation} from "../algebra/equation";
+import Point from "./point";
+import Fraction from "../coefficients/fraction";
+import Vector from "./vector";
+import Line from "./line";
+import Equation from "../algebra/equation";
 
 interface remarquableLines {
     'medians': {
@@ -31,7 +31,7 @@ interface remarquableLines {
     }
 }
 
-export class Triangle {
+export default class Triangle {
     private _A: Point;
     private _B: Point;
     private _C: Point;

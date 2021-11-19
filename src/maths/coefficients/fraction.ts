@@ -1,6 +1,6 @@
-import {Numeric} from "../numeric";
+import Numeric from "../numeric";
 
-export class Fraction {
+export default class Fraction {
     private _numerator: number;
     private _denominator: number;
 

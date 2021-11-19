@@ -1,13 +1,13 @@
-import {Polynom} from "./polynom";
-import {Fraction} from "../coefficients/fraction";
-import {Nthroot} from "../coefficients/nthroot";
-import {Numeric} from "../numeric";
-import {Monom} from "./monom";
-
 /**
  * Equation is a class to manage equations...
  */
-export class Equation {
+import Polynom from "./polynom";
+import Monom from "./monom";
+import Numeric from "../numeric";
+import Fraction from "../coefficients/fraction";
+import Nthroot from "../coefficients/nthroot";
+
+export default class Equation {
     private _left: Polynom;  // Left part of the equation
     private _right: Polynom; // Right part of the equation
     private _sign: string;   // Signe of the equation, by default =

@@ -3,10 +3,10 @@
  * Defined as coefficient * literal
  * Examples: 3x^2, 3/5x^2, ...
  */
-import {Fraction} from "../coefficients/fraction";
-import {Numeric} from "../numeric";
+import Fraction from "../coefficients/fraction";
+import Numeric from "../numeric";
 
-export class Monom {
+export default class Monom {
     private _coefficient: Fraction;
     private _literal: { [Key: string]: number };
 

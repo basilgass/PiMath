@@ -2,14 +2,14 @@
  * This class works for 2d line in a plane.
  */
 
-import {Fraction} from "../coefficients/fraction";
-import {Vector} from "./vector";
-import {Point} from "./point";
-import {Polynom} from "../algebra/polynom";
-import {Numeric} from "../numeric";
-import {Equation} from "../algebra/equation";
+import Fraction from "../coefficients/fraction";
+import Vector from "./vector";
+import Point from "./point";
+import Polynom from "../algebra/polynom";
+import Numeric from "../numeric";
+import Equation from "../algebra/equation";
 
-export class Line {
+export default class Line {
     // A line is defined as the canonical form
     // ax + by + c = 0
     private _a: Fraction;

@@ -3,12 +3,12 @@
  * @module Logicalset
  */
 
-import {Shutingyard} from '../shutingyard';
+import Shutingyard from '../shutingyard';
 
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  */
-export class Logicalset {
+export default class Logicalset {
     private _rawString: string;
     private _rpn: { token: string, tokenType: string }[]
 
