@@ -1,7 +1,7 @@
 import { Polynom } from "./polynom";
 import { Numeric } from "../numeric";
-import { Fraction } from "../coefficients/fraction";
-import { Nthroot } from "../coefficients/nthroot";
+import { Fraction } from "../coefficients";
+import { Nthroot } from "../coefficients";
 export class Equation {
     _left;
     _right;

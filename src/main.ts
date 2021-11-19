@@ -1,6 +1,6 @@
 import {Numeric} from "./maths/numeric";
 import {Shutingyard} from "./maths/shutingyard";
-import {Random} from "./maths/random/random";
+import {Random} from "./maths/random";
 import {Fraction, Nthroot} from "./maths/coefficients";
 import {Monom, Polynom, Equation, LinearSystem, Rational, Logicalset} from "./maths/algebra";
 import {Line, Circle, Triangle, Point, Vector} from "./maths/geometry";

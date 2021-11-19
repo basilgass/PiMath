@@ -1,7 +1,14 @@
 {
   "typedocOptions": {
-    "entryPoints": ["src/docs.ts"],
-    "out": "docs",
+    "entryPoints": [
+      "src/maths/algebra/index.ts",
+      "src/maths/geometry/index.ts",
+      "src/maths/coefficients/index.ts",
+      "src/maths/random/index.ts",
+      "src/maths/numeric.ts",
+      "src/maths/shutingyard.ts"
+    ],
+    "out": "docs"
   },
   "compilerOptions": {
     "outDir": "./esm/",

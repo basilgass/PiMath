@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import {Monom} from "../../src/maths/algebra/monom";
-import {Random} from "../../src/maths/random/random";
+import {Random} from "../../src/maths/random";
 
 describe('Monom derivate and integrate', () => { // the tests container
     it('derivate', () => { // the single test

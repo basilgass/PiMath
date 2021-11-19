@@ -1,12 +1,12 @@
-/**
- * Equation is a class to manage equations...
- */
 import {Polynom} from "./polynom";
 import {Monom} from "./monom";
 import {Numeric} from "../numeric";
-import {Fraction} from "../coefficients/fraction";
-import {Nthroot} from "../coefficients/nthroot";
+import {Fraction} from "../coefficients";
+import {Nthroot} from "../coefficients";
 
+/**
+ * Equation is a class to manage equations...
+ */
 export class Equation {
     private _left: Polynom;  // Left part of the equation
     private _right: Polynom; // Right part of the equation
@@ -21,6 +21,7 @@ export class Equation {
 
     /**
      * Create an Equation using two polynoms.
+     * Markdown *support* is cool
      * @param equations
      */
     constructor(...equations: any) {
@@ -372,6 +373,20 @@ export class Equation {
         return this;
     };
 
+    /**
+     * divide an equation by a given value (transformed as a fraction)
+     *
+     * ```
+     * 8x+10=6x \vert 2
+     * 4x+5=3x
+     * ```
+     *
+     * |>Alternatively with $3x-4$ maybe it's working ?
+     * $$\frac{3x}{5}$$
+     *
+     * @param value
+     * @returns {Equation}
+     */
     divide = (value: any): Equation => {
         // Make sure we have a fraction.
         let F: Fraction = new Fraction(value);

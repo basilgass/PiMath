@@ -1,7 +1,7 @@
-import { Fraction } from "../coefficients/fraction";
+import { Fraction } from "../coefficients";
 import { Equation } from "./equation";
 import { Polynom } from "./polynom";
-import { Random } from "../random/random";
+import { Random } from "../random";
 export class LinearSystem {
     _solutions;
     _resolutionSteps;

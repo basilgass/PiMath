@@ -1,6 +1,6 @@
 import { randomCore } from "./randomCore";
 import { rndMonom } from "./rndMonom";
-import { Random } from "./random";
+import { Random } from "./index";
 import { Polynom } from "../algebra/polynom";
 export class rndPolynom extends randomCore {
     constructor(userConfig) {

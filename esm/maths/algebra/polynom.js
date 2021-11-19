@@ -1,7 +1,7 @@
 import { Monom } from './monom';
 import { Shutingyard } from '../shutingyard';
 import { Numeric } from '../numeric';
-import { Random } from "../random/random";
+import { Random } from "../random";
 import { Fraction } from "../coefficients/fraction";
 export class Polynom {
     _rawString;

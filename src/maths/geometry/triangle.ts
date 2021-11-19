@@ -4,7 +4,7 @@ import {Vector} from "./vector";
 import {Line} from "./line";
 import {Equation} from "../algebra/equation";
 
-interface remarquableLines {
+export interface remarquableLines {
     'medians': {
         'A': Line,
         'B': Line,

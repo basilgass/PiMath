@@ -1,7 +1,7 @@
 import {randomCore} from "./randomCore";
 import {randomPolynomConfig} from "./rndTypes";
 import {rndMonom} from "./rndMonom";
-import {Random} from "./random";
+import {Random} from "./index";
 import {Polynom} from "../algebra/polynom";
 import {Monom} from "../algebra/monom";
 

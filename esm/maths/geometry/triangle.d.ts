@@ -1,7 +1,7 @@
 import { Point } from "./point";
 import { Vector } from "./vector";
 import { Line } from "./line";
-interface remarquableLines {
+export interface remarquableLines {
     'medians': {
         'A': Line;
         'B': Line;
@@ -62,4 +62,3 @@ export declare class Triangle {
     private _calculateRemarquableLines;
     private _calculateBisectors;
 }
-export {};

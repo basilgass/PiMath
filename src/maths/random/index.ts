@@ -2,20 +2,9 @@ import {rndPolynom} from "./rndPolynom";
 import {rndMonom} from "./rndMonom";
 import {rndHelpers} from "./rndHelpers";
 import {randomMonomConfig, randomPolynomConfig} from "./rndTypes";
-import {Monom} from "../algebra/monom";
-import {Polynom} from "../algebra/polynom";
+import {Monom, Polynom} from "../algebra";
 
-// export var Random = {
-//     monom: rndMonom,
-//     polynom: rndPolynom,
-//     number: rndHelpers.randomInt,
-//     numberSym: rndHelpers.randomIntSym,
-//     bool: rndHelpers.randomBool,
-//     array: rndHelpers.randomArray,
-//     item: rndHelpers.randomItem,
-//     shuffle: rndHelpers.shuffleArray
-// }
-
+export * from "./rndTypes"
 export namespace Random {
     export function polynom(config?: randomPolynomConfig): Polynom {
         return new rndPolynom(config).generate()
@@ -31,6 +20,4 @@ export namespace Random {
     export function array(arr:any[], number?:number):any[] { return rndHelpers.randomArray(arr, number)}
     export function item(arr:any[]):any { return rndHelpers.randomItem(arr)}
     export function shuffle(arr:any[]):any { rndHelpers.shuffleArray(arr)}
-
-
 }

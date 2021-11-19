@@ -1,5 +1,5 @@
 import { randomCore } from "./randomCore";
-import { Random } from "./random";
+import { Random } from "./index";
 import { Monom } from "../algebra/monom";
 export class rndMonom extends randomCore {
     constructor(userConfig) {
