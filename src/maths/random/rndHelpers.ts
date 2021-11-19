@@ -1,7 +1,7 @@
 /**
  * Random helpers
  */
-export default class rndHelpers {
+export class rndHelpers {
 
     /**
      * Random boolean with a percent ratio

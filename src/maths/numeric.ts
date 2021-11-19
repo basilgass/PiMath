@@ -1,4 +1,4 @@
-export default class Numeric{
+export class Numeric{
     static round(value:number, decimals:number=2):number {
         return Number(Math.round(Number(value+'e'+decimals))+'e-'+decimals);
     }

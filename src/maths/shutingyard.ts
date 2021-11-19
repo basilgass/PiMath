@@ -5,7 +5,7 @@ type tokenType = {
     }
 }
 
-export default class Shutingyard {
+export class Shutingyard {
     private _rpn: { token: string, tokenType: string }[] = [];
     readonly _mode: 'polynom' | 'set';
     private _tokenConfig: tokenType;

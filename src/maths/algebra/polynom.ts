@@ -3,11 +3,11 @@
  * @module Polynom
  */
 
-import Monom from './monom';
-import Shutingyard from '../shutingyard';
-import Numeric from '../numeric';
+import {Monom} from './monom';
+import {Shutingyard} from '../shutingyard';
+import {Numeric} from '../numeric';
 import {Random} from "../random/random";
-import Fraction from "../coefficients/fraction";
+import {Fraction} from "../coefficients/fraction";
 
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
@@ -15,7 +15,7 @@ import Fraction from "../coefficients/fraction";
  * let P = new Polynom('3x-4')
  * ```
  */
-export default class Polynom {
+export class Polynom {
     private _rawString: string;
     private _monoms: Monom[];
     private _factors: Polynom[];

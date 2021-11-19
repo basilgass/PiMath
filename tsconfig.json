@@ -1,6 +1,6 @@
 {
   "typedocOptions": {
-    "entryPoints": ["src/main.ts"],
+    "entryPoints": ["src/docs.ts"],
     "out": "docs",
   },
   "compilerOptions": {

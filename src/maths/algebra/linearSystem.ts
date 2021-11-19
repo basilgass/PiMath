@@ -1,10 +1,10 @@
-import Fraction from "../coefficients/fraction";
-import Equation from "./equation";
-import Polynom from "./polynom";
-import Monom from "./monom";
+import {Fraction} from "../coefficients/fraction";
+import {Equation} from "./equation";
+import {Polynom} from "./polynom";
+import {Monom} from "./monom";
 import {Random} from "../random/random";
 
-export default class LinearSystem {
+export class LinearSystem {
     private _solutions: { [letter: string]: { value: Fraction, isReal: boolean, isVarnothing: boolean } };
     private _resolutionSteps: LinearSystem[];
     private _equations: Equation[];

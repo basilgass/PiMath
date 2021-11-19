@@ -1,9 +1,9 @@
-import rndPolynom from "./rndPolynom";
-import rndMonom from "./rndMonom";
-import rndHelpers from "./rndHelpers";
+import {rndPolynom} from "./rndPolynom";
+import {rndMonom} from "./rndMonom";
+import {rndHelpers} from "./rndHelpers";
 import {randomMonomConfig, randomPolynomConfig} from "./rndTypes";
-import Monom from "../algebra/monom";
-import Polynom from "../algebra/polynom";
+import {Monom} from "../algebra/monom";
+import {Polynom} from "../algebra/polynom";
 
 // export var Random = {
 //     monom: rndMonom,

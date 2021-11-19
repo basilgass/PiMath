@@ -3,13 +3,13 @@
  * @module Polynom
  */
 
-import Polynom from "./polynom";
-import Fraction from "../coefficients/fraction";
+import {Polynom} from "./polynom";
+import {Fraction} from "../coefficients/fraction";
 
 /**
  * Rational class can handle rational polynoms
  */
-export default class Rational {
+export class Rational {
     private _rawString: string;
     private _numerator: Polynom;
     private _denominator: Polynom;

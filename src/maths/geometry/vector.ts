@@ -2,10 +2,10 @@
  * Vector module contains everything necessary to handle 2d or 3d vectors.
  * @module Vector
  */
-import Fraction from "../coefficients/fraction";
-import Numeric from "../numeric";
+import {Fraction} from "../coefficients/fraction";
+import {Numeric} from "../numeric";
 
-export default class Vector {
+export class Vector {
     private _x: Fraction;   // 1st component
     private _y: Fraction;   // 2nd component
 

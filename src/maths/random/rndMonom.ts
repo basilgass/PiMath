@@ -1,12 +1,12 @@
-import randomCore from "./randomCore";
+import {randomCore} from "./randomCore";
 import {randomMonomConfig, randomPolynomConfig} from "./rndTypes";
 import {Random} from "./random";
-import Monom from "../algebra/monom";
+import {Monom} from "../algebra/monom";
 
 /**
  * Create a random monom based on a based configuration
  */
-    export default class rndMonom extends randomCore {
+    export class rndMonom extends randomCore {
         declare protected _config: randomMonomConfig
         declare protected _defaultConfig: randomPolynomConfig
 
