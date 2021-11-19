@@ -1,4 +1,4 @@
-export default class Nthroot {
+export class Nthroot {
     _radical;
     _nth;
     _coefficient;

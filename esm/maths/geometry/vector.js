@@ -1,6 +1,6 @@
-import Fraction from "../coefficients/fraction";
-import Numeric from "../numeric";
-export default class Vector {
+import { Fraction } from "../coefficients/fraction";
+import { Numeric } from "../numeric";
+export class Vector {
     _x;
     _y;
     constructor(...values) {

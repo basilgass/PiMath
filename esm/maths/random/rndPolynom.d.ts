@@ -1,7 +1,7 @@
-import randomCore from "./randomCore";
+import { randomCore } from "./randomCore";
 import { randomPolynomConfig } from "./rndTypes";
-import Polynom from "../algebra/polynom";
-export default class rndPolynom extends randomCore {
+import { Polynom } from "../algebra/polynom";
+export declare class rndPolynom extends randomCore {
     protected _config: randomPolynomConfig;
     protected _defaultConfig: randomPolynomConfig;
     constructor(userConfig?: randomPolynomConfig);

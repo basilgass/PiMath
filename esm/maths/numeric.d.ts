@@ -1,4 +1,4 @@
-export default class Numeric {
+export declare class Numeric {
     static round(value: number, decimals?: number): number;
     static prime(nb?: number): number[];
     static dividers(value: number): number[];

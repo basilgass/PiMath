@@ -1,6 +1,6 @@
-import Monom from './monom';
-import Fraction from "../coefficients/fraction";
-export default class Polynom {
+import { Monom } from './monom';
+import { Fraction } from "../coefficients/fraction";
+export declare class Polynom {
     private _rawString;
     private _monoms;
     private _factors;

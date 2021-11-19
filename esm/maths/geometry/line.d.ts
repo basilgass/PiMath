@@ -1,8 +1,8 @@
-import Fraction from "../coefficients/fraction";
-import Vector from "./vector";
-import Point from "./point";
-import Equation from "../algebra/equation";
-export default class Line {
+import { Fraction } from "../coefficients/fraction";
+import { Vector } from "./vector";
+import { Point } from "./point";
+import { Equation } from "../algebra/equation";
+export declare class Line {
     private _a;
     private _b;
     private _c;

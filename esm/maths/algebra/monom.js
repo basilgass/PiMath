@@ -1,6 +1,6 @@
-import Fraction from "../coefficients/fraction";
-import Numeric from "../numeric";
-export default class Monom {
+import { Fraction } from "../coefficients/fraction";
+import { Numeric } from "../numeric";
+export class Monom {
     _coefficient;
     _literal;
     constructor(value) {

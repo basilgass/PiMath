@@ -1,8 +1,8 @@
-import Fraction from "../coefficients/fraction";
-import Equation from "./equation";
-import Polynom from "./polynom";
+import { Fraction } from "../coefficients/fraction";
+import { Equation } from "./equation";
+import { Polynom } from "./polynom";
 import { Random } from "../random/random";
-export default class LinearSystem {
+export class LinearSystem {
     _solutions;
     _resolutionSteps;
     _equations;

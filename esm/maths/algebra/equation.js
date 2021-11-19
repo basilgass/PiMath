@@ -1,8 +1,8 @@
-import Polynom from "./polynom";
-import Numeric from "../numeric";
-import Fraction from "../coefficients/fraction";
-import Nthroot from "../coefficients/nthroot";
-export default class Equation {
+import { Polynom } from "./polynom";
+import { Numeric } from "../numeric";
+import { Fraction } from "../coefficients/fraction";
+import { Nthroot } from "../coefficients/nthroot";
+export class Equation {
     _left;
     _right;
     _sign;

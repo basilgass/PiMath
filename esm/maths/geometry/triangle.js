@@ -1,9 +1,9 @@
-import Point from "./point";
-import Fraction from "../coefficients/fraction";
-import Vector from "./vector";
-import Line from "./line";
-import Equation from "../algebra/equation";
-export default class Triangle {
+import { Point } from "./point";
+import { Fraction } from "../coefficients/fraction";
+import { Vector } from "./vector";
+import { Line } from "./line";
+import { Equation } from "../algebra/equation";
+export class Triangle {
     _A;
     _B;
     _C;

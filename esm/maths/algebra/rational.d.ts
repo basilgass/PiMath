@@ -1,6 +1,6 @@
-import Polynom from "./polynom";
-import Fraction from "../coefficients/fraction";
-export default class Rational {
+import { Polynom } from "./polynom";
+import { Fraction } from "../coefficients/fraction";
+export declare class Rational {
     private _rawString;
     private _numerator;
     private _denominator;

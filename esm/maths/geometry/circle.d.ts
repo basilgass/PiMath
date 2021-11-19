@@ -1,4 +1,4 @@
-export default class Circle {
+export declare class Circle {
     private _center;
     private _radius;
     private _exists;

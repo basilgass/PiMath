@@ -1,5 +1,5 @@
-import Fraction from "../coefficients/fraction";
-export default class Vector {
+import { Fraction } from "../coefficients/fraction";
+export declare class Vector {
     private _x;
     private _y;
     constructor(...values: any);

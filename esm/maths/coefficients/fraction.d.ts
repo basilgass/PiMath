@@ -1,4 +1,4 @@
-export default class Fraction {
+export declare class Fraction {
     private _numerator;
     private _denominator;
     constructor(value?: any, denominatorOrPeriodic?: number);

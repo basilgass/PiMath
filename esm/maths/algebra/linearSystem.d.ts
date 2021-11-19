@@ -1,6 +1,6 @@
-import Fraction from "../coefficients/fraction";
-import Equation from "./equation";
-export default class LinearSystem {
+import { Fraction } from "../coefficients/fraction";
+import { Equation } from "./equation";
+export declare class LinearSystem {
     private _solutions;
     private _resolutionSteps;
     private _equations;

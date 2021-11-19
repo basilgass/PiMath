@@ -1,6 +1,6 @@
 import { randomMonomConfig, randomPolynomConfig } from "./rndTypes";
-import Monom from "../algebra/monom";
-import Polynom from "../algebra/polynom";
+import { Monom } from "../algebra/monom";
+import { Polynom } from "../algebra/polynom";
 export declare namespace Random {
     function polynom(config?: randomPolynomConfig): Polynom;
     function monom(config?: randomMonomConfig): Monom;

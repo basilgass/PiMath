@@ -4,7 +4,7 @@ declare type tokenType = {
         associative: string;
     };
 };
-export default class Shutingyard {
+export declare class Shutingyard {
     private _rpn;
     readonly _mode: 'polynom' | 'set';
     private _tokenConfig;

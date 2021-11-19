@@ -1,5 +1,5 @@
-import Fraction from "../coefficients/fraction";
-export default class Monom {
+import { Fraction } from "../coefficients/fraction";
+export declare class Monom {
     private _coefficient;
     private _literal;
     constructor(value?: string);

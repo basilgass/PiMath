@@ -1,9 +1,9 @@
-import Monom from './monom';
-import Shutingyard from '../shutingyard';
-import Numeric from '../numeric';
+import { Monom } from './monom';
+import { Shutingyard } from '../shutingyard';
+import { Numeric } from '../numeric';
 import { Random } from "../random/random";
-import Fraction from "../coefficients/fraction";
-export default class Polynom {
+import { Fraction } from "../coefficients/fraction";
+export class Polynom {
     _rawString;
     _monoms;
     _factors;

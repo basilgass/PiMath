@@ -1,5 +1,5 @@
-import Numeric from "../numeric";
-export default class Fraction {
+import { Numeric } from "../numeric";
+export class Fraction {
     _numerator;
     _denominator;
     constructor(value, denominatorOrPeriodic) {

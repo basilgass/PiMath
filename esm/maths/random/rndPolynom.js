@@ -1,8 +1,8 @@
-import randomCore from "./randomCore";
-import rndMonom from "./rndMonom";
+import { randomCore } from "./randomCore";
+import { rndMonom } from "./rndMonom";
 import { Random } from "./random";
-import Polynom from "../algebra/polynom";
-export default class rndPolynom extends randomCore {
+import { Polynom } from "../algebra/polynom";
+export class rndPolynom extends randomCore {
     constructor(userConfig) {
         super();
         this._defaultConfig = {

@@ -1,4 +1,4 @@
-export default class Shutingyard {
+export class Shutingyard {
     _rpn = [];
     _mode;
     _tokenConfig;

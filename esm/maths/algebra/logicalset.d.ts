@@ -1,4 +1,4 @@
-export default class Logicalset {
+export declare class Logicalset {
     private _rawString;
     private _rpn;
     constructor(value: string);

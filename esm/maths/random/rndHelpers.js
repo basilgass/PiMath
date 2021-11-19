@@ -1,4 +1,4 @@
-export default class rndHelpers {
+export class rndHelpers {
     static randomBool(percent = 0.5) {
         return Math.random() < percent;
     }

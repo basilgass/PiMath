@@ -1,5 +1,5 @@
-import Fraction from "../coefficients/fraction";
-export default class Point {
+import { Fraction } from "../coefficients/fraction";
+export class Point {
     _x;
     _y;
     _exist;

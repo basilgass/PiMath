@@ -1,4 +1,4 @@
-export default class randomCore {
+export class randomCore {
     _config;
     _defaultConfig;
     mergeConfig = (config, defaultConfig) => {

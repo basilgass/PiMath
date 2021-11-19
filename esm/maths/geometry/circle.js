@@ -1,8 +1,8 @@
-import Point from "./point";
-import Fraction from "../coefficients/fraction";
-import Equation from "../algebra/equation";
-import Polynom from "../algebra/polynom";
-export default class Circle {
+import { Point } from "./point";
+import { Fraction } from "../coefficients/fraction";
+import { Equation } from "../algebra/equation";
+import { Polynom } from "../algebra/polynom";
+export class Circle {
     _center;
     _radius;
     _exists;

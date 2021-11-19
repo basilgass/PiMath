@@ -1,19 +1,9 @@
-import Numeric from "./maths/numeric";
-import Shutingyard from "./maths/shutingyard";
-import Fraction from "./maths/coefficients/fraction";
-import Nthroot from "./maths/coefficients/nthroot";
-import Monom from "./maths/algebra/monom";
-import Polynom from "./maths/algebra/polynom";
-import Equation from "./maths/algebra/equation";
-import LinearSystem from "./maths/algebra/linearSystem";
-import Line from "./maths/geometry/line";
-import Circle from "./maths/geometry/circle";
-import Logicalset from "./maths/algebra/logicalset";
-import Rational from "./maths/algebra/rational";
+import { Numeric } from "./maths/numeric";
+import { Shutingyard } from "./maths/shutingyard";
 import { Random } from "./maths/random/random";
-import Triangle from "./maths/geometry/triangle";
-import Point from "./maths/geometry/point";
-import Vector from "./maths/geometry/vector";
+import { Fraction, Nthroot } from "./maths/coefficients";
+import { Monom, Polynom, Equation, LinearSystem, Rational, Logicalset } from "./maths/algebra";
+import { Line, Circle, Triangle, Point, Vector } from "./maths/geometry";
 window.Pi = {
     ShutingYard: Shutingyard,
     Numeric: Numeric,

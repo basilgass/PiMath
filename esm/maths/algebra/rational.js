@@ -1,5 +1,5 @@
-import Polynom from "./polynom";
-export default class Rational {
+import { Polynom } from "./polynom";
+export class Rational {
     _rawString;
     _numerator;
     _denominator;

@@ -1,10 +1,10 @@
-import Fraction from "../coefficients/fraction";
-import Vector from "./vector";
-import Point from "./point";
-import Polynom from "../algebra/polynom";
-import Numeric from "../numeric";
-import Equation from "../algebra/equation";
-export default class Line {
+import { Fraction } from "../coefficients/fraction";
+import { Vector } from "./vector";
+import { Point } from "./point";
+import { Polynom } from "../algebra/polynom";
+import { Numeric } from "../numeric";
+import { Equation } from "../algebra/equation";
+export class Line {
     _a;
     _b;
     _c;

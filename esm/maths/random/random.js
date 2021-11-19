@@ -1,6 +1,6 @@
-import rndPolynom from "./rndPolynom";
-import rndMonom from "./rndMonom";
-import rndHelpers from "./rndHelpers";
+import { rndPolynom } from "./rndPolynom";
+import { rndMonom } from "./rndMonom";
+import { rndHelpers } from "./rndHelpers";
 export var Random;
 (function (Random) {
     function polynom(config) {

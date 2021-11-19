@@ -1,7 +1,7 @@
-import randomCore from "./randomCore";
+import { randomCore } from "./randomCore";
 import { Random } from "./random";
-import Monom from "../algebra/monom";
-export default class rndMonom extends randomCore {
+import { Monom } from "../algebra/monom";
+export class rndMonom extends randomCore {
     constructor(userConfig) {
         super();
         this._defaultConfig = {

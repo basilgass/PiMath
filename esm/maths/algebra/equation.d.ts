@@ -1,5 +1,5 @@
-import Polynom from "./polynom";
-export default class Equation {
+import { Polynom } from "./polynom";
+export declare class Equation {
     private _left;
     private _right;
     private _sign;

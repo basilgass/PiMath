@@ -1,6 +1,6 @@
-import Point from "./point";
-import Vector from "./vector";
-import Line from "./line";
+import { Point } from "./point";
+import { Vector } from "./vector";
+import { Line } from "./line";
 interface remarquableLines {
     'medians': {
         'A': Line;
@@ -27,7 +27,7 @@ interface remarquableLines {
         'intersection': Point;
     };
 }
-export default class Triangle {
+export declare class Triangle {
     private _A;
     private _B;
     private _C;

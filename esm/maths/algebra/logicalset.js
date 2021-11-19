@@ -1,5 +1,5 @@
-import Shutingyard from '../shutingyard';
-export default class Logicalset {
+import { Shutingyard } from '../shutingyard';
+export class Logicalset {
     _rawString;
     _rpn;
     constructor(value) {
