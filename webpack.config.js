@@ -18,7 +18,7 @@ module.exports = {
     },
     output: {
         filename: 'pi.js',
-        path: path.resolve(__dirname, 'distStatic'),
+        path: path.resolve(__dirname, 'dev'),
     },
     optimization: {
         minimize: false

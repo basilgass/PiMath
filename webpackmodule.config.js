@@ -18,8 +18,8 @@ module.exports = {
         extensions: ['.tsx','.ts', '.js'],
     },
     output: {
-        filename: 'pi.js',
-        path: path.resolve(__dirname, 'dist'),
+        filename: 'pi.esm.js',
+        path: path.resolve(__dirname, 'esm'),
         library: 'Pi',
         libraryTarget: "umd"
     },
