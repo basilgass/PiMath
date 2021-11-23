@@ -6,7 +6,7 @@
 import {Monom} from './monom';
 import {Shutingyard} from '../shutingyard';
 import {Numeric} from '../numeric';
-import {Random} from "../random";
+import {Random, randomPolynomConfig} from "../random";
 import {Fraction} from "../coefficients/fraction";
 
 /**
@@ -294,6 +294,10 @@ import {Fraction} from "../coefficients/fraction";
         // -----------------------------------------------
         // Polynom generators and randomizers
         // -----------------------------------------------
+        random(config?:randomPolynomConfig){
+            return Random.polynom(config);
+        }
+
         private _randomizeDefaults: { [key: string]: number | string | boolean } = {
             degree: 2,
             unit: true,

@@ -7,11 +7,11 @@ import {Monom, Polynom} from "../algebra";
 export * from "./rndTypes"
 export namespace Random {
     export function polynom(config?: randomPolynomConfig): Polynom {
-        return new rndPolynom(config).generate()
+        return (new rndPolynom(config)).generate()
     }
 
     export function monom(config?: randomMonomConfig): Monom {
-        return new rndMonom(config).generate()
+        return (new rndMonom(config)).generate()
     }
 
     export function number(from:number, to:number):number { return rndHelpers.randomInt(from,to)}

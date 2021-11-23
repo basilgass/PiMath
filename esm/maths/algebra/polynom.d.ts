@@ -1,4 +1,5 @@
 import { Monom } from './monom';
+import { randomPolynomConfig } from "../random";
 import { Fraction } from "../coefficients/fraction";
 export declare class Polynom {
     private _rawString;
@@ -27,6 +28,7 @@ export declare class Polynom {
     zero: () => Polynom;
     one: () => Polynom;
     empty: () => Polynom;
+    random(config?: randomPolynomConfig): Polynom;
     private _randomizeDefaults;
     get randomizeDefaults(): {
         [key: string]: number | string | boolean;

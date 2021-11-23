@@ -5,7 +5,7 @@ export * from "./rndTypes";
 export var Random;
 (function (Random) {
     function polynom(config) {
-        return new rndPolynom(config).generate();
+        return (new rndPolynom(config)).generate();
     }
     Random.polynom = polynom;
     function monom(config) {

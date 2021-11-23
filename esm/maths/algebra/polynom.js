@@ -204,6 +204,9 @@ export class Polynom {
         this._rawString = '';
         return this;
     };
+    random(config) {
+        return Random.polynom(config);
+    }
     _randomizeDefaults = {
         degree: 2,
         unit: true,
