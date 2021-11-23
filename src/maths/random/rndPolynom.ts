@@ -2,8 +2,8 @@ import {randomCore} from "./randomCore";
 import {randomPolynomConfig} from "./rndTypes";
 import {rndMonom} from "./rndMonom";
 import {Random} from "./index";
-import {Polynom} from "../algebra/polynom";
-import {Monom} from "../algebra/monom";
+import {Polynom} from "../algebra";
+import {Monom} from "../algebra";
 
 /**
  * Random polynoms
@@ -32,10 +32,13 @@ export class rndPolynom extends randomCore {
     }
 
     generate = (): Polynom => {
+        if(this._config.factorable && this._config.degree>1){
+            return this.factorable()
+        }
+
         // Create the polynom
         let P = new Polynom().empty(),
             M: Monom
-
         for (let i = this._config.degree; i >= 0; i--) {
             // Create monom of corresponding degree.
             M = new rndMonom({
@@ -63,7 +66,15 @@ export class rndPolynom extends randomCore {
     }
 
     factorable = (): Polynom => {
-        let P = new Polynom()
+        let P = new Polynom().one()
+
+        let _factorableConfig = {...this._config}
+        _factorableConfig.degree = 1
+        _factorableConfig.factorable = false
+
+        for(let i=0; i<this._config.degree;i++){
+            P.multiply(Random.polynom(_factorableConfig))
+        }
 
         return P
     }

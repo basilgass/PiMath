@@ -9,7 +9,7 @@ export var Random;
     }
     Random.polynom = polynom;
     function monom(config) {
-        return new rndMonom(config).generate();
+        return (new rndMonom(config)).generate();
     }
     Random.monom = monom;
     function number(from, to) { return rndHelpers.randomInt(from, to); }
