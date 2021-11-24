@@ -1,6 +1,7 @@
 <html>
 <head>
     <title>Getting Started</title>
+    <script src="pi.js"></script>
 </head>
 <body>
 
@@ -16,9 +17,14 @@
 
 
 <script type="module">
-  import {Algebra} from '../esm/maths/algebra'
-
-	console.log((new Algebra.Polynom('3x-5')).tex)
+	let P = Pi.Random.polynom({
+		letters: 'x',
+		degree: 2,
+		factorable: true,
+		unit: true,
+		allowNullMonom: false
+	})
+		console.log(P.tex, P.factorize().map(x=>x.tex))
 </script>
 </body>
 </html>

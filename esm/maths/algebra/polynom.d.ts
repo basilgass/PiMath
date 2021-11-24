@@ -1,6 +1,6 @@
 import { Monom } from './monom';
 import { randomPolynomConfig } from "../random";
-import { Fraction } from "../coefficients/fraction";
+import { Fraction } from "../coefficients";
 export declare class Polynom {
     private _rawString;
     private _monoms;

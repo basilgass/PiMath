@@ -1,13 +1,12 @@
 /**
  * Polynom module contains everything necessary to handle polynoms.*
- * @module Polynom
  */
 
 import {Monom} from './monom';
 import {Shutingyard} from '../shutingyard';
 import {Numeric} from '../numeric';
 import {Random, randomPolynomConfig} from "../random";
-import {Fraction} from "../coefficients/fraction";
+import {Fraction} from "../coefficients";
 
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
