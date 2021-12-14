@@ -1,11 +1,14 @@
-import { Fraction } from "../coefficients/fraction";
-import { Numeric } from "../numeric";
-export class Vector {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Vector = void 0;
+const fraction_1 = require("../coefficients/fraction");
+const numeric_1 = require("../numeric");
+class Vector {
     _x;
     _y;
     constructor(...values) {
-        this._x = new Fraction().zero();
-        this._y = new Fraction().zero();
+        this._x = new fraction_1.Fraction().zero();
+        this._y = new fraction_1.Fraction().zero();
         if (values !== undefined) {
             this.parse(...values);
         }
@@ -55,10 +58,10 @@ export class Vector {
                 return this;
             }
             if (values[0].isFraction || !isNaN(values[0])) {
-                this._x = new Fraction(values[0]);
+                this._x = new fraction_1.Fraction(values[0]);
             }
             if (values[1].isFraction || !isNaN(values[1])) {
-                this._y = new Fraction(values[1]);
+                this._y = new fraction_1.Fraction(values[1]);
             }
         }
         return this;
@@ -80,19 +83,19 @@ export class Vector {
     };
     zero = () => {
         this.reset();
-        this._x = new Fraction(null);
-        this._y = new Fraction(null);
+        this._x = new fraction_1.Fraction(null);
+        this._y = new fraction_1.Fraction(null);
         return this;
     };
     one = () => {
-        this._x = new Fraction();
-        this._y = new Fraction();
+        this._x = new fraction_1.Fraction();
+        this._y = new fraction_1.Fraction();
         return this;
     };
     _parseString = (value) => {
         let components = value.split(/[,;\s]/g);
-        this.x = new Fraction(components[0] || null);
-        this.y = new Fraction(components[1] || null);
+        this.x = new fraction_1.Fraction(components[0] || null);
+        this.y = new fraction_1.Fraction(components[1] || null);
         return this;
     };
     opposed = () => {
@@ -124,17 +127,17 @@ export class Vector {
         return this.scalarProductWithVector(v).isZero();
     };
     multiplyByScalar = (k) => {
-        let scalar = new Fraction(k);
+        let scalar = new fraction_1.Fraction(k);
         this._x.multiply(scalar);
         this._y.multiply(scalar);
         return this;
     };
     divideByScalar = (k) => {
-        return this.multiplyByScalar(new Fraction(k).invert());
+        return this.multiplyByScalar(new fraction_1.Fraction(k).invert());
     };
     simplify = () => {
-        return this.multiplyByScalar(Numeric.lcm(this._x.denominator, this._y.denominator))
-            .divideByScalar(Numeric.gcd(this._x.numerator, this._y.numerator));
+        return this.multiplyByScalar(numeric_1.Numeric.lcm(this._x.denominator, this._y.denominator))
+            .divideByScalar(numeric_1.Numeric.gcd(this._x.numerator, this._y.numerator));
     };
     angleWith = (V, sharp, radian) => {
         let scalar = this.scalarProductWithVector(V).value, toDegree = radian ? 1 : 180 / Math.PI;
@@ -144,4 +147,5 @@ export class Vector {
         return toDegree * Math.acos(scalar / (this.norm * V.norm));
     };
 }
+exports.Vector = Vector;
 //# sourceMappingURL=vector.js.map

@@ -1,8 +1,11 @@
-import { Fraction } from "../coefficients";
-import { Equation } from "./equation";
-import { Polynom } from "./polynom";
-import { Random } from "../random";
-export class LinearSystem {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LinearSystem = void 0;
+const coefficients_1 = require("../coefficients");
+const equation_1 = require("./equation");
+const polynom_1 = require("./polynom");
+const random_1 = require("../random");
+class LinearSystem {
     _solutions;
     _resolutionSteps;
     _equations;
@@ -15,7 +18,7 @@ export class LinearSystem {
         }
         return this;
     }
-    get isLinerarSystem() {
+    get isLinearSystem() {
         return true;
     }
     get equations() {
@@ -82,7 +85,7 @@ export class LinearSystem {
         return `(${tex.join(';')})`;
     }
     parse = (...equations) => {
-        this._equations = equations.map(value => new Equation(value));
+        this._equations = equations.map(value => new equation_1.Equation(value));
         this._findLetters();
         return this;
     };
@@ -90,7 +93,7 @@ export class LinearSystem {
         this._equations = [];
         let i = 0;
         while (i < coefficients.length - this._letters.length) {
-            let left = new Polynom().parse(this._letters.join(''), ...coefficients.slice(i, i + this._letters.length)), right = new Polynom(coefficients[i + this._letters.length].toString()), equ = new Equation().create(left, right);
+            let left = new polynom_1.Polynom().parse(this._letters.join(''), ...coefficients.slice(i, i + this._letters.length)), right = new polynom_1.Polynom(coefficients[i + this._letters.length].toString()), equ = new equation_1.Equation().create(left, right);
             this._equations.push(equ.clone());
             i = i + this._letters.length + 1;
         }
@@ -115,7 +118,7 @@ export class LinearSystem {
         let solutionsF = [];
         for (let s of solutions) {
             if (typeof s === "number") {
-                solutionsF.push(new Fraction(s.toString()));
+                solutionsF.push(new coefficients_1.Fraction(s.toString()));
             }
             else {
                 solutionsF.push(s.clone());
@@ -128,15 +131,15 @@ export class LinearSystem {
         return this;
     };
     _generateOneEquation = (...solutions) => {
-        let coeff = [], leftValue = new Fraction().zero(), letters = ['x', 'y', 'z', 't', 'u', 'v', 'w', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'], equString = '', equ;
+        let coeff = [], leftValue = new coefficients_1.Fraction().zero(), letters = ['x', 'y', 'z', 't', 'u', 'v', 'w', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'], equString = '', equ;
         for (let i = 0; i < solutions.length; i++) {
-            coeff.push(Random.numberSym(5));
+            coeff.push(random_1.Random.numberSym(5));
             leftValue.add(solutions[i].clone().multiply(coeff[i]));
             equString += `${(coeff[i] < 0) ? coeff[i] : '+' + coeff[i]}${letters[i]}`;
         }
-        equ = new Equation(`${equString}=${leftValue.display}`);
+        equ = new equation_1.Equation(`${equString}=${leftValue.display}`);
         if (equ.right.monoms[0].coefficient.denominator != 1) {
-            equ.multiply(new Fraction(equ.right.monoms[0].coefficient.denominator, 1));
+            equ.multiply(new coefficients_1.Fraction(equ.right.monoms[0].coefficient.denominator, 1));
         }
         if (this._checkIfLinerCombination(equ)) {
             return equ;
@@ -150,7 +153,7 @@ export class LinearSystem {
         return this.mergeEquations(eq1, eq2, c2, c1);
     }
     mergeEquations = (eq1, eq2, factor1, factor2) => {
-        let eq1multiplied = eq1.clone().multiply(new Fraction(factor1)), eq2multiplied = eq2.clone().multiply(new Fraction(factor2));
+        let eq1multiplied = eq1.clone().multiply(new coefficients_1.Fraction(factor1)), eq2multiplied = eq2.clone().multiply(new coefficients_1.Fraction(factor2));
         eq1multiplied.left.add(eq2multiplied.left);
         eq1multiplied.right.add(eq2multiplied.right);
         return eq1multiplied;
@@ -190,7 +193,7 @@ export class LinearSystem {
         let E = this._resolutionSteps[this._resolutionSteps.length - 1].equations[0];
         E.solve();
         return {
-            value: new Fraction(E.solutions[0]),
+            value: new coefficients_1.Fraction(E.solutions[0]),
             isReal: E.isReal,
             isVarnothing: E.isVarnothing
         };
@@ -204,4 +207,5 @@ export class LinearSystem {
         return str;
     };
 }
+exports.LinearSystem = LinearSystem;
 //# sourceMappingURL=linearSystem.js.map

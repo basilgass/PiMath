@@ -1,5 +1,4 @@
-import { Monom } from './monom';
-import { randomPolynomConfig } from "../random";
+import { literalType, Monom } from './monom';
 import { Fraction } from "../coefficients";
 export declare class Polynom {
     private _rawString;
@@ -28,18 +27,6 @@ export declare class Polynom {
     zero: () => Polynom;
     one: () => Polynom;
     empty: () => Polynom;
-    random(config?: randomPolynomConfig): Polynom;
-    private _randomizeDefaults;
-    get randomizeDefaults(): {
-        [key: string]: number | string | boolean;
-    };
-    set randomizeDefaults(value: {
-        [key: string]: number | string | boolean;
-    });
-    randomize: (config: {
-        [key: string]: string | number | boolean;
-    }) => Polynom;
-    rndFactorable: (degree?: number, unit?: boolean | number, letters?: string) => Polynom;
     opposed: () => Polynom;
     add: (...values: any[]) => Polynom;
     subtract: (...values: any[]) => Polynom;
@@ -66,22 +53,19 @@ export declare class Polynom {
     isDeveloped: (polynomString: string) => Boolean;
     reduce: () => Polynom;
     reorder: (letter?: string) => Polynom;
-    degree: (letter?: string) => number;
+    degree: (letter?: string) => Fraction;
     letters: () => string[];
     replaceBy: (letter: string, P: Polynom) => Polynom;
-    evaluate: (values: number | Fraction | {
-        [key: string]: number | Fraction;
-    }) => Fraction;
+    evaluate: (values: literalType | Fraction | number) => Fraction;
     derivative: (letter?: string) => Polynom;
     primitive: (letter?: string) => Polynom;
     integrate: (a: Fraction | number, b: Fraction | number, letter?: string) => Fraction;
-    factorize_OLD: (maxValue?: number) => Polynom;
     factorize: (letter?: string) => Polynom[];
     private _factorize2ndDegree;
     private _factorizeByGroups;
     getZeroes: () => (Fraction | boolean)[];
-    monomByDegree: (degree?: number, letter?: string) => Monom;
-    monomsByDegree: (degree?: number, letter?: string) => Monom[];
+    monomByDegree: (degree?: Fraction | number, letter?: string) => Monom;
+    monomsByDegree: (degree?: number | Fraction, letter?: string) => Monom[];
     monomByLetter: (letter: string) => Monom;
     getDenominators: () => number[];
     getNumerators: () => number[];
@@ -90,8 +74,4 @@ export declare class Polynom {
     lcmNumerator: () => number;
     gcdNumerator: () => number;
     commonMonom: () => Monom;
-    makeItComplicate: (complexity?: number) => Polynom;
-    factorizePartial: (forceSign?: boolean) => Polynom;
-    minify: () => Polynom;
-    canDivide: (P: Polynom, letter?: string) => boolean;
 }

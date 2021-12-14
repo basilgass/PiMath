@@ -19,7 +19,6 @@ describe('Shuting yard', () => { // the tests container
         expect(SY3b.rpn.map(x=>x.token)).to.have.all.members(['3/2', 'x', '5', '+', '*'])
         expect(SY4.rpn.map(x=>x.token)).to.have.all.members(['3/2', 'x', '2', '^', '*', '5', 'x', '*',  'y', '*',  '-', '12', '-'])
         expect(SY5.rpn.map(x=>x.token)).to.have.all.members(['3/2', 'x', '0', '3', '-', '^', '*', '5', 'x', '*', 'y', '*', '-', '12', '-'])
-
         expect(SY6.rpn.map(x=>x.token)).to.have.all.members(['x', '3', '^', 'y', '2', '^', '*', 'z', '*'])
     })
 

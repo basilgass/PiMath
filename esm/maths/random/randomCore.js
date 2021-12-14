@@ -1,4 +1,7 @@
-export class randomCore {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.randomCore = void 0;
+class randomCore {
     _config;
     _defaultConfig;
     mergeConfig = (config, defaultConfig) => {
@@ -15,4 +18,5 @@ export class randomCore {
         return this;
     };
 }
+exports.randomCore = randomCore;
 //# sourceMappingURL=randomCore.js.map

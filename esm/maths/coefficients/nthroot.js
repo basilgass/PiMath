@@ -1,4 +1,7 @@
-export class Nthroot {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Nthroot = void 0;
+class Nthroot {
     _radical;
     _nth;
     _coefficient;
@@ -89,4 +92,5 @@ export class Nthroot {
         return !(this._radical === 1 || this._radical === 0 || this._isValid === false);
     };
 }
+exports.Nthroot = Nthroot;
 //# sourceMappingURL=nthroot.js.map

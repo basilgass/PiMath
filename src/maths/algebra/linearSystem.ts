@@ -21,7 +21,7 @@ import {Random} from "../random";
             return this;
         }
 
-        get isLinerarSystem() {
+        get isLinearSystem() {
             return true;
         }
 
@@ -52,7 +52,7 @@ import {Random} from "../random";
                 return false;
             }
 
-            //TOOD: Must check if two equations isn't a linear combination of the others ?
+            //TODO: Must check if two equations isn't a linear combination of the others ?
 
             return true;
         }
@@ -92,7 +92,7 @@ import {Random} from "../random";
                 // Add the equal sign
                 equStr.push('=');
 
-                // Add the right hand part of the equation (should be only a number, because it has been reorderd)
+                // Add the right hand part of the equation (should be only a number, because it has been reordered)
                 equStr.push(equ.right.tex);
 
                 // Add to the list.

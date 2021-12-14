@@ -1,4 +1,7 @@
-export class Shutingyard {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Shutingyard = void 0;
+class Shutingyard {
     _rpn = [];
     _mode;
     _tokenConfig;
@@ -227,4 +230,5 @@ export class Shutingyard {
         return this._rpn;
     }
 }
+exports.Shutingyard = Shutingyard;
 //# sourceMappingURL=shutingyard.js.map

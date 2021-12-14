@@ -1,11 +1,14 @@
-import { Fraction } from "../coefficients/fraction";
-export class Point {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Point = void 0;
+const fraction_1 = require("../coefficients/fraction");
+class Point {
     _x;
     _y;
     _exist;
     constructor(...values) {
-        this._x = new Fraction().zero();
-        this._y = new Fraction().zero();
+        this._x = new fraction_1.Fraction().zero();
+        this._y = new fraction_1.Fraction().zero();
         if (values !== undefined) {
             this.parse(...values);
         }
@@ -47,22 +50,22 @@ export class Point {
             if (typeof values[0] === 'string') {
                 let xy = values[0].split(',');
                 if (xy.length === 2) {
-                    this._x = new Fraction(xy[0]).reduce();
-                    this._y = new Fraction(xy[1]).reduce();
+                    this._x = new fraction_1.Fraction(xy[0]).reduce();
+                    this._y = new fraction_1.Fraction(xy[1]).reduce();
                     return this;
                 }
             }
             if (values[0].x !== undefined && values[0].y !== undefined) {
-                this._x = new Fraction(values[0].x).reduce();
-                this._y = new Fraction(values[0].y).reduce();
+                this._x = new fraction_1.Fraction(values[0].x).reduce();
+                this._y = new fraction_1.Fraction(values[0].y).reduce();
             }
             else {
                 return this.zero();
             }
         }
         if (values.length === 2) {
-            this._x = new Fraction(values[0]).reduce();
-            this._y = new Fraction(values[1]).reduce();
+            this._x = new fraction_1.Fraction(values[0]).reduce();
+            this._y = new fraction_1.Fraction(values[1]).reduce();
         }
         return this;
     };
@@ -72,8 +75,8 @@ export class Point {
         return this;
     };
     zero = () => {
-        this._x = new Fraction(null);
-        this._y = new Fraction(null);
+        this._x = new fraction_1.Fraction(null);
+        this._y = new fraction_1.Fraction(null);
         return this;
     };
     origin = () => {
@@ -100,4 +103,5 @@ export class Point {
         }
     };
 }
+exports.Point = Point;
 //# sourceMappingURL=point.js.map

@@ -8,7 +8,7 @@ import {Monom} from "../algebra/monom";
  */
     export class rndMonom extends randomCore {
         declare protected _config: randomMonomConfig
-        declare protected _defaultConfig: randomPolynomConfig
+        declare protected _defaultConfig: randomMonomConfig
 
         constructor(userConfig?: randomMonomConfig) {
             super();
@@ -28,7 +28,10 @@ import {Monom} from "../algebra/monom";
             let M = new Monom()
 
             // Generate the coefficient
-            M.coefficient.parse(Random.numberSym(10, this._config.zero), (this._config.fraction) ? Random.number(1, 10) : 1).reduce();
+            M.coefficient = Random.fraction({
+                zero: this._config.zero,
+                reduced: true
+            })
 
             // Calculate the degree of the monom
             if (this._config.letters.length > 1) {
@@ -38,7 +41,7 @@ import {Monom} from "../algebra/monom";
                 }
                 for (let i = 0; i < this._config.degree; i++) {
                     const L = Random.item(this._config.letters.split(""))
-                    M.setLetter(L, M.degree(L) + 1)
+                    M.setLetter(L, M.degree(L).clone().add(1))
                 }
             } else {
                 M.setLetter(this._config.letters, this._config.degree)

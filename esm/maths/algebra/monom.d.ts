@@ -1,4 +1,7 @@
-import { Fraction } from "../coefficients/fraction";
+import { Fraction } from "../coefficients";
+export declare type literalType = {
+    [Key: string]: Fraction;
+};
 export declare class Monom {
     private _coefficient;
     private _literal;
@@ -6,23 +9,18 @@ export declare class Monom {
     get isMonom(): boolean;
     get coefficient(): Fraction;
     set coefficient(F: Fraction);
-    get literal(): {
-        [Key: string]: number;
-    };
-    get literalSqrt(): {
-        [Key: string]: number;
-    };
-    set literal(L: {
-        [Key: string]: number;
-    });
+    get literal(): literalType;
+    get literalSqrt(): literalType;
+    set literal(L: literalType);
     set literalStr(inputStr: string);
     get variables(): string[];
     get display(): string;
     get dividers(): Monom[];
-    private _getLitteralDividers;
+    private _getLiteralDividers;
     get displayWithSign(): string;
     get tex(): string;
     parse: (inputStr: string) => Monom;
+    private _shutingYardToReducedMonom;
     clone: () => Monom;
     zero: () => Monom;
     one: () => Monom;
@@ -42,13 +40,12 @@ export declare class Monom {
     isEqual: (M: Monom) => boolean;
     isSameAs: (M: Monom) => boolean;
     isSquare: () => boolean;
-    isLitteralSquare: () => boolean;
+    isLiteralSquare: () => boolean;
+    hasFractionCoefficient: () => boolean;
     hasLetter: (letter?: string) => boolean;
-    setLetter: (letter: string, pow: number) => void;
-    degree: (letter?: string) => number;
-    evaluate: (values: number | Fraction | {
-        [key: string]: number | Fraction;
-    }) => Fraction;
+    setLetter: (letter: string, pow: Fraction | number) => void;
+    degree: (letter?: string) => Fraction;
+    evaluate: (values: literalType | Fraction | number) => Fraction;
     derivative: (letter?: string) => Monom;
     primitive: (letter?: string) => Monom;
     static lcm: (...monoms: Monom[]) => Monom;

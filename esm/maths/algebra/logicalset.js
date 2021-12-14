@@ -1,5 +1,8 @@
-import { Shutingyard } from '../shutingyard';
-export class Logicalset {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Logicalset = void 0;
+const shutingyard_1 = require("../shutingyard");
+class Logicalset {
     _rawString;
     _rpn;
     constructor(value) {
@@ -12,7 +15,7 @@ export class Logicalset {
     }
     ;
     parse = (value) => {
-        this._rpn = new Shutingyard('set').parse(value).rpn;
+        this._rpn = new shutingyard_1.Shutingyard('set').parse(value).rpn;
         return this;
     };
     evaluate(tokenSets, reference) {
@@ -139,4 +142,5 @@ export class Logicalset {
         return varStack[0].token;
     }
 }
+exports.Logicalset = Logicalset;
 //# sourceMappingURL=logicalset.js.map

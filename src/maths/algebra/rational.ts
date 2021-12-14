@@ -131,17 +131,17 @@ import {Fraction} from "../coefficients/fraction";
 
                 N.divide(D)
 
-                if (N.degree(letter) > 0) {
-                    return N.coefficient.sign() * (Math.pow((value > 0 ? 1 : -1), N.degree(letter) % 2)) === 1 ? Infinity : -Infinity
+                if (N.degree(letter).isStrictlyPositive()) {
+                    return N.coefficient.sign() * (Math.pow((value > 0 ? 1 : -1), N.degree(letter).value % 2)) === 1 ? Infinity : -Infinity
                 }
-                if (N.degree(letter) === 0) {
+                if (N.degree(letter).isZero()) {
                     return N.coefficient
                 }
-                if (N.degree(letter) > 0) {
-                    return N.coefficient.sign() * (Math.pow(-1, N.degree(letter) % 2)) === 1 ? 0 : -0
+                if (N.degree(letter).isStrictlyPositive()) {
+                    return N.coefficient.sign() * (Math.pow(-1, N.degree(letter).value % 2)) === 1 ? 0 : -0
                 }
             } else {
-                return this._numerator.evaluate({letter: value}).divide(this._denominator.evaluate({letter: value}))
+                return this._numerator.evaluate({letter: new Fraction(value)}).divide(this._denominator.evaluate({letter: new Fraction(value)}))
             }
         }
     }

@@ -23,6 +23,6 @@
     "removeComments": true
   },
   "include": [
-    "./src/**/*"
+    "./tests/**/*"
   ]
 }

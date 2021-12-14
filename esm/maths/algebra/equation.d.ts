@@ -1,4 +1,5 @@
 import { Polynom } from "./polynom";
+import { Fraction } from "../coefficients";
 export declare class Equation {
     private _left;
     private _right;
@@ -45,7 +46,7 @@ export declare class Equation {
     replaceBy: (letter: string, P: Polynom) => Equation;
     multiply: (value: any) => Equation;
     divide: (value: any) => Equation;
-    degree: (letter?: string) => number;
+    degree: (letter?: string) => Fraction;
     isMultiVariable: () => boolean;
     letters: () => string[];
     solve: (letter?: string) => Equation;

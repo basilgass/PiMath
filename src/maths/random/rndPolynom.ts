@@ -59,7 +59,6 @@ export class rndPolynom extends randomCore {
 
         // If the number of monoms is greater than the allowed value, remove some of them...
         if (this._config.numberOfMonoms > 0 && this._config.numberOfMonoms < P.length) {
-            console.log(P.monoms.length)
             P.monoms = Random.array(P.monoms, this._config.numberOfMonoms)
         }
         return P

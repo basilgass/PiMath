@@ -221,7 +221,7 @@ export class Line {
     // ------------------------------------------
     isParellelTo = (line: Line): Boolean => {
         // Do they have the isSame direction ?
-        return this.slope.isEqual(line.slope) && this.height.isDifferent(line.height);
+        return this.slope.isEqual(line.slope) && this.height.isNotEqual(line.height);
     }
     isSameAs = (line: Line): Boolean => {
         return this.slope.isEqual(line.slope) && this.height.isEqual(line.height);

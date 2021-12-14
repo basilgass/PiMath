@@ -1,8 +1,11 @@
-import { Polynom } from "./polynom";
-import { Numeric } from "../numeric";
-import { Fraction } from "../coefficients";
-import { Nthroot } from "../coefficients";
-export class Equation {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Equation = void 0;
+const polynom_1 = require("./polynom");
+const numeric_1 = require("../numeric");
+const coefficients_1 = require("../coefficients");
+const coefficients_2 = require("../coefficients");
+class Equation {
     _left;
     _right;
     _sign;
@@ -11,8 +14,8 @@ export class Equation {
     _varnothing = '\\varnothing';
     _real = '\\mathbb{R}';
     constructor(...equations) {
-        this._left = new Polynom().zero();
-        this._right = new Polynom().zero();
+        this._left = new polynom_1.Polynom().zero();
+        this._right = new polynom_1.Polynom().zero();
         this._sign = '=';
         if (equations.length === 1) {
             if (equations[0].isEquation === true) {
@@ -23,8 +26,8 @@ export class Equation {
             }
         }
         else if (equations.length === 2) {
-            this.left = equations[0].isPolynom ? equations[0].clone() : new Polynom(equations[0]);
-            this.right = equations[1].isPolynom ? equations[1].clone() : new Polynom(equations[1]);
+            this.left = equations[0].isPolynom ? equations[0].clone() : new polynom_1.Polynom(equations[0]);
+            this.right = equations[1].isPolynom ? equations[1].clone() : new polynom_1.Polynom(equations[1]);
         }
         else {
             return this;
@@ -106,7 +109,7 @@ export class Equation {
             return;
         }
         pStr = equationString.split(strSign);
-        return this.create(new Polynom(pStr[0]), new Polynom(pStr[1]), this._formatSign(strSign));
+        return this.create(new polynom_1.Polynom(pStr[0]), new polynom_1.Polynom(pStr[1]), this._formatSign(strSign));
     };
     _findSign = (equationString) => {
         let strSign = '';
@@ -207,7 +210,7 @@ export class Equation {
         this._randomizeDefaults = value;
     }
     randomize = (opts, sign) => {
-        return new Equation().create(new Polynom(), new Polynom(), sign);
+        return new Equation().create(new polynom_1.Polynom(), new polynom_1.Polynom(), sign);
     };
     moveLeft = () => {
         this._left = this._left.clone().subtract(this._right);
@@ -222,7 +225,7 @@ export class Equation {
         }
         let mMove;
         for (let m of this._left.monoms) {
-            if (m.degree() === 0) {
+            if (m.degree().isZero()) {
                 mMove = m.clone();
                 this._left.subtract(mMove);
                 this._right.subtract(mMove);
@@ -233,12 +236,12 @@ export class Equation {
         return this;
     };
     simplify = () => {
-        this.multiply(Numeric.lcm(...this._left.getDenominators(), ...this._right.getDenominators()));
-        this.divide(Numeric.gcd(...this._left.getNumerators(), ...this._right.getNumerators()));
+        this.multiply(numeric_1.Numeric.lcm(...this._left.getDenominators(), ...this._right.getDenominators()));
+        this.divide(numeric_1.Numeric.gcd(...this._left.getNumerators(), ...this._right.getNumerators()));
         return this;
     };
     isolate = (letter) => {
-        if (this.degree(letter) !== 1) {
+        if (!this.degree(letter).isOne()) {
             return false;
         }
         if (this.isMultiVariable()) {
@@ -268,7 +271,7 @@ export class Equation {
         return this;
     };
     multiply = (value) => {
-        let F = new Fraction(value);
+        let F = new coefficients_1.Fraction(value);
         this._left.multiply(F);
         this._right.multiply(F);
         if (this._sign !== '=' && F.sign() === -1) {
@@ -277,7 +280,7 @@ export class Equation {
         return this;
     };
     divide = (value) => {
-        let F = new Fraction(value);
+        let F = new coefficients_1.Fraction(value);
         if (F.isZero()) {
             return this;
         }
@@ -286,7 +289,7 @@ export class Equation {
         }
     };
     degree = (letter) => {
-        return Math.max(this._left.degree(letter), this._right.degree(letter));
+        return coefficients_1.Fraction.max(this._left.degree(letter), this._right.degree(letter));
     };
     isMultiVariable = () => {
         return this._left.isMultiVariable || this._right.isMultiVariable;
@@ -297,7 +300,7 @@ export class Equation {
     solve = (letter) => {
         this._solutions = [];
         this._polynom = this._left.clone().subtract(this._right);
-        switch (this._polynom.degree(letter)) {
+        switch (this._polynom.degree(letter).value) {
             case 0:
             case 1:
                 this._solveDegree1(letter);
@@ -373,7 +376,7 @@ export class Equation {
         return this._solutions;
     };
     _solveDegree2 = (letter) => {
-        let aF = this._polynom.monomByDegree(2, letter).coefficient, bF = this._polynom.monomByDegree(1, letter).coefficient, cF = this._polynom.monomByDegree(0, letter).coefficient, delta, nthDelta, lcm = Numeric.lcm(aF.denominator, bF.denominator, cF.denominator), a = aF.multiply(lcm).value, b = bF.multiply(lcm).value, c = cF.multiply(lcm).value, realX1, realX2, sX1, sX2;
+        let aF = this._polynom.monomByDegree(2, letter).coefficient, bF = this._polynom.monomByDegree(1, letter).coefficient, cF = this._polynom.monomByDegree(0, letter).coefficient, delta, nthDelta, lcm = numeric_1.Numeric.lcm(aF.denominator, bF.denominator, cF.denominator), a = aF.multiply(lcm).value, b = bF.multiply(lcm).value, c = cF.multiply(lcm).value, realX1, realX2, sX1, sX2;
         delta = b * b - 4 * a * c;
         if (delta > 0) {
             realX1 = (-b - Math.sqrt(delta)) / (2 * a);
@@ -385,9 +388,9 @@ export class Equation {
                 ];
             }
             else {
-                nthDelta = new Nthroot().parse(delta).reduce();
+                nthDelta = new coefficients_2.Nthroot().parse(delta).reduce();
                 if (nthDelta.hasRadical()) {
-                    let gcd = Numeric.gcd(b, 2 * a, nthDelta.coefficient);
+                    let gcd = numeric_1.Numeric.gcd(b, 2 * a, nthDelta.coefficient);
                     nthDelta.coefficient = nthDelta.coefficient / gcd;
                     if (b !== 0) {
                         if (2 * a / gcd === 1) {
@@ -420,14 +423,14 @@ export class Equation {
                 }
                 else {
                     this._solutions = [
-                        new Fraction(-b - nthDelta.coefficient, 2 * a).reduce().dfrac,
-                        new Fraction(-b + nthDelta.coefficient, 2 * a).reduce().dfrac
+                        new coefficients_1.Fraction(-b - nthDelta.coefficient, 2 * a).reduce().dfrac,
+                        new coefficients_1.Fraction(-b + nthDelta.coefficient, 2 * a).reduce().dfrac
                     ];
                 }
             }
         }
         else if (delta === 0) {
-            this._solutions = [new Fraction(-b, 2 * a).reduce().dfrac];
+            this._solutions = [new coefficients_1.Fraction(-b, 2 * a).reduce().dfrac];
         }
         else {
             this._solutions = [this._varnothing];
@@ -482,4 +485,5 @@ export class Equation {
         return this._solutions;
     };
 }
+exports.Equation = Equation;
 //# sourceMappingURL=equation.js.map

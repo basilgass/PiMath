@@ -6,7 +6,7 @@ export declare class LinearSystem {
     private _equations;
     private _letters;
     constructor(...equationStrings: string[]);
-    get isLinerarSystem(): boolean;
+    get isLinearSystem(): boolean;
     get equations(): Equation[];
     set equations(value: Equation[]);
     get letters(): string;

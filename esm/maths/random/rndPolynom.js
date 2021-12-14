@@ -1,8 +1,11 @@
-import { randomCore } from "./randomCore";
-import { rndMonom } from "./rndMonom";
-import { Random } from "./index";
-import { Polynom } from "../algebra";
-export class rndPolynom extends randomCore {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.rndPolynom = void 0;
+const randomCore_1 = require("./randomCore");
+const rndMonom_1 = require("./rndMonom");
+const index_1 = require("./index");
+const algebra_1 = require("../algebra");
+class rndPolynom extends randomCore_1.randomCore {
     constructor(userConfig) {
         super();
         this._defaultConfig = {
@@ -21,9 +24,9 @@ export class rndPolynom extends randomCore {
         if (this._config.factorable && this._config.degree > 1) {
             return this.factorable();
         }
-        let P = new Polynom().empty(), M;
+        let P = new algebra_1.Polynom().empty(), M;
         for (let i = this._config.degree; i >= 0; i--) {
-            M = new rndMonom({
+            M = new rndMonom_1.rndMonom({
                 letters: this._config.letters,
                 degree: i,
                 fraction: this._config.fraction,
@@ -35,20 +38,20 @@ export class rndPolynom extends randomCore {
             P.add(M);
         }
         if (this._config.numberOfMonoms > 0 && this._config.numberOfMonoms < P.length) {
-            console.log(P.monoms.length);
-            P.monoms = Random.array(P.monoms, this._config.numberOfMonoms);
+            P.monoms = index_1.Random.array(P.monoms, this._config.numberOfMonoms);
         }
         return P;
     };
     factorable = () => {
-        let P = new Polynom().one();
+        let P = new algebra_1.Polynom().one();
         let _factorableConfig = { ...this._config };
         _factorableConfig.degree = 1;
         _factorableConfig.factorable = false;
         for (let i = 0; i < this._config.degree; i++) {
-            P.multiply(Random.polynom(_factorableConfig));
+            P.multiply(index_1.Random.polynom(_factorableConfig));
         }
         return P;
     };
 }
+exports.rndPolynom = rndPolynom;
 //# sourceMappingURL=rndPolynom.js.map

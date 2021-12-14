@@ -1,4 +1,7 @@
-export class Numeric {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Numeric = void 0;
+class Numeric {
     static round(value, decimals = 2) {
         return Number(Math.round(Number(value + 'e' + decimals)) + 'e-' + decimals);
     }
@@ -59,4 +62,5 @@ export class Numeric {
         });
     }
 }
+exports.Numeric = Numeric;
 //# sourceMappingURL=numeric.js.map

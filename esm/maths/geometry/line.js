@@ -1,10 +1,13 @@
-import { Fraction } from "../coefficients/fraction";
-import { Vector } from "./vector";
-import { Point } from "./point";
-import { Polynom } from "../algebra/polynom";
-import { Numeric } from "../numeric";
-import { Equation } from "../algebra/equation";
-export class Line {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Line = void 0;
+const fraction_1 = require("../coefficients/fraction");
+const vector_1 = require("./vector");
+const point_1 = require("./point");
+const polynom_1 = require("../algebra/polynom");
+const numeric_1 = require("../numeric");
+const equation_1 = require("../algebra/equation");
+class Line {
     _a;
     _b;
     _c;
@@ -22,7 +25,7 @@ export class Line {
     get isLine() { return true; }
     get exists() { return this._exists; }
     get equation() {
-        return new Equation(new Polynom().parse('xy', this._a, this._b, this._c), new Polynom('0')).simplify();
+        return new equation_1.Equation(new polynom_1.Polynom().parse('xy', this._a, this._b, this._c), new polynom_1.Polynom('0')).simplify();
     }
     get tex() {
         let canonical = this.equation;
@@ -31,8 +34,8 @@ export class Line {
         }
         return {
             canonical: canonical.tex,
-            mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new Polynom().parse('x', this.slope, this.height).tex,
-            parametric: `${Point.pmatrix('x', 'y')} = ${Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${Point.pmatrix(this._d.x, this._d.y)}`
+            mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new polynom_1.Polynom().parse('x', this.slope, this.height).tex,
+            parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(this._d.x, this._d.y)}`
         };
     }
     get a() {
@@ -66,7 +69,7 @@ export class Line {
         return this._n;
     }
     get normal() {
-        return new Vector(this._a, this._b);
+        return new vector_1.Vector(this._a, this._b);
     }
     set d(value) {
         this._d = value;
@@ -87,14 +90,14 @@ export class Line {
                 return this.parseByPointAndVector(values[0], values[1]);
             }
             else if (values[0].isPoint && values[1].isPoint) {
-                return this.parseByPointAndVector(values[0], new Vector(values[0], values[1]));
+                return this.parseByPointAndVector(values[0], new vector_1.Vector(values[0], values[1]));
             }
         }
         else if (values.length === 1) {
             if (values[0].isLine) {
                 return values[0].clone();
             }
-            let equ = new Equation(values[0]);
+            let equ = new equation_1.Equation(values[0]);
             if (equ.isEquation) {
                 equ.reorder(true);
                 let letters = new Set(equ.letters());
@@ -117,11 +120,11 @@ export class Line {
         return this;
     };
     parseByCoefficient = (a, b, c) => {
-        this._a = new Fraction(a);
-        this._b = new Fraction(b);
-        this._c = new Fraction(c);
-        this._d = new Vector(this._b.clone(), this._a.clone().opposed());
-        this._OA = new Point(new Fraction().zero(), this._c.clone());
+        this._a = new fraction_1.Fraction(a);
+        this._b = new fraction_1.Fraction(b);
+        this._c = new fraction_1.Fraction(c);
+        this._d = new vector_1.Vector(this._b.clone(), this._a.clone().opposed());
+        this._OA = new point_1.Point(new fraction_1.Fraction().zero(), this._c.clone());
         this._n = this._d.clone().normal();
         this._exists = true;
         return this;
@@ -144,19 +147,19 @@ export class Line {
         return this;
     };
     isParellelTo = (line) => {
-        return this.slope.isEqual(line.slope) && this.height.isDifferent(line.height);
+        return this.slope.isEqual(line.slope) && this.height.isNotEqual(line.height);
     };
     isSameAs = (line) => {
         return this.slope.isEqual(line.slope) && this.height.isEqual(line.height);
     };
     simplifyDirection = () => {
-        let lcm = Numeric.lcm(this._d.x.denominator, this._d.y.denominator), gcd = Numeric.gcd(this._d.x.numerator, this._d.y.numerator);
+        let lcm = numeric_1.Numeric.lcm(this._d.x.denominator, this._d.y.denominator), gcd = numeric_1.Numeric.gcd(this._d.x.numerator, this._d.y.numerator);
         this._d.x.multiply(lcm).divide(gcd);
         this._d.y.multiply(lcm).divide(gcd);
         return this;
     };
     intersection = (line) => {
-        let Pt = new Point(), isParallel = false, isSame = false, hasIntersection = true;
+        let Pt = new point_1.Point(), isParallel = false, isSame = false, hasIntersection = true;
         if (this._b.isZero() || line.b.isZero()) {
         }
         if (this.isParellelTo(line)) {
@@ -190,7 +193,7 @@ export class Line {
             return {
                 value: NaN,
                 tex: 'Not a line',
-                fraction: new Fraction().infinite()
+                fraction: new fraction_1.Fraction().infinite()
             };
         }
         let value = numerator.value / Math.sqrt(d2.value), F = numerator.clone().divide(d2.clone().sqrt());
@@ -248,4 +251,5 @@ export class Line {
         return canonical + '=0';
     }
 }
+exports.Line = Line;
 //# sourceMappingURL=line.js.map

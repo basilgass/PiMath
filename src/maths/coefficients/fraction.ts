@@ -1,4 +1,5 @@
 import {Numeric} from "../numeric";
+import {Random} from "../random";
 
 export class Fraction {
     private _numerator: number;
@@ -95,8 +96,8 @@ export class Fraction {
                 S = value.split('/');
 
                 // Security checks
-                    if (S.length > 2) throw "Two many divide signs";
-                    if (S.map(x => x === '' || isNaN(Number(x))).includes(true)) throw "Not a number"
+                if (S.length > 2) throw "Two many divide signs";
+                if (S.map(x => x === '' || isNaN(Number(x))).includes(true)) throw "Not a number"
 
 
                 if (S.length === 1) {
@@ -193,18 +194,26 @@ export class Fraction {
         return this;
     };
 
-    add = (F: Fraction): Fraction => {
-        let N: number = this._numerator,
-            D: number = this._denominator;
+    add = (F: Fraction | number): Fraction => {
+        if (F instanceof Fraction) {
+            let N: number = this._numerator,
+                D: number = this._denominator;
 
-        this._numerator = N * F.denominator + F.numerator * D;
-        this._denominator = D * F.denominator;
+            this._numerator = N * F.denominator + F.numerator * D;
+            this._denominator = D * F.denominator;
+        }else{
+            return this.add(new Fraction(F))
+        }
 
         return this.reduce();
     };
 
-    subtract = (F: Fraction): Fraction => {
-        return this.add(F.clone().opposed());
+    subtract = (F: Fraction | number): Fraction => {
+        if (F instanceof Fraction) {
+            return this.add(F.clone().opposed());
+        } else {
+            return this.add(-F)
+        }
     };
 
     multiply = (F: Fraction | number): Fraction => {
@@ -241,10 +250,16 @@ export class Fraction {
 
         return this;
     }
-    pow = (p: number): Fraction => {
+    pow = (p: number | Fraction): Fraction => {
+        // TODO: Fraction.pow with a value different than a safe integer ?
+        if (p instanceof Fraction) {
+            return this.pow(p.value)
+        }
+
         if (!Number.isSafeInteger(p)) {
             return this.invalid();
         }
+
         this.reduce();
 
         if (p < 0) {
@@ -287,6 +302,32 @@ export class Fraction {
         return this;
     };
 
+
+    static max = (...fractions: (Fraction|number)[]): Fraction => {
+        let M = new Fraction(fractions[0])
+
+        for (let m of fractions) {
+            let compare = new Fraction(m)
+            if (compare.greater(M)) {
+                M = compare.clone()
+            }
+        }
+
+        return M
+    }
+    static min = (...fractions: (Fraction|number)[]): Fraction => {
+        let M = new Fraction(fractions[0])
+
+        for (let m of fractions) {
+            let compare = new Fraction(m)
+            if (compare.lesser(M)) {
+                M = compare.clone()
+            }
+        }
+
+        return M
+    }
+
     // ------------------------------------------
     // Mathematical operations specific to fractions
     // ------------------------------------------
@@ -319,49 +360,55 @@ export class Fraction {
      * @param F (Coefficient) The coefficient to compare
      * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
      */
-    compare = (F: Fraction, sign?: string): boolean => {
+    compare = (F: unknown, sign?: string): boolean => {
         if (sign === undefined) {
             sign = '=';
         }
 
+        let compareFraction: Fraction
+        if (F instanceof Fraction) {
+            compareFraction = F.clone()
+        } else {
+            compareFraction = new Fraction(F)
+        }
 
         switch (sign) {
             case '>':
-                return this.value > F.value;
+                return this.value > compareFraction.value;
             case ">=" || "=>" || "geq":
-                return this.value >= F.value;
+                return this.value >= compareFraction.value;
             case "<":
-                return this.value < F.value;
+                return this.value < compareFraction.value;
             case "<=" || "=>" || "leq":
-                return this.value <= F.value;
+                return this.value <= compareFraction.value;
             case "=":
-                // let F2: Fraction = F.clone().reduce(),
+                // let F2: Fraction = compareFraction.clone().reduce(),
                 //     F1: Fraction = this.clone().reduce();
                 // return (F1.numerator === F2.numerator && F1.denominator === F2.denominator);
-                return this.value === F.value;
+                return this.value === compareFraction.value;
             case "<>":
-                return this.value !== F.value;
+                return this.value !== compareFraction.value;
             default:
                 return false;
         }
     };
     /* Compare shortcuts */
-    lesser = (than: Fraction): Boolean => {
+    lesser = (than: Fraction | number): Boolean => {
         return this.compare(than, '<');
     };
-    leq = (than: Fraction): Boolean => {
+    leq = (than: Fraction | number): Boolean => {
         return this.compare(than, '<=');
     };
-    greater = (than: Fraction): Boolean => {
+    greater = (than: Fraction | number): Boolean => {
         return this.compare(than, '>');
     };
-    geq = (than: Fraction): Boolean => {
+    geq = (than: Fraction | number): Boolean => {
         return this.compare(than, '>=');
     };
-    isEqual = (than: Fraction): boolean => {
+    isEqual = (than: Fraction | number): boolean => {
         return this.compare(than, '=');
     }
-    isDifferent = (than: Fraction): boolean => {
+    isNotEqual = (than: Fraction | number): boolean => {
         return this.compare(than, '<>');
     }
     isOpposed = (p: Fraction): boolean => {
@@ -373,14 +420,26 @@ export class Fraction {
     isZero = (): boolean => {
         return this._numerator === 0;
     }
+    isNotZero = (): boolean => {
+        return this._numerator !== 0;
+    }
     isOne = (): boolean => {
         return this._numerator === 1 && this._denominator === 1;
     }
+    isNegativeOne = (): boolean => {
+        return this._numerator === -1 && this._denominator === 1;
+    }
     isPositive = (): boolean => {
-        return this.sign()===1;
+        return this.sign() === 1;
     }
     isNegative = (): boolean => {
-        return this.sign()===-1;
+        return this.sign() === -1;
+    }
+    isStrictlyPositive = (): boolean => {
+        return this.value > 0
+    }
+    isStrictlyNegative = (): Boolean => {
+        return this.value < 0
     }
     isNaN = (): boolean => {
         return isNaN(this._numerator);
@@ -395,7 +454,19 @@ export class Fraction {
         return Math.sqrt(this._numerator) % 1 === 0 && Math.sqrt(this._denominator) % 1 === 0
     }
     isReduced = (): boolean => {
-        return Math.abs(Numeric.gcd(this._numerator, this._denominator))===1
+        return Math.abs(Numeric.gcd(this._numerator, this._denominator)) === 1
+    }
+    isNatural = (): boolean => {
+        return this.clone().reduce().denominator === 1
+    }
+    isRational = (): boolean => {
+        return !this.isNatural()
+    }
+    isEven = (): boolean => {
+        return this.isNatural() && this.value % 2 === 0
+    }
+    isOdd = (): boolean => {
+        return this.isNatural() && this.value % 2 === 1
     }
     sign = (): number => {
         return (this._numerator * this._denominator >= 0) ? 1 : -1;

@@ -1,3 +1,5 @@
+import {loadHighlighter} from "typedoc/dist/lib/utils/highlighter";
+
 type tokenType = {
     [key: string]: {
         precedence: number,

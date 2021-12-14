@@ -1,27 +1,29 @@
-import { Numeric } from "./maths/numeric";
-import { Shutingyard } from "./maths/shutingyard";
-import { Random } from "./maths/random";
-import { Fraction, Nthroot } from "./maths/coefficients";
-import { Monom, Polynom, Equation, LinearSystem, Rational, Logicalset } from "./maths/algebra";
-import { Line, Circle, Triangle, Point, Vector } from "./maths/geometry";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const numeric_1 = require("./maths/numeric");
+const shutingyard_1 = require("./maths/shutingyard");
+const random_1 = require("./maths/random");
+const coefficients_1 = require("./maths/coefficients");
+const algebra_1 = require("./maths/algebra");
+const geometry_1 = require("./maths/geometry");
 window.Pi = {
-    ShutingYard: Shutingyard,
-    Numeric: Numeric,
-    Fraction: Fraction,
-    Root: Nthroot,
-    Monom: Monom,
-    Polynom: Polynom,
-    Equation: Equation,
-    LinearSystem: LinearSystem,
-    Rational: Rational,
-    Logicalset: Logicalset,
-    Random: Random,
+    ShutingYard: shutingyard_1.Shutingyard,
+    Numeric: numeric_1.Numeric,
+    Fraction: coefficients_1.Fraction,
+    Root: coefficients_1.Nthroot,
+    Monom: algebra_1.Monom,
+    Polynom: algebra_1.Polynom,
+    Equation: algebra_1.Equation,
+    LinearSystem: algebra_1.LinearSystem,
+    Rational: algebra_1.Rational,
+    Logicalset: algebra_1.Logicalset,
+    Random: random_1.Random,
     Geometry: {
-        Vector: Vector,
-        Point: Point,
-        Line: Line,
-        Triangle: Triangle,
-        Circle: Circle
+        Vector: geometry_1.Vector,
+        Point: geometry_1.Point,
+        Line: geometry_1.Line,
+        Triangle: geometry_1.Triangle,
+        Circle: geometry_1.Circle
     }
 };
 //# sourceMappingURL=main.js.map

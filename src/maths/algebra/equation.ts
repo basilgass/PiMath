@@ -282,7 +282,7 @@ export class Equation {
         }
         let mMove: Monom;
         for (let m of this._left.monoms) {
-            if (m.degree() === 0) {
+            if (m.degree().isZero()) {
                 mMove = m.clone();
                 this._left.subtract(mMove);
                 this._right.subtract(mMove);
@@ -313,7 +313,7 @@ export class Equation {
 
         // Both part of the equations must be of the first degree.
         //TODO: handle equations of degree two or more ?
-        if (this.degree(letter) !== 1) {
+        if (!this.degree(letter).isOne()) {
             return false;
         }
 
@@ -406,8 +406,8 @@ export class Equation {
      * Get the degree of the equation
      * @param letter
      */
-    degree = (letter?: string): number => {
-        return Math.max(this._left.degree(letter), this._right.degree(letter));
+    degree = (letter?: string): Fraction => {
+        return Fraction.max(this._left.degree(letter), this._right.degree(letter));
     };
 
     /**
@@ -431,9 +431,10 @@ export class Equation {
 
         // TODO: this._polynom could be removed.
         // TODO: consolidate solving equations (inequations vs equations)
+        // TODO: work with not natural degrees ?
         this._polynom = this._left.clone().subtract(this._right);
 
-        switch (this._polynom.degree(letter)) {
+        switch (this._polynom.degree(letter).value) {
             case 0:
             case 1:
                 this._solveDegree1(letter);

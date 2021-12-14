@@ -1,8 +1,11 @@
-import { Point } from "./point";
-import { Fraction } from "../coefficients/fraction";
-import { Equation } from "../algebra/equation";
-import { Polynom } from "../algebra/polynom";
-export class Circle {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Circle = void 0;
+const point_1 = require("./point");
+const fraction_1 = require("../coefficients/fraction");
+const equation_1 = require("../algebra/equation");
+const polynom_1 = require("../algebra/polynom");
+class Circle {
     _center;
     _radius;
     _exists;
@@ -14,8 +17,8 @@ export class Circle {
     }
     parse(...values) {
         if (values.length === 2) {
-            this._center = new Point(values[0]);
-            this._radius = new Fraction(values[1]);
+            this._center = new point_1.Point(values[0]);
+            this._radius = new fraction_1.Fraction(values[1]);
         }
     }
     get tex() {
@@ -35,8 +38,9 @@ export class Circle {
         return `${cx}+${cy}=${this._radius.pow(2).tex}`;
     }
     get developed() {
-        let equ = new Equation(new Polynom(`(x-(${this._center.x.display}))^2+(y-(${this._center.y.display}))^2`), new Polynom(`${this._radius.pow(2).display}`));
+        let equ = new equation_1.Equation(new polynom_1.Polynom(`(x-(${this._center.x.display}))^2+(y-(${this._center.y.display}))^2`), new polynom_1.Polynom(`${this._radius.pow(2).display}`));
         return equ.moveLeft().tex;
     }
 }
+exports.Circle = Circle;
 //# sourceMappingURL=circle.js.map

@@ -1,7 +1,10 @@
-import { randomCore } from "./randomCore";
-import { Random } from "./index";
-import { Monom } from "../algebra/monom";
-export class rndMonom extends randomCore {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.rndMonom = void 0;
+const randomCore_1 = require("./randomCore");
+const index_1 = require("./index");
+const monom_1 = require("../algebra/monom");
+class rndMonom extends randomCore_1.randomCore {
     constructor(userConfig) {
         super();
         this._defaultConfig = {
@@ -13,15 +16,18 @@ export class rndMonom extends randomCore {
         this._config = this.mergeConfig(userConfig, this._defaultConfig);
     }
     generate = () => {
-        let M = new Monom();
-        M.coefficient.parse(Random.numberSym(10, this._config.zero), (this._config.fraction) ? Random.number(1, 10) : 1).reduce();
+        let M = new monom_1.Monom();
+        M.coefficient = index_1.Random.fraction({
+            zero: this._config.zero,
+            reduced: true
+        });
         if (this._config.letters.length > 1) {
             for (let L of this._config.letters.split('')) {
                 M.setLetter(L, 0);
             }
             for (let i = 0; i < this._config.degree; i++) {
-                const L = Random.item(this._config.letters.split(""));
-                M.setLetter(L, M.degree(L) + 1);
+                const L = index_1.Random.item(this._config.letters.split(""));
+                M.setLetter(L, M.degree(L).clone().add(1));
             }
         }
         else {
@@ -30,4 +36,5 @@ export class rndMonom extends randomCore {
         return M;
     };
 }
+exports.rndMonom = rndMonom;
 //# sourceMappingURL=rndMonom.js.map

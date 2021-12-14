@@ -1,5 +1,8 @@
-import { Numeric } from "../numeric";
-export class Fraction {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Fraction = void 0;
+const numeric_1 = require("../numeric");
+class Fraction {
     _numerator;
     _denominator;
     constructor(value, denominatorOrPeriodic) {
@@ -147,13 +150,23 @@ export class Fraction {
         return this;
     };
     add = (F) => {
-        let N = this._numerator, D = this._denominator;
-        this._numerator = N * F.denominator + F.numerator * D;
-        this._denominator = D * F.denominator;
+        if (F instanceof Fraction) {
+            let N = this._numerator, D = this._denominator;
+            this._numerator = N * F.denominator + F.numerator * D;
+            this._denominator = D * F.denominator;
+        }
+        else {
+            return this.add(new Fraction(F));
+        }
         return this.reduce();
     };
     subtract = (F) => {
-        return this.add(F.clone().opposed());
+        if (F instanceof Fraction) {
+            return this.add(F.clone().opposed());
+        }
+        else {
+            return this.add(-F);
+        }
     };
     multiply = (F) => {
         let Q = new Fraction(F);
@@ -178,6 +191,9 @@ export class Fraction {
         return this;
     };
     pow = (p) => {
+        if (p instanceof Fraction) {
+            return this.pow(p.value);
+        }
         if (!Number.isSafeInteger(p)) {
             return this.invalid();
         }
@@ -209,8 +225,28 @@ export class Fraction {
         this._denominator = Math.abs(this._denominator);
         return this;
     };
+    static max = (...fractions) => {
+        let M = new Fraction(fractions[0]);
+        for (let m of fractions) {
+            let compare = new Fraction(m);
+            if (compare.greater(M)) {
+                M = compare.clone();
+            }
+        }
+        return M;
+    };
+    static min = (...fractions) => {
+        let M = new Fraction(fractions[0]);
+        for (let m of fractions) {
+            let compare = new Fraction(m);
+            if (compare.lesser(M)) {
+                M = compare.clone();
+            }
+        }
+        return M;
+    };
     reduce = () => {
-        let g = Numeric.gcd(this._numerator, this._denominator);
+        let g = numeric_1.Numeric.gcd(this._numerator, this._denominator);
         this._numerator = this._numerator / g;
         this._denominator = this._denominator / g;
         if (this._denominator < 0) {
@@ -230,19 +266,26 @@ export class Fraction {
         if (sign === undefined) {
             sign = '=';
         }
+        let compareFraction;
+        if (F instanceof Fraction) {
+            compareFraction = F.clone();
+        }
+        else {
+            compareFraction = new Fraction(F);
+        }
         switch (sign) {
             case '>':
-                return this.value > F.value;
+                return this.value > compareFraction.value;
             case ">=" || "=>" || "geq":
-                return this.value >= F.value;
+                return this.value >= compareFraction.value;
             case "<":
-                return this.value < F.value;
+                return this.value < compareFraction.value;
             case "<=" || "=>" || "leq":
-                return this.value <= F.value;
+                return this.value <= compareFraction.value;
             case "=":
-                return this.value === F.value;
+                return this.value === compareFraction.value;
             case "<>":
-                return this.value !== F.value;
+                return this.value !== compareFraction.value;
             default:
                 return false;
         }
@@ -262,7 +305,7 @@ export class Fraction {
     isEqual = (than) => {
         return this.compare(than, '=');
     };
-    isDifferent = (than) => {
+    isNotEqual = (than) => {
         return this.compare(than, '<>');
     };
     isOpposed = (p) => {
@@ -274,14 +317,26 @@ export class Fraction {
     isZero = () => {
         return this._numerator === 0;
     };
+    isNotZero = () => {
+        return this._numerator !== 0;
+    };
     isOne = () => {
         return this._numerator === 1 && this._denominator === 1;
+    };
+    isNegativeOne = () => {
+        return this._numerator === -1 && this._denominator === 1;
     };
     isPositive = () => {
         return this.sign() === 1;
     };
     isNegative = () => {
         return this.sign() === -1;
+    };
+    isStrictlyPositive = () => {
+        return this.value > 0;
+    };
+    isStrictlyNegative = () => {
+        return this.value < 0;
     };
     isNaN = () => {
         return isNaN(this._numerator);
@@ -296,7 +351,19 @@ export class Fraction {
         return Math.sqrt(this._numerator) % 1 === 0 && Math.sqrt(this._denominator) % 1 === 0;
     };
     isReduced = () => {
-        return Math.abs(Numeric.gcd(this._numerator, this._denominator)) === 1;
+        return Math.abs(numeric_1.Numeric.gcd(this._numerator, this._denominator)) === 1;
+    };
+    isNatural = () => {
+        return this.clone().reduce().denominator === 1;
+    };
+    isRational = () => {
+        return !this.isNatural();
+    };
+    isEven = () => {
+        return this.isNatural() && this.value % 2 === 0;
+    };
+    isOdd = () => {
+        return this.isNatural() && this.value % 2 === 1;
     };
     sign = () => {
         return (this._numerator * this._denominator >= 0) ? 1 : -1;
@@ -310,4 +377,5 @@ export class Fraction {
         return true;
     };
 }
+exports.Fraction = Fraction;
 //# sourceMappingURL=fraction.js.map

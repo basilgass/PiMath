@@ -1,9 +1,12 @@
-import { Point } from "./point";
-import { Fraction } from "../coefficients/fraction";
-import { Vector } from "./vector";
-import { Line } from "./line";
-import { Equation } from "../algebra/equation";
-export class Triangle {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Triangle = void 0;
+const point_1 = require("./point");
+const fraction_1 = require("../coefficients/fraction");
+const vector_1 = require("./vector");
+const line_1 = require("./line");
+const equation_1 = require("../algebra/equation");
+class Triangle {
     _A;
     _B;
     _C;
@@ -73,12 +76,12 @@ export class Triangle {
     }
     parse = (...values) => {
         if (values.length === 6) {
-            let v = values.map((x) => new Fraction(x));
-            return this.parse(new Point(v[0], v[1]), new Point(v[2], v[3]), new Point(v[4], v[5]));
+            let v = values.map((x) => new fraction_1.Fraction(x));
+            return this.parse(new point_1.Point(v[0], v[1]), new point_1.Point(v[2], v[3]), new point_1.Point(v[4], v[5]));
         }
         else if (values.length === 3) {
             if (values.filter((x) => typeof x === 'string').length === 3) {
-                return this.parse(...values.map((x) => new Line(x)));
+                return this.parse(...values.map((x) => new line_1.Line(x)));
             }
             else if (values.filter((x) => x.isLine === true).length === 3) {
                 this._lines = {
@@ -110,15 +113,15 @@ export class Triangle {
             }
             else {
                 if (values.filter((x) => x.isPoint === true).length < 3) {
-                    return this.parse(new Point(values[0]), new Point(values[1]), new Point(values[2]));
+                    return this.parse(new point_1.Point(values[0]), new point_1.Point(values[1]), new point_1.Point(values[2]));
                 }
                 this._A = values[0].clone();
                 this._B = values[1].clone();
                 this._C = values[2].clone();
                 this._lines = {
-                    'AB': new Line(this._A, this._B),
-                    'BC': new Line(this._B, this._C),
-                    'AC': new Line(this._A, this._C)
+                    'AB': new line_1.Line(this._A, this._B),
+                    'BC': new line_1.Line(this._B, this._C),
+                    'AC': new line_1.Line(this._A, this._C)
                 };
             }
         }
@@ -144,9 +147,9 @@ export class Triangle {
     };
     _updateTriangle = () => {
         this._middles = {
-            'AB': new Point().middleOf(this._A, this._B),
-            'AC': new Point().middleOf(this._A, this._C),
-            'BC': new Point().middleOf(this._B, this._C)
+            'AB': new point_1.Point().middleOf(this._A, this._B),
+            'AC': new point_1.Point().middleOf(this._A, this._C),
+            'BC': new point_1.Point().middleOf(this._B, this._C)
         };
         this._remarquables = this._calculateRemarquableLines();
     };
@@ -162,26 +165,26 @@ export class Triangle {
         return this._A;
     };
     getSegment = (ptName1, ptName2) => {
-        return new Vector(this.getPointByName(ptName1), this.getPointByName(ptName2));
+        return new vector_1.Vector(this.getPointByName(ptName1), this.getPointByName(ptName2));
     };
     _calculateRemarquableLines = () => {
         let remarquables = {
             'medians': {
-                'A': new Line(this._A, this._middles.BC),
-                'B': new Line(this._B, this._middles.AC),
-                'C': new Line(this._C, this._middles.AB),
+                'A': new line_1.Line(this._A, this._middles.BC),
+                'B': new line_1.Line(this._B, this._middles.AC),
+                'C': new line_1.Line(this._C, this._middles.AB),
                 'intersection': null
             },
             'mediators': {
-                'AB': new Line(this._middles.AB, new Vector(this._A, this._B).normal()),
-                'AC': new Line(this._middles.AC, new Vector(this._A, this._C).normal()),
-                'BC': new Line(this._middles.BC, new Vector(this._B, this._C).normal()),
+                'AB': new line_1.Line(this._middles.AB, new vector_1.Vector(this._A, this._B).normal()),
+                'AC': new line_1.Line(this._middles.AC, new vector_1.Vector(this._A, this._C).normal()),
+                'BC': new line_1.Line(this._middles.BC, new vector_1.Vector(this._B, this._C).normal()),
                 'intersection': null
             },
             'heights': {
-                'A': new Line(this._A, new Vector(this._B, this._C).normal()),
-                'B': new Line(this._B, new Vector(this._A, this._C).normal()),
-                'C': new Line(this._C, new Vector(this._A, this._B).normal()),
+                'A': new line_1.Line(this._A, new vector_1.Vector(this._B, this._C).normal()),
+                'B': new line_1.Line(this._B, new vector_1.Vector(this._A, this._C).normal()),
+                'C': new line_1.Line(this._C, new vector_1.Vector(this._A, this._B).normal()),
                 'intersection': null
             },
             'bisectors': {
@@ -211,7 +214,7 @@ export class Triangle {
             d1 = tlines.BC;
             d2 = tlines.AC;
         }
-        let b1 = new Line(new Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm)).reorder(true).simplify()), b2 = new Line(new Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm).opposed()).reorder(true).simplify());
+        let b1 = new line_1.Line(new equation_1.Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm)).reorder(true).simplify()), b2 = new line_1.Line(new equation_1.Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm).opposed()).reorder(true).simplify());
         if (pt === 'A') {
             return b1.hitSegment(this.B, this.C) ? b1 : b2;
         }
@@ -224,4 +227,5 @@ export class Triangle {
         return b1;
     };
 }
+exports.Triangle = Triangle;
 //# sourceMappingURL=triangle.js.map

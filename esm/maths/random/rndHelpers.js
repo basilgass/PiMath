@@ -1,4 +1,7 @@
-export class rndHelpers {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.rndHelpers = void 0;
+class rndHelpers {
     static randomBool(percent = 0.5) {
         return Math.random() < percent;
     }
@@ -42,4 +45,5 @@ export class rndHelpers {
         return shuffleArray;
     }
 }
+exports.rndHelpers = rndHelpers;
 //# sourceMappingURL=rndHelpers.js.map
