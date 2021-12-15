@@ -276,6 +276,20 @@ class Line {
         }
         return false;
     }
+    getValueAtX = (value) => {
+        const equ = this.equation.clone().isolate('y');
+        if (equ instanceof algebra_1.Equation) {
+            return equ.right.evaluate({ x: value });
+        }
+        return;
+    };
+    getValueAtY = (value) => {
+        const equ = this.equation.clone().isolate('x');
+        if (equ instanceof algebra_1.Equation) {
+            return equ.right.evaluate({ y: value });
+        }
+        return;
+    };
     canonicalAsFloatCoefficient(decimals) {
         if (decimals === undefined) {
             decimals = 2;

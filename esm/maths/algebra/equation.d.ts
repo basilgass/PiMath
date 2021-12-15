@@ -16,6 +16,7 @@ export declare class Equation {
     get isVarnothing(): boolean;
     get signAsTex(): string;
     get tex(): string;
+    get display(): string;
     get raw(): string;
     get variables(): string[];
     get numberOfVars(): number;

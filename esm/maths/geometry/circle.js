@@ -20,27 +20,6 @@ class Circle {
     get center() {
         return this._center;
     }
-    parse(...values) {
-        if (values.length === 1 && typeof values[0] === 'string') {
-            this.checkCircle(new algebra_1.Equation(values[0]));
-        }
-        else if (values.length >= 2) {
-            this._center = new point_1.Point(values[0]);
-            if (values[1] instanceof point_1.Point) {
-                this._squareRadius = new vector_1.Vector(this._center, values[1]).normSquare;
-            }
-            else {
-                if (values[2] === true) {
-                    this._squareRadius = new coefficients_1.Fraction(values[1]);
-                }
-                else {
-                    this._radius = new coefficients_1.Fraction(values[1]);
-                    this._squareRadius = this._radius.clone().pow(2);
-                }
-            }
-            this._cartesian = (new algebra_1.Equation(new algebra_1.Polynom(`(x-(${this._center.x.display}))^2+(y-(${this._center.y.display}))^2`), new algebra_1.Polynom(`${this._squareRadius.display}`))).moveLeft();
-        }
-    }
     get radius() {
         if (this._squareRadius.isSquare()) {
             return {
@@ -75,6 +54,33 @@ class Circle {
     get developed() {
         return this._cartesian.tex;
     }
+    get display() {
+        return this._cartesian.display;
+    }
+    get cartesian() {
+        return this._cartesian;
+    }
+    parse(...values) {
+        if (values.length === 1 && typeof values[0] === 'string') {
+            this.checkCircle(new algebra_1.Equation(values[0]));
+        }
+        else if (values.length >= 2) {
+            this._center = new point_1.Point(values[0]);
+            if (values[1] instanceof point_1.Point) {
+                this._squareRadius = new vector_1.Vector(this._center, values[1]).normSquare;
+            }
+            else {
+                if (values[2] === true) {
+                    this._squareRadius = new coefficients_1.Fraction(values[1]);
+                }
+                else {
+                    this._radius = new coefficients_1.Fraction(values[1]);
+                    this._squareRadius = this._radius.clone().pow(2);
+                }
+            }
+            this._cartesian = (new algebra_1.Equation(new algebra_1.Polynom(`(x-(${this._center.x.display}))^2+(y-(${this._center.y.display}))^2`), new algebra_1.Polynom(`${this._squareRadius.display}`))).moveLeft();
+        }
+    }
     checkCircle = (P) => {
         if (P.degree('x').value === 2 && P.degree('y').value === 2) {
             let x2 = P.left.monomByDegree(2, 'x'), y2 = P.left.monomByDegree(2, 'y'), x1, y1, c;
@@ -102,6 +108,15 @@ class Circle {
         else {
             return 2;
         }
+    };
+    lineIntersection = (L) => {
+        let P1, P2;
+        const equ = this._cartesian.clone(), yLine = L.equation.clone().isolate('y');
+        if (yLine instanceof algebra_1.Equation) {
+            equ.replaceBy('y', yLine.right);
+            equ.solve();
+        }
+        return [];
     };
 }
 exports.Circle = Circle;
