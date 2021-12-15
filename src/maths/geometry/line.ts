@@ -411,6 +411,23 @@ export class Line {
         return false;
     }
 
+    getValueAtX = (value: Fraction): Fraction => {
+        const equ = this.equation.clone().isolate('y')
+
+        if(equ instanceof Equation){
+            return equ.right.evaluate({x: value})
+        }
+        return
+    }
+    getValueAtY = (value: Fraction): Fraction => {
+        const equ = this.equation.clone().isolate('x')
+
+        if(equ instanceof Equation){
+            return equ.right.evaluate({y: value})
+        }
+        return
+    }
+
     // ------------------------------------------
     // Special functions
     // ------------------------------------------

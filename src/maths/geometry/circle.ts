@@ -25,30 +25,6 @@ export class Circle {
         return this._center;
     }
 
-    private parse(...values: any) {
-        if (values.length === 1 && typeof values[0] === 'string') {
-            this.checkCircle(new Equation(values[0]))
-        } else if (values.length >= 2) {
-            this._center = new Point(values[0])
-
-            if(values[1] instanceof Point){
-                // Go through this point
-                this._squareRadius = new Vector(this._center, values[1]).normSquare
-            }else {
-                if (values[2] === true) {
-                    this._squareRadius = new Fraction(values[1])
-                } else {
-                    this._radius = new Fraction(values[1])
-                    this._squareRadius = this._radius.clone().pow(2)
-                }
-            }
-            this._cartesian = (new Equation(
-                new Polynom(`(x-(${this._center.x.display}))^2+(y-(${this._center.y.display}))^2`),
-                new Polynom(`${this._squareRadius.display}`)
-            )).moveLeft()
-        }
-    }
-
     get radius(): { tex: string, display: string } {
         if (this._squareRadius.isSquare()) {
             return {
@@ -69,12 +45,12 @@ export class Circle {
         if (this._center.x.isZero()) {
             cx = 'x^2'
         } else {
-            cx = `\\left(x${this._center.x.isNegative()?'+':'-'}${this._center.x.clone().abs().tex}\\right)^2`
+            cx = `\\left(x${this._center.x.isNegative() ? '+' : '-'}${this._center.x.clone().abs().tex}\\right)^2`
         }
         if (this._center.y.isZero()) {
             cy = 'y^2'
         } else {
-            cy = `\\left(y${this._center.y.isNegative()?'+':'-'}${this._center.y.clone().abs().tex}\\right)^2`
+            cy = `\\left(y${this._center.y.isNegative() ? '+' : '-'}${this._center.y.clone().abs().tex}\\right)^2`
         }
         return `${cx}+${cy}=${this._squareRadius.tex}`
     }
@@ -82,6 +58,41 @@ export class Circle {
     get developed(): string {
         return this._cartesian.tex
     }
+
+
+    // TODO: reformat code for better display.
+    get display(): string {
+        return this._cartesian.display
+    }
+
+    get cartesian(): Equation {
+        return this._cartesian
+    }
+
+    private parse(...values: any) {
+        if (values.length === 1 && typeof values[0] === 'string') {
+            this.checkCircle(new Equation(values[0]))
+        } else if (values.length >= 2) {
+            this._center = new Point(values[0])
+
+            if (values[1] instanceof Point) {
+                // Go through this point
+                this._squareRadius = new Vector(this._center, values[1]).normSquare
+            } else {
+                if (values[2] === true) {
+                    this._squareRadius = new Fraction(values[1])
+                } else {
+                    this._radius = new Fraction(values[1])
+                    this._squareRadius = this._radius.clone().pow(2)
+                }
+            }
+            this._cartesian = (new Equation(
+                new Polynom(`(x-(${this._center.x.display}))^2+(y-(${this._center.y.display}))^2`),
+                new Polynom(`${this._squareRadius.display}`)
+            )).moveLeft()
+        }
+    }
+
 
     checkCircle = (P: Equation): boolean => {
         if (P.degree('x').value === 2 && P.degree('y').value === 2) {
@@ -123,12 +134,26 @@ export class Circle {
         let distance = L.distanceTo(this.center),
             radius = Math.sqrt(this._squareRadius.value)
 
-        if (distance.value-radius>0.0000000001) {
+        if (distance.value - radius > 0.0000000001) {
             return 0 // external
-        } else if (Math.abs(distance.value-radius)<0.0000000001) {
+        } else if (Math.abs(distance.value - radius) < 0.0000000001) {
             return 1 // tangent
         } else {
             return 2 // external
         }
+    }
+
+    lineIntersection = (L: Line): Point[] => {
+        let P1: Point, P2: Point
+
+        const equ = this._cartesian.clone(),
+            yLine = L.equation.clone().isolate('y')
+
+        if (yLine instanceof Equation) {
+            equ.replaceBy('y', yLine.right)
+            equ.solve()
+        }
+
+        return []
     }
 }

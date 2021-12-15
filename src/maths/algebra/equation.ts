@@ -101,6 +101,11 @@ export class Equation {
         return `${this._left.tex}${this.signAsTex}${this._right.tex}`;
     }
 
+    get display(): string {
+        return `${this._left.display}${this.signAsTex}${this._right.display}`;
+    }
+
+
     get raw(): string {
         return `${this._left.raw}${this.signAsTex}${this._right.raw}`;
     }
