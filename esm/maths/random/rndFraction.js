@@ -10,7 +10,8 @@ class rndFraction extends randomCore_1.randomCore {
         this._defaultConfig = {
             negative: true,
             reduced: true,
-            zero: true
+            zero: true,
+            natural: false
         };
         this._config = this.mergeConfig(userConfig, this._defaultConfig);
     }
@@ -22,7 +23,12 @@ class rndFraction extends randomCore_1.randomCore {
         else {
             Q.numerator = index_1.Random.number(this._config.zero ? 0 : 1, 10);
         }
-        Q.denominator = index_1.Random.number(1, 10);
+        if (this._config.natural) {
+            Q.denominator = 1;
+        }
+        else {
+            Q.denominator = index_1.Random.number(1, 10);
+        }
         return this._config.reduced ? Q.reduce() : Q;
     };
 }

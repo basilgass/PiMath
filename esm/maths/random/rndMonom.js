@@ -19,7 +19,8 @@ class rndMonom extends randomCore_1.randomCore {
         let M = new monom_1.Monom();
         M.coefficient = index_1.Random.fraction({
             zero: this._config.zero,
-            reduced: true
+            reduced: true,
+            natural: !this._config.fraction
         });
         if (this._config.letters.length > 1) {
             for (let L of this._config.letters.split('')) {
