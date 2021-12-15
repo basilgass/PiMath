@@ -748,7 +748,7 @@ export class Polynom {
      * @param P
      */
     replaceBy = (letter: string, P: Polynom): Polynom => {
-        let pow: number;
+        let pow: Fraction;
         const resultPolynom: Polynom = new Polynom().zero();
 
         for (const m of this.monoms) {
@@ -757,10 +757,11 @@ export class Polynom {
             } else {
                 // We have found a setLetter.
                 // Get the power and reset it.
-                pow = +m.literal[letter];
+                pow = m.literal[letter].clone();
                 delete m.literal[letter];
 
-                resultPolynom.add(P.clone().pow(pow).multiply(m));
+                // TODO: replaceBy works only with positive and natural pow
+                resultPolynom.add(P.clone().pow(Math.abs(pow.numerator)).multiply(m));
             }
         }
 

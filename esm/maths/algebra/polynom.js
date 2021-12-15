@@ -495,9 +495,9 @@ class Polynom {
                 resultPolynom.add(m.clone());
             }
             else {
-                pow = +m.literal[letter];
+                pow = m.literal[letter].clone();
                 delete m.literal[letter];
-                resultPolynom.add(P.clone().pow(pow).multiply(m));
+                resultPolynom.add(P.clone().pow(Math.abs(pow.numerator)).multiply(m));
             }
         }
         this._monoms = resultPolynom.reduce().reorder().monoms;
