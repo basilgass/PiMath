@@ -18,43 +18,50 @@
 
 <script>
 
-	let C1 = new Pi.Geometry.Point(-5, 4),
-		r1 = 36,
-		C2 = new Pi.Geometry.Point(7, -2),
-		T = new Pi.Geometry.Point(2, 3)
+  let P = new Pi.Random.polynom({
+    degree: 4,
+    fraction: false
+  })
 
-	let G1 = new Pi.Geometry.Circle(C1, r1, true),
-		G2 = new Pi.Geometry.Circle(C2, T)
+	console.log(P.display)
 
-	console.log('G1', G1.tex)
-	console.log('G2', G2.tex)
-
-	let t = new Pi.Geometry.Line(
-		new Pi.Geometry.Vector(C2, T),
-		T
-	)
-
-	console.log(t.tex.canonical)
-	console.log(G1.relativePosition(t))
-
-	let d = new Pi.Geometry.Line(G1.center, G2.center)
-	console.log(d.tex.canonical)
-
-	let M = new Pi.Geometry.Point(
-		G1.center.x.clone().add(G2.center.x).divide(2),
-		G1.center.y.clone().add(G2.center.y).divide(2),
-	)
-
-	console.log(M.display)
-
-	let k = new Pi.Geometry.Line().parseByPointAndLine(
-		M, d,
-		Pi.Geometry.Line.PERPENDICULAR
-	)
-
-	console.log(k.tex.canonical)
-
-		console.log(G1.lineIntersection(d))
+//	let C1 = new Pi.Geometry.Point(-5, 4),
+//		r1 = 36,
+//		C2 = new Pi.Geometry.Point(7, -2),
+//		T = new Pi.Geometry.Point(2, 3)
+//
+//	let G1 = new Pi.Geometry.Circle(C1, r1, true),
+//		G2 = new Pi.Geometry.Circle(C2, T)
+//
+//	console.log('G1', G1.tex)
+//	console.log('G2', G2.tex)
+//
+//	let t = new Pi.Geometry.Line(
+//		new Pi.Geometry.Vector(C2, T),
+//		T
+//	)
+//
+//	console.log(t.tex.canonical)
+//	console.log(G1.relativePosition(t))
+//
+//	let d = new Pi.Geometry.Line(G1.center, G2.center)
+//	console.log(d.tex.canonical)
+//
+//	let M = new Pi.Geometry.Point(
+//		G1.center.x.clone().add(G2.center.x).divide(2),
+//		G1.center.y.clone().add(G2.center.y).divide(2),
+//	)
+//
+//	console.log(M.display)
+//
+//	let k = new Pi.Geometry.Line().parseByPointAndLine(
+//		M, d,
+//		Pi.Geometry.Line.PERPENDICULAR
+//	)
+//
+//	console.log(k.tex.canonical)
+//
+//		console.log(G1.lineIntersection(d))
 </script>
 </body>
 </html>

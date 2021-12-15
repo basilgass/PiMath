@@ -2,6 +2,7 @@ export declare type randomCoefficientConfig = {
     negative?: boolean;
     reduced?: boolean;
     zero?: boolean;
+    natural?: boolean;
 };
 export declare type randomMonomConfig = {
     letters?: string;

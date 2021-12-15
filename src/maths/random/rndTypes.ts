@@ -1,7 +1,8 @@
 export type randomCoefficientConfig = {
     negative?: boolean,
     reduced?: boolean,
-    zero?:boolean
+    zero?:boolean,
+    natural?:boolean
 }
 
 export type randomMonomConfig = {

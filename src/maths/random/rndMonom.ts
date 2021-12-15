@@ -30,7 +30,8 @@ import {Monom} from "../algebra/monom";
             // Generate the coefficient
             M.coefficient = Random.fraction({
                 zero: this._config.zero,
-                reduced: true
+                reduced: true,
+                natural: !this._config.fraction
             })
 
             // Calculate the degree of the monom

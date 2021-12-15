@@ -16,7 +16,8 @@ export class rndFraction extends randomCore {
         this._defaultConfig = {
             negative: true,
             reduced: true,
-            zero: true
+            zero: true,
+            natural: false
         }
 
         this._config = this.mergeConfig(userConfig, this._defaultConfig)
@@ -30,7 +31,11 @@ export class rndFraction extends randomCore {
         }else {
             Q.numerator = Random.number(this._config.zero ? 0 : 1, 10)
         }
-        Q.denominator = Random.number(1, 10)
+        if(this._config.natural){
+            Q.denominator = 1
+        }else {
+            Q.denominator = Random.number(1, 10)
+        }
 
         return this._config.reduced?Q.reduce():Q
     }
