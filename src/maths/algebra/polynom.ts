@@ -34,11 +34,6 @@ export class Polynom {
         return this;
     }
 
-    get isPolynom() {
-        return true;
-    };
-
-
     // ------------------------------------------
     // Getter and setter
     // ------------------------------------------
@@ -365,9 +360,9 @@ export class Polynom {
     add = (...values: any[]): Polynom => {
 
         for (let value of values) {
-            if (value.isPolynom) {
+            if (value instanceof Polynom) {
                 this._monoms = this._monoms.concat(value.monoms);
-            } else if (value.isMonom) {
+            } else if (value instanceof Monom) {
                 this._monoms.push(value.clone());
             } else if (Number.isSafeInteger(value)) {
                 this._monoms.push(new Monom(value.toString()));
@@ -382,9 +377,9 @@ export class Polynom {
     subtract = (...values: any[]): Polynom => {
 
         for (let value of values) {
-            if (value.isPolynom) {
+            if (value instanceof Polynom) {
                 this._monoms = this._monoms.concat(value.clone().opposed().monoms);
-            } else if (value.isMonom) {
+            } else if (value instanceof Monom) {
                 this._monoms.push(value.clone().opposed());
             } else if (Number.isSafeInteger(value)) {
                 this._monoms.push(new Monom(value.toString()).opposed());
@@ -1100,7 +1095,7 @@ export class Polynom {
         // Reduce the polynom.
         const M = this.clone().reduce();
         for (const m of M._monoms) {
-            if (m.degree(letter) === degree) {
+            if (m.degree(letter).isEqual(degree)) {
                 return m.clone();
             }
         }

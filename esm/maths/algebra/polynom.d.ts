@@ -6,7 +6,6 @@ export declare class Polynom {
     private _factors;
     private _texString;
     constructor(polynomString?: string, ...values: any[]);
-    get isPolynom(): boolean;
     get monoms(): Monom[];
     set monoms(M: Monom[]);
     get factors(): Polynom[];

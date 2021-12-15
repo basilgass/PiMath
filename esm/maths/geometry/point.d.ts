@@ -10,6 +10,7 @@ export declare class Point {
     get y(): Fraction;
     set y(value: Fraction);
     get tex(): string;
+    get display(): string;
     parse: (...values: any) => Point;
     clone: () => Point;
     zero: () => Point;

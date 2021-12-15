@@ -33,10 +33,6 @@ export class Monom {
     // ------------------------------------------
     // Getter and setter
     // ------------------------------------------
-    get isMonom() {
-        return true;
-    }
-
     /**
      * Get the coefficient as fraction
      */
@@ -311,10 +307,10 @@ export class Monom {
 
         let stack: Monom[] = [], m, pow, letter, q1, q2
 
-        if(rpn.length===0){
+        if (rpn.length === 0) {
             this.zero()
             return this
-        }else if(rpn.length===1){
+        } else if (rpn.length === 1) {
             const element = rpn[0]
 
             this.one()
@@ -324,9 +320,8 @@ export class Monom {
                 this.setLetter(element.token, 1)
             }
             return this
-        }else{
+        } else {
             // Reset the monom
-            this.one()
             for (const element of rpn) {
                 if (element.tokenType === 'coefficient') {
                     let M = new Monom().one()
@@ -343,16 +338,15 @@ export class Monom {
                             q2 = (stack.pop()) || new Monom().zero()
                             q1 = (stack.pop()) || new Monom().zero()
 
-                            if(q1.isZero() && q2.isZero()){
-                                this.opposed()
-                                break
-                            }
                             stack.push(q1.subtract(q2))
+
                             break;
                         case '*':
                             // Get the last element in the stack
-                            m = (stack.pop()) || new Monom().one()
-                            this.multiply(m)
+                            q2 = (stack.pop()) || new Monom().one()
+                            q1 = (stack.pop()) || new Monom().one()
+
+                            stack.push(q1.multiply(q2))
                             break
                         case '^':
                             // get the two last elements in the stack
@@ -361,16 +355,20 @@ export class Monom {
 
                             letter = m.variables[0]
 
-                            if(letter!==undefined) {
+                            if (letter !== undefined) {
                                 m.setLetter(letter, pow)
                             }
-                            this.multiply(m.clone())
+
+                            stack.push(m)
+                            // this.multiply(m.clone())
                             break
                     }
                 }
             }
         }
 
+        this.one()
+        this.multiply(stack[0])
         return this
     }
     /**
@@ -387,6 +385,14 @@ export class Monom {
         }
         return F;
     };
+
+    makeSame = (M: Monom):Monom => {
+        // Copy the literal parts.
+        for (let k in M._literal) {
+            this.setLetter(k, M._literal[k].clone());
+        }
+        return this
+    }
 
     /**
      * Create a zero value monom
@@ -439,6 +445,9 @@ export class Monom {
     add = (...M: Monom[]): Monom => {
         for (let m of M) {
             if (this.isSameAs(m)) {
+                if(this.isZero()){
+                    this.makeSame(m)
+                }
                 this._coefficient.add(m.coefficient);
             } else {
                 console.log('Add: Is not similar: ', m.display);
@@ -454,7 +463,10 @@ export class Monom {
     subtract = (...M: Monom[]): Monom => {
         for (let m of M) {
             if (this.isSameAs(m)) {
-                this._coefficient.add(m.coefficient.clone().opposed());
+                if(this.isZero()){
+                    this.makeSame(m)
+                }
+                this._coefficient.add(m.clone().coefficient.opposed());
             } else {
                 console.log('Subtract: Is not similar: ', m.display);
             }
@@ -571,14 +583,17 @@ export class Monom {
                     M2: string[] = M.variables,
                     K: string[] = M1.concat(M2.filter((item) => M1.indexOf(item) < 0));
 
-                for (let key of K) {
-                    // The setLetter is not available in one of the monom
-                    if (this._literal[key] === undefined || M.literal[key] === undefined) {
-                        return false;
-                    }
-                    // The setLetter does not have the isSame power in each monoms.
-                    if (!this._literal[key].isEqual(M.literal[key])) {
-                        return false;
+                // To compare, both must be different than zero.
+                if (!this.isZero() && !M.isZero()) {
+                    for (let key of K) {
+                        // The setLetter is not available in one of the monom
+                        if (this._literal[key] === undefined || M.literal[key] === undefined) {
+                            return false;
+                        }
+                        // The setLetter does not have the isSame power in each monoms.
+                        if (!this._literal[key].isEqual(M.literal[key])) {
+                            return false;
+                        }
                     }
                 }
 

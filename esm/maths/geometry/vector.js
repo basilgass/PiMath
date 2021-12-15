@@ -14,9 +14,6 @@ class Vector {
         }
     }
     ;
-    get isVector() {
-        return true;
-    }
     get x() {
         return this._x;
     }
@@ -44,7 +41,7 @@ class Vector {
             return this;
         }
         if (values.length === 1) {
-            if (values[0].isVector) {
+            if (values[0] instanceof Vector) {
                 return values[0].clone();
             }
             else {

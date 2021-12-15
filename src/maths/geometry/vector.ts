@@ -18,10 +18,6 @@ export class Vector {
         }
     };
 
-    get isVector() {
-        return true;
-    }
-
     // ------------------------------------------
     // Getter and setter
     // ------------------------------------------
@@ -68,7 +64,7 @@ export class Vector {
         }
 
         if (values.length === 1) {
-            if (values[0].isVector) {
+            if (values[0] instanceof Vector) {
                 return values[0].clone()
             } else {
                 return this._parseString(values[0])

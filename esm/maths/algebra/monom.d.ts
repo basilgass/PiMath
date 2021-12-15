@@ -6,7 +6,6 @@ export declare class Monom {
     private _coefficient;
     private _literal;
     constructor(value?: string);
-    get isMonom(): boolean;
     get coefficient(): Fraction;
     set coefficient(F: Fraction);
     get literal(): literalType;
@@ -22,6 +21,7 @@ export declare class Monom {
     parse: (inputStr: string) => Monom;
     private _shutingYardToReducedMonom;
     clone: () => Monom;
+    makeSame: (M: Monom) => Monom;
     zero: () => Monom;
     one: () => Monom;
     clean: () => Monom;

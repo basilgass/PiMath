@@ -36,6 +36,12 @@ class Point {
         pts.push(this._y.tex);
         return `\\left(${pts.join(';')}\\right)`;
     }
+    get display() {
+        let pts = [];
+        pts.push(this._x.tex);
+        pts.push(this._y.tex);
+        return `(${pts.join(';')})`;
+    }
     parse = (...values) => {
         this.zero();
         if (values.length === 0) {

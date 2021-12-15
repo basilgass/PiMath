@@ -37,8 +37,8 @@ export class Equation {
                 this.parse(equations[0]);
             }
         } else if (equations.length === 2) {
-            this.left = equations[0].isPolynom ? equations[0].clone() : new Polynom(equations[0]);
-            this.right = equations[1].isPolynom ? equations[1].clone() : new Polynom(equations[1]);
+            this.left = (equations[0] instanceof Polynom) ? equations[0].clone() : new Polynom(equations[0]);
+            this.right = (equations[1] instanceof Polynom) ? equations[1].clone() : new Polynom(equations[1]);
         } else {
             // Return default empty equation
             return this;

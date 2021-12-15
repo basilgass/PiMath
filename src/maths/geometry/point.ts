@@ -53,6 +53,15 @@ export class Point {
         return `\\left(${pts.join(';')}\\right)`
     }
 
+    get display(): string {
+        let pts = [];
+
+        pts.push(this._x.tex);
+        pts.push(this._y.tex);
+
+        return `(${pts.join(';')})`
+    }
+
     // ------------------------------------------
     // Creation / parsing functions
     // ------------------------------------------

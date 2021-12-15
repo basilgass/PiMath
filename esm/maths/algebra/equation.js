@@ -26,8 +26,8 @@ class Equation {
             }
         }
         else if (equations.length === 2) {
-            this.left = equations[0].isPolynom ? equations[0].clone() : new polynom_1.Polynom(equations[0]);
-            this.right = equations[1].isPolynom ? equations[1].clone() : new polynom_1.Polynom(equations[1]);
+            this.left = (equations[0] instanceof polynom_1.Polynom) ? equations[0].clone() : new polynom_1.Polynom(equations[0]);
+            this.right = (equations[1] instanceof polynom_1.Polynom) ? equations[1].clone() : new polynom_1.Polynom(equations[1]);
         }
         else {
             return this;

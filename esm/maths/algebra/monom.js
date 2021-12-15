@@ -14,9 +14,6 @@ class Monom {
         }
         return this;
     }
-    get isMonom() {
-        return true;
-    }
     get coefficient() {
         return this._coefficient;
     }
@@ -217,7 +214,6 @@ class Monom {
             return this;
         }
         else {
-            this.one();
             for (const element of rpn) {
                 if (element.tokenType === 'coefficient') {
                     let M = new Monom().one();
@@ -234,15 +230,12 @@ class Monom {
                         case '-':
                             q2 = (stack.pop()) || new Monom().zero();
                             q1 = (stack.pop()) || new Monom().zero();
-                            if (q1.isZero() && q2.isZero()) {
-                                this.opposed();
-                                break;
-                            }
                             stack.push(q1.subtract(q2));
                             break;
                         case '*':
-                            m = (stack.pop()) || new Monom().one();
-                            this.multiply(m);
+                            q2 = (stack.pop()) || new Monom().one();
+                            q1 = (stack.pop()) || new Monom().one();
+                            stack.push(q1.multiply(q2));
                             break;
                         case '^':
                             pow = (stack.pop().coefficient) || new coefficients_1.Fraction().one();
@@ -251,12 +244,14 @@ class Monom {
                             if (letter !== undefined) {
                                 m.setLetter(letter, pow);
                             }
-                            this.multiply(m.clone());
+                            stack.push(m);
                             break;
                     }
                 }
             }
         }
+        this.one();
+        this.multiply(stack[0]);
         return this;
     };
     clone = () => {
@@ -266,6 +261,12 @@ class Monom {
             F.setLetter(k, this._literal[k].clone());
         }
         return F;
+    };
+    makeSame = (M) => {
+        for (let k in M._literal) {
+            this.setLetter(k, M._literal[k].clone());
+        }
+        return this;
     };
     zero = () => {
         this._coefficient = new coefficients_1.Fraction().zero();
@@ -292,6 +293,9 @@ class Monom {
     add = (...M) => {
         for (let m of M) {
             if (this.isSameAs(m)) {
+                if (this.isZero()) {
+                    this.makeSame(m);
+                }
                 this._coefficient.add(m.coefficient);
             }
             else {
@@ -303,7 +307,10 @@ class Monom {
     subtract = (...M) => {
         for (let m of M) {
             if (this.isSameAs(m)) {
-                this._coefficient.add(m.coefficient.clone().opposed());
+                if (this.isZero()) {
+                    this.makeSame(m);
+                }
+                this._coefficient.add(m.clone().coefficient.opposed());
             }
             else {
                 console.log('Subtract: Is not similar: ', m.display);
@@ -372,12 +379,14 @@ class Monom {
                 return this._coefficient.isEqual(M.coefficient);
             case 'same':
                 let M1 = this.variables, M2 = M.variables, K = M1.concat(M2.filter((item) => M1.indexOf(item) < 0));
-                for (let key of K) {
-                    if (this._literal[key] === undefined || M.literal[key] === undefined) {
-                        return false;
-                    }
-                    if (!this._literal[key].isEqual(M.literal[key])) {
-                        return false;
+                if (!this.isZero() && !M.isZero()) {
+                    for (let key of K) {
+                        if (this._literal[key] === undefined || M.literal[key] === undefined) {
+                            return false;
+                        }
+                        if (!this._literal[key].isEqual(M.literal[key])) {
+                            return false;
+                        }
                     }
                 }
                 return true;

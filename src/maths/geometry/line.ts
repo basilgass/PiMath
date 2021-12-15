@@ -2,12 +2,17 @@
  * This class works for 2d line in a plane.
  */
 
-import {Fraction} from "../coefficients/fraction";
+import {Fraction} from "../coefficients";
 import {Vector} from "./vector";
 import {Point} from "./point";
-import {Polynom} from "../algebra/polynom";
+import {Equation, Polynom} from "../algebra";
 import {Numeric} from "../numeric";
-import {Equation} from "../algebra/equation";
+
+enum LinePropriety {
+    None,
+    Parallel,
+    Perpendicular
+}
 
 export class Line {
     // A line is defined as the canonical form
@@ -20,19 +25,30 @@ export class Line {
     private _n: Vector;
     private _exists: boolean
 
+    private _referencePropriety: LinePropriety
+    private _referenceLine: Line
+
+    static PERPENDICULAR = LinePropriety.Perpendicular
+    static PARALLEL = LinePropriety.Parallel
+
     constructor(...values: any) {
 
         this._exists = false;
 
-        if (values !== undefined) {
+        if (values.length > 0) {
             this.parse(...values);
         }
 
         return this;
     }
 
-    get isLine():boolean {return true;}
-    get exists(): boolean {return this._exists; }
+    get isLine(): boolean {
+        return true;
+    }
+
+    get exists(): boolean {
+        return this._exists;
+    }
 
     // ------------------------------------------
     // Getter and setter
@@ -40,6 +56,7 @@ export class Line {
     get equation(): Equation {
         return new Equation(new Polynom().parse('xy', this._a, this._b, this._c), new Polynom('0')).simplify();
     }
+
     get tex(): { canonical: string, mxh: string, parametric: string } {
         // canonical    =>  ax + by + c = 0
         // mxh          =>  y = -a/b x - c/b
@@ -47,7 +64,7 @@ export class Line {
 
         let canonical = this.equation;
         // Make sur the first item is positive.
-        if(this._a.isNegative()){
+        if (this._a.isNegative()) {
             canonical.multiply(-1);
         }
 
@@ -102,6 +119,10 @@ export class Line {
         return new Vector(this._a, this._b);
     }
 
+    get director(): Vector {
+        return this._d.clone()
+    }
+
     set d(value: Vector) {
         this._d = value;
     }
@@ -117,61 +138,96 @@ export class Line {
 // ------------------------------------------
     // Creation / parsing functions
     // ------------------------------------------
-    parse = (...values: any): Line => {
+    /**
+     * Parse data to a line
+     * @param {any} values
+     * @returns {Line}
+     */
+    parse = (...values: unknown[]): Line => {
         this._exists = false;
 
-        if (values.length === 3) {
-            return this.parseByCoefficient(values[0], values[1], values[2]);
-        } else if (values.length === 2) {
-            if (values[0].isPoint && values[1].isVector) {
-                return this.parseByPointAndVector(values[0], values[1]);
-            } else if (values[0].isPoint && values[1].isPoint) {
-                return this.parseByPointAndVector(values[0], new Vector(values[0], values[1]));
-            }
-        } else if (values.length === 1){
-            // It's a already a line - clone it !
-            if(values[0].isLine){
-                return values[0].clone();
-            }
+        // Nothing is given...
+        if (values.length === 0) {
+            return this
+        }
 
-            // Maybe it's a string or an equation
-            let equ = new Equation(values[0]);
-            if(equ.isEquation){
-                // Check if it's a valid equation.
-                equ.reorder(true)
-
-                // It must contain either x, y or both.
-                let letters = new Set(equ.letters());
-
-                // No 'x', no 'y' in the equations
-                if(!(letters.has('x') || letters.has('y'))){return;}
-
-                // Another letter in the equation.
-                for(let elem of ['x', 'y']){
-                    if(letters.has(elem)){
-                        letters.delete(elem)}
+        // One value only: already a line (clone it), an Equation, a string (as Equation)
+        if (values.length === 1) {
+            if (values[0] instanceof Line) {
+                // Already a Line
+                return values[0].clone()
+            } else if (values[0] instanceof Equation) {
+                // It's an Equation
+                return this.parseEquation(values[0])
+            } else if (typeof values[0] === "string") {
+                // It's a string - create an Equation from it.
+                try {
+                    let E = new Equation(values[0])
+                    return this.parse(E)
+                } catch (e) {
+                    return this
                 }
-
-                if(letters.size>0){
-                    console.log('Extra variable in the equation.')
-                    return this;
-                }
-
-                // Everything should be ok now...
-                return this.parseByCoefficient(equ.left.monomByLetter('x').coefficient, equ.left.monomByLetter('y').coefficient, equ.left.monomByDegree(0).coefficient)
             }
         }
+
+        if (values.length === 2) {
+            if (values[0] instanceof Point && values[1] instanceof Vector) {
+                return this.parseByPointAndVector(values[0], values[1]);
+            } else if (values[0] instanceof Point && values[1] instanceof Point) {
+                return this.parseByPointAndVector(values[0], new Vector(values[0], values[1]));
+            } else if (values[0] instanceof Vector && values[1] instanceof Point) {
+                return this.parseByPointAndNormal(values[1], values[0])
+            }
+        }
+
+        if (values.length === 3) {
+            if (
+                (values[0] instanceof Fraction || typeof values[0] === 'number')
+                &&
+                (values[1] instanceof Fraction || typeof values[1] === 'number')
+                &&
+                (values[2] instanceof Fraction || typeof values[2] === 'number')
+            ) {
+                return this.parseByCoefficient(values[0], values[1], values[2]);
+            }
+        }
+
         // TODO: Add the ability to create line from a normal vector
         console.log('Someting wrong happend while creating the line')
         return this;
     }
 
-    parseByCoefficient = (a: Fraction, b: Fraction, c: Fraction): Line => {
+    parseEquation = (equ: Equation): Line => {
+        // Reorder the eequation
+        equ.reorder(true)
+
+        // It must contain either x, y or both.
+        let letters = new Set(equ.letters());
+
+        // No 'x', no 'y' in the equations
+        if (!(letters.has('x') || letters.has('y'))) {
+            return this
+        }
+
+        // Another letter in the equation ?
+        for (let elem of ['x', 'y']) {
+            if (letters.has(elem)) {
+                letters.delete(elem)
+            }
+        }
+
+        if (letters.size > 0) {
+            return this
+        }
+
+        // Everything should be ok now...
+        return this.parseByCoefficient(equ.left.monomByLetter('x').coefficient, equ.left.monomByLetter('y').coefficient, equ.left.monomByDegree(0).coefficient)
+    }
+    parseByCoefficient = (a: Fraction | number, b: Fraction | number, c: Fraction | number): Line => {
         this._a = new Fraction(a);
         this._b = new Fraction(b);
         this._c = new Fraction(c);
 
-        // TODO: initialize direction and reference point
         this._d = new Vector(this._b.clone(), this._a.clone().opposed());
         this._OA = new Point(new Fraction().zero(), this._c.clone());
         this._n = this._d.clone().normal();
@@ -205,6 +261,31 @@ export class Line {
         return this;
     }
 
+    parseByPointAndNormal = (P: Point, n: Vector): Line => {
+        return this.parseByCoefficient(
+            n.x,
+            n.y,
+            P.x.clone().multiply(n.x)
+                .add(P.y.clone().multiply(n.y)).opposed()
+        )
+    }
+
+    parseByPointAndLine = (P: Point, L: Line, orientation?: LinePropriety): Line => {
+
+        if (orientation === undefined) {
+            orientation = LinePropriety.Parallel
+        }
+
+        if (orientation === LinePropriety.Parallel) {
+            return this.parseByPointAndNormal(P, L.normal)
+        } else if (orientation === LinePropriety.Perpendicular) {
+            return this.parseByPointAndNormal(P, L.director)
+        }
+
+        this._exists = false
+        return this
+    }
+
     clone = (): Line => {
         this._a = this._a.clone();
         this._b = this._b.clone();
@@ -214,6 +295,7 @@ export class Line {
         this._OA = this._OA.clone();
         this._n = this._n.clone();
 
+        this._exists = this.exists
         return this;
     }
     // ------------------------------------------
@@ -320,7 +402,7 @@ export class Line {
         )
 
         // There is an intersection point
-        if(iPt.hasIntersection) {
+        if (iPt.hasIntersection) {
             return iPt.point.x.value >= Math.min(A.x.value, B.x.value)
                 && iPt.point.x.value <= Math.max(A.x.value, B.x.value)
                 && iPt.point.y.value >= Math.min(A.y.value, B.y.value)
@@ -328,36 +410,41 @@ export class Line {
         }
         return false;
     }
+
     // ------------------------------------------
     // Special functions
     // ------------------------------------------
-    canonicalAsFloatCoefficient(decimals: number): string{
-        if(decimals===undefined){
+    canonicalAsFloatCoefficient(decimals: number): string {
+        if (decimals === undefined) {
             decimals = 2;
         }
 
         let ca = this._a.value,
             cb = this._b.value,
-            cc= this._c.value,
+            cc = this._c.value,
             canonical = '';
 
-        if(!this._a.isZero()){
-            if(this._a.isOne()){
+        if (!this._a.isZero()) {
+            if (this._a.isOne()) {
                 canonical = 'x'
-            }else if(this._a.clone().opposed().isOne()){
+            } else if (this._a.clone().opposed().isOne()) {
                 canonical = '-x'
-            }else{
-                canonical = this._a.value.toFixed(decimals)+'x'
+            } else {
+                canonical = this._a.value.toFixed(decimals) + 'x'
             }
         }
 
-        if(!this._b.isZero()){
-            if(this._b.isPositive()){canonical+='+'}
+        if (!this._b.isZero()) {
+            if (this._b.isPositive()) {
+                canonical += '+'
+            }
             canonical += this._b.value.toFixed(decimals) + 'y'
         }
 
-        if(!this._c.isZero()){
-            if(this._c.isPositive()){canonical+='+'}
+        if (!this._c.isZero()) {
+            if (this._c.isPositive()) {
+                canonical += '+'
+            }
             canonical += this._c.value.toFixed(decimals)
         }
 

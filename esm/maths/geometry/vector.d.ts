@@ -3,7 +3,6 @@ export declare class Vector {
     private _x;
     private _y;
     constructor(...values: any);
-    get isVector(): boolean;
     get x(): Fraction;
     set x(value: Fraction);
     get y(): Fraction;

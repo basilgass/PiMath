@@ -1,7 +1,12 @@
-import { Fraction } from "../coefficients/fraction";
+import { Fraction } from "../coefficients";
 import { Vector } from "./vector";
 import { Point } from "./point";
-import { Equation } from "../algebra/equation";
+import { Equation } from "../algebra";
+declare enum LinePropriety {
+    None = 0,
+    Parallel = 1,
+    Perpendicular = 2
+}
 export declare class Line {
     private _a;
     private _b;
@@ -10,6 +15,10 @@ export declare class Line {
     private _d;
     private _n;
     private _exists;
+    private _referencePropriety;
+    private _referenceLine;
+    static PERPENDICULAR: LinePropriety;
+    static PARALLEL: LinePropriety;
     constructor(...values: any);
     get isLine(): boolean;
     get exists(): boolean;
@@ -30,12 +39,16 @@ export declare class Line {
     get d(): Vector;
     get n(): Vector;
     get normal(): Vector;
+    get director(): Vector;
     set d(value: Vector);
     get slope(): Fraction;
     get height(): Fraction;
-    parse: (...values: any) => Line;
-    parseByCoefficient: (a: Fraction, b: Fraction, c: Fraction) => Line;
+    parse: (...values: unknown[]) => Line;
+    parseEquation: (equ: Equation) => Line;
+    parseByCoefficient: (a: Fraction | number, b: Fraction | number, c: Fraction | number) => Line;
     parseByPointAndVector: (P: Point, d: Vector) => Line;
+    parseByPointAndNormal: (P: Point, n: Vector) => Line;
+    parseByPointAndLine: (P: Point, L: Line, orientation?: LinePropriety) => Line;
     clone: () => Line;
     isParellelTo: (line: Line) => Boolean;
     isSameAs: (line: Line) => Boolean;
@@ -54,3 +67,4 @@ export declare class Line {
     hitSegment(A: Point, B: Point): boolean;
     canonicalAsFloatCoefficient(decimals: number): string;
 }
+export {};
