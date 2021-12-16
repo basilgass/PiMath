@@ -52,6 +52,7 @@ export declare class Line {
     clone: () => Line;
     isParellelTo: (line: Line) => Boolean;
     isSameAs: (line: Line) => Boolean;
+    simplify: () => Line;
     simplifyDirection: () => Line;
     intersection: (line: Line) => {
         point: Point;
@@ -65,8 +66,8 @@ export declare class Line {
         tex: string;
     };
     hitSegment(A: Point, B: Point): boolean;
-    getValueAtX: (value: Fraction) => Fraction;
-    getValueAtY: (value: Fraction) => Fraction;
+    getValueAtX: (value: Fraction | number) => Fraction;
+    getValueAtY: (value: Fraction | number) => Fraction;
     canonicalAsFloatCoefficient(decimals: number): string;
 }
 export {};

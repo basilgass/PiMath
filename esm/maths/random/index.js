@@ -30,17 +30,29 @@ var Random;
         return (new rndFraction_1.rndFraction(config)).generate();
     }
     Random.fraction = fraction;
-    function number(from, to) { return rndHelpers_1.rndHelpers.randomInt(from, to); }
+    function number(from, to) {
+        return rndHelpers_1.rndHelpers.randomInt(from, to);
+    }
     Random.number = number;
-    function numberSym(max, allowZero) { return rndHelpers_1.rndHelpers.randomIntSym(max, allowZero); }
+    function numberSym(max, allowZero) {
+        return rndHelpers_1.rndHelpers.randomIntSym(max, allowZero);
+    }
     Random.numberSym = numberSym;
-    function bool(percent) { return rndHelpers_1.rndHelpers.randomBool(percent); }
+    function bool(percent) {
+        return rndHelpers_1.rndHelpers.randomBool(percent);
+    }
     Random.bool = bool;
-    function array(arr, number) { return rndHelpers_1.rndHelpers.randomArray(arr, number); }
+    function array(arr, number) {
+        return rndHelpers_1.rndHelpers.randomArray(arr, number);
+    }
     Random.array = array;
-    function item(arr) { return rndHelpers_1.rndHelpers.randomItem(arr); }
+    function item(arr) {
+        return rndHelpers_1.rndHelpers.randomItem(arr);
+    }
     Random.item = item;
-    function shuffle(arr) { rndHelpers_1.rndHelpers.shuffleArray(arr); }
+    function shuffle(arr) {
+        rndHelpers_1.rndHelpers.shuffleArray(arr);
+    }
     Random.shuffle = shuffle;
 })(Random = exports.Random || (exports.Random = {}));
 //# sourceMappingURL=index.js.map

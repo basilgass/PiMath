@@ -137,6 +137,14 @@ class Line {
                     (values[2] instanceof coefficients_1.Fraction || typeof values[2] === 'number')) {
                 return this.parseByCoefficient(values[0], values[1], values[2]);
             }
+            else if (values[0] instanceof point_1.Point && values[1] instanceof vector_1.Vector) {
+                if (values[2] === LinePropriety.Perpendicular) {
+                    return this.parseByPointAndNormal(values[0], values[1]);
+                }
+                else if (values[2] === LinePropriety.Parallel) {
+                    return this.parseByPointAndVector(values[0], values[1]);
+                }
+            }
         }
         console.log('Someting wrong happend while creating the line');
         return this;
@@ -208,6 +216,10 @@ class Line {
     isSameAs = (line) => {
         return this.slope.isEqual(line.slope) && this.height.isEqual(line.height);
     };
+    simplify = () => {
+        let lcm = numeric_1.Numeric.lcm(this._a.denominator, this._b.denominator, this._c.denominator), gcd = numeric_1.Numeric.gcd(this._a.numerator, this._b.numerator, this._c.denominator);
+        return new Line(this._a.denominator * lcm / gcd, this._b.denominator * lcm / gcd, this._c.denominator * lcm / gcd);
+    };
     simplifyDirection = () => {
         let lcm = numeric_1.Numeric.lcm(this._d.x.denominator, this._d.y.denominator), gcd = numeric_1.Numeric.gcd(this._d.x.numerator, this._d.y.numerator);
         this._d.x.multiply(lcm).divide(gcd);
@@ -277,16 +289,16 @@ class Line {
         return false;
     }
     getValueAtX = (value) => {
-        const equ = this.equation.clone().isolate('y');
+        const equ = this.equation.clone().isolate('y'), F = new coefficients_1.Fraction(value);
         if (equ instanceof algebra_1.Equation) {
-            return equ.right.evaluate({ x: value });
+            return equ.right.evaluate({ x: F });
         }
         return;
     };
     getValueAtY = (value) => {
-        const equ = this.equation.clone().isolate('x');
+        const equ = this.equation.clone().isolate('x'), F = new coefficients_1.Fraction(value);
         if (equ instanceof algebra_1.Equation) {
-            return equ.right.evaluate({ y: value });
+            return equ.right.evaluate({ y: F });
         }
         return;
     };

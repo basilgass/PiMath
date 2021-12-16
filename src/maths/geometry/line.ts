@@ -189,6 +189,14 @@ export class Line {
                 (values[2] instanceof Fraction || typeof values[2] === 'number')
             ) {
                 return this.parseByCoefficient(values[0], values[1], values[2]);
+            }else if (
+                values[0] instanceof Point && values[1] instanceof Vector
+            ){
+                if(values[2] === LinePropriety.Perpendicular){
+                    return this.parseByPointAndNormal(values[0], values[1])
+                }else if (values[2] === LinePropriety.Parallel){
+                    return this.parseByPointAndVector(values[0], values[1])
+                }
             }
         }
 
@@ -308,6 +316,17 @@ export class Line {
     isSameAs = (line: Line): Boolean => {
         return this.slope.isEqual(line.slope) && this.height.isEqual(line.height);
     }
+    simplify = (): Line => {
+        let lcm = Numeric.lcm(this._a.denominator, this._b.denominator, this._c.denominator),
+            gcd = Numeric.gcd(this._a.numerator, this._b.numerator, this._c.denominator);
+
+        return new Line(
+            this._a.denominator*lcm/gcd,
+            this._b.denominator*lcm/gcd,
+            this._c.denominator*lcm/gcd,
+        )
+    }
+
     simplifyDirection = (): Line => {
         let lcm = Numeric.lcm(this._d.x.denominator, this._d.y.denominator),
             gcd = Numeric.gcd(this._d.x.numerator, this._d.y.numerator);
@@ -411,19 +430,21 @@ export class Line {
         return false;
     }
 
-    getValueAtX = (value: Fraction): Fraction => {
-        const equ = this.equation.clone().isolate('y')
+    getValueAtX = (value: Fraction|number): Fraction => {
+        const equ = this.equation.clone().isolate('y'),
+            F = new Fraction(value)
 
         if(equ instanceof Equation){
-            return equ.right.evaluate({x: value})
+            return equ.right.evaluate({x: F})
         }
         return
     }
-    getValueAtY = (value: Fraction): Fraction => {
-        const equ = this.equation.clone().isolate('x')
+    getValueAtY = (value: Fraction|number): Fraction => {
+        const equ = this.equation.clone().isolate('x'),
+            F = new Fraction(value)
 
         if(equ instanceof Equation){
-            return equ.right.evaluate({y: value})
+            return equ.right.evaluate({y: F})
         }
         return
     }
