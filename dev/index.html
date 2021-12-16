@@ -18,12 +18,13 @@
 
 <script>
 
-  let P = new Pi.Random.polynom({
-    degree: 4,
-    fraction: false
-  })
+  let L = new Pi.Geometry.Line('6x-8y+12=0')
 
-	console.log(P.display)
+	console.log(L.a.display, L.b.display, L.c.display)
+    L.simplify()
+	console.log(L.a.display, L.b.display, L.c.display)
+
+	console.log(L.tex.canonical)
 
 //	let C1 = new Pi.Geometry.Point(-5, 4),
 //		r1 = 36,

@@ -321,9 +321,9 @@ export class Line {
             gcd = Numeric.gcd(this._a.numerator, this._b.numerator, this._c.numerator);
 
         this.parseByCoefficient(
-            this._a.denominator*lcm/gcd,
-            this._b.denominator*lcm/gcd,
-            this._c.denominator*lcm/gcd,
+            this._a.clone().multiply(lcm).divide(gcd),
+            this._b.clone().multiply(lcm).divide(gcd),
+            this._c.clone().multiply(lcm).divide(gcd),
         )
 
         return this

@@ -218,7 +218,7 @@ class Line {
     };
     simplify = () => {
         let lcm = numeric_1.Numeric.lcm(this._a.denominator, this._b.denominator, this._c.denominator), gcd = numeric_1.Numeric.gcd(this._a.numerator, this._b.numerator, this._c.numerator);
-        this.parseByCoefficient(this._a.denominator * lcm / gcd, this._b.denominator * lcm / gcd, this._c.denominator * lcm / gcd);
+        this.parseByCoefficient(this._a.clone().multiply(lcm).divide(gcd), this._b.clone().multiply(lcm).divide(gcd), this._c.clone().multiply(lcm).divide(gcd));
         return this;
     };
     simplifyDirection = () => {
