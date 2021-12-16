@@ -318,13 +318,15 @@ export class Line {
     }
     simplify = (): Line => {
         let lcm = Numeric.lcm(this._a.denominator, this._b.denominator, this._c.denominator),
-            gcd = Numeric.gcd(this._a.numerator, this._b.numerator, this._c.denominator);
+            gcd = Numeric.gcd(this._a.numerator, this._b.numerator, this._c.numerator);
 
-        return new Line(
+        this.parseByCoefficient(
             this._a.denominator*lcm/gcd,
             this._b.denominator*lcm/gcd,
             this._c.denominator*lcm/gcd,
         )
+
+        return this
     }
 
     simplifyDirection = (): Line => {
