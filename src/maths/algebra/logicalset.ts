@@ -35,7 +35,7 @@ import {Shutingyard} from '../shutingyard';
             return this;
         }
 
-        evaluate(tokenSets: { [key: string]: any[] }, reference?: any[]): any[] {
+        evaluate(tokenSets: { [key: string]: unknown[] }, reference?: unknown[]): unknown[] {
             let varStack: (Set<unknown>)[] = []
 
             let referenceSet: Set<unknown>

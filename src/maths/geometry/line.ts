@@ -31,7 +31,7 @@ export class Line {
     static PERPENDICULAR = LinePropriety.Perpendicular
     static PARALLEL = LinePropriety.Parallel
 
-    constructor(...values: any) {
+    constructor(...values: unknown[]) {
 
         this._exists = false;
 
@@ -40,10 +40,6 @@ export class Line {
         }
 
         return this;
-    }
-
-    get isLine(): boolean {
-        return true;
     }
 
     get exists(): boolean {

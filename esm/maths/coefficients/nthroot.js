@@ -6,11 +6,14 @@ class Nthroot {
     _nth;
     _coefficient;
     _isValid;
-    constructor() {
+    constructor(...values) {
         this._radical = 1;
         this._coefficient = 1;
         this._nth = 2;
         this._isValid = true;
+        if (values !== undefined) {
+            this.parse(values[0], values[1], values[2]);
+        }
     }
     get radical() {
         return this._radical;

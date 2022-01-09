@@ -19,7 +19,7 @@ export class Monom {
      * Create the monom object.
      * @param value (optional) string
      */
-    constructor(value?: string) {
+    constructor(value?: unknown) {
         this.zero();
 
         if (value !== undefined) {
@@ -279,23 +279,20 @@ export class Monom {
      * Parse a string to a monom. The string may include fraction.
      * @param inputStr
      */
-    parse = (inputStr: string): Monom => {
-        this._shutingYardToReducedMonom(inputStr)
-        //
-        // // Set the literal part.
-        // this.literalStr = inputStr;
-        //
-        // // Get the coefficient
-        // this._coefficient = new Fraction();
-        // for (const v of [...inputStr.replace(/([a-z])|(\^[+-]?[0-9]+)/g, ',').split(',')]) {
-        //     // The value is empty.
-        //     if (v.trim() === '') {
-        //         continue;
-        //     }
-        //
-        //     // Multiply the current coefficient by the new found value.
-        //     this._coefficient.multiply(new Fraction(v.trim()));
-        // }
+    parse = (inputStr: unknown): Monom => {
+
+        if(typeof inputStr === 'string') {
+            this._shutingYardToReducedMonom(inputStr)
+        }else if(typeof inputStr ==='number') {
+            this._coefficient = new Fraction(inputStr)
+            this._literal = {}
+        }else if(inputStr instanceof Fraction) {
+            this._coefficient = inputStr.clone()
+            this._literal = {}
+        }else if(inputStr instanceof Monom){
+            this._coefficient = inputStr._coefficient.clone()
+            this._literal = this.copyLiterals(inputStr.literal)
+        }
 
         return this;
     };
@@ -385,6 +382,15 @@ export class Monom {
         }
         return F;
     };
+
+    copyLiterals = (literal: literalType): literalType => {
+        let L:literalType = {}
+
+        for (let k in literal) {
+            L[k] = literal[k].clone()
+        }
+        return L
+    }
 
     makeSame = (M: Monom):Monom => {
         // Copy the literal parts.

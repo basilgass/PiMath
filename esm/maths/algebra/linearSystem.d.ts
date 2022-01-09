@@ -6,7 +6,6 @@ export declare class LinearSystem {
     private _equations;
     private _letters;
     constructor(...equationStrings: string[]);
-    get isLinearSystem(): boolean;
     get equations(): Equation[];
     set equations(value: Equation[]);
     get letters(): string;
@@ -14,8 +13,8 @@ export declare class LinearSystem {
     get isSolvable(): boolean;
     get variables(): string[];
     get tex(): string;
-    get texSolution(): string;
-    parse: (...equations: any[]) => LinearSystem;
+    get solution(): string;
+    parse: (...equations: unknown[]) => LinearSystem;
     setCoefficient: (...coefficients: string[]) => LinearSystem;
     clone: () => LinearSystem;
     setLetters: (...letters: string[]) => LinearSystem;
@@ -23,7 +22,7 @@ export declare class LinearSystem {
     generate: (...solutions: Fraction[] | number[]) => LinearSystem;
     private _generateOneEquation;
     private _linearReduction;
-    mergeEquations: (eq1: Equation, eq2: Equation, factor1: any, factor2: any) => Equation;
+    mergeEquations: (eq1: Equation, eq2: Equation, factor1: unknown, factor2: unknown) => Equation;
     reorder: () => LinearSystem;
     solve: () => LinearSystem;
     private _checkIfLinerCombination;

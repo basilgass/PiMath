@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.rndMonom = void 0;
 const randomCore_1 = require("./randomCore");
 const index_1 = require("./index");
-const monom_1 = require("../algebra/monom");
+const algebra_1 = require("../algebra");
 class rndMonom extends randomCore_1.randomCore {
     constructor(userConfig) {
         super();
@@ -16,12 +16,17 @@ class rndMonom extends randomCore_1.randomCore {
         this._config = this.mergeConfig(userConfig, this._defaultConfig);
     }
     generate = () => {
-        let M = new monom_1.Monom();
-        M.coefficient = index_1.Random.fraction({
-            zero: this._config.zero,
-            reduced: true,
-            natural: !this._config.fraction
-        });
+        let M = new algebra_1.Monom();
+        if (typeof this._config.fraction === "boolean") {
+            M.coefficient = index_1.Random.fraction({
+                zero: this._config.zero,
+                reduced: true,
+                natural: !this._config.fraction
+            });
+        }
+        else {
+            M.coefficient = index_1.Random.fraction(this._config.fraction);
+        }
         if (this._config.letters.length > 1) {
             for (let L of this._config.letters.split('')) {
                 M.setLetter(L, 0);

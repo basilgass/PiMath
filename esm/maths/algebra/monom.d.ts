@@ -5,7 +5,7 @@ export declare type literalType = {
 export declare class Monom {
     private _coefficient;
     private _literal;
-    constructor(value?: string);
+    constructor(value?: unknown);
     get coefficient(): Fraction;
     set coefficient(F: Fraction);
     get literal(): literalType;
@@ -18,9 +18,10 @@ export declare class Monom {
     private _getLiteralDividers;
     get displayWithSign(): string;
     get tex(): string;
-    parse: (inputStr: string) => Monom;
+    parse: (inputStr: unknown) => Monom;
     private _shutingYardToReducedMonom;
     clone: () => Monom;
+    copyLiterals: (literal: literalType) => literalType;
     makeSame: (M: Monom) => Monom;
     zero: () => Monom;
     one: () => Monom;

@@ -3,7 +3,7 @@ export declare class Nthroot {
     private _nth;
     private _coefficient;
     private _isValid;
-    constructor();
+    constructor(...values: number[]);
     get radical(): number;
     set radical(value: number);
     get nth(): number;

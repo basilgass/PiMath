@@ -25,7 +25,7 @@ export class Polynom {
      * @param {string} polynomString (optional) Default polynom to parse on class creation
      * @param values
      */
-    constructor(polynomString?: string, ...values: any[]) {
+    constructor(polynomString?: string, ...values: unknown[]) {
         this._monoms = [];
         this._factors = [];
         if (polynomString !== undefined) {
@@ -149,7 +149,7 @@ export class Polynom {
      * @param inputStr
      * @param values: as string, numbers or fractions
      */
-    parse = (inputStr: string, ...values: any[]): Polynom => {
+    parse = (inputStr: string, ...values: unknown[]): Polynom => {
 
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;
@@ -357,7 +357,7 @@ export class Polynom {
         return this;
     };
 
-    add = (...values: any[]): Polynom => {
+    add = (...values: unknown[]): Polynom => {
 
         for (let value of values) {
             if (value instanceof Polynom) {
@@ -374,7 +374,7 @@ export class Polynom {
         return this.reduce();
     };
 
-    subtract = (...values: any[]): Polynom => {
+    subtract = (...values: unknown[]): Polynom => {
 
         for (let value of values) {
             if (value instanceof Polynom) {
@@ -391,14 +391,14 @@ export class Polynom {
         return this.reduce();
     };
 
-    multiply = (value: any): Polynom => {
+    multiply = (value: unknown): Polynom => {
         if (value instanceof Polynom) {
             return this.multiplyByPolynom(value);
         } else if (value instanceof Fraction) {
             return this.multiplyByFraction(value);
         } else if (value instanceof Monom) {
             return this.multiplyByMonom(value);
-        } else if (Number.isSafeInteger(value)) {
+        } else if (Number.isSafeInteger(value) && typeof value==='number') {
             return this.multiplyByInteger(value);
         }
 
@@ -479,10 +479,10 @@ export class Polynom {
         return {quotient, reminder};
     };
 
-    divide = (value: any): Polynom => {
-        if (value.isFraction) {
+    divide = (value: unknown): Polynom => {
+        if (value instanceof Fraction) {
             this.divideByFraction(value);
-        } else if (Number.isSafeInteger(value)) {
+        } else if (typeof value==='number' && Number.isSafeInteger(value)) {
             return this.divideByInteger(value);
         }
     }

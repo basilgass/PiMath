@@ -4,6 +4,7 @@
  */
 import {Fraction} from "../coefficients/fraction";
 import {Numeric} from "../numeric";
+import {Point} from "./point";
 
 export class Vector {
     private _x: Fraction;   // 1st component
@@ -73,7 +74,7 @@ export class Vector {
 
         if (values.length >= 2) {
             // Two points are given - skip the third value.
-            if (values[0].isPoint && values[1].isPoint) {
+            if (values[0] instanceof Point && values[1] instanceof Point) {
                 this._x = values[1].x.clone().subtract(values[0].x)
                 this._y = values[1].y.clone().subtract(values[0].y)
                 return this;
@@ -159,7 +160,7 @@ export class Vector {
 
     static scalarProduct = (v1: Vector, v2: Vector): number => {
         // TODO: Transform to fraction with nthroot.
-        return  v1.x.value * v2.x.value + v1.y.value * v2.y.value;
+        return v1.x.value * v2.x.value + v1.y.value * v2.y.value;
     };
 
     normal = (): Vector => {
@@ -180,7 +181,7 @@ export class Vector {
         return this;
     }
 
-    divideByScalar = (k:any): Vector => {
+    divideByScalar = (k: any): Vector => {
         return this.multiplyByScalar(new Fraction(k).invert());
     }
     // ------------------------------------------

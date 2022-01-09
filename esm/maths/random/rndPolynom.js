@@ -16,7 +16,8 @@ class rndPolynom extends randomCore_1.randomCore {
             unit: false,
             factorable: false,
             allowNullMonom: true,
-            numberOfMonoms: 0
+            numberOfMonoms: 0,
+            positive: true
         };
         this._config = this.mergeConfig(userConfig, this._defaultConfig);
     }
@@ -37,8 +38,13 @@ class rndPolynom extends randomCore_1.randomCore {
             }
             P.add(M);
         }
+        if (this._config.positive && P.monomByDegree().coefficient.isNegative()) {
+            P.monomByDegree().coefficient.opposed();
+        }
         if (this._config.numberOfMonoms > 0 && this._config.numberOfMonoms < P.length) {
-            P.monoms = index_1.Random.array(P.monoms, this._config.numberOfMonoms);
+            let M = P.monomByDegree().clone();
+            P.monoms = index_1.Random.array(P.monoms.slice(1), this._config.numberOfMonoms - 1);
+            P.add(M).reorder().reduce();
         }
         return P;
     };

@@ -19,7 +19,6 @@ class Triangle {
         }
         return this;
     }
-    get isTriangle() { return true; }
     get A() {
         return this._A;
     }
@@ -83,7 +82,7 @@ class Triangle {
             if (values.filter((x) => typeof x === 'string').length === 3) {
                 return this.parse(...values.map((x) => new line_1.Line(x)));
             }
-            else if (values.filter((x) => x.isLine === true).length === 3) {
+            else if (values.filter((x) => x instanceof line_1.Line).length === 3) {
                 this._lines = {
                     'AB': values[0],
                     'BC': values[1],
@@ -112,7 +111,7 @@ class Triangle {
                 }
             }
             else {
-                if (values.filter((x) => x.isPoint === true).length < 3) {
+                if (values.filter((x) => (x instanceof point_1.Point)).length < 3) {
                     return this.parse(new point_1.Point(values[0]), new point_1.Point(values[1]), new point_1.Point(values[2]));
                 }
                 this._A = values[0].clone();
@@ -126,7 +125,7 @@ class Triangle {
             }
         }
         else if (values.length === 1) {
-            if (values[0].isTriangle === true) {
+            if (values[0] instanceof Triangle) {
                 return values[0].clone();
             }
         }

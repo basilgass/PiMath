@@ -1,5 +1,6 @@
 export type randomCoefficientConfig = {
     negative?: boolean,
+    max?: number,
     reduced?: boolean,
     zero?:boolean,
     natural?:boolean
@@ -8,7 +9,7 @@ export type randomCoefficientConfig = {
 export type randomMonomConfig = {
     letters?: string,
     degree?: number,
-    fraction?: boolean,
+    fraction?: boolean|randomCoefficientConfig,
     zero?: boolean
 }
 
@@ -16,5 +17,6 @@ export type randomPolynomConfig = randomMonomConfig & {
     unit?: boolean,
     factorable?: boolean,
     allowNullMonom?: boolean,
-    numberOfMonoms?: number
+    numberOfMonoms?: number,
+    positive?: boolean
 }

@@ -1,23 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Point = void 0;
-const fraction_1 = require("../coefficients/fraction");
+const coefficients_1 = require("../coefficients");
+class PointXY {
+    x;
+    y;
+}
 class Point {
     _x;
     _y;
     _exist;
     constructor(...values) {
-        this._x = new fraction_1.Fraction().zero();
-        this._y = new fraction_1.Fraction().zero();
+        this._x = new coefficients_1.Fraction().zero();
+        this._y = new coefficients_1.Fraction().zero();
         if (values !== undefined) {
             this.parse(...values);
         }
         return this;
     }
     ;
-    get isPoint() {
-        return true;
-    }
     get x() {
         return this._x;
     }
@@ -56,22 +57,24 @@ class Point {
             if (typeof values[0] === 'string') {
                 let xy = values[0].split(',');
                 if (xy.length === 2) {
-                    this._x = new fraction_1.Fraction(xy[0]).reduce();
-                    this._y = new fraction_1.Fraction(xy[1]).reduce();
+                    this._x = new coefficients_1.Fraction(xy[0]).reduce();
+                    this._y = new coefficients_1.Fraction(xy[1]).reduce();
                     return this;
                 }
             }
-            if (values[0].x !== undefined && values[0].y !== undefined) {
-                this._x = new fraction_1.Fraction(values[0].x).reduce();
-                this._y = new fraction_1.Fraction(values[0].y).reduce();
+            if (values[0] instanceof PointXY) {
+                this._x = new coefficients_1.Fraction(values[0].x).reduce();
+                this._y = new coefficients_1.Fraction(values[0].y).reduce();
+                return this;
             }
             else {
                 return this.zero();
             }
         }
         if (values.length === 2) {
-            this._x = new fraction_1.Fraction(values[0]).reduce();
-            this._y = new fraction_1.Fraction(values[1]).reduce();
+            this._x = new coefficients_1.Fraction(values[0]).reduce();
+            this._y = new coefficients_1.Fraction(values[1]).reduce();
+            return this;
         }
         return this;
     };
@@ -81,8 +84,8 @@ class Point {
         return this;
     };
     zero = () => {
-        this._x = new fraction_1.Fraction(null);
-        this._y = new fraction_1.Fraction(null);
+        this._x = new coefficients_1.Fraction(null);
+        this._y = new coefficients_1.Fraction(null);
         return this;
     };
     origin = () => {

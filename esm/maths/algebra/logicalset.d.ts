@@ -5,8 +5,8 @@ export declare class Logicalset {
     get isLogicalset(): boolean;
     private parse;
     evaluate(tokenSets: {
-        [key: string]: any[];
-    }, reference?: any[]): any[];
+        [key: string]: unknown[];
+    }, reference?: unknown[]): unknown[];
     vennAB(): any[];
     vennABC(): any[];
     get rpn(): {

@@ -24,7 +24,8 @@ export class rndPolynom extends randomCore {
             unit: false,
             factorable: false,
             allowNullMonom: true,
-            numberOfMonoms: 0
+            numberOfMonoms: 0,
+            positive: true
         }
 
         // Merge config with initialiser
@@ -39,6 +40,7 @@ export class rndPolynom extends randomCore {
         // Create the polynom
         let P = new Polynom().empty(),
             M: Monom
+
         for (let i = this._config.degree; i >= 0; i--) {
             // Create monom of corresponding degree.
             M = new rndMonom({
@@ -57,9 +59,17 @@ export class rndPolynom extends randomCore {
             P.add(M)
         }
 
-        // If the number of monoms is greater than the allowed value, remove some of them...
+        // Make sure the first monom is positive.
+        if(this._config.positive && P.monomByDegree().coefficient.isNegative()){
+            P.monomByDegree().coefficient.opposed()
+        }
+
+        // If the number of monoms is greater than the allowed value, remove some of them... except the first one !
         if (this._config.numberOfMonoms > 0 && this._config.numberOfMonoms < P.length) {
-            P.monoms = Random.array(P.monoms, this._config.numberOfMonoms)
+            // Get the greatest degree monom
+            let M = P.monomByDegree().clone()
+            P.monoms = Random.array(P.monoms.slice(1), this._config.numberOfMonoms-1)
+            P.add(M).reorder().reduce()
         }
         return P
     }

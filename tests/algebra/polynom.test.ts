@@ -1,7 +1,8 @@
 import {expect} from 'chai';
 import {Fraction} from "../../src/maths/coefficients";
-import {Polynom} from "../../src/maths/algebra";
+import {Monom, Polynom} from "../../src/maths/algebra";
 import {Random} from "../../src/maths/random";
+import {describe} from "mocha";
 
 describe('Polynom tests', () => {
     it('Parse polynom', () => {
@@ -38,10 +39,15 @@ describe('Polynom tests', () => {
     it('Random Polynom of degree 5', function () {
         let P = Random.polynom({
             degree: 6,
-            numberOfMonoms: 3
+            numberOfMonoms: 3,
+            positive: true,
+            fraction: {
+                max: 3
+            }
         })
 
+        console.log(P.tex)
         expect(P.length).to.be.equal(3)
-        expect(P.degree().value).to.be.lessThanOrEqual(6)
+        expect(P.degree().value).to.be.equal(6)
     });
 })

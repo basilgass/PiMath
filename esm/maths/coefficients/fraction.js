@@ -111,7 +111,7 @@ class Fraction {
                 }
                 break;
             case "object":
-                if (value.isFraction) {
+                if (value instanceof Fraction) {
                     this._numerator = +value.numerator;
                     this._denominator = +value.denominator;
                 }

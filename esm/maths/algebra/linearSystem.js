@@ -18,9 +18,6 @@ class LinearSystem {
         }
         return this;
     }
-    get isLinearSystem() {
-        return true;
-    }
     get equations() {
         return this._equations;
     }
@@ -66,7 +63,7 @@ class LinearSystem {
         }
         return `\\left\\{\\begin{array}{${"r".repeat(letters.length)}cl}${equArray.join('\\\\\ ')}\\end{array}\\right.`;
     }
-    get texSolution() {
+    get solution() {
         let tex = [];
         if (this._solutions === undefined) {
             this.solve();
@@ -193,7 +190,7 @@ class LinearSystem {
         let E = this._resolutionSteps[this._resolutionSteps.length - 1].equations[0];
         E.solve();
         return {
-            value: new coefficients_1.Fraction(E.solutions[0]),
+            value: new coefficients_1.Fraction(E.solutions[0].value),
             isReal: E.isReal,
             isVarnothing: E.isVarnothing
         };

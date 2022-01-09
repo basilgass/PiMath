@@ -248,7 +248,7 @@ class Polynom {
         else if (value instanceof monom_1.Monom) {
             return this.multiplyByMonom(value);
         }
-        else if (Number.isSafeInteger(value)) {
+        else if (Number.isSafeInteger(value) && typeof value === 'number') {
             return this.multiplyByInteger(value);
         }
         return this;
@@ -301,10 +301,10 @@ class Polynom {
         return { quotient, reminder };
     };
     divide = (value) => {
-        if (value.isFraction) {
+        if (value instanceof coefficients_1.Fraction) {
             this.divideByFraction(value);
         }
-        else if (Number.isSafeInteger(value)) {
+        else if (typeof value === 'number' && Number.isSafeInteger(value)) {
             return this.divideByInteger(value);
         }
     };

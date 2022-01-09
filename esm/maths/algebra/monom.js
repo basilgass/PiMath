@@ -191,7 +191,21 @@ class Monom {
         }
     }
     parse = (inputStr) => {
-        this._shutingYardToReducedMonom(inputStr);
+        if (typeof inputStr === 'string') {
+            this._shutingYardToReducedMonom(inputStr);
+        }
+        else if (typeof inputStr === 'number') {
+            this._coefficient = new coefficients_1.Fraction(inputStr);
+            this._literal = {};
+        }
+        else if (inputStr instanceof coefficients_1.Fraction) {
+            this._coefficient = inputStr.clone();
+            this._literal = {};
+        }
+        else if (inputStr instanceof Monom) {
+            this._coefficient = inputStr._coefficient.clone();
+            this._literal = this.copyLiterals(inputStr.literal);
+        }
         return this;
     };
     _shutingYardToReducedMonom = (inputStr) => {
@@ -261,6 +275,13 @@ class Monom {
             F.setLetter(k, this._literal[k].clone());
         }
         return F;
+    };
+    copyLiterals = (literal) => {
+        let L = {};
+        for (let k in literal) {
+            L[k] = literal[k].clone();
+        }
+        return L;
     };
     makeSame = (M) => {
         for (let k in M._literal) {

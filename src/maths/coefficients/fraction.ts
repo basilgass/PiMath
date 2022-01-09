@@ -1,11 +1,15 @@
 import {Numeric} from "../numeric";
-import {Random} from "../random";
 
+/**
+ * The fraction class make possible to handle
+ * TODO: Write the documentation correctly.
+ * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
+ */
 export class Fraction {
     private _numerator: number;
     private _denominator: number;
 
-    constructor(value?: any, denominatorOrPeriodic?: number) {
+    constructor(value?: unknown, denominatorOrPeriodic?: number) {
         this._numerator = 1;
         this._denominator = 1;
 
@@ -80,7 +84,7 @@ export class Fraction {
      * @param value : number or string to parse to get the fraction
      * @param denominatorOrPeriodic (optional|number) : length of the periodic part: 2.333333 => 1 or denominator value
      */
-    parse = (value: any, denominatorOrPeriodic?: number): Fraction => {
+    parse = (value: unknown, denominatorOrPeriodic?: number): Fraction => {
         let S: string[];
 
         // A null value means a zero fraction.
@@ -146,7 +150,7 @@ export class Fraction {
                 }
                 break;
             case "object":
-                if (value.isFraction) {
+                if (value instanceof Fraction) {
                     this._numerator = +value.numerator;
                     this._denominator = +value.denominator;
                 }
@@ -201,7 +205,7 @@ export class Fraction {
 
             this._numerator = N * F.denominator + F.numerator * D;
             this._denominator = D * F.denominator;
-        }else{
+        } else {
             return this.add(new Fraction(F))
         }
 
@@ -303,7 +307,7 @@ export class Fraction {
     };
 
 
-    static max = (...fractions: (Fraction|number)[]): Fraction => {
+    static max = (...fractions: (Fraction | number)[]): Fraction => {
         let M = new Fraction(fractions[0])
 
         for (let m of fractions) {
@@ -315,7 +319,7 @@ export class Fraction {
 
         return M
     }
-    static min = (...fractions: (Fraction|number)[]): Fraction => {
+    static min = (...fractions: (Fraction | number)[]): Fraction => {
         let M = new Fraction(fractions[0])
 
         for (let m of fractions) {

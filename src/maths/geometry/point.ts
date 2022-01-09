@@ -2,15 +2,22 @@
  * Vector module contains everything necessary to handle 2d or 3d vectors.
  * @module Vector
  */
-import {Fraction} from "../coefficients/fraction";
+import {Fraction} from "../coefficients"
 
-//TODO: Ajouter une vérification si la droite existe.
+/**
+ * Helper class - a way to identify an object {x: number, y: number}
+ */
+class PointXY {
+    public x: number
+    public y: number
+}
+
 export class Point {
     private _x: Fraction;   // 1st component
     private _y: Fraction;   // 2nd component
     private _exist: Boolean;
 
-    constructor(...values: any) {
+    constructor(...values: unknown[]) {
         this._x = new Fraction().zero();
         this._y = new Fraction().zero();
 
@@ -20,10 +27,6 @@ export class Point {
 
         return this
     };
-
-    get isPoint() {
-        return true;
-    }
 
     // ------------------------------------------
     // Getter and setter
@@ -66,7 +69,8 @@ export class Point {
     // Creation / parsing functions
     // ------------------------------------------
 
-    parse = (...values: any): Point => {
+
+    parse = (...values: unknown[]): Point => {
         // Initialize the value.
         this.zero();
 
@@ -81,30 +85,33 @@ export class Point {
             if (values[0] instanceof Point) {
                 this._x = values[0].x.clone()
                 this._y = values[0].y.clone()
-                return this;
+                return this
             }
 
             // Value is given as string, comma separated.
-            if(typeof values[0] === 'string'){
+            if (typeof values[0] === 'string') {
                 let xy = values[0].split(',')
-                if(xy.length===2){
+                if (xy.length === 2) {
                     this._x = new Fraction(xy[0]).reduce()
                     this._y = new Fraction(xy[1]).reduce()
-                    return this;
+                    return this
                 }
             }
 
             // Value given as an object with {x: value, y: value}
-            if (values[0].x !== undefined && values[0].y !== undefined) {
-                this._x = new Fraction(values[0].x).reduce()
-                this._y = new Fraction(values[0].y).reduce()
+            if(values[0] instanceof PointXY){
+                    this._x = new Fraction(values[0].x).reduce()
+                    this._y = new Fraction(values[0].y).reduce()
+                return this
             } else {
-                return this.zero();
+                return this.zero()
             }
         }
+
         if (values.length === 2) {
             this._x = new Fraction(values[0]).reduce()
             this._y = new Fraction(values[1]).reduce()
+            return this
         }
 
         return this;
@@ -140,8 +147,8 @@ export class Point {
     texValues = (numberOfDigits: number): string => {
         let pts = [];
 
-        pts.push(this._x.value.toFixed(numberOfDigits===undefined?2:numberOfDigits));
-        pts.push(this._y.value.toFixed(numberOfDigits===undefined?2:numberOfDigits));
+        pts.push(this._x.value.toFixed(numberOfDigits === undefined ? 2 : numberOfDigits));
+        pts.push(this._y.value.toFixed(numberOfDigits === undefined ? 2 : numberOfDigits));
 
         return `\\left(${pts.join(';')}\\right)`
     }

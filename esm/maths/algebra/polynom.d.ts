@@ -5,7 +5,7 @@ export declare class Polynom {
     private _monoms;
     private _factors;
     private _texString;
-    constructor(polynomString?: string, ...values: any[]);
+    constructor(polynomString?: string, ...values: unknown[]);
     get monoms(): Monom[];
     set monoms(M: Monom[]);
     get factors(): Polynom[];
@@ -20,16 +20,16 @@ export declare class Polynom {
     get variables(): string[];
     get numberOfVars(): number;
     private genDisplay;
-    parse: (inputStr: string, ...values: any[]) => Polynom;
+    parse: (inputStr: string, ...values: unknown[]) => Polynom;
     private shutingYardToReducedPolynom;
     clone: () => Polynom;
     zero: () => Polynom;
     one: () => Polynom;
     empty: () => Polynom;
     opposed: () => Polynom;
-    add: (...values: any[]) => Polynom;
-    subtract: (...values: any[]) => Polynom;
-    multiply: (value: any) => Polynom;
+    add: (...values: unknown[]) => Polynom;
+    subtract: (...values: unknown[]) => Polynom;
+    multiply: (value: unknown) => Polynom;
     private multiplyByPolynom;
     private multiplyByFraction;
     private multiplyByInteger;
@@ -38,7 +38,7 @@ export declare class Polynom {
         quotient: Polynom;
         reminder: Polynom;
     };
-    divide: (value: any) => Polynom;
+    divide: (value: unknown) => Polynom;
     private divideByInteger;
     private divideByFraction;
     pow: (nb: number) => Polynom;

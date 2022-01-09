@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Vector = void 0;
 const fraction_1 = require("../coefficients/fraction");
 const numeric_1 = require("../numeric");
+const point_1 = require("./point");
 class Vector {
     _x;
     _y;
@@ -49,7 +50,7 @@ class Vector {
             }
         }
         if (values.length >= 2) {
-            if (values[0].isPoint && values[1].isPoint) {
+            if (values[0] instanceof point_1.Point && values[1] instanceof point_1.Point) {
                 this._x = values[1].x.clone().subtract(values[0].x);
                 this._y = values[1].y.clone().subtract(values[0].y);
                 return this;

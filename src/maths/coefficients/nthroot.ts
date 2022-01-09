@@ -1,14 +1,21 @@
+/**
+ * Nthroot is something like "a+b\sqrt{3}
+ */
 export class Nthroot {
     private _radical: number;
     private _nth: number;
     private _coefficient: number;
     private _isValid:boolean;
 
-    constructor() {
+    constructor(...values: number[]) {
         this._radical = 1;
         this._coefficient = 1;
         this._nth = 2;
         this._isValid = true;
+
+        if(values !== undefined){
+            this.parse(values[0], values[1], values[2])
+        }
     }
 
     // ------------------------------------------

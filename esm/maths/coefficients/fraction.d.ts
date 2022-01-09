@@ -1,7 +1,7 @@
 export declare class Fraction {
     private _numerator;
     private _denominator;
-    constructor(value?: any, denominatorOrPeriodic?: number);
+    constructor(value?: unknown, denominatorOrPeriodic?: number);
     get isFraction(): boolean;
     get numerator(): number;
     set numerator(value: number);
@@ -12,7 +12,7 @@ export declare class Fraction {
     get display(): string;
     get frac(): string;
     get dfrac(): string;
-    parse: (value: any, denominatorOrPeriodic?: number) => Fraction;
+    parse: (value: unknown, denominatorOrPeriodic?: number) => Fraction;
     clone: () => Fraction;
     zero: () => Fraction;
     one: () => Fraction;

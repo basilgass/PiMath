@@ -9,6 +9,7 @@ class rndFraction extends randomCore_1.randomCore {
         super();
         this._defaultConfig = {
             negative: true,
+            max: 10,
             reduced: true,
             zero: true,
             natural: false
@@ -18,16 +19,16 @@ class rndFraction extends randomCore_1.randomCore {
     generate = () => {
         let Q = new coefficients_1.Fraction();
         if (this._config.negative) {
-            Q.numerator = index_1.Random.numberSym(10, this._config.zero);
+            Q.numerator = index_1.Random.numberSym(this._config.max, this._config.zero);
         }
         else {
-            Q.numerator = index_1.Random.number(this._config.zero ? 0 : 1, 10);
+            Q.numerator = index_1.Random.number(this._config.zero ? 0 : 1, this._config.max);
         }
         if (this._config.natural) {
             Q.denominator = 1;
         }
         else {
-            Q.denominator = index_1.Random.number(1, 10);
+            Q.denominator = index_1.Random.number(1, this._config.max);
         }
         return this._config.reduced ? Q.reduce() : Q;
     };

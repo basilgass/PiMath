@@ -35,7 +35,6 @@ export declare class Triangle {
     private _middles;
     private _remarquables;
     constructor(...values: any);
-    get isTriangle(): boolean;
     get A(): Point;
     get B(): Point;
     get C(): Point;

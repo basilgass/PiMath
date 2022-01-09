@@ -1,5 +1,10 @@
 import { Polynom } from "./polynom";
 import { Fraction } from "../coefficients";
+interface ISolution {
+    tex: string;
+    value: number;
+    exact: unknown;
+}
 export declare class Equation {
     private _left;
     private _right;
@@ -8,9 +13,9 @@ export declare class Equation {
     private _solutions;
     private _varnothing;
     private _real;
-    constructor(...equations: any);
+    constructor(...equations: unknown[]);
     get isEquation(): boolean;
-    get solutions(): string[];
+    get solutions(): ISolution[];
     get solution(): string;
     get isReal(): boolean;
     get isVarnothing(): boolean;
@@ -45,12 +50,12 @@ export declare class Equation {
     simplify: () => Equation;
     isolate: (letter?: string) => Equation | false;
     replaceBy: (letter: string, P: Polynom) => Equation;
-    multiply: (value: any) => Equation;
-    divide: (value: any) => Equation;
+    multiply: (value: unknown) => Equation;
+    divide: (value: unknown) => Equation;
     degree: (letter?: string) => Fraction;
     isMultiVariable: () => boolean;
     letters: () => string[];
-    solve: (letter?: string) => Equation;
+    solve: () => Equation;
     private isGreater;
     private isStrictEqual;
     private isAlsoEqual;
@@ -58,3 +63,4 @@ export declare class Equation {
     private _solveDegree2;
     private _solveDegree3plus;
 }
+export {};

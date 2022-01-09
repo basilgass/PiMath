@@ -31,9 +31,6 @@ class Line {
         }
         return this;
     }
-    get isLine() {
-        return true;
-    }
     get exists() {
         return this._exists;
     }

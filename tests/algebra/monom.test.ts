@@ -1,10 +1,11 @@
 import {expect} from 'chai';
 import {Monom} from "../../src/maths/algebra";
 import {Random} from "../../src/maths/random";
-import exp = require("constants");
+import {describe} from "mocha";
+import {Fraction} from "../../src/maths/coefficients";
 
-describe('Monom tests', ()=> {
-    it('parsing', ()=>{
+describe('Monom tests', () => {
+    it('parsing', () => {
         const M0a = new Monom('3');
         expect(M0a.tex).to.be.equal('3')
 
@@ -30,7 +31,7 @@ describe('Monom tests', ()=> {
         expect(M5.tex).to.be.equal('-24x^{7/3}y^{-5}')
     })
 
-    it('basic operations', ()=>{
+    it('basic operations', () => {
         const M1 = new Monom('3x'),
             M2 = new Monom('2x')
 
@@ -63,4 +64,17 @@ describe('Monom tests', ()=> {
         expect(M.coefficient.isZero()).to.be.false
         expect(M.degree().value).to.be.greaterThan(0)
     });
+})
+
+describe('Monom as numerical expression', () => {
+    it('should create a numerical expression', () => {
+        let M = new Monom()
+
+        M.coefficient = new Fraction(3, 7)
+        M.setLetter('3', new Fraction(0.5).reduce())
+
+        console.log(M.tex)
+        // TODO: Problem while displaying numerical expression
+        console.log(M.display)
+    })
 })

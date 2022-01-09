@@ -8,6 +8,9 @@
       "src/maths/numeric.ts",
       "src/maths/shutingyard.ts"
     ],
+    "plugin": [
+      "./typedoc.katex.js"
+    ],
     "out": "docs"
   },
   "compilerOptions": {
@@ -16,7 +19,7 @@
     "module": "commonjs",
     "target": "esnext",
     "allowJs": true,
-//    "jsx": "react",
+    //    "jsx": "react-jsx",
     "sourceMap": true,
     "moduleResolution": "node",
     "declaration": true,

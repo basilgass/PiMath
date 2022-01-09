@@ -19,8 +19,7 @@ export declare class Line {
     private _referenceLine;
     static PERPENDICULAR: LinePropriety;
     static PARALLEL: LinePropriety;
-    constructor(...values: any);
-    get isLine(): boolean;
+    constructor(...values: unknown[]);
     get exists(): boolean;
     get equation(): Equation;
     get tex(): {

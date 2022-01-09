@@ -56,8 +56,6 @@ export class Triangle {
         return this;
     }
 
-    get isTriangle():boolean {return true;}
-
     // ------------------------------------------
     // Getter and setters
     // ------------------------------------------
@@ -158,7 +156,7 @@ export class Triangle {
             // - Three lines as text.
             if(values.filter((x:any) => typeof x === 'string').length===3) {
                 return this.parse( ...values.map((x:string) => new Line(x)) )
-            }else if(values.filter((x:any) => x.isLine === true).length===3) {
+            }else if(values.filter((x:any) => x instanceof Line).length===3) {
                 // We have three lines
                 this._lines = {
                     'AB': values[0],
@@ -187,7 +185,7 @@ export class Triangle {
                 }
             }else {
                 // At least, one of the value is not a point.
-                if (values.filter((x: any) => x.isPoint === true).length < 3) {
+                if (values.filter((x: any) => (x instanceof Point)).length < 3) {
                     return this.parse(
                         new Point(values[0]),
                         new Point(values[1]),
@@ -207,7 +205,7 @@ export class Triangle {
                 };
             }
         } else if (values.length === 1) {
-            if (values[0].isTriangle === true) {
+            if (values[0] instanceof Triangle) {
                 return values[0].clone();
             }
         }

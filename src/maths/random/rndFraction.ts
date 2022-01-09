@@ -15,6 +15,7 @@ export class rndFraction extends randomCore {
 
         this._defaultConfig = {
             negative: true,
+            max: 10,
             reduced: true,
             zero: true,
             natural: false
@@ -27,14 +28,14 @@ export class rndFraction extends randomCore {
         let Q = new Fraction()
 
         if(this._config.negative){
-            Q.numerator = Random.numberSym(10, this._config.zero)
+            Q.numerator = Random.numberSym(this._config.max, this._config.zero)
         }else {
-            Q.numerator = Random.number(this._config.zero ? 0 : 1, 10)
+            Q.numerator = Random.number(this._config.zero ? 0 : 1, this._config.max)
         }
         if(this._config.natural){
             Q.denominator = 1
         }else {
-            Q.denominator = Random.number(1, 10)
+            Q.denominator = Random.number(1, this._config.max)
         }
 
         return this._config.reduced?Q.reduce():Q
