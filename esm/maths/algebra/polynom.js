@@ -289,7 +289,7 @@ class Polynom {
         const degreeP = P.degree(letter);
         let newM;
         let MaxIteration = this.degree(letter).clone().multiply(2);
-        while (reminder.degree(letter) >= degreeP && MaxIteration.isPositive()) {
+        while (reminder.degree(letter).geq(degreeP) && MaxIteration.isPositive()) {
             MaxIteration.subtract(1);
             newM = reminder.monomByDegree(undefined, letter).clone().divide(maxMP);
             if (newM.isZero()) {
