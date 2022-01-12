@@ -46,8 +46,17 @@ describe('Polynom tests', () => {
             }
         })
 
-        console.log(P.tex)
         expect(P.length).to.be.equal(3)
         expect(P.degree().value).to.be.equal(6)
+    });
+
+    it('should calculate correctly the quotient and reminder', function () {
+        let P = new Polynom('(x-3)(x^2+5x-4)+12'),
+            D = new Polynom('x-3')
+
+        let euclidian = P.euclidian(D);
+
+        expect(euclidian.quotient.tex).to.be.equal('x^{2}+5x-4')
+        expect(euclidian.reminder.tex).to.be.equal('12')
     });
 })

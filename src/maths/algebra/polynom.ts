@@ -461,7 +461,7 @@ export class Polynom {
 
         // Make the euclidian division of the two polynoms.
         let MaxIteration = this.degree(letter).clone().multiply(2);
-        while (reminder.degree(letter) >= degreeP && MaxIteration.isPositive()) {
+        while (reminder.degree(letter).geq(degreeP) && MaxIteration.isPositive()) {
             MaxIteration.subtract(1)
 
             // Get the greatest monom divided by the max monom of the divider
