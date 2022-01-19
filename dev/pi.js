@@ -4254,6 +4254,12 @@ class NumExp {
         this._expression = value;
         this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value).rpn;
     }
+    get rpn() {
+        return this._rpn;
+    }
+    get expression() {
+        return this._expression;
+    }
     _extractDecimalPart(value) {
         let decimal = value.toString();
         if (!decimal.includes('.')) {
@@ -4263,20 +4269,23 @@ class NumExp {
         return decimal.substring(0, decimal.length - 2);
     }
     _numberCorrection(value) {
-        const omega = 0.00000000000001, number_of_digits = 6;
+        const epsilon = 0.00000000000001, number_of_digits = 6;
         let decimal = this._extractDecimalPart(value);
+        if (decimal === '') {
+            return value;
+        }
         const n9 = decimal.match(/9+$/g);
         const n0 = decimal.match(/0+$/g);
         if (n9 && n9[0].length >= number_of_digits) {
-            let mod = this._extractDecimalPart(value + omega), mod0 = mod.match(/0+$/g);
+            let mod = this._extractDecimalPart(value + epsilon), mod0 = mod.match(/0+$/g);
             if (mod0 && mod0[0].length >= number_of_digits) {
-                return +((value + omega).toString().split(mod0[0])[0]);
+                return +((value + epsilon).toString().split(mod0[0])[0]);
             }
         }
         if (n0 && n0[0].length >= number_of_digits) {
-            let mod = this._extractDecimalPart(value - omega), mod9 = mod.match(/9+$/g);
+            let mod = this._extractDecimalPart(value - epsilon), mod9 = mod.match(/9+$/g);
             if (mod9 && mod9[0].length >= number_of_digits) {
-                return +((value - omega).toString().split(mod9[0])[0]);
+                return +(value.toString().split(n0[0])[0]);
             }
         }
         return value;

@@ -36,9 +36,12 @@
 <!--</div>-->
 
 <script>
-  let ne = new Pi.NumExp('x^2-2*x+3*y-8')
+  // let ne = new Pi.NumExp('5/x*sin(x*x)')
+  let ne = new Pi.NumExp('x+3')
 
-	console.log(ne.evaluate({x: 5, y: 3}))
+	console.log(5.000000000000004)
+	console.log(ne.evaluate({x: 5.000000000000004}))
+	console.log(ne.evaluate({x: 5.000000000000}))
 
 	function dev () {
 		let output = []

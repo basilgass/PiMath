@@ -10,6 +10,14 @@ export class NumExp {
         this._rpn = new Shutingyard(ShutingyardMode.NUMERIC).parse(value).rpn
     }
 
+    get rpn(): { token: string; tokenType: string }[] {
+        return this._rpn;
+    }
+
+    get expression(): string {
+        return this._expression;
+    }
+
     private _extractDecimalPart(value: number): string {
         let decimal = value.toString()
 
@@ -30,33 +38,34 @@ export class NumExp {
         // check if around n last characters are either 0 or 9
         // if it is, 'round' the number.
 
-        const omega = 0.00000000000001,
+        const epsilon = 0.00000000000001,
             number_of_digits = 6
 
         let decimal = this._extractDecimalPart(value)
+        if(decimal===''){return value}
 
         const n9 = decimal.match(/9+$/g)
         const n0 = decimal.match(/0+$/g)
 
         if (n9 && n9[0].length >= number_of_digits) {
             // New tested values.
-            let mod = this._extractDecimalPart(value + omega),
+            let mod = this._extractDecimalPart(value + epsilon),
                 mod0 = mod.match(/0+$/g)
 
             if(mod0 && mod0[0].length>= number_of_digits){
                 // The value can be changed. Remove all zeros!
-                return +((value+omega).toString().split(mod0[0])[0])
+                return +((value+epsilon).toString().split(mod0[0])[0])
             }
         }
 
         if (n0 && n0[0].length >= number_of_digits) {
             // New tested values.
-            let mod = this._extractDecimalPart(value - omega),
+            let mod = this._extractDecimalPart(value - epsilon),
                 mod9 = mod.match(/9+$/g)
 
             if(mod9 && mod9[0].length>= number_of_digits){
                 // The value can be changed. Remove all nines!
-                return +((value-omega).toString().split(mod9[0])[0])
+                return +(value.toString().split(n0[0])[0])
             }
         }
 
@@ -67,7 +76,7 @@ export class NumExp {
         stack.push(this._numberCorrection(value))
     }
 
-    evaluate(values: { [Key: string]: number }): Number {
+    evaluate(values: { [Key: string]: number }): number {
         let stack: number[] = []
         for (const element of this._rpn) {
             if (element.tokenType === ShutingyardType.COEFFICIENT) {
