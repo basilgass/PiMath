@@ -1,20 +1,42 @@
 import {loadHighlighter} from "typedoc/dist/lib/utils/highlighter";
+import exp = require("constants");
 
 type tokenType = {
     [key: string]: {
         precedence: number,
-        associative: string
+        associative: string,
+        type: string
     }
+}
+
+export const tokenConstant:{[Key:string]:number} = {
+    pi: Math.PI,
+    e: Math.exp(1)
+}
+export enum ShutingyardType {
+    VARIABLE='variable',
+    COEFFICIENT='coefficient',
+    OPERATION = 'operation',
+    CONSTANT = 'constant',
+    FUNCTION = 'function',
+    MONOM = 'monom'
+}
+export enum ShutingyardMode {
+    POLYNOM= 'polynom',
+    SET = 'set',
+    NUMERIC = 'numeric'
 }
 
 export class Shutingyard {
     private _rpn: { token: string, tokenType: string }[] = [];
-    readonly _mode: 'polynom' | 'set';
+    readonly _mode: ShutingyardMode;
     private _tokenConfig: tokenType;
+    private _tokenConstant: {[Key:string]: number}
     private _uniformize: boolean;
+    private _tokenKeys: string[]
 
-    constructor(mode?: 'polynom' | 'set') {
-        this._mode = typeof mode === 'undefined' ? 'polynom' : mode;
+    constructor(mode?: ShutingyardMode ) {
+        this._mode = typeof mode === 'undefined' ? ShutingyardMode.POLYNOM : mode;
         this.tokenConfigInitialization()
     }
 
@@ -23,41 +45,55 @@ export class Shutingyard {
      * Defined operations: + - * / ^ sin cos tan
      * @param token
      */
-    isOperation(token: string): boolean {
-        if (token[0].match(/[+\-*/^]/g)) {
-            return true;
-        }
-        //
-        // if (token.match(/^sin|cos|tan/g)) {
-        //     return true;
-        // }
-
-        return false;
-    }
+    // isOperation(token: string): boolean {
+    //     if (token[0].match(/[+\-*/^]/g)) {
+    //         return true;
+    //     }
+    //     //
+    //     // if (token.match(/^sin|cos|tan/g)) {
+    //     //     return true;
+    //     // }
+    //
+    //     return false;
+    // }
 
     tokenConfigInitialization(): tokenType {
-        if (this._mode === 'set') {
+        if (this._mode === ShutingyardMode.SET) {
             this._tokenConfig = {
-                '&': {precedence: 3, associative: 'left'},
-                '|': {precedence: 3, associative: 'left'},
-                '!': {precedence: 4, associative: 'right'},
-                '-': {precedence: 2, associative: 'left'}
+                '&': {precedence: 3, associative: 'left', type: ShutingyardType.OPERATION},
+                '|': {precedence: 3, associative: 'left', type: ShutingyardType.OPERATION},
+                '!': {precedence: 4, associative: 'right', type: ShutingyardType.OPERATION},
+                '-': {precedence: 2, associative: 'left', type: ShutingyardType.OPERATION}
             }
             this._uniformize = false;
+        }else if (this._mode === ShutingyardMode.NUMERIC){
+            this._tokenConfig = {
+                '^': {precedence: 4, associative: 'right', type: ShutingyardType.OPERATION},
+                '*': {precedence: 3, associative: 'left', type: ShutingyardType.OPERATION},
+                '/': {precedence: 3, associative: 'left', type: ShutingyardType.OPERATION},
+                '+': {precedence: 2, associative: 'left', type: ShutingyardType.OPERATION},
+                '-': {precedence: 2, associative: 'left', type: ShutingyardType.OPERATION},
+                '%': {precedence: 3, associative: 'right', type: ShutingyardType.OPERATION},
+                'sin': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                'cos': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                'tan': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+            }
         } else {
             this._tokenConfig = {
-                '^': {precedence: 4, associative: 'right'},
-                '*': {precedence: 3, associative: 'left'},
-                '/': {precedence: 3, associative: 'left'},
-                '+': {precedence: 2, associative: 'left'},
-                '-': {precedence: 2, associative: 'left'},
-                '%': {precedence: 3, associative: 'right'},
-                'sin': {precedence: 4, associative: 'right'},
-                'cos': {precedence: 4, associative: 'right'},
-                'tab': {precedence: 4, associative: 'right'},
+                '^': {precedence: 4, associative: 'right', type: ShutingyardType.OPERATION},
+                '*': {precedence: 3, associative: 'left', type: ShutingyardType.OPERATION},
+                '/': {precedence: 3, associative: 'left', type: ShutingyardType.OPERATION},
+                '+': {precedence: 2, associative: 'left', type: ShutingyardType.OPERATION},
+                '-': {precedence: 2, associative: 'left', type: ShutingyardType.OPERATION},
+                '%': {precedence: 3, associative: 'right', type: ShutingyardType.OPERATION},
+                'sin': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                'cos': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                'tan': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
             }
             this._uniformize = true
         }
+
+        this._tokenKeys = Object.keys(this._tokenConfig).sort((a,b)=>b.length-a.length)
         return this._tokenConfig
     }
 
@@ -86,12 +122,23 @@ export class Shutingyard {
             tokenType = 'function-argument';
         } else{
             // Order token keys by token characters length (descending)
-            const keys = Object.keys(this._tokenConfig).sort((a,b)=>b.length-a.length)
+            // TODO: this is done each time ! SHould be done once !
+            // const keys = Object.keys(this._tokenConfig).sort((a,b)=>b.length-a.length)
 
-            for(let key of keys){
-                if(expr.substr(start, key.length) === key){
+            // Extract operation and function tokens
+            for(let key of this._tokenKeys){
+                if(expr.substring(start, start+key.length) === key){
                     token += key;
-                    tokenType = 'operation'
+                    tokenType = this._tokenConfig[key].type
+                    break
+                }
+            }
+
+            // Extract constant
+            for(let key in tokenConstant){
+                if(expr.substring(start, start+key.length) === key){
+                    token += key;
+                    tokenType = ShutingyardType.CONSTANT
                     break
                 }
             }
@@ -99,79 +146,81 @@ export class Shutingyard {
             if(token===''){
                 // No function found ! Might be a coefficient !
                 if( expr[start].match(/[0-9]/) ) {
-                    token = expr.substr(start).match(/^([0-9.,/]+)/)[0]
-                    tokenType = 'coefficient'
+                    if(this._mode === ShutingyardMode.POLYNOM) {
+                        token = expr.substring(start).match(/^([0-9.,/]+)/)[0]
+                    }else{
+                        token = expr.substring(start).match(/^([0-9.,]+)/)[0]
+                    }
+                    tokenType = ShutingyardType.COEFFICIENT
                 }else if (expr[start].match(/[a-zA-Z]/)) {
-                    token = expr.substr(start).match(/^([a-zA-Z])/)[0]
-                    tokenType = 'variable'
+                    token = expr.substring(start).match(/^([a-zA-Z])/)[0]
+                    tokenType = ShutingyardType.VARIABLE
                 }else{
                     console.log('Unidentified token', expr[start], expr, start)
                     token = expr[start]
-                    tokenType = 'monom'
+                    tokenType = ShutingyardType.MONOM
                 }
 
             }
         }
 
-
-        // console.log(token, tokenType)
         return [token, start + token.length, tokenType];
     }
 
-    NextToken(expr: string, start: number): [string, number, string] {
-        let tokenMatch: string[], token: string, tokenType: string;
-
-        this.NextToken2(expr, start)
-        // Detect a fraction monoms or return empty array
-        tokenMatch = (expr.substr(start).match(/^[0-9/a-zA-Z^]+/g)) || [];
-
-        if (expr.substr(start, start + 3).match(/^(sin|cos|tan)/g)) {
-            token = expr.substr(start, 3)
-            tokenType = 'function'
-        } else if (tokenMatch.length > 0) {
-            token = tokenMatch[0];
-            tokenType = 'monom';
-        }
-        // It's an operation !
-        else if (expr[start].match(/[+\-*/^]/g)) {
-            token = expr[start];
-            tokenType = 'operation';
-        } else if (expr[start].match(/[&|!]/g)) {
-            token = expr[start];
-            tokenType = 'operation';
-        }
-        // It's an opening parenthese
-        else if (expr[start] === '(') {
-            token = '(';
-            tokenType = '(';
-        }
-        // It's a closing parenthese
-        else if (expr[start] === ')') {
-            token = ')';
-            tokenType = ')';
-        }
-        // It's an argument separator for a function
-        else if (expr[start] === ',') {
-            token = ',';
-            tokenType = 'function-argument';
-        }
-        // It's a monom.
-        else {
-            // TODO: Actually, negative exposant aren't supported.
-            // token = (expr.substr(start).match(/^[\da-z\^]+/g)[0])||'';
-            token = tokenMatch[0];
-            tokenType = 'monom';
-
-            if (token === '') {
-                token = expr[start];
-                tokenType = 'monom';
-                console.log('SHUTING YARD - NEXT TOKEN: error at ', start);
-            }
-        }
-
-        // console.log(token, start + token.length, tokenType);
-        return [token, start + token.length, tokenType];
-    }
+    // NextToken(expr: string, start: number): [string, number, string] {
+    //     let tokenMatch: string[], token: string, tokenType: string;
+    //
+    //     this.NextToken2(expr, start)
+    //     // Detect a fraction monoms or return empty array
+    //     tokenMatch = (expr.substring(start).match(/^[0-9/a-zA-Z^]+/g)) || [];
+    //
+    //     if (expr.substring(start, start + 3).match(/^(sin|cos|tan)/g)) {
+    //         token = expr.substring(start, start+3)
+    //         tokenType = 'function'
+    //     } else if (tokenMatch.length > 0) {
+    //         token = tokenMatch[0];
+    //         tokenType = 'monom';
+    //     }
+    //     // It's an operation !
+    //     else if (expr[start].match(/[+\-*/^]/g)) {
+    //         token = expr[start];
+    //         tokenType = 'operation';
+    //     } else if (expr[start].match(/[&|!]/g)) {
+    //         token = expr[start];
+    //         tokenType = 'operation';
+    //     }
+    //     // It's an opening parenthese
+    //     else if (expr[start] === '(') {
+    //         token = '(';
+    //         tokenType = '(';
+    //     }
+    //     // It's a closing parenthese
+    //     else if (expr[start] === ')') {
+    //         token = ')';
+    //         tokenType = ')';
+    //     }
+    //     // It's an argument separator for a function
+    //     else if (expr[start] === ',') {
+    //         token = ',';
+    //         tokenType = 'function-argument';
+    //     }
+    //     // It's a monom.
+    //     else {
+    //         // TODO: Actually, negative exposant aren't supported.
+    //         // token = (expr.substring(start).match(/^[\da-z\^]+/g)[0])||'';
+    //         token = tokenMatch[0];
+    //         tokenType = 'monom';
+    //
+    //         if (token === '') {
+    //             token = expr[start];
+    //             tokenType = 'monom';
+    //             console.log('SHUTING YARD - NEXT TOKEN: error at ', start);
+    //         }
+    //     }
+    //
+    //     // console.log(token, start + token.length, tokenType);
+    //     return [token, start + token.length, tokenType];
+    // }
 
     /**
      * Sanitize an expression by adding missing common operation (multiplication between parentheseses)
@@ -247,6 +296,7 @@ export class Shutingyard {
                 case 'monom':
                 case 'coefficient':
                 case 'variable':
+                case 'constant':
                     outQueue.push({
                         token,
                         tokenType

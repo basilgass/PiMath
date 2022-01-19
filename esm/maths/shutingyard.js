@@ -1,45 +1,74 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Shutingyard = void 0;
+exports.Shutingyard = exports.ShutingyardMode = exports.ShutingyardType = exports.tokenConstant = void 0;
+exports.tokenConstant = {
+    pi: Math.PI,
+    e: Math.exp(1)
+};
+var ShutingyardType;
+(function (ShutingyardType) {
+    ShutingyardType["VARIABLE"] = "variable";
+    ShutingyardType["COEFFICIENT"] = "coefficient";
+    ShutingyardType["OPERATION"] = "operation";
+    ShutingyardType["CONSTANT"] = "constant";
+    ShutingyardType["FUNCTION"] = "function";
+    ShutingyardType["MONOM"] = "monom";
+})(ShutingyardType = exports.ShutingyardType || (exports.ShutingyardType = {}));
+var ShutingyardMode;
+(function (ShutingyardMode) {
+    ShutingyardMode["POLYNOM"] = "polynom";
+    ShutingyardMode["SET"] = "set";
+    ShutingyardMode["NUMERIC"] = "numeric";
+})(ShutingyardMode = exports.ShutingyardMode || (exports.ShutingyardMode = {}));
 class Shutingyard {
     _rpn = [];
     _mode;
     _tokenConfig;
+    _tokenConstant;
     _uniformize;
+    _tokenKeys;
     constructor(mode) {
-        this._mode = typeof mode === 'undefined' ? 'polynom' : mode;
+        this._mode = typeof mode === 'undefined' ? ShutingyardMode.POLYNOM : mode;
         this.tokenConfigInitialization();
     }
-    isOperation(token) {
-        if (token[0].match(/[+\-*/^]/g)) {
-            return true;
-        }
-        return false;
-    }
     tokenConfigInitialization() {
-        if (this._mode === 'set') {
+        if (this._mode === ShutingyardMode.SET) {
             this._tokenConfig = {
-                '&': { precedence: 3, associative: 'left' },
-                '|': { precedence: 3, associative: 'left' },
-                '!': { precedence: 4, associative: 'right' },
-                '-': { precedence: 2, associative: 'left' }
+                '&': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '|': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '!': { precedence: 4, associative: 'right', type: ShutingyardType.OPERATION },
+                '-': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION }
             };
             this._uniformize = false;
         }
+        else if (this._mode === ShutingyardMode.NUMERIC) {
+            this._tokenConfig = {
+                '^': { precedence: 4, associative: 'right', type: ShutingyardType.OPERATION },
+                '*': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '/': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '+': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
+                '-': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
+                '%': { precedence: 3, associative: 'right', type: ShutingyardType.OPERATION },
+                'sin': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'cos': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'tan': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+            };
+        }
         else {
             this._tokenConfig = {
-                '^': { precedence: 4, associative: 'right' },
-                '*': { precedence: 3, associative: 'left' },
-                '/': { precedence: 3, associative: 'left' },
-                '+': { precedence: 2, associative: 'left' },
-                '-': { precedence: 2, associative: 'left' },
-                '%': { precedence: 3, associative: 'right' },
-                'sin': { precedence: 4, associative: 'right' },
-                'cos': { precedence: 4, associative: 'right' },
-                'tab': { precedence: 4, associative: 'right' },
+                '^': { precedence: 4, associative: 'right', type: ShutingyardType.OPERATION },
+                '*': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '/': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '+': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
+                '-': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
+                '%': { precedence: 3, associative: 'right', type: ShutingyardType.OPERATION },
+                'sin': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'cos': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'tan': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
             };
             this._uniformize = true;
         }
+        this._tokenKeys = Object.keys(this._tokenConfig).sort((a, b) => b.length - a.length);
         return this._tokenConfig;
     }
     NextToken2(expr, start) {
@@ -59,71 +88,39 @@ class Shutingyard {
             tokenType = 'function-argument';
         }
         else {
-            const keys = Object.keys(this._tokenConfig).sort((a, b) => b.length - a.length);
-            for (let key of keys) {
-                if (expr.substr(start, key.length) === key) {
+            for (let key of this._tokenKeys) {
+                if (expr.substring(start, start + key.length) === key) {
                     token += key;
-                    tokenType = 'operation';
+                    tokenType = this._tokenConfig[key].type;
+                    break;
+                }
+            }
+            for (let key in exports.tokenConstant) {
+                if (expr.substring(start, start + key.length) === key) {
+                    token += key;
+                    tokenType = ShutingyardType.CONSTANT;
                     break;
                 }
             }
             if (token === '') {
                 if (expr[start].match(/[0-9]/)) {
-                    token = expr.substr(start).match(/^([0-9.,/]+)/)[0];
-                    tokenType = 'coefficient';
+                    if (this._mode === ShutingyardMode.POLYNOM) {
+                        token = expr.substring(start).match(/^([0-9.,/]+)/)[0];
+                    }
+                    else {
+                        token = expr.substring(start).match(/^([0-9.,]+)/)[0];
+                    }
+                    tokenType = ShutingyardType.COEFFICIENT;
                 }
                 else if (expr[start].match(/[a-zA-Z]/)) {
-                    token = expr.substr(start).match(/^([a-zA-Z])/)[0];
-                    tokenType = 'variable';
+                    token = expr.substring(start).match(/^([a-zA-Z])/)[0];
+                    tokenType = ShutingyardType.VARIABLE;
                 }
                 else {
                     console.log('Unidentified token', expr[start], expr, start);
                     token = expr[start];
-                    tokenType = 'monom';
+                    tokenType = ShutingyardType.MONOM;
                 }
-            }
-        }
-        return [token, start + token.length, tokenType];
-    }
-    NextToken(expr, start) {
-        let tokenMatch, token, tokenType;
-        this.NextToken2(expr, start);
-        tokenMatch = (expr.substr(start).match(/^[0-9/a-zA-Z^]+/g)) || [];
-        if (expr.substr(start, start + 3).match(/^(sin|cos|tan)/g)) {
-            token = expr.substr(start, 3);
-            tokenType = 'function';
-        }
-        else if (tokenMatch.length > 0) {
-            token = tokenMatch[0];
-            tokenType = 'monom';
-        }
-        else if (expr[start].match(/[+\-*/^]/g)) {
-            token = expr[start];
-            tokenType = 'operation';
-        }
-        else if (expr[start].match(/[&|!]/g)) {
-            token = expr[start];
-            tokenType = 'operation';
-        }
-        else if (expr[start] === '(') {
-            token = '(';
-            tokenType = '(';
-        }
-        else if (expr[start] === ')') {
-            token = ')';
-            tokenType = ')';
-        }
-        else if (expr[start] === ',') {
-            token = ',';
-            tokenType = 'function-argument';
-        }
-        else {
-            token = tokenMatch[0];
-            tokenType = 'monom';
-            if (token === '') {
-                token = expr[start];
-                tokenType = 'monom';
-                console.log('SHUTING YARD - NEXT TOKEN: error at ', start);
             }
         }
         return [token, start + token.length, tokenType];
@@ -160,6 +157,7 @@ class Shutingyard {
                 case 'monom':
                 case 'coefficient':
                 case 'variable':
+                case 'constant':
                     outQueue.push({
                         token,
                         tokenType

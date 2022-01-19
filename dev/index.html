@@ -29,14 +29,16 @@
 </head>
 <body>
 
-<div x-data="dev()">
-    <template x-for="(item, index) of output" :key="index">
-        <div class="katex-left" x-html="`\\[${item}\\]`"></div>
-    </template>
-</div>
+<!--<div x-data="dev()">-->
+<!--    <template x-for="(item, index) of output" :key="index">-->
+<!--        <div class="katex-left" x-html="`\\[${item}\\]`"></div>-->
+<!--    </template>-->
+<!--</div>-->
 
 <script>
-	ex1()
+  let ne = new Pi.NumExp('x^2-2*x+3*y-8')
+
+	console.log(ne.evaluate({x: 5, y: 3}))
 
 	function dev () {
 		let output = []
@@ -223,7 +225,6 @@
 			'(t):\\ ' + t1.tex.canonical
 		]
 	}
-
 
 </script>
 </body>

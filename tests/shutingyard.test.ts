@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {Shutingyard} from "../src/maths/shutingyard";
+import {Shutingyard, ShutingyardMode} from "../src/maths/shutingyard";
 
 describe('Shuting yard', () => { // the tests container
     it('RPN for polynom', () => {
@@ -28,8 +28,8 @@ describe('Shuting yard', () => { // the tests container
     })
 
 	it('Custom RPN', () => {
-		const SY1: Shutingyard = new Shutingyard('set').parse('(A|B)&C');
-        const SY2: Shutingyard = new Shutingyard('set').parse('(A-B)&!C');
+		const SY1: Shutingyard = new Shutingyard(ShutingyardMode.SET).parse('(A|B)&C');
+        const SY2: Shutingyard = new Shutingyard(ShutingyardMode.SET).parse('(A-B)&!C');
 		expect(SY1.rpn.map(x=>x.token)).to.have.all.members(['A', 'B', '|', 'C', '&'])
 		expect(SY2.rpn.map(x=>x.token)).to.have.all.members(['A', 'B', '-', 'C', '!', '&'])
 	})

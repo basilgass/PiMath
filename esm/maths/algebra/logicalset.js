@@ -15,7 +15,7 @@ class Logicalset {
     }
     ;
     parse = (value) => {
-        this._rpn = new shutingyard_1.Shutingyard('set').parse(value).rpn;
+        this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.SET).parse(value).rpn;
         return this;
     };
     evaluate(tokenSets, reference) {

@@ -1,4 +1,5 @@
 import {Numeric} from "./maths/numeric";
+import {NumExp} from "./maths/numexp";
 import {Shutingyard} from "./maths/shutingyard";
 import {Random} from "./maths/random";
 import {Fraction, Nthroot} from "./maths/coefficients";
@@ -10,6 +11,7 @@ import {Line, Circle, Triangle, Point, Vector} from "./maths/geometry";
 (<any>window).Pi = {
     ShutingYard: Shutingyard,
     Numeric: Numeric,
+    NumExp: NumExp,
     Fraction: Fraction,
     Root: Nthroot,
     Monom: Monom,

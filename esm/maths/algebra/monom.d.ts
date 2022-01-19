@@ -7,7 +7,7 @@ export declare class Monom {
     private _literal;
     constructor(value?: unknown);
     get coefficient(): Fraction;
-    set coefficient(F: Fraction);
+    set coefficient(F: Fraction | number | string);
     get literal(): literalType;
     get literalSqrt(): literalType;
     set literal(L: literalType);
@@ -17,6 +17,7 @@ export declare class Monom {
     get dividers(): Monom[];
     private _getLiteralDividers;
     get displayWithSign(): string;
+    get texWithSign(): string;
     get tex(): string;
     parse: (inputStr: unknown) => Monom;
     private _shutingYardToReducedMonom;

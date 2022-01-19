@@ -1,5 +1,5 @@
 import { Polynom } from "./polynom";
-import { Fraction } from "../coefficients/fraction";
+import { Fraction } from "../coefficients";
 export declare class Rational {
     private _rawString;
     private _numerator;

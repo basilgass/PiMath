@@ -66,7 +66,7 @@ describe('Monom tests', () => {
     });
 })
 
-describe('Monom as numerical expression', () => {
+describe('Monom as numerical expression WIP', () => {
     it('should create a numerical expression', () => {
         let M = new Monom()
 

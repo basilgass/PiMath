@@ -3,7 +3,7 @@
  * @module Logicalset
  */
 
-import {Shutingyard} from '../shutingyard';
+import {Shutingyard, ShutingyardMode} from '../shutingyard';
 
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
@@ -30,7 +30,7 @@ import {Shutingyard} from '../shutingyard';
             // TODO: Must format the value string to convert some items...
 
             // Parse the updated value to the shutingyard algorithm
-            this._rpn = new Shutingyard('set').parse(value).rpn;
+            this._rpn = new Shutingyard(ShutingyardMode.SET).parse(value).rpn;
 
             return this;
         }

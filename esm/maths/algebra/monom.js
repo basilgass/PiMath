@@ -18,7 +18,7 @@ class Monom {
         return this._coefficient;
     }
     set coefficient(F) {
-        this._coefficient = F;
+        this._coefficient = new coefficients_1.Fraction(F);
     }
     get literal() {
         return this._literal;
@@ -156,6 +156,12 @@ class Monom {
     get displayWithSign() {
         let d = this.display;
         return (d[0] !== '-' ? '+' : '') + d;
+    }
+    get texWithSign() {
+        if (this.coefficient.isStrictlyPositive()) {
+            return '+' + this.tex;
+        }
+        return this.tex;
     }
     get tex() {
         let L = '', letters = Object.keys(this._literal).sort();

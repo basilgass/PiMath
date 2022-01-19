@@ -1,0 +1,3 @@
+.katex-left > .katex-display > .katex,.katex-left > span > .katex-display > .katex {
+    text-align: left !important;
+}

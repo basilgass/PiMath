@@ -1,7 +1,5 @@
 /***
  * Monom class
- * Defined as coefficient * literal
- * Examples: 3x^2, 3/5x^2, ...
  */
 import {Fraction} from "../coefficients";
 import {Numeric} from "../numeric";
@@ -16,8 +14,10 @@ export class Monom {
     private _literal: literalType;
 
     /**
-     * Create the monom object.
-     * @param value (optional) string
+     * Create a Monom
+     * Defined as \\(k \\cdot x^{n}\\), where \\( k,n \in \\mathbb{Q}\\).
+     * Examples: \\(3x^2\\) or \\(3/5x^2\\)
+     * @param value (optional) string The value that should be parse. Can be a Monom, a Fraction, a string or a number. If nothing is provided, it will return the trivial monom (0).
      */
     constructor(value?: unknown) {
         this.zero();
@@ -34,29 +34,35 @@ export class Monom {
     // Getter and setter
     // ------------------------------------------
     /**
-     * Get the coefficient as fraction
+     * Get the coefficient \\(k\\) of the Monom \\(k\\cdot x^{n}\\)
+     * @returns {Fraction}
      */
     get coefficient(): Fraction {
         return this._coefficient;
     }
 
     /**
-     * Set the coefficient value of the monom
-     * @param F     Fraction
+     * Set the coefficient \\(k\\) value of the monom
+     * @param {Fraction | number | string} F
      */
-    set coefficient(F: Fraction) {
-        this._coefficient = F;
+    set coefficient(F: Fraction | number | string) {
+        this._coefficient = new Fraction(F);
     }
 
     /**
-     * Get the literal part, as dictionary
+     * Get the literal part of \\(x^{n_1}y^{n_2}\\) as dictionary \\[\\begin{array}{ll}x&=n_1\\\\y&=n_2\\end{array}\\]
+     * @returns {literalType}
      */
     get literal(): literalType {
         return this._literal;
     }
 
+    /**
+     * Get the literal square roots of the Monom.
+     * TODO: remove this getter ? Is it used and is it correct ?
+     * @returns {literalType}
+     */
     get literalSqrt(): literalType {
-
         if (this.isLiteralSquare()) {
             let L: literalType = {}
             for (let key in this._literal) {
@@ -69,8 +75,8 @@ export class Monom {
     }
 
     /**
-     * Set the literal part of the monom
-     * @param L     Literal part as dictionary: <setLetter: exposant>
+     * Set the literal part of the monom. Must be a dictionary {x: Fraction, y: Fraction, ...}
+     * @param {literalType} L
      */
     set literal(L: literalType) {
         this._literal = L;
@@ -230,9 +236,16 @@ export class Monom {
      * Display the monom, forcing the '+' sign to appear
      */
     get displayWithSign(): string {
-        // TODO: Rename or remove this getter ?
         let d: String = this.display;
         return (d[0] !== '-' ? '+' : '') + d;
+    }
+
+    get texWithSign(): string {
+        if (this.coefficient.isStrictlyPositive()) {
+            return '+' + this.tex
+        }
+
+        return this.tex
     }
 
     /**
@@ -281,15 +294,15 @@ export class Monom {
      */
     parse = (inputStr: unknown): Monom => {
 
-        if(typeof inputStr === 'string') {
+        if (typeof inputStr === 'string') {
             this._shutingYardToReducedMonom(inputStr)
-        }else if(typeof inputStr ==='number') {
+        } else if (typeof inputStr === 'number') {
             this._coefficient = new Fraction(inputStr)
             this._literal = {}
-        }else if(inputStr instanceof Fraction) {
+        } else if (inputStr instanceof Fraction) {
             this._coefficient = inputStr.clone()
             this._literal = {}
-        }else if(inputStr instanceof Monom){
+        } else if (inputStr instanceof Monom) {
             this._coefficient = inputStr._coefficient.clone()
             this._literal = this.copyLiterals(inputStr.literal)
         }
@@ -384,7 +397,7 @@ export class Monom {
     };
 
     copyLiterals = (literal: literalType): literalType => {
-        let L:literalType = {}
+        let L: literalType = {}
 
         for (let k in literal) {
             L[k] = literal[k].clone()
@@ -392,7 +405,7 @@ export class Monom {
         return L
     }
 
-    makeSame = (M: Monom):Monom => {
+    makeSame = (M: Monom): Monom => {
         // Copy the literal parts.
         for (let k in M._literal) {
             this.setLetter(k, M._literal[k].clone());
@@ -451,7 +464,7 @@ export class Monom {
     add = (...M: Monom[]): Monom => {
         for (let m of M) {
             if (this.isSameAs(m)) {
-                if(this.isZero()){
+                if (this.isZero()) {
                     this.makeSame(m)
                 }
                 this._coefficient.add(m.coefficient);
@@ -469,7 +482,7 @@ export class Monom {
     subtract = (...M: Monom[]): Monom => {
         for (let m of M) {
             if (this.isSameAs(m)) {
-                if(this.isZero()){
+                if (this.isZero()) {
                     this.makeSame(m)
                 }
                 this._coefficient.add(m.clone().coefficient.opposed());
