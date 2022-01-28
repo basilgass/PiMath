@@ -51,6 +51,7 @@ export declare class Line {
     clone: () => Line;
     isParellelTo: (line: Line) => Boolean;
     isSameAs: (line: Line) => Boolean;
+    isVertical: () => Boolean;
     simplify: () => Line;
     simplifyDirection: () => Line;
     intersection: (line: Line) => {

@@ -30,7 +30,7 @@ export declare class Shutingyard {
     private _tokenKeys;
     constructor(mode?: ShutingyardMode);
     tokenConfigInitialization(): tokenType;
-    NextToken2(expr: string, start: number): [string, number, string];
+    NextToken(expr: string, start: number): [string, number, string];
     Uniformizer(expr: string): string;
     parse(expr: string, operators?: string[]): Shutingyard;
     get rpn(): {

@@ -19,7 +19,6 @@
     "module": "commonjs",
     "target": "esnext",
     "allowJs": true,
-    //    "jsx": "react-jsx",
     "sourceMap": true,
     "moduleResolution": "node",
     "declaration": true,

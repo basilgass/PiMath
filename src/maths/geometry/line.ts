@@ -312,6 +312,9 @@ export class Line {
     isSameAs = (line: Line): Boolean => {
         return this.slope.isEqual(line.slope) && this.height.isEqual(line.height);
     }
+    isVertical = (): Boolean => {
+        return this.slope.isInfinity()
+    }
     simplify = (): Line => {
         let lcm = Numeric.lcm(this._a.denominator, this._b.denominator, this._c.denominator),
             gcd = Numeric.gcd(this._a.numerator, this._b.numerator, this._c.numerator);

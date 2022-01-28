@@ -77,7 +77,9 @@ export class Shutingyard {
                 'sin': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
                 'cos': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
                 'tan': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                'sqrt': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
             }
+            this._uniformize = false
         } else {
             this._tokenConfig = {
                 '^': {precedence: 4, associative: 'right', type: ShutingyardType.OPERATION},
@@ -102,7 +104,7 @@ export class Shutingyard {
      * @param expr (string) Expression to analyse
      * @param start (number) CUrrent position in the expr string.
      */
-    NextToken2(expr: string, start: number): [string, number, string] {
+    NextToken(expr: string, start: number): [string, number, string] {
         let token: string, tokenType: string;
         token = '';
         tokenType = '';
@@ -166,61 +168,6 @@ export class Shutingyard {
 
         return [token, start + token.length, tokenType];
     }
-
-    // NextToken(expr: string, start: number): [string, number, string] {
-    //     let tokenMatch: string[], token: string, tokenType: string;
-    //
-    //     this.NextToken2(expr, start)
-    //     // Detect a fraction monoms or return empty array
-    //     tokenMatch = (expr.substring(start).match(/^[0-9/a-zA-Z^]+/g)) || [];
-    //
-    //     if (expr.substring(start, start + 3).match(/^(sin|cos|tan)/g)) {
-    //         token = expr.substring(start, start+3)
-    //         tokenType = 'function'
-    //     } else if (tokenMatch.length > 0) {
-    //         token = tokenMatch[0];
-    //         tokenType = 'monom';
-    //     }
-    //     // It's an operation !
-    //     else if (expr[start].match(/[+\-*/^]/g)) {
-    //         token = expr[start];
-    //         tokenType = 'operation';
-    //     } else if (expr[start].match(/[&|!]/g)) {
-    //         token = expr[start];
-    //         tokenType = 'operation';
-    //     }
-    //     // It's an opening parenthese
-    //     else if (expr[start] === '(') {
-    //         token = '(';
-    //         tokenType = '(';
-    //     }
-    //     // It's a closing parenthese
-    //     else if (expr[start] === ')') {
-    //         token = ')';
-    //         tokenType = ')';
-    //     }
-    //     // It's an argument separator for a function
-    //     else if (expr[start] === ',') {
-    //         token = ',';
-    //         tokenType = 'function-argument';
-    //     }
-    //     // It's a monom.
-    //     else {
-    //         // TODO: Actually, negative exposant aren't supported.
-    //         // token = (expr.substring(start).match(/^[\da-z\^]+/g)[0])||'';
-    //         token = tokenMatch[0];
-    //         tokenType = 'monom';
-    //
-    //         if (token === '') {
-    //             token = expr[start];
-    //             tokenType = 'monom';
-    //             console.log('SHUTING YARD - NEXT TOKEN: error at ', start);
-    //         }
-    //     }
-    //
-    //     // console.log(token, start + token.length, tokenType);
-    //     return [token, start + token.length, tokenType];
-    // }
 
     /**
      * Sanitize an expression by adding missing common operation (multiplication between parentheseses)
@@ -290,7 +237,7 @@ export class Shutingyard {
             }
 
             // Get the next token and the corresponding new (ending) position
-            [token, tokenPos, tokenType] = this.NextToken2(expr, tokenPos);
+            [token, tokenPos, tokenType] = this.NextToken(expr, tokenPos);
 
             switch (tokenType) {
                 case 'monom':

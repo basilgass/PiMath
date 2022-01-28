@@ -122,6 +122,8 @@ export class NumExp {
                     this._addToStack(stack, Math.cos(a))
                 } else if (element.token === 'tan') {
                     this._addToStack(stack, Math.tan(a))
+                } else if(element.token === 'sqrt') {
+                    this._addToStack(stack, Math.sqrt(a))
                 }
             }
         }

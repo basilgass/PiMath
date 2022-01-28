@@ -52,7 +52,9 @@ class Shutingyard {
                 'sin': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
                 'cos': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
                 'tan': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'sqrt': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
             };
+            this._uniformize = false;
         }
         else {
             this._tokenConfig = {
@@ -71,7 +73,7 @@ class Shutingyard {
         this._tokenKeys = Object.keys(this._tokenConfig).sort((a, b) => b.length - a.length);
         return this._tokenConfig;
     }
-    NextToken2(expr, start) {
+    NextToken(expr, start) {
         let token, tokenType;
         token = '';
         tokenType = '';
@@ -152,7 +154,7 @@ class Shutingyard {
                 console.log('SECURITY LEVEL 1 EXIT');
                 break;
             }
-            [token, tokenPos, tokenType] = this.NextToken2(expr, tokenPos);
+            [token, tokenPos, tokenType] = this.NextToken(expr, tokenPos);
             switch (tokenType) {
                 case 'monom':
                 case 'coefficient':

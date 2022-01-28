@@ -81,11 +81,19 @@ export class Vector {
             }
 
             // Fractions or a number are give
-            if (values[0].isFraction || !isNaN(values[0])) {
+            if (values[0] instanceof Fraction || !isNaN(values[0])) {
                 this._x = new Fraction(values[0])
             }
-            if (values[1].isFraction || !isNaN(values[1])) {
+            if (values[1] instanceof Fraction || !isNaN(values[1])) {
                 this._y = new Fraction(values[1])
+            }
+
+            if(
+                (typeof values[0] === 'object' && !isNaN(values[0].x) && !isNaN(values[0].x)) &&
+                (typeof values[1] === 'object' && !isNaN(values[1].x) && !isNaN(values[1].x))
+            ){
+                this._x = new Fraction(+values[1].x-values[0].x)
+                this._y = new Fraction(+values[1].y-values[0].y)
             }
         }
 

@@ -3516,6 +3516,9 @@ class Line {
     isSameAs = (line) => {
         return this.slope.isEqual(line.slope) && this.height.isEqual(line.height);
     };
+    isVertical = () => {
+        return this.slope.isInfinity();
+    };
     simplify = () => {
         let lcm = numeric_1.Numeric.lcm(this._a.denominator, this._b.denominator, this._c.denominator), gcd = numeric_1.Numeric.gcd(this._a.numerator, this._b.numerator, this._c.numerator);
         this.parseByCoefficient(this._a.clone().multiply(lcm).divide(gcd), this._b.clone().multiply(lcm).divide(gcd), this._c.clone().multiply(lcm).divide(gcd));
@@ -4066,11 +4069,16 @@ class Vector {
                 this._y = values[1].y.clone().subtract(values[0].y);
                 return this;
             }
-            if (values[0].isFraction || !isNaN(values[0])) {
+            if (values[0] instanceof fraction_1.Fraction || !isNaN(values[0])) {
                 this._x = new fraction_1.Fraction(values[0]);
             }
-            if (values[1].isFraction || !isNaN(values[1])) {
+            if (values[1] instanceof fraction_1.Fraction || !isNaN(values[1])) {
                 this._y = new fraction_1.Fraction(values[1]);
+            }
+            if ((typeof values[0] === 'object' && !isNaN(values[0].x) && !isNaN(values[0].x)) &&
+                (typeof values[1] === 'object' && !isNaN(values[1].x) && !isNaN(values[1].x))) {
+                this._x = new fraction_1.Fraction(+values[1].x - values[0].x);
+                this._y = new fraction_1.Fraction(+values[1].y - values[0].y);
             }
         }
         return this;
@@ -4344,6 +4352,9 @@ class NumExp {
                 }
                 else if (element.token === 'tan') {
                     this._addToStack(stack, Math.tan(a));
+                }
+                else if (element.token === 'sqrt') {
+                    this._addToStack(stack, Math.sqrt(a));
                 }
             }
         }
@@ -4762,7 +4773,9 @@ class Shutingyard {
                 'sin': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
                 'cos': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
                 'tan': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'sqrt': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
             };
+            this._uniformize = false;
         }
         else {
             this._tokenConfig = {
@@ -4781,7 +4794,7 @@ class Shutingyard {
         this._tokenKeys = Object.keys(this._tokenConfig).sort((a, b) => b.length - a.length);
         return this._tokenConfig;
     }
-    NextToken2(expr, start) {
+    NextToken(expr, start) {
         let token, tokenType;
         token = '';
         tokenType = '';
@@ -4862,7 +4875,7 @@ class Shutingyard {
                 console.log('SECURITY LEVEL 1 EXIT');
                 break;
             }
-            [token, tokenPos, tokenType] = this.NextToken2(expr, tokenPos);
+            [token, tokenPos, tokenType] = this.NextToken(expr, tokenPos);
             switch (tokenType) {
                 case 'monom':
                 case 'coefficient':

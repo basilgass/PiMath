@@ -101,6 +101,9 @@ class NumExp {
                 else if (element.token === 'tan') {
                     this._addToStack(stack, Math.tan(a));
                 }
+                else if (element.token === 'sqrt') {
+                    this._addToStack(stack, Math.sqrt(a));
+                }
             }
         }
         if (stack.length === 1) {
