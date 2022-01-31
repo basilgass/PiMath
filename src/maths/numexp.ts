@@ -107,7 +107,7 @@ export class NumExp {
                     this._addToStack(stack, a + b)
                 } else if (element.token === '-') {
                     const b = +stack.pop(),
-                        a = +stack.pop()
+                        a = +stack.pop() || 0
                     this._addToStack(stack, a - b)
                 } else if (element.token === '^') {
                     const b = +stack.pop(),

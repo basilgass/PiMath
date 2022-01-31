@@ -37,10 +37,15 @@
 
 <script>
   // let ne = new Pi.NumExp('5/x*sin(x*x)')
-  let ne = new Pi.NumExp('5/x*sqrt(x^2)')
+	const expr2 = new Pi.NumExp('-3*x^2-5')
 
-	console.log(ne.rpn)
-	console.log(ne.evaluate({x: 0}))
+	console.log(expr2.evaluate({x: -2}))
+  //
+	//
+	// let ne = new Pi.NumExp('5/x*sqrt(x^2)')
+	//
+	// console.log(ne.rpn)
+	// console.log(ne.evaluate({x: 0}))
 
 	function dev () {
 		let output = []
