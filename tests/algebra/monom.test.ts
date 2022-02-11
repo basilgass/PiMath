@@ -3,8 +3,10 @@ import {Monom} from "../../src/maths/algebra";
 import {Random} from "../../src/maths/random";
 import {describe} from "mocha";
 import {Fraction} from "../../src/maths/coefficients";
+import {Shutingyard} from "../../src/maths/shutingyard";
+import {log} from "util";
 
-describe('Monom tests', () => {
+describe('Monom with integer power', () => {
     it('parsing', () => {
         const M0a = new Monom('3');
         expect(M0a.tex).to.be.equal('3')
@@ -66,14 +68,21 @@ describe('Monom tests', () => {
     });
 })
 
-describe('Monom as numerical expression WIP', () => {
+describe('Monom with fraction power', () => {
     it('should create a numerical expression', () => {
-        let M = new Monom()
+        const inputStr: string = '1/5x^(2/3)'
+        const SY: Shutingyard = new Shutingyard().parse(inputStr);
+        const rpn: { token: string, tokenType: string }[] = SY.rpn;
+        console.log(rpn)
 
-        M.coefficient = new Fraction(3, 7)
-        M.setLetter('3', new Fraction(0.5).reduce())
+        let M = new Monom(inputStr)
+        console.log(M.tex)
+        let N = new Monom('7x^(4/5)')
+
+        M.multiply(N.clone())
 
         console.log(M.tex)
+
         // TODO: Problem while displaying numerical expression
         console.log(M.display)
     })

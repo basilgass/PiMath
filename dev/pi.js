@@ -1232,6 +1232,47 @@ class Monom {
         }
         return this;
     };
+    static addToken = (stack, element) => {
+        let q1, q2, m, letter, pow;
+        if (element.tokenType === 'coefficient') {
+            let M = new Monom().one();
+            M.coefficient = new coefficients_1.Fraction(element.token);
+            stack.push(M.clone());
+        }
+        else if (element.tokenType === 'variable') {
+            let M = new Monom().one();
+            M.setLetter(element.token, 1);
+            stack.push(M.clone());
+        }
+        else if (element.tokenType === 'operation') {
+            switch (element.token) {
+                case '-':
+                    q2 = (stack.pop()) || new Monom().zero();
+                    q1 = (stack.pop()) || new Monom().zero();
+                    stack.push(q1.subtract(q2));
+                    break;
+                case '*':
+                    q2 = (stack.pop()) || new Monom().one();
+                    q1 = (stack.pop()) || new Monom().one();
+                    stack.push(q1.multiply(q2));
+                    break;
+                case '/':
+                    q2 = (stack.pop()) || new Monom().one();
+                    q1 = (stack.pop()) || new Monom().one();
+                    stack.push(q1.divide(q2));
+                    break;
+                case '^':
+                    pow = (stack.pop().coefficient) || new coefficients_1.Fraction().one();
+                    m = (stack.pop()) || new Monom().one();
+                    letter = m.variables[0];
+                    if (letter !== undefined) {
+                        m.setLetter(letter, pow);
+                    }
+                    stack.push(m);
+                    break;
+            }
+        }
+    };
     _shutingYardToReducedMonom = (inputStr) => {
         const SY = new shutingyard_1.Shutingyard().parse(inputStr);
         const rpn = SY.rpn;
@@ -1253,39 +1294,7 @@ class Monom {
         }
         else {
             for (const element of rpn) {
-                if (element.tokenType === 'coefficient') {
-                    let M = new Monom().one();
-                    M.coefficient = new coefficients_1.Fraction(element.token);
-                    stack.push(M.clone());
-                }
-                else if (element.tokenType === 'variable') {
-                    let M = new Monom().one();
-                    M.setLetter(element.token, 1);
-                    stack.push(M.clone());
-                }
-                else if (element.tokenType === 'operation') {
-                    switch (element.token) {
-                        case '-':
-                            q2 = (stack.pop()) || new Monom().zero();
-                            q1 = (stack.pop()) || new Monom().zero();
-                            stack.push(q1.subtract(q2));
-                            break;
-                        case '*':
-                            q2 = (stack.pop()) || new Monom().one();
-                            q1 = (stack.pop()) || new Monom().one();
-                            stack.push(q1.multiply(q2));
-                            break;
-                        case '^':
-                            pow = (stack.pop().coefficient) || new coefficients_1.Fraction().one();
-                            m = (stack.pop()) || new Monom().one();
-                            letter = m.variables[0];
-                            if (letter !== undefined) {
-                                m.setLetter(letter, pow);
-                            }
-                            stack.push(m);
-                            break;
-                    }
-                }
+                Monom.addToken(stack, element);
             }
         }
         this.one();
@@ -1627,9 +1636,6 @@ const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts"
 const coefficients_1 = __webpack_require__(/*! ../coefficients */ "./src/maths/coefficients/index.ts");
 class Polynom {
     _rawString;
-    _monoms;
-    _factors;
-    _texString;
     constructor(polynomString, ...values) {
         this._monoms = [];
         this._factors = [];
@@ -1638,17 +1644,23 @@ class Polynom {
         }
         return this;
     }
+    _monoms;
     get monoms() {
         return this._monoms;
     }
     set monoms(M) {
         this._monoms = M;
     }
+    _factors;
     get factors() {
         return this._factors;
     }
     set factors(value) {
         this._factors = value;
+    }
+    _texString;
+    get texString() {
+        return this._texString;
     }
     get texFactors() {
         this.factorize();
@@ -1662,9 +1674,6 @@ class Polynom {
             }
         }
         return tex;
-    }
-    get texString() {
-        return this._texString;
     }
     get length() {
         return this._monoms.length;
@@ -1698,27 +1707,6 @@ class Polynom {
     get numberOfVars() {
         return this.variables.length;
     }
-    genDisplay = (output, forceSign, wrapParentheses) => {
-        let P = '';
-        for (const k of this._monoms) {
-            if (k.coefficient.value === 0) {
-                continue;
-            }
-            P += `${(k.coefficient.sign() === 1 && (P !== '' || forceSign === true)) ? '+' : ''}${(output === 'tex') ? k.tex : k.display}`;
-        }
-        if (wrapParentheses === true && this.length > 1) {
-            if (output === 'tex') {
-                P = `\\left( ${P} \\right)`;
-            }
-            else {
-                P = `(${P})`;
-            }
-        }
-        if (P === '') {
-            P = '0';
-        }
-        return P;
-    };
     parse = (inputStr, ...values) => {
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;
@@ -1759,40 +1747,6 @@ class Polynom {
         else {
             return this.zero();
         }
-    };
-    shutingYardToReducedPolynom = (inputStr) => {
-        const SY = new shutingyard_1.Shutingyard().parse(inputStr);
-        const rpn = SY.rpn;
-        let m1;
-        let m2;
-        let stack = [], previousToken = null, tempPolynom;
-        for (const element of rpn) {
-            if (element.tokenType === 'coefficient' || element.tokenType === 'variable') {
-                tempPolynom = new Polynom().zero();
-                tempPolynom.monoms = [new monom_1.Monom(element.token)];
-                stack.push(tempPolynom.clone());
-            }
-            else if (element.tokenType === 'operation') {
-                m2 = (stack.pop()) || new Polynom().zero();
-                m1 = (stack.pop()) || new Polynom().zero();
-                switch (element.token) {
-                    case '+':
-                        stack.push(m1.add(m2));
-                        break;
-                    case '-':
-                        stack.push(m1.subtract(m2));
-                        break;
-                    case '*':
-                        stack.push(m1.multiply(m2));
-                        break;
-                    case '^':
-                        stack.push(m1.pow(+previousToken));
-                }
-            }
-            previousToken = element.token;
-        }
-        this._monoms = stack[0].monoms;
-        return this;
     };
     clone = () => {
         const P = new Polynom();
@@ -1873,31 +1827,6 @@ class Polynom {
         }
         return this;
     };
-    multiplyByPolynom = (P) => {
-        const M = [];
-        for (const m1 of this._monoms) {
-            for (const m2 of P.monoms) {
-                M.push(monom_1.Monom.xmultiply(m1, m2));
-            }
-        }
-        this._monoms = M;
-        return this.reduce();
-    };
-    multiplyByFraction = (F) => {
-        for (const m of this._monoms) {
-            m.coefficient.multiply(F);
-        }
-        return this.reduce();
-    };
-    multiplyByInteger = (nb) => {
-        return this.multiplyByFraction(new coefficients_1.Fraction(nb));
-    };
-    multiplyByMonom = (M) => {
-        for (const m of this._monoms) {
-            m.multiply(M);
-        }
-        return this.reduce();
-    };
     euclidian = (P) => {
         const letter = P.variables[0];
         const quotient = new Polynom().zero();
@@ -1927,19 +1856,6 @@ class Polynom {
         else if (typeof value === 'number' && Number.isSafeInteger(value)) {
             return this.divideByInteger(value);
         }
-    };
-    divideByInteger = (nb) => {
-        const nbF = new coefficients_1.Fraction(nb);
-        for (const m of this._monoms) {
-            m.coefficient.divide(nbF);
-        }
-        return this;
-    };
-    divideByFraction = (F) => {
-        for (const m of this._monoms) {
-            m.coefficient.divide(F);
-        }
-        return this;
     };
     pow = (nb) => {
         if (!Number.isSafeInteger(nb)) {
@@ -2197,82 +2113,6 @@ class Polynom {
         this.factors = factors;
         return factors;
     };
-    _factorize2ndDegree = (letter) => {
-        let P1, P2, a, b, c, delta, x1, x2, factor;
-        if (this.numberOfVars === 1) {
-            a = this.monomByDegree(2, letter).coefficient;
-            b = this.monomByDegree(1, letter).coefficient;
-            c = this.monomByDegree(0, letter).coefficient;
-            delta = b.clone().pow(2).subtract(a.clone().multiply(c).multiply(4));
-            if (delta.isZero()) {
-                x1 = b.clone().opposed().divide(a.clone().multiply(2));
-                P1 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator);
-                P2 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator);
-                factor = a.divide(x1.denominator).divide(x1.denominator);
-                if (!factor.isOne()) {
-                    return [new Polynom(factor.display), P1, P2];
-                }
-                else {
-                    return [P1, P2];
-                }
-            }
-            else if (delta.isPositive() && delta.isSquare()) {
-                x1 = b.clone().opposed()
-                    .add(delta.clone().sqrt())
-                    .divide(a.clone().multiply(2));
-                x2 = b.clone().opposed()
-                    .subtract(delta.clone().sqrt())
-                    .divide(a.clone().multiply(2));
-                factor = a.divide(x1.denominator).divide(x2.denominator);
-                if (factor.isOne()) {
-                    return [
-                        new Polynom(letter).subtract(x1.display).multiply(x1.denominator),
-                        new Polynom(letter).subtract(x2.display).multiply(x2.denominator),
-                    ];
-                }
-                else {
-                    return [
-                        new Polynom(factor.display),
-                        new Polynom(letter).subtract(x1.display).multiply(x1.denominator),
-                        new Polynom(letter).subtract(x2.display).multiply(x2.denominator),
-                    ];
-                }
-            }
-            else {
-                return [this.clone()];
-            }
-        }
-        else {
-            a = this.monomByDegree(2, letter);
-            b = this.monomByDegree(1, letter);
-            c = this.monomByDegree(0, letter);
-            if (a.isLiteralSquare() && c.isLiteralSquare()) {
-                if (b.clone().pow(2).isSameAs(a.clone().multiply(c))) {
-                    let xPolynom = new Polynom('x', a.coefficient, b.coefficient, c.coefficient);
-                    let xFactors = xPolynom._factorize2ndDegree('x');
-                    let factors = [], xyzPolynom;
-                    if (xFactors.length >= 2) {
-                        for (let p of xFactors) {
-                            if (p.degree().isZero()) {
-                                factors.push(p.clone());
-                            }
-                            else {
-                                xyzPolynom = p.clone();
-                                xyzPolynom.monoms[0].literal = a.literalSqrt;
-                                xyzPolynom.monoms[1].literal = c.literalSqrt;
-                                factors.push(xyzPolynom.clone());
-                            }
-                        }
-                        return factors;
-                    }
-                }
-            }
-            return [this.clone()];
-        }
-    };
-    _factorizeByGroups = () => {
-        return [];
-    };
     getZeroes = () => {
         const Z = [];
         switch (this.degree().value) {
@@ -2403,6 +2243,169 @@ class Polynom {
             }
         }
         return M;
+    };
+    genDisplay = (output, forceSign, wrapParentheses) => {
+        let P = '';
+        for (const k of this._monoms) {
+            if (k.coefficient.value === 0) {
+                continue;
+            }
+            P += `${(k.coefficient.sign() === 1 && (P !== '' || forceSign === true)) ? '+' : ''}${(output === 'tex') ? k.tex : k.display}`;
+        }
+        if (wrapParentheses === true && this.length > 1) {
+            if (output === 'tex') {
+                P = `\\left( ${P} \\right)`;
+            }
+            else {
+                P = `(${P})`;
+            }
+        }
+        if (P === '') {
+            P = '0';
+        }
+        return P;
+    };
+    addToken = (stack, token) => {
+    };
+    shutingYardToReducedPolynom = (inputStr) => {
+        const SY = new shutingyard_1.Shutingyard().parse(inputStr);
+        const rpn = SY.rpn;
+        this.zero();
+        let stack = [], mStack = [], monom = new monom_1.Monom();
+        console.log(inputStr);
+        for (const element of rpn) {
+            console.log('POLYNOM', stack.map(x => x.tex));
+            console.log('MONOM', mStack.map(x => x.tex));
+            console.log('OPERATION', element.token);
+            if (element.token === '-' || element.token === '+') {
+                if (stack.length >= 2) {
+                    let pushToPolynomIndex = stack.length - 2;
+                    if (!stack[pushToPolynomIndex].isSameAs(stack[stack.length - 1])) {
+                        this.add(stack[pushToPolynomIndex]);
+                        stack.shift();
+                    }
+                }
+            }
+            monom_1.Monom.addToken(mStack, element);
+        }
+        if (stack.length === 1) {
+            this.add(stack[0]);
+        }
+        return this;
+    };
+    multiplyByPolynom = (P) => {
+        const M = [];
+        for (const m1 of this._monoms) {
+            for (const m2 of P.monoms) {
+                M.push(monom_1.Monom.xmultiply(m1, m2));
+            }
+        }
+        this._monoms = M;
+        return this.reduce();
+    };
+    multiplyByFraction = (F) => {
+        for (const m of this._monoms) {
+            m.coefficient.multiply(F);
+        }
+        return this.reduce();
+    };
+    multiplyByInteger = (nb) => {
+        return this.multiplyByFraction(new coefficients_1.Fraction(nb));
+    };
+    multiplyByMonom = (M) => {
+        for (const m of this._monoms) {
+            m.multiply(M);
+        }
+        return this.reduce();
+    };
+    divideByInteger = (nb) => {
+        const nbF = new coefficients_1.Fraction(nb);
+        for (const m of this._monoms) {
+            m.coefficient.divide(nbF);
+        }
+        return this;
+    };
+    divideByFraction = (F) => {
+        for (const m of this._monoms) {
+            m.coefficient.divide(F);
+        }
+        return this;
+    };
+    _factorize2ndDegree = (letter) => {
+        let P1, P2, a, b, c, delta, x1, x2, factor;
+        if (this.numberOfVars === 1) {
+            a = this.monomByDegree(2, letter).coefficient;
+            b = this.monomByDegree(1, letter).coefficient;
+            c = this.monomByDegree(0, letter).coefficient;
+            delta = b.clone().pow(2).subtract(a.clone().multiply(c).multiply(4));
+            if (delta.isZero()) {
+                x1 = b.clone().opposed().divide(a.clone().multiply(2));
+                P1 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator);
+                P2 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator);
+                factor = a.divide(x1.denominator).divide(x1.denominator);
+                if (!factor.isOne()) {
+                    return [new Polynom(factor.display), P1, P2];
+                }
+                else {
+                    return [P1, P2];
+                }
+            }
+            else if (delta.isPositive() && delta.isSquare()) {
+                x1 = b.clone().opposed()
+                    .add(delta.clone().sqrt())
+                    .divide(a.clone().multiply(2));
+                x2 = b.clone().opposed()
+                    .subtract(delta.clone().sqrt())
+                    .divide(a.clone().multiply(2));
+                factor = a.divide(x1.denominator).divide(x2.denominator);
+                if (factor.isOne()) {
+                    return [
+                        new Polynom(letter).subtract(x1.display).multiply(x1.denominator),
+                        new Polynom(letter).subtract(x2.display).multiply(x2.denominator),
+                    ];
+                }
+                else {
+                    return [
+                        new Polynom(factor.display),
+                        new Polynom(letter).subtract(x1.display).multiply(x1.denominator),
+                        new Polynom(letter).subtract(x2.display).multiply(x2.denominator),
+                    ];
+                }
+            }
+            else {
+                return [this.clone()];
+            }
+        }
+        else {
+            a = this.monomByDegree(2, letter);
+            b = this.monomByDegree(1, letter);
+            c = this.monomByDegree(0, letter);
+            if (a.isLiteralSquare() && c.isLiteralSquare()) {
+                if (b.clone().pow(2).isSameAs(a.clone().multiply(c))) {
+                    let xPolynom = new Polynom('x', a.coefficient, b.coefficient, c.coefficient);
+                    let xFactors = xPolynom._factorize2ndDegree('x');
+                    let factors = [], xyzPolynom;
+                    if (xFactors.length >= 2) {
+                        for (let p of xFactors) {
+                            if (p.degree().isZero()) {
+                                factors.push(p.clone());
+                            }
+                            else {
+                                xyzPolynom = p.clone();
+                                xyzPolynom.monoms[0].literal = a.literalSqrt;
+                                xyzPolynom.monoms[1].literal = c.literalSqrt;
+                                factors.push(xyzPolynom.clone());
+                            }
+                        }
+                        return factors;
+                    }
+                }
+            }
+            return [this.clone()];
+        }
+    };
+    _factorizeByGroups = () => {
+        return [];
     };
 }
 exports.Polynom = Polynom;
@@ -3312,8 +3315,9 @@ const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts"
 var LinePropriety;
 (function (LinePropriety) {
     LinePropriety[LinePropriety["None"] = 0] = "None";
-    LinePropriety[LinePropriety["Parallel"] = 1] = "Parallel";
-    LinePropriety[LinePropriety["Perpendicular"] = 2] = "Perpendicular";
+    LinePropriety["Parallel"] = "parallel";
+    LinePropriety["Perpendicular"] = "perpendicular";
+    LinePropriety["Tangent"] = "tangent";
 })(LinePropriety || (LinePropriety = {}));
 class Line {
     _a;
@@ -4827,9 +4831,7 @@ class Shutingyard {
             }
             if (token === '') {
                 if (expr[start].match(/[0-9]/)) {
-                    if (this._mode === ShutingyardMode.POLYNOM) {
-                        token = expr.substring(start).match(/^([0-9.,/]+)/)[0];
-                    }
+                    if (this._mode === ShutingyardMode.POLYNOM && false) {}
                     else {
                         token = expr.substring(start).match(/^([0-9.,]+)/)[0];
                     }

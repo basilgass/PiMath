@@ -2,16 +2,16 @@ import { literalType, Monom } from './monom';
 import { Fraction } from "../coefficients";
 export declare class Polynom {
     private _rawString;
-    private _monoms;
-    private _factors;
-    private _texString;
     constructor(polynomString?: string, ...values: unknown[]);
+    private _monoms;
     get monoms(): Monom[];
     set monoms(M: Monom[]);
+    private _factors;
     get factors(): Polynom[];
     set factors(value: Polynom[]);
-    get texFactors(): string;
+    private _texString;
     get texString(): string;
+    get texFactors(): string;
     get length(): number;
     get display(): string;
     get raw(): string;
@@ -19,9 +19,7 @@ export declare class Polynom {
     get isMultiVariable(): boolean;
     get variables(): string[];
     get numberOfVars(): number;
-    private genDisplay;
     parse: (inputStr: string, ...values: unknown[]) => Polynom;
-    private shutingYardToReducedPolynom;
     clone: () => Polynom;
     zero: () => Polynom;
     one: () => Polynom;
@@ -30,17 +28,11 @@ export declare class Polynom {
     add: (...values: unknown[]) => Polynom;
     subtract: (...values: unknown[]) => Polynom;
     multiply: (value: unknown) => Polynom;
-    private multiplyByPolynom;
-    private multiplyByFraction;
-    private multiplyByInteger;
-    private multiplyByMonom;
     euclidian: (P: Polynom) => {
         quotient: Polynom;
         reminder: Polynom;
     };
     divide: (value: unknown) => Polynom;
-    private divideByInteger;
-    private divideByFraction;
     pow: (nb: number) => Polynom;
     compare: (P: Polynom, sign?: string) => boolean;
     isZero(): boolean;
@@ -60,8 +52,6 @@ export declare class Polynom {
     primitive: (letter?: string) => Polynom;
     integrate: (a: Fraction | number, b: Fraction | number, letter?: string) => Fraction;
     factorize: (letter?: string) => Polynom[];
-    private _factorize2ndDegree;
-    private _factorizeByGroups;
     getZeroes: () => (Fraction | boolean)[];
     monomByDegree: (degree?: Fraction | number, letter?: string) => Monom;
     monomsByDegree: (degree?: number | Fraction, letter?: string) => Monom[];
@@ -73,4 +63,15 @@ export declare class Polynom {
     lcmNumerator: () => number;
     gcdNumerator: () => number;
     commonMonom: () => Monom;
+    private genDisplay;
+    addToken: (stack: Polynom[], token: string) => void;
+    private shutingYardToReducedPolynom;
+    private multiplyByPolynom;
+    private multiplyByFraction;
+    private multiplyByInteger;
+    private multiplyByMonom;
+    private divideByInteger;
+    private divideByFraction;
+    private _factorize2ndDegree;
+    private _factorizeByGroups;
 }

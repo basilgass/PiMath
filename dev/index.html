@@ -36,10 +36,13 @@
 <!--</div>-->
 
 <script>
-  // let ne = new Pi.NumExp('5/x*sin(x*x)')
-	const expr2 = new Pi.NumExp('-3*x^2-5')
+	let P = new Pi.Polynom('2x(x+3)^2(x-1)')
 
-	console.log(expr2.evaluate({x: -2}))
+		console.log(P.tex)
+  // let ne = new Pi.NumExp('5/x*sin(x*x)')
+	// const expr2 = new Pi.NumExp('-3*x^2-5')
+  //
+	// console.log(expr2.evaluate({x: -2}))
   //
 	//
 	// let ne = new Pi.NumExp('5/x*sqrt(x^2)')

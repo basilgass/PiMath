@@ -10,8 +10,9 @@ import {Numeric} from "../numeric";
 
 enum LinePropriety {
     None,
-    Parallel,
-    Perpendicular
+    Parallel='parallel',
+    Perpendicular = 'perpendicular',
+    Tangent = 'tangent'
 }
 
 export class Line {
@@ -432,6 +433,7 @@ export class Line {
     }
 
     getValueAtX = (value: Fraction|number): Fraction => {
+
         const equ = this.equation.clone().isolate('y'),
             F = new Fraction(value)
 

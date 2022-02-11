@@ -1,7 +1,7 @@
 import {loadHighlighter} from "typedoc/dist/lib/utils/highlighter";
 import exp = require("constants");
 
-type tokenType = {
+export type tokenType = {
     [key: string]: {
         precedence: number,
         associative: string,
@@ -148,7 +148,7 @@ export class Shutingyard {
             if(token===''){
                 // No function found ! Might be a coefficient !
                 if( expr[start].match(/[0-9]/) ) {
-                    if(this._mode === ShutingyardMode.POLYNOM) {
+                    if(this._mode === ShutingyardMode.POLYNOM && false) {
                         token = expr.substring(start).match(/^([0-9.,/]+)/)[0]
                     }else{
                         token = expr.substring(start).match(/^([0-9.,]+)/)[0]

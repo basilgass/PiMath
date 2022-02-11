@@ -4,8 +4,9 @@ import { Point } from "./point";
 import { Equation } from "../algebra";
 declare enum LinePropriety {
     None = 0,
-    Parallel = 1,
-    Perpendicular = 2
+    Parallel = "parallel",
+    Perpendicular = "perpendicular",
+    Tangent = "tangent"
 }
 export declare class Line {
     private _a;

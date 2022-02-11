@@ -3,6 +3,7 @@ import {Fraction} from "../../src/maths/coefficients";
 import {Monom, Polynom} from "../../src/maths/algebra";
 import {Random} from "../../src/maths/random";
 import {describe} from "mocha";
+import {Shutingyard} from "../../src/maths/shutingyard";
 
 describe('Polynom tests', () => {
     it('Parse polynom', () => {
@@ -10,6 +11,14 @@ describe('Polynom tests', () => {
         options.reorder().reduce();
         expect(options.tex).to.be.equal('2x^{4}+10x^{3}+6x^{2}-18x');
     });
+
+    it('Parse polynom with coefficient as fraction', ()=>{
+        const P = new Polynom('-3/5x-2')
+
+
+        console.log(P.tex)
+        expect(P.tex).to.be.equal('-\\frac{ 3 }{ 5 }x - 2')
+    })
 
     it('Tex display', () => {
         const options = new Polynom('x^2-2x+1');
@@ -36,7 +45,7 @@ describe('Polynom tests', () => {
         expect(F.integrate(0, 2).value).to.be.equal(-4)
         expect(G.integrate(-3, 3).display).to.be.equal('174/5')
     })
-    it('Random Polynom of degree 5', function () {
+    it('Random Polynom of degree 5', () => {
         let P = Random.polynom({
             degree: 6,
             numberOfMonoms: 3,
@@ -50,7 +59,7 @@ describe('Polynom tests', () => {
         expect(P.degree().value).to.be.equal(6)
     });
 
-    it('should calculate correctly the quotient and reminder', function () {
+    it('should calculate correctly the quotient and reminder', () => {
         let P = new Polynom('(x-3)(x^2+5x-4)+12'),
             D = new Polynom('x-3')
 
@@ -59,4 +68,20 @@ describe('Polynom tests', () => {
         expect(euclidian.quotient.tex).to.be.equal('x^{2}+5x-4')
         expect(euclidian.reminder.tex).to.be.equal('12')
     });
+
+    it('should parse with roots coefficient',  ()=>{
+        let P = new Polynom('sqrt(x)-5')
+
+        expect(P.degree().value).to.be.equal(0.5)
+    })
+})
+
+describe('Polynom parsing with rational power or roots', ()=>{
+    it('should parse with rational powers', ()=> {
+        // const SY: Shutingyard = new Shutingyard().parse('3x^(2/3)-5x+5/3');
+        const SY: Shutingyard = new Shutingyard().parse('-3/5x-2');
+        const rpn: { token: string, tokenType: string }[] = SY.rpn;
+
+        console.log(rpn)
+    })
 })

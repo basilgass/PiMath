@@ -5,7 +5,6 @@
 import {literalType, Monom} from './monom';
 import {Shutingyard} from '../shutingyard';
 import {Numeric} from '../numeric';
-import {Random, randomPolynomConfig} from "../random";
 import {Fraction} from "../coefficients";
 
 /**
@@ -16,9 +15,6 @@ import {Fraction} from "../coefficients";
  */
 export class Polynom {
     private _rawString: string;
-    private _monoms: Monom[];
-    private _factors: Polynom[];
-    private _texString: string;
 
     /**
      *
@@ -34,8 +30,8 @@ export class Polynom {
         return this;
     }
 
-    // ------------------------------------------
-    // Getter and setter
+    private _monoms: Monom[];
+
     // ------------------------------------------
     get monoms() {
         return this._monoms;
@@ -45,12 +41,23 @@ export class Polynom {
         this._monoms = M;
     }
 
+    // ------------------------------------------
+    // Getter and setter
+
+    private _factors: Polynom[];
+
     get factors(): Polynom[] {
         return this._factors;
     }
 
     set factors(value: Polynom[]) {
         this._factors = value;
+    }
+
+    private _texString: string;
+
+    get texString(): string {
+        return this._texString;
     }
 
     get texFactors(): string {
@@ -65,10 +72,6 @@ export class Polynom {
             }
         }
         return tex;
-    }
-
-    get texString(): string {
-        return this._texString;
     }
 
     get length() {
@@ -115,34 +118,6 @@ export class Polynom {
         return this.variables.length;
     }
 
-    private genDisplay = (output?: string, forceSign?: boolean, wrapParentheses?: boolean): string => {
-        let P: string = '';
-
-        for (const k of this._monoms) {
-            if (k.coefficient.value === 0) {
-                continue;
-            }
-
-            P += `${(k.coefficient.sign() === 1 && (P !== '' || forceSign === true)) ? '+' : ''}${(output === 'tex') ? k.tex : k.display}`;
-        }
-
-        if (wrapParentheses === true && this.length > 1) {
-            if (output === 'tex') {
-                P = `\\left( ${P} \\right)`;
-            } else {
-                P = `(${P})`;
-            }
-        }
-
-        if (P === '') {
-            P = '0';
-        }
-        return P;
-    };
-
-
-    // ------------------------------------------
-    // Creation / parsing functions
     // ------------------------------------------
     /**
      * Parse a string to a polynom.
@@ -204,49 +179,9 @@ export class Polynom {
 
     };
 
-    /**
-     * Main parse using a shutting yard class
-     * @param inputStr
-     */
-    private shutingYardToReducedPolynom = (inputStr: string): Polynom => {
-        // Get the RPN array of the current expression
-        const SY: Shutingyard = new Shutingyard().parse(inputStr);
-        const rpn: { token: string, tokenType: string }[] = SY.rpn;
-        let m1: Polynom;
-        let m2: Polynom;
 
-        let stack: Polynom[] = [],
-            previousToken: string = null,
-            tempPolynom
-
-        for (const element of rpn) {
-            if (element.tokenType === 'coefficient' || element.tokenType === 'variable') {
-                tempPolynom = new Polynom().zero();
-                tempPolynom.monoms = [new Monom(element.token)]
-                stack.push(tempPolynom.clone())
-            } else if (element.tokenType === 'operation') {
-                m2 = (stack.pop()) || new Polynom().zero();
-                m1 = (stack.pop()) || new Polynom().zero();
-                switch (element.token) {
-                    case '+':
-                        stack.push(m1.add(m2))
-                        break;
-                    case '-':
-                        stack.push(m1.subtract(m2))
-                        break;
-                    case '*':
-                        stack.push(m1.multiply(m2))
-                        break;
-                    case '^':
-                        stack.push(m1.pow(+previousToken))
-                }
-            }
-            previousToken = element.token;
-        }
-
-        this._monoms = stack[0].monoms;
-        return this;
-    }
+    // ------------------------------------------
+    // Creation / parsing functions
 
     /**
      * Clone the polynom
@@ -285,6 +220,29 @@ export class Polynom {
         this._monoms = [];
         this._rawString = '';
         return this;
+    };
+
+    // ------------------------------------------
+    opposed = (): Polynom => {
+        this._monoms = this._monoms.map(m => m.opposed());
+        return this;
+    };
+
+    add = (...values: unknown[]): Polynom => {
+
+        for (let value of values) {
+            if (value instanceof Polynom) {
+                this._monoms = this._monoms.concat(value.monoms);
+            } else if (value instanceof Monom) {
+                this._monoms.push(value.clone());
+            } else if (Number.isSafeInteger(value)) {
+                this._monoms.push(new Monom(value.toString()));
+            } else {
+                this._monoms.push(new Monom(value));
+            }
+        }
+
+        return this.reduce();
     };
 
     // // -----------------------------------------------
@@ -351,28 +309,6 @@ export class Polynom {
 
     // ------------------------------------------
     // Mathematical operations
-    // ------------------------------------------
-    opposed = (): Polynom => {
-        this._monoms = this._monoms.map(m => m.opposed());
-        return this;
-    };
-
-    add = (...values: unknown[]): Polynom => {
-
-        for (let value of values) {
-            if (value instanceof Polynom) {
-                this._monoms = this._monoms.concat(value.monoms);
-            } else if (value instanceof Monom) {
-                this._monoms.push(value.clone());
-            } else if (Number.isSafeInteger(value)) {
-                this._monoms.push(new Monom(value.toString()));
-            } else {
-                this._monoms.push(new Monom(value));
-            }
-        }
-
-        return this.reduce();
-    };
 
     subtract = (...values: unknown[]): Polynom => {
 
@@ -398,44 +334,13 @@ export class Polynom {
             return this.multiplyByFraction(value);
         } else if (value instanceof Monom) {
             return this.multiplyByMonom(value);
-        } else if (Number.isSafeInteger(value) && typeof value==='number') {
+        } else if (Number.isSafeInteger(value) && typeof value === 'number') {
             return this.multiplyByInteger(value);
         }
 
         // Something went wrong...
         return this;
     }
-
-    private multiplyByPolynom = (P: Polynom): Polynom => {
-        const M: Monom[] = [];
-        for (const m1 of this._monoms) {
-            for (const m2 of P.monoms) {
-                M.push(Monom.xmultiply(m1, m2));
-            }
-        }
-
-        this._monoms = M;
-        return this.reduce();
-    };
-
-    private multiplyByFraction = (F: Fraction): Polynom => {
-        for (const m of this._monoms) {
-            m.coefficient.multiply(F);
-        }
-
-        return this.reduce();
-    };
-
-    private multiplyByInteger = (nb: number): Polynom => {
-        return this.multiplyByFraction(new Fraction(nb));
-    };
-
-    private multiplyByMonom = (M: Monom): Polynom => {
-        for (const m of this._monoms) {
-            m.multiply(M)
-        }
-        return this.reduce();
-    };
 
     /**
      * Divide the current polynom by another polynom.
@@ -482,25 +387,10 @@ export class Polynom {
     divide = (value: unknown): Polynom => {
         if (value instanceof Fraction) {
             this.divideByFraction(value);
-        } else if (typeof value==='number' && Number.isSafeInteger(value)) {
+        } else if (typeof value === 'number' && Number.isSafeInteger(value)) {
             return this.divideByInteger(value);
         }
     }
-
-    private divideByInteger = (nb: number): Polynom => {
-        const nbF = new Fraction(nb);
-        for (const m of this._monoms) {
-            m.coefficient.divide(nbF);
-        }
-        return this;
-    };
-
-    private divideByFraction = (F: Fraction): Polynom => {
-        for (const m of this._monoms) {
-            m.coefficient.divide(F);
-        }
-        return this;
-    };
 
     pow = (nb: number): Polynom => {
         if (!Number.isSafeInteger(nb)) {
@@ -520,9 +410,6 @@ export class Polynom {
         return this.reduce();
     };
 
-
-    // ------------------------------------------
-    // Compare functions
     // ------------------------------------------
     /**
      * Compare the current coefficient with another coefficient
@@ -686,8 +573,11 @@ export class Polynom {
         // TODO: Maybe it's enough to just make this test !
         return polynomStringNormalized === P.reduce().reorder().display
     }
+
+
     // ------------------------------------------
-    // Misc polynoms functions
+    // Compare functions
+
     // -------------------------------------
     reduce = (): Polynom => {
         for (let i = 0; i < this._monoms.length; i++) {
@@ -798,6 +688,8 @@ export class Polynom {
         }
         return dP
     }
+    // ------------------------------------------
+    // Misc polynoms functions
 
     integrate = (a: Fraction | number, b: Fraction | number, letter?: string): Fraction => {
         const primitive = this.primitive(letter)
@@ -813,8 +705,7 @@ export class Polynom {
 
         return primitive.evaluate(valuesB).subtract(primitive.evaluate(valuesA))
     }
-    // ------------------------------------------
-    // Polynoms factorization functions
+
     // -------------------------------------
     /**
      * Factorize a polynom and store the best results in factors.
@@ -885,6 +776,335 @@ export class Polynom {
         this.factors = factors
         return factors;
     }
+
+    // TODO: get zeroes for more than first degree and for more than natural degrees
+    getZeroes = (): (Fraction | boolean)[] => {
+        const Z: Fraction[] = [];
+
+        switch (this.degree().value) {
+            case 0:
+                if (this._monoms[0].coefficient.value === 0) {
+                    return [true];
+                } else {
+                    return [false];
+                }
+            case 1:
+                // There is only one monoms,
+                if (this._monoms.length === 1) {
+                    return [new Fraction().zero()];
+                } else {
+                    const P = this.clone().reduce().reorder();
+                    return [P.monoms[1].coefficient.opposed().divide(P.monoms[0].coefficient)];
+                }
+            // TODO: Determine the zeros of an equation of second degree.
+            //case 2:
+            default:
+                // Make sure the polynom is factorized.
+                if (this._factors.length === 0) {
+                    this.factorize()
+                }
+
+                let zeroes = [], zeroesAsTex = [];
+                for (let P of this._factors) {
+                    if (P.degree().greater(2)) {
+                        // TODO: Handle other polynom.
+
+                    } else if (P.degree().value === 2) {
+                        let A = P.monomByDegree(2).coefficient,
+                            B = P.monomByDegree(1).coefficient,
+                            C = P.monomByDegree(0).coefficient,
+                            D = B.clone().pow(2).subtract(A.clone().multiply(C).multiply(4));
+
+                        if (D.value > 0) {
+                            /*console.log('Two zeroes for ', P.tex); */
+                            let x1 = (-(B.value) + Math.sqrt(D.value)) / (2 * A.value),
+                                x2 = (-(B.value) - Math.sqrt(D.value)) / (2 * A.value);
+
+                            zeroes.push(new Fraction(x1.toFixed(3)).reduce());
+                            zeroes.push(new Fraction(x2.toFixed(3)).reduce());
+                        } else if (D.value === 0) {
+                            /*console.log('One zero for ', P.tex); */
+
+                        } else {
+                            console.log('No zero for ', P.tex);
+                        }
+                    } else {
+                        for (let z of P.getZeroes()) {
+                            // Check if the zero is already in the list.
+                            if (z === false || z === true) {
+                                continue;
+                            }
+                            if (zeroesAsTex.indexOf(z.frac) === -1) {
+                                zeroes.push(z);
+                                zeroesAsTex.push(z.frac);
+                            }
+                        }
+                    }
+                }
+                return zeroes;
+        }
+        return Z;
+    };
+
+    // TODO: analyse the next functions to determine if they are useful or not...
+    monomByDegree = (degree?: Fraction | number, letter?: string): Monom => {
+        if (degree === undefined) {
+            // return the highest degree monom.
+            return this.monomByDegree(this.degree(letter), letter);
+        }
+
+        // Reduce the polynom.
+        const M = this.clone().reduce();
+        for (const m of M._monoms) {
+            if (m.degree(letter).isEqual(degree)) {
+                return m.clone();
+            }
+        }
+
+        // Nothing was found - return the null monom.
+        return new Monom().zero();
+    };
+
+    monomsByDegree = (degree?: number | Fraction, letter?: string): Monom[] => {
+        if (degree === undefined) {
+            // return the highest degree monom.
+            return this.monomsByDegree(this.degree(letter));
+        }
+
+        // Reduce the polynom.
+        let Ms: Monom[] = [];
+
+        const M = this.clone().reduce();
+        for (const m of M._monoms) {
+            if (m.degree(letter) === degree) {
+                Ms.push(m.clone())
+            }
+        }
+
+        return Ms
+        // Nothing was found - retur
+    }
+
+    // Used in LinearSystem.tex
+    monomByLetter = (letter: string): Monom => {
+        const M = this.clone().reduce();
+        for (const m of M._monoms) {
+            if (m.hasLetter(letter)) {
+                return m.clone();
+            }
+        }
+
+        return new Monom().zero();
+    };
+
+    // Next functions are used for for commonMonom, which is used in the factorize method.
+    getDenominators = (): number[] => {
+        const denominators: number[] = [];
+        for (const m of this._monoms) {
+            denominators.push(m.coefficient.denominator);
+        }
+        return denominators;
+    };
+
+    getNumerators = (): number[] => {
+        const numerators: number[] = [];
+        for (const m of this._monoms) {
+            numerators.push(m.coefficient.numerator);
+        }
+        return numerators;
+    };
+
+    lcmDenominator = (): number => {
+        return Numeric.lcm(...this.getDenominators());
+    };
+    // ------------------------------------------
+    // Polynoms factorization functions
+
+    gcdDenominator = (): number => {
+        return Numeric.gcd(...this.getDenominators());
+    };
+
+    lcmNumerator = (): number => {
+        return Numeric.lcm(...this.getNumerators());
+    };
+
+    gcdNumerator = (): number => {
+        return Numeric.gcd(...this.getNumerators());
+    };
+    // ------------------------------------------
+    // Polynoms helpers functions
+    // -------------------------------------
+
+    commonMonom = (): Monom => {
+        let M = new Monom().one(), numerator: number, denominator: number, degree = this.degree();
+
+        numerator = this.gcdNumerator();
+        denominator = this.gcdDenominator();
+
+        M.coefficient = new Fraction(numerator, denominator);
+        for (let L of this.variables) {
+            // Initialize the setLetter with the max degree
+            M.setLetter(L, degree);
+            for (let m of this._monoms) {
+                M.setLetter(L, Fraction.min(m.degree(L), M.degree(L)));
+                if (M.degree(L).isZero()) {
+                    break;
+                }
+            }
+        }
+        return M;
+    }
+
+    private genDisplay = (output?: string, forceSign?: boolean, wrapParentheses?: boolean): string => {
+        let P: string = '';
+
+        for (const k of this._monoms) {
+            if (k.coefficient.value === 0) {
+                continue;
+            }
+
+            P += `${(k.coefficient.sign() === 1 && (P !== '' || forceSign === true)) ? '+' : ''}${(output === 'tex') ? k.tex : k.display}`;
+        }
+
+        if (wrapParentheses === true && this.length > 1) {
+            if (output === 'tex') {
+                P = `\\left( ${P} \\right)`;
+            } else {
+                P = `(${P})`;
+            }
+        }
+
+        if (P === '') {
+            P = '0';
+        }
+        return P;
+    };
+
+
+    addToken = (stack: Polynom[], token: string): void => {
+
+    }
+    /**
+     * Main parse using a shutting yard class
+     * @param inputStr
+     */
+    private shutingYardToReducedPolynom = (inputStr: string): Polynom => {
+        // Get the RPN array of the current expression
+        const SY: Shutingyard = new Shutingyard().parse(inputStr);
+        const rpn: { token: string, tokenType: string }[] = SY.rpn;
+
+        // New version for reducing shuting yard.
+        this.zero()
+
+        let stack: Monom[] = [],
+            mStack: Monom[] = [],
+            monom: Monom = new Monom()
+
+        console.log(inputStr)
+        // Loop through the
+        for (const element of rpn) {
+            console.log('POLYNOM', stack.map(x => x.tex))
+            console.log('MONOM', mStack.map(x => x.tex))
+            console.log('OPERATION', element.token)
+            if (element.token === '-' || element.token === '+') {
+                if (stack.length >= 2) {
+                    let pushToPolynomIndex = stack.length - 2
+                    if (!stack[pushToPolynomIndex].isSameAs(stack[stack.length - 1])) {
+                        this.add(stack[pushToPolynomIndex])
+                        stack.shift()
+                    }
+                }
+            }
+            Monom.addToken(mStack, element);
+        }
+
+        if (stack.length === 1) {
+            this.add(stack[0])
+        }
+
+        return this
+        /**
+         let m1: Polynom;
+         let m2: Polynom;
+
+         let stack: Polynom[] = [],
+         previousToken: string = null,
+         tempPolynom
+
+         for (const element of rpn) {
+            if (element.tokenType === 'coefficient' || element.tokenType === 'variable') {
+                tempPolynom = new Polynom().zero();
+                tempPolynom.monoms = [new Monom(element.token)]
+                stack.push(tempPolynom.clone())
+            } else if (element.tokenType === 'operation') {
+                m2 = (stack.pop()) || new Polynom().zero();
+                m1 = (stack.pop()) || new Polynom().zero();
+                switch (element.token) {
+                    case '+':
+                        stack.push(m1.add(m2))
+                        break;
+                    case '-':
+                        stack.push(m1.subtract(m2))
+                        break;
+                    case '*':
+                        stack.push(m1.multiply(m2))
+                        break;
+                    case '^':
+                        stack.push(m1.pow(+previousToken))
+                }
+            }
+            previousToken = element.token;
+        }
+
+         this._monoms = stack[0].monoms;
+         return this;*/
+    }
+
+    private multiplyByPolynom = (P: Polynom): Polynom => {
+        const M: Monom[] = [];
+        for (const m1 of this._monoms) {
+            for (const m2 of P.monoms) {
+                M.push(Monom.xmultiply(m1, m2));
+            }
+        }
+
+        this._monoms = M;
+        return this.reduce();
+    };
+
+    private multiplyByFraction = (F: Fraction): Polynom => {
+        for (const m of this._monoms) {
+            m.coefficient.multiply(F);
+        }
+
+        return this.reduce();
+    };
+
+    private multiplyByInteger = (nb: number): Polynom => {
+        return this.multiplyByFraction(new Fraction(nb));
+    };
+
+    private multiplyByMonom = (M: Monom): Polynom => {
+        for (const m of this._monoms) {
+            m.multiply(M)
+        }
+        return this.reduce();
+    };
+
+    private divideByInteger = (nb: number): Polynom => {
+        const nbF = new Fraction(nb);
+        for (const m of this._monoms) {
+            m.coefficient.divide(nbF);
+        }
+        return this;
+    };
+
+    private divideByFraction = (F: Fraction): Polynom => {
+        for (const m of this._monoms) {
+            m.coefficient.divide(F);
+        }
+        return this;
+    };
 
     private _factorize2ndDegree = (letter: string): Polynom[] => {
         let P1: Polynom, P2: Polynom,
@@ -1012,182 +1232,5 @@ export class Polynom {
     private _factorizeByGroups = (): Polynom[] => {
         // TODO: Factorize by groups.
         return [];
-    }
-    // ------------------------------------------
-    // Polynoms helpers functions
-    // -------------------------------------
-    // TODO: get zeroes for more than first degree and for more than natural degrees
-    getZeroes = (): (Fraction | boolean)[] => {
-        const Z: Fraction[] = [];
-
-        switch (this.degree().value) {
-            case 0:
-                if (this._monoms[0].coefficient.value === 0) {
-                    return [true];
-                } else {
-                    return [false];
-                }
-            case 1:
-                // There is only one monoms,
-                if (this._monoms.length === 1) {
-                    return [new Fraction().zero()];
-                } else {
-                    const P = this.clone().reduce().reorder();
-                    return [P.monoms[1].coefficient.opposed().divide(P.monoms[0].coefficient)];
-                }
-            // TODO: Determine the zeros of an equation of second degree.
-            //case 2:
-            default:
-                // Make sure the polynom is factorized.
-                if (this._factors.length === 0) {
-                    this.factorize()
-                }
-
-                let zeroes = [], zeroesAsTex = [];
-                for (let P of this._factors) {
-                    if (P.degree().greater(2)) {
-                        // TODO: Handle other polynom.
-
-                    } else if (P.degree().value === 2) {
-                        let A = P.monomByDegree(2).coefficient,
-                            B = P.monomByDegree(1).coefficient,
-                            C = P.monomByDegree(0).coefficient,
-                            D = B.clone().pow(2).subtract(A.clone().multiply(C).multiply(4));
-
-                        if (D.value > 0) {
-                            /*console.log('Two zeroes for ', P.tex); */
-                            let x1 = (-(B.value) + Math.sqrt(D.value)) / (2 * A.value),
-                                x2 = (-(B.value) - Math.sqrt(D.value)) / (2 * A.value);
-
-                            zeroes.push(new Fraction(x1.toFixed(3)).reduce());
-                            zeroes.push(new Fraction(x2.toFixed(3)).reduce());
-                        } else if (D.value === 0) {
-                            /*console.log('One zero for ', P.tex); */
-
-                        } else {
-                            console.log('No zero for ', P.tex);
-                        }
-                    } else {
-                        for (let z of P.getZeroes()) {
-                            // Check if the zero is already in the list.
-                            if (z === false || z === true) {
-                                continue;
-                            }
-                            if (zeroesAsTex.indexOf(z.frac) === -1) {
-                                zeroes.push(z);
-                                zeroesAsTex.push(z.frac);
-                            }
-                        }
-                    }
-                }
-                return zeroes;
-        }
-        return Z;
-    };
-
-
-    // TODO: analyse the next functions to determine if they are useful or not...
-    monomByDegree = (degree?: Fraction|number, letter?: string): Monom => {
-        if (degree === undefined) {
-            // return the highest degree monom.
-            return this.monomByDegree(this.degree(letter), letter);
-        }
-
-        // Reduce the polynom.
-        const M = this.clone().reduce();
-        for (const m of M._monoms) {
-            if (m.degree(letter).isEqual(degree)) {
-                return m.clone();
-            }
-        }
-
-        // Nothing was found - return the null monom.
-        return new Monom().zero();
-    };
-
-    monomsByDegree = (degree?: number|Fraction, letter?: string): Monom[] => {
-        if (degree === undefined) {
-            // return the highest degree monom.
-            return this.monomsByDegree(this.degree(letter));
-        }
-
-        // Reduce the polynom.
-        let Ms: Monom[] = [];
-
-        const M = this.clone().reduce();
-        for (const m of M._monoms) {
-            if (m.degree(letter) === degree) {
-                Ms.push(m.clone())
-            }
-        }
-
-        return Ms
-        // Nothing was found - retur
-    }
-
-    // Used in LinearSystem.tex
-    monomByLetter = (letter: string): Monom => {
-        const M = this.clone().reduce();
-        for (const m of M._monoms) {
-            if (m.hasLetter(letter)) {
-                return m.clone();
-            }
-        }
-
-        return new Monom().zero();
-    };
-
-
-    // Next functions are used for for commonMonom, which is used in the factorize method.
-    getDenominators = (): number[] => {
-        const denominators: number[] = [];
-        for (const m of this._monoms) {
-            denominators.push(m.coefficient.denominator);
-        }
-        return denominators;
-    };
-
-    getNumerators = (): number[] => {
-        const numerators: number[] = [];
-        for (const m of this._monoms) {
-            numerators.push(m.coefficient.numerator);
-        }
-        return numerators;
-    };
-
-    lcmDenominator = (): number => {
-        return Numeric.lcm(...this.getDenominators());
-    };
-
-    gcdDenominator = (): number => {
-        return Numeric.gcd(...this.getDenominators());
-    };
-
-    lcmNumerator = (): number => {
-        return Numeric.lcm(...this.getNumerators());
-    };
-
-    gcdNumerator = (): number => {
-        return Numeric.gcd(...this.getNumerators());
-    };
-
-    commonMonom = (): Monom => {
-        let M = new Monom().one(), numerator: number, denominator: number, degree = this.degree();
-
-        numerator = this.gcdNumerator();
-        denominator = this.gcdDenominator();
-
-        M.coefficient = new Fraction(numerator, denominator);
-        for (let L of this.variables) {
-            // Initialize the setLetter with the max degree
-            M.setLetter(L, degree);
-            for (let m of this._monoms) {
-                M.setLetter(L, Fraction.min(m.degree(L), M.degree(L)));
-                if (M.degree(L).isZero()) {
-                    break;
-                }
-            }
-        }
-        return M;
     }
 }

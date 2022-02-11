@@ -1,4 +1,4 @@
-declare type tokenType = {
+export declare type tokenType = {
     [key: string]: {
         precedence: number;
         associative: string;
@@ -38,4 +38,3 @@ export declare class Shutingyard {
         tokenType: string;
     }[];
 }
-export {};

@@ -3,7 +3,7 @@
  */
 import {Fraction} from "../coefficients";
 import {Numeric} from "../numeric";
-import {Shutingyard} from "../shutingyard";
+import {Shutingyard, tokenType} from "../shutingyard";
 
 export type literalType = {
     [Key: string]: Fraction
@@ -310,6 +310,57 @@ export class Monom {
         return this;
     };
 
+    static addToken = (stack: Monom[], element: { token: string, tokenType: string }): void => {
+        let q1: Monom, q2: Monom, m: Monom, letter: string, pow: Fraction
+        if (element.tokenType === 'coefficient') {
+            let M = new Monom().one()
+            M.coefficient = new Fraction(element.token)
+            stack.push(M.clone())
+        } else if (element.tokenType === 'variable') {
+            let M = new Monom().one()
+            M.setLetter(element.token, 1)
+            stack.push(M.clone())
+        } else if (element.tokenType === 'operation') {
+            switch (element.token) {
+                case '-':
+                    // this should only happen for negative powers or for negative coefficient.
+                    q2 = (stack.pop()) || new Monom().zero()
+                    q1 = (stack.pop()) || new Monom().zero()
+
+                    stack.push(q1.subtract(q2))
+
+                    break;
+                case '*':
+                    // Get the last element in the stack
+                    q2 = (stack.pop()) || new Monom().one()
+                    q1 = (stack.pop()) || new Monom().one()
+
+                    stack.push(q1.multiply(q2))
+                    break
+                case '/':
+                    // Get the last element in the stack
+                    q2 = (stack.pop()) || new Monom().one()
+                    q1 = (stack.pop()) || new Monom().one()
+
+                    stack.push(q1.divide(q2))
+                    break
+                case '^':
+                    // get the two last elements in the stack
+                    pow = (stack.pop().coefficient) || new Fraction().one()
+                    m = (stack.pop()) || new Monom().one()
+
+                    letter = m.variables[0]
+
+                    if (letter !== undefined) {
+                        m.setLetter(letter, pow)
+                    }
+
+                    stack.push(m)
+                    // this.multiply(m.clone())
+                    break
+            }
+        }
+    }
     private _shutingYardToReducedMonom = (inputStr: string): Monom => {
         // Get the RPN array of the current expression
         const SY: Shutingyard = new Shutingyard().parse(inputStr);
@@ -333,47 +384,7 @@ export class Monom {
         } else {
             // Reset the monom
             for (const element of rpn) {
-                if (element.tokenType === 'coefficient') {
-                    let M = new Monom().one()
-                    M.coefficient = new Fraction(element.token)
-                    stack.push(M.clone())
-                } else if (element.tokenType === 'variable') {
-                    let M = new Monom().one()
-                    M.setLetter(element.token, 1)
-                    stack.push(M.clone())
-                } else if (element.tokenType === 'operation') {
-                    switch (element.token) {
-                        case '-':
-                            // this should only happen for negative powers or for negative coefficient.
-                            q2 = (stack.pop()) || new Monom().zero()
-                            q1 = (stack.pop()) || new Monom().zero()
-
-                            stack.push(q1.subtract(q2))
-
-                            break;
-                        case '*':
-                            // Get the last element in the stack
-                            q2 = (stack.pop()) || new Monom().one()
-                            q1 = (stack.pop()) || new Monom().one()
-
-                            stack.push(q1.multiply(q2))
-                            break
-                        case '^':
-                            // get the two last elements in the stack
-                            pow = (stack.pop().coefficient) || new Fraction().one()
-                            m = (stack.pop()) || new Monom().one()
-
-                            letter = m.variables[0]
-
-                            if (letter !== undefined) {
-                                m.setLetter(letter, pow)
-                            }
-
-                            stack.push(m)
-                            // this.multiply(m.clone())
-                            break
-                    }
-                }
+                Monom.addToken(stack, element)
             }
         }
 
