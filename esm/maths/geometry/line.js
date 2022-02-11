@@ -9,8 +9,9 @@ const numeric_1 = require("../numeric");
 var LinePropriety;
 (function (LinePropriety) {
     LinePropriety[LinePropriety["None"] = 0] = "None";
-    LinePropriety[LinePropriety["Parallel"] = 1] = "Parallel";
-    LinePropriety[LinePropriety["Perpendicular"] = 2] = "Perpendicular";
+    LinePropriety["Parallel"] = "parallel";
+    LinePropriety["Perpendicular"] = "perpendicular";
+    LinePropriety["Tangent"] = "tangent";
 })(LinePropriety || (LinePropriety = {}));
 class Line {
     _a;

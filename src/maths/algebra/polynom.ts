@@ -3,7 +3,7 @@
  */
 
 import {literalType, Monom} from './monom';
-import {Shutingyard} from '../shutingyard';
+import {Shutingyard, ShutingyardType, Token} from '../shutingyard';
 import {Numeric} from '../numeric';
 import {Fraction} from "../coefficients";
 
@@ -21,7 +21,7 @@ export class Polynom {
      * @param {string} polynomString (optional) Default polynom to parse on class creation
      * @param values
      */
-    constructor(polynomString?: string, ...values: unknown[]) {
+    constructor(polynomString?: string|Monom|number|Polynom|Fraction, ...values: unknown[]) {
         this._monoms = [];
         this._factors = [];
         if (polynomString !== undefined) {
@@ -124,13 +124,30 @@ export class Polynom {
      * @param inputStr
      * @param values: as string, numbers or fractions
      */
-    parse = (inputStr: string, ...values: unknown[]): Polynom => {
+    parse = (inputStr: string|number|Fraction|Monom|Polynom, ...values: unknown[]): Polynom => {
+        // Reset the main variables.
+        this._monoms = []
+        this._factors = []
 
+        if(typeof inputStr === 'string') {
+            return this._parseString(inputStr, ...values)
+        }else if(typeof inputStr === 'number' || inputStr instanceof Fraction || inputStr instanceof Monom){
+            this._monoms.push(new Monom(inputStr))
+        }else if(inputStr instanceof Polynom){
+            for(const m of inputStr.monoms){
+                this._monoms.push(m.clone())
+            }
+        }
+
+        return this
+    };
+
+    private _parseString(inputStr: string, ...values:unknown[]): Polynom{
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;
             this._rawString = inputStr;
 
-            // Parse the polynom using the shuting yard algorithm
+            // Parse the polynom using the shutting yard algorithm
             if (inputStr !== '' && !isNaN(Number(inputStr))) {
                 this.empty();
                 // It's a simple number.
@@ -176,8 +193,7 @@ export class Polynom {
         } else {
             return this.zero();
         }
-
-    };
+    }
 
 
     // ------------------------------------------
@@ -386,10 +402,11 @@ export class Polynom {
 
     divide = (value: unknown): Polynom => {
         if (value instanceof Fraction) {
-            this.divideByFraction(value);
+            return this.divideByFraction(value);
         } else if (typeof value === 'number' && Number.isSafeInteger(value)) {
             return this.divideByInteger(value);
         }
+
     }
 
     pow = (nb: number): Polynom => {
@@ -981,8 +998,80 @@ export class Polynom {
     };
 
 
-    addToken = (stack: Polynom[], token: string): void => {
+    static addToken = (stack: Polynom[], element: Token): void => {
 
+        switch(element.tokenType){
+            case ShutingyardType.COEFFICIENT:
+                stack.push(new Polynom( element.token ))
+                break
+
+            case ShutingyardType.VARIABLE:
+                stack.push(new Polynom().add(new Monom(element.token)))
+                break
+
+            case ShutingyardType.CONSTANT:
+                // TODO: add constant support to Polynom parsing.
+                console.log('Actually, not supported - will be added later !')
+                break
+
+            case ShutingyardType.OPERATION:
+                if(stack.length>=2){
+                    const b = stack.pop(),
+                        a = stack.pop()
+
+                    if(element.token === '+'){
+                        stack.push(a.add(b))
+                    }else if(element.token === '-'){
+                        stack.push(a.subtract(b))
+                    }else if(element.token === '*'){
+                        stack.push(a.multiply(b))
+                    }else if(element.token === '/'){
+                        if(b.degree().isStrictlyPositive()){
+                            console.log('divide by a polynom -> should create a rational polynom !')
+                        }else {
+                            stack.push(a.divide(b.monoms[0].coefficient))
+
+                        }
+                    }else if(element.token === '^'){
+                        if(b.degree().isStrictlyPositive()) {
+                            console.error('Cannot elevate a polynom with another polynom !')
+                        }else {
+                            if(b.monoms[0].coefficient.isNatural()) {
+                                // Integer power
+                                stack.push(a.pow(b.monoms[0].coefficient.value))
+                            }else{
+                                // Only allow power if the previous polynom is only a monom, without coefficient.
+                                if(a.monoms.length===1 && a.monoms[0].coefficient.isOne()){
+                                    for (let letter in a.monoms[0].literal) {
+                                        a.monoms[0].literal[letter].multiply(b.monoms[0].coefficient)
+                                    }
+                                    stack.push(a)
+                                }else {
+                                    console.error('Cannot have power with fraction')
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    console.log('Stack size: ', stack.length)
+                    if(element.token === '-'){
+                        stack.push(stack.pop().opposed())
+                    }else{
+                        console.log('While parsing, cannot apply ', element.token, 'to', stack[0].tex)
+                    }
+                }
+                break
+
+            case ShutingyardType.MONOM:
+                // Should never appear.
+                console.error('The monom token should not appear here')
+                break;
+
+            case ShutingyardType.FUNCTION:
+                // Should never appear.
+                console.log('The function token should not appear here - might be introduced later.')
+                break;
+        }
     }
     /**
      * Main parse using a shutting yard class
@@ -996,26 +1085,12 @@ export class Polynom {
         // New version for reducing shuting yard.
         this.zero()
 
-        let stack: Monom[] = [],
-            mStack: Monom[] = [],
+        let stack: Polynom[] = [],
             monom: Monom = new Monom()
 
-        console.log(inputStr)
         // Loop through the
         for (const element of rpn) {
-            console.log('POLYNOM', stack.map(x => x.tex))
-            console.log('MONOM', mStack.map(x => x.tex))
-            console.log('OPERATION', element.token)
-            if (element.token === '-' || element.token === '+') {
-                if (stack.length >= 2) {
-                    let pushToPolynomIndex = stack.length - 2
-                    if (!stack[pushToPolynomIndex].isSameAs(stack[stack.length - 1])) {
-                        this.add(stack[pushToPolynomIndex])
-                        stack.shift()
-                    }
-                }
-            }
-            Monom.addToken(mStack, element);
+            Polynom.addToken(stack, element);
         }
 
         if (stack.length === 1) {

@@ -21,6 +21,10 @@ export declare enum ShutingyardMode {
     SET = "set",
     NUMERIC = "numeric"
 }
+export declare type Token = {
+    token: string;
+    tokenType: string;
+};
 export declare class Shutingyard {
     private _rpn;
     readonly _mode: ShutingyardMode;
@@ -33,8 +37,5 @@ export declare class Shutingyard {
     NextToken(expr: string, start: number): [string, number, string];
     Uniformizer(expr: string): string;
     parse(expr: string, operators?: string[]): Shutingyard;
-    get rpn(): {
-        token: string;
-        tokenType: string;
-    }[];
+    get rpn(): Token[];
 }

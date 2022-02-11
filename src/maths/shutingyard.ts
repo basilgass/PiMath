@@ -13,6 +13,7 @@ export const tokenConstant:{[Key:string]:number} = {
     pi: Math.PI,
     e: Math.exp(1)
 }
+
 export enum ShutingyardType {
     VARIABLE='variable',
     COEFFICIENT='coefficient',
@@ -21,14 +22,17 @@ export enum ShutingyardType {
     FUNCTION = 'function',
     MONOM = 'monom'
 }
+
 export enum ShutingyardMode {
     POLYNOM= 'polynom',
     SET = 'set',
     NUMERIC = 'numeric'
 }
 
+export type Token = { token: string, tokenType: string }
+
 export class Shutingyard {
-    private _rpn: { token: string, tokenType: string }[] = [];
+    private _rpn: Token[] = [];
     readonly _mode: ShutingyardMode;
     private _tokenConfig: tokenType;
     private _tokenConstant: {[Key:string]: number}
@@ -87,10 +91,10 @@ export class Shutingyard {
                 '/': {precedence: 3, associative: 'left', type: ShutingyardType.OPERATION},
                 '+': {precedence: 2, associative: 'left', type: ShutingyardType.OPERATION},
                 '-': {precedence: 2, associative: 'left', type: ShutingyardType.OPERATION},
-                '%': {precedence: 3, associative: 'right', type: ShutingyardType.OPERATION},
-                'sin': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
-                'cos': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
-                'tan': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                // '%': {precedence: 3, associative: 'right', type: ShutingyardType.OPERATION},
+                // 'sin': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                // 'cos': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                // 'tan': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
             }
             this._uniformize = true
         }

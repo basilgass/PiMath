@@ -15,9 +15,8 @@ describe('Polynom tests', () => {
     it('Parse polynom with coefficient as fraction', ()=>{
         const P = new Polynom('-3/5x-2')
 
-
         console.log(P.tex)
-        expect(P.tex).to.be.equal('-\\frac{ 3 }{ 5 }x - 2')
+        expect(P.tex).to.be.equal('-\\dfrac{ 3 }{ 5 }x-2')
     })
 
     it('Tex display', () => {
@@ -68,20 +67,22 @@ describe('Polynom tests', () => {
         expect(euclidian.quotient.tex).to.be.equal('x^{2}+5x-4')
         expect(euclidian.reminder.tex).to.be.equal('12')
     });
-
-    it('should parse with roots coefficient',  ()=>{
-        let P = new Polynom('sqrt(x)-5')
-
-        expect(P.degree().value).to.be.equal(0.5)
-    })
 })
 
-describe('Polynom parsing with rational power or roots', ()=>{
+describe('Polynom parsing with rational power', ()=>{
     it('should parse with rational powers', ()=> {
-        // const SY: Shutingyard = new Shutingyard().parse('3x^(2/3)-5x+5/3');
-        const SY: Shutingyard = new Shutingyard().parse('-3/5x-2');
-        const rpn: { token: string, tokenType: string }[] = SY.rpn;
+        const P = new Polynom('3x^(2/3)-5x+5/3');
 
-        console.log(rpn)
+        expect(P.tex).to.be.equal('3x^{\\tfrac{ 2 }{ 3 }}-5x+\\dfrac{ 5 }{ 3 }')
     })
 })
+
+
+// TODO: working with roots !
+// describe('WIP : working with roots', ()=>{
+//     it('should parse with roots coefficient',  ()=>{
+//         let P = new Polynom('sqrt(x)-5')
+//
+//         expect(P.degree().value).to.be.equal(0.5)
+//     })
+// })

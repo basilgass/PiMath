@@ -3,7 +3,7 @@
  */
 import {Fraction} from "../coefficients";
 import {Numeric} from "../numeric";
-import {Shutingyard, tokenType} from "../shutingyard";
+import {Shutingyard, ShutingyardType, Token, tokenType} from "../shutingyard";
 
 export type literalType = {
     [Key: string]: Fraction
@@ -260,7 +260,7 @@ export class Monom {
             if (this._literal[letter].isNotZero()) {
                 L += `${letter}`;
                 if (this._literal[letter].isNotEqual(1)) {
-                    L += `^{${this._literal[letter].display}}`;
+                    L += `^{${this._literal[letter].tfrac}}`;
                 }
             }
         }
@@ -310,17 +310,19 @@ export class Monom {
         return this;
     };
 
-    static addToken = (stack: Monom[], element: { token: string, tokenType: string }): void => {
+    static addToken = (stack: Monom[], element: Token): void => {
+
         let q1: Monom, q2: Monom, m: Monom, letter: string, pow: Fraction
-        if (element.tokenType === 'coefficient') {
-            let M = new Monom().one()
-            M.coefficient = new Fraction(element.token)
-            stack.push(M.clone())
-        } else if (element.tokenType === 'variable') {
+
+        if (element.tokenType === ShutingyardType.COEFFICIENT) {
+            stack.push(new Monom(new Fraction(element.token)))
+
+        } else if (element.tokenType === ShutingyardType.VARIABLE) {
             let M = new Monom().one()
             M.setLetter(element.token, 1)
             stack.push(M.clone())
-        } else if (element.tokenType === 'operation') {
+
+        } else if (element.tokenType === ShutingyardType.OPERATION) {
             switch (element.token) {
                 case '-':
                     // this should only happen for negative powers or for negative coefficient.
@@ -558,10 +560,10 @@ export class Monom {
      * Get the pow of a monom.
      * @param nb (number) : Mathematical pow
      */
-    pow = (nb: number): Monom => {
+    pow = (nb: number|Fraction): Monom => {
         this._coefficient.pow(nb);
         for (let letter in this._literal) {
-            this._literal[letter].pow(nb)
+            this._literal[letter].multiply(nb)
         }
         return this;
     };

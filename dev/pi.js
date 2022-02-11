@@ -1187,7 +1187,7 @@ class Monom {
             if (this._literal[letter].isNotZero()) {
                 L += `${letter}`;
                 if (this._literal[letter].isNotEqual(1)) {
-                    L += `^{${this._literal[letter].display}}`;
+                    L += `^{${this._literal[letter].tfrac}}`;
                 }
             }
         }
@@ -1234,17 +1234,15 @@ class Monom {
     };
     static addToken = (stack, element) => {
         let q1, q2, m, letter, pow;
-        if (element.tokenType === 'coefficient') {
-            let M = new Monom().one();
-            M.coefficient = new coefficients_1.Fraction(element.token);
-            stack.push(M.clone());
+        if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
+            stack.push(new Monom(new coefficients_1.Fraction(element.token)));
         }
-        else if (element.tokenType === 'variable') {
+        else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
             let M = new Monom().one();
             M.setLetter(element.token, 1);
             stack.push(M.clone());
         }
-        else if (element.tokenType === 'operation') {
+        else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
             switch (element.token) {
                 case '-':
                     q2 = (stack.pop()) || new Monom().zero();
@@ -1405,7 +1403,7 @@ class Monom {
     pow = (nb) => {
         this._coefficient.pow(nb);
         for (let letter in this._literal) {
-            this._literal[letter].pow(nb);
+            this._literal[letter].multiply(nb);
         }
         return this;
     };
@@ -1708,6 +1706,22 @@ class Polynom {
         return this.variables.length;
     }
     parse = (inputStr, ...values) => {
+        this._monoms = [];
+        this._factors = [];
+        if (typeof inputStr === 'string') {
+            return this._parseString(inputStr, ...values);
+        }
+        else if (typeof inputStr === 'number' || inputStr instanceof coefficients_1.Fraction || inputStr instanceof monom_1.Monom) {
+            this._monoms.push(new monom_1.Monom(inputStr));
+        }
+        else if (inputStr instanceof Polynom) {
+            for (const m of inputStr.monoms) {
+                this._monoms.push(m.clone());
+            }
+        }
+        return this;
+    };
+    _parseString(inputStr, ...values) {
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;
             this._rawString = inputStr;
@@ -1747,7 +1761,7 @@ class Polynom {
         else {
             return this.zero();
         }
-    };
+    }
     clone = () => {
         const P = new Polynom();
         const M = [];
@@ -1851,7 +1865,7 @@ class Polynom {
     };
     divide = (value) => {
         if (value instanceof coefficients_1.Fraction) {
-            this.divideByFraction(value);
+            return this.divideByFraction(value);
         }
         else if (typeof value === 'number' && Number.isSafeInteger(value)) {
             return this.divideByInteger(value);
@@ -2265,28 +2279,84 @@ class Polynom {
         }
         return P;
     };
-    addToken = (stack, token) => {
+    static addToken = (stack, element) => {
+        switch (element.tokenType) {
+            case shutingyard_1.ShutingyardType.COEFFICIENT:
+                stack.push(new Polynom(element.token));
+                break;
+            case shutingyard_1.ShutingyardType.VARIABLE:
+                stack.push(new Polynom().add(new monom_1.Monom(element.token)));
+                break;
+            case shutingyard_1.ShutingyardType.CONSTANT:
+                console.log('Actually, not supported - will be added later !');
+                break;
+            case shutingyard_1.ShutingyardType.OPERATION:
+                if (stack.length >= 2) {
+                    const b = stack.pop(), a = stack.pop();
+                    if (element.token === '+') {
+                        stack.push(a.add(b));
+                    }
+                    else if (element.token === '-') {
+                        stack.push(a.subtract(b));
+                    }
+                    else if (element.token === '*') {
+                        stack.push(a.multiply(b));
+                    }
+                    else if (element.token === '/') {
+                        if (b.degree().isStrictlyPositive()) {
+                            console.log('divide by a polynom -> should create a rational polynom !');
+                        }
+                        else {
+                            stack.push(a.divide(b.monoms[0].coefficient));
+                        }
+                    }
+                    else if (element.token === '^') {
+                        if (b.degree().isStrictlyPositive()) {
+                            console.error('Cannot elevate a polynom with another polynom !');
+                        }
+                        else {
+                            if (b.monoms[0].coefficient.isNatural()) {
+                                stack.push(a.pow(b.monoms[0].coefficient.value));
+                            }
+                            else {
+                                if (a.monoms.length === 1 && a.monoms[0].coefficient.isOne()) {
+                                    for (let letter in a.monoms[0].literal) {
+                                        a.monoms[0].literal[letter].multiply(b.monoms[0].coefficient);
+                                    }
+                                    stack.push(a);
+                                }
+                                else {
+                                    console.error('Cannot have power with fraction');
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    console.log('Stack size: ', stack.length);
+                    if (element.token === '-') {
+                        stack.push(stack.pop().opposed());
+                    }
+                    else {
+                        console.log('While parsing, cannot apply ', element.token, 'to', stack[0].tex);
+                    }
+                }
+                break;
+            case shutingyard_1.ShutingyardType.MONOM:
+                console.error('The monom token should not appear here');
+                break;
+            case shutingyard_1.ShutingyardType.FUNCTION:
+                console.log('The function token should not appear here - might be introduced later.');
+                break;
+        }
     };
     shutingYardToReducedPolynom = (inputStr) => {
         const SY = new shutingyard_1.Shutingyard().parse(inputStr);
         const rpn = SY.rpn;
         this.zero();
-        let stack = [], mStack = [], monom = new monom_1.Monom();
-        console.log(inputStr);
+        let stack = [], monom = new monom_1.Monom();
         for (const element of rpn) {
-            console.log('POLYNOM', stack.map(x => x.tex));
-            console.log('MONOM', mStack.map(x => x.tex));
-            console.log('OPERATION', element.token);
-            if (element.token === '-' || element.token === '+') {
-                if (stack.length >= 2) {
-                    let pushToPolynomIndex = stack.length - 2;
-                    if (!stack[pushToPolynomIndex].isSameAs(stack[stack.length - 1])) {
-                        this.add(stack[pushToPolynomIndex]);
-                        stack.shift();
-                    }
-                }
-            }
-            monom_1.Monom.addToken(mStack, element);
+            Polynom.addToken(stack, element);
         }
         if (stack.length === 1) {
             this.add(stack[0]);
@@ -2594,6 +2664,9 @@ class Fraction {
     }
     get dfrac() {
         return this.tex.replace('\\frac', '\\dfrac');
+    }
+    get tfrac() {
+        return this.tex.replace('\\frac', '\\tfrac');
     }
     parse = (value, denominatorOrPeriodic) => {
         let S;
@@ -4788,10 +4861,6 @@ class Shutingyard {
                 '/': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
                 '+': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
                 '-': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
-                '%': { precedence: 3, associative: 'right', type: ShutingyardType.OPERATION },
-                'sin': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
-                'cos': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
-                'tan': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
             };
             this._uniformize = true;
         }

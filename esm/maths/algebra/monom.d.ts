@@ -1,5 +1,5 @@
 import { Fraction } from "../coefficients";
-import { tokenType } from "../shutingyard";
+import { Token } from "../shutingyard";
 export declare type literalType = {
     [Key: string]: Fraction;
 };
@@ -21,10 +21,7 @@ export declare class Monom {
     get texWithSign(): string;
     get tex(): string;
     parse: (inputStr: unknown) => Monom;
-    static addToken: (stack: Monom[], element: {
-        token: string;
-        tokenType: string;
-    }) => void;
+    static addToken: (stack: Monom[], element: Token) => void;
     private _shutingYardToReducedMonom;
     clone: () => Monom;
     copyLiterals: (literal: literalType) => literalType;
@@ -38,7 +35,7 @@ export declare class Monom {
     multiply: (...M: Monom[]) => Monom;
     multiplyByNumber: (F: Fraction | number) => Monom;
     divide: (...M: Monom[]) => Monom;
-    pow: (nb: number) => Monom;
+    pow: (nb: number | Fraction) => Monom;
     root: (p: number) => Monom;
     sqrt: () => Monom;
     compare: (M: Monom, sign?: string) => boolean;

@@ -63,10 +63,6 @@ class Shutingyard {
                 '/': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
                 '+': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
                 '-': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
-                '%': { precedence: 3, associative: 'right', type: ShutingyardType.OPERATION },
-                'sin': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
-                'cos': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
-                'tan': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
             };
             this._uniformize = true;
         }
@@ -106,7 +102,7 @@ class Shutingyard {
             }
             if (token === '') {
                 if (expr[start].match(/[0-9]/)) {
-                    if (this._mode === ShutingyardMode.POLYNOM) {
+                    if (this._mode === ShutingyardMode.POLYNOM && false) {
                         token = expr.substring(start).match(/^([0-9.,/]+)/)[0];
                     }
                     else {

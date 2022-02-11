@@ -75,6 +75,9 @@ export class Fraction {
     get dfrac(): string {
         return this.tex.replace('\\frac', '\\dfrac');
     }
+    get tfrac(): string {
+        return this.tex.replace('\\frac', '\\tfrac')
+    }
 
     // ------------------------------------------
     // Creation / parsing functions
@@ -255,7 +258,7 @@ export class Fraction {
         return this;
     }
     pow = (p: number | Fraction): Fraction => {
-        // TODO: Fraction.pow with a value different than a safe integer ?
+        // TODO: Fraction.pow with a value different than a safe integer !
         if (p instanceof Fraction) {
             return this.pow(p.value)
         }

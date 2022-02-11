@@ -1,8 +1,9 @@
 import { literalType, Monom } from './monom';
+import { Token } from '../shutingyard';
 import { Fraction } from "../coefficients";
 export declare class Polynom {
     private _rawString;
-    constructor(polynomString?: string, ...values: unknown[]);
+    constructor(polynomString?: string | Monom | number | Polynom | Fraction, ...values: unknown[]);
     private _monoms;
     get monoms(): Monom[];
     set monoms(M: Monom[]);
@@ -19,7 +20,8 @@ export declare class Polynom {
     get isMultiVariable(): boolean;
     get variables(): string[];
     get numberOfVars(): number;
-    parse: (inputStr: string, ...values: unknown[]) => Polynom;
+    parse: (inputStr: string | number | Fraction | Monom | Polynom, ...values: unknown[]) => Polynom;
+    private _parseString;
     clone: () => Polynom;
     zero: () => Polynom;
     one: () => Polynom;
@@ -64,7 +66,7 @@ export declare class Polynom {
     gcdNumerator: () => number;
     commonMonom: () => Monom;
     private genDisplay;
-    addToken: (stack: Polynom[], token: string) => void;
+    static addToken: (stack: Polynom[], element: Token) => void;
     private shutingYardToReducedPolynom;
     private multiplyByPolynom;
     private multiplyByFraction;

@@ -27,10 +27,10 @@ describe('Monom with integer power', () => {
         expect(M3.tex).to.be.equal('-3x^{-2}')
 
         const M4 = new Monom('3x^(2/3)')
-        expect(M4.tex).to.be.equal('3x^{2/3}')
+        expect(M4.tex).to.be.equal('3x^{\\tfrac{ 2 }{ 3 }}')
 
         const M5 = new Monom('-3x^(-2/3)y^(-5)8x^3')
-        expect(M5.tex).to.be.equal('-24x^{7/3}y^{-5}')
+        expect(M5.tex).to.be.equal('-24x^{\\tfrac{ 7 }{ 3 }}y^{-5}')
     })
 
     it('basic operations', () => {
@@ -70,20 +70,15 @@ describe('Monom with integer power', () => {
 
 describe('Monom with fraction power', () => {
     it('should create a numerical expression', () => {
-        const inputStr: string = '1/5x^(2/3)'
-        const SY: Shutingyard = new Shutingyard().parse(inputStr);
-        const rpn: { token: string, tokenType: string }[] = SY.rpn;
-        console.log(rpn)
-
-        let M = new Monom(inputStr)
-        console.log(M.tex)
-        let N = new Monom('7x^(4/5)')
+        const inputStr: string = '-1/5x^(2/3)'
+        const M = new Monom(inputStr),
+            N = new Monom('7x^(4/5)')
 
         M.multiply(N.clone())
 
         console.log(M.tex)
 
         // TODO: Problem while displaying numerical expression
-        console.log(M.display)
+        expect(M.tex).to.be.equal('-\\dfrac{ 7 }{ 5 }x^{\\tfrac{ 22 }{ 15 }}')
     })
 })

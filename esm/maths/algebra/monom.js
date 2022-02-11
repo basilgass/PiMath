@@ -169,7 +169,7 @@ class Monom {
             if (this._literal[letter].isNotZero()) {
                 L += `${letter}`;
                 if (this._literal[letter].isNotEqual(1)) {
-                    L += `^{${this._literal[letter].display}}`;
+                    L += `^{${this._literal[letter].tfrac}}`;
                 }
             }
         }
@@ -214,6 +214,45 @@ class Monom {
         }
         return this;
     };
+    static addToken = (stack, element) => {
+        let q1, q2, m, letter, pow;
+        if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
+            stack.push(new Monom(new coefficients_1.Fraction(element.token)));
+        }
+        else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
+            let M = new Monom().one();
+            M.setLetter(element.token, 1);
+            stack.push(M.clone());
+        }
+        else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
+            switch (element.token) {
+                case '-':
+                    q2 = (stack.pop()) || new Monom().zero();
+                    q1 = (stack.pop()) || new Monom().zero();
+                    stack.push(q1.subtract(q2));
+                    break;
+                case '*':
+                    q2 = (stack.pop()) || new Monom().one();
+                    q1 = (stack.pop()) || new Monom().one();
+                    stack.push(q1.multiply(q2));
+                    break;
+                case '/':
+                    q2 = (stack.pop()) || new Monom().one();
+                    q1 = (stack.pop()) || new Monom().one();
+                    stack.push(q1.divide(q2));
+                    break;
+                case '^':
+                    pow = (stack.pop().coefficient) || new coefficients_1.Fraction().one();
+                    m = (stack.pop()) || new Monom().one();
+                    letter = m.variables[0];
+                    if (letter !== undefined) {
+                        m.setLetter(letter, pow);
+                    }
+                    stack.push(m);
+                    break;
+            }
+        }
+    };
     _shutingYardToReducedMonom = (inputStr) => {
         const SY = new shutingyard_1.Shutingyard().parse(inputStr);
         const rpn = SY.rpn;
@@ -235,39 +274,7 @@ class Monom {
         }
         else {
             for (const element of rpn) {
-                if (element.tokenType === 'coefficient') {
-                    let M = new Monom().one();
-                    M.coefficient = new coefficients_1.Fraction(element.token);
-                    stack.push(M.clone());
-                }
-                else if (element.tokenType === 'variable') {
-                    let M = new Monom().one();
-                    M.setLetter(element.token, 1);
-                    stack.push(M.clone());
-                }
-                else if (element.tokenType === 'operation') {
-                    switch (element.token) {
-                        case '-':
-                            q2 = (stack.pop()) || new Monom().zero();
-                            q1 = (stack.pop()) || new Monom().zero();
-                            stack.push(q1.subtract(q2));
-                            break;
-                        case '*':
-                            q2 = (stack.pop()) || new Monom().one();
-                            q1 = (stack.pop()) || new Monom().one();
-                            stack.push(q1.multiply(q2));
-                            break;
-                        case '^':
-                            pow = (stack.pop().coefficient) || new coefficients_1.Fraction().one();
-                            m = (stack.pop()) || new Monom().one();
-                            letter = m.variables[0];
-                            if (letter !== undefined) {
-                                m.setLetter(letter, pow);
-                            }
-                            stack.push(m);
-                            break;
-                    }
-                }
+                Monom.addToken(stack, element);
             }
         }
         this.one();
@@ -378,7 +385,7 @@ class Monom {
     pow = (nb) => {
         this._coefficient.pow(nb);
         for (let letter in this._literal) {
-            this._literal[letter].pow(nb);
+            this._literal[letter].multiply(nb);
         }
         return this;
     };

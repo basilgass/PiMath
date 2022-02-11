@@ -56,6 +56,9 @@ class Fraction {
     get dfrac() {
         return this.tex.replace('\\frac', '\\dfrac');
     }
+    get tfrac() {
+        return this.tex.replace('\\frac', '\\tfrac');
+    }
     parse = (value, denominatorOrPeriodic) => {
         let S;
         if (value === null || value === "") {

@@ -12,6 +12,7 @@ export declare class Fraction {
     get display(): string;
     get frac(): string;
     get dfrac(): string;
+    get tfrac(): string;
     parse: (value: unknown, denominatorOrPeriodic?: number) => Fraction;
     clone: () => Fraction;
     zero: () => Fraction;

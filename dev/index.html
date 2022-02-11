@@ -16,12 +16,12 @@
           integrity="sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs" crossorigin="anonymous">
 
     <!-- The loading of KaTeX is deferred to speed up page rendering -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"
             integrity="sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx"
             crossorigin="anonymous"></script>
 
     <!-- To automatically render math in text elements, include the auto-render extension: -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js"
             integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
             onload="renderMathInElement(document.body);"></script>
 
@@ -29,21 +29,29 @@
 </head>
 <body>
 
-<!--<div x-data="dev()">-->
-<!--    <template x-for="(item, index) of output" :key="index">-->
-<!--        <div class="katex-left" x-html="`\\[${item}\\]`"></div>-->
-<!--    </template>-->
-<!--</div>-->
+<div x-data="example()">
+    <!--    <template x-for="(item, index) of output" :key="index">-->
+    <!--        <div class="katex-left" x-html="`\\[${item}\\]`"></div>-->
+    <!--    </template>-->
+    <div x-html="tex"></div>
+</div>
 
 <script>
-	let P = new Pi.Polynom('2x(x+3)^2(x-1)')
+	function example () {
+		let P = new Pi.Polynom('3x^(2/3)-5x+5/3')
 
 		console.log(P.tex)
-  // let ne = new Pi.NumExp('5/x*sin(x*x)')
+
+		return {
+			tex: katex.renderToString(P.tex)
+		}
+	}
+
+	// let ne = new Pi.NumExp('5/x*sin(x*x)')
 	// const expr2 = new Pi.NumExp('-3*x^2-5')
-  //
+	//
 	// console.log(expr2.evaluate({x: -2}))
-  //
+	//
 	//
 	// let ne = new Pi.NumExp('5/x*sqrt(x^2)')
 	//
