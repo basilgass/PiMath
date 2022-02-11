@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const numeric_1 = require("./maths/numeric");
-const numexp_1 = require("./maths/numexp");
+const numexp_1 = require("./maths/expressions/numexp");
 const shutingyard_1 = require("./maths/shutingyard");
 const random_1 = require("./maths/random");
 const coefficients_1 = require("./maths/coefficients");
@@ -15,6 +15,8 @@ window.Pi = {
     Root: coefficients_1.Nthroot,
     Monom: algebra_1.Monom,
     Polynom: algebra_1.Polynom,
+    PolynomExp: algebra_1.PolynomExp,
+    PolynomExpFactor: algebra_1.PolynomExpFactor,
     Equation: algebra_1.Equation,
     LinearSystem: algebra_1.LinearSystem,
     Rational: algebra_1.Rational,

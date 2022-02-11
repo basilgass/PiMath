@@ -16,4 +16,6 @@ __exportStar(require("./logicalset"), exports);
 __exportStar(require("./monom"), exports);
 __exportStar(require("./polynom"), exports);
 __exportStar(require("./rational"), exports);
+__exportStar(require("./../expressions/polynomexp"), exports);
+__exportStar(require("./../expressions/polynomexp"), exports);
 //# sourceMappingURL=index.js.map
