@@ -634,6 +634,8 @@ __exportStar(__webpack_require__(/*! ./logicalset */ "./src/maths/algebra/logica
 __exportStar(__webpack_require__(/*! ./monom */ "./src/maths/algebra/monom.ts"), exports);
 __exportStar(__webpack_require__(/*! ./polynom */ "./src/maths/algebra/polynom.ts"), exports);
 __exportStar(__webpack_require__(/*! ./rational */ "./src/maths/algebra/rational.ts"), exports);
+__exportStar(__webpack_require__(/*! ./../expressions/polynomexp */ "./src/maths/expressions/polynomexp.ts"), exports);
+__exportStar(__webpack_require__(/*! ./../expressions/polynomexp */ "./src/maths/expressions/polynomexp.ts"), exports);
 
 
 /***/ }),
@@ -3126,6 +3128,264 @@ exports.Nthroot = Nthroot;
 
 /***/ }),
 
+/***/ "./src/maths/expressions/numexp.ts":
+/*!*****************************************!*\
+  !*** ./src/maths/expressions/numexp.ts ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NumExp = void 0;
+const shutingyard_1 = __webpack_require__(/*! ../shutingyard */ "./src/maths/shutingyard.ts");
+const coefficients_1 = __webpack_require__(/*! ../coefficients */ "./src/maths/coefficients/index.ts");
+class NumExp {
+    _rpn;
+    _expression;
+    constructor(value) {
+        this._expression = value;
+        this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value).rpn;
+    }
+    get rpn() {
+        return this._rpn;
+    }
+    get expression() {
+        return this._expression;
+    }
+    _extractDecimalPart(value) {
+        let decimal = value.toString();
+        if (!decimal.includes('.')) {
+            return '';
+        }
+        decimal = decimal.split('.')[1];
+        return decimal.substring(0, decimal.length - 2);
+    }
+    _numberCorrection(value) {
+        const epsilon = 0.00000000000001, number_of_digits = 6;
+        let decimal = this._extractDecimalPart(value);
+        if (decimal === '') {
+            return value;
+        }
+        const n9 = decimal.match(/9+$/g);
+        const n0 = decimal.match(/0+$/g);
+        if (n9 && n9[0].length >= number_of_digits) {
+            let mod = this._extractDecimalPart(value + epsilon), mod0 = mod.match(/0+$/g);
+            if (mod0 && mod0[0].length >= number_of_digits) {
+                return +((value + epsilon).toString().split(mod0[0])[0]);
+            }
+        }
+        if (n0 && n0[0].length >= number_of_digits) {
+            let mod = this._extractDecimalPart(value - epsilon), mod9 = mod.match(/9+$/g);
+            if (mod9 && mod9[0].length >= number_of_digits) {
+                return +(value.toString().split(n0[0])[0]);
+            }
+        }
+        return value;
+    }
+    _addToStack(stack, value) {
+        stack.push(this._numberCorrection(value));
+    }
+    evaluate(values) {
+        let stack = [];
+        for (const element of this._rpn) {
+            if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
+                if (!isNaN(+element.token)) {
+                    this._addToStack(stack, +element.token);
+                }
+                else {
+                    this._addToStack(stack, new coefficients_1.Fraction(element.token).value);
+                }
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
+                if (values[element.token] !== undefined) {
+                    this._addToStack(stack, +values[element.token]);
+                }
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.CONSTANT) {
+                this._addToStack(stack, shutingyard_1.tokenConstant[element.token]);
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
+                if (element.token === '*') {
+                    const b = +stack.pop(), a = +stack.pop();
+                    this._addToStack(stack, a * b);
+                }
+                else if (element.token === '/') {
+                    const b = +stack.pop(), a = +stack.pop();
+                    this._addToStack(stack, a / b);
+                }
+                else if (element.token === '+') {
+                    const b = +stack.pop(), a = +stack.pop();
+                    this._addToStack(stack, a + b);
+                }
+                else if (element.token === '-') {
+                    const b = +stack.pop(), a = +stack.pop() || 0;
+                    this._addToStack(stack, a - b);
+                }
+                else if (element.token === '^') {
+                    const b = +stack.pop(), a = +stack.pop();
+                    this._addToStack(stack, Math.pow(a, b));
+                }
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.FUNCTION) {
+                const a = +stack.pop();
+                if (element.token === 'sin') {
+                    this._addToStack(stack, Math.sin(a));
+                }
+                else if (element.token === 'cos') {
+                    this._addToStack(stack, Math.cos(a));
+                }
+                else if (element.token === 'tan') {
+                    this._addToStack(stack, Math.tan(a));
+                }
+                else if (element.token === 'sqrt') {
+                    this._addToStack(stack, Math.sqrt(a));
+                }
+            }
+        }
+        if (stack.length === 1) {
+            return stack[0];
+        }
+        else {
+            console.error('There was a problem parsing', this._expression, '. The RPN array is', this._rpn);
+            return 0;
+        }
+    }
+}
+exports.NumExp = NumExp;
+
+
+/***/ }),
+
+/***/ "./src/maths/expressions/polynomexp.ts":
+/*!*********************************************!*\
+  !*** ./src/maths/expressions/polynomexp.ts ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PolynomExp = exports.PolynomExpFactor = void 0;
+class PolynomExpFactor {
+    _factors;
+    _powerAsInteger;
+    constructor(...values) {
+        this._powerAsInteger = false;
+        this._factors = [];
+    }
+    addFactor = (value) => {
+        this._factors.push({
+            polynom: value.polynom.clone(),
+            degree: value.degree.clone()
+        });
+        return this;
+    };
+    multiply = (value) => {
+        for (let k of this._factors) {
+            this.addFactor(k);
+        }
+        return this;
+    };
+    divide = (value) => {
+        for (let k of this._factors) {
+            this.addFactor({
+                polynom: k.polynom,
+                degree: k.degree.clone().opposed()
+            });
+        }
+        return this;
+    };
+    get factors() {
+        return this._factors;
+    }
+    get tex() {
+        let numerators = [], denominators = [];
+        for (let k of this._factors) {
+            if (k.degree.isPositive()) {
+                numerators.push(this.factorAsTex(k));
+            }
+            else {
+                denominators.push(this.factorAsTex({
+                    polynom: k.polynom,
+                    degree: k.degree.clone().opposed()
+                }));
+            }
+        }
+        if (denominators.length > 0) {
+            return `\\dfrac{ ${numerators.join('')} }{ ${denominators.join('')} }`;
+        }
+        else {
+            return '';
+        }
+    }
+    get powerAsInteger() {
+        return this._powerAsInteger;
+    }
+    set powerAsInteger(value) {
+        this._powerAsInteger = value;
+    }
+    factorAsTex = (factor, withParenthesis) => {
+        let tex = '';
+        if (factor.degree.isOne()) {
+            if (withParenthesis === undefined || withParenthesis) {
+                tex = `\\left(${factor.polynom.tex}\\right)`;
+            }
+            else {
+                tex = factor.polynom.tex;
+            }
+        }
+        else if (factor.degree.isNatural()) {
+            tex = `\\left(${factor.polynom.tex}\\right)^{ ${factor.degree.tex} }`;
+        }
+        else {
+            if (this._powerAsInteger) {
+                if (factor.degree.denominator === 2) {
+                    tex = `\\sqrt{${factor.polynom.tex}}`;
+                }
+                else {
+                    tex = `\\sqrt[${factor.degree.denominator}]{${factor.polynom.tex}}`;
+                }
+                if (factor.degree.numerator !== 1) {
+                    tex += `^{ ${factor.degree.numerator} }`;
+                }
+            }
+            else {
+                tex = `\\left(${factor.polynom.tex}\\right)^{ ${factor.degree.tex} }`;
+            }
+        }
+        return tex;
+    };
+}
+exports.PolynomExpFactor = PolynomExpFactor;
+class PolynomExp {
+    _factors;
+    _powerAsInteger;
+    constructor(...values) {
+        this._factors = [];
+        this._factors.push(new PolynomExpFactor());
+    }
+    addFactors = (value) => {
+        value.powerAsInteger = this._powerAsInteger;
+        this._factors.push(value);
+        return this;
+    };
+    get tex() {
+        return this._factors.map(x => x.tex).join('');
+    }
+    get powerAsInteger() {
+        return this._powerAsInteger;
+    }
+    set powerAsInteger(value) {
+        for (let factor of this._factors) {
+            factor.powerAsInteger = value;
+        }
+        this._powerAsInteger = value;
+    }
+}
+exports.PolynomExp = PolynomExp;
+
+
+/***/ }),
+
 /***/ "./src/maths/geometry/circle.ts":
 /*!**************************************!*\
   !*** ./src/maths/geometry/circle.ts ***!
@@ -4321,134 +4581,6 @@ exports.Numeric = Numeric;
 
 /***/ }),
 
-/***/ "./src/maths/numexp.ts":
-/*!*****************************!*\
-  !*** ./src/maths/numexp.ts ***!
-  \*****************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NumExp = void 0;
-const shutingyard_1 = __webpack_require__(/*! ./shutingyard */ "./src/maths/shutingyard.ts");
-const coefficients_1 = __webpack_require__(/*! ./coefficients */ "./src/maths/coefficients/index.ts");
-class NumExp {
-    _rpn;
-    _expression;
-    constructor(value) {
-        this._expression = value;
-        this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value).rpn;
-    }
-    get rpn() {
-        return this._rpn;
-    }
-    get expression() {
-        return this._expression;
-    }
-    _extractDecimalPart(value) {
-        let decimal = value.toString();
-        if (!decimal.includes('.')) {
-            return '';
-        }
-        decimal = decimal.split('.')[1];
-        return decimal.substring(0, decimal.length - 2);
-    }
-    _numberCorrection(value) {
-        const epsilon = 0.00000000000001, number_of_digits = 6;
-        let decimal = this._extractDecimalPart(value);
-        if (decimal === '') {
-            return value;
-        }
-        const n9 = decimal.match(/9+$/g);
-        const n0 = decimal.match(/0+$/g);
-        if (n9 && n9[0].length >= number_of_digits) {
-            let mod = this._extractDecimalPart(value + epsilon), mod0 = mod.match(/0+$/g);
-            if (mod0 && mod0[0].length >= number_of_digits) {
-                return +((value + epsilon).toString().split(mod0[0])[0]);
-            }
-        }
-        if (n0 && n0[0].length >= number_of_digits) {
-            let mod = this._extractDecimalPart(value - epsilon), mod9 = mod.match(/9+$/g);
-            if (mod9 && mod9[0].length >= number_of_digits) {
-                return +(value.toString().split(n0[0])[0]);
-            }
-        }
-        return value;
-    }
-    _addToStack(stack, value) {
-        stack.push(this._numberCorrection(value));
-    }
-    evaluate(values) {
-        let stack = [];
-        for (const element of this._rpn) {
-            if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
-                if (!isNaN(+element.token)) {
-                    this._addToStack(stack, +element.token);
-                }
-                else {
-                    this._addToStack(stack, new coefficients_1.Fraction(element.token).value);
-                }
-            }
-            else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
-                if (values[element.token] !== undefined) {
-                    this._addToStack(stack, +values[element.token]);
-                }
-            }
-            else if (element.tokenType === shutingyard_1.ShutingyardType.CONSTANT) {
-                this._addToStack(stack, shutingyard_1.tokenConstant[element.token]);
-            }
-            else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
-                if (element.token === '*') {
-                    const b = +stack.pop(), a = +stack.pop();
-                    this._addToStack(stack, a * b);
-                }
-                else if (element.token === '/') {
-                    const b = +stack.pop(), a = +stack.pop();
-                    this._addToStack(stack, a / b);
-                }
-                else if (element.token === '+') {
-                    const b = +stack.pop(), a = +stack.pop();
-                    this._addToStack(stack, a + b);
-                }
-                else if (element.token === '-') {
-                    const b = +stack.pop(), a = +stack.pop() || 0;
-                    this._addToStack(stack, a - b);
-                }
-                else if (element.token === '^') {
-                    const b = +stack.pop(), a = +stack.pop();
-                    this._addToStack(stack, Math.pow(a, b));
-                }
-            }
-            else if (element.tokenType === shutingyard_1.ShutingyardType.FUNCTION) {
-                const a = +stack.pop();
-                if (element.token === 'sin') {
-                    this._addToStack(stack, Math.sin(a));
-                }
-                else if (element.token === 'cos') {
-                    this._addToStack(stack, Math.cos(a));
-                }
-                else if (element.token === 'tan') {
-                    this._addToStack(stack, Math.tan(a));
-                }
-                else if (element.token === 'sqrt') {
-                    this._addToStack(stack, Math.sqrt(a));
-                }
-            }
-        }
-        if (stack.length === 1) {
-            return stack[0];
-        }
-        else {
-            console.error('There was a problem parsing', this._expression, '. The RPN array is', this._rpn);
-            return 0;
-        }
-    }
-}
-exports.NumExp = NumExp;
-
-
-/***/ }),
-
 /***/ "./src/maths/random/index.ts":
 /*!***********************************!*\
   !*** ./src/maths/random/index.ts ***!
@@ -5064,7 +5196,7 @@ var exports = __webpack_exports__;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const numeric_1 = __webpack_require__(/*! ./maths/numeric */ "./src/maths/numeric.ts");
-const numexp_1 = __webpack_require__(/*! ./maths/numexp */ "./src/maths/numexp.ts");
+const numexp_1 = __webpack_require__(/*! ./maths/expressions/numexp */ "./src/maths/expressions/numexp.ts");
 const shutingyard_1 = __webpack_require__(/*! ./maths/shutingyard */ "./src/maths/shutingyard.ts");
 const random_1 = __webpack_require__(/*! ./maths/random */ "./src/maths/random/index.ts");
 const coefficients_1 = __webpack_require__(/*! ./maths/coefficients */ "./src/maths/coefficients/index.ts");
@@ -5078,6 +5210,8 @@ window.Pi = {
     Root: coefficients_1.Nthroot,
     Monom: algebra_1.Monom,
     Polynom: algebra_1.Polynom,
+    PolynomExp: algebra_1.PolynomExp,
+    PolynomExpFactor: algebra_1.PolynomExpFactor,
     Equation: algebra_1.Equation,
     LinearSystem: algebra_1.LinearSystem,
     Rational: algebra_1.Rational,

@@ -1,5 +1,5 @@
-import {Shutingyard, ShutingyardMode, ShutingyardType, tokenConstant} from "./shutingyard";
-import {Fraction} from "./coefficients";
+import {Shutingyard, ShutingyardMode, ShutingyardType, tokenConstant} from "../shutingyard";
+import {Fraction} from "../coefficients";
 
 export class NumExp {
     private _rpn: { token: string, tokenType: string }[]
