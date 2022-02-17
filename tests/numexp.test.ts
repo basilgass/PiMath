@@ -1,5 +1,6 @@
 import {expect} from 'chai';
 import {NumExp} from "../src/maths/expressions/numexp";
+import exp = require("constants");
 
 describe('Numerical expression', () => { // the tests container
     it('RPN for numerical expression', () => {
@@ -18,10 +19,16 @@ describe('Numerical expression', () => { // the tests container
         expect(expr2.evaluate({x: -2})).to.be.equal(-17)
     })
 
-
-
     it('Evaluation simple mathematical functions', () => {
         const expr = new NumExp('sqrt(x)')
         expect(expr.evaluate({x: 9})).to.be.equal(3)
     })
+
+    it('should detect invalid rpn parsing', function () {
+        const exprValid = new NumExp('3*sin(x)'),
+            exprInvalid = new NumExp('3*sin')
+
+        expect(exprValid.isValid).to.be.true
+        expect(exprInvalid.isValid).to.be.false
+    });
 });

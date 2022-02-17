@@ -4,6 +4,7 @@
 import {Fraction} from "../coefficients";
 import {Numeric} from "../numeric";
 import {Shutingyard, ShutingyardType, Token, tokenType} from "../shutingyard";
+import {log} from "util";
 
 export type literalType = {
     [Key: string]: Fraction
@@ -118,8 +119,8 @@ export class Monom {
      * Get the variables letters
      */
     get variables(): string[] {
-        this.clone().clean();
-        return Object.keys(this._literal)
+        let M = this.clone().clean();
+        return Object.keys(M.literal)
     }
 
     // Display getter
@@ -453,9 +454,14 @@ export class Monom {
                 delete this._literal[letter];
             }
         }
-
         return this;
     };
+
+    reduce = (): Monom => {
+        this.clean()
+        this.coefficient.reduce()
+        return this
+    }
 
     // ------------------------------------------
     // Mathematical operations
@@ -615,6 +621,7 @@ export class Monom {
                     M2: string[] = M.variables,
                     K: string[] = M1.concat(M2.filter((item) => M1.indexOf(item) < 0));
 
+                if(M1.length===0 && M2.length===0){return true}
                 // To compare, both must be different than zero.
                 if (!this.isZero() && !M.isZero()) {
                     for (let key of K) {
@@ -759,7 +766,6 @@ export class Monom {
 
         if (typeof values === 'number' || values instanceof Fraction) {
             let tmpValues: literalType = {}
-
             tmpValues[this.variables[0]] = new Fraction(values)
             return this.evaluate(tmpValues);
         }
@@ -771,9 +777,11 @@ export class Monom {
                 }
 
                 let value = new Fraction(values[L])
+
                 r.multiply(value.pow(this._literal[L]))
             }
         }
+
         return r;
     };
 
@@ -824,6 +832,7 @@ export class Monom {
             }
             M.setLetter(letter, 1)
         }
+
         return M
     }
     // ----------------------------------------

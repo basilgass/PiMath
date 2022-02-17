@@ -53,8 +53,8 @@ class Monom {
         }
     }
     get variables() {
-        this.clone().clean();
-        return Object.keys(this._literal);
+        let M = this.clone().clean();
+        return Object.keys(M.literal);
     }
     get display() {
         let L = '', letters = Object.keys(this._literal).sort();
@@ -320,6 +320,11 @@ class Monom {
         }
         return this;
     };
+    reduce = () => {
+        this.clean();
+        this.coefficient.reduce();
+        return this;
+    };
     opposed = () => {
         this._coefficient.opposed();
         return this;
@@ -413,6 +418,9 @@ class Monom {
                 return this._coefficient.isEqual(M.coefficient);
             case 'same':
                 let M1 = this.variables, M2 = M.variables, K = M1.concat(M2.filter((item) => M1.indexOf(item) < 0));
+                if (M1.length === 0 && M2.length === 0) {
+                    return true;
+                }
                 if (!this.isZero() && !M.isZero()) {
                     for (let key of K) {
                         if (this._literal[key] === undefined || M.literal[key] === undefined) {

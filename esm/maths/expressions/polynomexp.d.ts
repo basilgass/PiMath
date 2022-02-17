@@ -1,32 +1,52 @@
-import { Polynom } from "../algebra";
-import { Fraction } from "../coefficients";
-declare type Factor = {
-    polynom: Polynom;
-    degree: Fraction;
+import { Polynom, PolynomParsingType } from "../algebra";
+import { Fraction, FractionParsingType } from "../coefficients";
+declare type PolynomExpMathFunctionType = {
+    name: string;
+    fn: Function;
+    tex: string;
 };
 export declare class PolynomExpFactor {
-    private _factors;
+    constructor(polynom: PolynomParsingType, degree?: FractionParsingType, mathFunction?: PolynomExpMathFunctionType);
+    private _forceParenthesis;
+    get forceParenthesis(): boolean;
+    set forceParenthesis(value: boolean);
+    private _fn;
+    get fn(): PolynomExpMathFunctionType;
+    set fn(value: PolynomExpMathFunctionType);
     private _powerAsInteger;
-    constructor(...values: unknown[]);
-    addFactor: (value: Factor) => PolynomExpFactor;
-    multiply: (value: PolynomExpFactor) => PolynomExpFactor;
-    divide: (value: PolynomExpFactor) => PolynomExpFactor;
-    get factors(): {
-        polynom: Polynom;
-        degree: Fraction;
-    }[];
-    get tex(): string;
     get powerAsInteger(): boolean;
     set powerAsInteger(value: boolean);
-    factorAsTex: (factor: Factor, withParenthesis?: Boolean) => string;
+    private _polynom;
+    get polynom(): Polynom;
+    set polynom(value: Polynom);
+    private _degree;
+    get degree(): Fraction;
+    set degree(value: Fraction);
+    get tex(): string;
+    get isCoefficient(): boolean;
+    get firstCoefficient(): Fraction;
+    private get _texDegree();
+    setForceParenthesis(value?: boolean): PolynomExpFactor;
+    derivative(letter?: string): PolynomExpProduct;
 }
-export declare class PolynomExp {
+export declare class PolynomExpProduct {
+    constructor(...values: PolynomExpFactor[]);
+    private _fn;
+    get fn(): PolynomExpMathFunctionType;
+    set fn(value: PolynomExpMathFunctionType);
     private _factors;
-    private _powerAsInteger;
-    constructor(...values: unknown[]);
-    addFactors: (value: PolynomExpFactor) => PolynomExp;
+    get factors(): PolynomExpFactor[];
+    set factors(value: PolynomExpFactor[]);
+    private _positive;
+    get positive(): boolean;
+    set positive(value: boolean);
+    private _asPositiveDegree;
+    get asPositiveDegree(): boolean;
+    set asPositiveDegree(value: boolean);
     get tex(): string;
-    get powerAsInteger(): boolean;
-    set powerAsInteger(value: boolean);
+    reduce(): PolynomExpProduct;
+    integrate(letter?: string): PolynomExpProduct;
+    applyMathFunction(mathFn: PolynomExpMathFunctionType): PolynomExpProduct;
+    private _integrateWithInternalDerivative;
 }
 export {};

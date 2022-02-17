@@ -234,6 +234,8 @@ class Polynom {
             quotient.add(newM);
             reminder.subtract(P.clone().multiply(newM));
         }
+        quotient.reduce();
+        reminder.reduce();
         return { quotient, reminder };
     };
     divide = (value) => {
@@ -688,7 +690,7 @@ class Polynom {
                             console.error('Cannot elevate a polynom with another polynom !');
                         }
                         else {
-                            if (b.monoms[0].coefficient.isNatural()) {
+                            if (b.monoms[0].coefficient.isRelative()) {
                                 stack.push(a.pow(b.monoms[0].coefficient.value));
                             }
                             else {

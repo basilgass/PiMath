@@ -1,5 +1,6 @@
 import {Numeric} from "../numeric";
 
+export type FractionParsingType = number|string|Fraction
 /**
  * The fraction class make possible to handle
  * TODO: Write the documentation correctly.
@@ -150,6 +151,7 @@ export class Fraction {
                         this._numerator = value * Math.pow(10, p) - Math.floor(value * Math.pow(10, p - denominatorOrPeriodic));
                         this.denominator = Math.pow(10, p) - Math.pow(10, p - denominatorOrPeriodic)
                     }
+                    this.reduce()
                 }
                 break;
             case "object":
@@ -263,18 +265,27 @@ export class Fraction {
             return this.pow(p.value)
         }
 
-        if (!Number.isSafeInteger(p)) {
-            return this.invalid();
-        }
-
         this.reduce();
-
         if (p < 0) {
             this.invert()
         }
 
-        this._numerator = this._numerator ** Math.abs(p);
-        this._denominator = this._denominator ** Math.abs(p);
+        // Check if numerator and denominator are roots of...
+        // othervise, convert to numeric.
+        let controlNumerator = Math.floor(Math.pow(this._numerator, Math.abs(p))),
+            controlDenominator = Math.floor(Math.pow(this._denominator, Math.abs(p)))
+
+        if(controlNumerator ** Math.abs(p) === this._numerator
+            &&
+            controlDenominator ** Math.abs(p) === this._denominator){
+
+            this._numerator = this._numerator ** Math.abs(p);
+            this._denominator = this._denominator ** Math.abs(p);
+        }else{
+            this._numerator = this._numerator ** Math.abs(p);
+            this._denominator = this._denominator ** Math.abs(p);
+        }
+
         return this;
     };
 
@@ -464,16 +475,19 @@ export class Fraction {
         return Math.abs(Numeric.gcd(this._numerator, this._denominator)) === 1
     }
     isNatural = (): boolean => {
+        return this.isRelative() && this.isPositive()
+    }
+    isRelative = (): boolean => {
         return this.clone().reduce().denominator === 1
     }
     isRational = (): boolean => {
-        return !this.isNatural()
+        return !this.isRelative()
     }
     isEven = (): boolean => {
-        return this.isNatural() && this.value % 2 === 0
+        return this.isRelative() && this.value % 2 === 0
     }
     isOdd = (): boolean => {
-        return this.isNatural() && this.value % 2 === 1
+        return this.isRelative() && this.value % 2 === 1
     }
     sign = (): number => {
         return (this._numerator * this._denominator >= 0) ? 1 : -1;

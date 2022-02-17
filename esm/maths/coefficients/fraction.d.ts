@@ -1,3 +1,4 @@
+export declare type FractionParsingType = number | string | Fraction;
 export declare class Fraction {
     private _numerator;
     private _denominator;
@@ -56,6 +57,7 @@ export declare class Fraction {
     isSquare: () => boolean;
     isReduced: () => boolean;
     isNatural: () => boolean;
+    isRelative: () => boolean;
     isRational: () => boolean;
     isEven: () => boolean;
     isOdd: () => boolean;

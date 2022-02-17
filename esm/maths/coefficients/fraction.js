@@ -111,6 +111,7 @@ class Fraction {
                         this._numerator = value * Math.pow(10, p) - Math.floor(value * Math.pow(10, p - denominatorOrPeriodic));
                         this.denominator = Math.pow(10, p) - Math.pow(10, p - denominatorOrPeriodic);
                     }
+                    this.reduce();
                 }
                 break;
             case "object":
@@ -197,15 +198,21 @@ class Fraction {
         if (p instanceof Fraction) {
             return this.pow(p.value);
         }
-        if (!Number.isSafeInteger(p)) {
-            return this.invalid();
-        }
         this.reduce();
         if (p < 0) {
             this.invert();
         }
-        this._numerator = this._numerator ** Math.abs(p);
-        this._denominator = this._denominator ** Math.abs(p);
+        let controlNumerator = Math.floor(Math.pow(this._numerator, Math.abs(p))), controlDenominator = Math.floor(Math.pow(this._denominator, Math.abs(p)));
+        if (controlNumerator ** Math.abs(p) === this._numerator
+            &&
+                controlDenominator ** Math.abs(p) === this._denominator) {
+            this._numerator = this._numerator ** Math.abs(p);
+            this._denominator = this._denominator ** Math.abs(p);
+        }
+        else {
+            this._numerator = this._numerator ** Math.abs(p);
+            this._denominator = this._denominator ** Math.abs(p);
+        }
         return this;
     };
     root = (p) => {
@@ -357,16 +364,19 @@ class Fraction {
         return Math.abs(numeric_1.Numeric.gcd(this._numerator, this._denominator)) === 1;
     };
     isNatural = () => {
+        return this.isRelative() && this.isPositive();
+    };
+    isRelative = () => {
         return this.clone().reduce().denominator === 1;
     };
     isRational = () => {
-        return !this.isNatural();
+        return !this.isRelative();
     };
     isEven = () => {
-        return this.isNatural() && this.value % 2 === 0;
+        return this.isRelative() && this.value % 2 === 0;
     };
     isOdd = () => {
-        return this.isNatural() && this.value % 2 === 1;
+        return this.isRelative() && this.value % 2 === 1;
     };
     sign = () => {
         return (this._numerator * this._denominator >= 0) ? 1 : -1;

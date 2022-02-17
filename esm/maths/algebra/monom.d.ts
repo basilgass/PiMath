@@ -29,6 +29,7 @@ export declare class Monom {
     zero: () => Monom;
     one: () => Monom;
     clean: () => Monom;
+    reduce: () => Monom;
     opposed: () => Monom;
     add: (...M: Monom[]) => Monom;
     subtract: (...M: Monom[]) => Monom;

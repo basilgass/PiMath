@@ -6,12 +6,22 @@ const coefficients_1 = require("../coefficients");
 class NumExp {
     _rpn;
     _expression;
+    _isValid;
     constructor(value) {
         this._expression = value;
         this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value).rpn;
     }
     get rpn() {
         return this._rpn;
+    }
+    get isValid() {
+        if (this._isValid === undefined) {
+            this.evaluate({ x: 0 });
+        }
+        return this._isValid;
+    }
+    set isValid(value) {
+        this._isValid = value;
     }
     get expression() {
         return this._expression;
@@ -26,20 +36,20 @@ class NumExp {
     }
     _numberCorrection(value) {
         const epsilon = 0.00000000000001, number_of_digits = 6;
-        let decimal = this._extractDecimalPart(value);
+        const decimal = this._extractDecimalPart(value);
         if (decimal === '') {
             return value;
         }
         const n9 = decimal.match(/9+$/g);
         const n0 = decimal.match(/0+$/g);
         if (n9 && n9[0].length >= number_of_digits) {
-            let mod = this._extractDecimalPart(value + epsilon), mod0 = mod.match(/0+$/g);
+            const mod = this._extractDecimalPart(value + epsilon), mod0 = mod.match(/0+$/g);
             if (mod0 && mod0[0].length >= number_of_digits) {
                 return +((value + epsilon).toString().split(mod0[0])[0]);
             }
         }
         if (n0 && n0[0].length >= number_of_digits) {
-            let mod = this._extractDecimalPart(value - epsilon), mod9 = mod.match(/9+$/g);
+            const mod = this._extractDecimalPart(value - epsilon), mod9 = mod.match(/9+$/g);
             if (mod9 && mod9[0].length >= number_of_digits) {
                 return +(value.toString().split(n0[0])[0]);
             }
@@ -50,7 +60,8 @@ class NumExp {
         stack.push(this._numberCorrection(value));
     }
     evaluate(values) {
-        let stack = [];
+        const stack = [];
+        this.isValid = true;
         for (const element of this._rpn) {
             if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
                 if (!isNaN(+element.token)) {
@@ -70,28 +81,46 @@ class NumExp {
             }
             else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
                 if (element.token === '*') {
-                    const b = +stack.pop(), a = +stack.pop();
+                    const b = stack.pop(), a = stack.pop();
+                    if (a === undefined || b === undefined) {
+                        this.isValid = false;
+                    }
                     this._addToStack(stack, a * b);
                 }
                 else if (element.token === '/') {
-                    const b = +stack.pop(), a = +stack.pop();
+                    const b = stack.pop(), a = stack.pop();
+                    if (a === undefined || b === undefined) {
+                        this.isValid = false;
+                    }
                     this._addToStack(stack, a / b);
                 }
                 else if (element.token === '+') {
-                    const b = +stack.pop(), a = +stack.pop();
-                    this._addToStack(stack, a + b);
+                    const b = stack.pop(), a = stack.pop();
+                    if (a === undefined || b === undefined) {
+                        this.isValid = false;
+                    }
+                    this._addToStack(stack, (+a) + (+b));
                 }
                 else if (element.token === '-') {
-                    const b = +stack.pop(), a = +stack.pop() || 0;
+                    const b = stack.pop(), a = stack.pop() || 0;
+                    if (b === undefined) {
+                        this.isValid = false;
+                    }
                     this._addToStack(stack, a - b);
                 }
                 else if (element.token === '^') {
-                    const b = +stack.pop(), a = +stack.pop();
+                    const b = stack.pop(), a = stack.pop();
+                    if (a === undefined || b === undefined) {
+                        this.isValid = false;
+                    }
                     this._addToStack(stack, Math.pow(a, b));
                 }
             }
             else if (element.tokenType === shutingyard_1.ShutingyardType.FUNCTION) {
-                const a = +stack.pop();
+                const a = stack.pop();
+                if (a === undefined) {
+                    this.isValid = false;
+                }
                 if (element.token === 'sin') {
                     this._addToStack(stack, Math.sin(a));
                 }
@@ -110,8 +139,7 @@ class NumExp {
             return stack[0];
         }
         else {
-            console.error('There was a problem parsing', this._expression, '. The RPN array is', this._rpn);
-            return 0;
+            throw `There was a problem parsing: ${this._expression}`;
         }
     }
 }

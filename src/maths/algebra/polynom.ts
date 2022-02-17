@@ -6,7 +6,9 @@ import {literalType, Monom} from './monom';
 import {Shutingyard, ShutingyardType, Token} from '../shutingyard';
 import {Numeric} from '../numeric';
 import {Fraction} from "../coefficients";
+import {log} from "util";
 
+export type PolynomParsingType = string|Polynom|number|Fraction|Monom
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -21,7 +23,7 @@ export class Polynom {
      * @param {string} polynomString (optional) Default polynom to parse on class creation
      * @param values
      */
-    constructor(polynomString?: string|Monom|number|Polynom|Fraction, ...values: unknown[]) {
+    constructor(polynomString?: PolynomParsingType, ...values: unknown[]) {
         this._monoms = [];
         this._factors = [];
         if (polynomString !== undefined) {
@@ -124,7 +126,7 @@ export class Polynom {
      * @param inputStr
      * @param values: as string, numbers or fractions
      */
-    parse = (inputStr: string|number|Fraction|Monom|Polynom, ...values: unknown[]): Polynom => {
+    parse = (inputStr: PolynomParsingType, ...values: unknown[]): Polynom => {
         // Reset the main variables.
         this._monoms = []
         this._factors = []
@@ -397,6 +399,8 @@ export class Polynom {
             reminder.subtract(P.clone().multiply(newM));
         }
 
+        quotient.reduce()
+        reminder.reduce()
         return {quotient, reminder};
     };
 
@@ -684,6 +688,7 @@ export class Polynom {
             //console.log('Evaluate polynom: ', monom.display, values, monom.evaluate(values).display);
             r.add(monom.evaluate(values));
         });
+
         return r;
     };
 
@@ -1036,7 +1041,7 @@ export class Polynom {
                         if(b.degree().isStrictlyPositive()) {
                             console.error('Cannot elevate a polynom with another polynom !')
                         }else {
-                            if(b.monoms[0].coefficient.isNatural()) {
+                            if(b.monoms[0].coefficient.isRelative()) {
                                 // Integer power
                                 stack.push(a.pow(b.monoms[0].coefficient.value))
                             }else{

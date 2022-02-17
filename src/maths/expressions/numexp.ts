@@ -4,6 +4,7 @@ import {Fraction} from "../coefficients";
 export class NumExp {
     private _rpn: { token: string, tokenType: string }[]
     private _expression: string
+    private _isValid: boolean
 
     constructor(value: string) {
         this._expression = value
@@ -12,6 +13,17 @@ export class NumExp {
 
     get rpn(): { token: string; tokenType: string }[] {
         return this._rpn;
+    }
+
+    get isValid(): boolean {
+        if(this._isValid===undefined){
+            this.evaluate({x: 0})
+        }
+        return this._isValid
+    }
+
+    set isValid(value: boolean){
+        this._isValid = value
     }
 
     get expression(): string {
@@ -41,7 +53,7 @@ export class NumExp {
         const epsilon = 0.00000000000001,
             number_of_digits = 6
 
-        let decimal = this._extractDecimalPart(value)
+        const decimal = this._extractDecimalPart(value)
         if(decimal===''){return value}
 
         const n9 = decimal.match(/9+$/g)
@@ -49,7 +61,7 @@ export class NumExp {
 
         if (n9 && n9[0].length >= number_of_digits) {
             // New tested values.
-            let mod = this._extractDecimalPart(value + epsilon),
+            const mod = this._extractDecimalPart(value + epsilon),
                 mod0 = mod.match(/0+$/g)
 
             if(mod0 && mod0[0].length>= number_of_digits){
@@ -60,7 +72,7 @@ export class NumExp {
 
         if (n0 && n0[0].length >= number_of_digits) {
             // New tested values.
-            let mod = this._extractDecimalPart(value - epsilon),
+            const mod = this._extractDecimalPart(value - epsilon),
                 mod9 = mod.match(/9+$/g)
 
             if(mod9 && mod9[0].length>= number_of_digits){
@@ -77,7 +89,10 @@ export class NumExp {
     }
 
     evaluate(values: { [Key: string]: number }): number {
-        let stack: number[] = []
+        const stack: number[] = []
+
+        this.isValid = true
+
         for (const element of this._rpn) {
             if (element.tokenType === ShutingyardType.COEFFICIENT) {
                 // May be a numeric value or a Fraction.
@@ -94,28 +109,34 @@ export class NumExp {
                 this._addToStack(stack, tokenConstant[element.token])
             } else if (element.tokenType === ShutingyardType.OPERATION) {
                 if (element.token === '*') {
-                    const b = +stack.pop(),
-                        a = +stack.pop()
+                    const b = stack.pop(),
+                        a = stack.pop()
+                    if(a === undefined || b === undefined){this.isValid = false}
                     this._addToStack(stack, a * b)
                 } else if (element.token === '/') {
-                    const b = +stack.pop(),
-                        a = +stack.pop()
+                    const b = stack.pop(),
+                        a = stack.pop()
+                    if(a === undefined || b === undefined){this.isValid = false}
                     this._addToStack(stack, a / b)
                 } else if (element.token === '+') {
-                    const b = +stack.pop(),
-                        a = +stack.pop()
-                    this._addToStack(stack, a + b)
+                    const b = stack.pop(),
+                        a = stack.pop()
+                    if(a === undefined || b === undefined){this.isValid = false}
+                    this._addToStack(stack, (+a) + (+b))
                 } else if (element.token === '-') {
-                    const b = +stack.pop(),
-                        a = +stack.pop() || 0
+                    const b = stack.pop(),
+                        a = stack.pop() || 0
+                    if(b === undefined){this.isValid = false}
                     this._addToStack(stack, a - b)
                 } else if (element.token === '^') {
-                    const b = +stack.pop(),
-                        a = +stack.pop()
+                    const b = stack.pop(),
+                        a = stack.pop()
+                    if(a === undefined || b === undefined){this.isValid = false}
                     this._addToStack(stack, Math.pow(a, b))
                 }
             } else if (element.tokenType === ShutingyardType.FUNCTION) {
-                const a = +stack.pop()
+                const a = stack.pop()
+                if(a === undefined){this.isValid = false}
                 if (element.token === 'sin') {
                     this._addToStack(stack, Math.sin(a))
                 } else if (element.token === 'cos') {
@@ -131,8 +152,7 @@ export class NumExp {
         if (stack.length === 1) {
             return stack[0]
         } else {
-            console.error('There was a problem parsing', this._expression, '. The RPN array is', this._rpn)
-            return 0
+            throw `There was a problem parsing: ${this._expression}`
         }
     }
 }

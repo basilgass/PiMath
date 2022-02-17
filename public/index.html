@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,47 +28,30 @@
 
     <link href="demo.css" rel="stylesheet">
 </head>
+
 <body>
 
-<div x-data="examplePolynomExp()">
+<div x-data="examplePolynomExpSimple()">
     <!--    <template x-for="(item, index) of output" :key="index">-->
     <!--        <div class="katex-left" x-html="`\\[${item}\\]`"></div>-->
     <!--    </template>-->
-    <div x-html="tex"></div>
+    <div x-html="d"></div>
+    <div x-html="i"></div>
 </div>
-
 <script>
-	function examplePolynomExp () {
-		let P = new Pi.PolynomExp(),
-			F = new Pi.PolynomExpFactor()
+	// Should be
+	function examplePolynomExpSimple () {
+		const F1 = new Pi.PolynomExpFactor('x^2-4x+7', -1),
+			F2 = new Pi.PolynomExpFactor('8x-16', 1),
+			PP = new Pi.PolynomExpProduct(F2, F1)
 
-		P.powerAsInteger = false
+		const D = F1.derivative()
+		D.reduce()
 
-		F.addFactor({
-			polynom: new Pi.Polynom('3x-5'),
-			degree: new Pi.Fraction(2)
-		})
-		F.addFactor({
-			polynom: new Pi.Polynom('x^2-2x+5'),
-			degree: new Pi.Fraction('1/2')
-		})
-		F.addFactor({
-			polynom: new Pi.Polynom('3-x'),
-			degree: new Pi.Fraction('3/5')
-		})
-		F.addFactor({
-			polynom: new Pi.Polynom('x^3-5'),
-			degree: new Pi.Fraction('-1')
-		})
-		F.addFactor({
-			polynom: new Pi.Polynom('x+2'),
-			degree: new Pi.Fraction('-3')
-		})
-
-		P.addFactors(F)
-
+			console.log(PP.integrate())
 		return {
-			tex: katex.renderToString(P.tex)
+			d: katex.renderToString('\\left(' + F1.tex + '\\right)\'=' + D.tex),
+			i: katex.renderToString('\\displaystyle\\int\\ ' + PP.tex + '\\ \\text{d}x = ' + PP.integrate().tex)
 		}
 	}
 
@@ -280,4 +264,5 @@
 
 </script>
 </body>
+
 </html>

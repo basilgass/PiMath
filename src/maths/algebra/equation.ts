@@ -165,7 +165,7 @@ export class Equation {
         strSign = this._findSign(equationString);
 
         if (strSign === false) {
-            console.log('The equation is not valid (no sign found)');
+            console.error('The equation is not valid (no sign found)');
             return;
         }
 
