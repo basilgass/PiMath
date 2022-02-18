@@ -740,6 +740,7 @@ export class Polynom {
         let P = this.clone().reorder(),
             M = P.commonMonom(),
             tempPolynom: Polynom
+
         // It has a common monom.
         if (!M.isOne()) {
             tempPolynom = new Polynom()
@@ -750,9 +751,9 @@ export class Polynom {
 
         let securityLoop = P.degree().clone().multiply(2).value
         // securityLoop = 0
+
         while (securityLoop >= 0) {
             securityLoop--
-
 
             if (P.monoms.length < 2) {
                 if (!P.isOne()) {
@@ -764,9 +765,6 @@ export class Polynom {
                 let m1 = P.monoms[0].dividers,
                     m2 = P.monoms[P.monoms.length - 1].dividers
 
-                // console.log('CURRENT VALUE')
-                // console.log(P.tex)
-                // console.log('---------------------')
                 for (let m1d of m1) {
                     for (let m2d of m2) {
                         // if(m1d.degree()===m2d.degree()){continue}
@@ -775,7 +773,6 @@ export class Polynom {
                         dividerPolynom.monoms = [m1d.clone(), m2d.clone()]
                         result = P.euclidian(dividerPolynom)
 
-                        // console.log(dividerPolynom.tex, '=>', result.reminder.tex, '|||||', result.quotient.tex)
                         if (result.reminder.isZero()) {
                             P = result.quotient.clone();
                             factors.push(dividerPolynom)
@@ -788,11 +785,9 @@ export class Polynom {
                             P = result.quotient.clone();
                             factors.push(dividerPolynom)
                         }
-                        // console.log(dividerPolynom.tex, '=>', result.reminder.tex)
                     }
                 }
             }
-
         }
 
         this.factors = factors

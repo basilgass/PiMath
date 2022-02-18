@@ -67,6 +67,13 @@ describe('Polynom tests', () => {
         expect(euclidian.quotient.tex).to.be.equal('x^{2}+5x-4')
         expect(euclidian.reminder.tex).to.be.equal('12')
     });
+
+    it('should factorize the polynom', ()=> {
+        let P = new Polynom('x^2-5x+6')
+
+        P.factorize()
+        expect(P.factors.map(x=>x.tex)).to.have.all.members(['x-2', 'x-3'])
+    })
 })
 
 describe('Polynom parsing with rational power', ()=>{

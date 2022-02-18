@@ -161,11 +161,13 @@ export class Monom {
 
     get dividers(): Monom[] {
         // Decompose only if the coefficient is a natural number
-        if (this.coefficient.denominator !== 1) {
+        if (!this.coefficient.isRelative()) {
             return [this.clone()]
         }
+
+
         // Decompose only if the power values are natural numbers.
-        if (this.hasFractionCoefficient) {
+        if (this.hasFractionCoefficient()) {
             return [this.clone()]
         }
 
@@ -173,6 +175,8 @@ export class Monom {
         if (this.coefficient.numerator > 10000) {
             return [this.clone()]
         }
+
+
         const dividers = Numeric.dividers(Math.abs(this.coefficient.numerator))
 
         // Decompose the literals parts.

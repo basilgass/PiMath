@@ -90,10 +90,10 @@ class Monom {
         }
     }
     get dividers() {
-        if (this.coefficient.denominator !== 1) {
+        if (!this.coefficient.isRelative()) {
             return [this.clone()];
         }
-        if (this.hasFractionCoefficient) {
+        if (this.hasFractionCoefficient()) {
             return [this.clone()];
         }
         if (this.coefficient.numerator > 10000) {
