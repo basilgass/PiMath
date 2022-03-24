@@ -6151,6 +6151,11 @@ class Shutingyard {
         this._mode = typeof mode === 'undefined' ? ShutingyardMode.POLYNOM : mode;
         this.tokenConfigInitialization();
     }
+    // Getter
+    get rpn() {
+        // console.log(this._rpn)
+        return this._rpn;
+    }
     /**
      * Determin if the token is a defined operation
      * Defined operations: + - * / ^ sin cos tan
@@ -6419,11 +6424,6 @@ class Shutingyard {
         // console.log(outQueue.concat(opStack.reverse()));
         this._rpn = outQueue.concat(opStack.reverse());
         return this;
-    }
-    // Getter
-    get rpn() {
-        // console.log(this._rpn)
-        return this._rpn;
     }
 }
 exports.Shutingyard = Shutingyard;

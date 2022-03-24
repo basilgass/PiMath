@@ -1,6 +1,3 @@
-import {loadHighlighter} from "typedoc/dist/lib/utils/highlighter";
-import exp = require("constants");
-
 export type tokenType = {
     [key: string]: {
         precedence: number,
@@ -9,14 +6,14 @@ export type tokenType = {
     }
 }
 
-export const tokenConstant:{[Key:string]:number} = {
+export const tokenConstant: { [Key: string]: number } = {
     pi: Math.PI,
     e: Math.exp(1)
 }
 
 export enum ShutingyardType {
-    VARIABLE='variable',
-    COEFFICIENT='coefficient',
+    VARIABLE = 'variable',
+    COEFFICIENT = 'coefficient',
     OPERATION = 'operation',
     CONSTANT = 'constant',
     FUNCTION = 'function',
@@ -24,7 +21,7 @@ export enum ShutingyardType {
 }
 
 export enum ShutingyardMode {
-    POLYNOM= 'polynom',
+    POLYNOM = 'polynom',
     SET = 'set',
     NUMERIC = 'numeric'
 }
@@ -32,16 +29,23 @@ export enum ShutingyardMode {
 export type Token = { token: string, tokenType: string }
 
 export class Shutingyard {
-    private _rpn: Token[] = [];
     readonly _mode: ShutingyardMode;
     private _tokenConfig: tokenType;
-    private _tokenConstant: {[Key:string]: number}
-    private _uniformize: boolean;
+    private _tokenConstant: { [Key: string]: number }
     private _tokenKeys: string[]
+    private _uniformize: boolean;
 
-    constructor(mode?: ShutingyardMode ) {
+    constructor(mode?: ShutingyardMode) {
         this._mode = typeof mode === 'undefined' ? ShutingyardMode.POLYNOM : mode;
         this.tokenConfigInitialization()
+    }
+
+    private _rpn: Token[] = [];
+
+    // Getter
+    get rpn() {
+        // console.log(this._rpn)
+        return this._rpn;
     }
 
     /**
@@ -70,7 +74,7 @@ export class Shutingyard {
                 '-': {precedence: 2, associative: 'left', type: ShutingyardType.OPERATION}
             }
             this._uniformize = false;
-        }else if (this._mode === ShutingyardMode.NUMERIC){
+        } else if (this._mode === ShutingyardMode.NUMERIC) {
             this._tokenConfig = {
                 '^': {precedence: 4, associative: 'right', type: ShutingyardType.OPERATION},
                 '*': {precedence: 3, associative: 'left', type: ShutingyardType.OPERATION},
@@ -99,7 +103,7 @@ export class Shutingyard {
             this._uniformize = true
         }
 
-        this._tokenKeys = Object.keys(this._tokenConfig).sort((a,b)=>b.length-a.length)
+        this._tokenKeys = Object.keys(this._tokenConfig).sort((a, b) => b.length - a.length)
         return this._tokenConfig
     }
 
@@ -126,14 +130,14 @@ export class Shutingyard {
         else if (expr[start] === ',') {
             token = ',';
             tokenType = 'function-argument';
-        } else{
+        } else {
             // Order token keys by token characters length (descending)
             // TODO: this is done each time ! SHould be done once !
             // const keys = Object.keys(this._tokenConfig).sort((a,b)=>b.length-a.length)
 
             // Extract operation and function tokens
-            for(let key of this._tokenKeys){
-                if(expr.substring(start, start+key.length) === key){
+            for (let key of this._tokenKeys) {
+                if (expr.substring(start, start + key.length) === key) {
                     token += key;
                     tokenType = this._tokenConfig[key].type
                     break
@@ -141,27 +145,27 @@ export class Shutingyard {
             }
 
             // Extract constant
-            for(let key in tokenConstant){
-                if(expr.substring(start, start+key.length) === key){
+            for (let key in tokenConstant) {
+                if (expr.substring(start, start + key.length) === key) {
                     token += key;
                     tokenType = ShutingyardType.CONSTANT
                     break
                 }
             }
 
-            if(token===''){
+            if (token === '') {
                 // No function found ! Might be a coefficient !
-                if( expr[start].match(/[0-9]/) ) {
-                    if(this._mode === ShutingyardMode.POLYNOM && false) {
+                if (expr[start].match(/[0-9]/)) {
+                    if (this._mode === ShutingyardMode.POLYNOM && false) {
                         token = expr.substring(start).match(/^([0-9.,/]+)/)[0]
-                    }else{
+                    } else {
                         token = expr.substring(start).match(/^([0-9.,]+)/)[0]
                     }
                     tokenType = ShutingyardType.COEFFICIENT
-                }else if (expr[start].match(/[a-zA-Z]/)) {
+                } else if (expr[start].match(/[a-zA-Z]/)) {
                     token = expr.substring(start).match(/^([a-zA-Z])/)[0]
                     tokenType = ShutingyardType.VARIABLE
-                }else{
+                } else {
                     console.log('Unidentified token', expr[start], expr, start)
                     token = expr[start]
                     tokenType = ShutingyardType.MONOM
@@ -180,7 +184,9 @@ export class Shutingyard {
      */
     Uniformizer(expr: string): string {
         // Determiner if need to be uniformized
-        if(!this._uniformize){return expr}
+        if (!this._uniformize) {
+            return expr
+        }
 
         let expr2;
         // Replace missing multiplication between two parenthese
@@ -220,8 +226,8 @@ export class Shutingyard {
      * @param operators
      */
     parse(expr: string, operators?: string[]): Shutingyard {
-        let outQueue: {token:string, tokenType: string}[] = [],    // Output queue
-            opStack: {token:string, tokenType: string}[] = [],     // Operation queue
+        let outQueue: { token: string, tokenType: string }[] = [],    // Output queue
+            opStack: { token: string, tokenType: string }[] = [],     // Operation queue
             token: string = '',
             tokenPos: number = 0,
             tokenType: string = '',
@@ -287,12 +293,14 @@ export class Shutingyard {
                             outQueue.push((opStack.pop()) || {token: '', tokenType: 'operation'});
 
                             // Get the next operation on top of the Stack.
-                            if(opStack.length===0){break;}
+                            if (opStack.length === 0) {
+                                break;
+                            }
                             opTop = opStack[opStack.length - 1];
                         }
                     }
                     //at the end of iteration push o1 onto the operator stack
-                    opStack.push({token,tokenType});
+                    opStack.push({token, tokenType});
                     break;
                 case 'function-argument':
                     // TODO: check if the opStack exist.
@@ -304,11 +312,11 @@ export class Shutingyard {
                             break;
                         }
 
-                        outQueue.push((opStack.pop()) || {token,tokenType});
+                        outQueue.push((opStack.pop()) || {token, tokenType});
                     }
                     break;
                 case '(':
-                    opStack.push({token,tokenType});
+                    opStack.push({token, tokenType});
                     // Add an empty value if next element is negative.
                     if (expr[tokenPos] === '-') {
                         outQueue.push({token: '0', tokenType: 'coefficient'});
@@ -324,7 +332,7 @@ export class Shutingyard {
                             break;
                         }
 
-                        outQueue.push((opStack.pop()) || {token,tokenType});
+                        outQueue.push((opStack.pop()) || {token, tokenType});
                     }
 
                     //Pop the left parenthesis from the stack, but not onto the output queue.
@@ -346,13 +354,6 @@ export class Shutingyard {
         this._rpn = outQueue.concat(opStack.reverse());
 
         return this;
-    }
-
-
-    // Getter
-    get rpn() {
-        // console.log(this._rpn)
-        return this._rpn;
     }
 
 

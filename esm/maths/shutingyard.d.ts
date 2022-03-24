@@ -26,13 +26,14 @@ export declare type Token = {
     tokenType: string;
 };
 export declare class Shutingyard {
-    private _rpn;
     readonly _mode: ShutingyardMode;
     private _tokenConfig;
     private _tokenConstant;
-    private _uniformize;
     private _tokenKeys;
+    private _uniformize;
     constructor(mode?: ShutingyardMode);
+    private _rpn;
+    get rpn(): Token[];
     /**
      * Determin if the token is a defined operation
      * Defined operations: + - * / ^ sin cos tan
@@ -58,5 +59,4 @@ export declare class Shutingyard {
      * @param operators
      */
     parse(expr: string, operators?: string[]): Shutingyard;
-    get rpn(): Token[];
 }
