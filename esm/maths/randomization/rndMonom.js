@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rndMonom = void 0;
 const randomCore_1 = require("./randomCore");
-const index_1 = require("./index");
+const random_1 = require("./random");
 const algebra_1 = require("../algebra");
 /**
  * Create a random monom based on a based configuration
@@ -15,14 +15,14 @@ class rndMonom extends randomCore_1.randomCore {
             let M = new algebra_1.Monom();
             // Generate the coefficient
             if (typeof this._config.fraction === "boolean") {
-                M.coefficient = index_1.Random.fraction({
+                M.coefficient = random_1.Random.fraction({
                     zero: this._config.zero,
                     reduced: true,
                     natural: !this._config.fraction
                 });
             }
             else {
-                M.coefficient = index_1.Random.fraction(this._config.fraction);
+                M.coefficient = random_1.Random.fraction(this._config.fraction);
             }
             // Calculate the degree of the monom
             if (this._config.letters.length > 1) {
@@ -31,7 +31,7 @@ class rndMonom extends randomCore_1.randomCore {
                     M.setLetter(L, 0);
                 }
                 for (let i = 0; i < this._config.degree; i++) {
-                    const L = index_1.Random.item(this._config.letters.split(""));
+                    const L = random_1.Random.item(this._config.letters.split(""));
                     M.setLetter(L, M.degree(L).clone().add(1));
                 }
             }

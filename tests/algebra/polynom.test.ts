@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {Fraction} from "../../src/maths/coefficients";
 import {Monom, Polynom} from "../../src/maths/algebra";
-import {Random} from "../../src/maths/random";
+import {Random} from "../../src/maths/randomization/random";
 import {describe} from "mocha";
 import {Shutingyard} from "../../src/maths/shutingyard";
 

@@ -1,7 +1,7 @@
 import {Numeric} from "./maths/numeric";
 import {NumExp} from "./maths/expressions/numexp";
 import {Shutingyard} from "./maths/shutingyard";
-import {Random} from "./maths/random";
+import {Random} from "./maths/randomization/random";
 import {Fraction, Nthroot} from "./maths/coefficients";
 import {
     Monom,
@@ -16,7 +16,7 @@ import {
 import {Line, Circle, Triangle, Point, Vector} from "./maths/geometry";
 
 // Expose as global
-export const PiMath = {
+export const Pi = {
     ShutingYard: Shutingyard,
     Numeric: Numeric,
     NumExp: NumExp,
@@ -39,4 +39,4 @@ export const PiMath = {
         Circle: Circle
     }
 };
-(<any>window).Pi = PiMath
+(<any>window).Pi = Pi

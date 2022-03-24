@@ -1,11 +1,11 @@
 import { Numeric } from "./maths/numeric";
 import { NumExp } from "./maths/expressions/numexp";
 import { Shutingyard } from "./maths/shutingyard";
-import { Random } from "./maths/random";
+import { Random } from "./maths/randomization/random";
 import { Fraction, Nthroot } from "./maths/coefficients";
 import { Monom, Polynom, Equation, LinearSystem, Rational, Logicalset, PolynomExpFactor, PolynomExpProduct } from "./maths/algebra";
 import { Line, Circle, Triangle, Point, Vector } from "./maths/geometry";
-export declare const PiMath: {
+export declare const Pi: {
     ShutingYard: typeof Shutingyard;
     Numeric: typeof Numeric;
     NumExp: typeof NumExp;

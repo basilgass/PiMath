@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PiMath = void 0;
+exports.Pi = void 0;
 const numeric_1 = require("./maths/numeric");
 const numexp_1 = require("./maths/expressions/numexp");
 const shutingyard_1 = require("./maths/shutingyard");
-const random_1 = require("./maths/random");
+const random_1 = require("./maths/randomization/random");
 const coefficients_1 = require("./maths/coefficients");
 const algebra_1 = require("./maths/algebra");
 const geometry_1 = require("./maths/geometry");
 // Expose as global
-exports.PiMath = {
+exports.Pi = {
     ShutingYard: shutingyard_1.Shutingyard,
     Numeric: numeric_1.Numeric,
     NumExp: numexp_1.NumExp,
@@ -32,5 +32,5 @@ exports.PiMath = {
         Circle: geometry_1.Circle
     }
 };
-window.Pi = exports.PiMath;
+window.Pi = exports.Pi;
 //# sourceMappingURL=main.js.map

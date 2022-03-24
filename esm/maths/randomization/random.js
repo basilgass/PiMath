@@ -59,4 +59,4 @@ var Random;
     }
     Random.shuffle = shuffle;
 })(Random = exports.Random || (exports.Random = {}));
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=random.js.map

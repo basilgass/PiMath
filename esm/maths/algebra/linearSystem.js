@@ -4,7 +4,7 @@ exports.LinearSystem = void 0;
 const coefficients_1 = require("../coefficients");
 const equation_1 = require("./equation");
 const polynom_1 = require("./polynom");
-const random_1 = require("../random");
+const random_1 = require("../randomization/random");
 // TODO: Must check and rework
 class LinearSystem {
     constructor(...equationStrings) {

@@ -2,7 +2,7 @@ import {Fraction} from "../coefficients";
 import {Equation} from "./equation";
 import {Polynom} from "./polynom";
 import {Monom} from "./monom";
-import {Random} from "../random";
+import {Random} from "../randomization/random";
 
 // TODO: Must check and rework
 export class LinearSystem {

@@ -8,16 +8,16 @@
 var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
-exports.l = void 0;
+exports.Pi = void 0;
 const numeric_1 = __webpack_require__(956);
 const numexp_1 = __webpack_require__(735);
 const shutingyard_1 = __webpack_require__(505);
-const random_1 = __webpack_require__(984);
+const random_1 = __webpack_require__(941);
 const coefficients_1 = __webpack_require__(534);
 const algebra_1 = __webpack_require__(667);
 const geometry_1 = __webpack_require__(272);
 // Expose as global
-exports.l = {
+exports.Pi = {
     ShutingYard: shutingyard_1.Shutingyard,
     Numeric: numeric_1.Numeric,
     NumExp: numexp_1.NumExp,
@@ -40,7 +40,7 @@ exports.l = {
         Circle: geometry_1.Circle
     }
 };
-window.Pi = exports.l;
+window.Pi = exports.Pi;
 
 
 /***/ }),
@@ -784,7 +784,7 @@ exports.LinearSystem = void 0;
 const coefficients_1 = __webpack_require__(534);
 const equation_1 = __webpack_require__(760);
 const polynom_1 = __webpack_require__(38);
-const random_1 = __webpack_require__(984);
+const random_1 = __webpack_require__(941);
 // TODO: Must check and rework
 class LinearSystem {
     constructor(...equationStrings) {
@@ -5823,7 +5823,7 @@ exports.Numeric = Numeric;
 
 /***/ }),
 
-/***/ 984:
+/***/ 941:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -5843,11 +5843,11 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Random = void 0;
-const rndPolynom_1 = __webpack_require__(773);
-const rndMonom_1 = __webpack_require__(41);
-const rndHelpers_1 = __webpack_require__(890);
-const rndFraction_1 = __webpack_require__(538);
-__exportStar(__webpack_require__(233), exports);
+const rndPolynom_1 = __webpack_require__(22);
+const rndMonom_1 = __webpack_require__(793);
+const rndHelpers_1 = __webpack_require__(140);
+const rndFraction_1 = __webpack_require__(754);
+__exportStar(__webpack_require__(230), exports);
 var Random;
 (function (Random) {
     function polynom(config) {
@@ -5891,7 +5891,7 @@ var Random;
 
 /***/ }),
 
-/***/ 43:
+/***/ 373:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -5919,15 +5919,15 @@ exports.randomCore = randomCore;
 
 /***/ }),
 
-/***/ 538:
+/***/ 754:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndFraction = void 0;
-const randomCore_1 = __webpack_require__(43);
+const randomCore_1 = __webpack_require__(373);
 const coefficients_1 = __webpack_require__(534);
-const index_1 = __webpack_require__(984);
+const random_1 = __webpack_require__(941);
 /**
  * Create a random monom based on a based configuration
  */
@@ -5937,16 +5937,16 @@ class rndFraction extends randomCore_1.randomCore {
         this.generate = () => {
             let Q = new coefficients_1.Fraction();
             if (this._config.negative) {
-                Q.numerator = index_1.Random.numberSym(this._config.max, this._config.zero);
+                Q.numerator = random_1.Random.numberSym(this._config.max, this._config.zero);
             }
             else {
-                Q.numerator = index_1.Random.number(this._config.zero ? 0 : 1, this._config.max);
+                Q.numerator = random_1.Random.number(this._config.zero ? 0 : 1, this._config.max);
             }
             if (this._config.natural) {
                 Q.denominator = 1;
             }
             else {
-                Q.denominator = index_1.Random.number(1, this._config.max);
+                Q.denominator = random_1.Random.number(1, this._config.max);
             }
             return this._config.reduced ? Q.reduce() : Q;
         };
@@ -5965,7 +5965,7 @@ exports.rndFraction = rndFraction;
 
 /***/ }),
 
-/***/ 890:
+/***/ 140:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -6040,14 +6040,14 @@ exports.rndHelpers = rndHelpers;
 
 /***/ }),
 
-/***/ 41:
+/***/ 793:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndMonom = void 0;
-const randomCore_1 = __webpack_require__(43);
-const index_1 = __webpack_require__(984);
+const randomCore_1 = __webpack_require__(373);
+const random_1 = __webpack_require__(941);
 const algebra_1 = __webpack_require__(667);
 /**
  * Create a random monom based on a based configuration
@@ -6060,14 +6060,14 @@ class rndMonom extends randomCore_1.randomCore {
             let M = new algebra_1.Monom();
             // Generate the coefficient
             if (typeof this._config.fraction === "boolean") {
-                M.coefficient = index_1.Random.fraction({
+                M.coefficient = random_1.Random.fraction({
                     zero: this._config.zero,
                     reduced: true,
                     natural: !this._config.fraction
                 });
             }
             else {
-                M.coefficient = index_1.Random.fraction(this._config.fraction);
+                M.coefficient = random_1.Random.fraction(this._config.fraction);
             }
             // Calculate the degree of the monom
             if (this._config.letters.length > 1) {
@@ -6076,7 +6076,7 @@ class rndMonom extends randomCore_1.randomCore {
                     M.setLetter(L, 0);
                 }
                 for (let i = 0; i < this._config.degree; i++) {
-                    const L = index_1.Random.item(this._config.letters.split(""));
+                    const L = random_1.Random.item(this._config.letters.split(""));
                     M.setLetter(L, M.degree(L).clone().add(1));
                 }
             }
@@ -6099,15 +6099,15 @@ exports.rndMonom = rndMonom;
 
 /***/ }),
 
-/***/ 773:
+/***/ 22:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndPolynom = void 0;
-const randomCore_1 = __webpack_require__(43);
-const rndMonom_1 = __webpack_require__(41);
-const index_1 = __webpack_require__(984);
+const randomCore_1 = __webpack_require__(373);
+const rndMonom_1 = __webpack_require__(793);
+const random_1 = __webpack_require__(941);
 const algebra_1 = __webpack_require__(667);
 /**
  * Random polynoms
@@ -6144,7 +6144,7 @@ class rndPolynom extends randomCore_1.randomCore {
             if (this._config.numberOfMonoms > 0 && this._config.numberOfMonoms < P.length) {
                 // Get the greatest degree monom
                 let M = P.monomByDegree().clone();
-                P.monoms = index_1.Random.array(P.monoms.slice(1), this._config.numberOfMonoms - 1);
+                P.monoms = random_1.Random.array(P.monoms.slice(1), this._config.numberOfMonoms - 1);
                 P.add(M).reorder().reduce();
             }
             return P;
@@ -6155,7 +6155,7 @@ class rndPolynom extends randomCore_1.randomCore {
             _factorableConfig.degree = 1;
             _factorableConfig.factorable = false;
             for (let i = 0; i < this._config.degree; i++) {
-                P.multiply(index_1.Random.polynom(_factorableConfig));
+                P.multiply(random_1.Random.polynom(_factorableConfig));
             }
             return P;
         };
@@ -6180,7 +6180,7 @@ exports.rndPolynom = rndPolynom;
 
 /***/ }),
 
-/***/ 233:
+/***/ 230:
 /***/ ((__unused_webpack_module, exports) => {
 
 

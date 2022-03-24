@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.rndPolynom = void 0;
 const randomCore_1 = require("./randomCore");
 const rndMonom_1 = require("./rndMonom");
-const index_1 = require("./index");
+const random_1 = require("./random");
 const algebra_1 = require("../algebra");
 /**
  * Random polynoms
@@ -40,7 +40,7 @@ class rndPolynom extends randomCore_1.randomCore {
             if (this._config.numberOfMonoms > 0 && this._config.numberOfMonoms < P.length) {
                 // Get the greatest degree monom
                 let M = P.monomByDegree().clone();
-                P.monoms = index_1.Random.array(P.monoms.slice(1), this._config.numberOfMonoms - 1);
+                P.monoms = random_1.Random.array(P.monoms.slice(1), this._config.numberOfMonoms - 1);
                 P.add(M).reorder().reduce();
             }
             return P;
@@ -51,7 +51,7 @@ class rndPolynom extends randomCore_1.randomCore {
             _factorableConfig.degree = 1;
             _factorableConfig.factorable = false;
             for (let i = 0; i < this._config.degree; i++) {
-                P.multiply(index_1.Random.polynom(_factorableConfig));
+                P.multiply(random_1.Random.polynom(_factorableConfig));
             }
             return P;
         };

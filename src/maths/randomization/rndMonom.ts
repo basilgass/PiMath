@@ -1,6 +1,6 @@
 import {randomCore} from "./randomCore";
 import {randomMonomConfig} from "./rndTypes";
-import {Random} from "./index";
+import {Random} from "./random";
 import {Monom} from "../algebra";
 
 /**
