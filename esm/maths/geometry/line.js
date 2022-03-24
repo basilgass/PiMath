@@ -4,11 +4,12 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Line = exports.LinePropriety = void 0;
-const coefficients_1 = require("../coefficients");
 const vector_1 = require("./vector");
 const point_1 = require("./point");
-const algebra_1 = require("../algebra");
 const numeric_1 = require("../numeric");
+const fraction_1 = require("../coefficients/fraction");
+const equation_1 = require("../algebra/equation");
+const polynom_1 = require("../algebra/polynom");
 var LinePropriety;
 (function (LinePropriety) {
     LinePropriety[LinePropriety["None"] = 0] = "None";
@@ -38,14 +39,14 @@ class Line {
                     // Already a Line
                     return values[0].clone();
                 }
-                else if (values[0] instanceof algebra_1.Equation) {
+                else if (values[0] instanceof equation_1.Equation) {
                     // It's an Equation
                     return this.parseEquation(values[0]);
                 }
                 else if (typeof values[0] === "string") {
                     // It's a string - create an Equation from it.
                     try {
-                        let E = new algebra_1.Equation(values[0]);
+                        let E = new equation_1.Equation(values[0]);
                         return this.parse(E);
                     }
                     catch (e) {
@@ -65,11 +66,11 @@ class Line {
                 }
             }
             if (values.length === 3) {
-                if ((values[0] instanceof coefficients_1.Fraction || typeof values[0] === 'number')
+                if ((values[0] instanceof fraction_1.Fraction || typeof values[0] === 'number')
                     &&
-                        (values[1] instanceof coefficients_1.Fraction || typeof values[1] === 'number')
+                        (values[1] instanceof fraction_1.Fraction || typeof values[1] === 'number')
                     &&
-                        (values[2] instanceof coefficients_1.Fraction || typeof values[2] === 'number')) {
+                        (values[2] instanceof fraction_1.Fraction || typeof values[2] === 'number')) {
                     return this.parseByCoefficient(values[0], values[1], values[2]);
                 }
                 else if (values[0] instanceof point_1.Point && values[1] instanceof vector_1.Vector) {
@@ -107,11 +108,11 @@ class Line {
             return this.parseByCoefficient(equ.left.monomByLetter('x').coefficient, equ.left.monomByLetter('y').coefficient, equ.left.monomByDegree(0).coefficient);
         };
         this.parseByCoefficient = (a, b, c) => {
-            this._a = new coefficients_1.Fraction(a);
-            this._b = new coefficients_1.Fraction(b);
-            this._c = new coefficients_1.Fraction(c);
+            this._a = new fraction_1.Fraction(a);
+            this._b = new fraction_1.Fraction(b);
+            this._c = new fraction_1.Fraction(c);
             this._d = new vector_1.Vector(this._b.clone(), this._a.clone().opposed());
-            this._OA = new point_1.Point(new coefficients_1.Fraction().zero(), this._c.clone());
+            this._OA = new point_1.Point(new fraction_1.Fraction().zero(), this._c.clone());
             this._n = this._d.clone().normal();
             this._exists = true;
             return this;
@@ -228,15 +229,15 @@ class Line {
             };
         };
         this.getValueAtX = (value) => {
-            const equ = this.equation.clone().isolate('y'), F = new coefficients_1.Fraction(value);
-            if (equ instanceof algebra_1.Equation) {
+            const equ = this.equation.clone().isolate('y'), F = new fraction_1.Fraction(value);
+            if (equ instanceof equation_1.Equation) {
                 return equ.right.evaluate({ x: F });
             }
             return;
         };
         this.getValueAtY = (value) => {
-            const equ = this.equation.clone().isolate('x'), F = new coefficients_1.Fraction(value);
-            if (equ instanceof algebra_1.Equation) {
+            const equ = this.equation.clone().isolate('x'), F = new fraction_1.Fraction(value);
+            if (equ instanceof equation_1.Equation) {
                 return equ.right.evaluate({ y: F });
             }
             return;
@@ -254,7 +255,7 @@ class Line {
     // Getter and setter
     // ------------------------------------------
     get equation() {
-        return new algebra_1.Equation(new algebra_1.Polynom().parse('xy', this._a, this._b, this._c), new algebra_1.Polynom('0')).simplify();
+        return new equation_1.Equation(new polynom_1.Polynom().parse('xy', this._a, this._b, this._c), new polynom_1.Polynom('0')).simplify();
     }
     get tex() {
         // canonical    =>  ax + by + c = 0
@@ -267,7 +268,7 @@ class Line {
         }
         return {
             canonical: canonical.tex,
-            mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new algebra_1.Polynom().parse('x', this.slope, this.height).tex,
+            mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new polynom_1.Polynom().parse('x', this.slope, this.height).tex,
             parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(this._d.x, this._d.y)}`
         };
     }
@@ -325,7 +326,7 @@ class Line {
             return {
                 value: NaN,
                 tex: 'Not a line',
-                fraction: new coefficients_1.Fraction().infinite()
+                fraction: new fraction_1.Fraction().infinite()
             };
         }
         // The denominator is a perfect square - simplify the tex result

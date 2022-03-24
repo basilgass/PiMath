@@ -1,10 +1,10 @@
 /**
  * This class works for 2d line in a plane.
  */
-import { Fraction } from "../coefficients";
 import { Vector } from "./vector";
 import { Point } from "./point";
-import { Equation } from "../algebra";
+import { Fraction } from "../coefficients/fraction";
+import { Equation } from "../algebra/equation";
 export declare enum LinePropriety {
     None = 0,
     Parallel = "parallel",

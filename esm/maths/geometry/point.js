@@ -5,9 +5,9 @@ exports.Point = void 0;
  * Vector module contains everything necessary to handle 2d or 3d vectors.
  * @module Vector
  */
-const coefficients_1 = require("../coefficients");
 const line_1 = require("./line");
 const vector_1 = require("./vector");
+const fraction_1 = require("../coefficients/fraction");
 /**
  * Helper class - a way to identify an object {x: number, y: number}
  */
@@ -37,15 +37,15 @@ class Point {
                 if (typeof values[0] === 'string') {
                     let xy = values[0].split(',');
                     if (xy.length === 2) {
-                        this._x = new coefficients_1.Fraction(xy[0]).reduce();
-                        this._y = new coefficients_1.Fraction(xy[1]).reduce();
+                        this._x = new fraction_1.Fraction(xy[0]).reduce();
+                        this._y = new fraction_1.Fraction(xy[1]).reduce();
                         return this;
                     }
                 }
                 // Value given as an object with {x: value, y: value}
                 if (values[0] instanceof PointXY) {
-                    this._x = new coefficients_1.Fraction(values[0].x).reduce();
-                    this._y = new coefficients_1.Fraction(values[0].y).reduce();
+                    this._x = new fraction_1.Fraction(values[0].x).reduce();
+                    this._y = new fraction_1.Fraction(values[0].y).reduce();
                     return this;
                 }
                 else {
@@ -53,8 +53,8 @@ class Point {
                 }
             }
             if (values.length === 2) {
-                this._x = new coefficients_1.Fraction(values[0]).reduce();
-                this._y = new coefficients_1.Fraction(values[1]).reduce();
+                this._x = new fraction_1.Fraction(values[0]).reduce();
+                this._y = new fraction_1.Fraction(values[1]).reduce();
                 return this;
             }
             return this;
@@ -65,8 +65,8 @@ class Point {
             return this;
         };
         this.zero = () => {
-            this._x = new coefficients_1.Fraction(null);
-            this._y = new coefficients_1.Fraction(null);
+            this._x = new fraction_1.Fraction(null);
+            this._y = new fraction_1.Fraction(null);
             return this;
         };
         this.origin = () => {
@@ -88,7 +88,7 @@ class Point {
             return `\\left(${pts.join(';')}\\right)`;
         };
         this.distanceTo = (item) => {
-            let value = 0, fraction = new coefficients_1.Fraction(), tex = '';
+            let value = 0, fraction = new fraction_1.Fraction(), tex = '';
             if (item instanceof line_1.Line) {
                 return item.distanceTo(this);
             }
@@ -104,8 +104,8 @@ class Point {
             const keyList = list.map(x => x.key);
             return keyList.includes(this.key);
         };
-        this._x = new coefficients_1.Fraction().zero();
-        this._y = new coefficients_1.Fraction().zero();
+        this._x = new fraction_1.Fraction().zero();
+        this._y = new fraction_1.Fraction().zero();
         if (values !== undefined) {
             this.parse(...values);
         }

@@ -1,9 +1,8 @@
 import {expect} from 'chai';
-import {Fraction} from "../../src/maths/coefficients";
-import {Monom, Polynom} from "../../src/maths/algebra";
 import {Random} from "../../src/maths/randomization/random";
 import {describe} from "mocha";
-import {Shutingyard} from "../../src/maths/shutingyard";
+import {Polynom} from "../../src/maths/algebra/polynom";
+import {Fraction} from "../../src/maths/coefficients/fraction";
 
 describe('Polynom tests', () => {
     it('Parse polynom', () => {
@@ -12,7 +11,7 @@ describe('Polynom tests', () => {
         expect(options.tex).to.be.equal('2x^{4}+10x^{3}+6x^{2}-18x');
     });
 
-    it('Parse polynom with coefficient as fraction', ()=>{
+    it('Parse polynom with coefficient as fraction', () => {
         const P = new Polynom('-3/5x-2')
 
         console.log(P.tex)
@@ -68,16 +67,16 @@ describe('Polynom tests', () => {
         expect(euclidian.reminder.tex).to.be.equal('12')
     });
 
-    it('should factorize the polynom', ()=> {
+    it('should factorize the polynom', () => {
         let P = new Polynom('x^2-5x+6')
 
         P.factorize()
-        expect(P.factors.map(x=>x.tex)).to.have.all.members(['x-2', 'x-3'])
+        expect(P.factors.map(x => x.tex)).to.have.all.members(['x-2', 'x-3'])
     })
 })
 
-describe('Polynom parsing with rational power', ()=>{
-    it('should parse with rational powers', ()=> {
+describe('Polynom parsing with rational power', () => {
+    it('should parse with rational powers', () => {
         const P = new Polynom('3x^(2/3)-5x+5/3');
 
         expect(P.tex).to.be.equal('3x^{\\tfrac{ 2 }{ 3 }}-5x+\\dfrac{ 5 }{ 3 }')

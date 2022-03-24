@@ -1,5 +1,5 @@
-import { Polynom, PolynomParsingType } from "../algebra";
-import { Fraction, FractionParsingType } from "../coefficients";
+import { Polynom, PolynomParsingType } from "../algebra/polynom";
+import { Fraction, FractionParsingType } from "../coefficients/fraction";
 declare type PolynomExpMathFunctionType = {
     name: string;
     fn: Function;

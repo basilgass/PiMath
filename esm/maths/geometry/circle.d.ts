@@ -1,7 +1,7 @@
 import { Point } from "./point";
-import { Fraction } from "../coefficients";
-import { Equation } from "../algebra";
 import { Line } from "./line";
+import { Fraction } from "../coefficients/fraction";
+import { Equation } from "../algebra/equation";
 export declare class Circle {
     constructor(...values: unknown[]);
     private _center;

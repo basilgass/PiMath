@@ -1,10 +1,12 @@
 import {Point} from "./point";
-import {Fraction} from "../coefficients";
-import {Equation, Monom, Polynom} from "../algebra";
 import {Line, LinePropriety} from "./line";
 import {Vector} from "./vector";
 import {Triangle} from "./triangle";
 import {Numeric} from "../numeric";
+import {Fraction} from "../coefficients/fraction";
+import {Equation} from "../algebra/equation";
+import {Polynom} from "../algebra/polynom";
+import {Monom} from "../algebra/monom";
 
 export class Circle {
     constructor(...values: unknown[]) {

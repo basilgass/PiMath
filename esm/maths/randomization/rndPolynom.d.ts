@@ -1,6 +1,6 @@
 import { randomCore } from "./randomCore";
 import { randomPolynomConfig } from "./rndTypes";
-import { Polynom } from "../algebra";
+import { Polynom } from "../algebra/polynom";
 /**
  * Random polynoms
  */

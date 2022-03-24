@@ -1,7 +1,7 @@
 import {randomCore} from "./randomCore";
 import {randomCoefficientConfig, randomMonomConfig, randomPolynomConfig} from "./rndTypes";
-import {Fraction} from "../coefficients";
 import {Random} from "./random";
+import {Fraction} from "../coefficients/fraction";
 
 /**
  * Create a random monom based on a based configuration

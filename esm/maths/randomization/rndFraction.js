@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rndFraction = void 0;
 const randomCore_1 = require("./randomCore");
-const coefficients_1 = require("../coefficients");
 const random_1 = require("./random");
+const fraction_1 = require("../coefficients/fraction");
 /**
  * Create a random monom based on a based configuration
  */
@@ -11,7 +11,7 @@ class rndFraction extends randomCore_1.randomCore {
     constructor(userConfig) {
         super();
         this.generate = () => {
-            let Q = new coefficients_1.Fraction();
+            let Q = new fraction_1.Fraction();
             if (this._config.negative) {
                 Q.numerator = random_1.Random.numberSym(this._config.max, this._config.zero);
             }

@@ -2,9 +2,10 @@ import {rndPolynom} from "./rndPolynom";
 import {rndMonom} from "./rndMonom";
 import {rndHelpers} from "./rndHelpers";
 import {randomCoefficientConfig, randomMonomConfig, randomPolynomConfig} from "./rndTypes";
-import {Monom, Polynom} from "../algebra";
-import {Fraction} from "../coefficients";
 import {rndFraction} from "./rndFraction";
+import {Polynom} from "../algebra/polynom";
+import {Monom} from "../algebra/monom";
+import {Fraction} from "../coefficients/fraction";
 
 export * from "./rndTypes"
 

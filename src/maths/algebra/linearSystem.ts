@@ -1,8 +1,8 @@
-import {Fraction} from "../coefficients";
 import {Equation} from "./equation";
 import {Polynom} from "./polynom";
 import {Monom} from "./monom";
 import {Random} from "../randomization/random";
+import {Fraction} from "../coefficients/fraction";
 
 // TODO: Must check and rework
 export class LinearSystem {

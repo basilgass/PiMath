@@ -1,7 +1,8 @@
 import {Polynom} from "./polynom";
 import {literalType, Monom} from "./monom";
 import {Numeric} from "../numeric";
-import {Fraction, Nthroot} from "../coefficients";
+import {Fraction} from "../coefficients/fraction";
+import {Nthroot} from "../coefficients/nthroot";
 
 /**
  * Equation is a class to manage equations...

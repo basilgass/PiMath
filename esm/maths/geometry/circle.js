@@ -2,12 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Circle = void 0;
 const point_1 = require("./point");
-const coefficients_1 = require("../coefficients");
-const algebra_1 = require("../algebra");
 const line_1 = require("./line");
 const vector_1 = require("./vector");
 const triangle_1 = require("./triangle");
 const numeric_1 = require("../numeric");
+const fraction_1 = require("../coefficients/fraction");
+const equation_1 = require("../algebra/equation");
+const polynom_1 = require("../algebra/polynom");
 class Circle {
     constructor(...values) {
         /**
@@ -33,21 +34,21 @@ class Circle {
                 return [];
             }
             const equX = this._cartesian.clone(), lineX = L.equation.clone().isolate('x'), lineY = L.equation.clone().isolate('y');
-            if (lineX instanceof algebra_1.Equation && lineY instanceof algebra_1.Equation) {
+            if (lineX instanceof equation_1.Equation && lineY instanceof equation_1.Equation) {
                 equX.replaceBy('y', lineY.right).simplify();
                 equX.solve();
                 for (let x of equX.solutions) {
                     if (x.exact === false && isNaN(x.value)) {
                         continue;
                     }
-                    solX = new coefficients_1.Fraction(x.exact === false ? x.value : x.exact);
+                    solX = new fraction_1.Fraction(x.exact === false ? x.value : x.exact);
                     intersectionPoints.push(new point_1.Point(solX.clone(), lineY.right.evaluate(solX)));
                 }
             }
             return intersectionPoints;
         };
         this.tangents = (P) => {
-            if (P instanceof coefficients_1.Fraction) {
+            if (P instanceof fraction_1.Fraction) {
                 return this._tangentsWithSlope(P);
             }
             else if (this.isPointOnCircle(P)) {
@@ -97,15 +98,15 @@ class Circle {
             // Centre: cx, cy, radius: r
             // (m.cx - cy -m.px + py)^2 = r^2  * (m^2  + 1)
             // (m(cx-py) - (cy - py))^2 = r^2  * (m^2  + 1)
-            let cx_px = this.center.x.clone().subtract(P.x), cy_py = this.center.y.clone().subtract(P.y), polyLeft = new algebra_1.Polynom('x'), polyRight = new algebra_1.Polynom('x^2+1');
+            let cx_px = this.center.x.clone().subtract(P.x), cy_py = this.center.y.clone().subtract(P.y), polyLeft = new polynom_1.Polynom('x'), polyRight = new polynom_1.Polynom('x^2+1');
             polyLeft.multiply(cx_px).subtract(cy_py).pow(2);
             polyRight.multiply(this.squareRadius);
-            let equ = new algebra_1.Equation(polyLeft, polyRight);
+            let equ = new equation_1.Equation(polyLeft, polyRight);
             equ.moveLeft().simplify().solve();
             return equ.solutions.map(sol => {
                 //  h = -m px + py
-                let h, equ = new algebra_1.Equation('y', 'x');
-                if (sol.exact instanceof coefficients_1.Fraction) {
+                let h, equ = new equation_1.Equation('y', 'x');
+                if (sol.exact instanceof fraction_1.Fraction) {
                     h = P.x.clone().opposed().multiply(sol.exact).add(P.y);
                     equ.right.multiply(sol.exact).add(h);
                 }
@@ -209,9 +210,9 @@ class Circle {
         // three values: Point, Fraction, Boolean (center, square radius, true)
         this._reset();
         if (typeof values[0] === 'string') {
-            this._parseEquation(new algebra_1.Equation(values[0]));
+            this._parseEquation(new equation_1.Equation(values[0]));
         }
-        else if (values[0] instanceof algebra_1.Equation) {
+        else if (values[0] instanceof equation_1.Equation) {
             this._parseEquation(values[0]);
         }
         else if (values[0] instanceof Circle) {
@@ -226,7 +227,7 @@ class Circle {
                     this._parseCenterAndPointThrough(values[0], values[1]);
                 }
             }
-            else if (values[1] instanceof coefficients_1.Fraction || typeof values[1] === 'number') {
+            else if (values[1] instanceof fraction_1.Fraction || typeof values[1] === 'number') {
                 this._parseCenterAndRadius(values[0], values[1], (typeof values[2] === "boolean") ? values[2] : false);
             }
         }
@@ -241,7 +242,7 @@ class Circle {
         return this;
     }
     _calculateCartesian() {
-        this._cartesian = (new algebra_1.Equation(new algebra_1.Polynom(`(x-(${this._center.x.display}))^2+(y-(${this._center.y.display}))^2`), new algebra_1.Polynom(`${this._squareRadius.display}`))).moveLeft();
+        this._cartesian = (new equation_1.Equation(new polynom_1.Polynom(`(x-(${this._center.x.display}))^2+(y-(${this._center.y.display}))^2`), new polynom_1.Polynom(`${this._squareRadius.display}`))).moveLeft();
     }
     _parseCopyCircle(circle) {
         this._center = circle.center.clone();
@@ -253,10 +254,10 @@ class Circle {
     _parseCenterAndRadius(center, radius, square) {
         this._center = center.clone();
         if (square) {
-            this._squareRadius = (new coefficients_1.Fraction(radius));
+            this._squareRadius = (new fraction_1.Fraction(radius));
         }
         else {
-            this._squareRadius = new coefficients_1.Fraction(radius).pow(2);
+            this._squareRadius = new fraction_1.Fraction(radius).pow(2);
         }
         this._exists = true;
         return this;

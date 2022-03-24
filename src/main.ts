@@ -2,18 +2,20 @@ import {Numeric} from "./maths/numeric";
 import {NumExp} from "./maths/expressions/numexp";
 import {Shutingyard} from "./maths/shutingyard";
 import {Random} from "./maths/randomization/random";
-import {Fraction, Nthroot} from "./maths/coefficients";
-import {
-    Monom,
-    Polynom,
-    Equation,
-    LinearSystem,
-    Rational,
-    Logicalset,
-    PolynomExpFactor,
-    PolynomExpProduct
-} from "./maths/algebra";
-import {Line, Circle, Triangle, Point, Vector} from "./maths/geometry";
+import {Fraction} from "./maths/coefficients/fraction";
+import {Nthroot} from "./maths/coefficients/nthroot";
+import {Monom} from "./maths/algebra/monom";
+import {Polynom} from "./maths/algebra/polynom";
+import {Equation} from "./maths/algebra/equation";
+import {LinearSystem} from "./maths/algebra/linearSystem";
+import {Rational} from "./maths/algebra/rational";
+import {Logicalset} from "./maths/algebra/logicalset";
+import {PolynomExpFactor, PolynomExpProduct} from "./maths/expressions/polynomexp";
+import {Vector} from "./maths/geometry/vector";
+import {Line} from "./maths/geometry/line";
+import {Triangle} from "./maths/geometry/triangle";
+import {Circle} from "./maths/geometry/circle";
+import {Point} from "./maths/geometry/point";
 
 // Expose as global
 export const Pi = {

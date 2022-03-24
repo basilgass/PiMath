@@ -1,10 +1,10 @@
 /***
  * Monom class
  */
-import {Fraction} from "../coefficients";
 import {Numeric} from "../numeric";
 import {Shutingyard, ShutingyardType, Token, tokenType} from "../shutingyard";
 import {log} from "util";
+import {Fraction} from "../coefficients/fraction";
 
 export type literalType = {
     [Key: string]: Fraction

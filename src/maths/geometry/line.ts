@@ -2,11 +2,12 @@
  * This class works for 2d line in a plane.
  */
 
-import {Fraction} from "../coefficients";
 import {Vector} from "./vector";
 import {Point} from "./point";
-import {Equation, Polynom} from "../algebra";
 import {Numeric} from "../numeric";
+import {Fraction} from "../coefficients/fraction";
+import {Equation} from "../algebra/equation";
+import {Polynom} from "../algebra/polynom";
 
 export enum LinePropriety {
     None,

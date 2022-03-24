@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.rndMonom = void 0;
 const randomCore_1 = require("./randomCore");
 const random_1 = require("./random");
-const algebra_1 = require("../algebra");
+const monom_1 = require("../algebra/monom");
 /**
  * Create a random monom based on a based configuration
  */
@@ -12,7 +12,7 @@ class rndMonom extends randomCore_1.randomCore {
         super();
         this.generate = () => {
             // Create a monom instance
-            let M = new algebra_1.Monom();
+            let M = new monom_1.Monom();
             // Generate the coefficient
             if (typeof this._config.fraction === "boolean") {
                 M.coefficient = random_1.Random.fraction({

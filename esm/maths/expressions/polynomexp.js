@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PolynomExpProduct = exports.PolynomExpFactor = void 0;
-const algebra_1 = require("../algebra");
-const coefficients_1 = require("../coefficients");
+const polynom_1 = require("../algebra/polynom");
+const fraction_1 = require("../coefficients/fraction");
 class PolynomExpFactor {
     constructor(polynom, degree, mathFunction) {
-        this._polynom = new algebra_1.Polynom(polynom);
-        this._degree = new coefficients_1.Fraction(degree === undefined ? 1 : degree);
+        this._polynom = new polynom_1.Polynom(polynom);
+        this._degree = new fraction_1.Fraction(degree === undefined ? 1 : degree);
         this._fn = mathFunction;
         this._powerAsInteger = true;
         this._forceParenthesis = true;
@@ -167,7 +167,7 @@ class PolynomExpProduct {
     }
     reduce() {
         let coefficients = this._factors.filter(factor => factor.isCoefficient), polynoms = this._factors.filter(factor => !factor.isCoefficient);
-        let result = new coefficients_1.Fraction().one();
+        let result = new fraction_1.Fraction().one();
         if (coefficients.length > 1) {
             for (const factor of coefficients) {
                 if (factor.degree.isPositive()) {

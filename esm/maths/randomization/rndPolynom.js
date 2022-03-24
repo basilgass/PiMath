@@ -4,7 +4,7 @@ exports.rndPolynom = void 0;
 const randomCore_1 = require("./randomCore");
 const rndMonom_1 = require("./rndMonom");
 const random_1 = require("./random");
-const algebra_1 = require("../algebra");
+const polynom_1 = require("../algebra/polynom");
 /**
  * Random polynoms
  */
@@ -16,7 +16,7 @@ class rndPolynom extends randomCore_1.randomCore {
                 return this.factorable();
             }
             // Create the polynom
-            let P = new algebra_1.Polynom().empty(), M;
+            let P = new polynom_1.Polynom().empty(), M;
             for (let i = this._config.degree; i >= 0; i--) {
                 // Create monom of corresponding degree.
                 M = new rndMonom_1.rndMonom({
@@ -46,7 +46,7 @@ class rndPolynom extends randomCore_1.randomCore {
             return P;
         };
         this.factorable = () => {
-            let P = new algebra_1.Polynom().one();
+            let P = new polynom_1.Polynom().one();
             let _factorableConfig = { ...this._config };
             _factorableConfig.degree = 1;
             _factorableConfig.factorable = false;

@@ -5,10 +5,10 @@
 import {literalType, Monom} from './monom';
 import {Shutingyard, ShutingyardType, Token} from '../shutingyard';
 import {Numeric} from '../numeric';
-import {Fraction} from "../coefficients";
-import {log} from "util";
+import {Fraction} from "../coefficients/fraction";
 
-export type PolynomParsingType = string|Polynom|number|Fraction|Monom
+export type PolynomParsingType = string | Polynom | number | Fraction | Monom
+
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -120,6 +120,82 @@ export class Polynom {
         return this.variables.length;
     }
 
+    static addToken = (stack: Polynom[], element: Token): void => {
+
+        switch (element.tokenType) {
+            case ShutingyardType.COEFFICIENT:
+                stack.push(new Polynom(element.token))
+                break
+
+            case ShutingyardType.VARIABLE:
+                stack.push(new Polynom().add(new Monom(element.token)))
+                break
+
+            case ShutingyardType.CONSTANT:
+                // TODO: add constant support to Polynom parsing.
+                console.log('Actually, not supported - will be added later !')
+                break
+
+            case ShutingyardType.OPERATION:
+                if (stack.length >= 2) {
+                    const b = stack.pop(),
+                        a = stack.pop()
+
+                    if (element.token === '+') {
+                        stack.push(a.add(b))
+                    } else if (element.token === '-') {
+                        stack.push(a.subtract(b))
+                    } else if (element.token === '*') {
+                        stack.push(a.multiply(b))
+                    } else if (element.token === '/') {
+                        if (b.degree().isStrictlyPositive()) {
+                            console.log('divide by a polynom -> should create a rational polynom !')
+                        } else {
+                            stack.push(a.divide(b.monoms[0].coefficient))
+
+                        }
+                    } else if (element.token === '^') {
+                        if (b.degree().isStrictlyPositive()) {
+                            console.error('Cannot elevate a polynom with another polynom !')
+                        } else {
+                            if (b.monoms[0].coefficient.isRelative()) {
+                                // Integer power
+                                stack.push(a.pow(b.monoms[0].coefficient.value))
+                            } else {
+                                // Only allow power if the previous polynom is only a monom, without coefficient.
+                                if (a.monoms.length === 1 && a.monoms[0].coefficient.isOne()) {
+                                    for (let letter in a.monoms[0].literal) {
+                                        a.monoms[0].literal[letter].multiply(b.monoms[0].coefficient)
+                                    }
+                                    stack.push(a)
+                                } else {
+                                    console.error('Cannot have power with fraction')
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    console.log('Stack size: ', stack.length)
+                    if (element.token === '-') {
+                        stack.push(stack.pop().opposed())
+                    } else {
+                        console.log('While parsing, cannot apply ', element.token, 'to', stack[0].tex)
+                    }
+                }
+                break
+
+            case ShutingyardType.MONOM:
+                // Should never appear.
+                console.error('The monom token should not appear here')
+                break;
+
+            case ShutingyardType.FUNCTION:
+                // Should never appear.
+                console.log('The function token should not appear here - might be introduced later.')
+                break;
+        }
+    }
+
     // ------------------------------------------
     /**
      * Parse a string to a polynom.
@@ -131,71 +207,18 @@ export class Polynom {
         this._monoms = []
         this._factors = []
 
-        if(typeof inputStr === 'string') {
+        if (typeof inputStr === 'string') {
             return this._parseString(inputStr, ...values)
-        }else if(typeof inputStr === 'number' || inputStr instanceof Fraction || inputStr instanceof Monom){
+        } else if (typeof inputStr === 'number' || inputStr instanceof Fraction || inputStr instanceof Monom) {
             this._monoms.push(new Monom(inputStr))
-        }else if(inputStr instanceof Polynom){
-            for(const m of inputStr.monoms){
+        } else if (inputStr instanceof Polynom) {
+            for (const m of inputStr.monoms) {
                 this._monoms.push(m.clone())
             }
         }
 
         return this
     };
-
-    private _parseString(inputStr: string, ...values:unknown[]): Polynom{
-        if (values === undefined || values.length === 0) {
-            inputStr = '' + inputStr;
-            this._rawString = inputStr;
-
-            // Parse the polynom using the shutting yard algorithm
-            if (inputStr !== '' && !isNaN(Number(inputStr))) {
-                this.empty();
-                // It's a simple number.
-                let m = new Monom(inputStr);
-                // m.coefficient = new Fraction(inputStr);
-                // m.literalStr = '';
-                this.add(m);
-                return this;
-            }
-
-            // Parse the string.
-            return this.shutingYardToReducedPolynom(inputStr);
-        } else if (/^[a-z]/.test(inputStr)) {
-            // We assume the inputStr contains only letters.
-            this.empty();
-
-            let fractions = values.map(x => new Fraction(x));
-            // Multiple setLetter version
-            if (inputStr.length > 1) {
-                // TODO: check that the number of values given correspond to the letters (+1 eventually)
-                let letters = inputStr.split(''),
-                    i = 0;
-                for (let F of fractions) {
-                    let m = new Monom();
-                    m.coefficient = F.clone();
-                    m.literalStr = letters[i] || '';
-                    this.add(m);
-                    i++;
-                }
-            }
-            // Single setLetter version
-            else {
-                let n = fractions.length - 1;
-                for (let F of fractions) {
-                    let m = new Monom()
-                    m.coefficient = F.clone();
-                    m.literalStr = `${inputStr}^${n}`
-                    this.add(m);
-                    n--;
-                }
-            }
-            return this;
-        } else {
-            return this.zero();
-        }
-    }
 
 
     // ------------------------------------------
@@ -972,6 +995,59 @@ export class Polynom {
         return M;
     }
 
+    private _parseString(inputStr: string, ...values: unknown[]): Polynom {
+        if (values === undefined || values.length === 0) {
+            inputStr = '' + inputStr;
+            this._rawString = inputStr;
+
+            // Parse the polynom using the shutting yard algorithm
+            if (inputStr !== '' && !isNaN(Number(inputStr))) {
+                this.empty();
+                // It's a simple number.
+                let m = new Monom(inputStr);
+                // m.coefficient = new Fraction(inputStr);
+                // m.literalStr = '';
+                this.add(m);
+                return this;
+            }
+
+            // Parse the string.
+            return this.shutingYardToReducedPolynom(inputStr);
+        } else if (/^[a-z]/.test(inputStr)) {
+            // We assume the inputStr contains only letters.
+            this.empty();
+
+            let fractions = values.map(x => new Fraction(x));
+            // Multiple setLetter version
+            if (inputStr.length > 1) {
+                // TODO: check that the number of values given correspond to the letters (+1 eventually)
+                let letters = inputStr.split(''),
+                    i = 0;
+                for (let F of fractions) {
+                    let m = new Monom();
+                    m.coefficient = F.clone();
+                    m.literalStr = letters[i] || '';
+                    this.add(m);
+                    i++;
+                }
+            }
+            // Single setLetter version
+            else {
+                let n = fractions.length - 1;
+                for (let F of fractions) {
+                    let m = new Monom()
+                    m.coefficient = F.clone();
+                    m.literalStr = `${inputStr}^${n}`
+                    this.add(m);
+                    n--;
+                }
+            }
+            return this;
+        } else {
+            return this.zero();
+        }
+    }
+
     private genDisplay = (output?: string, forceSign?: boolean, wrapParentheses?: boolean): string => {
         let P: string = '';
 
@@ -997,82 +1073,6 @@ export class Polynom {
         return P;
     };
 
-
-    static addToken = (stack: Polynom[], element: Token): void => {
-
-        switch(element.tokenType){
-            case ShutingyardType.COEFFICIENT:
-                stack.push(new Polynom( element.token ))
-                break
-
-            case ShutingyardType.VARIABLE:
-                stack.push(new Polynom().add(new Monom(element.token)))
-                break
-
-            case ShutingyardType.CONSTANT:
-                // TODO: add constant support to Polynom parsing.
-                console.log('Actually, not supported - will be added later !')
-                break
-
-            case ShutingyardType.OPERATION:
-                if(stack.length>=2){
-                    const b = stack.pop(),
-                        a = stack.pop()
-
-                    if(element.token === '+'){
-                        stack.push(a.add(b))
-                    }else if(element.token === '-'){
-                        stack.push(a.subtract(b))
-                    }else if(element.token === '*'){
-                        stack.push(a.multiply(b))
-                    }else if(element.token === '/'){
-                        if(b.degree().isStrictlyPositive()){
-                            console.log('divide by a polynom -> should create a rational polynom !')
-                        }else {
-                            stack.push(a.divide(b.monoms[0].coefficient))
-
-                        }
-                    }else if(element.token === '^'){
-                        if(b.degree().isStrictlyPositive()) {
-                            console.error('Cannot elevate a polynom with another polynom !')
-                        }else {
-                            if(b.monoms[0].coefficient.isRelative()) {
-                                // Integer power
-                                stack.push(a.pow(b.monoms[0].coefficient.value))
-                            }else{
-                                // Only allow power if the previous polynom is only a monom, without coefficient.
-                                if(a.monoms.length===1 && a.monoms[0].coefficient.isOne()){
-                                    for (let letter in a.monoms[0].literal) {
-                                        a.monoms[0].literal[letter].multiply(b.monoms[0].coefficient)
-                                    }
-                                    stack.push(a)
-                                }else {
-                                    console.error('Cannot have power with fraction')
-                                }
-                            }
-                        }
-                    }
-                }else{
-                    console.log('Stack size: ', stack.length)
-                    if(element.token === '-'){
-                        stack.push(stack.pop().opposed())
-                    }else{
-                        console.log('While parsing, cannot apply ', element.token, 'to', stack[0].tex)
-                    }
-                }
-                break
-
-            case ShutingyardType.MONOM:
-                // Should never appear.
-                console.error('The monom token should not appear here')
-                break;
-
-            case ShutingyardType.FUNCTION:
-                // Should never appear.
-                console.log('The function token should not appear here - might be introduced later.')
-                break;
-        }
-    }
     /**
      * Main parse using a shutting yard class
      * @param inputStr

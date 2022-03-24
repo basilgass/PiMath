@@ -12,32 +12,43 @@ exports.Pi = void 0;
 const numeric_1 = __webpack_require__(956);
 const numexp_1 = __webpack_require__(735);
 const shutingyard_1 = __webpack_require__(505);
-const random_1 = __webpack_require__(941);
-const coefficients_1 = __webpack_require__(534);
-const algebra_1 = __webpack_require__(667);
-const geometry_1 = __webpack_require__(272);
+const random_1 = __webpack_require__(330);
+const fraction_1 = __webpack_require__(506);
+const nthroot_1 = __webpack_require__(923);
+const monom_1 = __webpack_require__(937);
+const polynom_1 = __webpack_require__(38);
+const equation_1 = __webpack_require__(760);
+const linearSystem_1 = __webpack_require__(554);
+const rational_1 = __webpack_require__(107);
+const logicalset_1 = __webpack_require__(236);
+const polynomexp_1 = __webpack_require__(75);
+const vector_1 = __webpack_require__(586);
+const line_1 = __webpack_require__(9);
+const triangle_1 = __webpack_require__(164);
+const circle_1 = __webpack_require__(699);
+const point_1 = __webpack_require__(557);
 // Expose as global
 exports.Pi = {
     ShutingYard: shutingyard_1.Shutingyard,
     Numeric: numeric_1.Numeric,
     NumExp: numexp_1.NumExp,
-    Fraction: coefficients_1.Fraction,
-    Root: coefficients_1.Nthroot,
-    Monom: algebra_1.Monom,
-    Polynom: algebra_1.Polynom,
-    Equation: algebra_1.Equation,
-    LinearSystem: algebra_1.LinearSystem,
-    Rational: algebra_1.Rational,
-    Logicalset: algebra_1.Logicalset,
+    Fraction: fraction_1.Fraction,
+    Root: nthroot_1.Nthroot,
+    Monom: monom_1.Monom,
+    Polynom: polynom_1.Polynom,
+    Equation: equation_1.Equation,
+    LinearSystem: linearSystem_1.LinearSystem,
+    Rational: rational_1.Rational,
+    Logicalset: logicalset_1.Logicalset,
     Random: random_1.Random,
-    PolynomExpFactor: algebra_1.PolynomExpFactor,
-    PolynomExpProduct: algebra_1.PolynomExpProduct,
+    PolynomExpFactor: polynomexp_1.PolynomExpFactor,
+    PolynomExpProduct: polynomexp_1.PolynomExpProduct,
     Geometry: {
-        Vector: geometry_1.Vector,
-        Point: geometry_1.Point,
-        Line: geometry_1.Line,
-        Triangle: geometry_1.Triangle,
-        Circle: geometry_1.Circle
+        Vector: vector_1.Vector,
+        Point: point_1.Point,
+        Line: line_1.Line,
+        Triangle: triangle_1.Triangle,
+        Circle: circle_1.Circle
     }
 };
 window.Pi = exports.Pi;
@@ -53,7 +64,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Equation = void 0;
 const polynom_1 = __webpack_require__(38);
 const numeric_1 = __webpack_require__(956);
-const coefficients_1 = __webpack_require__(534);
+const fraction_1 = __webpack_require__(506);
+const nthroot_1 = __webpack_require__(923);
 class Equation {
     /**
      * Create an Equation using two polynoms.
@@ -186,7 +198,7 @@ class Equation {
          */
         this.multiply = (value) => {
             // Make sure we have a fraction.
-            let F = new coefficients_1.Fraction(value);
+            let F = new fraction_1.Fraction(value);
             // Multiply each part of the equation by the fraction
             this._left.multiply(F);
             this._right.multiply(F);
@@ -212,7 +224,7 @@ class Equation {
          */
         this.divide = (value) => {
             // Make sure we have a fraction.
-            let F = new coefficients_1.Fraction(value);
+            let F = new fraction_1.Fraction(value);
             if (F.isZero()) {
                 return this;
             }
@@ -225,7 +237,7 @@ class Equation {
          * @param letter
          */
         this.degree = (letter) => {
-            return coefficients_1.Fraction.max(this._left.degree(letter), this._right.degree(letter));
+            return fraction_1.Fraction.max(this._left.degree(letter), this._right.degree(letter));
         };
         /**
          * Determine if the equation contains more than one letter/variable.
@@ -448,7 +460,7 @@ class Equation {
                     ];
                 }
                 else {
-                    nthDelta = new coefficients_1.Nthroot(delta).reduce();
+                    nthDelta = new nthroot_1.Nthroot(delta).reduce();
                     if (nthDelta.hasRadical()) {
                         // -b +- coeff\sqrt{radical}
                         // -------------------------
@@ -520,7 +532,7 @@ class Equation {
                     }
                     else {
                         // -b +- d / 2a
-                        const S1 = new coefficients_1.Fraction(-b - nthDelta.coefficient, 2 * a).reduce(), S2 = new coefficients_1.Fraction(-b + nthDelta.coefficient, 2 * a).reduce();
+                        const S1 = new fraction_1.Fraction(-b - nthDelta.coefficient, 2 * a).reduce(), S2 = new fraction_1.Fraction(-b + nthDelta.coefficient, 2 * a).reduce();
                         this._solutions = [
                             {
                                 tex: S1.dfrac,
@@ -537,7 +549,7 @@ class Equation {
                 }
             }
             else if (delta === 0) {
-                const sol = new coefficients_1.Fraction(-b, 2 * a).reduce();
+                const sol = new fraction_1.Fraction(-b, 2 * a).reduce();
                 this._solutions = [{
                         tex: sol.dfrac,
                         value: sol.value,
@@ -745,46 +757,16 @@ exports.Equation = Equation;
 
 /***/ }),
 
-/***/ 667:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__webpack_require__(760), exports);
-__exportStar(__webpack_require__(554), exports);
-__exportStar(__webpack_require__(236), exports);
-__exportStar(__webpack_require__(937), exports);
-__exportStar(__webpack_require__(38), exports);
-__exportStar(__webpack_require__(107), exports);
-__exportStar(__webpack_require__(75), exports);
-
-
-/***/ }),
-
 /***/ 554:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LinearSystem = void 0;
-const coefficients_1 = __webpack_require__(534);
 const equation_1 = __webpack_require__(760);
 const polynom_1 = __webpack_require__(38);
-const random_1 = __webpack_require__(941);
+const random_1 = __webpack_require__(330);
+const fraction_1 = __webpack_require__(506);
 // TODO: Must check and rework
 class LinearSystem {
     constructor(...equationStrings) {
@@ -833,7 +815,7 @@ class LinearSystem {
             // Convert the numbers to fractions if necessary
             for (let s of solutions) {
                 if (typeof s === "number") {
-                    solutionsF.push(new coefficients_1.Fraction(s.toString()));
+                    solutionsF.push(new fraction_1.Fraction(s.toString()));
                 }
                 else {
                     solutionsF.push(s.clone());
@@ -847,7 +829,7 @@ class LinearSystem {
             return this;
         };
         this._generateOneEquation = (...solutions) => {
-            let coeff = [], leftValue = new coefficients_1.Fraction().zero(), letters = ['x', 'y', 'z', 't', 'u', 'v', 'w', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'], equString = '', equ;
+            let coeff = [], leftValue = new fraction_1.Fraction().zero(), letters = ['x', 'y', 'z', 't', 'u', 'v', 'w', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'], equString = '', equ;
             for (let i = 0; i < solutions.length; i++) {
                 coeff.push(random_1.Random.numberSym(5));
                 leftValue.add(solutions[i].clone().multiply(coeff[i]));
@@ -858,7 +840,7 @@ class LinearSystem {
             // Must check if it's not a linear combination
             equ = new equation_1.Equation(`${equString}=${leftValue.display}`);
             if (equ.right.monoms[0].coefficient.denominator != 1) {
-                equ.multiply(new coefficients_1.Fraction(equ.right.monoms[0].coefficient.denominator, 1));
+                equ.multiply(new fraction_1.Fraction(equ.right.monoms[0].coefficient.denominator, 1));
             }
             if (this._checkIfLinerCombination(equ)) {
                 return equ;
@@ -869,7 +851,7 @@ class LinearSystem {
         };
         this.mergeEquations = (eq1, eq2, factor1, factor2) => {
             // Set and clone the equations.
-            let eq1multiplied = eq1.clone().multiply(new coefficients_1.Fraction(factor1)), eq2multiplied = eq2.clone().multiply(new coefficients_1.Fraction(factor2));
+            let eq1multiplied = eq1.clone().multiply(new fraction_1.Fraction(factor1)), eq2multiplied = eq2.clone().multiply(new fraction_1.Fraction(factor2));
             // Add both equations together.
             eq1multiplied.left.add(eq2multiplied.left);
             eq1multiplied.right.add(eq2multiplied.right);
@@ -1031,7 +1013,7 @@ class LinearSystem {
         let E = this._resolutionSteps[this._resolutionSteps.length - 1].equations[0];
         E.solve();
         return {
-            value: new coefficients_1.Fraction(E.solutions[0].value),
+            value: new fraction_1.Fraction(E.solutions[0].value),
             isReal: E.isReal,
             isVarnothing: E.isVarnothing
         };
@@ -1215,9 +1197,9 @@ exports.Monom = void 0;
 /***
  * Monom class
  */
-const coefficients_1 = __webpack_require__(534);
 const numeric_1 = __webpack_require__(956);
 const shutingyard_1 = __webpack_require__(505);
+const fraction_1 = __webpack_require__(506);
 class Monom {
     /**
      * Create a Monom
@@ -1238,10 +1220,10 @@ class Monom {
                 this._shutingYardToReducedMonom(inputStr);
             }
             else if (typeof inputStr === 'number') {
-                this._coefficient = new coefficients_1.Fraction(inputStr);
+                this._coefficient = new fraction_1.Fraction(inputStr);
                 this._literal = {};
             }
-            else if (inputStr instanceof coefficients_1.Fraction) {
+            else if (inputStr instanceof fraction_1.Fraction) {
                 this._coefficient = inputStr.clone();
                 this._literal = {};
             }
@@ -1264,7 +1246,7 @@ class Monom {
                 const element = rpn[0];
                 this.one();
                 if (element.tokenType === 'coefficient') {
-                    this.coefficient = new coefficients_1.Fraction(element.token);
+                    this.coefficient = new fraction_1.Fraction(element.token);
                 }
                 else if (element.tokenType === 'variable') {
                     this.setLetter(element.token, 1);
@@ -1311,7 +1293,7 @@ class Monom {
          * Create a zero value monom
          */
         this.zero = () => {
-            this._coefficient = new coefficients_1.Fraction().zero();
+            this._coefficient = new fraction_1.Fraction().zero();
             this._literal = {};
             return this;
         };
@@ -1319,7 +1301,7 @@ class Monom {
          * Create a one value monom
          */
         this.one = () => {
-            this._coefficient = new coefficients_1.Fraction().one();
+            this._coefficient = new fraction_1.Fraction().one();
             this._literal = {};
             return this;
         };
@@ -1564,7 +1546,7 @@ class Monom {
          * @param pow (number) Power of the setLetter (must be positive integer.
          */
         this.setLetter = (letter, pow) => {
-            if (pow instanceof coefficients_1.Fraction) {
+            if (pow instanceof fraction_1.Fraction) {
                 // Set the power of the letter to zero => remove it
                 if (this.hasLetter(letter) && pow.isZero()) {
                     delete this._literal[letter];
@@ -1572,7 +1554,7 @@ class Monom {
                 this._literal[letter] = pow.clone();
             }
             else {
-                this.setLetter(letter, new coefficients_1.Fraction(pow));
+                this.setLetter(letter, new fraction_1.Fraction(pow));
             }
         };
         /**
@@ -1581,7 +1563,7 @@ class Monom {
          */
         this.degree = (letter) => {
             if (this.variables.length === 0) {
-                return new coefficients_1.Fraction().zero();
+                return new fraction_1.Fraction().zero();
             }
             if (letter === undefined) {
                 // Not setLetter given -> we get the global monom degree (sum of all the letters).
@@ -1589,7 +1571,7 @@ class Monom {
             }
             else {
                 // A setLetter is given -> get the corresponding power.
-                return this._literal[letter] === undefined ? new coefficients_1.Fraction().zero() : this._literal[letter].clone();
+                return this._literal[letter] === undefined ? new fraction_1.Fraction().zero() : this._literal[letter].clone();
             }
         };
         /**
@@ -1598,17 +1580,17 @@ class Monom {
          */
         this.evaluate = (values) => {
             let r = this.coefficient.clone();
-            if (typeof values === 'number' || values instanceof coefficients_1.Fraction) {
+            if (typeof values === 'number' || values instanceof fraction_1.Fraction) {
                 let tmpValues = {};
-                tmpValues[this.variables[0]] = new coefficients_1.Fraction(values);
+                tmpValues[this.variables[0]] = new fraction_1.Fraction(values);
                 return this.evaluate(tmpValues);
             }
             if (typeof values === 'object') {
                 for (let L in this._literal) {
                     if (values[L] === undefined) {
-                        return new coefficients_1.Fraction().zero();
+                        return new fraction_1.Fraction().zero();
                     }
-                    let value = new coefficients_1.Fraction(values[L]);
+                    let value = new fraction_1.Fraction(values[L]);
                     r.multiply(value.pow(this._literal[L]));
                 }
             }
@@ -1628,7 +1610,7 @@ class Monom {
                 // Subtract one to the degree.
                 dM._literal[letter].subtract(1);
                 // Multiply the coefficient by the previous degree
-                dM._coefficient.multiply(new coefficients_1.Fraction(d.clone()));
+                dM._coefficient.multiply(new fraction_1.Fraction(d.clone()));
                 return dM;
             }
             else {
@@ -1651,7 +1633,7 @@ class Monom {
                 // There is no letter.
                 // The coefficient might be zero (=> x) or a number a (=> ax)
                 if (M.coefficient.isZero()) {
-                    M.coefficient = new coefficients_1.Fraction().one();
+                    M.coefficient = new fraction_1.Fraction().one();
                 }
                 M.setLetter(letter, 1);
             }
@@ -1713,7 +1695,7 @@ class Monom {
      * @param {Fraction | number | string} F
      */
     set coefficient(F) {
-        this._coefficient = new coefficients_1.Fraction(F);
+        this._coefficient = new fraction_1.Fraction(F);
     }
     /**
      * Get the literal part of \\(x^{n_1}y^{n_2}\\) as dictionary \\[\\begin{array}{ll}x&=n_1\\\\y&=n_2\\end{array}\\]
@@ -1756,7 +1738,7 @@ class Monom {
         for (const v of [...inputStr.matchAll(/([a-z])\^([+-]?[0-9]+)/g)]) {
             // Create the default letter entry if necessary.
             if (!(v[1] in this._literal)) {
-                this._literal[v[1]] = new coefficients_1.Fraction().zero();
+                this._literal[v[1]] = new fraction_1.Fraction().zero();
             }
             // Add the new value.
             // TODO: actually, it adds only numeric value
@@ -1766,7 +1748,7 @@ class Monom {
         for (const v of [...inputStr.matchAll(/([a-z](?!\^))/g)]) {
             // Match all single letters
             if (!(v[1] in this._literal)) {
-                this._literal[v[1]] = new coefficients_1.Fraction().zero();
+                this._literal[v[1]] = new fraction_1.Fraction().zero();
             }
             // Add one to the value.
             this._literal[v[1]].add(1);
@@ -1843,7 +1825,7 @@ class Monom {
             for (let N of dividers) {
                 for (let L of literals) {
                     let M = new Monom();
-                    M.coefficient = new coefficients_1.Fraction(N);
+                    M.coefficient = new fraction_1.Fraction(N);
                     M.literal = L;
                     monomDividers.push(M);
                 }
@@ -1852,7 +1834,7 @@ class Monom {
         else if (dividers.length === 0) {
             for (let L of literals) {
                 let M = new Monom();
-                M.coefficient = new coefficients_1.Fraction().one();
+                M.coefficient = new fraction_1.Fraction().one();
                 M.literal = L;
                 monomDividers.push(M);
             }
@@ -1860,7 +1842,7 @@ class Monom {
         else {
             for (let N of dividers) {
                 let M = new Monom();
-                M.coefficient = new coefficients_1.Fraction(N);
+                M.coefficient = new fraction_1.Fraction(N);
                 monomDividers.push(M);
             }
         }
@@ -1872,7 +1854,7 @@ class Monom {
         for (let d = 0; d <= this.literal[letter].value; d++) {
             if (arr.length === 0) {
                 let litt = {};
-                litt[letter] = new coefficients_1.Fraction(d);
+                litt[letter] = new fraction_1.Fraction(d);
                 tmpList.push(litt);
             }
             else {
@@ -1881,7 +1863,7 @@ class Monom {
                     for (let currentLetter in item) {
                         litt[currentLetter] = item[currentLetter];
                     }
-                    litt[letter] = new coefficients_1.Fraction(d);
+                    litt[letter] = new fraction_1.Fraction(d);
                     tmpList.push(litt);
                 }
             }
@@ -1956,7 +1938,7 @@ exports.Monom = Monom;
 Monom.addToken = (stack, element) => {
     let q1, q2, m, letter, pow;
     if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
-        stack.push(new Monom(new coefficients_1.Fraction(element.token)));
+        stack.push(new Monom(new fraction_1.Fraction(element.token)));
     }
     else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
         let M = new Monom().one();
@@ -1985,7 +1967,7 @@ Monom.addToken = (stack, element) => {
                 break;
             case '^':
                 // get the two last elements in the stack
-                pow = (stack.pop().coefficient) || new coefficients_1.Fraction().one();
+                pow = (stack.pop().coefficient) || new fraction_1.Fraction().one();
                 m = (stack.pop()) || new Monom().one();
                 letter = m.variables[0];
                 if (letter !== undefined) {
@@ -2013,7 +1995,7 @@ Monom.lcm = (...monoms) => {
     }
     let M = new Monom(), coeffN = monoms.map(value => value.coefficient.numerator), coeffD = monoms.map(value => value.coefficient.denominator), n = numeric_1.Numeric.gcd(...coeffN), d = numeric_1.Numeric.lcm(...coeffD);
     // Get the coefficient.
-    M.coefficient = new coefficients_1.Fraction(n, d).reduce();
+    M.coefficient = new fraction_1.Fraction(n, d).reduce();
     // Set the literal parts - go through each monoms literal parts and get only the lowest degree of each letters.
     for (let m of monoms) {
         // Remove the inexistant letters from the resulting monom
@@ -2027,7 +2009,7 @@ Monom.lcm = (...monoms) => {
                 M.literal[letter] = m.literal[letter].clone();
             }
             else {
-                M.literal[letter] = new coefficients_1.Fraction(Math.min(m.literal[letter].value, M.literal[letter].value));
+                M.literal[letter] = new fraction_1.Fraction(Math.min(m.literal[letter].value, M.literal[letter].value));
             }
         }
     }
@@ -2060,7 +2042,7 @@ exports.Polynom = void 0;
 const monom_1 = __webpack_require__(937);
 const shutingyard_1 = __webpack_require__(505);
 const numeric_1 = __webpack_require__(956);
-const coefficients_1 = __webpack_require__(534);
+const fraction_1 = __webpack_require__(506);
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -2087,7 +2069,7 @@ class Polynom {
             if (typeof inputStr === 'string') {
                 return this._parseString(inputStr, ...values);
             }
-            else if (typeof inputStr === 'number' || inputStr instanceof coefficients_1.Fraction || inputStr instanceof monom_1.Monom) {
+            else if (typeof inputStr === 'number' || inputStr instanceof fraction_1.Fraction || inputStr instanceof monom_1.Monom) {
                 this._monoms.push(new monom_1.Monom(inputStr));
             }
             else if (inputStr instanceof Polynom) {
@@ -2238,7 +2220,7 @@ class Polynom {
             if (value instanceof Polynom) {
                 return this.multiplyByPolynom(value);
             }
-            else if (value instanceof coefficients_1.Fraction) {
+            else if (value instanceof fraction_1.Fraction) {
                 return this.multiplyByFraction(value);
             }
             else if (value instanceof monom_1.Monom) {
@@ -2285,7 +2267,7 @@ class Polynom {
             return { quotient, reminder };
         };
         this.divide = (value) => {
-            if (value instanceof coefficients_1.Fraction) {
+            if (value instanceof fraction_1.Fraction) {
                 return this.divideByFraction(value);
             }
             else if (typeof value === 'number' && Number.isSafeInteger(value)) {
@@ -2473,9 +2455,9 @@ class Polynom {
             return this.reduce();
         };
         this.degree = (letter) => {
-            let d = new coefficients_1.Fraction().zero();
+            let d = new fraction_1.Fraction().zero();
             for (const m of this._monoms) {
-                d = coefficients_1.Fraction.max(m.degree(letter).value, d);
+                d = fraction_1.Fraction.max(m.degree(letter).value, d);
             }
             return d;
         };
@@ -2513,7 +2495,7 @@ class Polynom {
         };
         // Evaluate a polynom.
         this.evaluate = (values) => {
-            const r = new coefficients_1.Fraction().zero();
+            const r = new fraction_1.Fraction().zero();
             this._monoms.forEach(monom => {
                 //console.log('Evaluate polynom: ', monom.display, values, monom.evaluate(values).display);
                 r.add(monom.evaluate(values));
@@ -2542,8 +2524,8 @@ class Polynom {
                 letter = 'x';
             }
             let valuesA = {}, valuesB = {};
-            valuesA[letter] = new coefficients_1.Fraction(a);
-            valuesB[letter] = new coefficients_1.Fraction(b);
+            valuesA[letter] = new fraction_1.Fraction(a);
+            valuesB[letter] = new fraction_1.Fraction(b);
             return primitive.evaluate(valuesB).subtract(primitive.evaluate(valuesA));
         };
         // -------------------------------------
@@ -2613,7 +2595,7 @@ class Polynom {
                 case 1:
                     // There is only one monoms,
                     if (this._monoms.length === 1) {
-                        return [new coefficients_1.Fraction().zero()];
+                        return [new fraction_1.Fraction().zero()];
                     }
                     else {
                         const P = this.clone().reduce().reorder();
@@ -2636,8 +2618,8 @@ class Polynom {
                             if (D.value > 0) {
                                 /*console.log('Two zeroes for ', P.tex); */
                                 let x1 = (-(B.value) + Math.sqrt(D.value)) / (2 * A.value), x2 = (-(B.value) - Math.sqrt(D.value)) / (2 * A.value);
-                                zeroes.push(new coefficients_1.Fraction(x1.toFixed(3)).reduce());
-                                zeroes.push(new coefficients_1.Fraction(x2.toFixed(3)).reduce());
+                                zeroes.push(new fraction_1.Fraction(x1.toFixed(3)).reduce());
+                                zeroes.push(new fraction_1.Fraction(x2.toFixed(3)).reduce());
                             }
                             else if (D.value === 0) {
                                 /*console.log('One zero for ', P.tex); */
@@ -2741,12 +2723,12 @@ class Polynom {
             let M = new monom_1.Monom().one(), numerator, denominator, degree = this.degree();
             numerator = this.gcdNumerator();
             denominator = this.gcdDenominator();
-            M.coefficient = new coefficients_1.Fraction(numerator, denominator);
+            M.coefficient = new fraction_1.Fraction(numerator, denominator);
             for (let L of this.variables) {
                 // Initialize the setLetter with the max degree
                 M.setLetter(L, degree);
                 for (let m of this._monoms) {
-                    M.setLetter(L, coefficients_1.Fraction.min(m.degree(L), M.degree(L)));
+                    M.setLetter(L, fraction_1.Fraction.min(m.degree(L), M.degree(L)));
                     if (M.degree(L).isZero()) {
                         break;
                     }
@@ -2847,7 +2829,7 @@ class Polynom {
             return this.reduce();
         };
         this.multiplyByInteger = (nb) => {
-            return this.multiplyByFraction(new coefficients_1.Fraction(nb));
+            return this.multiplyByFraction(new fraction_1.Fraction(nb));
         };
         this.multiplyByMonom = (M) => {
             for (const m of this._monoms) {
@@ -2856,7 +2838,7 @@ class Polynom {
             return this.reduce();
         };
         this.divideByInteger = (nb) => {
-            const nbF = new coefficients_1.Fraction(nb);
+            const nbF = new fraction_1.Fraction(nb);
             for (const m of this._monoms) {
                 m.coefficient.divide(nbF);
             }
@@ -3056,6 +3038,12 @@ class Polynom {
     get numberOfVars() {
         return this.variables.length;
     }
+    isZero() {
+        return (this._monoms.length === 1 && this._monoms[0].coefficient.isZero()) || this._monoms.length === 0;
+    }
+    isOne() {
+        return this._monoms.length === 1 && this._monoms[0].coefficient.isOne();
+    }
     _parseString(inputStr, ...values) {
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;
@@ -3076,7 +3064,7 @@ class Polynom {
         else if (/^[a-z]/.test(inputStr)) {
             // We assume the inputStr contains only letters.
             this.empty();
-            let fractions = values.map(x => new coefficients_1.Fraction(x));
+            let fractions = values.map(x => new fraction_1.Fraction(x));
             // Multiple setLetter version
             if (inputStr.length > 1) {
                 // TODO: check that the number of values given correspond to the letters (+1 eventually)
@@ -3105,12 +3093,6 @@ class Polynom {
         else {
             return this.zero();
         }
-    }
-    isZero() {
-        return (this._monoms.length === 1 && this._monoms[0].coefficient.isZero()) || this._monoms.length === 0;
-    }
-    isOne() {
-        return this._monoms.length === 1 && this._monoms[0].coefficient.isOne();
     }
 }
 exports.Polynom = Polynom;
@@ -3205,7 +3187,7 @@ Polynom.addToken = (stack, element) => {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Rational = void 0;
 const polynom_1 = __webpack_require__(38);
-const coefficients_1 = __webpack_require__(534);
+const fraction_1 = __webpack_require__(506);
 /**
  * Rational class can handle rational polynoms
  */
@@ -3298,7 +3280,7 @@ class Rational {
                 }
             }
             else {
-                return this._numerator.evaluate({ letter: new coefficients_1.Fraction(value) }).divide(this._denominator.evaluate({ letter: new coefficients_1.Fraction(value) }));
+                return this._numerator.evaluate({ letter: new fraction_1.Fraction(value) }).divide(this._denominator.evaluate({ letter: new fraction_1.Fraction(value) }));
             }
         };
         this._numerator = numerator ? numerator.clone() : new polynom_1.Polynom();
@@ -3782,32 +3764,7 @@ Fraction.min = (...fractions) => {
 
 /***/ }),
 
-/***/ 534:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__webpack_require__(506), exports);
-__exportStar(__webpack_require__(330), exports);
-
-
-/***/ }),
-
-/***/ 330:
+/***/ 923:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -3934,7 +3891,7 @@ exports.Nthroot = Nthroot;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NumExp = void 0;
 const shutingyard_1 = __webpack_require__(505);
-const coefficients_1 = __webpack_require__(534);
+const fraction_1 = __webpack_require__(506);
 class NumExp {
     constructor(value) {
         this._expression = value;
@@ -4008,7 +3965,7 @@ class NumExp {
                     this._addToStack(stack, +element.token);
                 }
                 else {
-                    this._addToStack(stack, new coefficients_1.Fraction(element.token).value);
+                    this._addToStack(stack, new fraction_1.Fraction(element.token).value);
                 }
             }
             else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
@@ -4094,12 +4051,12 @@ exports.NumExp = NumExp;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PolynomExpProduct = exports.PolynomExpFactor = void 0;
-const algebra_1 = __webpack_require__(667);
-const coefficients_1 = __webpack_require__(534);
+const polynom_1 = __webpack_require__(38);
+const fraction_1 = __webpack_require__(506);
 class PolynomExpFactor {
     constructor(polynom, degree, mathFunction) {
-        this._polynom = new algebra_1.Polynom(polynom);
-        this._degree = new coefficients_1.Fraction(degree === undefined ? 1 : degree);
+        this._polynom = new polynom_1.Polynom(polynom);
+        this._degree = new fraction_1.Fraction(degree === undefined ? 1 : degree);
         this._fn = mathFunction;
         this._powerAsInteger = true;
         this._forceParenthesis = true;
@@ -4260,7 +4217,7 @@ class PolynomExpProduct {
     }
     reduce() {
         let coefficients = this._factors.filter(factor => factor.isCoefficient), polynoms = this._factors.filter(factor => !factor.isCoefficient);
-        let result = new coefficients_1.Fraction().one();
+        let result = new fraction_1.Fraction().one();
         if (coefficients.length > 1) {
             for (const factor of coefficients) {
                 if (factor.degree.isPositive()) {
@@ -4347,12 +4304,13 @@ exports.PolynomExpProduct = PolynomExpProduct;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Circle = void 0;
 const point_1 = __webpack_require__(557);
-const coefficients_1 = __webpack_require__(534);
-const algebra_1 = __webpack_require__(667);
 const line_1 = __webpack_require__(9);
 const vector_1 = __webpack_require__(586);
 const triangle_1 = __webpack_require__(164);
 const numeric_1 = __webpack_require__(956);
+const fraction_1 = __webpack_require__(506);
+const equation_1 = __webpack_require__(760);
+const polynom_1 = __webpack_require__(38);
 class Circle {
     constructor(...values) {
         /**
@@ -4378,21 +4336,21 @@ class Circle {
                 return [];
             }
             const equX = this._cartesian.clone(), lineX = L.equation.clone().isolate('x'), lineY = L.equation.clone().isolate('y');
-            if (lineX instanceof algebra_1.Equation && lineY instanceof algebra_1.Equation) {
+            if (lineX instanceof equation_1.Equation && lineY instanceof equation_1.Equation) {
                 equX.replaceBy('y', lineY.right).simplify();
                 equX.solve();
                 for (let x of equX.solutions) {
                     if (x.exact === false && isNaN(x.value)) {
                         continue;
                     }
-                    solX = new coefficients_1.Fraction(x.exact === false ? x.value : x.exact);
+                    solX = new fraction_1.Fraction(x.exact === false ? x.value : x.exact);
                     intersectionPoints.push(new point_1.Point(solX.clone(), lineY.right.evaluate(solX)));
                 }
             }
             return intersectionPoints;
         };
         this.tangents = (P) => {
-            if (P instanceof coefficients_1.Fraction) {
+            if (P instanceof fraction_1.Fraction) {
                 return this._tangentsWithSlope(P);
             }
             else if (this.isPointOnCircle(P)) {
@@ -4442,15 +4400,15 @@ class Circle {
             // Centre: cx, cy, radius: r
             // (m.cx - cy -m.px + py)^2 = r^2  * (m^2  + 1)
             // (m(cx-py) - (cy - py))^2 = r^2  * (m^2  + 1)
-            let cx_px = this.center.x.clone().subtract(P.x), cy_py = this.center.y.clone().subtract(P.y), polyLeft = new algebra_1.Polynom('x'), polyRight = new algebra_1.Polynom('x^2+1');
+            let cx_px = this.center.x.clone().subtract(P.x), cy_py = this.center.y.clone().subtract(P.y), polyLeft = new polynom_1.Polynom('x'), polyRight = new polynom_1.Polynom('x^2+1');
             polyLeft.multiply(cx_px).subtract(cy_py).pow(2);
             polyRight.multiply(this.squareRadius);
-            let equ = new algebra_1.Equation(polyLeft, polyRight);
+            let equ = new equation_1.Equation(polyLeft, polyRight);
             equ.moveLeft().simplify().solve();
             return equ.solutions.map(sol => {
                 //  h = -m px + py
-                let h, equ = new algebra_1.Equation('y', 'x');
-                if (sol.exact instanceof coefficients_1.Fraction) {
+                let h, equ = new equation_1.Equation('y', 'x');
+                if (sol.exact instanceof fraction_1.Fraction) {
                     h = P.x.clone().opposed().multiply(sol.exact).add(P.y);
                     equ.right.multiply(sol.exact).add(h);
                 }
@@ -4554,9 +4512,9 @@ class Circle {
         // three values: Point, Fraction, Boolean (center, square radius, true)
         this._reset();
         if (typeof values[0] === 'string') {
-            this._parseEquation(new algebra_1.Equation(values[0]));
+            this._parseEquation(new equation_1.Equation(values[0]));
         }
-        else if (values[0] instanceof algebra_1.Equation) {
+        else if (values[0] instanceof equation_1.Equation) {
             this._parseEquation(values[0]);
         }
         else if (values[0] instanceof Circle) {
@@ -4571,7 +4529,7 @@ class Circle {
                     this._parseCenterAndPointThrough(values[0], values[1]);
                 }
             }
-            else if (values[1] instanceof coefficients_1.Fraction || typeof values[1] === 'number') {
+            else if (values[1] instanceof fraction_1.Fraction || typeof values[1] === 'number') {
                 this._parseCenterAndRadius(values[0], values[1], (typeof values[2] === "boolean") ? values[2] : false);
             }
         }
@@ -4586,7 +4544,7 @@ class Circle {
         return this;
     }
     _calculateCartesian() {
-        this._cartesian = (new algebra_1.Equation(new algebra_1.Polynom(`(x-(${this._center.x.display}))^2+(y-(${this._center.y.display}))^2`), new algebra_1.Polynom(`${this._squareRadius.display}`))).moveLeft();
+        this._cartesian = (new equation_1.Equation(new polynom_1.Polynom(`(x-(${this._center.x.display}))^2+(y-(${this._center.y.display}))^2`), new polynom_1.Polynom(`${this._squareRadius.display}`))).moveLeft();
     }
     _parseCopyCircle(circle) {
         this._center = circle.center.clone();
@@ -4598,10 +4556,10 @@ class Circle {
     _parseCenterAndRadius(center, radius, square) {
         this._center = center.clone();
         if (square) {
-            this._squareRadius = (new coefficients_1.Fraction(radius));
+            this._squareRadius = (new fraction_1.Fraction(radius));
         }
         else {
-            this._squareRadius = new coefficients_1.Fraction(radius).pow(2);
+            this._squareRadius = new fraction_1.Fraction(radius).pow(2);
         }
         this._exists = true;
         return this;
@@ -4652,34 +4610,6 @@ exports.Circle = Circle;
 
 /***/ }),
 
-/***/ 272:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__webpack_require__(586), exports);
-__exportStar(__webpack_require__(164), exports);
-__exportStar(__webpack_require__(557), exports);
-__exportStar(__webpack_require__(699), exports);
-__exportStar(__webpack_require__(9), exports);
-
-
-/***/ }),
-
 /***/ 9:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -4689,11 +4619,12 @@ __exportStar(__webpack_require__(9), exports);
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Line = exports.LinePropriety = void 0;
-const coefficients_1 = __webpack_require__(534);
 const vector_1 = __webpack_require__(586);
 const point_1 = __webpack_require__(557);
-const algebra_1 = __webpack_require__(667);
 const numeric_1 = __webpack_require__(956);
+const fraction_1 = __webpack_require__(506);
+const equation_1 = __webpack_require__(760);
+const polynom_1 = __webpack_require__(38);
 var LinePropriety;
 (function (LinePropriety) {
     LinePropriety[LinePropriety["None"] = 0] = "None";
@@ -4723,14 +4654,14 @@ class Line {
                     // Already a Line
                     return values[0].clone();
                 }
-                else if (values[0] instanceof algebra_1.Equation) {
+                else if (values[0] instanceof equation_1.Equation) {
                     // It's an Equation
                     return this.parseEquation(values[0]);
                 }
                 else if (typeof values[0] === "string") {
                     // It's a string - create an Equation from it.
                     try {
-                        let E = new algebra_1.Equation(values[0]);
+                        let E = new equation_1.Equation(values[0]);
                         return this.parse(E);
                     }
                     catch (e) {
@@ -4750,11 +4681,11 @@ class Line {
                 }
             }
             if (values.length === 3) {
-                if ((values[0] instanceof coefficients_1.Fraction || typeof values[0] === 'number')
+                if ((values[0] instanceof fraction_1.Fraction || typeof values[0] === 'number')
                     &&
-                        (values[1] instanceof coefficients_1.Fraction || typeof values[1] === 'number')
+                        (values[1] instanceof fraction_1.Fraction || typeof values[1] === 'number')
                     &&
-                        (values[2] instanceof coefficients_1.Fraction || typeof values[2] === 'number')) {
+                        (values[2] instanceof fraction_1.Fraction || typeof values[2] === 'number')) {
                     return this.parseByCoefficient(values[0], values[1], values[2]);
                 }
                 else if (values[0] instanceof point_1.Point && values[1] instanceof vector_1.Vector) {
@@ -4792,11 +4723,11 @@ class Line {
             return this.parseByCoefficient(equ.left.monomByLetter('x').coefficient, equ.left.monomByLetter('y').coefficient, equ.left.monomByDegree(0).coefficient);
         };
         this.parseByCoefficient = (a, b, c) => {
-            this._a = new coefficients_1.Fraction(a);
-            this._b = new coefficients_1.Fraction(b);
-            this._c = new coefficients_1.Fraction(c);
+            this._a = new fraction_1.Fraction(a);
+            this._b = new fraction_1.Fraction(b);
+            this._c = new fraction_1.Fraction(c);
             this._d = new vector_1.Vector(this._b.clone(), this._a.clone().opposed());
-            this._OA = new point_1.Point(new coefficients_1.Fraction().zero(), this._c.clone());
+            this._OA = new point_1.Point(new fraction_1.Fraction().zero(), this._c.clone());
             this._n = this._d.clone().normal();
             this._exists = true;
             return this;
@@ -4913,15 +4844,15 @@ class Line {
             };
         };
         this.getValueAtX = (value) => {
-            const equ = this.equation.clone().isolate('y'), F = new coefficients_1.Fraction(value);
-            if (equ instanceof algebra_1.Equation) {
+            const equ = this.equation.clone().isolate('y'), F = new fraction_1.Fraction(value);
+            if (equ instanceof equation_1.Equation) {
                 return equ.right.evaluate({ x: F });
             }
             return;
         };
         this.getValueAtY = (value) => {
-            const equ = this.equation.clone().isolate('x'), F = new coefficients_1.Fraction(value);
-            if (equ instanceof algebra_1.Equation) {
+            const equ = this.equation.clone().isolate('x'), F = new fraction_1.Fraction(value);
+            if (equ instanceof equation_1.Equation) {
                 return equ.right.evaluate({ y: F });
             }
             return;
@@ -4939,7 +4870,7 @@ class Line {
     // Getter and setter
     // ------------------------------------------
     get equation() {
-        return new algebra_1.Equation(new algebra_1.Polynom().parse('xy', this._a, this._b, this._c), new algebra_1.Polynom('0')).simplify();
+        return new equation_1.Equation(new polynom_1.Polynom().parse('xy', this._a, this._b, this._c), new polynom_1.Polynom('0')).simplify();
     }
     get tex() {
         // canonical    =>  ax + by + c = 0
@@ -4952,7 +4883,7 @@ class Line {
         }
         return {
             canonical: canonical.tex,
-            mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new algebra_1.Polynom().parse('x', this.slope, this.height).tex,
+            mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new polynom_1.Polynom().parse('x', this.slope, this.height).tex,
             parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(this._d.x, this._d.y)}`
         };
     }
@@ -5010,7 +4941,7 @@ class Line {
             return {
                 value: NaN,
                 tex: 'Not a line',
-                fraction: new coefficients_1.Fraction().infinite()
+                fraction: new fraction_1.Fraction().infinite()
             };
         }
         // The denominator is a perfect square - simplify the tex result
@@ -5092,9 +5023,9 @@ exports.Point = void 0;
  * Vector module contains everything necessary to handle 2d or 3d vectors.
  * @module Vector
  */
-const coefficients_1 = __webpack_require__(534);
 const line_1 = __webpack_require__(9);
 const vector_1 = __webpack_require__(586);
+const fraction_1 = __webpack_require__(506);
 /**
  * Helper class - a way to identify an object {x: number, y: number}
  */
@@ -5124,15 +5055,15 @@ class Point {
                 if (typeof values[0] === 'string') {
                     let xy = values[0].split(',');
                     if (xy.length === 2) {
-                        this._x = new coefficients_1.Fraction(xy[0]).reduce();
-                        this._y = new coefficients_1.Fraction(xy[1]).reduce();
+                        this._x = new fraction_1.Fraction(xy[0]).reduce();
+                        this._y = new fraction_1.Fraction(xy[1]).reduce();
                         return this;
                     }
                 }
                 // Value given as an object with {x: value, y: value}
                 if (values[0] instanceof PointXY) {
-                    this._x = new coefficients_1.Fraction(values[0].x).reduce();
-                    this._y = new coefficients_1.Fraction(values[0].y).reduce();
+                    this._x = new fraction_1.Fraction(values[0].x).reduce();
+                    this._y = new fraction_1.Fraction(values[0].y).reduce();
                     return this;
                 }
                 else {
@@ -5140,8 +5071,8 @@ class Point {
                 }
             }
             if (values.length === 2) {
-                this._x = new coefficients_1.Fraction(values[0]).reduce();
-                this._y = new coefficients_1.Fraction(values[1]).reduce();
+                this._x = new fraction_1.Fraction(values[0]).reduce();
+                this._y = new fraction_1.Fraction(values[1]).reduce();
                 return this;
             }
             return this;
@@ -5152,8 +5083,8 @@ class Point {
             return this;
         };
         this.zero = () => {
-            this._x = new coefficients_1.Fraction(null);
-            this._y = new coefficients_1.Fraction(null);
+            this._x = new fraction_1.Fraction(null);
+            this._y = new fraction_1.Fraction(null);
             return this;
         };
         this.origin = () => {
@@ -5175,7 +5106,7 @@ class Point {
             return `\\left(${pts.join(';')}\\right)`;
         };
         this.distanceTo = (item) => {
-            let value = 0, fraction = new coefficients_1.Fraction(), tex = '';
+            let value = 0, fraction = new fraction_1.Fraction(), tex = '';
             if (item instanceof line_1.Line) {
                 return item.distanceTo(this);
             }
@@ -5191,8 +5122,8 @@ class Point {
             const keyList = list.map(x => x.key);
             return keyList.includes(this.key);
         };
-        this._x = new coefficients_1.Fraction().zero();
-        this._y = new coefficients_1.Fraction().zero();
+        this._x = new fraction_1.Fraction().zero();
+        this._y = new fraction_1.Fraction().zero();
         if (values !== undefined) {
             this.parse(...values);
         }
@@ -5823,7 +5754,7 @@ exports.Numeric = Numeric;
 
 /***/ }),
 
-/***/ 941:
+/***/ 330:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -5926,8 +5857,8 @@ exports.randomCore = randomCore;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndFraction = void 0;
 const randomCore_1 = __webpack_require__(373);
-const coefficients_1 = __webpack_require__(534);
-const random_1 = __webpack_require__(941);
+const random_1 = __webpack_require__(330);
+const fraction_1 = __webpack_require__(506);
 /**
  * Create a random monom based on a based configuration
  */
@@ -5935,7 +5866,7 @@ class rndFraction extends randomCore_1.randomCore {
     constructor(userConfig) {
         super();
         this.generate = () => {
-            let Q = new coefficients_1.Fraction();
+            let Q = new fraction_1.Fraction();
             if (this._config.negative) {
                 Q.numerator = random_1.Random.numberSym(this._config.max, this._config.zero);
             }
@@ -6047,8 +5978,8 @@ exports.rndHelpers = rndHelpers;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndMonom = void 0;
 const randomCore_1 = __webpack_require__(373);
-const random_1 = __webpack_require__(941);
-const algebra_1 = __webpack_require__(667);
+const random_1 = __webpack_require__(330);
+const monom_1 = __webpack_require__(937);
 /**
  * Create a random monom based on a based configuration
  */
@@ -6057,7 +5988,7 @@ class rndMonom extends randomCore_1.randomCore {
         super();
         this.generate = () => {
             // Create a monom instance
-            let M = new algebra_1.Monom();
+            let M = new monom_1.Monom();
             // Generate the coefficient
             if (typeof this._config.fraction === "boolean") {
                 M.coefficient = random_1.Random.fraction({
@@ -6107,8 +6038,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndPolynom = void 0;
 const randomCore_1 = __webpack_require__(373);
 const rndMonom_1 = __webpack_require__(793);
-const random_1 = __webpack_require__(941);
-const algebra_1 = __webpack_require__(667);
+const random_1 = __webpack_require__(330);
+const polynom_1 = __webpack_require__(38);
 /**
  * Random polynoms
  */
@@ -6120,7 +6051,7 @@ class rndPolynom extends randomCore_1.randomCore {
                 return this.factorable();
             }
             // Create the polynom
-            let P = new algebra_1.Polynom().empty(), M;
+            let P = new polynom_1.Polynom().empty(), M;
             for (let i = this._config.degree; i >= 0; i--) {
                 // Create monom of corresponding degree.
                 M = new rndMonom_1.rndMonom({
@@ -6150,7 +6081,7 @@ class rndPolynom extends randomCore_1.randomCore {
             return P;
         };
         this.factorable = () => {
-            let P = new algebra_1.Polynom().one();
+            let P = new polynom_1.Polynom().one();
             let _factorableConfig = { ...this._config };
             _factorableConfig.degree = 1;
             _factorableConfig.factorable = false;

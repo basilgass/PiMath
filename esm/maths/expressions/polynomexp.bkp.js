@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PolynomExp = exports.PolynomExpFactor = exports.isFactor = void 0;
-const algebra_1 = require("../algebra");
-const coefficients_1 = require("../coefficients");
+const polynom_1 = require("../algebra/polynom");
+const fraction_1 = require("../coefficients/fraction");
 function isFactor(value) {
     return value && 'polynom' in value && 'degree' in value;
 }
@@ -11,8 +11,8 @@ class PolynomExpFactor {
     constructor(...values) {
         this.addFactor = (value) => {
             this._factors.push({
-                polynom: new algebra_1.Polynom(value.polynom),
-                degree: new coefficients_1.Fraction(value.degree)
+                polynom: new polynom_1.Polynom(value.polynom),
+                degree: new fraction_1.Fraction(value.degree)
             });
             return this;
         };
@@ -46,11 +46,11 @@ class PolynomExpFactor {
         };
         this._factorDerivative = (factor, letter) => {
             let derivativeExpression = new PolynomExpFactor();
-            derivativeExpression.addFactor({ polynom: new algebra_1.Polynom(factor.degree), degree: new coefficients_1.Fraction().one() });
+            derivativeExpression.addFactor({ polynom: new polynom_1.Polynom(factor.degree), degree: new fraction_1.Fraction().one() });
             derivativeExpression.addFactor({ polynom: factor.polynom, degree: factor.degree.subtract(1) });
             derivativeExpression.addFactor({
                 polynom: factor.polynom.clone().derivative(letter),
-                degree: new coefficients_1.Fraction().one()
+                degree: new fraction_1.Fraction().one()
             });
             return derivativeExpression;
         };

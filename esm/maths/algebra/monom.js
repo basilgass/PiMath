@@ -4,9 +4,9 @@ exports.Monom = void 0;
 /***
  * Monom class
  */
-const coefficients_1 = require("../coefficients");
 const numeric_1 = require("../numeric");
 const shutingyard_1 = require("../shutingyard");
+const fraction_1 = require("../coefficients/fraction");
 class Monom {
     /**
      * Create a Monom
@@ -27,10 +27,10 @@ class Monom {
                 this._shutingYardToReducedMonom(inputStr);
             }
             else if (typeof inputStr === 'number') {
-                this._coefficient = new coefficients_1.Fraction(inputStr);
+                this._coefficient = new fraction_1.Fraction(inputStr);
                 this._literal = {};
             }
-            else if (inputStr instanceof coefficients_1.Fraction) {
+            else if (inputStr instanceof fraction_1.Fraction) {
                 this._coefficient = inputStr.clone();
                 this._literal = {};
             }
@@ -53,7 +53,7 @@ class Monom {
                 const element = rpn[0];
                 this.one();
                 if (element.tokenType === 'coefficient') {
-                    this.coefficient = new coefficients_1.Fraction(element.token);
+                    this.coefficient = new fraction_1.Fraction(element.token);
                 }
                 else if (element.tokenType === 'variable') {
                     this.setLetter(element.token, 1);
@@ -100,7 +100,7 @@ class Monom {
          * Create a zero value monom
          */
         this.zero = () => {
-            this._coefficient = new coefficients_1.Fraction().zero();
+            this._coefficient = new fraction_1.Fraction().zero();
             this._literal = {};
             return this;
         };
@@ -108,7 +108,7 @@ class Monom {
          * Create a one value monom
          */
         this.one = () => {
-            this._coefficient = new coefficients_1.Fraction().one();
+            this._coefficient = new fraction_1.Fraction().one();
             this._literal = {};
             return this;
         };
@@ -353,7 +353,7 @@ class Monom {
          * @param pow (number) Power of the setLetter (must be positive integer.
          */
         this.setLetter = (letter, pow) => {
-            if (pow instanceof coefficients_1.Fraction) {
+            if (pow instanceof fraction_1.Fraction) {
                 // Set the power of the letter to zero => remove it
                 if (this.hasLetter(letter) && pow.isZero()) {
                     delete this._literal[letter];
@@ -361,7 +361,7 @@ class Monom {
                 this._literal[letter] = pow.clone();
             }
             else {
-                this.setLetter(letter, new coefficients_1.Fraction(pow));
+                this.setLetter(letter, new fraction_1.Fraction(pow));
             }
         };
         /**
@@ -370,7 +370,7 @@ class Monom {
          */
         this.degree = (letter) => {
             if (this.variables.length === 0) {
-                return new coefficients_1.Fraction().zero();
+                return new fraction_1.Fraction().zero();
             }
             if (letter === undefined) {
                 // Not setLetter given -> we get the global monom degree (sum of all the letters).
@@ -378,7 +378,7 @@ class Monom {
             }
             else {
                 // A setLetter is given -> get the corresponding power.
-                return this._literal[letter] === undefined ? new coefficients_1.Fraction().zero() : this._literal[letter].clone();
+                return this._literal[letter] === undefined ? new fraction_1.Fraction().zero() : this._literal[letter].clone();
             }
         };
         /**
@@ -387,17 +387,17 @@ class Monom {
          */
         this.evaluate = (values) => {
             let r = this.coefficient.clone();
-            if (typeof values === 'number' || values instanceof coefficients_1.Fraction) {
+            if (typeof values === 'number' || values instanceof fraction_1.Fraction) {
                 let tmpValues = {};
-                tmpValues[this.variables[0]] = new coefficients_1.Fraction(values);
+                tmpValues[this.variables[0]] = new fraction_1.Fraction(values);
                 return this.evaluate(tmpValues);
             }
             if (typeof values === 'object') {
                 for (let L in this._literal) {
                     if (values[L] === undefined) {
-                        return new coefficients_1.Fraction().zero();
+                        return new fraction_1.Fraction().zero();
                     }
-                    let value = new coefficients_1.Fraction(values[L]);
+                    let value = new fraction_1.Fraction(values[L]);
                     r.multiply(value.pow(this._literal[L]));
                 }
             }
@@ -417,7 +417,7 @@ class Monom {
                 // Subtract one to the degree.
                 dM._literal[letter].subtract(1);
                 // Multiply the coefficient by the previous degree
-                dM._coefficient.multiply(new coefficients_1.Fraction(d.clone()));
+                dM._coefficient.multiply(new fraction_1.Fraction(d.clone()));
                 return dM;
             }
             else {
@@ -440,7 +440,7 @@ class Monom {
                 // There is no letter.
                 // The coefficient might be zero (=> x) or a number a (=> ax)
                 if (M.coefficient.isZero()) {
-                    M.coefficient = new coefficients_1.Fraction().one();
+                    M.coefficient = new fraction_1.Fraction().one();
                 }
                 M.setLetter(letter, 1);
             }
@@ -502,7 +502,7 @@ class Monom {
      * @param {Fraction | number | string} F
      */
     set coefficient(F) {
-        this._coefficient = new coefficients_1.Fraction(F);
+        this._coefficient = new fraction_1.Fraction(F);
     }
     /**
      * Get the literal part of \\(x^{n_1}y^{n_2}\\) as dictionary \\[\\begin{array}{ll}x&=n_1\\\\y&=n_2\\end{array}\\]
@@ -545,7 +545,7 @@ class Monom {
         for (const v of [...inputStr.matchAll(/([a-z])\^([+-]?[0-9]+)/g)]) {
             // Create the default letter entry if necessary.
             if (!(v[1] in this._literal)) {
-                this._literal[v[1]] = new coefficients_1.Fraction().zero();
+                this._literal[v[1]] = new fraction_1.Fraction().zero();
             }
             // Add the new value.
             // TODO: actually, it adds only numeric value
@@ -555,7 +555,7 @@ class Monom {
         for (const v of [...inputStr.matchAll(/([a-z](?!\^))/g)]) {
             // Match all single letters
             if (!(v[1] in this._literal)) {
-                this._literal[v[1]] = new coefficients_1.Fraction().zero();
+                this._literal[v[1]] = new fraction_1.Fraction().zero();
             }
             // Add one to the value.
             this._literal[v[1]].add(1);
@@ -632,7 +632,7 @@ class Monom {
             for (let N of dividers) {
                 for (let L of literals) {
                     let M = new Monom();
-                    M.coefficient = new coefficients_1.Fraction(N);
+                    M.coefficient = new fraction_1.Fraction(N);
                     M.literal = L;
                     monomDividers.push(M);
                 }
@@ -641,7 +641,7 @@ class Monom {
         else if (dividers.length === 0) {
             for (let L of literals) {
                 let M = new Monom();
-                M.coefficient = new coefficients_1.Fraction().one();
+                M.coefficient = new fraction_1.Fraction().one();
                 M.literal = L;
                 monomDividers.push(M);
             }
@@ -649,7 +649,7 @@ class Monom {
         else {
             for (let N of dividers) {
                 let M = new Monom();
-                M.coefficient = new coefficients_1.Fraction(N);
+                M.coefficient = new fraction_1.Fraction(N);
                 monomDividers.push(M);
             }
         }
@@ -661,7 +661,7 @@ class Monom {
         for (let d = 0; d <= this.literal[letter].value; d++) {
             if (arr.length === 0) {
                 let litt = {};
-                litt[letter] = new coefficients_1.Fraction(d);
+                litt[letter] = new fraction_1.Fraction(d);
                 tmpList.push(litt);
             }
             else {
@@ -670,7 +670,7 @@ class Monom {
                     for (let currentLetter in item) {
                         litt[currentLetter] = item[currentLetter];
                     }
-                    litt[letter] = new coefficients_1.Fraction(d);
+                    litt[letter] = new fraction_1.Fraction(d);
                     tmpList.push(litt);
                 }
             }
@@ -745,7 +745,7 @@ exports.Monom = Monom;
 Monom.addToken = (stack, element) => {
     let q1, q2, m, letter, pow;
     if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
-        stack.push(new Monom(new coefficients_1.Fraction(element.token)));
+        stack.push(new Monom(new fraction_1.Fraction(element.token)));
     }
     else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
         let M = new Monom().one();
@@ -774,7 +774,7 @@ Monom.addToken = (stack, element) => {
                 break;
             case '^':
                 // get the two last elements in the stack
-                pow = (stack.pop().coefficient) || new coefficients_1.Fraction().one();
+                pow = (stack.pop().coefficient) || new fraction_1.Fraction().one();
                 m = (stack.pop()) || new Monom().one();
                 letter = m.variables[0];
                 if (letter !== undefined) {
@@ -802,7 +802,7 @@ Monom.lcm = (...monoms) => {
     }
     let M = new Monom(), coeffN = monoms.map(value => value.coefficient.numerator), coeffD = monoms.map(value => value.coefficient.denominator), n = numeric_1.Numeric.gcd(...coeffN), d = numeric_1.Numeric.lcm(...coeffD);
     // Get the coefficient.
-    M.coefficient = new coefficients_1.Fraction(n, d).reduce();
+    M.coefficient = new fraction_1.Fraction(n, d).reduce();
     // Set the literal parts - go through each monoms literal parts and get only the lowest degree of each letters.
     for (let m of monoms) {
         // Remove the inexistant letters from the resulting monom
@@ -816,7 +816,7 @@ Monom.lcm = (...monoms) => {
                 M.literal[letter] = m.literal[letter].clone();
             }
             else {
-                M.literal[letter] = new coefficients_1.Fraction(Math.min(m.literal[letter].value, M.literal[letter].value));
+                M.literal[letter] = new fraction_1.Fraction(Math.min(m.literal[letter].value, M.literal[letter].value));
             }
         }
     }

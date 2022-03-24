@@ -6,7 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Rational = void 0;
 const polynom_1 = require("./polynom");
-const coefficients_1 = require("../coefficients");
+const fraction_1 = require("../coefficients/fraction");
 /**
  * Rational class can handle rational polynoms
  */
@@ -99,7 +99,7 @@ class Rational {
                 }
             }
             else {
-                return this._numerator.evaluate({ letter: new coefficients_1.Fraction(value) }).divide(this._denominator.evaluate({ letter: new coefficients_1.Fraction(value) }));
+                return this._numerator.evaluate({ letter: new fraction_1.Fraction(value) }).divide(this._denominator.evaluate({ letter: new fraction_1.Fraction(value) }));
             }
         };
         this._numerator = numerator ? numerator.clone() : new polynom_1.Polynom();

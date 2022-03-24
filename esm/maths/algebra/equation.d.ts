@@ -1,6 +1,6 @@
 import { Polynom } from "./polynom";
 import { literalType } from "./monom";
-import { Fraction } from "../coefficients";
+import { Fraction } from "../coefficients/fraction";
 /**
  * Equation is a class to manage equations...
  */

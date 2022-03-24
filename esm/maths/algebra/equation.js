@@ -3,7 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Equation = void 0;
 const polynom_1 = require("./polynom");
 const numeric_1 = require("../numeric");
-const coefficients_1 = require("../coefficients");
+const fraction_1 = require("../coefficients/fraction");
+const nthroot_1 = require("../coefficients/nthroot");
 class Equation {
     /**
      * Create an Equation using two polynoms.
@@ -136,7 +137,7 @@ class Equation {
          */
         this.multiply = (value) => {
             // Make sure we have a fraction.
-            let F = new coefficients_1.Fraction(value);
+            let F = new fraction_1.Fraction(value);
             // Multiply each part of the equation by the fraction
             this._left.multiply(F);
             this._right.multiply(F);
@@ -162,7 +163,7 @@ class Equation {
          */
         this.divide = (value) => {
             // Make sure we have a fraction.
-            let F = new coefficients_1.Fraction(value);
+            let F = new fraction_1.Fraction(value);
             if (F.isZero()) {
                 return this;
             }
@@ -175,7 +176,7 @@ class Equation {
          * @param letter
          */
         this.degree = (letter) => {
-            return coefficients_1.Fraction.max(this._left.degree(letter), this._right.degree(letter));
+            return fraction_1.Fraction.max(this._left.degree(letter), this._right.degree(letter));
         };
         /**
          * Determine if the equation contains more than one letter/variable.
@@ -398,7 +399,7 @@ class Equation {
                     ];
                 }
                 else {
-                    nthDelta = new coefficients_1.Nthroot(delta).reduce();
+                    nthDelta = new nthroot_1.Nthroot(delta).reduce();
                     if (nthDelta.hasRadical()) {
                         // -b +- coeff\sqrt{radical}
                         // -------------------------
@@ -470,7 +471,7 @@ class Equation {
                     }
                     else {
                         // -b +- d / 2a
-                        const S1 = new coefficients_1.Fraction(-b - nthDelta.coefficient, 2 * a).reduce(), S2 = new coefficients_1.Fraction(-b + nthDelta.coefficient, 2 * a).reduce();
+                        const S1 = new fraction_1.Fraction(-b - nthDelta.coefficient, 2 * a).reduce(), S2 = new fraction_1.Fraction(-b + nthDelta.coefficient, 2 * a).reduce();
                         this._solutions = [
                             {
                                 tex: S1.dfrac,
@@ -487,7 +488,7 @@ class Equation {
                 }
             }
             else if (delta === 0) {
-                const sol = new coefficients_1.Fraction(-b, 2 * a).reduce();
+                const sol = new fraction_1.Fraction(-b, 2 * a).reduce();
                 this._solutions = [{
                         tex: sol.dfrac,
                         value: sol.value,

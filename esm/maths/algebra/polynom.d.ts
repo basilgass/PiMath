@@ -3,7 +3,7 @@
  */
 import { literalType, Monom } from './monom';
 import { Token } from '../shutingyard';
-import { Fraction } from "../coefficients";
+import { Fraction } from "../coefficients/fraction";
 export declare type PolynomParsingType = string | Polynom | number | Fraction | Monom;
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
@@ -35,13 +35,13 @@ export declare class Polynom {
     get isMultiVariable(): boolean;
     get variables(): string[];
     get numberOfVars(): number;
+    static addToken: (stack: Polynom[], element: Token) => void;
     /**
      * Parse a string to a polynom.
      * @param inputStr
      * @param values: as string, numbers or fractions
      */
     parse: (inputStr: PolynomParsingType, ...values: unknown[]) => Polynom;
-    private _parseString;
     /**
      * Clone the polynom
      */
@@ -111,8 +111,8 @@ export declare class Polynom {
     lcmNumerator: () => number;
     gcdNumerator: () => number;
     commonMonom: () => Monom;
+    private _parseString;
     private genDisplay;
-    static addToken: (stack: Polynom[], element: Token) => void;
     /**
      * Main parse using a shutting yard class
      * @param inputStr

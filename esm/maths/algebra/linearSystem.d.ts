@@ -1,5 +1,5 @@
-import { Fraction } from "../coefficients";
 import { Equation } from "./equation";
+import { Fraction } from "../coefficients/fraction";
 export declare class LinearSystem {
     private _solutions;
     private _resolutionSteps;

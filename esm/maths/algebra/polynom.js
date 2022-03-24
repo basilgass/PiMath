@@ -7,7 +7,7 @@ exports.Polynom = void 0;
 const monom_1 = require("./monom");
 const shutingyard_1 = require("../shutingyard");
 const numeric_1 = require("../numeric");
-const coefficients_1 = require("../coefficients");
+const fraction_1 = require("../coefficients/fraction");
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -34,7 +34,7 @@ class Polynom {
             if (typeof inputStr === 'string') {
                 return this._parseString(inputStr, ...values);
             }
-            else if (typeof inputStr === 'number' || inputStr instanceof coefficients_1.Fraction || inputStr instanceof monom_1.Monom) {
+            else if (typeof inputStr === 'number' || inputStr instanceof fraction_1.Fraction || inputStr instanceof monom_1.Monom) {
                 this._monoms.push(new monom_1.Monom(inputStr));
             }
             else if (inputStr instanceof Polynom) {
@@ -185,7 +185,7 @@ class Polynom {
             if (value instanceof Polynom) {
                 return this.multiplyByPolynom(value);
             }
-            else if (value instanceof coefficients_1.Fraction) {
+            else if (value instanceof fraction_1.Fraction) {
                 return this.multiplyByFraction(value);
             }
             else if (value instanceof monom_1.Monom) {
@@ -232,7 +232,7 @@ class Polynom {
             return { quotient, reminder };
         };
         this.divide = (value) => {
-            if (value instanceof coefficients_1.Fraction) {
+            if (value instanceof fraction_1.Fraction) {
                 return this.divideByFraction(value);
             }
             else if (typeof value === 'number' && Number.isSafeInteger(value)) {
@@ -420,9 +420,9 @@ class Polynom {
             return this.reduce();
         };
         this.degree = (letter) => {
-            let d = new coefficients_1.Fraction().zero();
+            let d = new fraction_1.Fraction().zero();
             for (const m of this._monoms) {
-                d = coefficients_1.Fraction.max(m.degree(letter).value, d);
+                d = fraction_1.Fraction.max(m.degree(letter).value, d);
             }
             return d;
         };
@@ -460,7 +460,7 @@ class Polynom {
         };
         // Evaluate a polynom.
         this.evaluate = (values) => {
-            const r = new coefficients_1.Fraction().zero();
+            const r = new fraction_1.Fraction().zero();
             this._monoms.forEach(monom => {
                 //console.log('Evaluate polynom: ', monom.display, values, monom.evaluate(values).display);
                 r.add(monom.evaluate(values));
@@ -489,8 +489,8 @@ class Polynom {
                 letter = 'x';
             }
             let valuesA = {}, valuesB = {};
-            valuesA[letter] = new coefficients_1.Fraction(a);
-            valuesB[letter] = new coefficients_1.Fraction(b);
+            valuesA[letter] = new fraction_1.Fraction(a);
+            valuesB[letter] = new fraction_1.Fraction(b);
             return primitive.evaluate(valuesB).subtract(primitive.evaluate(valuesA));
         };
         // -------------------------------------
@@ -560,7 +560,7 @@ class Polynom {
                 case 1:
                     // There is only one monoms,
                     if (this._monoms.length === 1) {
-                        return [new coefficients_1.Fraction().zero()];
+                        return [new fraction_1.Fraction().zero()];
                     }
                     else {
                         const P = this.clone().reduce().reorder();
@@ -583,8 +583,8 @@ class Polynom {
                             if (D.value > 0) {
                                 /*console.log('Two zeroes for ', P.tex); */
                                 let x1 = (-(B.value) + Math.sqrt(D.value)) / (2 * A.value), x2 = (-(B.value) - Math.sqrt(D.value)) / (2 * A.value);
-                                zeroes.push(new coefficients_1.Fraction(x1.toFixed(3)).reduce());
-                                zeroes.push(new coefficients_1.Fraction(x2.toFixed(3)).reduce());
+                                zeroes.push(new fraction_1.Fraction(x1.toFixed(3)).reduce());
+                                zeroes.push(new fraction_1.Fraction(x2.toFixed(3)).reduce());
                             }
                             else if (D.value === 0) {
                                 /*console.log('One zero for ', P.tex); */
@@ -688,12 +688,12 @@ class Polynom {
             let M = new monom_1.Monom().one(), numerator, denominator, degree = this.degree();
             numerator = this.gcdNumerator();
             denominator = this.gcdDenominator();
-            M.coefficient = new coefficients_1.Fraction(numerator, denominator);
+            M.coefficient = new fraction_1.Fraction(numerator, denominator);
             for (let L of this.variables) {
                 // Initialize the setLetter with the max degree
                 M.setLetter(L, degree);
                 for (let m of this._monoms) {
-                    M.setLetter(L, coefficients_1.Fraction.min(m.degree(L), M.degree(L)));
+                    M.setLetter(L, fraction_1.Fraction.min(m.degree(L), M.degree(L)));
                     if (M.degree(L).isZero()) {
                         break;
                     }
@@ -794,7 +794,7 @@ class Polynom {
             return this.reduce();
         };
         this.multiplyByInteger = (nb) => {
-            return this.multiplyByFraction(new coefficients_1.Fraction(nb));
+            return this.multiplyByFraction(new fraction_1.Fraction(nb));
         };
         this.multiplyByMonom = (M) => {
             for (const m of this._monoms) {
@@ -803,7 +803,7 @@ class Polynom {
             return this.reduce();
         };
         this.divideByInteger = (nb) => {
-            const nbF = new coefficients_1.Fraction(nb);
+            const nbF = new fraction_1.Fraction(nb);
             for (const m of this._monoms) {
                 m.coefficient.divide(nbF);
             }
@@ -1003,6 +1003,12 @@ class Polynom {
     get numberOfVars() {
         return this.variables.length;
     }
+    isZero() {
+        return (this._monoms.length === 1 && this._monoms[0].coefficient.isZero()) || this._monoms.length === 0;
+    }
+    isOne() {
+        return this._monoms.length === 1 && this._monoms[0].coefficient.isOne();
+    }
     _parseString(inputStr, ...values) {
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;
@@ -1023,7 +1029,7 @@ class Polynom {
         else if (/^[a-z]/.test(inputStr)) {
             // We assume the inputStr contains only letters.
             this.empty();
-            let fractions = values.map(x => new coefficients_1.Fraction(x));
+            let fractions = values.map(x => new fraction_1.Fraction(x));
             // Multiple setLetter version
             if (inputStr.length > 1) {
                 // TODO: check that the number of values given correspond to the letters (+1 eventually)
@@ -1052,12 +1058,6 @@ class Polynom {
         else {
             return this.zero();
         }
-    }
-    isZero() {
-        return (this._monoms.length === 1 && this._monoms[0].coefficient.isZero()) || this._monoms.length === 0;
-    }
-    isOne() {
-        return this._monoms.length === 1 && this._monoms[0].coefficient.isOne();
     }
 }
 exports.Polynom = Polynom;

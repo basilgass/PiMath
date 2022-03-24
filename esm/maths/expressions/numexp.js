@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NumExp = void 0;
 const shutingyard_1 = require("../shutingyard");
-const coefficients_1 = require("../coefficients");
+const fraction_1 = require("../coefficients/fraction");
 class NumExp {
     constructor(value) {
         this._expression = value;
@@ -76,7 +76,7 @@ class NumExp {
                     this._addToStack(stack, +element.token);
                 }
                 else {
-                    this._addToStack(stack, new coefficients_1.Fraction(element.token).value);
+                    this._addToStack(stack, new fraction_1.Fraction(element.token).value);
                 }
             }
             else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {

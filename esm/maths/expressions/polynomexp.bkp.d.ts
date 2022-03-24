@@ -1,5 +1,5 @@
-import { Polynom } from "../algebra";
-import { Fraction } from "../coefficients";
+import { Polynom } from "../algebra/polynom";
+import { Fraction } from "../coefficients/fraction";
 declare type Factor = {
     polynom: Polynom;
     degree: Fraction;

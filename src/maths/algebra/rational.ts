@@ -4,7 +4,7 @@
  */
 
 import {Polynom} from "./polynom";
-import {Fraction} from "../coefficients";
+import {Fraction} from "../coefficients/fraction";
 
 /**
  * Rational class can handle rational polynoms

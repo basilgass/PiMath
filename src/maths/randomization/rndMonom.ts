@@ -1,7 +1,7 @@
 import {randomCore} from "./randomCore";
 import {randomMonomConfig} from "./rndTypes";
 import {Random} from "./random";
-import {Monom} from "../algebra";
+import {Monom} from "../algebra/monom";
 
 /**
  * Create a random monom based on a based configuration

@@ -2,9 +2,9 @@
  * Vector module contains everything necessary to handle 2d or 3d vectors.
  * @module Vector
  */
-import {Fraction} from "../coefficients"
 import {Line} from "./line";
 import {Vector} from "./vector";
+import {Fraction} from "../coefficients/fraction";
 
 /**
  * Helper class - a way to identify an object {x: number, y: number}
