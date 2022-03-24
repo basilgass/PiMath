@@ -4,14 +4,126 @@ exports.Circle = void 0;
 const point_1 = require("./point");
 const coefficients_1 = require("../coefficients");
 const algebra_1 = require("../algebra");
+const line_1 = require("./line");
 const vector_1 = require("./vector");
 const triangle_1 = require("./triangle");
+const numeric_1 = require("../numeric");
 class Circle {
-    _center;
-    _squareRadius;
-    _cartesian;
-    _exists;
     constructor(...values) {
+        /**
+         * Get the relative position between circle and line. It corresponds to the number of intersection.
+         * @param {Line} L
+         * @returns {number}
+         */
+        this.relativePosition = (L) => {
+            let distance = L.distanceTo(this.center), radius = Math.sqrt(this._squareRadius.value);
+            if (distance.value - radius > 0.0000000001) {
+                return 0; // external
+            }
+            else if (Math.abs(distance.value - radius) < 0.0000000001) {
+                return 1; // tangent
+            }
+            else {
+                return 2; // external
+            }
+        };
+        this.lineIntersection = (L) => {
+            let intersectionPoints = [], solX;
+            if (this._cartesian === null) {
+                return [];
+            }
+            const equX = this._cartesian.clone(), lineX = L.equation.clone().isolate('x'), lineY = L.equation.clone().isolate('y');
+            if (lineX instanceof algebra_1.Equation && lineY instanceof algebra_1.Equation) {
+                equX.replaceBy('y', lineY.right).simplify();
+                equX.solve();
+                for (let x of equX.solutions) {
+                    if (x.exact === false && isNaN(x.value)) {
+                        continue;
+                    }
+                    solX = new coefficients_1.Fraction(x.exact === false ? x.value : x.exact);
+                    intersectionPoints.push(new point_1.Point(solX.clone(), lineY.right.evaluate(solX)));
+                }
+            }
+            return intersectionPoints;
+        };
+        this.tangents = (P) => {
+            if (P instanceof coefficients_1.Fraction) {
+                return this._tangentsWithSlope(P);
+            }
+            else if (this.isPointOnCircle(P)) {
+                return this._tangentsThroughOnePointOnTheCircle(P);
+            }
+            else if (this.center.distanceTo(P).value > this.radius.value) {
+                //TODO:  Must check it's outside the circle
+                return this._tangentsThroughOnePointOutsideTheCircle(P);
+            }
+            else {
+                console.log('No tangents as the point is inside !');
+            }
+            return [];
+        };
+        this.isPointOnCircle = (P) => {
+            return this._cartesian.test({ x: P.x, y: P.y });
+        };
+        this.getPointsOnCircle = (numberIsInteger) => {
+            if (numberIsInteger === undefined) {
+                numberIsInteger = false;
+            }
+            // It means searching for pythagorician triples that make a perfect square.
+            // (x-4)^2 + (y+3)^2 = 15
+            let triplets = numeric_1.Numeric.pythagoricianTripletsWithTarget(this._squareRadius.value, true);
+            let points = [], pt;
+            triplets.forEach(triplet => {
+                // Allow positive / negative values
+                // x-a = t  => x = a + t
+                // x-a = -t => x = a - t
+                for (let k of [[1, 1], [-1, 1], [-1, -1], [1, -1]]) {
+                    pt = new point_1.Point(this.center.x.clone().add(k[0] * triplet[0]), this.center.y.clone().add(k[1] * triplet[1]));
+                    // Check if the point is not already in points.
+                    if (!pt.isInListOfPoints(points)) {
+                        points.push(pt);
+                    }
+                }
+            });
+            return points;
+        };
+        this._tangentsThroughOnePointOnTheCircle = (P) => {
+            let CT = new vector_1.Vector(this._center, P);
+            return [new line_1.Line(P, CT, line_1.LinePropriety.Perpendicular)];
+        };
+        this._tangentsThroughOnePointOutsideTheCircle = (P) => {
+            // y = mx + h
+            // px, py => h = -m px + py => mx - y -m.px + py = 0 =>
+            // Centre: cx, cy, radius: r
+            // (m.cx - cy -m.px + py)^2 = r^2  * (m^2  + 1)
+            // (m(cx-py) - (cy - py))^2 = r^2  * (m^2  + 1)
+            let cx_px = this.center.x.clone().subtract(P.x), cy_py = this.center.y.clone().subtract(P.y), polyLeft = new algebra_1.Polynom('x'), polyRight = new algebra_1.Polynom('x^2+1');
+            polyLeft.multiply(cx_px).subtract(cy_py).pow(2);
+            polyRight.multiply(this.squareRadius);
+            let equ = new algebra_1.Equation(polyLeft, polyRight);
+            equ.moveLeft().simplify().solve();
+            return equ.solutions.map(sol => {
+                //  h = -m px + py
+                let h, equ = new algebra_1.Equation('y', 'x');
+                if (sol.exact instanceof coefficients_1.Fraction) {
+                    h = P.x.clone().opposed().multiply(sol.exact).add(P.y);
+                    equ.right.multiply(sol.exact).add(h);
+                }
+                else {
+                    h = P.x.clone().opposed().multiply(sol.value).add(P.y);
+                    equ.right.multiply(sol.value).add(h);
+                }
+                return new line_1.Line(equ);
+            });
+        };
+        this._tangentsWithSlope = (slope) => {
+            // d(C;t)=r => ac1+bc2 + x = +- sqrt(a^2 + b^2)*r
+            // x = -ac1-bc2  +-  sqrt(a^2 + b^2)*r
+            // y = a/bx + h => ax-by + H = 0
+            const a = slope.numerator, b = -slope.denominator, c1 = this._center.x.clone(), c2 = this._center.y.clone(), r = this._squareRadius;
+            let sq = this._squareRadius.clone().multiply(slope.numerator ** 2 + slope.denominator ** 2), x1 = c1.clone().multiply(a).opposed().subtract(c2.clone().multiply(b)).add(sq.clone().sqrt()), x2 = c1.clone().multiply(a).opposed().subtract(c2.clone().multiply(b)).subtract(sq.clone().sqrt());
+            return [new line_1.Line(a, b, x1), new line_1.Line(a, b, x2)];
+        };
         this._exists = false;
         if (values !== undefined) {
             this.parse(...values);
@@ -20,23 +132,28 @@ class Circle {
     get center() {
         return this._center;
     }
-    get exists() {
-        return this._exists;
-    }
     get squareRadius() {
         return this._squareRadius;
+    }
+    get cartesian() {
+        return this._cartesian;
+    }
+    get exists() {
+        return this._exists;
     }
     get radius() {
         if (this._squareRadius.isSquare()) {
             return {
                 tex: this._squareRadius.clone().sqrt().tex,
                 display: this._squareRadius.clone().sqrt().display,
+                value: this._squareRadius.clone().sqrt().value
             };
         }
         else {
             return {
                 tex: `\\sqrt{${this._squareRadius.tex}}`,
-                display: `sqrt(${this._squareRadius.display})`
+                display: `sqrt(${this._squareRadius.display})`,
+                value: this._squareRadius.clone().sqrt().value
             };
         }
         return this._squareRadius;
@@ -65,11 +182,9 @@ class Circle {
     get developed() {
         return this._cartesian.tex;
     }
+    // TODO: reformat code for better display.
     get display() {
         return this._cartesian.display;
-    }
-    get cartesian() {
-        return this._cartesian;
     }
     clone() {
         this._center = this._center.clone();
@@ -85,6 +200,13 @@ class Circle {
         return this;
     }
     parse(...values) {
+        // Data can be given in these formats:
+        // one value, a string -> make it an Equation
+        // one value, an Equation
+        // one value, a circle -> clone it
+        // two values: two points (center and pointThrough)
+        // two values: point and Fraction (center and radius)
+        // three values: Point, Fraction, Boolean (center, square radius, true)
         this._reset();
         if (typeof values[0] === 'string') {
             this._parseEquation(new algebra_1.Equation(values[0]));
@@ -108,8 +230,10 @@ class Circle {
                 this._parseCenterAndRadius(values[0], values[1], (typeof values[2] === "boolean") ? values[2] : false);
             }
         }
+        // Calculate once the different values.
         if (this._exists) {
             this._calculateCartesian();
+            // If the square radius is zero or positive, the circle exists.
             if (this._squareRadius !== undefined && this._squareRadius.isNegative()) {
                 this._exists = false;
             }
@@ -145,9 +269,12 @@ class Circle {
     }
     _parseEquation(equ) {
         this._exists = false;
+        // Move everything to the left.
         equ.moveLeft();
         if (equ.degree('x').value === 2 && equ.degree('y').value === 2) {
+            // Both must be of degree 2.
             let x2 = equ.left.monomByDegree(2, 'x'), y2 = equ.left.monomByDegree(2, 'y'), x1, y1, c;
+            // Both square monoms must have the same coefficient.
             if (x2.coefficient.isEqual(y2.coefficient)) {
                 equ.divide(x2.coefficient);
                 x1 = equ.left.monomByDegree(1, 'x');
@@ -161,6 +288,7 @@ class Circle {
                 this._exists = true;
             }
             else {
+                // The circle is not a valid circle
                 this._center = null;
                 this._squareRadius = null;
                 this._exists = false;
@@ -173,37 +301,6 @@ class Circle {
         this.parse(mAB.intersection(mAC).point, A);
         return this;
     }
-    relativePosition = (L) => {
-        let distance = L.distanceTo(this.center), radius = Math.sqrt(this._squareRadius.value);
-        if (distance.value - radius > 0.0000000001) {
-            return 0;
-        }
-        else if (Math.abs(distance.value - radius) < 0.0000000001) {
-            return 1;
-        }
-        else {
-            return 2;
-        }
-    };
-    lineIntersection = (L) => {
-        let intersectionPoints = [], solX;
-        if (this._cartesian === null) {
-            return [];
-        }
-        const equX = this._cartesian.clone(), lineX = L.equation.clone().isolate('x'), lineY = L.equation.clone().isolate('y');
-        if (lineX instanceof algebra_1.Equation && lineY instanceof algebra_1.Equation) {
-            equX.replaceBy('y', lineY.right).simplify();
-            equX.solve();
-            for (let x of equX.solutions) {
-                if (x.exact === false && isNaN(x.value)) {
-                    continue;
-                }
-                solX = new coefficients_1.Fraction(x.exact === false ? x.value : x.exact);
-                intersectionPoints.push(new point_1.Point(solX.clone(), lineY.right.evaluate(solX)));
-            }
-        }
-        return intersectionPoints;
-    };
 }
 exports.Circle = Circle;
 //# sourceMappingURL=circle.js.map

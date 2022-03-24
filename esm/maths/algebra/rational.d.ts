@@ -1,9 +1,21 @@
+/**
+ * Rational polynom module contains everything necessary to handle rational polynoms.
+ * @module Polynom
+ */
 import { Polynom } from "./polynom";
 import { Fraction } from "../coefficients";
+/**
+ * Rational class can handle rational polynoms
+ */
 export declare class Rational {
     private _rawString;
     private _numerator;
     private _denominator;
+    /**
+     *
+     * @param numerator
+     * @param denominator
+     */
     constructor(numerator?: Polynom, denominator?: Polynom);
     clone: () => Rational;
     get tex(): string;

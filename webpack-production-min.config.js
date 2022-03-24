@@ -17,10 +17,10 @@ module.exports = {
         extensions: ['.tsx','.ts', '.js'],
     },
     output: {
-        filename: 'pi.js',
+        filename: 'pi.min.js',
         path: path.resolve(__dirname, 'dist'),
     },
     optimization: {
-        minimize: false
+        minimize: true
     }
 };

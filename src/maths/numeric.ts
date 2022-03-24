@@ -89,4 +89,19 @@ export class Numeric{
             return Math.abs(a * b / Numeric.gcd(a, b));
         });
     }
+
+    static pythagoricianTripletsWithTarget(target: number, targetIsSquare?:boolean): number[][] {
+        // méthode inverse, à partir du triplet.
+        const triplets = [],
+            targetValue = targetIsSquare===true?+target:target**2
+        for(let u = 0; u <= target; u++){
+            for(let v = 0; v <=target; v++){
+                if(u**2+v**2===targetValue){
+                    triplets.push([u, v, target])
+                }
+            }
+        }
+
+        return triplets
+    }
 }

@@ -7,6 +7,8 @@ const random_1 = require("./maths/random");
 const coefficients_1 = require("./maths/coefficients");
 const algebra_1 = require("./maths/algebra");
 const geometry_1 = require("./maths/geometry");
+// Expose as global
+// export let Pi = {
 window.Pi = {
     ShutingYard: shutingyard_1.Shutingyard,
     Numeric: numeric_1.Numeric,

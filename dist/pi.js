@@ -1,2 +1,6531 @@
-(()=>{"use strict";var e={760:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Equation=void 0;const n=i(38),s=i(956),o=i(534);class r{_left;_right;_sign;_polynom;_solutions;_varnothing="\\varnothing";_real="\\mathbb{R}";constructor(...e){if(this._left=(new n.Polynom).zero(),this._right=(new n.Polynom).zero(),this._sign="=",1===e.length){if(e[0]instanceof r)return e[0].clone();"string"==typeof e[0]&&this.parse(e[0])}else{if(2!==e.length)return this;e[0]instanceof n.Polynom?this.left=e[0].clone():"string"==typeof e[0]&&(this.left=new n.Polynom(e[0])),e[1]instanceof n.Polynom?this.right=e[1].clone():"string"==typeof e[1]&&(this.right=new n.Polynom(e[1]))}return this}get isEquation(){return!0}get solutions(){return this._solutions}get solution(){return 1!==this._solutions.length||this._solutions[0].tex!==this._real&&this._solutions[0].tex!==this._varnothing&&!this._solutions[0].tex.includes("\\left")?`S = \\left{ ${this._solutions.map((e=>e.tex)).join(";")} \\right}`:`S = ${this._solutions[0]}`}get isReal(){return void 0===this._solutions&&this.solve(),this._solutions[0].tex===this._real}get isVarnothing(){return void 0===this._solutions&&this.solve(),this._solutions[0].tex===this._varnothing}get signAsTex(){return">="===this._sign||"=>"===this._sign||"geq"===this._sign?"\\geq":"<="===this._sign||"=<"===this._sign||"leq"===this._sign?"\\leq":this._sign}get tex(){return`${this._left.tex}${this.signAsTex}${this._right.tex}`}get display(){return`${this._left.display}${this.signAsTex}${this._right.display}`}get raw(){return`${this._left.raw}${this.signAsTex}${this._right.raw}`}get variables(){return[...new Set(this._right.variables.concat(this._left.variables))]}get numberOfVars(){return this.variables.length}get left(){return this._left}set left(e){this._left=e}get right(){return this._right}set right(e){this._right=e}get sign(){return this._sign}set sign(e){this._sign=this._formatSign(e)}parse=e=>{let t,i;if(i=this._findSign(e),!1!==i)return t=e.split(i),this.create(new n.Polynom(t[0]),new n.Polynom(t[1]),this._formatSign(i));console.error("The equation is not valid (no sign found)")};_findSign=e=>e.includes("geq")?e.includes("\\geq")?"\\geq":"geq":e.includes("leq")?e.includes("\\leq")?"\\leq":"leq":e.includes(">=")?">=":e.includes("=>")?"=>":e.includes(">")?">":e.includes("<=")?"<=":e.includes("=<")?"=<":e.includes("<")?"<":e.includes("=")?"=":(console.log("Equation: parse string : sign not found"),!1);_formatSign=e=>void 0===e?"=":e.includes("geq")||e.includes(">=")||e.includes("=>")?">=":e.includes(">")?">":e.includes("leq")||e.includes("<=")||e.includes("=<")?"<=":e.includes("<")?"<":"=";_reverseSign=()=>"="===this._sign?this:this._sign.includes("<")?(this._sign.replace("<",">"),this):this._sign.includes(">")?(this._sign.replace(">","<"),this):this;create=(e,t,i)=>(this._left=e,this._right=t,this._sign=this._formatSign(i),this);clone=()=>(new r).create(this._left.clone(),this._right.clone(),this._sign+"");_randomizeDefaults={degree:2};get randomizeDefaults(){return this._randomizeDefaults}set randomizeDefaults(e){this._randomizeDefaults=e}randomize=(e,t)=>(new r).create(new n.Polynom,new n.Polynom,t);moveLeft=()=>(this._left=this._left.clone().subtract(this._right),this._right.zero(),this);reorder=e=>{if(this._left.subtract(this._right),this._right.zero(),e)return this.moveLeft();let t;for(let e of this._left.monoms)e.degree().isZero()&&(t=e.clone(),this._left.subtract(t),this._right.subtract(t));return this._left.reorder(),this._right.reorder(),this};simplify=()=>(this.multiply(s.Numeric.lcm(...this._left.getDenominators(),...this._right.getDenominators())),this.divide(s.Numeric.gcd(...this._left.getNumerators(),...this._right.getNumerators())),this);isolate=e=>{if(!this.degree(e).isOne())return!1;if(this.isMultiVariable())return!1;let t,i;this._left.subtract(this._right),this._right.zero();for(let i of this._left.monoms)i.hasLetter(e)||(t=i.clone(),this._left.add(t.clone().opposed()),this._right.add(t.clone().opposed()));return 1===this._left.length&&(i=this._left.monoms[0].coefficient.clone(),this._left.divide(i),this._right.divide(i),this)};replaceBy=(e,t)=>(this._left.replaceBy(e,t),this._right.replaceBy(e,t),this);multiply=e=>{let t=new o.Fraction(e);return this._left.multiply(t),this._right.multiply(t),"="!==this._sign&&-1===t.sign()&&this._reverseSign(),this};divide=e=>{let t=new o.Fraction(e);return t.isZero()?this:this.multiply(t.invert())};degree=e=>o.Fraction.max(this._left.degree(e),this._right.degree(e));isMultiVariable=()=>this._left.isMultiVariable||this._right.isMultiVariable;letters=()=>[...new Set([...this._left.letters(),...this._right.letters()])];solve=()=>{switch(this._solutions=[],this._polynom=this._left.clone().subtract(this._right),this._polynom.degree().value){case 0:case 1:this._solveDegree1();break;case 2:this._solveDegree2();break;default:this._solveDegree3plus()}return this};isGreater=()=>-1!==this._sign.indexOf(">")||-1!==this._sign.indexOf("geq");isStrictEqual=()=>"="===this._sign;isAlsoEqual=()=>-1!==this._sign.indexOf("=")||-1!==this._sign.indexOf("geq")||-1!==this._sign.indexOf("leq")||void 0;_solveDegree1=e=>{const t=this._polynom.monomByDegree(1,e).coefficient,i=this._polynom.monomByDegree(0,e).coefficient,n=i.clone().opposed().divide(t);let s;return this.isStrictEqual()?0===t.value?0===i.value?this._solutions=[{tex:this._real,value:NaN,exact:!1}]:this._solutions=[{tex:this._varnothing,value:NaN,exact:!1}]:this._solutions=[{tex:n.display,value:n.value,exact:n}]:(s=0===t.value?0===i.value&&this.isAlsoEqual()?"\\mathbb{R}":i.value>0?this.isGreater()?this._real:this._varnothing:this.isGreater()?this._varnothing:this._real:this.isGreater()&&1===t.sign()||!this.isGreater()&&-1===t.sign()?`\\left${this.isAlsoEqual()?"\\[":"\\]"}${n};+\\infty\\right\\[`:`\\left\\]-\\infty;${n} \\right\\${this.isAlsoEqual()?"\\]":"\\["}`,this._solutions=[{tex:s,value:NaN,exact:!1}]),this._solutions};_solveDegree2=e=>{let t,i,n,r,a,l,h=this._polynom.monomByDegree(2,e).coefficient,c=this._polynom.monomByDegree(1,e).coefficient,u=this._polynom.monomByDegree(0,e).coefficient,f=s.Numeric.lcm(h.denominator,c.denominator,u.denominator),d=h.multiply(f).value,_=c.multiply(f).value;if(t=_*_-4*d*u.multiply(f).value,t>0)if(n=(-_-Math.sqrt(t))/(2*d),r=(-_+Math.sqrt(t))/(2*d),t>1e5)this._solutions=[{tex:((-_-Math.sqrt(t))/(2*d)).toFixed(5),value:n,exact:!1},{tex:((-_+Math.sqrt(t))/(2*d)).toFixed(5),value:r,exact:!1}];else if(i=new o.Nthroot(t).reduce(),i.hasRadical()){let e=s.Numeric.gcd(_,2*d,i.coefficient);i.coefficient=i.coefficient/e,this._solutions=0!==_?2*d/e==1?[{tex:`${-_/e} - ${i.tex}`,value:n,exact:!1},{tex:`${-_/e} + ${i.tex}`,value:r,exact:!1}]:[{tex:`\\dfrac{${-_/e} - ${i.tex} }{ ${2*d/e} }`,value:n,exact:!1},{tex:`\\dfrac{${-_/e} + ${i.tex} }{ ${2*d/e} }`,value:r,exact:!1}]:2*d/e==1?[{tex:`- ${i.tex}`,value:n,exact:!1},{tex:`${i.tex}`,value:r,exact:!1}]:[{tex:`\\dfrac{- ${i.tex} }{ ${2*d/e} }`,value:n,exact:!1},{tex:`\\dfrac{${i.tex} }{ ${2*d/e} }`,value:r,exact:!1}]}else{const e=new o.Fraction(-_-i.coefficient,2*d).reduce(),t=new o.Fraction(-_+i.coefficient,2*d).reduce();this._solutions=[{tex:e.dfrac,value:n,exact:e},{tex:t.dfrac,value:r,exact:t}]}else if(0===t){const e=new o.Fraction(-_,2*d).reduce();this._solutions=[{tex:e.dfrac,value:e.value,exact:e}]}else this._solutions=[{tex:this._varnothing,value:NaN,exact:!1}];return this.isStrictEqual()||(2===this._solutions.length?(a=n<r?this._solutions[0].tex:this._solutions[1].tex,l=n<r?this._solutions[1].tex:this._solutions[0].tex,this.isGreater()&&1===h.sign()||!this.isGreater()&&-1===h.sign()?this._solutions=[{tex:`\\left]-\\infty ; ${a}\\right${this.isAlsoEqual()?"]":"["} \\cup \\left${this.isAlsoEqual()?"[":"]"}${l};+\\infty\\right[`,value:NaN,exact:!1}]:this._solutions=[{tex:`\\left${this.isAlsoEqual()?"[":"]"}${a} ; ${l}\\right${this.isAlsoEqual()?"]":"["}`,value:NaN,exact:!1}]):1===this._solutions.length&&this._solutions[0].tex!==this._varnothing?this.isAlsoEqual()?(this.isGreater()&&1===h.sign()||!this.isGreater()&&-1===h.sign())&&(this._solutions=[{tex:this._real,value:NaN,exact:!1}]):this.isGreater()&&1===h.sign()||!this.isGreater()&&-1===h.sign()?this._solutions=[{tex:`\\left]-\\infty ; ${this._solutions[0].tex}\\right[ \\cup \\left]${this._solutions[0].tex};+\\infty\\right[`,value:NaN,exact:!1}]:this._solutions=[{tex:this._varnothing,value:NaN,exact:!1}]:this.isGreater()?this._solutions=[{tex:1===h.sign()?this._real:this._varnothing,value:NaN,exact:!1}]:this._solutions=[{tex:-1===h.sign()?this._real:this._varnothing,value:NaN,exact:!1}]),this._solutions};_solveDegree3plus=()=>(this._solutions=[{tex:"solve x - not yet handled",value:NaN,exact:!1}],this._solutions)}t.Equation=r},667:function(e,t,i){var n=this&&this.__createBinding||(Object.create?function(e,t,i,n){void 0===n&&(n=i),Object.defineProperty(e,n,{enumerable:!0,get:function(){return t[i]}})}:function(e,t,i,n){void 0===n&&(n=i),e[n]=t[i]}),s=this&&this.__exportStar||function(e,t){for(var i in e)"default"===i||Object.prototype.hasOwnProperty.call(t,i)||n(t,e,i)};Object.defineProperty(t,"__esModule",{value:!0}),s(i(760),t),s(i(554),t),s(i(236),t),s(i(937),t),s(i(38),t),s(i(107),t),s(i(75),t)},554:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.LinearSystem=void 0;const n=i(534),s=i(760),o=i(38),r=i(984);class a{_solutions;_resolutionSteps;_equations;_letters;constructor(...e){return this._equations=[],this._letters="xy".split(""),void 0!==e&&e.length>0&&this.parse(...e),this}get equations(){return this._equations}set equations(e){this._equations=e}get letters(){return this._letters.join("")}set letters(e){this._letters=e.split("")}get isSolvable(){return this.variables.length===this._equations.length}get variables(){let e=[];for(let t of this._equations)e=e.concat(t.variables);return[...new Set(e)].sort()}get tex(){let e,t,i=this.clone().reorder(),n=i.variables,s=[];for(let o of i.equations){e=[];for(let i of n)t=o.left.monomByLetter(i),0===e.length?e.push(t.isZero()?"":t.tex):e.push(t.isZero()?"":(1===t.coefficient.sign()?"+":"")+t.tex);e.push("="),e.push(o.right.tex),s.push(e.join("&"))}return`\\left\\{\\begin{array}{${"r".repeat(n.length)}cl}${s.join("\\\\ ")}\\end{array}\\right.`}get solution(){let e=[];void 0===this._solutions&&this.solve();for(let t in this._solutions){if(this._solutions[t].isReal)return void console.log(`Undetermined (letter ${t})`);if(this._solutions[t].isVarnothing)return void console.log(`Undefined (letter ${t})`);e.push(this._solutions[t].value.dfrac)}return`(${e.join(";")})`}parse=(...e)=>(this._equations=e.map((e=>new s.Equation(e))),this._findLetters(),this);setCoefficient=(...e)=>{this._equations=[];let t=0;for(;t<e.length-this._letters.length;){let i=(new o.Polynom).parse(this._letters.join(""),...e.slice(t,t+this._letters.length)),n=new o.Polynom(e[t+this._letters.length].toString()),r=(new s.Equation).create(i,n);this._equations.push(r.clone()),t=t+this._letters.length+1}return this};clone=()=>(new a).parse(...this._equations.map((e=>e.clone())));setLetters=(...e)=>(this._letters=e,this);_findLetters=()=>{let e=new Set;for(let t of this._equations)e=new Set([...e,...t.variables]);return this._letters=[...e],this};generate=(...e)=>{let t=[];for(let i of e)"number"==typeof i?t.push(new n.Fraction(i.toString())):t.push(i.clone());this._equations=[];for(let i=0;i<e.length;i++)this._equations.push(this._generateOneEquation(...t));return this};_generateOneEquation=(...e)=>{let t,i=[],o=(new n.Fraction).zero(),a=["x","y","z","t","u","v","w","a","b","c","d","e","f","g","h","i","j","k","l"],l="";for(let t=0;t<e.length;t++)i.push(r.Random.numberSym(5)),o.add(e[t].clone().multiply(i[t])),l+=`${i[t]<0?i[t]:"+"+i[t]}${a[t]}`;return t=new s.Equation(`${l}=${o.display}`),1!=t.right.monoms[0].coefficient.denominator&&t.multiply(new n.Fraction(t.right.monoms[0].coefficient.denominator,1)),this._checkIfLinerCombination(t)?t:this._generateOneEquation(...e)};_linearReduction(e,t,i){let n=e.left.monomByDegree(1,i).coefficient.clone(),s=t.left.monomByDegree(1,i).coefficient.clone().opposed();return this.mergeEquations(e,t,s,n)}mergeEquations=(e,t,i,s)=>{let o=e.clone().multiply(new n.Fraction(i)),r=t.clone().multiply(new n.Fraction(s));return o.left.add(r.left),o.right.add(r.right),o};reorder=()=>{for(let e of this._equations)e.reorder();return this};solve=()=>{this._solutions={},this._resolutionSteps=[],this.reorder();let e=this.variables.sort();for(let t of e)this._solutions[t]=this._solveOneLetter(t,e);return this};_checkIfLinerCombination=e=>!0;_solveOneLetter(e,t){let i=this.clone().equations,s=[];for(let n of t)if(n!==e){for(let e=0;e<i.length-1;e++)s.push(this._linearReduction(i[e],i[e+1],n));this._resolutionSteps.push((new a).parse(...s)),i=this._resolutionSteps[this._resolutionSteps.length-1].clone().equations,s=[]}let o=this._resolutionSteps[this._resolutionSteps.length-1].equations[0];return o.solve(),{value:new n.Fraction(o.solutions[0].value),isReal:o.isReal,isVarnothing:o.isVarnothing}}log=()=>{let e="";for(let t of this._equations)console.log(t.tex),e+=`${t.tex}\\n}`;return e}}t.LinearSystem=a},236:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Logicalset=void 0;const n=i(505);t.Logicalset=class{_rawString;_rpn;constructor(e){return this._rawString=e,this.parse(e),this}get isLogicalset(){return!0}parse=e=>(this._rpn=new n.Shutingyard(n.ShutingyardMode.SET).parse(e).rpn,this);evaluate(e,t){let i,n=[];if(void 0===t){i=new Set;for(let t in e)i=new Set([...i,...e[t]])}else i=new Set(t);for(let t of this._rpn)if("variable"===t.tokenType)void 0===e[t.token]?n.push(new Set):n.push(new Set(e[t.token]));else switch(t.token){case"&":if(n.length>=2){let e=n.pop(),t=n.pop();n.push(new Set([...t].filter((t=>e.has(t)))))}break;case"|":if(n.length>=2){let e=n.pop(),t=n.pop();n.push(new Set([...t,...e]))}break;case"-":if(n.length>=2){let e=n.pop(),t=n.pop();n.push(new Set([...t].filter((t=>!e.has(t)))))}break;case"!":if(n.length>=1){let e=n.pop();n.push(new Set([...i].filter((t=>!e.has(t)))))}}return[...n[0]].sort()}vennAB(){return this.evaluate({A:["A","AB"],B:["B","AB"]},["A","B","AB","E"])}vennABC(){return this.evaluate({A:["A","AB","AC","ABC"],B:["B","AB","BC","ABC"],C:["C","AC","BC","ABC"]},["A","B","C","AB","AC","BC","E"])}get rpn(){return this._rpn}get tex(){let e=[];for(let t of this._rpn)if("variable"===t.tokenType)e.push(t);else switch(t.token){case"&":if(e.length>=2){let t=e.pop(),i=e.pop();"mix"===i.tokenType&&(i.token=`( ${i.token} )`),"mix"===t.tokenType&&(t.token=`( ${t.token} )`),e.push({token:`${i.token} \\cap ${t.token}`,tokenType:"mix"})}break;case"|":if(e.length>=2){let t=e.pop(),i=e.pop();"mix"===i.tokenType&&(i.token=`( ${i.token} )`),"mix"===t.tokenType&&(t.token=`( ${t.token} )`),e.push({token:`${i.token} \\cup ${t.token}`,tokenType:"mix"})}break;case"-":if(e.length>=2){let t=e.pop(),i=e.pop();"mix"===i.tokenType&&(i.token=`( ${i.token} )`),"mix"===t.tokenType&&(t.token=`( ${t.token} )`),e.push({token:`${i.token} \\setminus ${t.token}`,tokenType:"mix"})}break;case"!":if(e.length>=1){let t=e.pop();e.push({token:`\\overline{ ${t.token} }`,tokenType:"variable"})}}return e[0].token}}},937:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Monom=void 0;const n=i(534),s=i(956),o=i(505);class r{_coefficient;_literal;constructor(e){return this.zero(),void 0!==e&&this.parse(e),this}get coefficient(){return this._coefficient}set coefficient(e){this._coefficient=new n.Fraction(e)}get literal(){return this._literal}get literalSqrt(){if(this.isLiteralSquare()){let e={};for(let t in this._literal)e[t]=this._literal[t].clone().sqrt();return e}return this._literal}set literal(e){this._literal=e}set literalStr(e){for(const t of[...e.matchAll(/([a-z])\^([+-]?[0-9]+)/g)])t[1]in this._literal||(this._literal[t[1]]=(new n.Fraction).zero()),this._literal[t[1]].add(+t[2]);for(const t of[...e.matchAll(/([a-z](?!\^))/g)])t[1]in this._literal||(this._literal[t[1]]=(new n.Fraction).zero()),this._literal[t[1]].add(1)}get variables(){let e=this.clone().clean();return Object.keys(e.literal)}get display(){let e="",t=Object.keys(this._literal).sort();for(let i of t)this._literal[i].isNotZero()&&(e+=`${i}`,this._literal[i].isNotEqual(1)&&(e+=`^${this._literal[i].display}`));return""===e?0!=this._coefficient.value?`${this._coefficient.display}`:"":1===this._coefficient.value?e:-1===this._coefficient.value?`-${e}`:0===this._coefficient.value?"0":`${this._coefficient.display}${e}`}get dividers(){if(!this.coefficient.isRelative())return[this.clone()];if(this.hasFractionCoefficient())return[this.clone()];if(this.coefficient.numerator>1e4)return[this.clone()];const e=s.Numeric.dividers(Math.abs(this.coefficient.numerator));let t=[];for(let e in this.literal)t=this._getLiteralDividers(t,e);const i=[];if(t.length>0&&e.length>0)for(let s of e)for(let e of t){let t=new r;t.coefficient=new n.Fraction(s),t.literal=e,i.push(t)}else if(0===e.length)for(let e of t){let t=new r;t.coefficient=(new n.Fraction).one(),t.literal=e,i.push(t)}else for(let t of e){let e=new r;e.coefficient=new n.Fraction(t),i.push(e)}return 0===i.length?[(new r).one()]:i}_getLiteralDividers(e,t){let i=[];for(let s=0;s<=this.literal[t].value;s++)if(0===e.length){let e={};e[t]=new n.Fraction(s),i.push(e)}else for(let o of e){let e={};for(let t in o)e[t]=o[t];e[t]=new n.Fraction(s),i.push(e)}return i}get displayWithSign(){let e=this.display;return("-"!==e[0]?"+":"")+e}get texWithSign(){return this.coefficient.isStrictlyPositive()?"+"+this.tex:this.tex}get tex(){let e="",t=Object.keys(this._literal).sort();for(let i of t)this._literal[i].isNotZero()&&(e+=`${i}`,this._literal[i].isNotEqual(1)&&(e+=`^{${this._literal[i].tfrac}}`));return""===e?0!=this._coefficient.value?`${this._coefficient.dfrac}`:"0":1===this._coefficient.value?e:-1===this._coefficient.value?`-${e}`:0===this._coefficient.value?"0":`${this._coefficient.dfrac}${e}`}parse=e=>("string"==typeof e?this._shutingYardToReducedMonom(e):"number"==typeof e?(this._coefficient=new n.Fraction(e),this._literal={}):e instanceof n.Fraction?(this._coefficient=e.clone(),this._literal={}):e instanceof r&&(this._coefficient=e._coefficient.clone(),this._literal=this.copyLiterals(e.literal)),this);static addToken=(e,t)=>{let i,s,a,l,h;if(t.tokenType===o.ShutingyardType.COEFFICIENT)e.push(new r(new n.Fraction(t.token)));else if(t.tokenType===o.ShutingyardType.VARIABLE){let i=(new r).one();i.setLetter(t.token,1),e.push(i.clone())}else if(t.tokenType===o.ShutingyardType.OPERATION)switch(t.token){case"-":s=e.pop()||(new r).zero(),i=e.pop()||(new r).zero(),e.push(i.subtract(s));break;case"*":s=e.pop()||(new r).one(),i=e.pop()||(new r).one(),e.push(i.multiply(s));break;case"/":s=e.pop()||(new r).one(),i=e.pop()||(new r).one(),e.push(i.divide(s));break;case"^":h=e.pop().coefficient||(new n.Fraction).one(),a=e.pop()||(new r).one(),l=a.variables[0],void 0!==l&&a.setLetter(l,h),e.push(a)}};_shutingYardToReducedMonom=e=>{const t=(new o.Shutingyard).parse(e).rpn;let i=[];if(0===t.length)return this.zero(),this;if(1===t.length){const e=t[0];return this.one(),"coefficient"===e.tokenType?this.coefficient=new n.Fraction(e.token):"variable"===e.tokenType&&this.setLetter(e.token,1),this}for(const e of t)r.addToken(i,e);return this.one(),this.multiply(i[0]),this};clone=()=>{let e=new r;e.coefficient=this._coefficient.clone();for(let t in this._literal)e.setLetter(t,this._literal[t].clone());return e};copyLiterals=e=>{let t={};for(let i in e)t[i]=e[i].clone();return t};makeSame=e=>{for(let t in e._literal)this.setLetter(t,e._literal[t].clone());return this};zero=()=>(this._coefficient=(new n.Fraction).zero(),this._literal={},this);one=()=>(this._coefficient=(new n.Fraction).one(),this._literal={},this);clean=()=>{for(let e in this._literal)this._literal[e].isZero()&&delete this._literal[e];return this};reduce=()=>(this.clean(),this.coefficient.reduce(),this);opposed=()=>(this._coefficient.opposed(),this);add=(...e)=>{for(let t of e)this.isSameAs(t)?(this.isZero()&&this.makeSame(t),this._coefficient.add(t.coefficient)):console.log("Add: Is not similar: ",t.display);return this};subtract=(...e)=>{for(let t of e)this.isSameAs(t)?(this.isZero()&&this.makeSame(t),this._coefficient.add(t.clone().coefficient.opposed())):console.log("Subtract: Is not similar: ",t.display);return this};multiply=(...e)=>{for(let t of e){this._coefficient.multiply(t.coefficient);for(let e in t.literal)void 0===this._literal[e]?this._literal[e]=t.literal[e].clone():this._literal[e].add(t.literal[e])}return this};multiplyByNumber=e=>(this._coefficient.multiply(e),this);divide=(...e)=>{for(let t of e){this._coefficient.divide(t.coefficient);for(let e in t.literal)this._literal[e]=void 0===this._literal[e]?t.literal[e].clone().opposed():this._literal[e].subtract(t.literal[e]),this._literal[e].isZero()&&delete this._literal[e]}return this};pow=e=>{this._coefficient.pow(e);for(let t in this._literal)this._literal[t].multiply(e);return this};root=e=>this;sqrt=()=>{if(this.isSquare()){this._coefficient.sqrt();for(let e in this._literal)this._literal[e].clone().divide(2)}return this.root(2)};compare=(e,t)=>{switch(void 0===t&&(t="="),t){case"=":return!!this.compare(e,"same")&&this._coefficient.isEqual(e.coefficient);case"same":let t=this.variables,i=e.variables,n=t.concat(i.filter((e=>t.indexOf(e)<0)));if(0===t.length&&0===i.length)return!0;if(!this.isZero()&&!e.isZero())for(let t of n){if(void 0===this._literal[t]||void 0===e.literal[t])return!1;if(!this._literal[t].isEqual(e.literal[t]))return!1}return!0;default:return!1}};isZero(){return 0===this._coefficient.value}isOne(){return 1===this._coefficient.value&&0===this.variables.length}isEqual=e=>this.compare(e,"=");isSameAs=e=>this.compare(e,"same");isSquare=()=>!!this.coefficient.isSquare()&&this.isLiteralSquare();isLiteralSquare=()=>{for(let e in this.literal){if(this.literal[e].isRational())return!1;if(this.literal[e].isEven())return!1}return!0};hasFractionCoefficient=()=>{for(let e in this._literal)if(this._literal[e].isRational())return!0;return!1};hasLetter=e=>void 0!==this._literal[void 0===e?"x":e]&&this._literal[void 0===e?"x":e].isNotZero();setLetter=(e,t)=>{t instanceof n.Fraction?(this.hasLetter(e)&&t.isZero()&&delete this._literal[e],this._literal[e]=t.clone()):this.setLetter(e,new n.Fraction(t))};degree=e=>0===this.variables.length?(new n.Fraction).zero():void 0===e?Object.values(this._literal).reduce(((e,t)=>e.clone().add(t))):void 0===this._literal[e]?(new n.Fraction).zero():this._literal[e].clone();evaluate=e=>{let t=this.coefficient.clone();if("number"==typeof e||e instanceof n.Fraction){let t={};return t[this.variables[0]]=new n.Fraction(e),this.evaluate(t)}if("object"==typeof e)for(let i in this._literal){if(void 0===e[i])return(new n.Fraction).zero();let s=new n.Fraction(e[i]);t.multiply(s.pow(this._literal[i]))}return t};derivative=e=>{if(void 0===e&&(e="x"),this.hasLetter(e)){let t=this._literal[e].clone(),i=this.clone();return i._literal[e].subtract(1),i._coefficient.multiply(new n.Fraction(t.clone())),i}return(new r).zero()};primitive=e=>{void 0===e&&(e="x");let t,i=this.clone();return i.hasLetter(e)?(t=i.degree(e).clone().add(1),i.coefficient=i.coefficient.clone().divide(t),i.setLetter(e,t)):(i.coefficient.isZero()&&(i.coefficient=(new n.Fraction).one()),i.setLetter(e,1)),i};static lcm=(...e)=>{for(let t of e)if(t.hasFractionCoefficient())return(new r).zero();let t=new r,i=e.map((e=>e.coefficient.numerator)),o=e.map((e=>e.coefficient.denominator)),a=s.Numeric.gcd(...i),l=s.Numeric.lcm(...o);t.coefficient=new n.Fraction(a,l).reduce();for(let i of e){for(let e in t.literal)e in i.literal||t.literal[e].zero();for(let e in i.literal)void 0===t.literal[e]&&i.literal[e].isStrictlyPositive()?t.literal[e]=i.literal[e].clone():t.literal[e]=new n.Fraction(Math.min(i.literal[e].value,t.literal[e].value))}return t};static xmultiply=(...e)=>{let t=(new r).one();for(let i of e)t.multiply(i);return t};areSameAs=(...e)=>{for(let t=0;t<e.length;t++)if(!this.isSameAs(e[t]))return!1;return!0};areEquals=(...e)=>{if(!this.areSameAs(...e))return!1;for(let t of e)if(!this._coefficient.isEqual(t.coefficient))return!1;return!0}}t.Monom=r},38:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Polynom=void 0;const n=i(937),s=i(505),o=i(956),r=i(534);class a{_rawString;constructor(e,...t){return this._monoms=[],this._factors=[],void 0!==e&&this.parse(e,...t),this}_monoms;get monoms(){return this._monoms}set monoms(e){this._monoms=e}_factors;get factors(){return this._factors}set factors(e){this._factors=e}_texString;get texString(){return this._texString}get texFactors(){this.factorize();let e="";for(let t of this.factors)t.monoms.length>1?e+=`(${t.tex})`:e=t.tex+e;return e}get length(){return this._monoms.length}get display(){return this.genDisplay()}get raw(){return this._rawString}get tex(){return this.genDisplay("tex")}get isMultiVariable(){for(const e of this._monoms)if(e.variables.length>1)return!0;return!1}get variables(){let e=[];for(const t of this._monoms)e=e.concat(t.variables);return e=[...new Set(e)],e}get numberOfVars(){return this.variables.length}parse=(e,...t)=>{if(this._monoms=[],this._factors=[],"string"==typeof e)return this._parseString(e,...t);if("number"==typeof e||e instanceof r.Fraction||e instanceof n.Monom)this._monoms.push(new n.Monom(e));else if(e instanceof a)for(const t of e.monoms)this._monoms.push(t.clone());return this};_parseString(e,...t){if(void 0===t||0===t.length){if(e=""+e,this._rawString=e,""!==e&&!isNaN(Number(e))){this.empty();let t=new n.Monom(e);return this.add(t),this}return this.shutingYardToReducedPolynom(e)}if(/^[a-z]/.test(e)){this.empty();let i=t.map((e=>new r.Fraction(e)));if(e.length>1){let t=e.split(""),s=0;for(let e of i){let i=new n.Monom;i.coefficient=e.clone(),i.literalStr=t[s]||"",this.add(i),s++}}else{let t=i.length-1;for(let s of i){let i=new n.Monom;i.coefficient=s.clone(),i.literalStr=`${e}^${t}`,this.add(i),t--}}return this}return this.zero()}clone=()=>{const e=new a,t=[];for(const e of this._monoms)t.push(e.clone());return e.monoms=t,e};zero=()=>(this._monoms=[],this._monoms.push((new n.Monom).zero()),this._rawString="0",this);one=()=>(this._monoms=[],this._monoms.push((new n.Monom).one()),this._rawString="1",this);empty=()=>(this._monoms=[],this._rawString="",this);opposed=()=>(this._monoms=this._monoms.map((e=>e.opposed())),this);add=(...e)=>{for(let t of e)t instanceof a?this._monoms=this._monoms.concat(t.monoms):t instanceof n.Monom?this._monoms.push(t.clone()):Number.isSafeInteger(t)?this._monoms.push(new n.Monom(t.toString())):this._monoms.push(new n.Monom(t));return this.reduce()};subtract=(...e)=>{for(let t of e)t instanceof a?this._monoms=this._monoms.concat(t.clone().opposed().monoms):t instanceof n.Monom?this._monoms.push(t.clone().opposed()):Number.isSafeInteger(t)?this._monoms.push(new n.Monom(t.toString()).opposed()):this._monoms.push(new n.Monom(t).opposed());return this.reduce()};multiply=e=>e instanceof a?this.multiplyByPolynom(e):e instanceof r.Fraction?this.multiplyByFraction(e):e instanceof n.Monom?this.multiplyByMonom(e):Number.isSafeInteger(e)&&"number"==typeof e?this.multiplyByInteger(e):this;euclidian=e=>{const t=e.variables[0],i=(new a).zero(),n=this.clone().reorder(t);if(0===e.variables.length)return{quotient:i,reminder:n};const s=e.monomByDegree(void 0,t),o=e.degree(t);let r,l=this.degree(t).clone().multiply(2);for(;n.degree(t).geq(o)&&l.isPositive()&&(l.subtract(1),r=n.monomByDegree(void 0,t).clone().divide(s),!r.isZero());)i.add(r),n.subtract(e.clone().multiply(r));return i.reduce(),n.reduce(),{quotient:i,reminder:n}};divide=e=>e instanceof r.Fraction?this.divideByFraction(e):"number"==typeof e&&Number.isSafeInteger(e)?this.divideByInteger(e):void 0;pow=e=>{if(!Number.isSafeInteger(e))return this.zero();if(e<0)return this.zero();if(0===e)return new a;const t=this.clone();for(let i=1;i<e;i++)this.multiply(t);return this.reduce()};compare=(e,t)=>{void 0===t&&(t="=");const i=this.clone().reduce().reorder(),n=e.clone().reduce().reorder();switch(t){case"=":if(i.length!==n.length||i.degree().isNotEqual(n.degree()))return!1;for(const e in i.monoms)if(!i.monoms[e].isEqual(n.monoms[e]))return!1;return!0;case"same":if(i.length!==n.length||i.degree()!==n.degree())return!1;for(const e in i.monoms)if(!i.monoms[e].isSameAs(n.monoms[e]))return!1;return!0;default:return!1}};isZero(){return 1===this._monoms.length&&this._monoms[0].coefficient.isZero()||0===this._monoms.length}isOne(){return 1===this._monoms.length&&this._monoms[0].coefficient.isOne()}isEqual=e=>this.compare(e,"=");isSameAs=e=>this.compare(e,"same");isOpposedAt=e=>this.compare(e.clone().opposed(),"=");isFactorized=e=>{let t;if(e.match(/\(/g).length!==e.match(/\)/g).length)return!1;try{t=new a(e)}catch(e){return!1}if(!this.isEqual(t))return!1;let i=e.replaceAll("*",""),n=""+i,s=[];for(let e of i.matchAll(/\(([a-z0-9+\-]+)\)(\^[0-9]*)?/g)){if(void 0!==e[2])for(let t=0;t<+e[2].substr(1);t++)s.push(e[1]);else s.push(e[1]);n=n.replaceAll(e[0],"")}""!==n&&s.push(n);let o=s.map((e=>new a(e)));this.factorize();let r=1;for(let e of this.factors)for(let t=0;t<o.length;t++){if(e.isEqual(o[t])){o.splice(t,1);break}if(e.isOpposedAt(o[t])){o.splice(t,1),r=-r;break}}return 0===o.length&&1===r};isDeveloped=e=>{let t;if(e.match(/\(/g).length+e.match(/\)/g).length)return!1;try{t=new a(e)}catch(e){return!1}return!!this.isEqual(t)&&e.replaceAll("[*s]","")===t.reduce().reorder().display};reduce=()=>{for(let e=0;e<this._monoms.length;e++)for(let t=e+1;t<this._monoms.length;t++)this._monoms[e].isSameAs(this.monoms[t])&&(this._monoms[e].add(this.monoms[t]),this._monoms.splice(t,1));this._monoms=this._monoms.filter((e=>0!==e.coefficient.value));for(const e of this._monoms)e.coefficient.reduce();return 0===this.length?(new a).zero():this};reorder=(e="x")=>(this._monoms.sort((function(t,i){return i.degree(e).clone().subtract(t.degree(e)).value})),this.reduce());degree=e=>{let t=(new r.Fraction).zero();for(const i of this._monoms)t=r.Fraction.max(i.degree(e).value,t);return t};letters=()=>{let e=new Set;for(let t of this._monoms)e=new Set([...e,...t.variables]);return[...e]};replaceBy=(e,t)=>{let i;const n=(new a).zero();for(const s of this.monoms)void 0===s.literal[e]||s.literal[e].isZero()?n.add(s.clone()):(i=s.literal[e].clone(),delete s.literal[e],n.add(t.clone().pow(Math.abs(i.numerator)).multiply(s)));return this._monoms=n.reduce().reorder().monoms,this};evaluate=e=>{const t=(new r.Fraction).zero();return this._monoms.forEach((i=>{t.add(i.evaluate(e))})),t};derivative=e=>{let t=new a;for(let i of this._monoms)t.add(i.derivative(e));return t};primitive=e=>{let t=new a;for(let i of this._monoms)t.add(i.primitive(e));return t};integrate=(e,t,i)=>{const n=this.primitive(i);void 0===i&&(i="x");let s={},o={};return s[i]=new r.Fraction(e),o[i]=new r.Fraction(t),n.evaluate(o).subtract(n.evaluate(s))};factorize=e=>{let t,i=[],n=this.clone().reorder(),s=n.commonMonom();s.isOne()||(t=new a,t.monoms=[s],i=[t.clone()],n=n.euclidian(t).quotient);let o=n.degree().clone().multiply(2).value;for(;o>=0;){if(o--,n.monoms.length<2){n.isOne()||i.push(n.clone());break}{let e=n.monoms[0].dividers,t=n.monoms[n.monoms.length-1].dividers;for(let s of e)for(let e of t){let t,o=new a;o.monoms=[s.clone(),e.clone()],t=n.euclidian(o),t.reminder.isZero()?(n=t.quotient.clone(),i.push(o)):(o.monoms=[s.clone(),e.clone().opposed()],t=n.euclidian(o),t.reminder.isZero()&&(n=t.quotient.clone(),i.push(o)))}}}return this.factors=i,i};getZeroes=()=>{switch(this.degree().value){case 0:return 0===this._monoms[0].coefficient.value?[!0]:[!1];case 1:if(1===this._monoms.length)return[(new r.Fraction).zero()];{const e=this.clone().reduce().reorder();return[e.monoms[1].coefficient.opposed().divide(e.monoms[0].coefficient)]}default:0===this._factors.length&&this.factorize();let e=[],t=[];for(let i of this._factors)if(i.degree().greater(2));else if(2===i.degree().value){let t=i.monomByDegree(2).coefficient,n=i.monomByDegree(1).coefficient,s=i.monomByDegree(0).coefficient,o=n.clone().pow(2).subtract(t.clone().multiply(s).multiply(4));if(o.value>0){let i=(-n.value+Math.sqrt(o.value))/(2*t.value),s=(-n.value-Math.sqrt(o.value))/(2*t.value);e.push(new r.Fraction(i.toFixed(3)).reduce()),e.push(new r.Fraction(s.toFixed(3)).reduce())}else 0===o.value||console.log("No zero for ",i.tex)}else for(let n of i.getZeroes())!1!==n&&!0!==n&&-1===t.indexOf(n.frac)&&(e.push(n),t.push(n.frac));return e}return[]};monomByDegree=(e,t)=>{if(void 0===e)return this.monomByDegree(this.degree(t),t);const i=this.clone().reduce();for(const n of i._monoms)if(n.degree(t).isEqual(e))return n.clone();return(new n.Monom).zero()};monomsByDegree=(e,t)=>{if(void 0===e)return this.monomsByDegree(this.degree(t));let i=[];const n=this.clone().reduce();for(const s of n._monoms)s.degree(t)===e&&i.push(s.clone());return i};monomByLetter=e=>{const t=this.clone().reduce();for(const i of t._monoms)if(i.hasLetter(e))return i.clone();return(new n.Monom).zero()};getDenominators=()=>{const e=[];for(const t of this._monoms)e.push(t.coefficient.denominator);return e};getNumerators=()=>{const e=[];for(const t of this._monoms)e.push(t.coefficient.numerator);return e};lcmDenominator=()=>o.Numeric.lcm(...this.getDenominators());gcdDenominator=()=>o.Numeric.gcd(...this.getDenominators());lcmNumerator=()=>o.Numeric.lcm(...this.getNumerators());gcdNumerator=()=>o.Numeric.gcd(...this.getNumerators());commonMonom=()=>{let e,t,i=(new n.Monom).one(),s=this.degree();e=this.gcdNumerator(),t=this.gcdDenominator(),i.coefficient=new r.Fraction(e,t);for(let e of this.variables){i.setLetter(e,s);for(let t of this._monoms)if(i.setLetter(e,r.Fraction.min(t.degree(e),i.degree(e))),i.degree(e).isZero())break}return i};genDisplay=(e,t,i)=>{let n="";for(const i of this._monoms)0!==i.coefficient.value&&(n+=`${1!==i.coefficient.sign()||""===n&&!0!==t?"":"+"}${"tex"===e?i.tex:i.display}`);return!0===i&&this.length>1&&(n="tex"===e?`\\left( ${n} \\right)`:`(${n})`),""===n&&(n="0"),n};static addToken=(e,t)=>{switch(t.tokenType){case s.ShutingyardType.COEFFICIENT:e.push(new a(t.token));break;case s.ShutingyardType.VARIABLE:e.push((new a).add(new n.Monom(t.token)));break;case s.ShutingyardType.CONSTANT:console.log("Actually, not supported - will be added later !");break;case s.ShutingyardType.OPERATION:if(e.length>=2){const i=e.pop(),n=e.pop();if("+"===t.token)e.push(n.add(i));else if("-"===t.token)e.push(n.subtract(i));else if("*"===t.token)e.push(n.multiply(i));else if("/"===t.token)i.degree().isStrictlyPositive()?console.log("divide by a polynom -> should create a rational polynom !"):e.push(n.divide(i.monoms[0].coefficient));else if("^"===t.token)if(i.degree().isStrictlyPositive())console.error("Cannot elevate a polynom with another polynom !");else if(i.monoms[0].coefficient.isRelative())e.push(n.pow(i.monoms[0].coefficient.value));else if(1===n.monoms.length&&n.monoms[0].coefficient.isOne()){for(let e in n.monoms[0].literal)n.monoms[0].literal[e].multiply(i.monoms[0].coefficient);e.push(n)}else console.error("Cannot have power with fraction")}else console.log("Stack size: ",e.length),"-"===t.token?e.push(e.pop().opposed()):console.log("While parsing, cannot apply ",t.token,"to",e[0].tex);break;case s.ShutingyardType.MONOM:console.error("The monom token should not appear here");break;case s.ShutingyardType.FUNCTION:console.log("The function token should not appear here - might be introduced later.")}};shutingYardToReducedPolynom=e=>{const t=(new s.Shutingyard).parse(e).rpn;this.zero();let i=[];new n.Monom;for(const e of t)a.addToken(i,e);return 1===i.length&&this.add(i[0]),this};multiplyByPolynom=e=>{const t=[];for(const i of this._monoms)for(const s of e.monoms)t.push(n.Monom.xmultiply(i,s));return this._monoms=t,this.reduce()};multiplyByFraction=e=>{for(const t of this._monoms)t.coefficient.multiply(e);return this.reduce()};multiplyByInteger=e=>this.multiplyByFraction(new r.Fraction(e));multiplyByMonom=e=>{for(const t of this._monoms)t.multiply(e);return this.reduce()};divideByInteger=e=>{const t=new r.Fraction(e);for(const e of this._monoms)e.coefficient.divide(t);return this};divideByFraction=e=>{for(const t of this._monoms)t.coefficient.divide(e);return this};_factorize2ndDegree=e=>{let t,i,n,s,o,r,l,h,c;if(1===this.numberOfVars)return n=this.monomByDegree(2,e).coefficient,s=this.monomByDegree(1,e).coefficient,o=this.monomByDegree(0,e).coefficient,r=s.clone().pow(2).subtract(n.clone().multiply(o).multiply(4)),r.isZero()?(l=s.clone().opposed().divide(n.clone().multiply(2)),t=new a(e).subtract(l.display).multiply(l.denominator),i=new a(e).subtract(l.display).multiply(l.denominator),c=n.divide(l.denominator).divide(l.denominator),c.isOne()?[t,i]:[new a(c.display),t,i]):r.isPositive()&&r.isSquare()?(l=s.clone().opposed().add(r.clone().sqrt()).divide(n.clone().multiply(2)),h=s.clone().opposed().subtract(r.clone().sqrt()).divide(n.clone().multiply(2)),c=n.divide(l.denominator).divide(h.denominator),c.isOne()?[new a(e).subtract(l.display).multiply(l.denominator),new a(e).subtract(h.display).multiply(h.denominator)]:[new a(c.display),new a(e).subtract(l.display).multiply(l.denominator),new a(e).subtract(h.display).multiply(h.denominator)]):[this.clone()];if(n=this.monomByDegree(2,e),s=this.monomByDegree(1,e),o=this.monomByDegree(0,e),n.isLiteralSquare()&&o.isLiteralSquare()&&s.clone().pow(2).isSameAs(n.clone().multiply(o))){let e,t=new a("x",n.coefficient,s.coefficient,o.coefficient)._factorize2ndDegree("x"),i=[];if(t.length>=2){for(let s of t)s.degree().isZero()?i.push(s.clone()):(e=s.clone(),e.monoms[0].literal=n.literalSqrt,e.monoms[1].literal=o.literalSqrt,i.push(e.clone()));return i}}return[this.clone()]};_factorizeByGroups=()=>[]}t.Polynom=a},107:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Rational=void 0;const n=i(38),s=i(534);t.Rational=class{_rawString;_numerator;_denominator;constructor(e,t){this._numerator=e?e.clone():new n.Polynom,this._denominator=t?t.clone():new n.Polynom}clone=()=>(this._numerator=this._numerator.clone(),this._denominator=this._denominator.clone(),this);get tex(){return`\\dfrac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`}get texFactors(){return this._numerator.factorize(),this._denominator.factorize(),`\\dfrac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`}get numerator(){return this._numerator}get denominator(){return this._denominator}domain=()=>{let e=this._denominator.getZeroes();return 0===e.length||!1===e[0]?"\\mathbb{R}":!0===e[0]?"\\varnothing":"\\mathbb{R}\\setminus\\left{"+e.map((e=>"boolean"==typeof e?"":e.frac)).join(";")+"\\right}"};amplify=e=>(this._numerator.multiply(e),this._denominator.multiply(e),this);simplify=e=>{let t=this._numerator.euclidian(e);if(!t.reminder.isZero())return this;let i=this._denominator.euclidian(e);return i.reminder.isZero()?(this._numerator=t.quotient,this._denominator=i.quotient,this):this};reduce=()=>{console.log(this._numerator.tex),this._numerator.factorize(),console.log(this._numerator.factors.map((e=>e.tex)));for(let e of this._numerator.factors)this.simplify(e);return this};opposed=()=>(this._numerator.opposed(),this);add=e=>{let t=this._denominator.clone();return this.amplify(e._denominator),this._numerator.add(e._numerator.clone().multiply(t)),this};subtract=e=>this.add(e.clone().opposed());limits=(e,t)=>{if(e!==1/0&&e!==-1/0)return this._numerator.evaluate({letter:new s.Fraction(e)}).divide(this._denominator.evaluate({letter:new s.Fraction(e)}));{let i=this._numerator.monomByDegree(this._numerator.degree(t),t),n=this._denominator.monomByDegree(this._denominator.degree(t),t);if(i.divide(n),i.degree(t).isStrictlyPositive())return i.coefficient.sign()*Math.pow(e>0?1:-1,i.degree(t).value%2)==1?1/0:-1/0;if(i.degree(t).isZero())return i.coefficient;if(i.degree(t).isStrictlyPositive())return i.coefficient.sign()*Math.pow(-1,i.degree(t).value%2)==1?0:-0}}}},506:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Fraction=void 0;const n=i(956);class s{_numerator;_denominator;constructor(e,t){return this._numerator=1,this._denominator=1,void 0!==e&&this.parse(e,t),this}get isFraction(){return!0}get numerator(){return this._numerator}set numerator(e){this._numerator=e}get denominator(){return this._denominator}set denominator(e){this._denominator=e}get value(){return this._numerator/this._denominator}get tex(){return 1===this._denominator?`${this._numerator}`:this._numerator<0?`-\\frac{ ${-this._numerator} }{ ${this._denominator} }`:`\\frac{ ${this._numerator} }{ ${this._denominator} }`}get display(){return 1===this._denominator?`${this._numerator}`:`${this._numerator}/${this._denominator}`}get frac(){return this.tex}get dfrac(){return this.tex.replace("\\frac","\\dfrac")}get tfrac(){return this.tex.replace("\\frac","\\tfrac")}parse=(e,t)=>{let i;if(null===e||""===e)return this._numerator=0,this._denominator=1,this;switch(typeof e){case"string":if(i=e.split("/"),i.length>2)throw"Two many divide signs";if(i.map((e=>""===e||isNaN(Number(e)))).includes(!0))throw"Not a number";if(1===i.length)return this.parse(+i[0]);2===i.length?"0"===i[1]?(this._numerator=NaN,this._denominator=1):(this._numerator=+i[0],this._denominator=+i[1]):(this._numerator=NaN,this._denominator=1);break;case"number":if(Number.isSafeInteger(e))this._numerator=+e,void 0!==t&&Number.isSafeInteger(t)?this._denominator=+t:this._denominator=1;else{let i=e.toString().split(".")[1].length;void 0===t?(this._numerator=e*Math.pow(10,i),this._denominator=Math.pow(10,i)):Number.isSafeInteger(t)&&(this._numerator=e*Math.pow(10,i)-Math.floor(e*Math.pow(10,i-t)),this.denominator=Math.pow(10,i)-Math.pow(10,i-t)),this.reduce()}break;case"object":e instanceof s&&(this._numerator=+e.numerator,this._denominator=+e.denominator)}return this};clone=()=>{let e=new s;return e.numerator=+this._numerator,e.denominator=+this._denominator,e};zero=()=>(this._numerator=0,this._denominator=1,this);one=()=>(this._numerator=1,this._denominator=1,this);infinite=()=>(this._numerator=1/0,this._denominator=1,this);invalid=()=>(this._numerator=NaN,this._denominator=1,this);opposed=()=>(this._numerator=-this._numerator,this);add=e=>{if(!(e instanceof s))return this.add(new s(e));{let t=this._numerator,i=this._denominator;this._numerator=t*e.denominator+e.numerator*i,this._denominator=i*e.denominator}return this.reduce()};subtract=e=>e instanceof s?this.add(e.clone().opposed()):this.add(-e);multiply=e=>{let t=new s(e);return this._numerator=this._numerator*t.numerator,this._denominator=this._denominator*t.denominator,this.reduce()};divide=e=>{let t=new s(e);if(0===t.numerator)return(new s).infinite();let i=+this._numerator,n=+this._denominator;return this._numerator=i*t.denominator,this._denominator=n*t.numerator,this.reduce()};invert=()=>{let e=+this._numerator,t=+this._denominator;return this._numerator=t,this._denominator=e,this};pow=e=>{if(e instanceof s)return this.pow(e.value);this.reduce(),e<0&&this.invert();let t=Math.floor(Math.pow(this._numerator,Math.abs(e)));return Math.floor(Math.pow(this._denominator,Math.abs(e))),t**Math.abs(e)===this._numerator&&(Math.abs(e),this._denominator),this._numerator=this._numerator**Math.abs(e),this._denominator=this._denominator**Math.abs(e),this};root=e=>(0===e||(e<0&&this.invert(),Math.pow(this._numerator,Math.abs(1/e)),Math.pow(this._denominator,Math.abs(1/e)),this._numerator=Math.pow(this._numerator,Math.abs(1/e)),this._denominator=Math.pow(this._denominator,Math.abs(1/e))),this);sqrt=()=>this.root(2);abs=()=>(this._numerator=Math.abs(this._numerator),this._denominator=Math.abs(this._denominator),this);static max=(...e)=>{let t=new s(e[0]);for(let i of e){let e=new s(i);e.greater(t)&&(t=e.clone())}return t};static min=(...e)=>{let t=new s(e[0]);for(let i of e){let e=new s(i);e.lesser(t)&&(t=e.clone())}return t};reduce=()=>{let e=n.Numeric.gcd(this._numerator,this._denominator);return this._numerator=this._numerator/e,this._denominator=this._denominator/e,this._denominator<0&&(this._denominator=-this._denominator,this._numerator=-this._numerator),this};amplify=e=>(Number.isSafeInteger(e)&&(this._numerator*=e,this._denominator*=e),this);compare=(e,t)=>{let i;switch(void 0===t&&(t="="),i=e instanceof s?e.clone():new s(e),t){case">":return this.value>i.value;case">=":return this.value>=i.value;case"<":return this.value<i.value;case"<=":return this.value<=i.value;case"=":return this.value===i.value;case"<>":return this.value!==i.value;default:return!1}};lesser=e=>this.compare(e,"<");leq=e=>this.compare(e,"<=");greater=e=>this.compare(e,">");geq=e=>this.compare(e,">=");isEqual=e=>this.compare(e,"=");isNotEqual=e=>this.compare(e,"<>");isOpposed=e=>this.isEqual(e.clone().opposed());isInverted=e=>this.isEqual((new s).one().divide(e.clone()));isZero=()=>0===this._numerator;isNotZero=()=>0!==this._numerator;isOne=()=>1===this._numerator&&1===this._denominator;isNegativeOne=()=>-1===this._numerator&&1===this._denominator;isPositive=()=>1===this.sign();isNegative=()=>-1===this.sign();isStrictlyPositive=()=>this.value>0;isStrictlyNegative=()=>this.value<0;isNaN=()=>isNaN(this._numerator);isInfinity=()=>this._numerator===1/0;isFinite=()=>!this.isInfinity();isSquare=()=>Math.sqrt(this._numerator)%1==0&&Math.sqrt(this._denominator)%1==0;isReduced=()=>1===Math.abs(n.Numeric.gcd(this._numerator,this._denominator));isNatural=()=>this.isRelative()&&this.isPositive();isRelative=()=>1===this.clone().reduce().denominator;isRational=()=>!this.isRelative();isEven=()=>this.isRelative()&&this.value%2==0;isOdd=()=>this.isRelative()&&this.value%2==1;sign=()=>this._numerator*this._denominator>=0?1:-1;areEquals=(...e)=>{for(let t=0;t<e.length;t++)if(!this.isEqual(e[t]))return!1;return!0}}t.Fraction=s},534:function(e,t,i){var n=this&&this.__createBinding||(Object.create?function(e,t,i,n){void 0===n&&(n=i),Object.defineProperty(e,n,{enumerable:!0,get:function(){return t[i]}})}:function(e,t,i,n){void 0===n&&(n=i),e[n]=t[i]}),s=this&&this.__exportStar||function(e,t){for(var i in e)"default"===i||Object.prototype.hasOwnProperty.call(t,i)||n(t,e,i)};Object.defineProperty(t,"__esModule",{value:!0}),s(i(506),t),s(i(330),t)},330:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Nthroot=void 0,t.Nthroot=class{_radical;_nth;_coefficient;_isValid;constructor(...e){this._radical=1,this._coefficient=1,this._nth=2,this._isValid=!0,void 0!==e&&this.parse(e[0],e[1],e[2])}get radical(){return this._radical}set radical(e){this._radical=e}get nth(){return this._nth}set nth(e){Number.isSafeInteger(e)&&e>=2?this._nth=e:(console.log("Error setting the nth root"),this._nth=2)}get coefficient(){return this._coefficient}set coefficient(e){this._coefficient=e}get tex(){let e;return e=1===this._coefficient?"":-1===this._coefficient?"-":this._coefficient.toString(),1===this._radical?`${this._coefficient}`:2===this._nth?`${e}\\sqrt{${this._radical}}`:`${e}\\sqrt[${this._nth}]{${this._radical}}`}get value(){return this._coefficient*Math.pow(this._radical,1/this._nth)}parse=(e,t,i)=>(this._coefficient=void 0===i?1:i,this._nth=void 0===t?2:t,this._radical=void 0===e?1:e,this._nth%2==0&&this._radical<0&&(this._isValid=!1),this);reduce=()=>{let e=Math.floor(Math.pow(this._radical,1/this._nth));for(;e>1;)this._radical%Math.pow(e,this._nth)!=0?e--:(this._coefficient*=e,this._radical=this._radical/Math.pow(e,this._nth),e=Math.floor(Math.pow(this._radical,1/this._nth)));return this};multiply=e=>(this._radical*=e.radical,this.reduce());hasRadical=()=>!(1===this._radical||0===this._radical||!1===this._isValid)}},735:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.NumExp=void 0;const n=i(505),s=i(534);t.NumExp=class{_rpn;_expression;_isValid;constructor(e){this._expression=e,this._rpn=new n.Shutingyard(n.ShutingyardMode.NUMERIC).parse(e).rpn}get rpn(){return this._rpn}get isValid(){return void 0===this._isValid&&this.evaluate({x:0}),this._isValid}set isValid(e){this._isValid=e}get expression(){return this._expression}_extractDecimalPart(e){let t=e.toString();return t.includes(".")?(t=t.split(".")[1],t.substring(0,t.length-2)):""}_numberCorrection(e){const t=1e-14,i=this._extractDecimalPart(e);if(""===i)return e;const n=i.match(/9+$/g),s=i.match(/0+$/g);if(n&&n[0].length>=6){const i=this._extractDecimalPart(e+t).match(/0+$/g);if(i&&i[0].length>=6)return+(e+t).toString().split(i[0])[0]}if(s&&s[0].length>=6){const i=this._extractDecimalPart(e-t).match(/9+$/g);if(i&&i[0].length>=6)return+e.toString().split(s[0])[0]}return e}_addToStack(e,t){e.push(this._numberCorrection(t))}evaluate(e){const t=[];this.isValid=!0;for(const i of this._rpn)if(i.tokenType===n.ShutingyardType.COEFFICIENT)isNaN(+i.token)?this._addToStack(t,new s.Fraction(i.token).value):this._addToStack(t,+i.token);else if(i.tokenType===n.ShutingyardType.VARIABLE)void 0!==e[i.token]&&this._addToStack(t,+e[i.token]);else if(i.tokenType===n.ShutingyardType.CONSTANT)this._addToStack(t,n.tokenConstant[i.token]);else if(i.tokenType===n.ShutingyardType.OPERATION){if("*"===i.token){const e=t.pop(),i=t.pop();void 0!==i&&void 0!==e||(this.isValid=!1),this._addToStack(t,i*e)}else if("/"===i.token){const e=t.pop(),i=t.pop();void 0!==i&&void 0!==e||(this.isValid=!1),this._addToStack(t,i/e)}else if("+"===i.token){const e=t.pop(),i=t.pop();void 0!==i&&void 0!==e||(this.isValid=!1),this._addToStack(t,+i+ +e)}else if("-"===i.token){const e=t.pop(),i=t.pop()||0;void 0===e&&(this.isValid=!1),this._addToStack(t,i-e)}else if("^"===i.token){const e=t.pop(),i=t.pop();void 0!==i&&void 0!==e||(this.isValid=!1),this._addToStack(t,Math.pow(i,e))}}else if(i.tokenType===n.ShutingyardType.FUNCTION){const e=t.pop();void 0===e&&(this.isValid=!1),"sin"===i.token?this._addToStack(t,Math.sin(e)):"cos"===i.token?this._addToStack(t,Math.cos(e)):"tan"===i.token?this._addToStack(t,Math.tan(e)):"sqrt"===i.token&&this._addToStack(t,Math.sqrt(e))}if(1===t.length)return t[0];throw`There was a problem parsing: ${this._expression}`}}},75:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.PolynomExpProduct=t.PolynomExpFactor=void 0;const n=i(667),s=i(534);class o{constructor(e,t,i){this._polynom=new n.Polynom(e),this._degree=new s.Fraction(void 0===t?1:t),this._fn=i,this._powerAsInteger=!0,this._forceParenthesis=!0}_forceParenthesis;get forceParenthesis(){return this._forceParenthesis}set forceParenthesis(e){this._forceParenthesis=e}_fn;get fn(){return this._fn}set fn(e){this._fn=e}_powerAsInteger;get powerAsInteger(){return this._powerAsInteger}set powerAsInteger(e){this._powerAsInteger=e}_polynom;get polynom(){return this._polynom}set polynom(e){this._polynom=e}_degree;get degree(){return this._degree}set degree(e){this._degree=e}get tex(){let e;return e=!this._degree.isOne()||void 0===this._fn&&this._forceParenthesis?this._powerAsInteger&&!this._degree.isRelative()?`\\sqrt${2!==this._degree.denominator?`[ ${this._degree.denominator} ]`:""}{ ${this._polynom.tex} }^{ ${this._degree.numerator} }`:this.isCoefficient&&this.firstCoefficient.isNatural()?this._polynom.tex+this._texDegree:`\\left( ${this._polynom.tex} \\right)${this._texDegree}`:this._polynom.tex,void 0!==this._fn&&void 0!==this._fn.tex&&(e=`${this._fn.tex}\\left( ${e} \\right)`),e}get isCoefficient(){return this._polynom.degree().isZero()}get firstCoefficient(){return this._polynom.monomByDegree().coefficient}get _texDegree(){return this._degree.isOne()?"":`^{ ${this._degree.tfrac} }`}setForceParenthesis(e){return this._forceParenthesis=void 0===e||e,this}derivative(e){return this._degree.isOne()?new r(new o(this._polynom.clone().derivative(e))):new r(new o(this._degree.clone()),new o(this._polynom.clone().derivative(e)),new o(this._polynom.clone(),this._degree.clone().subtract(1)))}}t.PolynomExpFactor=o;class r{constructor(...e){this._factors=e||[],this._positive=!0,this._asPositiveDegree=!0}_fn;get fn(){return this._fn}set fn(e){this._fn=e}_factors;get factors(){return this._factors}set factors(e){this._factors=e}_positive;get positive(){return this._positive}set positive(e){this._positive=e}_asPositiveDegree;get asPositiveDegree(){return this._asPositiveDegree}set asPositiveDegree(e){this._asPositiveDegree=e}get tex(){let e=this._factors.length>1,t=this._factors.map((t=>t.setForceParenthesis(e).tex)).join(" \\cdot ");if(this._asPositiveDegree){const i=this._factors.filter((e=>e.degree.isPositive())),n=this._factors.filter((e=>e.degree.isNegative()));let s,o;n.length>0&&(0===i.length?s=[1]:1===i.length?s=[i[0].setForceParenthesis(!1).tex]:(e=i.length>1,s=i.map((t=>t.setForceParenthesis(e).tex))),n.map((e=>e.degree.opposed())),1===n.length?o=[n[0].setForceParenthesis(!1).tex]:(e=n.length>1,o=n.map((t=>t.setForceParenthesis(e).tex))),n.map((e=>e.degree.opposed())),t=`\\dfrac{ ${s.join(" \\cdot ")} }{ ${o.join(" \\cdot ")} }`)}return void 0!==this._fn&&void 0!==this._fn.name&&""!==this._fn.name&&(t=`${this._fn.tex}\\left( ${t} \\right)`),t}reduce(){let e=this._factors.filter((e=>e.isCoefficient)),t=this._factors.filter((e=>!e.isCoefficient)),i=(new s.Fraction).one();if(e.length>1)for(const t of e)t.degree.isPositive()?i.multiply(t.polynom.monoms[0].coefficient.pow(t.degree)):i.divide(t.polynom.monoms[0].coefficient.pow(t.degree.clone().abs()));else 1===e.length&&(i=e[0].polynom.monoms[0].coefficient);return i.isOne()?this._factors=[...t]:i.isRelative()?this._factors=[new o(i),...t]:this._factors=[new o(i.numerator),new o(i.denominator,-1),...t],this}integrate(e){if(2===this._factors.length){let t=this._factors[0].polynom.degree(e).value,i=this._factors[1].polynom.degree(e).value;if(t===i+1)return this._integrateWithInternalDerivative(this._factors[0],this._factors[1],e);if(t+1===i)return this._integrateWithInternalDerivative(this._factors[1],this._factors[0],e)}}applyMathFunction(e){return this._fn=e,this}_integrateWithInternalDerivative(e,t,i){let n=e.polynom.clone().derivative(i),{quotient:s,reminder:a}=t.polynom.clone().euclidian(n);if(a.isZero()&&s.degree(i).isZero())return e.degree.isEqual(-1)?new r(new o(s,1),new o(e.polynom.clone(),1,{name:"ln",tex:"\\ln",fn:e=>Math.log(e)})):new r(new o(e.degree.clone().add(1).invert(),1),new o(s,1),new o(e.polynom.clone(),e.degree.clone().add(1)))}}t.PolynomExpProduct=r},699:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Circle=void 0;const n=i(557),s=i(534),o=i(667),r=i(586),a=i(164);class l{_center;_squareRadius;_cartesian;_exists;constructor(...e){this._exists=!1,void 0!==e&&this.parse(...e)}get center(){return this._center}get exists(){return this._exists}get squareRadius(){return this._squareRadius}get radius(){return this._squareRadius.isSquare()?{tex:this._squareRadius.clone().sqrt().tex,display:this._squareRadius.clone().sqrt().display}:{tex:`\\sqrt{${this._squareRadius.tex}}`,display:`sqrt(${this._squareRadius.display})`}}get tex(){if(this._exists){let e,t;return e=this._center.x.isZero()?"x^2":`\\left(x${this._center.x.isNegative()?"+":"-"}${this._center.x.clone().abs().tex}\\right)^2`,t=this._center.y.isZero()?"y^2":`\\left(y${this._center.y.isNegative()?"+":"-"}${this._center.y.clone().abs().tex}\\right)^2`,`${e}+${t}=${this._squareRadius.tex}`}return"\\text{le cercle n'existe pas.}"}get developed(){return this._cartesian.tex}get display(){return this._cartesian.display}get cartesian(){return this._cartesian}clone(){return this._center=this._center.clone(),this._squareRadius=this._squareRadius.clone(),this._calculateCartesian(),this}_reset(){return this._center=null,this._squareRadius=null,this._cartesian=null,this._exists=!1,this}parse(...e){return this._reset(),"string"==typeof e[0]?this._parseEquation(new o.Equation(e[0])):e[0]instanceof o.Equation?this._parseEquation(e[0]):e[0]instanceof l?this._parseCopyCircle(e[0]):e[0]instanceof n.Point&&e.length>1&&(e[1]instanceof n.Point?e[2]instanceof n.Point?this._parseThroughtThreePoints(e[0],e[1],e[2]):this._parseCenterAndPointThrough(e[0],e[1]):(e[1]instanceof s.Fraction||"number"==typeof e[1])&&this._parseCenterAndRadius(e[0],e[1],"boolean"==typeof e[2]&&e[2])),this._exists&&(this._calculateCartesian(),void 0!==this._squareRadius&&this._squareRadius.isNegative()&&(this._exists=!1)),this}_calculateCartesian(){this._cartesian=new o.Equation(new o.Polynom(`(x-(${this._center.x.display}))^2+(y-(${this._center.y.display}))^2`),new o.Polynom(`${this._squareRadius.display}`)).moveLeft()}_parseCopyCircle(e){return this._center=e.center.clone(),this._squareRadius=e.squareRadius.clone(),this._calculateCartesian(),this._exists=e.exists,this}_parseCenterAndRadius(e,t,i){return this._center=e.clone(),this._squareRadius=i?new s.Fraction(t):new s.Fraction(t).pow(2),this._exists=!0,this}_parseCenterAndPointThrough(e,t){return this._center=e.clone(),this._squareRadius=new r.Vector(this._center,t).normSquare,this._exists=!0,this}_parseEquation(e){if(this._exists=!1,e.moveLeft(),2===e.degree("x").value&&2===e.degree("y").value){let t,i,s,o=e.left.monomByDegree(2,"x"),r=e.left.monomByDegree(2,"y");o.coefficient.isEqual(r.coefficient)?(e.divide(o.coefficient),t=e.left.monomByDegree(1,"x"),i=e.left.monomByDegree(1,"y"),s=e.left.monomByDegree(0),this._center=new n.Point(t.coefficient.clone().divide(2).opposed(),i.coefficient.clone().divide(2).opposed()),this._squareRadius=s.coefficient.clone().opposed().add(this._center.x.clone().pow(2)).add(this._center.y.clone().pow(2)),this._calculateCartesian(),this._exists=!0):(this._center=null,this._squareRadius=null,this._exists=!1)}return this}_parseThroughtThreePoints(e,t,i){let n=new a.Triangle(e,t,i),s=n.remarquables.mediators.AB.clone(),o=n.remarquables.mediators.AC.clone();return this.parse(s.intersection(o).point,e),this}relativePosition=e=>{let t=e.distanceTo(this.center),i=Math.sqrt(this._squareRadius.value);return t.value-i>1e-10?0:Math.abs(t.value-i)<1e-10?1:2};lineIntersection=e=>{let t,i=[];if(null===this._cartesian)return[];const r=this._cartesian.clone(),a=e.equation.clone().isolate("x"),l=e.equation.clone().isolate("y");if(a instanceof o.Equation&&l instanceof o.Equation){r.replaceBy("y",l.right).simplify(),r.solve();for(let e of r.solutions)!1===e.exact&&isNaN(e.value)||(t=new s.Fraction(!1===e.exact?e.value:e.exact),i.push(new n.Point(t.clone(),l.right.evaluate(t))))}return i}}t.Circle=l},272:function(e,t,i){var n=this&&this.__createBinding||(Object.create?function(e,t,i,n){void 0===n&&(n=i),Object.defineProperty(e,n,{enumerable:!0,get:function(){return t[i]}})}:function(e,t,i,n){void 0===n&&(n=i),e[n]=t[i]}),s=this&&this.__exportStar||function(e,t){for(var i in e)"default"===i||Object.prototype.hasOwnProperty.call(t,i)||n(t,e,i)};Object.defineProperty(t,"__esModule",{value:!0}),s(i(586),t),s(i(164),t),s(i(557),t),s(i(699),t),s(i(9),t)},9:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Line=void 0;const n=i(534),s=i(586),o=i(557),r=i(667),a=i(956);var l;!function(e){e[e.None=0]="None",e.Parallel="parallel",e.Perpendicular="perpendicular",e.Tangent="tangent"}(l||(l={}));class h{_a;_b;_c;_OA;_d;_n;_exists;_referencePropriety;_referenceLine;static PERPENDICULAR=l.Perpendicular;static PARALLEL=l.Parallel;constructor(...e){return this._exists=!1,e.length>0&&this.parse(...e),this}get exists(){return this._exists}get equation(){return new r.Equation((new r.Polynom).parse("xy",this._a,this._b,this._c),new r.Polynom("0")).simplify()}get tex(){let e=this.equation;return this._a.isNegative()&&e.multiply(-1),{canonical:e.tex,mxh:this.slope.isInfinity()?"x="+this.OA.x.tex:"y="+(new r.Polynom).parse("x",this.slope,this.height).tex,parametric:`${o.Point.pmatrix("x","y")} = ${o.Point.pmatrix(this._OA.x,this._OA.y)} + k\\cdot ${o.Point.pmatrix(this._d.x,this._d.y)}`}}get a(){return this._a}set a(e){this._a=e}get b(){return this._b}set b(e){this._b=e}get c(){return this._c}set c(e){this._c=e}get OA(){return this._OA}set OA(e){this._OA=e}get d(){return this._d}get n(){return this._n}get normal(){return new s.Vector(this._a,this._b)}get director(){return this._d.clone()}set d(e){this._d=e}get slope(){return this._a.clone().opposed().divide(this._b)}get height(){return this._c.clone().opposed().divide(this._b)}parse=(...e)=>{if(this._exists=!1,0===e.length)return this;if(1===e.length){if(e[0]instanceof h)return e[0].clone();if(e[0]instanceof r.Equation)return this.parseEquation(e[0]);if("string"==typeof e[0])try{let t=new r.Equation(e[0]);return this.parse(t)}catch(e){return this}}if(2===e.length){if(e[0]instanceof o.Point&&e[1]instanceof s.Vector)return this.parseByPointAndVector(e[0],e[1]);if(e[0]instanceof o.Point&&e[1]instanceof o.Point)return this.parseByPointAndVector(e[0],new s.Vector(e[0],e[1]));if(e[0]instanceof s.Vector&&e[1]instanceof o.Point)return this.parseByPointAndNormal(e[1],e[0])}if(3===e.length){if((e[0]instanceof n.Fraction||"number"==typeof e[0])&&(e[1]instanceof n.Fraction||"number"==typeof e[1])&&(e[2]instanceof n.Fraction||"number"==typeof e[2]))return this.parseByCoefficient(e[0],e[1],e[2]);if(e[0]instanceof o.Point&&e[1]instanceof s.Vector){if(e[2]===l.Perpendicular)return this.parseByPointAndNormal(e[0],e[1]);if(e[2]===l.Parallel)return this.parseByPointAndVector(e[0],e[1])}}return console.log("Someting wrong happend while creating the line"),this};parseEquation=e=>{e.reorder(!0);let t=new Set(e.letters());if(!t.has("x")&&!t.has("y"))return this;for(let e of["x","y"])t.has(e)&&t.delete(e);return t.size>0?this:this.parseByCoefficient(e.left.monomByLetter("x").coefficient,e.left.monomByLetter("y").coefficient,e.left.monomByDegree(0).coefficient)};parseByCoefficient=(e,t,i)=>(this._a=new n.Fraction(e),this._b=new n.Fraction(t),this._c=new n.Fraction(i),this._d=new s.Vector(this._b.clone(),this._a.clone().opposed()),this._OA=new o.Point((new n.Fraction).zero(),this._c.clone()),this._n=this._d.clone().normal(),this._exists=!0,this);parseByPointAndVector=(e,t)=>(this.parseByCoefficient(t.y,t.x.clone().opposed(),e.x.clone().multiply(t.y).subtract(e.y.clone().multiply(t.x)).opposed()),this._OA=e.clone(),this._d=t.clone(),this._n=this._d.clone().normal(),this._exists=!0,this);parseByPointAndNormal=(e,t)=>this.parseByCoefficient(t.x,t.y,e.x.clone().multiply(t.x).add(e.y.clone().multiply(t.y)).opposed());parseByPointAndLine=(e,t,i)=>(void 0===i&&(i=l.Parallel),i===l.Parallel?this.parseByPointAndNormal(e,t.normal):i===l.Perpendicular?this.parseByPointAndNormal(e,t.director):(this._exists=!1,this));clone=()=>(this._a=this._a.clone(),this._b=this._b.clone(),this._c=this._c.clone(),this._d=this._d.clone(),this._OA=this._OA.clone(),this._n=this._n.clone(),this._exists=this.exists,this);isParellelTo=e=>this.slope.isEqual(e.slope)&&this.height.isNotEqual(e.height);isSameAs=e=>this.slope.isEqual(e.slope)&&this.height.isEqual(e.height);isVertical=()=>this.slope.isInfinity();simplify=()=>{let e=a.Numeric.lcm(this._a.denominator,this._b.denominator,this._c.denominator),t=a.Numeric.gcd(this._a.numerator,this._b.numerator,this._c.numerator);return this.parseByCoefficient(this._a.clone().multiply(e).divide(t),this._b.clone().multiply(e).divide(t),this._c.clone().multiply(e).divide(t)),this};simplifyDirection=()=>{let e=a.Numeric.lcm(this._d.x.denominator,this._d.y.denominator),t=a.Numeric.gcd(this._d.x.numerator,this._d.y.numerator);return this._d.x.multiply(e).divide(t),this._d.y.multiply(e).divide(t),this};intersection=e=>{let t=new o.Point,i=!1,n=!1;return this._b.isZero()||e.b.isZero(),this.isParellelTo(e)?(t.x=null,t.y=null,i=!0):this.isSameAs(e)?(t.x=null,t.y=null,n=!0):(t.x=this._b.clone().multiply(e.c).subtract(this._c.clone().multiply(e.b)).divide(this._a.clone().multiply(e.b).subtract(this._b.clone().multiply(e.a))),t.y=this._a.clone().multiply(e.c).subtract(this._c.clone().multiply(e.a)).divide(this._b.clone().multiply(e.a).subtract(this._a.clone().multiply(e.b)))),{point:t,hasIntersection:!(i||n),isParallel:i,isSame:n}};distanceTo(e){let t=e.x.clone().multiply(this._a).add(e.y.clone().multiply(this._b)).add(this._c).abs(),i=this.normal.normSquare;if(i.isZero())return{value:NaN,tex:"Not a line",fraction:(new n.Fraction).infinite()};let s=t.value/Math.sqrt(i.value),o=t.clone().divide(i.clone().sqrt());return i.isSquare()?{value:s,tex:o.tex,fraction:o}:{value:s,tex:`\\frac{${t.tex}}{\\sqrt{${i.tex}}}`,fraction:o}}hitSegment(e,t){let i=this.intersection(new h(e,t));return!!i.hasIntersection&&i.point.x.value>=Math.min(e.x.value,t.x.value)&&i.point.x.value<=Math.max(e.x.value,t.x.value)&&i.point.y.value>=Math.min(e.y.value,t.y.value)&&i.point.y.value<=Math.max(e.y.value,t.y.value)}getValueAtX=e=>{const t=this.equation.clone().isolate("y"),i=new n.Fraction(e);if(t instanceof r.Equation)return t.right.evaluate({x:i})};getValueAtY=e=>{const t=this.equation.clone().isolate("x"),i=new n.Fraction(e);if(t instanceof r.Equation)return t.right.evaluate({y:i})};canonicalAsFloatCoefficient(e){void 0===e&&(e=2),this._a.value,this._b.value,this._c.value;let t="";return this._a.isZero()||(t=this._a.isOne()?"x":this._a.clone().opposed().isOne()?"-x":this._a.value.toFixed(e)+"x"),this._b.isZero()||(this._b.isPositive()&&(t+="+"),t+=this._b.value.toFixed(e)+"y"),this._c.isZero()||(this._c.isPositive()&&(t+="+"),t+=this._c.value.toFixed(e)),t+"=0"}}t.Line=h},557:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Point=void 0;const n=i(534);class s{_x;_y;_exist;constructor(...e){return this._x=(new n.Fraction).zero(),this._y=(new n.Fraction).zero(),void 0!==e&&this.parse(...e),this}get x(){return this._x}set x(e){this._x=e}get y(){return this._y}set y(e){this._y=e}get tex(){let e=[];return e.push(this._x.tex),e.push(this._y.tex),`\\left(${e.join(";")}\\right)`}get display(){let e=[];return e.push(this._x.tex),e.push(this._y.tex),`(${e.join(";")})`}parse=(...e)=>{if(this.zero(),0===e.length)return this;if(1===e.length){if(e[0]instanceof s)return this._x=e[0].x.clone(),this._y=e[0].y.clone(),this;if("string"==typeof e[0]){let t=e[0].split(",");if(2===t.length)return this._x=new n.Fraction(t[0]).reduce(),this._y=new n.Fraction(t[1]).reduce(),this}return e[0]instanceof class{x;y}?(this._x=new n.Fraction(e[0].x).reduce(),this._y=new n.Fraction(e[0].y).reduce(),this):this.zero()}return 2===e.length?(this._x=new n.Fraction(e[0]).reduce(),this._y=new n.Fraction(e[1]).reduce(),this):this};clone=()=>(this._x=this._x.clone(),this._y=this._y.clone(),this);zero=()=>(this._x=new n.Fraction(null),this._y=new n.Fraction(null),this);origin=()=>(this.zero(),this);middleOf=(e,t)=>(this._x=e.x.clone().add(t.x).divide(2),this._y=e.y.clone().add(t.y).divide(2),this);texValues=e=>{let t=[];return t.push(this._x.value.toFixed(void 0===e?2:e)),t.push(this._y.value.toFixed(void 0===e?2:e)),`\\left(${t.join(";")}\\right)`};static pmatrix=(e,t,i)=>void 0===i?`\\begin{pmatrix} ${e.tex?e.tex:e} \\\\ ${t.tex?t.tex:t} \\end{pmatrix}`:`\\begin{pmatrix} ${e.tex?e.tex:e} \\\\ ${t.tex?t.tex:t} \\\\ ${i.tex?i.tex:i} \\end{pmatrix}`}t.Point=s},164:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Triangle=void 0;const n=i(557),s=i(506),o=i(586),r=i(9),a=i(760);class l{_A;_B;_C;_lines;_middles;_remarquables;constructor(...e){return e.length>0&&this.parse(...e),this}get A(){return this._A}get B(){return this._B}get C(){return this._C}get AB(){return this.getSegment("A","B")}get BA(){return this.getSegment("B","A")}get BC(){return this.getSegment("B","C")}get CB(){return this.getSegment("C","B")}get AC(){return this.getSegment("A","C")}get CA(){return this.getSegment("C","A")}get isRectangle(){return!!this.AB.isNormalTo(this.BC)||!!this.AB.isNormalTo(this.AC)||!!this.BC.isNormalTo(this.AC)}get isEquilateral(){return this.AB.normSquare.isEqual(this.BC.normSquare)&&this.AB.normSquare.isEqual(this.AC.normSquare)}get isIsocele(){return this.AB.normSquare.isEqual(this.BC.normSquare)||this.AB.normSquare.isEqual(this.AC.normSquare)||this.BC.normSquare.isEqual(this.AC.normSquare)}get lines(){return this._lines}get remarquables(){return this._remarquables}parse=(...e)=>{if(6===e.length){let t=e.map((e=>new s.Fraction(e)));return this.parse(new n.Point(t[0],t[1]),new n.Point(t[2],t[3]),new n.Point(t[4],t[5]))}if(3===e.length){if(3===e.filter((e=>"string"==typeof e)).length)return this.parse(...e.map((e=>new r.Line(e))));if(3===e.filter((e=>e instanceof r.Line)).length){this._lines={AB:e[0],BC:e[1],AC:e[2]};let t=e[0].intersection(e[1]);if(!t.hasIntersection)return this;if(this._B=t.point.clone(),t=e[1].intersection(e[2]),!t.hasIntersection)return this;if(this._C=t.point.clone(),t=e[2].intersection(e[0]),!t.hasIntersection)return this;this._A=t.point.clone()}else{if(e.filter((e=>e instanceof n.Point)).length<3)return this.parse(new n.Point(e[0]),new n.Point(e[1]),new n.Point(e[2]));this._A=e[0].clone(),this._B=e[1].clone(),this._C=e[2].clone(),this._lines={AB:new r.Line(this._A,this._B),BC:new r.Line(this._B,this._C),AC:new r.Line(this._A,this._C)}}}else if(1===e.length&&e[0]instanceof l)return e[0].clone();return this._updateTriangle(),this};clone=()=>(this._A=this._A.clone(),this._B=this._B.clone(),this._C=this._C.clone(),this._lines={AB:this._lines.AB.clone(),BC:this._lines.BC.clone(),AC:this._lines.AC.clone()},this._updateTriangle(),this);_updateTriangle=()=>{this._middles={AB:(new n.Point).middleOf(this._A,this._B),AC:(new n.Point).middleOf(this._A,this._C),BC:(new n.Point).middleOf(this._B,this._C)},this._remarquables=this._calculateRemarquableLines()};getPointByName=e=>{switch(e.toUpperCase()){case"A":return this._A;case"B":return this._B;case"C":return this._C}return this._A};getSegment=(e,t)=>new o.Vector(this.getPointByName(e),this.getPointByName(t));_calculateRemarquableLines=()=>{let e={medians:{A:new r.Line(this._A,this._middles.BC),B:new r.Line(this._B,this._middles.AC),C:new r.Line(this._C,this._middles.AB),intersection:null},mediators:{AB:new r.Line(this._middles.AB,new o.Vector(this._A,this._B).normal()),AC:new r.Line(this._middles.AC,new o.Vector(this._A,this._C).normal()),BC:new r.Line(this._middles.BC,new o.Vector(this._B,this._C).normal()),intersection:null},heights:{A:new r.Line(this._A,new o.Vector(this._B,this._C).normal()),B:new r.Line(this._B,new o.Vector(this._A,this._C).normal()),C:new r.Line(this._C,new o.Vector(this._A,this._B).normal()),intersection:null},bisectors:{A:this._calculateBisectors("A"),B:this._calculateBisectors("B"),C:this._calculateBisectors("C"),intersection:null}};return e.medians.intersection=e.medians.A.intersection(e.medians.B).point,e.mediators.intersection=e.mediators.AB.intersection(e.mediators.BC).point,e.heights.intersection=e.heights.A.intersection(e.heights.B).point,e.bisectors.intersection=e.bisectors.A.intersection(e.bisectors.B).point,e};_calculateBisectors=e=>{let t,i,n=this.lines;"A"===e?(t=n.AB,i=n.AC):"B"===e?(t=n.AB,i=n.BC):"C"===e&&(t=n.BC,i=n.AC);let s=new r.Line(new a.Equation(t.equation.left.clone().multiply(i.n.simplify().norm),i.equation.left.clone().multiply(t.n.simplify().norm)).reorder(!0).simplify()),o=new r.Line(new a.Equation(t.equation.left.clone().multiply(i.n.simplify().norm),i.equation.left.clone().multiply(t.n.simplify().norm).opposed()).reorder(!0).simplify());return"A"===e?s.hitSegment(this.B,this.C)?s:o:"B"===e?s.hitSegment(this.A,this.C)?s:o:"C"===e?s.hitSegment(this.B,this.A)?s:o:s}}t.Triangle=l},586:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Vector=void 0;const n=i(506),s=i(956),o=i(557);class r{_x;_y;constructor(...e){this._x=(new n.Fraction).zero(),this._y=(new n.Fraction).zero(),void 0!==e&&this.parse(...e)}get x(){return this._x}set x(e){this._x=e}get y(){return this._y}set y(e){this._y=e}get normSquare(){return this._x.clone().pow(2).add(this._y.clone().pow(2))}get norm(){return Math.sqrt(this.normSquare.value)}get tex(){return`\\begin{pmatrix}${this._x.tex} \\\\ ${this._y.tex} \\end{pmatrix}`}parse=(...e)=>{if(this.zero(),0===e.length)return this;if(1===e.length)return e[0]instanceof r?e[0].clone():this._parseString(e[0]);if(e.length>=2){if(e[0]instanceof o.Point&&e[1]instanceof o.Point)return this._x=e[1].x.clone().subtract(e[0].x),this._y=e[1].y.clone().subtract(e[0].y),this;(e[0]instanceof n.Fraction||!isNaN(e[0]))&&(this._x=new n.Fraction(e[0])),(e[1]instanceof n.Fraction||!isNaN(e[1]))&&(this._y=new n.Fraction(e[1])),"object"!=typeof e[0]||isNaN(e[0].x)||isNaN(e[0].x)||"object"!=typeof e[1]||isNaN(e[1].x)||isNaN(e[1].x)||(this._x=new n.Fraction(+e[1].x-e[0].x),this._y=new n.Fraction(+e[1].y-e[0].y))}return this};clone=()=>{let e=new r;return null!==this._x&&(e.x=this._x.clone()),null!==this._y&&(e.y=this._y.clone()),e};reset=()=>(this._x=null,this._y=null,this);zero=()=>(this.reset(),this._x=new n.Fraction(null),this._y=new n.Fraction(null),this);one=()=>(this._x=new n.Fraction,this._y=new n.Fraction,this);_parseString=e=>{let t=e.split(/[,;\s]/g);return this.x=new n.Fraction(t[0]||null),this.y=new n.Fraction(t[1]||null),this};opposed=()=>(this._x.opposed(),this._y.opposed(),this);add=e=>(this._x.add(e.x),this._y.add(e.y),this);subtract=e=>this.add(e.clone().opposed());scalarProductWithVector=e=>this._x.clone().multiply(e.x).add(this._y.clone().multiply(e.y));static scalarProduct=(e,t)=>e.x.value*t.x.value+e.y.value*t.y.value;normal=()=>{let e=this.x.clone().opposed(),t=this.y.clone();return this._x=t,this._y=e,this};isNormalTo=e=>this.scalarProductWithVector(e).isZero();multiplyByScalar=e=>{let t=new n.Fraction(e);return this._x.multiply(t),this._y.multiply(t),this};divideByScalar=e=>this.multiplyByScalar(new n.Fraction(e).invert());simplify=()=>this.multiplyByScalar(s.Numeric.lcm(this._x.denominator,this._y.denominator)).divideByScalar(s.Numeric.gcd(this._x.numerator,this._y.numerator));angleWith=(e,t,i)=>{let n=this.scalarProductWithVector(e).value,s=i?1:180/Math.PI;return t&&(n=Math.abs(n)),s*Math.acos(n/(this.norm*e.norm))}}t.Vector=r},956:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Numeric=void 0;class i{static round(e,t=2){return Number(Math.round(Number(e+"e"+t))+"e-"+t)}static prime(e){let t=[2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,199,211,223,227,229,233,239,241,251,257,263,269,271,277,281,283,293,307,311,313,317,331,337,347,349,353,359,367,373,379,383,389,397,401,409,419,421,431,433,439,443,449,457,461,463,467,479,487,491,499,503,509,521,523,541,547,557,563,569,571,577,587,593,599,601,607,613,617,619,631,641,643,647,653,659,661,673,677,683,691,701,709,719,727,733,739,743,751,757,761,769,773,787,797,809,811,821,823,827,829,839,853,857,859,863,877,881,883,887,907,911,919,929,937,941,947,953,967,971,977,983,991,997,1009,1013,1019,1021,1031,1033,1039,1049,1051,1061,1063,1069,1087,1091,1093,1097,1103,1109,1117,1123,1129,1151,1153,1163,1171,1181,1187,1193,1201,1213,1217,1223,1229,1231,1237,1249,1259,1277,1279,1283,1289,1291,1297,1301,1303,1307,1319,1321,1327,1361,1367,1373,1381,1399,1409,1423,1427,1429,1433,1439,1447,1451,1453,1459,1471,1481,1483,1487,1489,1493,1499,1511,1523,1531,1543,1549,1553,1559,1567,1571,1579,1583,1597,1601,1607,1609,1613,1619,1621,1627,1637,1657,1663,1667,1669,1693,1697,1699,1709,1721,1723,1733,1741,1747,1753,1759,1777,1783,1787,1789,1801,1811,1823,1831,1847,1861,1867,1871,1873,1877,1879,1889,1901,1907,1913,1931,1933,1949,1951,1973,1979,1987,1993,1997,1999,2003,2011,2017,2027,2029,2039,2053,2063,2069,2081,2083,2087,2089,2099,2111,2113,2129,2131,2137,2141,2143,2153,2161,2179,2203,2207,2213,2221,2237,2239,2243,2251,2267,2269,2273,2281,2287,2293,2297,2309,2311,2333,2339,2341,2347,2351,2357,2371,2377,2381,2383,2389,2393,2399,2411,2417,2423,2437,2441,2447,2459,2467,2473,2477,2503,2521,2531,2539,2543,2549,2551,2557,2579,2591,2593,2609,2617,2621,2633,2647,2657,2659,2663,2671,2677,2683,2687,2689,2693,2699,2707,2711,2713,2719,2729,2731,2741,2749,2753,2767,2777,2789,2791,2797,2801,2803,2819,2833,2837,2843,2851,2857,2861,2879,2887,2897,2903,2909,2917,2927,2939,2953,2957,2963,2969,2971,2999,3001,3011,3019,3023,3037,3041,3049,3061,3067,3079,3083,3089,3109,3119,3121,3137,3163,3167,3169,3181,3187,3191,3203,3209,3217,3221,3229,3251,3253,3257,3259,3271,3299,3301,3307,3313,3319,3323,3329,3331,3343,3347,3359,3361,3371,3373,3389,3391,3407,3413,3433,3449,3457,3461,3463,3467,3469,3491,3499,3511,3517,3527,3529,3533,3539,3541,3547,3557,3559,3571,3581,3583,3593,3607,3613,3617,3623,3631,3637,3643,3659,3671,3673,3677,3691,3697,3701,3709,3719,3727,3733,3739,3761,3767,3769,3779,3793,3797,3803,3821,3823,3833,3847,3851,3853,3863,3877,3881,3889,3907,3911,3917,3919,3923,3929,3931,3943,3947,3967,3989,4001,4003,4007,4013,4019,4021,4027,4049,4051,4057,4073,4079,4091,4093,4099,4111,4127,4129,4133,4139,4153,4157,4159,4177,4201,4211,4217,4219,4229,4231,4241,4243,4253,4259,4261,4271,4273,4283,4289,4297,4327,4337,4339,4349,4357,4363,4373,4391,4397,4409,4421,4423,4441,4447,4451,4457,4463,4481,4483,4493,4507,4513,4517,4519,4523,4547,4549,4561,4567,4583,4591,4597,4603,4621,4637,4639,4643,4649,4651,4657,4663,4673,4679,4691,4703,4721,4723,4729,4733,4751,4759,4783,4787,4789,4793,4799,4801,4813,4817,4831,4861,4871,4877,4889,4903,4909,4919,4931,4933,4937,4943,4951,4957,4967,4969,4973,4987,4993,4999,5003,5009,5011,5021,5023,5039,5051,5059,5077,5081,5087,5099,5101,5107,5113,5119,5147,5153,5167,5171,5179,5189,5197,5209,5227,5231,5233,5237,5261,5273,5279,5281,5297,5303,5309,5323,5333,5347,5351,5381,5387,5393,5399,5407,5413,5417,5419,5431,5437,5441,5443,5449,5471,5477,5479,5483,5501,5503,5507,5519,5521,5527,5531,5557,5563,5569,5573,5581,5591,5623,5639,5641,5647,5651,5653,5657,5659,5669,5683,5689,5693,5701,5711,5717,5737,5741,5743,5749,5779,5783,5791,5801,5807,5813,5821,5827,5839,5843,5849,5851,5857,5861,5867,5869,5879,5881,5897,5903,5923,5927,5939,5953,5981,5987,6007,6011,6029,6037,6043,6047,6053,6067,6073,6079,6089,6091,6101,6113,6121,6131,6133,6143,6151,6163,6173,6197,6199,6203,6211,6217,6221,6229,6247,6257,6263,6269,6271,6277,6287,6299,6301,6311,6317,6323,6329,6337,6343,6353,6359,6361,6367,6373,6379,6389,6397,6421,6427,6449,6451,6469,6473,6481,6491,6521,6529,6547,6551,6553,6563,6569,6571,6577,6581,6599,6607,6619,6637,6653,6659,6661,6673,6679,6689,6691,6701,6703,6709,6719,6733,6737,6761,6763,6779,6781,6791,6793,6803,6823,6827,6829,6833,6841,6857,6863,6869,6871,6883,6899,6907,6911,6917,6947,6949,6959,6961,6967,6971,6977,6983,6991,6997,7001,7013,7019,7027,7039,7043,7057,7069,7079,7103,7109,7121,7127,7129,7151,7159,7177,7187,7193,7207,7211,7213,7219,7229,7237,7243,7247,7253,7283,7297,7307,7309,7321,7331,7333,7349,7351,7369,7393,7411,7417,7433,7451,7457,7459,7477,7481,7487,7489,7499,7507,7517,7523,7529,7537,7541,7547,7549,7559,7561,7573,7577,7583,7589,7591,7603,7607,7621,7639,7643,7649,7669,7673,7681,7687,7691,7699,7703,7717,7723,7727,7741,7753,7757,7759,7789,7793,7817,7823,7829,7841,7853,7867,7873,7877,7879,7883,7901,7907,7919,7927,7933,7937,7949,7951,7963,7993,8009,8011,8017,8039,8053,8059,8069,8081,8087,8089,8093,8101,8111,8117,8123,8147,8161,8167,8171,8179,8191,8209,8219,8221,8231,8233,8237,8243,8263,8269,8273,8287,8291,8293,8297,8311,8317,8329,8353,8363,8369,8377,8387,8389,8419,8423,8429,8431,8443,8447,8461,8467,8501,8513,8521,8527,8537,8539,8543,8563,8573,8581,8597,8599,8609,8623,8627,8629,8641,8647,8663,8669,8677,8681,8689,8693,8699,8707,8713,8719,8731,8737,8741,8747,8753,8761,8779,8783,8803,8807,8819,8821,8831,8837,8839,8849,8861,8863,8867,8887,8893,8923,8929,8933,8941,8951,8963,8969,8971,8999,9001,9007,9011,9013,9029,9041,9043,9049,9059,9067,9091,9103,9109,9127,9133,9137,9151,9157,9161,9173,9181,9187,9199,9203,9209,9221,9227,9239,9241,9257,9277,9281,9283,9293,9311,9319,9323,9337,9341,9343,9349,9371,9377,9391,9397,9403,9413,9419,9421,9431,9433,9437,9439,9461,9463,9467,9473,9479,9491,9497,9511,9521,9533,9539,9547,9551,9587,9601,9613,9619,9623,9629,9631,9643,9649,9661,9677,9679,9689,9697,9719,9721,9733,9739,9743,9749,9767,9769,9781,9787,9791,9803,9811,9817,9829,9833,9839,9851,9857,9859,9871,9883,9887,9901,9907,9923,9929,9931,9941,9949,9967,9973];return void 0===e?t:t.slice(0,Math.max(t.length,e))}static dividers(e){let t;const i=Math.sqrt(Math.abs(e));t=[];for(let n=1;n<=i;n++)e%n==0&&(t.push(n),t.push(e/n));return t.sort((function(e,t){return e-t})),[...new Set(t)]}static gcd(...e){let t=function(e,i){return 0===i?e:t(i,e%i)},i=1,n=2;if(0===e.length)return 1;if(1===e.length)return 0===e[0]?1:e[0];if(i=t(e[0],e[1]),1===i)return 1;for(n=2;n<e.length&&(i=t(i,e[n]),1!==i);n++);return Math.abs(i)}static lcm(...e){return e.reduce((function(e,t){return Math.abs(e*t/i.gcd(e,t))}))}}t.Numeric=i},984:function(e,t,i){var n=this&&this.__createBinding||(Object.create?function(e,t,i,n){void 0===n&&(n=i),Object.defineProperty(e,n,{enumerable:!0,get:function(){return t[i]}})}:function(e,t,i,n){void 0===n&&(n=i),e[n]=t[i]}),s=this&&this.__exportStar||function(e,t){for(var i in e)"default"===i||Object.prototype.hasOwnProperty.call(t,i)||n(t,e,i)};Object.defineProperty(t,"__esModule",{value:!0}),t.Random=void 0;const o=i(773),r=i(41),a=i(890),l=i(538);var h;s(i(233),t),(h=t.Random||(t.Random={})).polynom=function(e){return new o.rndPolynom(e).generate()},h.monom=function(e){return new r.rndMonom(e).generate()},h.fraction=function(e){return new l.rndFraction(e).generate()},h.number=function(e,t){return a.rndHelpers.randomInt(e,t)},h.numberSym=function(e,t){return a.rndHelpers.randomIntSym(e,t)},h.bool=function(e){return a.rndHelpers.randomBool(e)},h.array=function(e,t){return a.rndHelpers.randomArray(e,t)},h.item=function(e){return a.rndHelpers.randomItem(e)},h.shuffle=function(e){a.rndHelpers.shuffleArray(e)}},43:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.randomCore=void 0,t.randomCore=class{_config;_defaultConfig;mergeConfig=(e,t)=>void 0!==e?{...t,...e}:t;generate=()=>{};config=e=>(this._config=this.mergeConfig(e,this._defaultConfig),this)}},538:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.rndFraction=void 0;const n=i(43),s=i(534),o=i(984);class r extends n.randomCore{constructor(e){super(),this._defaultConfig={negative:!0,max:10,reduced:!0,zero:!0,natural:!1},this._config=this.mergeConfig(e,this._defaultConfig)}generate=()=>{let e=new s.Fraction;return this._config.negative?e.numerator=o.Random.numberSym(this._config.max,this._config.zero):e.numerator=o.Random.number(this._config.zero?0:1,this._config.max),this._config.natural?e.denominator=1:e.denominator=o.Random.number(1,this._config.max),this._config.reduced?e.reduce():e}}t.rndFraction=r},890:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.rndHelpers=void 0;class i{static randomBool(e=.5){return Math.random()<e}static randomInt(e,t){return void 0===t?this.randomInt(0,e):Math.floor(Math.random()*(t-e+1)+e)}static randomIntSym(e,t){return!1===t?this.randomBool()?this.randomInt(1,e):-this.randomInt(1,e):this.randomInt(-e,e)}static randomArray(e,t){return void 0===t&&(t=1),e.length<=0?Object.values(e):i.shuffleArray(e).slice(0,t)}static randomItem(e){return 0===e.length?"":this.randomArray(e,1)[0]}static shuffleArray(e){let t=Object.values(e);for(let e=t.length-1;e>0;e--){const i=Math.floor(Math.random()*(e+1)),n=t[e];t[e]=t[i],t[i]=n}return t}}t.rndHelpers=i},41:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.rndMonom=void 0;const n=i(43),s=i(984),o=i(667);class r extends n.randomCore{constructor(e){super(),this._defaultConfig={letters:"x",degree:2,fraction:!0,zero:!1},this._config=this.mergeConfig(e,this._defaultConfig)}generate=()=>{let e=new o.Monom;if("boolean"==typeof this._config.fraction?e.coefficient=s.Random.fraction({zero:this._config.zero,reduced:!0,natural:!this._config.fraction}):e.coefficient=s.Random.fraction(this._config.fraction),this._config.letters.length>1){for(let t of this._config.letters.split(""))e.setLetter(t,0);for(let t=0;t<this._config.degree;t++){const t=s.Random.item(this._config.letters.split(""));e.setLetter(t,e.degree(t).clone().add(1))}}else e.setLetter(this._config.letters,this._config.degree);return e}}t.rndMonom=r},773:(e,t,i)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.rndPolynom=void 0;const n=i(43),s=i(41),o=i(984),r=i(667);class a extends n.randomCore{constructor(e){super(),this._defaultConfig={letters:"x",degree:2,fraction:!1,zero:!1,unit:!1,factorable:!1,allowNullMonom:!0,numberOfMonoms:0,positive:!0},this._config=this.mergeConfig(e,this._defaultConfig)}generate=()=>{if(this._config.factorable&&this._config.degree>1)return this.factorable();let e,t=(new r.Polynom).empty();for(let i=this._config.degree;i>=0;i--)e=new s.rndMonom({letters:this._config.letters,degree:i,fraction:this._config.fraction,zero:i!==this._config.degree&&this._config.allowNullMonom}).generate(),this._config.unit&&this._config.degree===i&&e.coefficient.one(),t.add(e);if(this._config.positive&&t.monomByDegree().coefficient.isNegative()&&t.monomByDegree().coefficient.opposed(),this._config.numberOfMonoms>0&&this._config.numberOfMonoms<t.length){let e=t.monomByDegree().clone();t.monoms=o.Random.array(t.monoms.slice(1),this._config.numberOfMonoms-1),t.add(e).reorder().reduce()}return t};factorable=()=>{let e=(new r.Polynom).one(),t={...this._config};t.degree=1,t.factorable=!1;for(let i=0;i<this._config.degree;i++)e.multiply(o.Random.polynom(t));return e}}t.rndPolynom=a},233:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0})},505:(e,t)=>{var i,n;Object.defineProperty(t,"__esModule",{value:!0}),t.Shutingyard=t.ShutingyardMode=t.ShutingyardType=t.tokenConstant=void 0,t.tokenConstant={pi:Math.PI,e:Math.exp(1)},function(e){e.VARIABLE="variable",e.COEFFICIENT="coefficient",e.OPERATION="operation",e.CONSTANT="constant",e.FUNCTION="function",e.MONOM="monom"}(i=t.ShutingyardType||(t.ShutingyardType={})),function(e){e.POLYNOM="polynom",e.SET="set",e.NUMERIC="numeric"}(n=t.ShutingyardMode||(t.ShutingyardMode={})),t.Shutingyard=class{_rpn=[];_mode;_tokenConfig;_tokenConstant;_uniformize;_tokenKeys;constructor(e){this._mode=void 0===e?n.POLYNOM:e,this.tokenConfigInitialization()}tokenConfigInitialization(){return this._mode===n.SET?(this._tokenConfig={"&":{precedence:3,associative:"left",type:i.OPERATION},"|":{precedence:3,associative:"left",type:i.OPERATION},"!":{precedence:4,associative:"right",type:i.OPERATION},"-":{precedence:2,associative:"left",type:i.OPERATION}},this._uniformize=!1):this._mode===n.NUMERIC?(this._tokenConfig={"^":{precedence:4,associative:"right",type:i.OPERATION},"*":{precedence:3,associative:"left",type:i.OPERATION},"/":{precedence:3,associative:"left",type:i.OPERATION},"+":{precedence:2,associative:"left",type:i.OPERATION},"-":{precedence:2,associative:"left",type:i.OPERATION},"%":{precedence:3,associative:"right",type:i.OPERATION},sin:{precedence:4,associative:"right",type:i.FUNCTION},cos:{precedence:4,associative:"right",type:i.FUNCTION},tan:{precedence:4,associative:"right",type:i.FUNCTION},sqrt:{precedence:4,associative:"right",type:i.FUNCTION}},this._uniformize=!1):(this._tokenConfig={"^":{precedence:4,associative:"right",type:i.OPERATION},"*":{precedence:3,associative:"left",type:i.OPERATION},"/":{precedence:3,associative:"left",type:i.OPERATION},"+":{precedence:2,associative:"left",type:i.OPERATION},"-":{precedence:2,associative:"left",type:i.OPERATION}},this._uniformize=!0),this._tokenKeys=Object.keys(this._tokenConfig).sort(((e,t)=>t.length-e.length)),this._tokenConfig}NextToken(e,s){let o,r;if(o="",r="","("===e[s])o="(",r="(";else if(")"===e[s])o=")",r=")";else if(","===e[s])o=",",r="function-argument";else{for(let t of this._tokenKeys)if(e.substring(s,s+t.length)===t){o+=t,r=this._tokenConfig[t].type;break}for(let n in t.tokenConstant)if(e.substring(s,s+n.length)===n){o+=n,r=i.CONSTANT;break}""===o&&(e[s].match(/[0-9]/)?(this._mode,n.POLYNOM,o=e.substring(s).match(/^([0-9.,]+)/)[0],r=i.COEFFICIENT):e[s].match(/[a-zA-Z]/)?(o=e.substring(s).match(/^([a-zA-Z])/)[0],r=i.VARIABLE):(console.log("Unidentified token",e[s],e,s),o=e[s],r=i.MONOM))}return[o,s+o.length,r]}Uniformizer(e){if(!this._uniformize)return e;let t;t=e.replace(/\)\(/g,")*("),t=t.replace(/([\da-zA-Z])(\()/g,"$1*$2"),t=t.replace(/(\))([\da-zA-Z])/g,"$1*$2"),t=t.replace(/([0-9])([a-zA-Z])/g,"$1*$2"),t=t.replace(/([a-zA-Z])([0-9])/g,"$1*$2"),t=t.replace(/([abcxyz])([abcxyz])/g,"$1*$2");let i=["sin","cos","tan"];for(let e of i)t=t.replace(new RegExp(e+"\\*","g"),e);return t}parse(e,t){let i=[],n=[],s="",o=0,r="",a=0;e=this.Uniformizer(e);let l,h=50;for(;o<e.length;){if(h--,0===h){console.log("SECURITY LEVEL 1 EXIT");break}switch([s,o,r]=this.NextToken(e,o),r){case"monom":case"coefficient":case"variable":case"constant":i.push({token:s,tokenType:r});break;case"operation":if(a=n.length,n.length>0){let e=n[n.length-1];for(l=50;e.token in this._tokenConfig&&("left"===this._tokenConfig[s].associative&&this._tokenConfig[s].precedence<=this._tokenConfig[e.token].precedence||"right"===this._tokenConfig[s].associative&&this._tokenConfig[s].precedence<this._tokenConfig[e.token].precedence);){if(l--,0===l){console.log("SECURITY LEVEL 2 OPERATION EXIT");break}if(i.push(n.pop()||{token:"",tokenType:"operation"}),0===n.length)break;e=n[n.length-1]}}n.push({token:s,tokenType:r});break;case"function-argument":for(l=50;"("!==n[n.length-1].token&&n.length>0;){if(l--,0===l){console.log("SECURITY LEVEL 2 FUNCTION ARGUMENT EXIT");break}i.push(n.pop()||{token:s,tokenType:r})}break;case"(":n.push({token:s,tokenType:r}),"-"===e[o]&&i.push({token:"0",tokenType:"coefficient"});break;case")":for(l=50;"("!==n[n.length-1].token&&n.length>1;){if(l--,0===l){console.log("SECURITY LEVEL 2 CLOSING PARENTHESE EXIT");break}i.push(n.pop()||{token:s,tokenType:r})}n.pop();break;case"function":n.push({token:s,tokenType:r});break;default:console.log(`SHUTING YARD: ${r} : ${s} `)}}return this._rpn=i.concat(n.reverse()),this}get rpn(){return this._rpn}}}},t={};function i(n){var s=t[n];if(void 0!==s)return s.exports;var o=t[n]={exports:{}};return e[n].call(o.exports,o,o.exports,i),o.exports}(()=>{const e=i(956),t=i(735),n=i(505),s=i(984),o=i(534),r=i(667),a=i(272);window.Pi={ShutingYard:n.Shutingyard,Numeric:e.Numeric,NumExp:t.NumExp,Fraction:o.Fraction,Root:o.Nthroot,Monom:r.Monom,Polynom:r.Polynom,Equation:r.Equation,LinearSystem:r.LinearSystem,Rational:r.Rational,Logicalset:r.Logicalset,Random:s.Random,PolynomExpFactor:r.PolynomExpFactor,PolynomExpProduct:r.PolynomExpProduct,Geometry:{Vector:a.Vector,Point:a.Point,Line:a.Line,Triangle:a.Triangle,Circle:a.Circle}}})()})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ 760:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Equation = void 0;
+const polynom_1 = __webpack_require__(38);
+const numeric_1 = __webpack_require__(956);
+const coefficients_1 = __webpack_require__(534);
+class Equation {
+    /**
+     * Create an Equation using two polynoms.
+     * Markdown *support* is cool
+     * @param equations
+     */
+    constructor(...equations) {
+        // Undetermined texSolutions.
+        this._varnothing = '\\varnothing';
+        this._real = '\\mathbb{R}';
+        // ------------------------------------------
+        // Creation / parsing functions
+        // -----------------------------------------------
+        this._randomizeDefaults = {
+            degree: 2
+        };
+        // ------------------------------------------
+        this.parse = (equationString) => {
+            let pStr, strSign;
+            // Find the string separator
+            strSign = this._findSign(equationString);
+            if (strSign === false) {
+                console.error('The equation is not valid (no sign found)');
+                return;
+            }
+            // The StrSign is found
+            pStr = equationString.split(strSign);
+            return this.create(new polynom_1.Polynom(pStr[0]), new polynom_1.Polynom(pStr[1]), this._formatSign(strSign));
+        };
+        this.create = (left, right, sign) => {
+            this._left = left;
+            this._right = right;
+            this._sign = this._formatSign(sign);
+            return this;
+        };
+        this.clone = () => {
+            return new Equation().create(this._left.clone(), this._right.clone(), this._sign + '');
+        };
+        // -----------------------------------------------
+        // Equations generators and randomizers
+        this.randomize = (opts, sign) => {
+            // TODO: Generate equations randomly, using config.
+            return new Equation().create(new polynom_1.Polynom(), new polynom_1.Polynom(), sign);
+        };
+        // -----------------------------------------------
+        /**
+         * Reorder will move all monoms containing a letter on the left, all the other on the right.
+         */
+        this.moveLeft = () => {
+            this._left = this._left.clone().subtract(this._right);
+            this._right.zero();
+            return this;
+        };
+        this.reorder = (allLeft) => {
+            // Move all monoms of degree greater than 0 to the left.
+            // and all zero degree monoms to the right.
+            this._left.subtract(this._right);
+            this._right.zero();
+            if (allLeft) {
+                return this.moveLeft();
+            }
+            let mMove;
+            for (let m of this._left.monoms) {
+                if (m.degree().isZero()) {
+                    mMove = m.clone();
+                    this._left.subtract(mMove);
+                    this._right.subtract(mMove);
+                }
+            }
+            // Reorder the left and right polynoms
+            this._left.reorder();
+            this._right.reorder();
+            return this;
+        };
+        /**
+         * Multiply by the lcm denominator and divide by the gcm numerators.
+         */
+        this.simplify = () => {
+            this.multiply(numeric_1.Numeric.lcm(...this._left.getDenominators(), ...this._right.getDenominators()));
+            this.divide(numeric_1.Numeric.gcd(...this._left.getNumerators(), ...this._right.getNumerators()));
+            return this;
+        };
+        // -----------------------------------------------
+        // Equations operations
+        /**
+         * Reorder the polynom to have only one letter on the left, the rest on the right.
+         * @param letter
+         */
+        this.isolate = (letter) => {
+            // Determine if we can isolate the variables.
+            // Both part of the equations must be of the first degree.
+            //TODO: handle equations of degree two or more ?
+            if (!this.degree(letter).isOne()) {
+                return false;
+            }
+            // Modify the equation to isolate the asked variable.
+            // TODO: must handle equations like 3xy+5y=4 => y = 4/(3x-5)
+            if (this.isMultiVariable()) {
+                return false;
+            }
+            // Isolate the letter.
+            let mMove, cMove;
+            // Start by moving everything to the left.
+            this._left.subtract(this._right);
+            this._right.zero();
+            for (let m of this._left.monoms) {
+                if (!m.hasLetter(letter)) {
+                    mMove = m.clone();
+                    this._left.add(mMove.clone().opposed());
+                    this._right.add(mMove.clone().opposed());
+                }
+            }
+            // In theory, we should have only one item on the left.
+            if (this._left.length !== 1) {
+                return false;
+            }
+            cMove = this._left.monoms[0].coefficient.clone();
+            this._left.divide(cMove);
+            this._right.divide(cMove);
+            return this;
+        };
+        this.replaceBy = (letter, P) => {
+            this._left.replaceBy(letter, P);
+            this._right.replaceBy(letter, P);
+            return this;
+        };
+        /**
+         * Multiple an equation by a fraction value.
+         * @param value
+         */
+        this.multiply = (value) => {
+            // Make sure we have a fraction.
+            let F = new coefficients_1.Fraction(value);
+            // Multiply each part of the equation by the fraction
+            this._left.multiply(F);
+            this._right.multiply(F);
+            // The sign of the inequation must be changed.
+            if (this._sign !== '=' && F.sign() === -1) {
+                this._reverseSign();
+            }
+            return this;
+        };
+        /**
+         * divide an equation by a given value (transformed as a fraction)
+         *
+         * ```
+         * 8x+10=6x \vert 2
+         * 4x+5=3x
+         * ```
+         *
+         * |>Alternatively with $3x-4$ maybe it's working ?
+         * $$\frac{3x}{5}$$
+         *
+         * @param value
+         * @returns {Equation}
+         */
+        this.divide = (value) => {
+            // Make sure we have a fraction.
+            let F = new coefficients_1.Fraction(value);
+            if (F.isZero()) {
+                return this;
+            }
+            else {
+                return this.multiply(F.invert());
+            }
+        };
+        /**
+         * Get the degree of the equation
+         * @param letter
+         */
+        this.degree = (letter) => {
+            return coefficients_1.Fraction.max(this._left.degree(letter), this._right.degree(letter));
+        };
+        /**
+         * Determine if the equation contains more than one letter/variable.
+         */
+        this.isMultiVariable = () => {
+            return this._left.isMultiVariable || this._right.isMultiVariable;
+        };
+        this.letters = () => {
+            // @ts-ignore
+            return [...new Set([...this._left.letters(), ...this._right.letters()])];
+        };
+        // -----------------------------------------------
+        // Equations helpers
+        // -----------------------------------------------
+        // -----------------------------------------------
+        this.solve = () => {
+            // Initialise the variables:
+            this._solutions = [];
+            // TODO: consolidate solving equations (inequations vs equations)
+            // TODO: work with not natural degrees ?
+            this._polynom = this._left.clone().subtract(this._right);
+            switch (this._polynom.degree().value) {
+                case 0:
+                case 1:
+                    this._solveDegree1();
+                    break;
+                case 2:
+                    this._solveDegree2();
+                    break;
+                default:
+                    this._solveDegree3plus();
+            }
+            return this;
+        };
+        this.test = (values) => {
+            return this.left.evaluate(values).isEqual(this.right.evaluate(values));
+        };
+        this._findSign = (equationString) => {
+            let strSign = '';
+            if (equationString.includes('geq')) {
+                return (equationString.includes('\\geq')) ? '\\geq' : 'geq';
+            }
+            else if (equationString.includes('leq')) {
+                return (equationString.includes('\\leq')) ? '\\leq' : 'leq';
+            }
+            else if (equationString.includes('>=')) {
+                return '>=';
+            }
+            else if (equationString.includes('=>')) {
+                return '=>';
+            }
+            else if (equationString.includes('>')) {
+                return '>';
+            }
+            else if (equationString.includes('<=')) {
+                return '<=';
+            }
+            else if (equationString.includes('=<')) {
+                return '=<';
+            }
+            else if (equationString.includes('<')) {
+                return '<';
+            }
+            else if (equationString.includes('=')) {
+                return '=';
+            }
+            if (strSign === '') {
+                console.log('Equation: parse string : sign not found');
+                return false;
+            }
+        };
+        // -----------------------------------------------
+        // Equations solving algorithms
+        this._formatSign = (signStr) => {
+            if (signStr === undefined) {
+                return '=';
+            }
+            if (signStr.includes('geq')) {
+                return '>=';
+            }
+            else if (signStr.includes('>=')) {
+                return '>=';
+            }
+            else if (signStr.includes('=>')) {
+                return '>=';
+            }
+            else if (signStr.includes('>')) {
+                return '>';
+            }
+            else if (signStr.includes('leq')) {
+                return '<=';
+            }
+            else if (signStr.includes('<=')) {
+                return '<=';
+            }
+            else if (signStr.includes('=<')) {
+                return '<=';
+            }
+            else if (signStr.includes('<')) {
+                return '<';
+            }
+            else {
+                return '=';
+            }
+        };
+        this._reverseSign = () => {
+            if (this._sign === '=') {
+                return this;
+            }
+            if (this._sign.includes('<')) {
+                this._sign.replace('<', '>');
+                return this;
+            }
+            if (this._sign.includes('>')) {
+                this._sign.replace('>', '<');
+                return this;
+            }
+            return this;
+        };
+        this.isGreater = () => {
+            if (this._sign.indexOf('>') !== -1) {
+                return true;
+            }
+            return this._sign.indexOf('geq') !== -1;
+        };
+        this.isStrictEqual = () => {
+            return this._sign === '=';
+        };
+        this.isAlsoEqual = () => {
+            if (this._sign.indexOf('=') !== -1) {
+                return true;
+            }
+            if (this._sign.indexOf('geq') !== -1) {
+                return true;
+            }
+            if (this._sign.indexOf('leq') !== -1) {
+                return true;
+            }
+        };
+        this._solveDegree1 = (letter) => {
+            const m1 = this._polynom.monomByDegree(1, letter).coefficient, m0 = this._polynom.monomByDegree(0, letter).coefficient, v = m0.clone().opposed().divide(m1);
+            let s;
+            if (this.isStrictEqual()) {
+                if (m1.value === 0) {
+                    // In this case, the coefficient of the x variable is zero.
+                    if (m0.value === 0) {
+                        this._solutions = [{
+                                tex: this._real,
+                                value: NaN,
+                                exact: false
+                            }];
+                    }
+                    else {
+                        this._solutions = [{
+                                tex: this._varnothing,
+                                value: NaN,
+                                exact: false
+                            }];
+                    }
+                }
+                else {
+                    this._solutions = [{
+                            tex: v.display,
+                            value: v.value,
+                            exact: v
+                        }];
+                }
+            }
+            else {
+                if (m1.value === 0) {
+                    // In this case, the coefficient of the x variable is zero.
+                    if (m0.value === 0 && this.isAlsoEqual()) {
+                        s = '\\mathbb{R}';
+                    }
+                    else {
+                        if (m0.value > 0) {
+                            s = this.isGreater() ? this._real : this._varnothing;
+                        }
+                        else {
+                            s = !this.isGreater() ? this._real : this._varnothing;
+                        }
+                    }
+                }
+                else {
+                    // Must handle the case if the m1 monom is negative.
+                    if ((this.isGreater() && m1.sign() === 1) || (!this.isGreater() && m1.sign() === -1)) {
+                        s = `\\left${this.isAlsoEqual() ? '\\[' : '\\]'}${v};+\\infty\\right\\[`;
+                    }
+                    else {
+                        s = `\\left\\]-\\infty;${v} \\right\\${this.isAlsoEqual() ? '\\]' : '\\['}`;
+                    }
+                }
+                this._solutions = [{
+                        tex: s,
+                        value: NaN,
+                        exact: false
+                    }];
+            }
+            return this._solutions;
+        };
+        this._solveDegree2 = (letter) => {
+            let aF = this._polynom.monomByDegree(2, letter).coefficient, bF = this._polynom.monomByDegree(1, letter).coefficient, cF = this._polynom.monomByDegree(0, letter).coefficient, delta, nthDelta, lcm = numeric_1.Numeric.lcm(aF.denominator, bF.denominator, cF.denominator), a = aF.multiply(lcm).value, b = bF.multiply(lcm).value, c = cF.multiply(lcm).value, realX1, realX2, sX1, sX2;
+            delta = b * b - 4 * a * c;
+            if (delta > 0) {
+                realX1 = (-b - Math.sqrt(delta)) / (2 * a);
+                realX2 = (-b + Math.sqrt(delta)) / (2 * a);
+                if (delta > 1.0e5) {
+                    // The delta is too big to be parsed !
+                    this._solutions = [
+                        {
+                            tex: ((-b - Math.sqrt(delta)) / (2 * a)).toFixed(5),
+                            value: realX1,
+                            exact: false
+                        },
+                        {
+                            tex: ((-b + Math.sqrt(delta)) / (2 * a)).toFixed(5),
+                            value: realX2,
+                            exact: false
+                        }
+                    ];
+                }
+                else {
+                    nthDelta = new coefficients_1.Nthroot(delta).reduce();
+                    if (nthDelta.hasRadical()) {
+                        // -b +- coeff\sqrt{radical}
+                        // -------------------------
+                        //           2a
+                        let gcd = numeric_1.Numeric.gcd(b, 2 * a, nthDelta.coefficient);
+                        nthDelta.coefficient = nthDelta.coefficient / gcd;
+                        // TODO: Can i delete the next line ?
+                        // let deltaC = nthDelta.coefficient, deltaR = nthDelta.radical;
+                        if (b !== 0) {
+                            if (2 * a / gcd === 1) {
+                                this._solutions = [
+                                    {
+                                        tex: `${-b / gcd} - ${nthDelta.tex}`,
+                                        value: realX1,
+                                        exact: false // TODO: implement exact value with nthroot
+                                    },
+                                    {
+                                        tex: `${-b / gcd} + ${nthDelta.tex}`,
+                                        value: realX2,
+                                        exact: false
+                                    },
+                                ];
+                            }
+                            else {
+                                this._solutions = [
+                                    {
+                                        tex: `\\dfrac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        value: realX1,
+                                        exact: false
+                                    },
+                                    {
+                                        tex: `\\dfrac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        value: realX2,
+                                        exact: false
+                                    },
+                                ];
+                            }
+                        }
+                        else {
+                            if (2 * a / gcd === 1) {
+                                this._solutions = [
+                                    {
+                                        tex: `- ${nthDelta.tex}`,
+                                        value: realX1,
+                                        exact: false
+                                    },
+                                    {
+                                        tex: `${nthDelta.tex}`,
+                                        value: realX2,
+                                        exact: false
+                                    },
+                                ];
+                            }
+                            else {
+                                this._solutions = [
+                                    {
+                                        tex: `\\dfrac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        value: realX1,
+                                        exact: false
+                                    },
+                                    {
+                                        tex: `\\dfrac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        value: realX2,
+                                        exact: false
+                                    },
+                                ];
+                            }
+                        }
+                    }
+                    else {
+                        // -b +- d / 2a
+                        const S1 = new coefficients_1.Fraction(-b - nthDelta.coefficient, 2 * a).reduce(), S2 = new coefficients_1.Fraction(-b + nthDelta.coefficient, 2 * a).reduce();
+                        this._solutions = [
+                            {
+                                tex: S1.dfrac,
+                                value: realX1,
+                                exact: S1
+                            },
+                            {
+                                tex: S2.dfrac,
+                                value: realX2,
+                                exact: S2
+                            }
+                        ];
+                    }
+                }
+            }
+            else if (delta === 0) {
+                const sol = new coefficients_1.Fraction(-b, 2 * a).reduce();
+                this._solutions = [{
+                        tex: sol.dfrac,
+                        value: sol.value,
+                        exact: sol
+                    }];
+            }
+            else {
+                this._solutions = [{
+                        tex: this._varnothing,
+                        value: NaN,
+                        exact: false
+                    }];
+            }
+            // Handle now the inequations.
+            if (!this.isStrictEqual()) {
+                if (this._solutions.length === 2) {
+                    sX1 = (realX1 < realX2) ? this._solutions[0].tex : this._solutions[1].tex;
+                    sX2 = (realX1 < realX2) ? this._solutions[1].tex : this._solutions[0].tex;
+                    if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
+                        this._solutions = [{
+                                tex: `\\left]-\\infty ; ${sX1}\\right${this.isAlsoEqual() ? ']' : '['} \\cup \\left${this.isAlsoEqual() ? '[' : ']'}${sX2};+\\infty\\right[`,
+                                value: NaN,
+                                exact: false
+                            }
+                        ];
+                    }
+                    else {
+                        this._solutions = [{
+                                tex: `\\left${this.isAlsoEqual() ? '[' : ']'}${sX1} ; ${sX2}\\right${this.isAlsoEqual() ? ']' : '['}`,
+                                value: NaN,
+                                exact: false
+                            }];
+                    }
+                }
+                else if (this._solutions.length === 1 && this._solutions[0].tex !== this._varnothing) {
+                    if (!this.isAlsoEqual()) {
+                        if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
+                            this._solutions = [{
+                                    tex: `\\left]-\\infty ; ${this._solutions[0].tex}\\right[ \\cup \\left]${this._solutions[0].tex};+\\infty\\right[`,
+                                    value: NaN,
+                                    exact: false
+                                }
+                            ];
+                        }
+                        else {
+                            this._solutions = [{
+                                    tex: this._varnothing,
+                                    value: NaN,
+                                    exact: false
+                                }];
+                        }
+                    }
+                    else {
+                        if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
+                            this._solutions = [{
+                                    tex: this._real,
+                                    value: NaN,
+                                    exact: false
+                                }];
+                        }
+                        else {
+                            // this._texSolutions = [ this._texSolutions[0] ];
+                        }
+                    }
+                }
+                else {
+                    if (this.isGreater()) {
+                        this._solutions = [{
+                                tex: aF.sign() === 1 ? this._real : this._varnothing,
+                                value: NaN,
+                                exact: false
+                            }];
+                    }
+                    else {
+                        this._solutions = [{
+                                tex: aF.sign() === -1 ? this._real : this._varnothing,
+                                value: NaN,
+                                exact: false
+                            }];
+                    }
+                }
+            }
+            return this._solutions;
+        };
+        this._solveDegree3plus = () => {
+            // TODO: try to resolve equations with a degree superior than 2.
+            this._solutions = [{ tex: 'solve x - not yet handled', value: NaN, exact: false }]; // ESLint remove system :(
+            return this._solutions;
+        };
+        // Default equation
+        this._left = new polynom_1.Polynom().zero();
+        this._right = new polynom_1.Polynom().zero();
+        this._sign = '=';
+        if (equations.length === 1) {
+            if (equations[0] instanceof Equation) {
+                return equations[0].clone();
+            }
+            else if (typeof equations[0] === 'string') {
+                this.parse(equations[0]);
+            }
+        }
+        else if (equations.length === 2) {
+            if (equations[0] instanceof polynom_1.Polynom) {
+                this.left = equations[0].clone();
+            }
+            else if (typeof equations[0] === 'string') {
+                this.left = new polynom_1.Polynom(equations[0]);
+            }
+            if (equations[1] instanceof polynom_1.Polynom) {
+                this.right = equations[1].clone();
+            }
+            else if (typeof equations[1] === 'string') {
+                this.right = new polynom_1.Polynom(equations[1]);
+            }
+        }
+        else {
+            // Return default empty equation
+            return this;
+        }
+        return this;
+    }
+    get left() {
+        return this._left;
+    }
+    set left(value) {
+        this._left = value;
+    }
+    get right() {
+        return this._right;
+    }
+    // ------------------------------------------
+    // Getter and setter
+    set right(value) {
+        this._right = value;
+    }
+    get sign() {
+        return this._sign;
+    }
+    set sign(value) {
+        // Set the sign value as formatted.
+        this._sign = this._formatSign(value);
+    }
+    // ------------------------------------------
+    get solutions() {
+        return this._solutions;
+    }
+    get isEquation() {
+        return true;
+    }
+    get solution() {
+        if (this._solutions.length === 1
+            &&
+                (this._solutions[0].tex === this._real
+                    || this._solutions[0].tex === this._varnothing
+                    || this._solutions[0].tex.includes('\\left'))) {
+            return `S = ${this._solutions[0]}`;
+        }
+        return `S = \\left{ ${this._solutions.map(x => x.tex).join(';')} \\right}`;
+    }
+    get isReal() {
+        if (this._solutions === undefined) {
+            this.solve();
+        }
+        return this._solutions[0].tex === this._real;
+    }
+    get isVarnothing() {
+        if (this._solutions === undefined) {
+            this.solve();
+        }
+        return this._solutions[0].tex === this._varnothing;
+    }
+    get signAsTex() {
+        if (this._sign === '>=' || this._sign === '=>' || this._sign === 'geq') {
+            return '\\geq';
+        }
+        if (this._sign === '<=' || this._sign === '=<' || this._sign === 'leq') {
+            return '\\leq';
+        }
+        return this._sign;
+    }
+    get tex() {
+        return `${this._left.tex}${this.signAsTex}${this._right.tex}`;
+    }
+    get display() {
+        return `${this._left.display}${this.signAsTex}${this._right.display}`;
+    }
+    get raw() {
+        return `${this._left.raw}${this.signAsTex}${this._right.raw}`;
+    }
+    get variables() {
+        return [...new Set(this._right.variables.concat(this._left.variables))];
+    }
+    get numberOfVars() {
+        return this.variables.length;
+    }
+    get randomizeDefaults() {
+        return this._randomizeDefaults;
+    }
+    set randomizeDefaults(value) {
+        this._randomizeDefaults = value;
+    }
+}
+exports.Equation = Equation;
+
+
+/***/ }),
+
+/***/ 667:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(760), exports);
+__exportStar(__webpack_require__(554), exports);
+__exportStar(__webpack_require__(236), exports);
+__exportStar(__webpack_require__(937), exports);
+__exportStar(__webpack_require__(38), exports);
+__exportStar(__webpack_require__(107), exports);
+__exportStar(__webpack_require__(75), exports);
+
+
+/***/ }),
+
+/***/ 554:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LinearSystem = void 0;
+const coefficients_1 = __webpack_require__(534);
+const equation_1 = __webpack_require__(760);
+const polynom_1 = __webpack_require__(38);
+const random_1 = __webpack_require__(984);
+// TODO: Must check and rework
+class LinearSystem {
+    constructor(...equationStrings) {
+        // ------------------------------------------
+        // Creation / parsing functions
+        // ------------------------------------------
+        this.parse = (...equations) => {
+            this._equations = equations.map(value => new equation_1.Equation(value));
+            this._findLetters();
+            return this;
+        };
+        this.setCoefficient = (...coefficients) => {
+            // Reset the equations list
+            this._equations = [];
+            let i = 0;
+            while (i < coefficients.length - this._letters.length) {
+                let left = new polynom_1.Polynom().parse(this._letters.join(''), ...coefficients.slice(i, i + this._letters.length)), right = new polynom_1.Polynom(coefficients[i + this._letters.length].toString()), equ = new equation_1.Equation().create(left, right);
+                this._equations.push(equ.clone());
+                i = i + this._letters.length + 1;
+            }
+            return this;
+        };
+        this.clone = () => {
+            return new LinearSystem().parse(...this._equations.map(equ => equ.clone()));
+        };
+        this.setLetters = (...letters) => {
+            this._letters = letters;
+            return this;
+        };
+        this._findLetters = () => {
+            // Find all letters used.
+            let variables = new Set();
+            for (let equ of this._equations) {
+                variables = new Set([...variables, ...equ.variables]);
+            }
+            // TODO: How to transform (Set of string) to string[]
+            // @ts-ignore
+            this._letters = [...variables];
+            return this;
+        };
+        // -----------------------------------------------
+        // Equations generators and randomizers
+        // -----------------------------------------------
+        this.generate = (...solutions) => {
+            let solutionsF = [];
+            // Convert the numbers to fractions if necessary
+            for (let s of solutions) {
+                if (typeof s === "number") {
+                    solutionsF.push(new coefficients_1.Fraction(s.toString()));
+                }
+                else {
+                    solutionsF.push(s.clone());
+                }
+            }
+            // Create the equations and make sure they are not linear combined.
+            this._equations = [];
+            for (let i = 0; i < solutions.length; i++) {
+                this._equations.push(this._generateOneEquation(...solutionsF));
+            }
+            return this;
+        };
+        this._generateOneEquation = (...solutions) => {
+            let coeff = [], leftValue = new coefficients_1.Fraction().zero(), letters = ['x', 'y', 'z', 't', 'u', 'v', 'w', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'], equString = '', equ;
+            for (let i = 0; i < solutions.length; i++) {
+                coeff.push(random_1.Random.numberSym(5));
+                leftValue.add(solutions[i].clone().multiply(coeff[i]));
+                equString += `${(coeff[i] < 0) ? coeff[i] : '+' + coeff[i]}${letters[i]}`;
+            }
+            // LeftValue contains the left part oof the equation - and is then the isSame as the right part.
+            // It might be a Fraction.
+            // Must check if it's not a linear combination
+            equ = new equation_1.Equation(`${equString}=${leftValue.display}`);
+            if (equ.right.monoms[0].coefficient.denominator != 1) {
+                equ.multiply(new coefficients_1.Fraction(equ.right.monoms[0].coefficient.denominator, 1));
+            }
+            if (this._checkIfLinerCombination(equ)) {
+                return equ;
+            }
+            else {
+                return this._generateOneEquation(...solutions);
+            }
+        };
+        this.mergeEquations = (eq1, eq2, factor1, factor2) => {
+            // Set and clone the equations.
+            let eq1multiplied = eq1.clone().multiply(new coefficients_1.Fraction(factor1)), eq2multiplied = eq2.clone().multiply(new coefficients_1.Fraction(factor2));
+            // Add both equations together.
+            eq1multiplied.left.add(eq2multiplied.left);
+            eq1multiplied.right.add(eq2multiplied.right);
+            return eq1multiplied;
+        };
+        // ------------------------------------------
+        // Solvers algorithm
+        // ------------------------------------------
+        this.reorder = () => {
+            for (let E of this._equations) {
+                E.reorder();
+            }
+            return this;
+        };
+        this.solve = () => {
+            // Solve it by linear
+            this._solutions = {};
+            this._resolutionSteps = [];
+            // Reorder all equations.
+            this.reorder();
+            // Get all variables in the linear system
+            let V = this.variables.sort();
+            for (let letter of V) {
+                this._solutions[letter] = this._solveOneLetter(letter, V);
+            }
+            // TODO: LinearSystem - solve: optimization and handle undetermined and undefined systems.
+            return this;
+        };
+        this._checkIfLinerCombination = (equ) => {
+            return true;
+        };
+        // ------------------------------------------
+        // Helpers
+        // ------------------------------------------
+        this.log = () => {
+            let str = '';
+            for (let E of this._equations) {
+                console.log(E.tex);
+                str += `${E.tex}\\n}`;
+            }
+            return str;
+        };
+        this._equations = [];
+        this._letters = 'xy'.split('');
+        if (equationStrings !== undefined && equationStrings.length > 0) {
+            this.parse(...equationStrings);
+        }
+        return this;
+    }
+    // ------------------------------------------
+    // Getter and setter
+    // ------------------------------------------
+    get equations() {
+        return this._equations;
+    }
+    set equations(value) {
+        this._equations = value;
+    }
+    get letters() {
+        return this._letters.join('');
+    }
+    set letters(value) {
+        this._letters = value.split('');
+    }
+    get isSolvable() {
+        let V = this.variables;
+        // TODO: in some case, it is possible to resolve systems if there isn't the isSame number of vars and equations
+        if (V.length !== this._equations.length) {
+            return false;
+        }
+        //TODO: Must check if two equations isn't a linear combination of the others ?
+        return true;
+    }
+    get variables() {
+        let V = [];
+        for (let E of this._equations) {
+            V = V.concat(E.variables);
+        }
+        return [...new Set(V)].sort();
+    }
+    get tex() {
+        // Build the array of values.
+        // Reorder
+        // This clone the system :!!!
+        //TODO: Avoid cloning this linear system
+        let LS = this.clone().reorder(), letters = LS.variables, equStr, equArray = [], m;
+        // TODO: Manage tex output of linear equations
+        for (let equ of LS.equations) {
+            equStr = [];
+            for (let L of letters) {
+                m = equ.left.monomByLetter(L);
+                if (equStr.length === 0) {
+                    equStr.push(m.isZero() ? '' : m.tex);
+                }
+                else {
+                    equStr.push(m.isZero() ? '' : ((m.coefficient.sign() === 1) ? '+' : '') + m.tex);
+                }
+            }
+            // Add the equal sign
+            equStr.push('=');
+            // Add the right hand part of the equation (should be only a number, because it has been reordered)
+            equStr.push(equ.right.tex);
+            // Add to the list.
+            equArray.push(equStr.join('&'));
+        }
+        return `\\left\\{\\begin{array}{${"r".repeat(letters.length)}cl}${equArray.join('\\\\\ ')}\\end{array}\\right.`;
+        //return `\\left\\{\\begin{array}{rrrcl}${this._equations.map(equ => `${equ.tex}`).join('\\\\\ \n')}\\end{array}\\right.`;
+    }
+    get solution() {
+        let tex = [];
+        if (this._solutions === undefined) {
+            this.solve();
+        }
+        for (let letter in this._solutions) {
+            if (this._solutions[letter].isReal) {
+                console.log(`Undetermined (letter ${letter})`);
+                return;
+            }
+            if (this._solutions[letter].isVarnothing) {
+                console.log(`Undefined (letter ${letter})`);
+                return;
+            }
+            tex.push(this._solutions[letter].value.dfrac);
+        }
+        return `(${tex.join(';')})`;
+    }
+    // ------------------------------------------
+    // Mathematical operations
+    // ------------------------------------------
+    _linearReduction(eq1, eq2, letter) {
+        // TODO: handle other signs for equations ?
+        // Get the monom for the particular letter.
+        let c1 = eq1.left.monomByDegree(1, letter).coefficient.clone(), c2 = eq2.left.monomByDegree(1, letter).coefficient.clone().opposed();
+        return this.mergeEquations(eq1, eq2, c2, c1);
+    }
+    _solveOneLetter(letter, V) {
+        // list of equations.
+        let LE = this.clone().equations, reducedEquations = [];
+        // Reduce the equations.
+        // Do it as long as there is more than one step, but no more than the number of equations.
+        for (let L of V) {
+            // remove the setLetter from all equations using linear combinations
+            if (L === letter) {
+                continue;
+            }
+            // Linear reduction.
+            // TODO: Search for better association
+            for (let i = 0; i < LE.length - 1; i++) {
+                reducedEquations.push(this._linearReduction(LE[i], LE[i + 1], L));
+            }
+            // Keep track of each steps.
+            this._resolutionSteps.push(new LinearSystem().parse(...reducedEquations));
+            // Set the list of equations to the new version.
+            LE = this._resolutionSteps[this._resolutionSteps.length - 1].clone().equations;
+            // Reset the stack
+            reducedEquations = [];
+        }
+        // Solve the equations
+        let E = this._resolutionSteps[this._resolutionSteps.length - 1].equations[0];
+        E.solve();
+        return {
+            value: new coefficients_1.Fraction(E.solutions[0].value),
+            isReal: E.isReal,
+            isVarnothing: E.isVarnothing
+        };
+    }
+}
+exports.LinearSystem = LinearSystem;
+
+
+/***/ }),
+
+/***/ 236:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+/**
+ * Polynom module contains everything necessary to handle polynoms.
+ * @module Logicalset
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Logicalset = void 0;
+const shutingyard_1 = __webpack_require__(505);
+/**
+ * Polynom class can handle polynoms, reorder, resolve, ...
+ */
+class Logicalset {
+    /**
+     *
+     * @param {string} value (optional) Default polynom to parse on class creation
+     */
+    constructor(value) {
+        this.parse = (value) => {
+            // TODO: Must format the value string to convert some items...
+            // Parse the updated value to the shutingyard algorithm
+            this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.SET).parse(value).rpn;
+            return this;
+        };
+        this._rawString = value;
+        this.parse(value);
+        return this;
+    }
+    get isLogicalset() {
+        return true;
+    }
+    ;
+    evaluate(tokenSets, reference) {
+        let varStack = [];
+        let referenceSet;
+        if (reference === undefined) {
+            referenceSet = new Set();
+            for (let key in tokenSets) {
+                referenceSet = new Set([...referenceSet, ...tokenSets[key]]);
+            }
+        }
+        else {
+            referenceSet = new Set(reference);
+        }
+        for (let token of this._rpn) {
+            if (token.tokenType === 'variable') {
+                // The variable has no token - assume it's empty.
+                if (tokenSets[token.token] === undefined) {
+                    varStack.push(new Set());
+                }
+                else {
+                    varStack.push(new Set(tokenSets[token.token]));
+                }
+            }
+            else {
+                switch (token.token) {
+                    case '&':
+                        if (varStack.length >= 2) {
+                            let second = varStack.pop(), first = varStack.pop();
+                            varStack.push(new Set([...first].filter(x => second.has(x))));
+                        }
+                        break;
+                    case '|':
+                        if (varStack.length >= 2) {
+                            let second = varStack.pop(), first = varStack.pop();
+                            varStack.push(new Set([...first, ...second]));
+                        }
+                        break;
+                    case '-':
+                        if (varStack.length >= 2) {
+                            let second = varStack.pop(), first = varStack.pop();
+                            varStack.push(new Set([...first].filter(x => !second.has(x))));
+                        }
+                        break;
+                    case '!':
+                        if (varStack.length >= 1) {
+                            let first = varStack.pop();
+                            varStack.push(new Set([...referenceSet].filter(x => !first.has(x))));
+                        }
+                        break;
+                }
+            }
+        }
+        return [...varStack[0]].sort();
+    }
+    vennAB() {
+        return this.evaluate({
+            A: ['A', 'AB'],
+            B: ['B', 'AB']
+        }, ['A', 'B', 'AB', 'E']);
+    }
+    vennABC() {
+        return this.evaluate({
+            A: ['A', 'AB', 'AC', 'ABC'],
+            B: ['B', 'AB', 'BC', 'ABC'],
+            C: ['C', 'AC', 'BC', 'ABC']
+        }, ['A', 'B', 'C', 'AB', 'AC', 'BC', 'E']);
+    }
+    get rpn() {
+        return this._rpn;
+    }
+    get tex() {
+        let varStack = [];
+        for (let token of this._rpn) {
+            if (token.tokenType === 'variable') {
+                varStack.push(token);
+            }
+            else {
+                switch (token.token) {
+                    case '&':
+                        if (varStack.length >= 2) {
+                            let second = varStack.pop(), first = varStack.pop();
+                            if (first.tokenType === 'mix') {
+                                first.token = `( ${first.token} )`;
+                            }
+                            if (second.tokenType === 'mix') {
+                                second.token = `( ${second.token} )`;
+                            }
+                            varStack.push({ token: `${first.token} \\cap ${second.token}`, tokenType: 'mix' });
+                        }
+                        break;
+                    case '|':
+                        if (varStack.length >= 2) {
+                            let second = varStack.pop(), first = varStack.pop();
+                            if (first.tokenType === 'mix') {
+                                first.token = `( ${first.token} )`;
+                            }
+                            if (second.tokenType === 'mix') {
+                                second.token = `( ${second.token} )`;
+                            }
+                            varStack.push({ token: `${first.token} \\cup ${second.token}`, tokenType: 'mix' });
+                        }
+                        break;
+                    case '-':
+                        if (varStack.length >= 2) {
+                            let second = varStack.pop(), first = varStack.pop();
+                            if (first.tokenType === 'mix') {
+                                first.token = `( ${first.token} )`;
+                            }
+                            if (second.tokenType === 'mix') {
+                                second.token = `( ${second.token} )`;
+                            }
+                            varStack.push({ token: `${first.token} \\setminus ${second.token}`, tokenType: 'mix' });
+                        }
+                        break;
+                    case '!':
+                        if (varStack.length >= 1) {
+                            let first = varStack.pop();
+                            varStack.push({ token: `\\overline{ ${first.token} }`, tokenType: 'variable' });
+                        }
+                        break;
+                }
+            }
+        }
+        return varStack[0].token;
+    }
+}
+exports.Logicalset = Logicalset;
+
+
+/***/ }),
+
+/***/ 937:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Monom = void 0;
+/***
+ * Monom class
+ */
+const coefficients_1 = __webpack_require__(534);
+const numeric_1 = __webpack_require__(956);
+const shutingyard_1 = __webpack_require__(505);
+class Monom {
+    /**
+     * Create a Monom
+     * Defined as \\(k \\cdot x^{n}\\), where \\( k,n \in \\mathbb{Q}\\).
+     * Examples: \\(3x^2\\) or \\(3/5x^2\\)
+     * @param value (optional) string The value that should be parse. Can be a Monom, a Fraction, a string or a number. If nothing is provided, it will return the trivial monom (0).
+     */
+    constructor(value) {
+        // ------------------------------------------
+        // Creation / parsing functions
+        // -----------------------------------------
+        /**
+         * Parse a string to a monom. The string may include fraction.
+         * @param inputStr
+         */
+        this.parse = (inputStr) => {
+            if (typeof inputStr === 'string') {
+                this._shutingYardToReducedMonom(inputStr);
+            }
+            else if (typeof inputStr === 'number') {
+                this._coefficient = new coefficients_1.Fraction(inputStr);
+                this._literal = {};
+            }
+            else if (inputStr instanceof coefficients_1.Fraction) {
+                this._coefficient = inputStr.clone();
+                this._literal = {};
+            }
+            else if (inputStr instanceof Monom) {
+                this._coefficient = inputStr._coefficient.clone();
+                this._literal = this.copyLiterals(inputStr.literal);
+            }
+            return this;
+        };
+        this._shutingYardToReducedMonom = (inputStr) => {
+            // Get the RPN array of the current expression
+            const SY = new shutingyard_1.Shutingyard().parse(inputStr);
+            const rpn = SY.rpn;
+            let stack = [], m, pow, letter, q1, q2;
+            if (rpn.length === 0) {
+                this.zero();
+                return this;
+            }
+            else if (rpn.length === 1) {
+                const element = rpn[0];
+                this.one();
+                if (element.tokenType === 'coefficient') {
+                    this.coefficient = new coefficients_1.Fraction(element.token);
+                }
+                else if (element.tokenType === 'variable') {
+                    this.setLetter(element.token, 1);
+                }
+                return this;
+            }
+            else {
+                // Reset the monom
+                for (const element of rpn) {
+                    Monom.addToken(stack, element);
+                }
+            }
+            this.one();
+            this.multiply(stack[0]);
+            return this;
+        };
+        /**
+         * Clone the current Monom.
+         */
+        this.clone = () => {
+            let F = new Monom();
+            F.coefficient = this._coefficient.clone();
+            // Copy the literal parts.
+            for (let k in this._literal) {
+                F.setLetter(k, this._literal[k].clone());
+            }
+            return F;
+        };
+        this.copyLiterals = (literal) => {
+            let L = {};
+            for (let k in literal) {
+                L[k] = literal[k].clone();
+            }
+            return L;
+        };
+        this.makeSame = (M) => {
+            // Copy the literal parts.
+            for (let k in M._literal) {
+                this.setLetter(k, M._literal[k].clone());
+            }
+            return this;
+        };
+        /**
+         * Create a zero value monom
+         */
+        this.zero = () => {
+            this._coefficient = new coefficients_1.Fraction().zero();
+            this._literal = {};
+            return this;
+        };
+        /**
+         * Create a one value monom
+         */
+        this.one = () => {
+            this._coefficient = new coefficients_1.Fraction().one();
+            this._literal = {};
+            return this;
+        };
+        /**
+         * Clean the monom by removing each letters with a power of zero.
+         */
+        this.clean = () => {
+            for (let letter in this._literal) {
+                if (this._literal[letter].isZero()) {
+                    delete this._literal[letter];
+                }
+            }
+            return this;
+        };
+        this.reduce = () => {
+            this.clean();
+            this.coefficient.reduce();
+            return this;
+        };
+        // ------------------------------------------
+        // Mathematical operations
+        // ------------------------------------------
+        /**
+         * Get the opposed
+         * Returns a monom.
+         */
+        this.opposed = () => {
+            this._coefficient.opposed();
+            return this;
+        };
+        /**
+         * Add all similar monoms. If they aren't similar, they are simply skipped.
+         * @param M (Monom[]) The monoms to add.
+         */
+        this.add = (...M) => {
+            for (let m of M) {
+                if (this.isSameAs(m)) {
+                    if (this.isZero()) {
+                        this.makeSame(m);
+                    }
+                    this._coefficient.add(m.coefficient);
+                }
+                else {
+                    console.log('Add: Is not similar: ', m.display);
+                }
+            }
+            return this;
+        };
+        /**
+         * Subtract multiple monoms
+         * @param M (Monom[]) The monoms to subtract
+         */
+        this.subtract = (...M) => {
+            for (let m of M) {
+                if (this.isSameAs(m)) {
+                    if (this.isZero()) {
+                        this.makeSame(m);
+                    }
+                    this._coefficient.add(m.clone().coefficient.opposed());
+                }
+                else {
+                    console.log('Subtract: Is not similar: ', m.display);
+                }
+            }
+            return this;
+        };
+        /**
+         * Multiple multiple monoms to the current monom
+         * @param M (Monom[]) The monoms to multiply to.
+         */
+        this.multiply = (...M) => {
+            for (let m of M) {
+                // Multiply the coefficient.
+                this._coefficient.multiply(m.coefficient);
+                // Multiply the literal parts.
+                for (let letter in m.literal) {
+                    if (this._literal[letter] === undefined) {
+                        this._literal[letter] = m.literal[letter].clone();
+                    }
+                    else {
+                        this._literal[letter].add(m.literal[letter]);
+                    }
+                }
+            }
+            return this;
+        };
+        this.multiplyByNumber = (F) => {
+            this._coefficient.multiply(F);
+            return this;
+        };
+        /**
+         * Divide the current monoms by multiple monoms
+         * @param M (Monom[])
+         */
+        this.divide = (...M) => {
+            // Depending on the given value, choose the current item
+            for (let v of M) {
+                // Divide the coefficient
+                this._coefficient.divide(v.coefficient);
+                // Subtract the power values
+                for (let letter in v.literal) {
+                    this._literal[letter] = (this._literal[letter] === undefined) ? v.literal[letter].clone().opposed() : this._literal[letter].subtract(v.literal[letter]);
+                    // If the power of a particular setLetter is zero, delete it from the literal part..
+                    if (this._literal[letter].isZero()) {
+                        delete this._literal[letter];
+                    }
+                }
+            }
+            return this;
+        };
+        /**
+         * Get the pow of a monom.
+         * @param nb (number) : Mathematical pow
+         */
+        this.pow = (nb) => {
+            this._coefficient.pow(nb);
+            for (let letter in this._literal) {
+                this._literal[letter].multiply(nb);
+            }
+            return this;
+        };
+        /**
+         * Get the nth-root of the monom
+         * @param p
+         */
+        this.root = (p) => {
+            // TODO: determiner the nth root of a monom
+            return this;
+        };
+        /**
+         * Return the square root of a monom
+         */
+        this.sqrt = () => {
+            if (this.isSquare()) {
+                this._coefficient.sqrt();
+                for (let letter in this._literal) {
+                    this._literal[letter].clone().divide(2);
+                }
+            }
+            return this.root(2);
+        };
+        // ------------------------------------------
+        // Compare functions
+        // ------------------------------------------
+        this.compare = (M, sign) => {
+            // TODO: Build the compare systems.
+            if (sign === undefined) {
+                sign = '=';
+            }
+            switch (sign) {
+                case '=':
+                    // To be equal, they must be the isSame
+                    if (!this.compare(M, 'same')) {
+                        return false;
+                    }
+                    // The literal parts are the isSame. The coefficient must be equal
+                    return this._coefficient.isEqual(M.coefficient);
+                case 'same':
+                    // Get the list of all variables from both monoms.
+                    let M1 = this.variables, M2 = M.variables, K = M1.concat(M2.filter((item) => M1.indexOf(item) < 0));
+                    if (M1.length === 0 && M2.length === 0) {
+                        return true;
+                    }
+                    // To compare, both must be different than zero.
+                    if (!this.isZero() && !M.isZero()) {
+                        for (let key of K) {
+                            // The setLetter is not available in one of the monom
+                            if (this._literal[key] === undefined || M.literal[key] === undefined) {
+                                return false;
+                            }
+                            // The setLetter does not have the isSame power in each monoms.
+                            if (!this._literal[key].isEqual(M.literal[key])) {
+                                return false;
+                            }
+                        }
+                    }
+                    // All are positive check - the monoms are the sames.
+                    return true;
+                default:
+                    return false;
+            }
+        };
+        /**
+         * Determine if two monoms are equals
+         * @param M
+         */
+        this.isEqual = (M) => {
+            return this.compare(M, '=');
+        };
+        /**
+         * Determine if two monoms are similar
+         * @param M
+         */
+        this.isSameAs = (M) => {
+            return this.compare(M, 'same');
+        };
+        this.isSquare = () => {
+            if (!this.coefficient.isSquare()) {
+                return false;
+            }
+            return this.isLiteralSquare();
+        };
+        this.isLiteralSquare = () => {
+            for (let letter in this.literal) {
+                // A literal square must have a natural power
+                if (this.literal[letter].isRational()) {
+                    return false;
+                }
+                // The natural power must be be even
+                if (this.literal[letter].isEven()) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        this.hasFractionCoefficient = () => {
+            for (let letter in this._literal) {
+                if (this._literal[letter].isRational()) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        // ------------------------------------------
+        // Misc monoms functions
+        // -------------------------------------
+        /**
+         * Determine if a monom contains a setLetter in it's literal part
+         * @param letter
+         */
+        this.hasLetter = (letter) => {
+            // The letter was not found
+            if (this._literal[letter === undefined ? 'x' : letter] === undefined) {
+                return false;
+            }
+            // The letter is found and is not zero !
+            return this._literal[letter === undefined ? 'x' : letter].isNotZero();
+        };
+        /**
+         * Set the power of a particular setLetter
+         * @param letter (string) Letter to change
+         * @param pow (number) Power of the setLetter (must be positive integer.
+         */
+        this.setLetter = (letter, pow) => {
+            if (pow instanceof coefficients_1.Fraction) {
+                // Set the power of the letter to zero => remove it
+                if (this.hasLetter(letter) && pow.isZero()) {
+                    delete this._literal[letter];
+                }
+                this._literal[letter] = pow.clone();
+            }
+            else {
+                this.setLetter(letter, new coefficients_1.Fraction(pow));
+            }
+        };
+        /**
+         * Get the degree of a monom. If no setLetter is given, the result will be the global degree.
+         * @param letter (string) Letter to get to degree (power)
+         */
+        this.degree = (letter) => {
+            if (this.variables.length === 0) {
+                return new coefficients_1.Fraction().zero();
+            }
+            if (letter === undefined) {
+                // Not setLetter given -> we get the global monom degree (sum of all the letters).
+                return Object.values(this._literal).reduce((t, n) => t.clone().add(n));
+            }
+            else {
+                // A setLetter is given -> get the corresponding power.
+                return this._literal[letter] === undefined ? new coefficients_1.Fraction().zero() : this._literal[letter].clone();
+            }
+        };
+        /**
+         * Evaluate a monom. Each setLetter must be assigned to a Fraction.
+         * @param values    Dictionary of <setLetter: Fraction>
+         */
+        this.evaluate = (values) => {
+            let r = this.coefficient.clone();
+            if (typeof values === 'number' || values instanceof coefficients_1.Fraction) {
+                let tmpValues = {};
+                tmpValues[this.variables[0]] = new coefficients_1.Fraction(values);
+                return this.evaluate(tmpValues);
+            }
+            if (typeof values === 'object') {
+                for (let L in this._literal) {
+                    if (values[L] === undefined) {
+                        return new coefficients_1.Fraction().zero();
+                    }
+                    let value = new coefficients_1.Fraction(values[L]);
+                    r.multiply(value.pow(this._literal[L]));
+                }
+            }
+            return r;
+        };
+        /**
+         * Derivative the monom
+         * @param letter
+         */
+        this.derivative = (letter) => {
+            // No setLetter given - assume it's the setLetter 'x'
+            if (letter === undefined) {
+                letter = 'x';
+            }
+            if (this.hasLetter(letter)) {
+                let d = this._literal[letter].clone(), dM = this.clone();
+                // Subtract one to the degree.
+                dM._literal[letter].subtract(1);
+                // Multiply the coefficient by the previous degree
+                dM._coefficient.multiply(new coefficients_1.Fraction(d.clone()));
+                return dM;
+            }
+            else {
+                return new Monom().zero();
+            }
+        };
+        this.primitive = (letter) => {
+            // TODO: derivative including the ln value => implies creating different monom system ?
+            if (letter === undefined) {
+                letter = 'x';
+            }
+            // Zero monom
+            let M = this.clone(), degree;
+            if (M.hasLetter(letter)) {
+                degree = M.degree(letter).clone().add(1);
+                M.coefficient = M.coefficient.clone().divide(degree);
+                M.setLetter(letter, degree);
+            }
+            else {
+                // There is no letter.
+                // The coefficient might be zero (=> x) or a number a (=> ax)
+                if (M.coefficient.isZero()) {
+                    M.coefficient = new coefficients_1.Fraction().one();
+                }
+                M.setLetter(letter, 1);
+            }
+            return M;
+        };
+        // TODO: The rest of the functions are not used or unnecessary ?
+        /**
+         * Determine if multiple monoms are similar
+         * @param M
+         */
+        this.areSameAs = (...M) => {
+            let result = true;
+            // Check all monoms if they are the isSame as the "this" one.
+            for (let i = 0; i < M.length; i++) {
+                if (!this.isSameAs(M[i])) {
+                    return false;
+                }
+            }
+            // All check passed -> all the monoms are similar.
+            return result;
+        };
+        /**
+         * Determine if multiple monoms are equals
+         * @param M
+         */
+        this.areEquals = (...M) => {
+            // They are not similar.
+            if (!this.areSameAs(...M)) {
+                return false;
+            }
+            // Check all coefficient. They must be equals.
+            for (let m of M) {
+                if (!this._coefficient.isEqual(m.coefficient)) {
+                    return false;
+                }
+            }
+            // All checks passed.
+            return true;
+        };
+        this.zero();
+        if (value !== undefined) {
+            // A string is given - try to parse the value.
+            this.parse(value);
+        }
+        return this;
+    }
+    // ------------------------------------------
+    // Getter and setter
+    // ------------------------------------------
+    /**
+     * Get the coefficient \\(k\\) of the Monom \\(k\\cdot x^{n}\\)
+     * @returns {Fraction}
+     */
+    get coefficient() {
+        return this._coefficient;
+    }
+    /**
+     * Set the coefficient \\(k\\) value of the monom
+     * @param {Fraction | number | string} F
+     */
+    set coefficient(F) {
+        this._coefficient = new coefficients_1.Fraction(F);
+    }
+    /**
+     * Get the literal part of \\(x^{n_1}y^{n_2}\\) as dictionary \\[\\begin{array}{ll}x&=n_1\\\\y&=n_2\\end{array}\\]
+     * @returns {literalType}
+     */
+    get literal() {
+        return this._literal;
+    }
+    /**
+     * Get the literal square roots of the Monom.
+     * TODO: remove this getter ? Is it used and is it correct ?
+     * @returns {literalType}
+     */
+    get literalSqrt() {
+        if (this.isLiteralSquare()) {
+            let L = {};
+            for (let key in this._literal) {
+                L[key] = this._literal[key].clone().sqrt();
+            }
+            return L;
+        }
+        else {
+            return this._literal;
+        }
+    }
+    /**
+     * Set the literal part of the monom. Must be a dictionary {x: Fraction, y: Fraction, ...}
+     * @param {literalType} L
+     */
+    set literal(L) {
+        this._literal = L;
+    }
+    /**
+     * Set the literal part of the monom from a string
+     * @param inputStr  String like x^2y^3
+     */
+    set literalStr(inputStr) {
+        // TODO : parse using shutingyard tree !
+        // Match all x^n
+        for (const v of [...inputStr.matchAll(/([a-z])\^([+-]?[0-9]+)/g)]) {
+            // Create the default letter entry if necessary.
+            if (!(v[1] in this._literal)) {
+                this._literal[v[1]] = new coefficients_1.Fraction().zero();
+            }
+            // Add the new value.
+            // TODO: actually, it adds only numeric value
+            this._literal[v[1]].add(+v[2]);
+        }
+        // Match all x
+        for (const v of [...inputStr.matchAll(/([a-z](?!\^))/g)]) {
+            // Match all single letters
+            if (!(v[1] in this._literal)) {
+                this._literal[v[1]] = new coefficients_1.Fraction().zero();
+            }
+            // Add one to the value.
+            this._literal[v[1]].add(1);
+        }
+    }
+    // Getter helpers.
+    /**
+     * Get the variables letters
+     */
+    get variables() {
+        let M = this.clone().clean();
+        return Object.keys(M.literal);
+    }
+    // Display getter
+    /**
+     * This display getter is to be used in the polynom display getter
+     */
+    get display() {
+        let L = '', letters = Object.keys(this._literal).sort();
+        for (let letter of letters) {
+            if (this._literal[letter].isNotZero()) {
+                L += `${letter}`;
+                if (this._literal[letter].isNotEqual(1)) {
+                    L += `^${this._literal[letter].display}`;
+                }
+            }
+        }
+        if (L === '') {
+            // No setLetter - means it's only a number !
+            if (this._coefficient.value != 0) {
+                return `${this._coefficient.display}`;
+            }
+            else {
+                return '';
+            }
+        }
+        else {
+            if (this._coefficient.value === 1) {
+                return L;
+            }
+            else if (this._coefficient.value === -1) {
+                return `-${L}`;
+            }
+            else if (this._coefficient.value === 0) {
+                return '0';
+            }
+            else {
+                return `${this._coefficient.display}${L}`;
+            }
+        }
+    }
+    get dividers() {
+        // Decompose only if the coefficient is a natural number
+        if (!this.coefficient.isRelative()) {
+            return [this.clone()];
+        }
+        // Decompose only if the power values are natural numbers.
+        if (this.hasFractionCoefficient()) {
+            return [this.clone()];
+        }
+        // Security : do not do this if greater than 10000
+        if (this.coefficient.numerator > 10000) {
+            return [this.clone()];
+        }
+        const dividers = numeric_1.Numeric.dividers(Math.abs(this.coefficient.numerator));
+        // Decompose the literals parts.
+        let literals = [];
+        for (let L in this.literal) {
+            // L is the letter.
+            literals = this._getLiteralDividers(literals, L);
+        }
+        const monomDividers = [];
+        if (literals.length > 0 && dividers.length > 0) {
+            for (let N of dividers) {
+                for (let L of literals) {
+                    let M = new Monom();
+                    M.coefficient = new coefficients_1.Fraction(N);
+                    M.literal = L;
+                    monomDividers.push(M);
+                }
+            }
+        }
+        else if (dividers.length === 0) {
+            for (let L of literals) {
+                let M = new Monom();
+                M.coefficient = new coefficients_1.Fraction().one();
+                M.literal = L;
+                monomDividers.push(M);
+            }
+        }
+        else {
+            for (let N of dividers) {
+                let M = new Monom();
+                M.coefficient = new coefficients_1.Fraction(N);
+                monomDividers.push(M);
+            }
+        }
+        return monomDividers.length === 0 ? [new Monom().one()] : monomDividers;
+    }
+    _getLiteralDividers(arr, letter) {
+        let tmpList = [];
+        // Be default, this.literal[letter] should be a rational number.
+        for (let d = 0; d <= this.literal[letter].value; d++) {
+            if (arr.length === 0) {
+                let litt = {};
+                litt[letter] = new coefficients_1.Fraction(d);
+                tmpList.push(litt);
+            }
+            else {
+                for (let item of arr) {
+                    let litt = {};
+                    for (let currentLetter in item) {
+                        litt[currentLetter] = item[currentLetter];
+                    }
+                    litt[letter] = new coefficients_1.Fraction(d);
+                    tmpList.push(litt);
+                }
+            }
+        }
+        return tmpList;
+    }
+    /**
+     * Display the monom, forcing the '+' sign to appear
+     */
+    get displayWithSign() {
+        let d = this.display;
+        return (d[0] !== '-' ? '+' : '') + d;
+    }
+    get texWithSign() {
+        if (this.coefficient.isStrictlyPositive()) {
+            return '+' + this.tex;
+        }
+        return this.tex;
+    }
+    /**
+     * Get the tex output of the monom
+     */
+    get tex() {
+        // TODO: display with square root !
+        let L = '', letters = Object.keys(this._literal).sort();
+        for (let letter of letters) {
+            if (this._literal[letter].isNotZero()) {
+                L += `${letter}`;
+                if (this._literal[letter].isNotEqual(1)) {
+                    L += `^{${this._literal[letter].tfrac}}`;
+                }
+            }
+        }
+        if (L === '') {
+            // No setLetter - means it's only a number !
+            if (this._coefficient.value != 0) {
+                return `${this._coefficient.dfrac}`;
+            }
+            else {
+                return '0';
+            }
+        }
+        else {
+            if (this._coefficient.value === 1) {
+                return L;
+            }
+            else if (this._coefficient.value === -1) {
+                return `-${L}`;
+            }
+            else if (this._coefficient.value === 0) {
+                return '0';
+            }
+            else {
+                return `${this._coefficient.dfrac}${L}`;
+            }
+        }
+    }
+    /**
+     * Determine if the monom is null
+     */
+    isZero() {
+        return this._coefficient.value === 0;
+    }
+    /**
+     * Determine if the monom is one
+     */
+    isOne() {
+        return this._coefficient.value === 1 && this.variables.length === 0;
+    }
+}
+exports.Monom = Monom;
+Monom.addToken = (stack, element) => {
+    let q1, q2, m, letter, pow;
+    if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
+        stack.push(new Monom(new coefficients_1.Fraction(element.token)));
+    }
+    else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
+        let M = new Monom().one();
+        M.setLetter(element.token, 1);
+        stack.push(M.clone());
+    }
+    else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
+        switch (element.token) {
+            case '-':
+                // this should only happen for negative powers or for negative coefficient.
+                q2 = (stack.pop()) || new Monom().zero();
+                q1 = (stack.pop()) || new Monom().zero();
+                stack.push(q1.subtract(q2));
+                break;
+            case '*':
+                // Get the last element in the stack
+                q2 = (stack.pop()) || new Monom().one();
+                q1 = (stack.pop()) || new Monom().one();
+                stack.push(q1.multiply(q2));
+                break;
+            case '/':
+                // Get the last element in the stack
+                q2 = (stack.pop()) || new Monom().one();
+                q1 = (stack.pop()) || new Monom().one();
+                stack.push(q1.divide(q2));
+                break;
+            case '^':
+                // get the two last elements in the stack
+                pow = (stack.pop().coefficient) || new coefficients_1.Fraction().one();
+                m = (stack.pop()) || new Monom().one();
+                letter = m.variables[0];
+                if (letter !== undefined) {
+                    m.setLetter(letter, pow);
+                }
+                stack.push(m);
+                // this.multiply(m.clone())
+                break;
+        }
+    }
+};
+// ----------------------------------------
+// Static functions
+// ----------------------------------------
+/**
+ * Get the least common multiple of monoms
+ * @param monoms    Array of monoms
+ */
+Monom.lcm = (...monoms) => {
+    // All the monoms must be with natural powers...
+    for (let m of monoms) {
+        if (m.hasFractionCoefficient()) {
+            return new Monom().zero();
+        }
+    }
+    let M = new Monom(), coeffN = monoms.map(value => value.coefficient.numerator), coeffD = monoms.map(value => value.coefficient.denominator), n = numeric_1.Numeric.gcd(...coeffN), d = numeric_1.Numeric.lcm(...coeffD);
+    // Get the coefficient.
+    M.coefficient = new coefficients_1.Fraction(n, d).reduce();
+    // Set the literal parts - go through each monoms literal parts and get only the lowest degree of each letters.
+    for (let m of monoms) {
+        // Remove the inexistant letters from the resulting monom
+        for (let letter in M.literal) {
+            if (!(letter in m.literal)) {
+                M.literal[letter].zero();
+            }
+        }
+        for (let letter in m.literal) {
+            if (M.literal[letter] === undefined && m.literal[letter].isStrictlyPositive()) {
+                M.literal[letter] = m.literal[letter].clone();
+            }
+            else {
+                M.literal[letter] = new coefficients_1.Fraction(Math.min(m.literal[letter].value, M.literal[letter].value));
+            }
+        }
+    }
+    return M;
+};
+/**
+ * Multiply two monoms and return a NEW monom.
+ * @param monoms
+ */
+Monom.xmultiply = (...monoms) => {
+    let M = new Monom().one();
+    for (let m of monoms) {
+        M.multiply(m);
+    }
+    return M;
+};
+
+
+/***/ }),
+
+/***/ 38:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+/**
+ * Polynom module contains everything necessary to handle polynoms.*
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Polynom = void 0;
+const monom_1 = __webpack_require__(937);
+const shutingyard_1 = __webpack_require__(505);
+const numeric_1 = __webpack_require__(956);
+const coefficients_1 = __webpack_require__(534);
+/**
+ * Polynom class can handle polynoms, reorder, resolve, ...
+ * ```
+ * let P = new Polynom('3x-4')
+ * ```
+ */
+class Polynom {
+    /**
+     *
+     * @param {string} polynomString (optional) Default polynom to parse on class creation
+     * @param values
+     */
+    constructor(polynomString, ...values) {
+        // ------------------------------------------
+        /**
+         * Parse a string to a polynom.
+         * @param inputStr
+         * @param values: as string, numbers or fractions
+         */
+        this.parse = (inputStr, ...values) => {
+            // Reset the main variables.
+            this._monoms = [];
+            this._factors = [];
+            if (typeof inputStr === 'string') {
+                return this._parseString(inputStr, ...values);
+            }
+            else if (typeof inputStr === 'number' || inputStr instanceof coefficients_1.Fraction || inputStr instanceof monom_1.Monom) {
+                this._monoms.push(new monom_1.Monom(inputStr));
+            }
+            else if (inputStr instanceof Polynom) {
+                for (const m of inputStr.monoms) {
+                    this._monoms.push(m.clone());
+                }
+            }
+            return this;
+        };
+        // ------------------------------------------
+        // Creation / parsing functions
+        /**
+         * Clone the polynom
+         */
+        this.clone = () => {
+            const P = new Polynom();
+            const M = [];
+            for (const m of this._monoms) {
+                M.push(m.clone());
+            }
+            P.monoms = M;
+            return P;
+        };
+        /**
+         * Set the polynom to zero.
+         * @returns {this}
+         */
+        this.zero = () => {
+            this._monoms = [];
+            this._monoms.push(new monom_1.Monom().zero());
+            this._rawString = '0';
+            return this;
+        };
+        this.one = () => {
+            this._monoms = [];
+            this._monoms.push(new monom_1.Monom().one());
+            this._rawString = '1';
+            return this;
+        };
+        this.empty = () => {
+            this._monoms = [];
+            this._rawString = '';
+            return this;
+        };
+        // ------------------------------------------
+        this.opposed = () => {
+            this._monoms = this._monoms.map(m => m.opposed());
+            return this;
+        };
+        this.add = (...values) => {
+            for (let value of values) {
+                if (value instanceof Polynom) {
+                    this._monoms = this._monoms.concat(value.monoms);
+                }
+                else if (value instanceof monom_1.Monom) {
+                    this._monoms.push(value.clone());
+                }
+                else if (Number.isSafeInteger(value)) {
+                    this._monoms.push(new monom_1.Monom(value.toString()));
+                }
+                else {
+                    this._monoms.push(new monom_1.Monom(value));
+                }
+            }
+            return this.reduce();
+        };
+        // // -----------------------------------------------
+        // // Polynom generators and randomizers
+        // // -----------------------------------------------
+        // random(config?: randomPolynomConfig) {
+        //     return Random.polynom(config);
+        // }
+        //
+        // private _randomizeDefaults: { [key: string]: number | string | boolean } = {
+        //     degree: 2,
+        //     unit: true,
+        //     fractions: false,
+        //     factorable: false,
+        //     letters: 'x',
+        //     allowNullMonom: false,
+        //     numberOfMonoms: false
+        // };
+        // get randomizeDefaults(): { [key: string]: number | string | boolean } {
+        //     return this._randomizeDefaults;
+        // }
+        //
+        // set randomizeDefaults(value) {
+        //     this._randomizeDefaults = value;
+        // }
+        //
+        // randomize = (config: { [key: string]: number | string | boolean }): Polynom => {
+        //     let P = new Polynom();
+        //
+        //     // Check the config file and use the default values.
+        //     if (config === undefined) {
+        //         config = {};
+        //     }
+        //     for (let k in this._randomizeDefaults) {
+        //         if (config[k] === undefined) {
+        //             config[k] = this._randomizeDefaults[k];
+        //         }
+        //     }
+        //
+        //     // TODO: Build a more robust randomize function
+        //     return P;
+        // }
+        //
+        // rndFactorable = (degree: number = 2, unit: boolean | number = false, letters: string = 'x'): Polynom => {
+        //     // TODO: Make rndFactorable polynom generator more user friendly
+        //     this._factors = [];
+        //     for (let i = 0; i < degree; i++) {
+        //         let factorUnit = unit === true || i >= unit,
+        //             p = Random.polynom({
+        //                 degree: 1,
+        //                 unit: factorUnit,
+        //                 fraction: false,
+        //                 letters
+        //             });
+        //         this._factors.push(p);
+        //     }
+        //
+        //     this.empty().monoms = this._factors[0].monoms;
+        //     for (let i = 1; i < this._factors.length; i++) {
+        //         this.multiply(this._factors[i]);
+        //     }
+        //     return this;
+        // };
+        // ------------------------------------------
+        // Mathematical operations
+        this.subtract = (...values) => {
+            for (let value of values) {
+                if (value instanceof Polynom) {
+                    this._monoms = this._monoms.concat(value.clone().opposed().monoms);
+                }
+                else if (value instanceof monom_1.Monom) {
+                    this._monoms.push(value.clone().opposed());
+                }
+                else if (Number.isSafeInteger(value)) {
+                    this._monoms.push(new monom_1.Monom(value.toString()).opposed());
+                }
+                else {
+                    this._monoms.push(new monom_1.Monom(value).opposed());
+                }
+            }
+            return this.reduce();
+        };
+        this.multiply = (value) => {
+            if (value instanceof Polynom) {
+                return this.multiplyByPolynom(value);
+            }
+            else if (value instanceof coefficients_1.Fraction) {
+                return this.multiplyByFraction(value);
+            }
+            else if (value instanceof monom_1.Monom) {
+                return this.multiplyByMonom(value);
+            }
+            else if (Number.isSafeInteger(value) && typeof value === 'number') {
+                return this.multiplyByInteger(value);
+            }
+            // Something went wrong...
+            return this;
+        };
+        /**
+         * Divide the current polynom by another polynom.
+         * @param P
+         * returns {quotient: Polynom, reminder: Polynom}
+         */
+        this.euclidian = (P) => {
+            const letter = P.variables[0];
+            const quotient = new Polynom().zero();
+            const reminder = this.clone().reorder(letter);
+            // There is no variable !
+            if (P.variables.length === 0) {
+                return { quotient, reminder };
+            }
+            // Get at least a letter
+            const maxMP = P.monomByDegree(undefined, letter);
+            const degreeP = P.degree(letter);
+            let newM;
+            // Make the euclidian division of the two polynoms.
+            let MaxIteration = this.degree(letter).clone().multiply(2);
+            while (reminder.degree(letter).geq(degreeP) && MaxIteration.isPositive()) {
+                MaxIteration.subtract(1);
+                // Get the greatest monom divided by the max monom of the divider
+                newM = reminder.monomByDegree(undefined, letter).clone().divide(maxMP);
+                if (newM.isZero()) {
+                    break;
+                }
+                // Get the new quotient and reminder.
+                quotient.add(newM);
+                reminder.subtract(P.clone().multiply(newM));
+            }
+            quotient.reduce();
+            reminder.reduce();
+            return { quotient, reminder };
+        };
+        this.divide = (value) => {
+            if (value instanceof coefficients_1.Fraction) {
+                return this.divideByFraction(value);
+            }
+            else if (typeof value === 'number' && Number.isSafeInteger(value)) {
+                return this.divideByInteger(value);
+            }
+        };
+        this.pow = (nb) => {
+            if (!Number.isSafeInteger(nb)) {
+                return this.zero();
+            }
+            if (nb < 0) {
+                return this.zero();
+            }
+            if (nb === 0) {
+                return new Polynom();
+            }
+            const P = this.clone();
+            for (let i = 1; i < nb; i++) {
+                this.multiply(P);
+            }
+            return this.reduce();
+        };
+        // ------------------------------------------
+        /**
+         * Compare the current coefficient with another coefficient
+         * @param P
+         * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
+         */
+        this.compare = (P, sign) => {
+            if (sign === undefined) {
+                sign = '=';
+            }
+            // Create clone version to reduce them without altering the original polynoms.
+            const cP1 = this.clone().reduce().reorder();
+            const cP2 = P.clone().reduce().reorder();
+            switch (sign) {
+                case '=':
+                    // They must have the isSame length and the isSame degree
+                    if (cP1.length !== cP2.length || cP1.degree().isNotEqual(cP2.degree())) {
+                        return false;
+                    }
+                    // Check if the coefficients are the isSame.
+                    for (const i in cP1.monoms) {
+                        if (!cP1.monoms[i].isEqual(cP2.monoms[i])) {
+                            return false;
+                        }
+                    }
+                    return true;
+                case 'same':
+                    // They must have the isSame length and the isSame degree
+                    if (cP1.length !== cP2.length || cP1.degree() !== cP2.degree()) {
+                        return false;
+                    }
+                    for (const i in cP1.monoms) {
+                        if (!cP1.monoms[i].isSameAs(cP2.monoms[i])) {
+                            return false;
+                        }
+                    }
+                    return true;
+                default:
+                    return false;
+            }
+        };
+        this.isEqual = (P) => {
+            return this.compare(P, '=');
+        };
+        this.isSameAs = (P) => {
+            return this.compare(P, 'same');
+        };
+        this.isOpposedAt = (P) => {
+            return this.compare(P.clone().opposed(), '=');
+        };
+        this.isFactorized = (polynomString) => {
+            let P;
+            // Check if polynom is complete...
+            if (polynomString.match(/\(/g).length !== polynomString.match(/\)/g).length) {
+                return false;
+            }
+            // Try to build the polynom
+            try {
+                P = new Polynom(polynomString);
+            }
+            catch (e) {
+                return false;
+            }
+            // Both polynom aren't the same (once developed and reduced => they cannot be equivalent)
+            if (!this.isEqual(P)) {
+                return false;
+            }
+            // Check if the provided (string) version is fully factorized.
+            // Run a regex on the string.
+            let polynomStringNormalized = polynomString.replaceAll('*', ''), polynomStringReduced = '' + polynomStringNormalized, factors = [];
+            for (let x of polynomStringNormalized.matchAll(/\(([a-z0-9+\-]+)\)(\^[0-9]*)?/g)) {
+                if (x[2] !== undefined) {
+                    for (let i = 0; i < +x[2].substr(1); i++) {
+                        factors.push(x[1]);
+                    }
+                }
+                else {
+                    factors.push(x[1]);
+                }
+                polynomStringReduced = polynomStringReduced.replaceAll(x[0], '');
+            }
+            if (polynomStringReduced !== '') {
+                factors.push(polynomStringReduced);
+            }
+            let polyFactors = factors.map(x => new Polynom(x));
+            // Factorize the current polynom.
+            this.factorize();
+            // Compare the given factors with the generated factors
+            let sign = 1;
+            for (let f of this.factors) {
+                for (let i = 0; i < polyFactors.length; i++) {
+                    if (f.isEqual(polyFactors[i])) {
+                        polyFactors.splice(i, 1);
+                        break;
+                    }
+                    else if (f.isOpposedAt(polyFactors[i])) {
+                        polyFactors.splice(i, 1);
+                        sign = -sign;
+                        break;
+                    }
+                }
+            }
+            // The polyfactors must be empty and the cumulative opposite factors must be 1.
+            return (polyFactors.length === 0 && sign === 1);
+        };
+        this.isDeveloped = (polynomString) => {
+            let P;
+            // There is at least one parenthese - it is not developed.
+            if (polynomString.match(/\(/g).length + polynomString.match(/\)/g).length) {
+                return false;
+            }
+            // Try to build the polynom
+            try {
+                // Build the polynom
+                P = new Polynom(polynomString);
+            }
+            catch (e) {
+                return false;
+            }
+            // Both polynom aren't the same (once developed and reduced => they cannot be equivalent)
+            if (!this.isEqual(P)) {
+                return false;
+            }
+            // Check that everything is completely developed. Actually, there are no parentheses... so it is fully developed
+            // maybe it wasn't reduced and not ordered...
+            // compare polynom string.
+            // normalize the string
+            let polynomStringNormalized = polynomString.replaceAll('[*\s]', '');
+            // Determine if it's the exact same string.
+            // TODO: Maybe it's enough to just make this test !
+            return polynomStringNormalized === P.reduce().reorder().display;
+        };
+        // ------------------------------------------
+        // Compare functions
+        // -------------------------------------
+        this.reduce = () => {
+            for (let i = 0; i < this._monoms.length; i++) {
+                for (let j = i + 1; j < this._monoms.length; j++) {
+                    if (this._monoms[i].isSameAs(this.monoms[j])) {
+                        this._monoms[i].add(this.monoms[j]);
+                        this._monoms.splice(j, 1);
+                    }
+                }
+            }
+            // Remove all null monoms
+            this._monoms = this._monoms.filter((m) => {
+                return m.coefficient.value !== 0;
+            });
+            // Reduce all monoms coefficient.
+            for (const m of this._monoms) {
+                m.coefficient.reduce();
+            }
+            if (this.length === 0) {
+                return new Polynom().zero();
+            }
+            return this;
+        };
+        this.reorder = (letter = 'x') => {
+            // TODO: Must handle multiple setLetter reorder system
+            this._monoms.sort(function (a, b) {
+                return b.degree(letter).clone().subtract(a.degree(letter)).value;
+            });
+            return this.reduce();
+        };
+        this.degree = (letter) => {
+            let d = new coefficients_1.Fraction().zero();
+            for (const m of this._monoms) {
+                d = coefficients_1.Fraction.max(m.degree(letter).value, d);
+            }
+            return d;
+        };
+        this.letters = () => {
+            let L = [], S = new Set();
+            for (let m of this._monoms) {
+                S = new Set([...S, ...m.variables]);
+            }
+            // @ts-ignore
+            return [...S];
+        };
+        /**
+         * Replace a variable (letter) by a polynom.
+         * @param letter
+         * @param P
+         */
+        this.replaceBy = (letter, P) => {
+            let pow;
+            const resultPolynom = new Polynom().zero();
+            for (const m of this.monoms) {
+                if (m.literal[letter] === undefined || m.literal[letter].isZero()) {
+                    resultPolynom.add(m.clone());
+                }
+                else {
+                    // We have found a setLetter.
+                    // Get the power and reset it.
+                    pow = m.literal[letter].clone();
+                    delete m.literal[letter];
+                    // TODO: replaceBy works only with positive and natural pow
+                    resultPolynom.add(P.clone().pow(Math.abs(pow.numerator)).multiply(m));
+                }
+            }
+            this._monoms = resultPolynom.reduce().reorder().monoms;
+            return this;
+        };
+        // Evaluate a polynom.
+        this.evaluate = (values) => {
+            const r = new coefficients_1.Fraction().zero();
+            this._monoms.forEach(monom => {
+                //console.log('Evaluate polynom: ', monom.display, values, monom.evaluate(values).display);
+                r.add(monom.evaluate(values));
+            });
+            return r;
+        };
+        this.derivative = (letter) => {
+            let dP = new Polynom();
+            for (let m of this._monoms) {
+                dP.add(m.derivative(letter));
+            }
+            return dP;
+        };
+        this.primitive = (letter) => {
+            let dP = new Polynom();
+            for (let m of this._monoms) {
+                dP.add(m.primitive(letter));
+            }
+            return dP;
+        };
+        // ------------------------------------------
+        // Misc polynoms functions
+        this.integrate = (a, b, letter) => {
+            const primitive = this.primitive(letter);
+            if (letter === undefined) {
+                letter = 'x';
+            }
+            let valuesA = {}, valuesB = {};
+            valuesA[letter] = new coefficients_1.Fraction(a);
+            valuesB[letter] = new coefficients_1.Fraction(b);
+            return primitive.evaluate(valuesB).subtract(primitive.evaluate(valuesA));
+        };
+        // -------------------------------------
+        /**
+         * Factorize a polynom and store the best results in factors.
+         * @param maxValue Defines the greatest value to search to (default is 20).
+         */
+        this.factorize = (letter) => {
+            let factors = [];
+            // Extract the common monom
+            let P = this.clone().reorder(), M = P.commonMonom(), tempPolynom;
+            // It has a common monom.
+            if (!M.isOne()) {
+                tempPolynom = new Polynom();
+                tempPolynom.monoms = [M];
+                factors = [tempPolynom.clone()];
+                P = P.euclidian(tempPolynom).quotient;
+            }
+            let securityLoop = P.degree().clone().multiply(2).value;
+            // securityLoop = 0
+            while (securityLoop >= 0) {
+                securityLoop--;
+                if (P.monoms.length < 2) {
+                    if (!P.isOne()) {
+                        factors.push(P.clone());
+                    }
+                    break;
+                }
+                else {
+                    // Get the first and last monom.
+                    let m1 = P.monoms[0].dividers, m2 = P.monoms[P.monoms.length - 1].dividers;
+                    for (let m1d of m1) {
+                        for (let m2d of m2) {
+                            // if(m1d.degree()===m2d.degree()){continue}
+                            let dividerPolynom = new Polynom(), result;
+                            dividerPolynom.monoms = [m1d.clone(), m2d.clone()];
+                            result = P.euclidian(dividerPolynom);
+                            if (result.reminder.isZero()) {
+                                P = result.quotient.clone();
+                                factors.push(dividerPolynom);
+                                continue;
+                            }
+                            dividerPolynom.monoms = [m1d.clone(), m2d.clone().opposed()];
+                            result = P.euclidian(dividerPolynom);
+                            if (result.reminder.isZero()) {
+                                P = result.quotient.clone();
+                                factors.push(dividerPolynom);
+                            }
+                        }
+                    }
+                }
+            }
+            this.factors = factors;
+            return factors;
+        };
+        // TODO: get zeroes for more than first degree and for more than natural degrees
+        this.getZeroes = () => {
+            const Z = [];
+            switch (this.degree().value) {
+                case 0:
+                    if (this._monoms[0].coefficient.value === 0) {
+                        return [true];
+                    }
+                    else {
+                        return [false];
+                    }
+                case 1:
+                    // There is only one monoms,
+                    if (this._monoms.length === 1) {
+                        return [new coefficients_1.Fraction().zero()];
+                    }
+                    else {
+                        const P = this.clone().reduce().reorder();
+                        return [P.monoms[1].coefficient.opposed().divide(P.monoms[0].coefficient)];
+                    }
+                // TODO: Determine the zeros of an equation of second degree.
+                //case 2:
+                default:
+                    // Make sure the polynom is factorized.
+                    if (this._factors.length === 0) {
+                        this.factorize();
+                    }
+                    let zeroes = [], zeroesAsTex = [];
+                    for (let P of this._factors) {
+                        if (P.degree().greater(2)) {
+                            // TODO: Handle other polynom.
+                        }
+                        else if (P.degree().value === 2) {
+                            let A = P.monomByDegree(2).coefficient, B = P.monomByDegree(1).coefficient, C = P.monomByDegree(0).coefficient, D = B.clone().pow(2).subtract(A.clone().multiply(C).multiply(4));
+                            if (D.value > 0) {
+                                /*console.log('Two zeroes for ', P.tex); */
+                                let x1 = (-(B.value) + Math.sqrt(D.value)) / (2 * A.value), x2 = (-(B.value) - Math.sqrt(D.value)) / (2 * A.value);
+                                zeroes.push(new coefficients_1.Fraction(x1.toFixed(3)).reduce());
+                                zeroes.push(new coefficients_1.Fraction(x2.toFixed(3)).reduce());
+                            }
+                            else if (D.value === 0) {
+                                /*console.log('One zero for ', P.tex); */
+                            }
+                            else {
+                                console.log('No zero for ', P.tex);
+                            }
+                        }
+                        else {
+                            for (let z of P.getZeroes()) {
+                                // Check if the zero is already in the list.
+                                if (z === false || z === true) {
+                                    continue;
+                                }
+                                if (zeroesAsTex.indexOf(z.frac) === -1) {
+                                    zeroes.push(z);
+                                    zeroesAsTex.push(z.frac);
+                                }
+                            }
+                        }
+                    }
+                    return zeroes;
+            }
+            return Z;
+        };
+        // TODO: analyse the next functions to determine if they are useful or not...
+        this.monomByDegree = (degree, letter) => {
+            if (degree === undefined) {
+                // return the highest degree monom.
+                return this.monomByDegree(this.degree(letter), letter);
+            }
+            // Reduce the polynom.
+            const M = this.clone().reduce();
+            for (const m of M._monoms) {
+                if (m.degree(letter).isEqual(degree)) {
+                    return m.clone();
+                }
+            }
+            // Nothing was found - return the null monom.
+            return new monom_1.Monom().zero();
+        };
+        this.monomsByDegree = (degree, letter) => {
+            if (degree === undefined) {
+                // return the highest degree monom.
+                return this.monomsByDegree(this.degree(letter));
+            }
+            // Reduce the polynom.
+            let Ms = [];
+            const M = this.clone().reduce();
+            for (const m of M._monoms) {
+                if (m.degree(letter) === degree) {
+                    Ms.push(m.clone());
+                }
+            }
+            return Ms;
+            // Nothing was found - retur
+        };
+        // Used in LinearSystem.tex
+        this.monomByLetter = (letter) => {
+            const M = this.clone().reduce();
+            for (const m of M._monoms) {
+                if (m.hasLetter(letter)) {
+                    return m.clone();
+                }
+            }
+            return new monom_1.Monom().zero();
+        };
+        // Next functions are used for for commonMonom, which is used in the factorize method.
+        this.getDenominators = () => {
+            const denominators = [];
+            for (const m of this._monoms) {
+                denominators.push(m.coefficient.denominator);
+            }
+            return denominators;
+        };
+        this.getNumerators = () => {
+            const numerators = [];
+            for (const m of this._monoms) {
+                numerators.push(m.coefficient.numerator);
+            }
+            return numerators;
+        };
+        this.lcmDenominator = () => {
+            return numeric_1.Numeric.lcm(...this.getDenominators());
+        };
+        // ------------------------------------------
+        // Polynoms factorization functions
+        this.gcdDenominator = () => {
+            return numeric_1.Numeric.gcd(...this.getDenominators());
+        };
+        this.lcmNumerator = () => {
+            return numeric_1.Numeric.lcm(...this.getNumerators());
+        };
+        this.gcdNumerator = () => {
+            return numeric_1.Numeric.gcd(...this.getNumerators());
+        };
+        // ------------------------------------------
+        // Polynoms helpers functions
+        // -------------------------------------
+        this.commonMonom = () => {
+            let M = new monom_1.Monom().one(), numerator, denominator, degree = this.degree();
+            numerator = this.gcdNumerator();
+            denominator = this.gcdDenominator();
+            M.coefficient = new coefficients_1.Fraction(numerator, denominator);
+            for (let L of this.variables) {
+                // Initialize the setLetter with the max degree
+                M.setLetter(L, degree);
+                for (let m of this._monoms) {
+                    M.setLetter(L, coefficients_1.Fraction.min(m.degree(L), M.degree(L)));
+                    if (M.degree(L).isZero()) {
+                        break;
+                    }
+                }
+            }
+            return M;
+        };
+        this.genDisplay = (output, forceSign, wrapParentheses) => {
+            let P = '';
+            for (const k of this._monoms) {
+                if (k.coefficient.value === 0) {
+                    continue;
+                }
+                P += `${(k.coefficient.sign() === 1 && (P !== '' || forceSign === true)) ? '+' : ''}${(output === 'tex') ? k.tex : k.display}`;
+            }
+            if (wrapParentheses === true && this.length > 1) {
+                if (output === 'tex') {
+                    P = `\\left( ${P} \\right)`;
+                }
+                else {
+                    P = `(${P})`;
+                }
+            }
+            if (P === '') {
+                P = '0';
+            }
+            return P;
+        };
+        /**
+         * Main parse using a shutting yard class
+         * @param inputStr
+         */
+        this.shutingYardToReducedPolynom = (inputStr) => {
+            // Get the RPN array of the current expression
+            const SY = new shutingyard_1.Shutingyard().parse(inputStr);
+            const rpn = SY.rpn;
+            // New version for reducing shuting yard.
+            this.zero();
+            let stack = [], monom = new monom_1.Monom();
+            // Loop through the
+            for (const element of rpn) {
+                Polynom.addToken(stack, element);
+            }
+            if (stack.length === 1) {
+                this.add(stack[0]);
+            }
+            return this;
+            /**
+             let m1: Polynom;
+             let m2: Polynom;
+    
+             let stack: Polynom[] = [],
+             previousToken: string = null,
+             tempPolynom
+    
+             for (const element of rpn) {
+                if (element.tokenType === 'coefficient' || element.tokenType === 'variable') {
+                    tempPolynom = new Polynom().zero();
+                    tempPolynom.monoms = [new Monom(element.token)]
+                    stack.push(tempPolynom.clone())
+                } else if (element.tokenType === 'operation') {
+                    m2 = (stack.pop()) || new Polynom().zero();
+                    m1 = (stack.pop()) || new Polynom().zero();
+                    switch (element.token) {
+                        case '+':
+                            stack.push(m1.add(m2))
+                            break;
+                        case '-':
+                            stack.push(m1.subtract(m2))
+                            break;
+                        case '*':
+                            stack.push(m1.multiply(m2))
+                            break;
+                        case '^':
+                            stack.push(m1.pow(+previousToken))
+                    }
+                }
+                previousToken = element.token;
+            }
+    
+             this._monoms = stack[0].monoms;
+             return this;*/
+        };
+        this.multiplyByPolynom = (P) => {
+            const M = [];
+            for (const m1 of this._monoms) {
+                for (const m2 of P.monoms) {
+                    M.push(monom_1.Monom.xmultiply(m1, m2));
+                }
+            }
+            this._monoms = M;
+            return this.reduce();
+        };
+        this.multiplyByFraction = (F) => {
+            for (const m of this._monoms) {
+                m.coefficient.multiply(F);
+            }
+            return this.reduce();
+        };
+        this.multiplyByInteger = (nb) => {
+            return this.multiplyByFraction(new coefficients_1.Fraction(nb));
+        };
+        this.multiplyByMonom = (M) => {
+            for (const m of this._monoms) {
+                m.multiply(M);
+            }
+            return this.reduce();
+        };
+        this.divideByInteger = (nb) => {
+            const nbF = new coefficients_1.Fraction(nb);
+            for (const m of this._monoms) {
+                m.coefficient.divide(nbF);
+            }
+            return this;
+        };
+        this.divideByFraction = (F) => {
+            for (const m of this._monoms) {
+                m.coefficient.divide(F);
+            }
+            return this;
+        };
+        this._factorize2ndDegree = (letter) => {
+            let P1, P2, a, b, c, delta, x1, x2, factor;
+            // One variable only
+            if (this.numberOfVars === 1) {
+                a = this.monomByDegree(2, letter).coefficient;
+                b = this.monomByDegree(1, letter).coefficient;
+                c = this.monomByDegree(0, letter).coefficient;
+                delta = b.clone().pow(2).subtract(a.clone().multiply(c).multiply(4));
+                if (delta.isZero()) {
+                    x1 = b.clone().opposed().divide(a.clone().multiply(2));
+                    P1 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator);
+                    P2 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator);
+                    factor = a.divide(x1.denominator).divide(x1.denominator);
+                    if (!factor.isOne()) {
+                        // TODO: Update new Polynom to accept anything...
+                        return [new Polynom(factor.display), P1, P2];
+                    }
+                    else {
+                        return [P1, P2];
+                    }
+                }
+                else if (delta.isPositive() && delta.isSquare()) {
+                    x1 = b.clone().opposed()
+                        .add(delta.clone().sqrt())
+                        .divide(a.clone().multiply(2));
+                    x2 = b.clone().opposed()
+                        .subtract(delta.clone().sqrt())
+                        .divide(a.clone().multiply(2));
+                    // (2x+5)(3x-2)
+                    // 6x^2+11x-10
+                    // a = 6, b = 11, c = -10
+                    // delta = 121-4*6*(-10) = 361= 19^2
+                    // x1 = (-11 + 19)  / 12 = 8/12 = 2/3
+                    // x2 = (-11 - 19)  / 12 = -30/12 = -5/2
+                    factor = a.divide(x1.denominator).divide(x2.denominator);
+                    if (factor.isOne()) {
+                        return [
+                            new Polynom(letter).subtract(x1.display).multiply(x1.denominator),
+                            new Polynom(letter).subtract(x2.display).multiply(x2.denominator),
+                        ];
+                    }
+                    else {
+                        return [
+                            new Polynom(factor.display),
+                            new Polynom(letter).subtract(x1.display).multiply(x1.denominator),
+                            new Polynom(letter).subtract(x2.display).multiply(x2.denominator),
+                        ];
+                    }
+                }
+                else {
+                    // No solution possible - return the complete value.
+                    return [this.clone()];
+                }
+            }
+            else {
+                // If multiple variables, only handle perfect squares...
+                a = this.monomByDegree(2, letter);
+                b = this.monomByDegree(1, letter);
+                c = this.monomByDegree(0, letter);
+                if (a.isLiteralSquare() && c.isLiteralSquare()) {
+                    // Check the middle item is same as...
+                    if (b.clone().pow(2).isSameAs(a.clone().multiply(c))) {
+                        // Determine if the coefficient values matches.
+                        // Search 4 values (r, s, t, u) that matches:
+                        // (r X + s Y)(t X + u Y) = rt X^2 + (ru + st) XY + su Y^2
+                        let xPolynom = new Polynom('x', a.coefficient, b.coefficient, c.coefficient);
+                        let xFactors = xPolynom._factorize2ndDegree('x');
+                        let factors = [], xyzPolynom;
+                        if (xFactors.length >= 2) {
+                            for (let p of xFactors) {
+                                if (p.degree().isZero()) {
+                                    factors.push(p.clone());
+                                }
+                                else {
+                                    xyzPolynom = p.clone();
+                                    xyzPolynom.monoms[0].literal = a.literalSqrt;
+                                    xyzPolynom.monoms[1].literal = c.literalSqrt;
+                                    factors.push(xyzPolynom.clone());
+                                }
+                            }
+                            return factors;
+                        }
+                    }
+                }
+                return [this.clone()];
+                //
+                // console.log(a.tex, b.tex, c.tex)
+                // if (a.isSquare() && c.isSquare()) {
+                //     console.log('A C squares')
+                //     if (a.clone().sqrt().multiply(c.clone().sqrt()).multiplyByNumber(2).isSameAs(b)) {
+                //         console.log('HERE')
+                //         if (a.coefficient.sign() === b.coefficient.sign()) {
+                //             return []
+                //         }else{
+                //             return []
+                //         }
+                //     }
+                // } else if(a.isLiteralSquare() && c.isLiteralSquare()) {
+                //     console.log('A C litteral SQUARES')
+                //     // Check that the middle element is the product of a and c.
+                //
+                //     if(b.clone().pow(2).isSameAs(a.clone().multiply(c))){
+                //         console.log('SAME')
+                //
+                //     }else{
+                //         console.log('NOT SAME')
+                //     }
+                //
+                //     return [this.clone()]
+                // } else {
+                //     console.log('NOT SQUARES AT ALL !!!!')
+                // }
+            }
+        };
+        this._factorizeByGroups = () => {
+            // TODO: Factorize by groups.
+            return [];
+        };
+        this._monoms = [];
+        this._factors = [];
+        if (polynomString !== undefined) {
+            this.parse(polynomString, ...values);
+        }
+        return this;
+    }
+    // ------------------------------------------
+    get monoms() {
+        return this._monoms;
+    }
+    set monoms(M) {
+        this._monoms = M;
+    }
+    get factors() {
+        return this._factors;
+    }
+    set factors(value) {
+        this._factors = value;
+    }
+    get texString() {
+        return this._texString;
+    }
+    get texFactors() {
+        this.factorize();
+        let tex = '';
+        for (let f of this.factors) {
+            if (f.monoms.length > 1) {
+                tex += `(${f.tex})`;
+            }
+            else {
+                tex = f.tex + tex;
+            }
+        }
+        return tex;
+    }
+    get length() {
+        // TODO: Must reduce the monoms list to remove the zero coefficient.
+        return this._monoms.length;
+    }
+    get display() {
+        return this.genDisplay();
+    }
+    get raw() {
+        return this._rawString;
+    }
+    get tex() {
+        return this.genDisplay('tex');
+    }
+    get isMultiVariable() {
+        const B = false;
+        for (const m of this._monoms) {
+            if (m.variables.length > 1) {
+                return true;
+            }
+        }
+        return B;
+    }
+    get variables() {
+        let V = [];
+        for (const m of this._monoms) {
+            V = V.concat(m.variables);
+        }
+        // Remove duplicates.
+        V = [...new Set(V)];
+        return V;
+    }
+    get numberOfVars() {
+        return this.variables.length;
+    }
+    _parseString(inputStr, ...values) {
+        if (values === undefined || values.length === 0) {
+            inputStr = '' + inputStr;
+            this._rawString = inputStr;
+            // Parse the polynom using the shutting yard algorithm
+            if (inputStr !== '' && !isNaN(Number(inputStr))) {
+                this.empty();
+                // It's a simple number.
+                let m = new monom_1.Monom(inputStr);
+                // m.coefficient = new Fraction(inputStr);
+                // m.literalStr = '';
+                this.add(m);
+                return this;
+            }
+            // Parse the string.
+            return this.shutingYardToReducedPolynom(inputStr);
+        }
+        else if (/^[a-z]/.test(inputStr)) {
+            // We assume the inputStr contains only letters.
+            this.empty();
+            let fractions = values.map(x => new coefficients_1.Fraction(x));
+            // Multiple setLetter version
+            if (inputStr.length > 1) {
+                // TODO: check that the number of values given correspond to the letters (+1 eventually)
+                let letters = inputStr.split(''), i = 0;
+                for (let F of fractions) {
+                    let m = new monom_1.Monom();
+                    m.coefficient = F.clone();
+                    m.literalStr = letters[i] || '';
+                    this.add(m);
+                    i++;
+                }
+            }
+            // Single setLetter version
+            else {
+                let n = fractions.length - 1;
+                for (let F of fractions) {
+                    let m = new monom_1.Monom();
+                    m.coefficient = F.clone();
+                    m.literalStr = `${inputStr}^${n}`;
+                    this.add(m);
+                    n--;
+                }
+            }
+            return this;
+        }
+        else {
+            return this.zero();
+        }
+    }
+    isZero() {
+        return (this._monoms.length === 1 && this._monoms[0].coefficient.isZero()) || this._monoms.length === 0;
+    }
+    isOne() {
+        return this._monoms.length === 1 && this._monoms[0].coefficient.isOne();
+    }
+}
+exports.Polynom = Polynom;
+Polynom.addToken = (stack, element) => {
+    switch (element.tokenType) {
+        case shutingyard_1.ShutingyardType.COEFFICIENT:
+            stack.push(new Polynom(element.token));
+            break;
+        case shutingyard_1.ShutingyardType.VARIABLE:
+            stack.push(new Polynom().add(new monom_1.Monom(element.token)));
+            break;
+        case shutingyard_1.ShutingyardType.CONSTANT:
+            // TODO: add constant support to Polynom parsing.
+            console.log('Actually, not supported - will be added later !');
+            break;
+        case shutingyard_1.ShutingyardType.OPERATION:
+            if (stack.length >= 2) {
+                const b = stack.pop(), a = stack.pop();
+                if (element.token === '+') {
+                    stack.push(a.add(b));
+                }
+                else if (element.token === '-') {
+                    stack.push(a.subtract(b));
+                }
+                else if (element.token === '*') {
+                    stack.push(a.multiply(b));
+                }
+                else if (element.token === '/') {
+                    if (b.degree().isStrictlyPositive()) {
+                        console.log('divide by a polynom -> should create a rational polynom !');
+                    }
+                    else {
+                        stack.push(a.divide(b.monoms[0].coefficient));
+                    }
+                }
+                else if (element.token === '^') {
+                    if (b.degree().isStrictlyPositive()) {
+                        console.error('Cannot elevate a polynom with another polynom !');
+                    }
+                    else {
+                        if (b.monoms[0].coefficient.isRelative()) {
+                            // Integer power
+                            stack.push(a.pow(b.monoms[0].coefficient.value));
+                        }
+                        else {
+                            // Only allow power if the previous polynom is only a monom, without coefficient.
+                            if (a.monoms.length === 1 && a.monoms[0].coefficient.isOne()) {
+                                for (let letter in a.monoms[0].literal) {
+                                    a.monoms[0].literal[letter].multiply(b.monoms[0].coefficient);
+                                }
+                                stack.push(a);
+                            }
+                            else {
+                                console.error('Cannot have power with fraction');
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                console.log('Stack size: ', stack.length);
+                if (element.token === '-') {
+                    stack.push(stack.pop().opposed());
+                }
+                else {
+                    console.log('While parsing, cannot apply ', element.token, 'to', stack[0].tex);
+                }
+            }
+            break;
+        case shutingyard_1.ShutingyardType.MONOM:
+            // Should never appear.
+            console.error('The monom token should not appear here');
+            break;
+        case shutingyard_1.ShutingyardType.FUNCTION:
+            // Should never appear.
+            console.log('The function token should not appear here - might be introduced later.');
+            break;
+    }
+};
+
+
+/***/ }),
+
+/***/ 107:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+/**
+ * Rational polynom module contains everything necessary to handle rational polynoms.
+ * @module Polynom
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Rational = void 0;
+const polynom_1 = __webpack_require__(38);
+const coefficients_1 = __webpack_require__(534);
+/**
+ * Rational class can handle rational polynoms
+ */
+class Rational {
+    /**
+     *
+     * @param numerator
+     * @param denominator
+     */
+    constructor(numerator, denominator) {
+        this.clone = () => {
+            this._numerator = this._numerator.clone();
+            this._denominator = this._denominator.clone();
+            return this;
+        };
+        this.domain = () => {
+            let zeroes = this._denominator.getZeroes();
+            if (zeroes.length === 0 || zeroes[0] === false) {
+                return '\\mathbb{R}';
+            }
+            else if (zeroes[0] === true) {
+                return '\\varnothing';
+            }
+            else {
+                return '\\mathbb{R}\\setminus\\left{' +
+                    zeroes.map(x => {
+                        return (typeof x === 'boolean') ? '' : x.frac;
+                    })
+                        .join(';') + '\\right}';
+            }
+        };
+        this.amplify = (P) => {
+            this._numerator.multiply(P);
+            this._denominator.multiply(P);
+            return this;
+        };
+        this.simplify = (P) => {
+            let NumeratorEuclidien = this._numerator.euclidian(P);
+            if (!NumeratorEuclidien.reminder.isZero()) {
+                return this;
+            }
+            let DenominatorEuclidien = this._denominator.euclidian(P);
+            if (!DenominatorEuclidien.reminder.isZero()) {
+                return this;
+            }
+            this._numerator = NumeratorEuclidien.quotient;
+            this._denominator = DenominatorEuclidien.quotient;
+            return this;
+        };
+        this.reduce = () => {
+            console.log(this._numerator.tex);
+            this._numerator.factorize();
+            console.log(this._numerator.factors.map(x => x.tex));
+            for (let f of this._numerator.factors) {
+                this.simplify(f);
+            }
+            return this;
+        };
+        this.opposed = () => {
+            this._numerator.opposed();
+            return this;
+        };
+        this.add = (R) => {
+            // 1. Make sure both rational are at the same denominator
+            // 2. Add the numerators.
+            // 3. Simplify
+            // Store the adding denominator
+            let denominator = this._denominator.clone();
+            // Amplif the main rational polynom by the adding denominator
+            this.amplify(R._denominator);
+            // Add to the numerator the adding value...
+            this._numerator.add(R._numerator.clone().multiply(denominator));
+            return this;
+        };
+        this.subtract = (R) => {
+            return this.add(R.clone().opposed());
+        };
+        this.limits = (value, letter) => {
+            if (value === Infinity || value === -Infinity) {
+                let N = this._numerator.monomByDegree(this._numerator.degree(letter), letter), D = this._denominator.monomByDegree(this._denominator.degree(letter), letter);
+                N.divide(D);
+                if (N.degree(letter).isStrictlyPositive()) {
+                    return N.coefficient.sign() * (Math.pow((value > 0 ? 1 : -1), N.degree(letter).value % 2)) === 1 ? Infinity : -Infinity;
+                }
+                if (N.degree(letter).isZero()) {
+                    return N.coefficient;
+                }
+                if (N.degree(letter).isStrictlyPositive()) {
+                    return N.coefficient.sign() * (Math.pow(-1, N.degree(letter).value % 2)) === 1 ? 0 : -0;
+                }
+            }
+            else {
+                return this._numerator.evaluate({ letter: new coefficients_1.Fraction(value) }).divide(this._denominator.evaluate({ letter: new coefficients_1.Fraction(value) }));
+            }
+        };
+        this._numerator = numerator ? numerator.clone() : new polynom_1.Polynom();
+        this._denominator = denominator ? denominator.clone() : new polynom_1.Polynom();
+    }
+    get tex() {
+        return `\\dfrac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
+    }
+    get texFactors() {
+        this._numerator.factorize();
+        this._denominator.factorize();
+        return `\\dfrac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
+    }
+    get numerator() {
+        return this._numerator;
+    }
+    get denominator() {
+        return this._denominator;
+    }
+}
+exports.Rational = Rational;
+
+
+/***/ }),
+
+/***/ 506:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Fraction = void 0;
+const numeric_1 = __webpack_require__(956);
+/**
+ * The fraction class make possible to handle
+ * TODO: Write the documentation correctly.
+ * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
+ */
+class Fraction {
+    constructor(value, denominatorOrPeriodic) {
+        // ------------------------------------------
+        // Creation / parsing functions
+        // ------------------------------------------
+        /**
+         * Parse the value to get the numerator and denominator
+         * @param value : number or string to parse to get the fraction
+         * @param denominatorOrPeriodic (optional|number) : length of the periodic part: 2.333333 => 1 or denominator value
+         */
+        this.parse = (value, denominatorOrPeriodic) => {
+            let S;
+            // A null value means a zero fraction.
+            if (value === null || value === "") {
+                this._numerator = 0;
+                this._denominator = 1;
+                return this;
+            }
+            switch (typeof value) {
+                case "string":
+                    // Split the sting value in two parts: Numerator/Denominator
+                    S = value.split('/');
+                    // Security checks
+                    if (S.length > 2)
+                        throw "Two many divide signs";
+                    if (S.map(x => x === '' || isNaN(Number(x))).includes(true))
+                        throw "Not a number";
+                    if (S.length === 1) {
+                        // No divide sign
+                        return this.parse(+S[0]);
+                    }
+                    else if (S.length === 2) {
+                        // One divide signe
+                        // We check if the denominator is zero
+                        if (S[1] === '0') {
+                            this._numerator = NaN;
+                            this._denominator = 1;
+                        }
+                        else {
+                            this._numerator = +S[0];
+                            this._denominator = +S[1];
+                        }
+                    }
+                    else {
+                        // More than one divide sign ?
+                        this._numerator = NaN;
+                        this._denominator = 1;
+                    }
+                    break;
+                case "number":
+                    if (Number.isSafeInteger(value)) {
+                        // The given value is an integer
+                        this._numerator = +value;
+                        if (denominatorOrPeriodic === undefined || !Number.isSafeInteger(denominatorOrPeriodic)) {
+                            this._denominator = 1;
+                        }
+                        else {
+                            this._denominator = +denominatorOrPeriodic;
+                        }
+                    }
+                    else {
+                        // The given value is a float number
+                        // Get the number of decimals after the float sign
+                        let p = (value.toString()).split('.')[1].length;
+                        // Transform the float number in two integer
+                        if (denominatorOrPeriodic === undefined) {
+                            this._numerator = value * Math.pow(10, p);
+                            this._denominator = Math.pow(10, p);
+                        }
+                        else if (Number.isSafeInteger(denominatorOrPeriodic)) {
+                            this._numerator = value * Math.pow(10, p) - Math.floor(value * Math.pow(10, p - denominatorOrPeriodic));
+                            this.denominator = Math.pow(10, p) - Math.pow(10, p - denominatorOrPeriodic);
+                        }
+                        this.reduce();
+                    }
+                    break;
+                case "object":
+                    if (value instanceof Fraction) {
+                        this._numerator = +value.numerator;
+                        this._denominator = +value.denominator;
+                    }
+                    break;
+            }
+            return this;
+        };
+        this.clone = () => {
+            let F = new Fraction();
+            F.numerator = +this._numerator;
+            F.denominator = +this._denominator;
+            return F;
+        };
+        this.zero = () => {
+            this._numerator = 0;
+            this._denominator = 1;
+            return this;
+        };
+        this.one = () => {
+            this._numerator = 1;
+            this._denominator = 1;
+            return this;
+        };
+        this.infinite = () => {
+            this._numerator = Infinity;
+            this._denominator = 1;
+            return this;
+        };
+        this.invalid = () => {
+            this._numerator = NaN;
+            this._denominator = 1;
+            return this;
+        };
+        // ------------------------------------------
+        // Mathematical operations
+        // ------------------------------------------
+        this.opposed = () => {
+            this._numerator = -this._numerator;
+            return this;
+        };
+        this.add = (F) => {
+            if (F instanceof Fraction) {
+                let N = this._numerator, D = this._denominator;
+                this._numerator = N * F.denominator + F.numerator * D;
+                this._denominator = D * F.denominator;
+            }
+            else {
+                return this.add(new Fraction(F));
+            }
+            return this.reduce();
+        };
+        this.subtract = (F) => {
+            if (F instanceof Fraction) {
+                return this.add(F.clone().opposed());
+            }
+            else {
+                return this.add(-F);
+            }
+        };
+        this.multiply = (F) => {
+            // Parse the value.
+            // If it's a fraction, return a clone of it
+            // If it's an integer, return the fraction F/1
+            let Q = new Fraction(F);
+            this._numerator = this._numerator * Q.numerator;
+            this._denominator = this._denominator * Q.denominator;
+            return this.reduce();
+        };
+        this.divide = (F) => {
+            let Q = new Fraction(F);
+            if (Q.numerator === 0) {
+                return new Fraction().infinite();
+            }
+            let N = +this._numerator, D = +this._denominator;
+            this._numerator = N * Q.denominator;
+            this._denominator = D * Q.numerator;
+            return this.reduce();
+        };
+        this.invert = () => {
+            let n = +this._numerator, d = +this._denominator;
+            this._numerator = d;
+            this._denominator = n;
+            return this;
+        };
+        this.pow = (p) => {
+            // TODO: Fraction.pow with a value different than a safe integer !
+            if (p instanceof Fraction) {
+                return this.pow(p.value);
+            }
+            this.reduce();
+            if (p < 0) {
+                this.invert();
+            }
+            // Check if numerator and denominator are roots of...
+            // othervise, convert to numeric.
+            let controlNumerator = Math.floor(Math.pow(this._numerator, Math.abs(p))), controlDenominator = Math.floor(Math.pow(this._denominator, Math.abs(p)));
+            if (controlNumerator ** Math.abs(p) === this._numerator
+                &&
+                    controlDenominator ** Math.abs(p) === this._denominator) {
+                this._numerator = this._numerator ** Math.abs(p);
+                this._denominator = this._denominator ** Math.abs(p);
+            }
+            else {
+                this._numerator = this._numerator ** Math.abs(p);
+                this._denominator = this._denominator ** Math.abs(p);
+            }
+            return this;
+        };
+        this.root = (p) => {
+            // TODO: nth - root of a fraction => this will return another type of coefficient.
+            // Check if they are perfect roots..
+            if (p === 0) {
+                return this;
+            }
+            // If negative, invert the fraction
+            if (p < 0) {
+                this.invert();
+            }
+            let n = Math.pow(this._numerator, Math.abs(1 / p)), d = Math.pow(this._denominator, Math.abs(1 / p));
+            this._numerator = Math.pow(this._numerator, Math.abs(1 / p));
+            this._denominator = Math.pow(this._denominator, Math.abs(1 / p));
+            return this;
+        };
+        this.sqrt = () => {
+            return this.root(2);
+        };
+        this.abs = () => {
+            this._numerator = Math.abs(this._numerator);
+            this._denominator = Math.abs(this._denominator);
+            return this;
+        };
+        // ------------------------------------------
+        // Mathematical operations specific to fractions
+        // ------------------------------------------
+        this.reduce = () => {
+            let g = numeric_1.Numeric.gcd(this._numerator, this._denominator);
+            this._numerator = this._numerator / g;
+            this._denominator = this._denominator / g;
+            if (this._denominator < 0) {
+                this._denominator = -this._denominator;
+                this._numerator = -this._numerator;
+            }
+            return this;
+        };
+        this.amplify = (k) => {
+            if (Number.isSafeInteger(k)) {
+                this._numerator *= k;
+                this._denominator *= k;
+            }
+            return this;
+        };
+        // ------------------------------------------
+        // Compare functions
+        // ------------------------------------------
+        /**
+         * Compare the current coefficient with another coefficient
+         * @param F (Coefficient) The coefficient to compare
+         * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
+         */
+        this.compare = (F, sign) => {
+            if (sign === undefined) {
+                sign = '=';
+            }
+            let compareFraction;
+            if (F instanceof Fraction) {
+                compareFraction = F.clone();
+            }
+            else {
+                compareFraction = new Fraction(F);
+            }
+            switch (sign) {
+                case '>':
+                    return this.value > compareFraction.value;
+                case ">=" || 0 || 0:
+                    return this.value >= compareFraction.value;
+                case "<":
+                    return this.value < compareFraction.value;
+                case "<=" || 0 || 0:
+                    return this.value <= compareFraction.value;
+                case "=":
+                    // let F2: Fraction = compareFraction.clone().reduce(),
+                    //     F1: Fraction = this.clone().reduce();
+                    // return (F1.numerator === F2.numerator && F1.denominator === F2.denominator);
+                    return this.value === compareFraction.value;
+                case "<>":
+                    return this.value !== compareFraction.value;
+                default:
+                    return false;
+            }
+        };
+        /* Compare shortcuts */
+        this.lesser = (than) => {
+            return this.compare(than, '<');
+        };
+        this.leq = (than) => {
+            return this.compare(than, '<=');
+        };
+        this.greater = (than) => {
+            return this.compare(than, '>');
+        };
+        this.geq = (than) => {
+            return this.compare(than, '>=');
+        };
+        this.isEqual = (than) => {
+            return this.compare(than, '=');
+        };
+        this.isNotEqual = (than) => {
+            return this.compare(than, '<>');
+        };
+        this.isOpposed = (p) => {
+            return this.isEqual(p.clone().opposed());
+        };
+        this.isInverted = (p) => {
+            return this.isEqual(new Fraction().one().divide(p.clone()));
+        };
+        this.isZero = () => {
+            return this._numerator === 0;
+        };
+        this.isNotZero = () => {
+            return this._numerator !== 0;
+        };
+        this.isOne = () => {
+            return this._numerator === 1 && this._denominator === 1;
+        };
+        this.isNegativeOne = () => {
+            return this._numerator === -1 && this._denominator === 1;
+        };
+        this.isPositive = () => {
+            return this.sign() === 1;
+        };
+        this.isNegative = () => {
+            return this.sign() === -1;
+        };
+        this.isStrictlyPositive = () => {
+            return this.value > 0;
+        };
+        this.isStrictlyNegative = () => {
+            return this.value < 0;
+        };
+        this.isNaN = () => {
+            return isNaN(this._numerator);
+        };
+        this.isInfinity = () => {
+            return this._numerator === Infinity;
+        };
+        this.isFinite = () => {
+            return !this.isInfinity();
+        };
+        this.isSquare = () => {
+            return Math.sqrt(this._numerator) % 1 === 0 && Math.sqrt(this._denominator) % 1 === 0;
+        };
+        this.isReduced = () => {
+            return Math.abs(numeric_1.Numeric.gcd(this._numerator, this._denominator)) === 1;
+        };
+        this.isNatural = () => {
+            return this.isRelative() && this.isPositive();
+        };
+        this.isRelative = () => {
+            return this.clone().reduce().denominator === 1;
+        };
+        this.isRational = () => {
+            return !this.isRelative();
+        };
+        this.isEven = () => {
+            return this.isRelative() && this.value % 2 === 0;
+        };
+        this.isOdd = () => {
+            return this.isRelative() && this.value % 2 === 1;
+        };
+        this.sign = () => {
+            return (this._numerator * this._denominator >= 0) ? 1 : -1;
+        };
+        // TODO: The rest of the functions are not used or unnecessary ?
+        /**
+         * Simple function to determine if it's a fraction
+         */
+        this.areEquals = (...F) => {
+            for (let i = 0; i < F.length; i++) {
+                if (!this.isEqual(F[i])) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        this._numerator = 1;
+        this._denominator = 1;
+        if (value !== undefined) {
+            this.parse(value, denominatorOrPeriodic);
+        }
+        return this;
+    }
+    get isFraction() {
+        return true;
+    }
+    // ------------------------------------------
+    // Getter and setter
+    // ------------------------------------------
+    get numerator() {
+        return this._numerator;
+    }
+    set numerator(value) {
+        this._numerator = value;
+    }
+    get denominator() {
+        return this._denominator;
+    }
+    set denominator(value) {
+        this._denominator = value;
+    }
+    get value() {
+        return this._numerator / this._denominator;
+    }
+    // Display getter
+    get tex() {
+        if (this._denominator === 1) {
+            return `${this._numerator}`;
+        }
+        else if (this._numerator < 0) {
+            return `-\\frac{ ${-this._numerator} }{ ${this._denominator} }`;
+        }
+        else {
+            return `\\frac{ ${this._numerator} }{ ${this._denominator} }`;
+        }
+    }
+    get display() {
+        if (this._denominator === 1) {
+            return `${this._numerator}`;
+        }
+        else {
+            return `${this._numerator}/${this._denominator}`;
+        }
+    }
+    // Helper function to display fractions
+    get frac() {
+        return this.tex;
+    }
+    get dfrac() {
+        return this.tex.replace('\\frac', '\\dfrac');
+    }
+    get tfrac() {
+        return this.tex.replace('\\frac', '\\tfrac');
+    }
+}
+exports.Fraction = Fraction;
+Fraction.max = (...fractions) => {
+    let M = new Fraction(fractions[0]);
+    for (let m of fractions) {
+        let compare = new Fraction(m);
+        if (compare.greater(M)) {
+            M = compare.clone();
+        }
+    }
+    return M;
+};
+Fraction.min = (...fractions) => {
+    let M = new Fraction(fractions[0]);
+    for (let m of fractions) {
+        let compare = new Fraction(m);
+        if (compare.lesser(M)) {
+            M = compare.clone();
+        }
+    }
+    return M;
+};
+
+
+/***/ }),
+
+/***/ 534:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(506), exports);
+__exportStar(__webpack_require__(330), exports);
+
+
+/***/ }),
+
+/***/ 330:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Nthroot = void 0;
+/**
+ * Nthroot is something like "a+b\sqrt{3}
+ */
+class Nthroot {
+    constructor(...values) {
+        // ------------------------------------------
+        // Creation / parsing functions
+        // ------------------------------------------
+        this.parse = (radical, nthroot, coefficient) => {
+            this._coefficient = (coefficient === undefined) ? 1 : coefficient;
+            this._nth = (nthroot === undefined) ? 2 : nthroot;
+            this._radical = (radical === undefined) ? 1 : radical;
+            if (this._nth % 2 === 0 && this._radical < 0) {
+                this._isValid = false;
+            }
+            return this;
+        };
+        // ------------------------------------------
+        // Mathematical operations
+        // ------------------------------------------
+        this.reduce = () => {
+            // Max value to test.
+            let V = Math.floor(Math.pow(this._radical, 1 / this._nth));
+            while (V > 1) {
+                if (this._radical % Math.pow(V, this._nth) === 0) {
+                    // It's dividable by V^n
+                    this._coefficient *= V;
+                    this._radical = this._radical / Math.pow(V, this._nth);
+                    // Redifine the new testing value (this is optimization)
+                    V = Math.floor(Math.pow(this._radical, 1 / this._nth));
+                    continue;
+                }
+                V--;
+            }
+            return this;
+        };
+        this.multiply = (N) => {
+            this._radical *= N.radical;
+            return this.reduce();
+        };
+        // ------------------------------------------
+        // Help functions
+        // ------------------------------------------
+        this.hasRadical = () => {
+            return !(this._radical === 1 || this._radical === 0 || this._isValid === false);
+        };
+        this._radical = 1;
+        this._coefficient = 1;
+        this._nth = 2;
+        this._isValid = true;
+        if (values !== undefined) {
+            this.parse(values[0], values[1], values[2]);
+        }
+    }
+    // ------------------------------------------
+    // Getter and setter
+    // ------------------------------------------
+    get radical() {
+        return this._radical;
+    }
+    set radical(value) {
+        this._radical = value;
+    }
+    get nth() {
+        return this._nth;
+    }
+    set nth(value) {
+        if (Number.isSafeInteger(value) && value >= 2) {
+            this._nth = value;
+        }
+        else {
+            // Error setting the nth root.
+            console.log('Error setting the nth root');
+            this._nth = 2;
+        }
+    }
+    get coefficient() {
+        return this._coefficient;
+    }
+    set coefficient(value) {
+        this._coefficient = value;
+    }
+    get tex() {
+        let C;
+        if (this._coefficient === 1) {
+            C = '';
+        }
+        else if (this._coefficient === -1) {
+            C = '-';
+        }
+        else {
+            C = this._coefficient.toString();
+        }
+        if (this._radical === 1) {
+            return `${this._coefficient}`;
+        }
+        else {
+            if (this._nth === 2) {
+                return `${C}\\sqrt{${this._radical}}`;
+            }
+            else {
+                return `${C}\\sqrt[${this._nth}]{${this._radical}}`;
+            }
+        }
+    }
+    get value() {
+        return this._coefficient * Math.pow(this._radical, 1 / this._nth);
+    }
+}
+exports.Nthroot = Nthroot;
+
+
+/***/ }),
+
+/***/ 735:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NumExp = void 0;
+const shutingyard_1 = __webpack_require__(505);
+const coefficients_1 = __webpack_require__(534);
+class NumExp {
+    constructor(value) {
+        this._expression = value;
+        this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value).rpn;
+    }
+    get rpn() {
+        return this._rpn;
+    }
+    get isValid() {
+        if (this._isValid === undefined) {
+            this.evaluate({ x: 0 });
+        }
+        return this._isValid;
+    }
+    set isValid(value) {
+        this._isValid = value;
+    }
+    get expression() {
+        return this._expression;
+    }
+    _extractDecimalPart(value) {
+        let decimal = value.toString();
+        if (!decimal.includes('.')) {
+            return '';
+        }
+        decimal = decimal.split('.')[1];
+        return decimal.substring(0, decimal.length - 2);
+    }
+    _numberCorrection(value) {
+        // Must modify the number if it's like:
+        // a: 3.0000000000000003
+        // b: 3.9999999999999994
+        // remove the last character
+        // check if around n last characters are either 0 or 9
+        // if it is, 'round' the number.
+        const epsilon = 0.00000000000001, number_of_digits = 6;
+        const decimal = this._extractDecimalPart(value);
+        if (decimal === '') {
+            return value;
+        }
+        const n9 = decimal.match(/9+$/g);
+        const n0 = decimal.match(/0+$/g);
+        if (n9 && n9[0].length >= number_of_digits) {
+            // New tested values.
+            const mod = this._extractDecimalPart(value + epsilon), mod0 = mod.match(/0+$/g);
+            if (mod0 && mod0[0].length >= number_of_digits) {
+                // The value can be changed. Remove all zeros!
+                return +((value + epsilon).toString().split(mod0[0])[0]);
+            }
+        }
+        if (n0 && n0[0].length >= number_of_digits) {
+            // New tested values.
+            const mod = this._extractDecimalPart(value - epsilon), mod9 = mod.match(/9+$/g);
+            if (mod9 && mod9[0].length >= number_of_digits) {
+                // The value can be changed. Remove all nines!
+                return +(value.toString().split(n0[0])[0]);
+            }
+        }
+        return value;
+    }
+    _addToStack(stack, value) {
+        stack.push(this._numberCorrection(value));
+    }
+    evaluate(values) {
+        const stack = [];
+        this.isValid = true;
+        for (const element of this._rpn) {
+            if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
+                // May be a numeric value or a Fraction.
+                if (!isNaN(+element.token)) {
+                    this._addToStack(stack, +element.token);
+                }
+                else {
+                    this._addToStack(stack, new coefficients_1.Fraction(element.token).value);
+                }
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
+                if (values[element.token] !== undefined) {
+                    this._addToStack(stack, +values[element.token]);
+                }
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.CONSTANT) {
+                this._addToStack(stack, shutingyard_1.tokenConstant[element.token]);
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
+                if (element.token === '*') {
+                    const b = stack.pop(), a = stack.pop();
+                    if (a === undefined || b === undefined) {
+                        this.isValid = false;
+                    }
+                    this._addToStack(stack, a * b);
+                }
+                else if (element.token === '/') {
+                    const b = stack.pop(), a = stack.pop();
+                    if (a === undefined || b === undefined) {
+                        this.isValid = false;
+                    }
+                    this._addToStack(stack, a / b);
+                }
+                else if (element.token === '+') {
+                    const b = stack.pop(), a = stack.pop();
+                    if (a === undefined || b === undefined) {
+                        this.isValid = false;
+                    }
+                    this._addToStack(stack, (+a) + (+b));
+                }
+                else if (element.token === '-') {
+                    const b = stack.pop(), a = stack.pop() || 0;
+                    if (b === undefined) {
+                        this.isValid = false;
+                    }
+                    this._addToStack(stack, a - b);
+                }
+                else if (element.token === '^') {
+                    const b = stack.pop(), a = stack.pop();
+                    if (a === undefined || b === undefined) {
+                        this.isValid = false;
+                    }
+                    this._addToStack(stack, Math.pow(a, b));
+                }
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.FUNCTION) {
+                const a = stack.pop();
+                if (a === undefined) {
+                    this.isValid = false;
+                }
+                if (element.token === 'sin') {
+                    this._addToStack(stack, Math.sin(a));
+                }
+                else if (element.token === 'cos') {
+                    this._addToStack(stack, Math.cos(a));
+                }
+                else if (element.token === 'tan') {
+                    this._addToStack(stack, Math.tan(a));
+                }
+                else if (element.token === 'sqrt') {
+                    this._addToStack(stack, Math.sqrt(a));
+                }
+            }
+        }
+        if (stack.length === 1) {
+            return stack[0];
+        }
+        else {
+            throw `There was a problem parsing: ${this._expression}`;
+        }
+    }
+}
+exports.NumExp = NumExp;
+
+
+/***/ }),
+
+/***/ 75:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PolynomExpProduct = exports.PolynomExpFactor = void 0;
+const algebra_1 = __webpack_require__(667);
+const coefficients_1 = __webpack_require__(534);
+class PolynomExpFactor {
+    constructor(polynom, degree, mathFunction) {
+        this._polynom = new algebra_1.Polynom(polynom);
+        this._degree = new coefficients_1.Fraction(degree === undefined ? 1 : degree);
+        this._fn = mathFunction;
+        this._powerAsInteger = true;
+        this._forceParenthesis = true;
+    }
+    get forceParenthesis() {
+        return this._forceParenthesis;
+    }
+    set forceParenthesis(value) {
+        this._forceParenthesis = value;
+    }
+    get fn() {
+        return this._fn;
+    }
+    set fn(value) {
+        this._fn = value;
+    }
+    get powerAsInteger() {
+        return this._powerAsInteger;
+    }
+    set powerAsInteger(value) {
+        this._powerAsInteger = value;
+    }
+    get polynom() {
+        return this._polynom;
+    }
+    set polynom(value) {
+        this._polynom = value;
+    }
+    get degree() {
+        return this._degree;
+    }
+    set degree(value) {
+        this._degree = value;
+    }
+    get tex() {
+        let tex;
+        if (this._degree.isOne() && (this._fn !== undefined || !this._forceParenthesis)) {
+            // If degree is one, no need to add the parenthesis.
+            tex = this._polynom.tex;
+        }
+        else {
+            // the degree is not one, add the parenthesis.
+            if (this._powerAsInteger && !this._degree.isRelative()) {
+                // the degree is a fraction and we want natural powers => use sqrt.
+                tex = `\\sqrt${this._degree.denominator !== 2 ? `[ ${this._degree.denominator} ]` : ''}{ ${this._polynom.tex} }^{ ${this._degree.numerator} }`;
+            }
+            else if (this.isCoefficient && this.firstCoefficient.isNatural()) {
+                // the value is a natural number (eg 3, 7, ...)
+                tex = this._polynom.tex + this._texDegree;
+            }
+            else {
+                // In any other case, add the parenthesis by default
+                tex = `\\left( ${this._polynom.tex} \\right)${this._texDegree}`;
+            }
+        }
+        if (this._fn !== undefined && this._fn.tex !== undefined) {
+            tex = `${this._fn.tex}\\left( ${tex} \\right)`;
+        }
+        return tex;
+    }
+    get isCoefficient() {
+        // TODO: Maybe reduce the coefficient if it isn't of degree one.
+        return this._polynom.degree().isZero();
+    }
+    get firstCoefficient() {
+        return this._polynom.monomByDegree().coefficient;
+    }
+    get _texDegree() {
+        if (this._degree.isOne()) {
+            return '';
+        }
+        else {
+            return `^{ ${this._degree.tfrac} }`;
+        }
+    }
+    setForceParenthesis(value) {
+        this._forceParenthesis = value === undefined || value;
+        return this;
+    }
+    derivative(letter) {
+        if (this._degree.isOne()) {
+            return new PolynomExpProduct(new PolynomExpFactor(this._polynom.clone().derivative(letter)));
+        }
+        else {
+            return new PolynomExpProduct(new PolynomExpFactor(this._degree.clone()), new PolynomExpFactor(this._polynom.clone().derivative(letter)), new PolynomExpFactor(this._polynom.clone(), this._degree.clone().subtract(1)));
+        }
+    }
+}
+exports.PolynomExpFactor = PolynomExpFactor;
+class PolynomExpProduct {
+    constructor(...values) {
+        this._factors = values || [];
+        this._positive = true;
+        this._asPositiveDegree = true;
+    }
+    get fn() {
+        return this._fn;
+    }
+    set fn(value) {
+        this._fn = value;
+    }
+    get factors() {
+        return this._factors;
+    }
+    set factors(value) {
+        this._factors = value;
+    }
+    get positive() {
+        return this._positive;
+    }
+    set positive(value) {
+        this._positive = value;
+    }
+    get asPositiveDegree() {
+        return this._asPositiveDegree;
+    }
+    set asPositiveDegree(value) {
+        this._asPositiveDegree = value;
+    }
+    get tex() {
+        let parenthesis = this._factors.length > 1;
+        // Default value
+        let tex = this._factors.map(factor => factor.setForceParenthesis(parenthesis).tex).join(' \\cdot ');
+        // Change the value in some cases...
+        if (this._asPositiveDegree) {
+            const numerators = this._factors.filter(x => x.degree.isPositive()), denominators = this._factors.filter(x => x.degree.isNegative());
+            let numeratorsAsTex, denominatorsAsTex;
+            if (denominators.length > 0) {
+                if (numerators.length === 0) {
+                    numeratorsAsTex = [1];
+                }
+                else if (numerators.length === 1) {
+                    numeratorsAsTex = [numerators[0].setForceParenthesis(false).tex];
+                }
+                else {
+                    parenthesis = numerators.length > 1;
+                    numeratorsAsTex = numerators.map(factor => factor.setForceParenthesis(parenthesis).tex);
+                }
+                // Change all denominators degrees to positive.
+                denominators.map(x => x.degree.opposed());
+                if (denominators.length === 1) {
+                    denominatorsAsTex = [denominators[0].setForceParenthesis(false).tex];
+                }
+                else {
+                    parenthesis = denominators.length > 1;
+                    denominatorsAsTex = denominators.map(factor => factor.setForceParenthesis(parenthesis).tex);
+                }
+                // restore all degrees to negative again.
+                denominators.map(x => x.degree.opposed());
+                tex = `\\dfrac{ ${numeratorsAsTex.join(' \\cdot ')} }{ ${denominatorsAsTex.join(' \\cdot ')} }`;
+            }
+        }
+        // Apply the modification
+        if (this._fn !== undefined && this._fn.name !== undefined && this._fn.name !== '') {
+            tex = `${this._fn.tex}\\left( ${tex} \\right)`;
+        }
+        return tex;
+    }
+    reduce() {
+        let coefficients = this._factors.filter(factor => factor.isCoefficient), polynoms = this._factors.filter(factor => !factor.isCoefficient);
+        let result = new coefficients_1.Fraction().one();
+        if (coefficients.length > 1) {
+            for (const factor of coefficients) {
+                if (factor.degree.isPositive()) {
+                    result.multiply(factor.polynom.monoms[0].coefficient.pow(factor.degree));
+                }
+                else {
+                    result.divide(factor.polynom.monoms[0].coefficient.pow(factor.degree.clone().abs()));
+                }
+            }
+        }
+        else if (coefficients.length === 1) {
+            result = coefficients[0].polynom.monoms[0].coefficient;
+        }
+        if (result.isOne()) {
+            this._factors = [...polynoms];
+        }
+        else if (!result.isRelative()) {
+            this._factors = [
+                new PolynomExpFactor(result.numerator),
+                new PolynomExpFactor(result.denominator, -1),
+                ...polynoms
+            ];
+        }
+        else {
+            this._factors = [
+                new PolynomExpFactor(result),
+                ...polynoms
+            ];
+        }
+        return this;
+    }
+    integrate(letter) {
+        // Handle this kind of case:
+        // A * f' * F^n
+        // A * f' / F^n, n != 1
+        // A * f_1 * f_2 * f_3, where (f_1 * f_2)' = f_3
+        if (this._factors.length === 2) {
+            // Check polynoms degree: one must of one degree less than the other.
+            let d1 = this._factors[0].polynom.degree(letter).value, d2 = this._factors[1].polynom.degree(letter).value;
+            if (d1 === d2 + 1) {
+                return this._integrateWithInternalDerivative(this._factors[0], this._factors[1], letter);
+            }
+            else if (d1 + 1 === d2) {
+                return this._integrateWithInternalDerivative(this._factors[1], this._factors[0], letter);
+            }
+        }
+        return;
+    }
+    applyMathFunction(mathFn) {
+        this._fn = mathFn;
+        return this;
+    }
+    _integrateWithInternalDerivative(P, Pinternal, letter) {
+        // Get the internal derivative
+        let internalDerivative = P.polynom.clone().derivative(letter);
+        // Get the factor.
+        let { quotient, reminder } = Pinternal.polynom.clone().euclidian(internalDerivative);
+        if (reminder.isZero() && quotient.degree(letter).isZero()) {
+            // All the conditions are done. Actual situation is
+            // (4x-10)(x^2-5x+7)^9
+            // P1 = (x^2-5x+7), P2 = (2x-5)
+            // => 1/10 * quotient * (x^2-5x+7)^10
+            if (P.degree.isEqual(-1)) {
+                return (new PolynomExpProduct(new PolynomExpFactor(quotient, 1), new PolynomExpFactor(P.polynom.clone(), 1, {
+                    name: 'ln', tex: '\\ln', fn: (x) => Math.log(x)
+                })));
+            }
+            else {
+                return new PolynomExpProduct(new PolynomExpFactor(P.degree.clone().add(1).invert(), 1), new PolynomExpFactor(quotient, 1), new PolynomExpFactor(P.polynom.clone(), P.degree.clone().add(1)));
+            }
+        }
+        return;
+    }
+}
+exports.PolynomExpProduct = PolynomExpProduct;
+
+
+/***/ }),
+
+/***/ 699:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Circle = void 0;
+const point_1 = __webpack_require__(557);
+const coefficients_1 = __webpack_require__(534);
+const algebra_1 = __webpack_require__(667);
+const line_1 = __webpack_require__(9);
+const vector_1 = __webpack_require__(586);
+const triangle_1 = __webpack_require__(164);
+const numeric_1 = __webpack_require__(956);
+class Circle {
+    constructor(...values) {
+        /**
+         * Get the relative position between circle and line. It corresponds to the number of intersection.
+         * @param {Line} L
+         * @returns {number}
+         */
+        this.relativePosition = (L) => {
+            let distance = L.distanceTo(this.center), radius = Math.sqrt(this._squareRadius.value);
+            if (distance.value - radius > 0.0000000001) {
+                return 0; // external
+            }
+            else if (Math.abs(distance.value - radius) < 0.0000000001) {
+                return 1; // tangent
+            }
+            else {
+                return 2; // external
+            }
+        };
+        this.lineIntersection = (L) => {
+            let intersectionPoints = [], solX;
+            if (this._cartesian === null) {
+                return [];
+            }
+            const equX = this._cartesian.clone(), lineX = L.equation.clone().isolate('x'), lineY = L.equation.clone().isolate('y');
+            if (lineX instanceof algebra_1.Equation && lineY instanceof algebra_1.Equation) {
+                equX.replaceBy('y', lineY.right).simplify();
+                equX.solve();
+                for (let x of equX.solutions) {
+                    if (x.exact === false && isNaN(x.value)) {
+                        continue;
+                    }
+                    solX = new coefficients_1.Fraction(x.exact === false ? x.value : x.exact);
+                    intersectionPoints.push(new point_1.Point(solX.clone(), lineY.right.evaluate(solX)));
+                }
+            }
+            return intersectionPoints;
+        };
+        this.tangents = (P) => {
+            if (P instanceof coefficients_1.Fraction) {
+                return this._tangentsWithSlope(P);
+            }
+            else if (this.isPointOnCircle(P)) {
+                return this._tangentsThroughOnePointOnTheCircle(P);
+            }
+            else if (this.center.distanceTo(P).value > this.radius.value) {
+                //TODO:  Must check it's outside the circle
+                return this._tangentsThroughOnePointOutsideTheCircle(P);
+            }
+            else {
+                console.log('No tangents as the point is inside !');
+            }
+            return [];
+        };
+        this.isPointOnCircle = (P) => {
+            return this._cartesian.test({ x: P.x, y: P.y });
+        };
+        this.getPointsOnCircle = (numberIsInteger) => {
+            if (numberIsInteger === undefined) {
+                numberIsInteger = false;
+            }
+            // It means searching for pythagorician triples that make a perfect square.
+            // (x-4)^2 + (y+3)^2 = 15
+            let triplets = numeric_1.Numeric.pythagoricianTripletsWithTarget(this._squareRadius.value, true);
+            let points = [], pt;
+            triplets.forEach(triplet => {
+                // Allow positive / negative values
+                // x-a = t  => x = a + t
+                // x-a = -t => x = a - t
+                for (let k of [[1, 1], [-1, 1], [-1, -1], [1, -1]]) {
+                    pt = new point_1.Point(this.center.x.clone().add(k[0] * triplet[0]), this.center.y.clone().add(k[1] * triplet[1]));
+                    // Check if the point is not already in points.
+                    if (!pt.isInListOfPoints(points)) {
+                        points.push(pt);
+                    }
+                }
+            });
+            return points;
+        };
+        this._tangentsThroughOnePointOnTheCircle = (P) => {
+            let CT = new vector_1.Vector(this._center, P);
+            return [new line_1.Line(P, CT, line_1.LinePropriety.Perpendicular)];
+        };
+        this._tangentsThroughOnePointOutsideTheCircle = (P) => {
+            // y = mx + h
+            // px, py => h = -m px + py => mx - y -m.px + py = 0 =>
+            // Centre: cx, cy, radius: r
+            // (m.cx - cy -m.px + py)^2 = r^2  * (m^2  + 1)
+            // (m(cx-py) - (cy - py))^2 = r^2  * (m^2  + 1)
+            let cx_px = this.center.x.clone().subtract(P.x), cy_py = this.center.y.clone().subtract(P.y), polyLeft = new algebra_1.Polynom('x'), polyRight = new algebra_1.Polynom('x^2+1');
+            polyLeft.multiply(cx_px).subtract(cy_py).pow(2);
+            polyRight.multiply(this.squareRadius);
+            let equ = new algebra_1.Equation(polyLeft, polyRight);
+            equ.moveLeft().simplify().solve();
+            return equ.solutions.map(sol => {
+                //  h = -m px + py
+                let h, equ = new algebra_1.Equation('y', 'x');
+                if (sol.exact instanceof coefficients_1.Fraction) {
+                    h = P.x.clone().opposed().multiply(sol.exact).add(P.y);
+                    equ.right.multiply(sol.exact).add(h);
+                }
+                else {
+                    h = P.x.clone().opposed().multiply(sol.value).add(P.y);
+                    equ.right.multiply(sol.value).add(h);
+                }
+                return new line_1.Line(equ);
+            });
+        };
+        this._tangentsWithSlope = (slope) => {
+            // d(C;t)=r => ac1+bc2 + x = +- sqrt(a^2 + b^2)*r
+            // x = -ac1-bc2  +-  sqrt(a^2 + b^2)*r
+            // y = a/bx + h => ax-by + H = 0
+            const a = slope.numerator, b = -slope.denominator, c1 = this._center.x.clone(), c2 = this._center.y.clone(), r = this._squareRadius;
+            let sq = this._squareRadius.clone().multiply(slope.numerator ** 2 + slope.denominator ** 2), x1 = c1.clone().multiply(a).opposed().subtract(c2.clone().multiply(b)).add(sq.clone().sqrt()), x2 = c1.clone().multiply(a).opposed().subtract(c2.clone().multiply(b)).subtract(sq.clone().sqrt());
+            return [new line_1.Line(a, b, x1), new line_1.Line(a, b, x2)];
+        };
+        this._exists = false;
+        if (values !== undefined) {
+            this.parse(...values);
+        }
+    }
+    get center() {
+        return this._center;
+    }
+    get squareRadius() {
+        return this._squareRadius;
+    }
+    get cartesian() {
+        return this._cartesian;
+    }
+    get exists() {
+        return this._exists;
+    }
+    get radius() {
+        if (this._squareRadius.isSquare()) {
+            return {
+                tex: this._squareRadius.clone().sqrt().tex,
+                display: this._squareRadius.clone().sqrt().display,
+                value: this._squareRadius.clone().sqrt().value
+            };
+        }
+        else {
+            return {
+                tex: `\\sqrt{${this._squareRadius.tex}}`,
+                display: `sqrt(${this._squareRadius.display})`,
+                value: this._squareRadius.clone().sqrt().value
+            };
+        }
+        return this._squareRadius;
+    }
+    get tex() {
+        if (this._exists) {
+            let cx, cy;
+            if (this._center.x.isZero()) {
+                cx = 'x^2';
+            }
+            else {
+                cx = `\\left(x${this._center.x.isNegative() ? '+' : '-'}${this._center.x.clone().abs().tex}\\right)^2`;
+            }
+            if (this._center.y.isZero()) {
+                cy = 'y^2';
+            }
+            else {
+                cy = `\\left(y${this._center.y.isNegative() ? '+' : '-'}${this._center.y.clone().abs().tex}\\right)^2`;
+            }
+            return `${cx}+${cy}=${this._squareRadius.tex}`;
+        }
+        else {
+            return `\\text{le cercle n'existe pas.}`;
+        }
+    }
+    get developed() {
+        return this._cartesian.tex;
+    }
+    // TODO: reformat code for better display.
+    get display() {
+        return this._cartesian.display;
+    }
+    clone() {
+        this._center = this._center.clone();
+        this._squareRadius = this._squareRadius.clone();
+        this._calculateCartesian();
+        return this;
+    }
+    _reset() {
+        this._center = null;
+        this._squareRadius = null;
+        this._cartesian = null;
+        this._exists = false;
+        return this;
+    }
+    parse(...values) {
+        // Data can be given in these formats:
+        // one value, a string -> make it an Equation
+        // one value, an Equation
+        // one value, a circle -> clone it
+        // two values: two points (center and pointThrough)
+        // two values: point and Fraction (center and radius)
+        // three values: Point, Fraction, Boolean (center, square radius, true)
+        this._reset();
+        if (typeof values[0] === 'string') {
+            this._parseEquation(new algebra_1.Equation(values[0]));
+        }
+        else if (values[0] instanceof algebra_1.Equation) {
+            this._parseEquation(values[0]);
+        }
+        else if (values[0] instanceof Circle) {
+            this._parseCopyCircle(values[0]);
+        }
+        else if (values[0] instanceof point_1.Point && values.length > 1) {
+            if (values[1] instanceof point_1.Point) {
+                if (values[2] instanceof point_1.Point) {
+                    this._parseThroughtThreePoints(values[0], values[1], values[2]);
+                }
+                else {
+                    this._parseCenterAndPointThrough(values[0], values[1]);
+                }
+            }
+            else if (values[1] instanceof coefficients_1.Fraction || typeof values[1] === 'number') {
+                this._parseCenterAndRadius(values[0], values[1], (typeof values[2] === "boolean") ? values[2] : false);
+            }
+        }
+        // Calculate once the different values.
+        if (this._exists) {
+            this._calculateCartesian();
+            // If the square radius is zero or positive, the circle exists.
+            if (this._squareRadius !== undefined && this._squareRadius.isNegative()) {
+                this._exists = false;
+            }
+        }
+        return this;
+    }
+    _calculateCartesian() {
+        this._cartesian = (new algebra_1.Equation(new algebra_1.Polynom(`(x-(${this._center.x.display}))^2+(y-(${this._center.y.display}))^2`), new algebra_1.Polynom(`${this._squareRadius.display}`))).moveLeft();
+    }
+    _parseCopyCircle(circle) {
+        this._center = circle.center.clone();
+        this._squareRadius = circle.squareRadius.clone();
+        this._calculateCartesian();
+        this._exists = circle.exists;
+        return this;
+    }
+    _parseCenterAndRadius(center, radius, square) {
+        this._center = center.clone();
+        if (square) {
+            this._squareRadius = (new coefficients_1.Fraction(radius));
+        }
+        else {
+            this._squareRadius = new coefficients_1.Fraction(radius).pow(2);
+        }
+        this._exists = true;
+        return this;
+    }
+    _parseCenterAndPointThrough(center, pointThrough) {
+        this._center = center.clone();
+        this._squareRadius = new vector_1.Vector(this._center, pointThrough).normSquare;
+        this._exists = true;
+        return this;
+    }
+    _parseEquation(equ) {
+        this._exists = false;
+        // Move everything to the left.
+        equ.moveLeft();
+        if (equ.degree('x').value === 2 && equ.degree('y').value === 2) {
+            // Both must be of degree 2.
+            let x2 = equ.left.monomByDegree(2, 'x'), y2 = equ.left.monomByDegree(2, 'y'), x1, y1, c;
+            // Both square monoms must have the same coefficient.
+            if (x2.coefficient.isEqual(y2.coefficient)) {
+                equ.divide(x2.coefficient);
+                x1 = equ.left.monomByDegree(1, 'x');
+                y1 = equ.left.monomByDegree(1, 'y');
+                c = equ.left.monomByDegree(0);
+                this._center = new point_1.Point(x1.coefficient.clone().divide(2).opposed(), y1.coefficient.clone().divide(2).opposed());
+                this._squareRadius = c.coefficient.clone().opposed()
+                    .add(this._center.x.clone().pow(2))
+                    .add(this._center.y.clone().pow(2));
+                this._calculateCartesian();
+                this._exists = true;
+            }
+            else {
+                // The circle is not a valid circle
+                this._center = null;
+                this._squareRadius = null;
+                this._exists = false;
+            }
+        }
+        return this;
+    }
+    _parseThroughtThreePoints(A, B, C) {
+        let T = new triangle_1.Triangle(A, B, C), mAB = T.remarquables.mediators.AB.clone(), mAC = T.remarquables.mediators.AC.clone();
+        this.parse(mAB.intersection(mAC).point, A);
+        return this;
+    }
+}
+exports.Circle = Circle;
+
+
+/***/ }),
+
+/***/ 272:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(586), exports);
+__exportStar(__webpack_require__(164), exports);
+__exportStar(__webpack_require__(557), exports);
+__exportStar(__webpack_require__(699), exports);
+__exportStar(__webpack_require__(9), exports);
+
+
+/***/ }),
+
+/***/ 9:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+/**
+ * This class works for 2d line in a plane.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Line = exports.LinePropriety = void 0;
+const coefficients_1 = __webpack_require__(534);
+const vector_1 = __webpack_require__(586);
+const point_1 = __webpack_require__(557);
+const algebra_1 = __webpack_require__(667);
+const numeric_1 = __webpack_require__(956);
+var LinePropriety;
+(function (LinePropriety) {
+    LinePropriety[LinePropriety["None"] = 0] = "None";
+    LinePropriety["Parallel"] = "parallel";
+    LinePropriety["Perpendicular"] = "perpendicular";
+    LinePropriety["Tangent"] = "tangent";
+})(LinePropriety = exports.LinePropriety || (exports.LinePropriety = {}));
+class Line {
+    constructor(...values) {
+        // ------------------------------------------
+        // Creation / parsing functions
+        // ------------------------------------------
+        /**
+         * Parse data to a line
+         * @param {any} values
+         * @returns {Line}
+         */
+        this.parse = (...values) => {
+            this._exists = false;
+            // Nothing is given...
+            if (values.length === 0) {
+                return this;
+            }
+            // One value only: already a line (clone it), an Equation, a string (as Equation)
+            if (values.length === 1) {
+                if (values[0] instanceof Line) {
+                    // Already a Line
+                    return values[0].clone();
+                }
+                else if (values[0] instanceof algebra_1.Equation) {
+                    // It's an Equation
+                    return this.parseEquation(values[0]);
+                }
+                else if (typeof values[0] === "string") {
+                    // It's a string - create an Equation from it.
+                    try {
+                        let E = new algebra_1.Equation(values[0]);
+                        return this.parse(E);
+                    }
+                    catch (e) {
+                        return this;
+                    }
+                }
+            }
+            if (values.length === 2) {
+                if (values[0] instanceof point_1.Point && values[1] instanceof vector_1.Vector) {
+                    return this.parseByPointAndVector(values[0], values[1]);
+                }
+                else if (values[0] instanceof point_1.Point && values[1] instanceof point_1.Point) {
+                    return this.parseByPointAndVector(values[0], new vector_1.Vector(values[0], values[1]));
+                }
+                else if (values[0] instanceof vector_1.Vector && values[1] instanceof point_1.Point) {
+                    return this.parseByPointAndNormal(values[1], values[0]);
+                }
+            }
+            if (values.length === 3) {
+                if ((values[0] instanceof coefficients_1.Fraction || typeof values[0] === 'number')
+                    &&
+                        (values[1] instanceof coefficients_1.Fraction || typeof values[1] === 'number')
+                    &&
+                        (values[2] instanceof coefficients_1.Fraction || typeof values[2] === 'number')) {
+                    return this.parseByCoefficient(values[0], values[1], values[2]);
+                }
+                else if (values[0] instanceof point_1.Point && values[1] instanceof vector_1.Vector) {
+                    if (values[2] === LinePropriety.Perpendicular) {
+                        return this.parseByPointAndNormal(values[0], values[1]);
+                    }
+                    else if (values[2] === LinePropriety.Parallel) {
+                        return this.parseByPointAndVector(values[0], values[1]);
+                    }
+                }
+            }
+            // TODO: Add the ability to create line from a normal vector
+            console.log('Someting wrong happend while creating the line');
+            return this;
+        };
+        this.parseEquation = (equ) => {
+            // Reorder the eequation
+            equ.reorder(true);
+            // It must contain either x, y or both.
+            let letters = new Set(equ.letters());
+            // No 'x', no 'y' in the equations
+            if (!(letters.has('x') || letters.has('y'))) {
+                return this;
+            }
+            // Another letter in the equation ?
+            for (let elem of ['x', 'y']) {
+                if (letters.has(elem)) {
+                    letters.delete(elem);
+                }
+            }
+            if (letters.size > 0) {
+                return this;
+            }
+            // Everything should be ok now...
+            return this.parseByCoefficient(equ.left.monomByLetter('x').coefficient, equ.left.monomByLetter('y').coefficient, equ.left.monomByDegree(0).coefficient);
+        };
+        this.parseByCoefficient = (a, b, c) => {
+            this._a = new coefficients_1.Fraction(a);
+            this._b = new coefficients_1.Fraction(b);
+            this._c = new coefficients_1.Fraction(c);
+            this._d = new vector_1.Vector(this._b.clone(), this._a.clone().opposed());
+            this._OA = new point_1.Point(new coefficients_1.Fraction().zero(), this._c.clone());
+            this._n = this._d.clone().normal();
+            this._exists = true;
+            return this;
+        };
+        this.parseByPointAndVector = (P, d) => {
+            // OX = OP + k*d
+            // x = px + kdx     * dy
+            // y = py + kdy     * dx
+            // ------------------
+            // dy * x = px * dy + kdxdy
+            // dx * y = py * dx + kdxdy
+            // ------------------
+            // dy * x - dx * y = px * dy - py * dx
+            // dy * x - dx * y - (px * dy - py * dx) = 0
+            this.parseByCoefficient(d.y, d.x.clone().opposed(), P.x.clone().multiply(d.y).subtract(P.y.clone().multiply(d.x)).opposed());
+            // Choose the current values as point and direction vector instead of the automatic version.
+            this._OA = P.clone();
+            this._d = d.clone();
+            this._n = this._d.clone().normal();
+            this._exists = true;
+            return this;
+        };
+        this.parseByPointAndNormal = (P, n) => {
+            return this.parseByCoefficient(n.x, n.y, P.x.clone().multiply(n.x)
+                .add(P.y.clone().multiply(n.y)).opposed());
+        };
+        this.parseByPointAndLine = (P, L, orientation) => {
+            if (orientation === undefined) {
+                orientation = LinePropriety.Parallel;
+            }
+            if (orientation === LinePropriety.Parallel) {
+                return this.parseByPointAndNormal(P, L.normal);
+            }
+            else if (orientation === LinePropriety.Perpendicular) {
+                return this.parseByPointAndNormal(P, L.director);
+            }
+            this._exists = false;
+            return this;
+        };
+        this.clone = () => {
+            this._a = this._a.clone();
+            this._b = this._b.clone();
+            this._c = this._c.clone();
+            this._d = this._d.clone();
+            this._OA = this._OA.clone();
+            this._n = this._n.clone();
+            this._exists = this.exists;
+            return this;
+        };
+        // ------------------------------------------
+        // Mathematical operations
+        // ------------------------------------------
+        this.isParellelTo = (line) => {
+            // Do they have the isSame direction ?
+            return this.slope.isEqual(line.slope) && this.height.isNotEqual(line.height);
+        };
+        this.isSameAs = (line) => {
+            return this.slope.isEqual(line.slope) && this.height.isEqual(line.height);
+        };
+        this.isVertical = () => {
+            return this.slope.isInfinity();
+        };
+        this.simplify = () => {
+            let lcm = numeric_1.Numeric.lcm(this._a.denominator, this._b.denominator, this._c.denominator), gcd = numeric_1.Numeric.gcd(this._a.numerator, this._b.numerator, this._c.numerator);
+            this.parseByCoefficient(this._a.clone().multiply(lcm).divide(gcd), this._b.clone().multiply(lcm).divide(gcd), this._c.clone().multiply(lcm).divide(gcd));
+            return this;
+        };
+        this.simplifyDirection = () => {
+            let lcm = numeric_1.Numeric.lcm(this._d.x.denominator, this._d.y.denominator), gcd = numeric_1.Numeric.gcd(this._d.x.numerator, this._d.y.numerator);
+            this._d.x.multiply(lcm).divide(gcd);
+            this._d.y.multiply(lcm).divide(gcd);
+            return this;
+        };
+        this.intersection = (line) => {
+            let Pt = new point_1.Point(), isParallel = false, isSame = false, hasIntersection = true;
+            // this         => ax+by+c = 0
+            // line         => dx+ey+f = 0
+            //
+            //  aex + bey + ce = 0
+            //  dbx + bey + bf = 0
+            // (ae-db)x + ce-bf = 0
+            //
+            //  adx + bdy + cd = 0
+            //  adx + aey + af = 0
+            // (bd-ae)y + (cd-af)
+            //
+            // x = (bf-ce)/(ae-db)
+            // y = (af-cd)/(bd-ae)
+            // Theres is no 'y'
+            if (this._b.isZero() || line.b.isZero()) {
+                // TODO : handle no y in the line canonical form
+            }
+            if (this.isParellelTo(line)) {
+                Pt.x = null;
+                Pt.y = null;
+                isParallel = true;
+            }
+            else if (this.isSameAs(line)) {
+                Pt.x = null;
+                Pt.y = null;
+                isSame = true;
+            }
+            else {
+                Pt.x = this._b.clone().multiply(line.c).subtract(this._c.clone().multiply(line.b))
+                    .divide(this._a.clone().multiply(line.b).subtract(this._b.clone().multiply(line.a)));
+                Pt.y = this._a.clone().multiply(line.c).subtract(this._c.clone().multiply(line.a))
+                    .divide(this._b.clone().multiply(line.a).subtract(this._a.clone().multiply(line.b)));
+            }
+            return {
+                point: Pt,
+                hasIntersection: !(isParallel || isSame),
+                isParallel,
+                isSame
+            };
+        };
+        this.getValueAtX = (value) => {
+            const equ = this.equation.clone().isolate('y'), F = new coefficients_1.Fraction(value);
+            if (equ instanceof algebra_1.Equation) {
+                return equ.right.evaluate({ x: F });
+            }
+            return;
+        };
+        this.getValueAtY = (value) => {
+            const equ = this.equation.clone().isolate('x'), F = new coefficients_1.Fraction(value);
+            if (equ instanceof algebra_1.Equation) {
+                return equ.right.evaluate({ y: F });
+            }
+            return;
+        };
+        this._exists = false;
+        if (values.length > 0) {
+            this.parse(...values);
+        }
+        return this;
+    }
+    get exists() {
+        return this._exists;
+    }
+    // ------------------------------------------
+    // Getter and setter
+    // ------------------------------------------
+    get equation() {
+        return new algebra_1.Equation(new algebra_1.Polynom().parse('xy', this._a, this._b, this._c), new algebra_1.Polynom('0')).simplify();
+    }
+    get tex() {
+        // canonical    =>  ax + by + c = 0
+        // mxh          =>  y = -a/b x - c/b
+        // parametric   =>  (xy) = OA + k*d
+        let canonical = this.equation;
+        // Make sur the first item is positive.
+        if (this._a.isNegative()) {
+            canonical.multiply(-1);
+        }
+        return {
+            canonical: canonical.tex,
+            mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new algebra_1.Polynom().parse('x', this.slope, this.height).tex,
+            parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(this._d.x, this._d.y)}`
+        };
+    }
+    get a() {
+        return this._a;
+    }
+    set a(value) {
+        this._a = value;
+    }
+    get b() {
+        return this._b;
+    }
+    set b(value) {
+        this._b = value;
+    }
+    get c() {
+        return this._c;
+    }
+    set c(value) {
+        this._c = value;
+    }
+    get OA() {
+        return this._OA;
+    }
+    set OA(value) {
+        this._OA = value;
+    }
+    get d() {
+        return this._d;
+    }
+    get n() {
+        return this._n;
+    }
+    get normal() {
+        return new vector_1.Vector(this._a, this._b);
+    }
+    get director() {
+        return this._d.clone();
+    }
+    set d(value) {
+        this._d = value;
+    }
+    get slope() {
+        return this._a.clone().opposed().divide(this._b);
+    }
+    get height() {
+        return this._c.clone().opposed().divide(this._b);
+    }
+    distanceTo(pt) {
+        let numerator = pt.x.clone().multiply(this._a)
+            .add(pt.y.clone().multiply(this._b))
+            .add(this._c).abs(), d2 = this.normal.normSquare;
+        // The denominator is null - shouldn't be possible
+        if (d2.isZero()) {
+            return {
+                value: NaN,
+                tex: 'Not a line',
+                fraction: new coefficients_1.Fraction().infinite()
+            };
+        }
+        // The denominator is a perfect square - simplify the tex result
+        let value = numerator.value / Math.sqrt(d2.value), F = numerator.clone().divide(d2.clone().sqrt());
+        // The denominator is a perfect square.
+        if (d2.isSquare()) {
+            return {
+                value,
+                tex: F.tex,
+                fraction: F
+            };
+        }
+        // Complete answer...
+        return {
+            value,
+            tex: `\\frac{${numerator.tex}}{\\sqrt{${d2.tex}}}`,
+            fraction: F
+        };
+    }
+    hitSegment(A, B) {
+        let iPt = this.intersection(new Line(A, B));
+        // There is an intersection point
+        if (iPt.hasIntersection) {
+            return iPt.point.x.value >= Math.min(A.x.value, B.x.value)
+                && iPt.point.x.value <= Math.max(A.x.value, B.x.value)
+                && iPt.point.y.value >= Math.min(A.y.value, B.y.value)
+                && iPt.point.y.value <= Math.max(A.y.value, B.y.value);
+        }
+        return false;
+    }
+    // ------------------------------------------
+    // Special functions
+    // ------------------------------------------
+    canonicalAsFloatCoefficient(decimals) {
+        if (decimals === undefined) {
+            decimals = 2;
+        }
+        let ca = this._a.value, cb = this._b.value, cc = this._c.value, canonical = '';
+        if (!this._a.isZero()) {
+            if (this._a.isOne()) {
+                canonical = 'x';
+            }
+            else if (this._a.clone().opposed().isOne()) {
+                canonical = '-x';
+            }
+            else {
+                canonical = this._a.value.toFixed(decimals) + 'x';
+            }
+        }
+        if (!this._b.isZero()) {
+            if (this._b.isPositive()) {
+                canonical += '+';
+            }
+            canonical += this._b.value.toFixed(decimals) + 'y';
+        }
+        if (!this._c.isZero()) {
+            if (this._c.isPositive()) {
+                canonical += '+';
+            }
+            canonical += this._c.value.toFixed(decimals);
+        }
+        return canonical + '=0';
+    }
+}
+exports.Line = Line;
+Line.PERPENDICULAR = LinePropriety.Perpendicular;
+Line.PARALLEL = LinePropriety.Parallel;
+
+
+/***/ }),
+
+/***/ 557:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Point = void 0;
+/**
+ * Vector module contains everything necessary to handle 2d or 3d vectors.
+ * @module Vector
+ */
+const coefficients_1 = __webpack_require__(534);
+const line_1 = __webpack_require__(9);
+const vector_1 = __webpack_require__(586);
+/**
+ * Helper class - a way to identify an object {x: number, y: number}
+ */
+class PointXY {
+}
+class Point {
+    constructor(...values) {
+        // ------------------------------------------
+        // Creation / parsing functions
+        // ------------------------------------------
+        this.parse = (...values) => {
+            // Initialize the value.
+            this.zero();
+            // Nothing is given
+            if (values.length === 0) {
+                return this;
+            }
+            // One element is given - might be already a point !
+            if (values.length === 1) {
+                // it's already a point - clone it
+                if (values[0] instanceof Point) {
+                    this._x = values[0].x.clone();
+                    this._y = values[0].y.clone();
+                    return this;
+                }
+                // Value is given as string, comma separated.
+                if (typeof values[0] === 'string') {
+                    let xy = values[0].split(',');
+                    if (xy.length === 2) {
+                        this._x = new coefficients_1.Fraction(xy[0]).reduce();
+                        this._y = new coefficients_1.Fraction(xy[1]).reduce();
+                        return this;
+                    }
+                }
+                // Value given as an object with {x: value, y: value}
+                if (values[0] instanceof PointXY) {
+                    this._x = new coefficients_1.Fraction(values[0].x).reduce();
+                    this._y = new coefficients_1.Fraction(values[0].y).reduce();
+                    return this;
+                }
+                else {
+                    return this.zero();
+                }
+            }
+            if (values.length === 2) {
+                this._x = new coefficients_1.Fraction(values[0]).reduce();
+                this._y = new coefficients_1.Fraction(values[1]).reduce();
+                return this;
+            }
+            return this;
+        };
+        this.clone = () => {
+            this._x = this._x.clone();
+            this._y = this._y.clone();
+            return this;
+        };
+        this.zero = () => {
+            this._x = new coefficients_1.Fraction(null);
+            this._y = new coefficients_1.Fraction(null);
+            return this;
+        };
+        this.origin = () => {
+            this.zero();
+            return this;
+        };
+        this.middleOf = (P1, P2) => {
+            this._x = P1.x.clone().add(P2.x).divide(2);
+            this._y = P1.y.clone().add(P2.y).divide(2);
+            return this;
+        };
+        // ------------------------------------------
+        // Display functions
+        // ------------------------------------------
+        this.texValues = (numberOfDigits) => {
+            let pts = [];
+            pts.push(this._x.value.toFixed(numberOfDigits === undefined ? 2 : numberOfDigits));
+            pts.push(this._y.value.toFixed(numberOfDigits === undefined ? 2 : numberOfDigits));
+            return `\\left(${pts.join(';')}\\right)`;
+        };
+        this.distanceTo = (item) => {
+            let value = 0, fraction = new coefficients_1.Fraction(), tex = '';
+            if (item instanceof line_1.Line) {
+                return item.distanceTo(this);
+            }
+            else if (item instanceof Point) {
+                let V = new vector_1.Vector(this, item);
+                value = V.norm;
+                fraction = V.normSquare.sqrt();
+                tex = V.normSquare.isSquare() ? fraction.tex : `\\sqrt{\\dfrac{ ${V.normSquare.numerator} }{ ${V.normSquare.denominator} }}`;
+            }
+            return { value, fraction, tex };
+        };
+        this.isInListOfPoints = (list) => {
+            const keyList = list.map(x => x.key);
+            return keyList.includes(this.key);
+        };
+        this._x = new coefficients_1.Fraction().zero();
+        this._y = new coefficients_1.Fraction().zero();
+        if (values !== undefined) {
+            this.parse(...values);
+        }
+        return this;
+    }
+    ;
+    // ------------------------------------------
+    // Getter and setter
+    // ------------------------------------------
+    get x() {
+        return this._x;
+    }
+    set x(value) {
+        this._x = value;
+    }
+    get y() {
+        return this._y;
+    }
+    set y(value) {
+        this._y = value;
+    }
+    get tex() {
+        let pts = [];
+        pts.push(this._x.tex);
+        pts.push(this._y.tex);
+        return `\\left(${pts.join(';')}\\right)`;
+    }
+    get display() {
+        let pts = [];
+        pts.push(this._x.tex);
+        pts.push(this._y.tex);
+        return `(${pts.join(';')})`;
+    }
+    get key() {
+        return `${this.x.display};${this.y.display}`;
+    }
+}
+exports.Point = Point;
+// ------------------------------------------
+// Mathematical operations
+// ------------------------------------------
+// ------------------------------------------
+// Vector functions
+// ------------------------------------------
+// ------------------------------------------
+// Static functions
+// ------------------------------------------
+Point.pmatrix = (a, b, c) => {
+    if (c === undefined) {
+        return `\\begin{pmatrix} ${a.tex ? a.tex : a} \\\\ ${b.tex ? b.tex : b} \\end{pmatrix}`;
+    }
+    else {
+        return `\\begin{pmatrix} ${a.tex ? a.tex : a} \\\\ ${b.tex ? b.tex : b} \\\\ ${c.tex ? c.tex : c} \\end{pmatrix}`;
+    }
+};
+
+
+/***/ }),
+
+/***/ 164:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Triangle = void 0;
+const point_1 = __webpack_require__(557);
+const fraction_1 = __webpack_require__(506);
+const vector_1 = __webpack_require__(586);
+const line_1 = __webpack_require__(9);
+const equation_1 = __webpack_require__(760);
+class Triangle {
+    constructor(...values) {
+        // ------------------------------------------
+        // Creation / parsing functions
+        // ------------------------------------------
+        /**
+         * Parse values to a triangle. Supported formats:
+         * Point, Point, Point
+         * x1, y1, x2, y2, x3, y3
+         * TODO: Something else ?
+         * @param values
+         */
+        this.parse = (...values) => {
+            if (values.length === 6) {
+                // Check if all values are number or fractions.
+                let v = values.map((x) => new fraction_1.Fraction(x));
+                return this.parse(new point_1.Point(v[0], v[1]), new point_1.Point(v[2], v[3]), new point_1.Point(v[4], v[5]));
+            }
+            else if (values.length === 3) {
+                // Possibilities:
+                // - Three points (or part of points, only dict for example, or array (TODO: Add the array syntax for point)
+                // - Three lines
+                // - Three lines as text.
+                if (values.filter((x) => typeof x === 'string').length === 3) {
+                    return this.parse(...values.map((x) => new line_1.Line(x)));
+                }
+                else if (values.filter((x) => x instanceof line_1.Line).length === 3) {
+                    // We have three lines
+                    this._lines = {
+                        'AB': values[0],
+                        'BC': values[1],
+                        'AC': values[2]
+                    };
+                    // Get the intersection points -> build the triangle using these intersection points.
+                    let intersect = values[0].intersection(values[1]);
+                    if (intersect.hasIntersection) {
+                        this._B = intersect.point.clone();
+                    }
+                    else {
+                        return this;
+                    }
+                    intersect = values[1].intersection(values[2]);
+                    if (intersect.hasIntersection) {
+                        this._C = intersect.point.clone();
+                    }
+                    else {
+                        return this;
+                    }
+                    intersect = values[2].intersection(values[0]);
+                    if (intersect.hasIntersection) {
+                        this._A = intersect.point.clone();
+                    }
+                    else {
+                        return this;
+                    }
+                }
+                else {
+                    // At least, one of the value is not a point.
+                    if (values.filter((x) => (x instanceof point_1.Point)).length < 3) {
+                        return this.parse(new point_1.Point(values[0]), new point_1.Point(values[1]), new point_1.Point(values[2]));
+                    }
+                    // We have three points.
+                    this._A = values[0].clone();
+                    this._B = values[1].clone();
+                    this._C = values[2].clone();
+                    this._lines = {
+                        'AB': new line_1.Line(this._A, this._B),
+                        'BC': new line_1.Line(this._B, this._C),
+                        'AC': new line_1.Line(this._A, this._C)
+                    };
+                }
+            }
+            else if (values.length === 1) {
+                if (values[0] instanceof Triangle) {
+                    return values[0].clone();
+                }
+            }
+            this._updateTriangle();
+            return this;
+        };
+        /**
+         * Clone the Triangle class
+         */
+        this.clone = () => {
+            this._A = this._A.clone();
+            this._B = this._B.clone();
+            this._C = this._C.clone();
+            this._lines = {
+                'AB': this._lines.AB.clone(),
+                'BC': this._lines.BC.clone(),
+                'AC': this._lines.AC.clone()
+            };
+            this._updateTriangle();
+            return this;
+        };
+        // ------------------------------------------
+        // Triangle operations and properties
+        // ------------------------------------------
+        /**
+         * Generate the Line object for the three segments of the triangle
+         */
+        this._updateTriangle = () => {
+            this._middles = {
+                'AB': new point_1.Point().middleOf(this._A, this._B),
+                'AC': new point_1.Point().middleOf(this._A, this._C),
+                'BC': new point_1.Point().middleOf(this._B, this._C)
+            };
+            this._remarquables = this._calculateRemarquableLines();
+        };
+        /**
+         * Get the Point class for the given name
+         * @param ptName
+         */
+        this.getPointByName = (ptName) => {
+            switch (ptName.toUpperCase()) {
+                case 'A':
+                    return this._A;
+                case 'B':
+                    return this._B;
+                case 'C':
+                    return this._C;
+            }
+            // Something went wrong ! Return the first point
+            return this._A;
+        };
+        /**
+         * Get the vector for the segment given by name.
+         * @param ptName1
+         * @param ptName2
+         */
+        this.getSegment = (ptName1, ptName2) => {
+            return new vector_1.Vector(this.getPointByName(ptName1), this.getPointByName(ptName2));
+        };
+        this._calculateRemarquableLines = () => {
+            let remarquables = {
+                'medians': {
+                    'A': new line_1.Line(this._A, this._middles.BC),
+                    'B': new line_1.Line(this._B, this._middles.AC),
+                    'C': new line_1.Line(this._C, this._middles.AB),
+                    'intersection': null
+                },
+                'mediators': {
+                    'AB': new line_1.Line(this._middles.AB, new vector_1.Vector(this._A, this._B).normal()),
+                    'AC': new line_1.Line(this._middles.AC, new vector_1.Vector(this._A, this._C).normal()),
+                    'BC': new line_1.Line(this._middles.BC, new vector_1.Vector(this._B, this._C).normal()),
+                    'intersection': null
+                },
+                'heights': {
+                    'A': new line_1.Line(this._A, new vector_1.Vector(this._B, this._C).normal()),
+                    'B': new line_1.Line(this._B, new vector_1.Vector(this._A, this._C).normal()),
+                    'C': new line_1.Line(this._C, new vector_1.Vector(this._A, this._B).normal()),
+                    'intersection': null
+                },
+                'bisectors': {
+                    'A': this._calculateBisectors('A'),
+                    'B': this._calculateBisectors('B'),
+                    'C': this._calculateBisectors('C'),
+                    'intersection': null
+                }
+            };
+            // As it's a triangle, we assume the lines are intersecting and aren't parallel or superposed.
+            remarquables.medians.intersection = remarquables.medians.A.intersection(remarquables.medians.B).point;
+            remarquables.mediators.intersection = remarquables.mediators.AB.intersection(remarquables.mediators.BC).point;
+            remarquables.heights.intersection = remarquables.heights.A.intersection(remarquables.heights.B).point;
+            remarquables.bisectors.intersection = remarquables.bisectors.A.intersection(remarquables.bisectors.B).point;
+            // Everything was calculated for the remarquable lines.
+            return remarquables;
+        };
+        this._calculateBisectors = (pt) => {
+            let tlines = this.lines, d1, d2;
+            if (pt === 'A') {
+                d1 = tlines.AB;
+                d2 = tlines.AC;
+            }
+            else if (pt === 'B') {
+                d1 = tlines.AB;
+                d2 = tlines.BC;
+            }
+            else if (pt === 'C') {
+                d1 = tlines.BC;
+                d2 = tlines.AC;
+            }
+            let b1 = new line_1.Line(new equation_1.Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm)).reorder(true).simplify()), b2 = new line_1.Line(new equation_1.Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm).opposed()).reorder(true).simplify());
+            // Must determine which bisectors is in the triangle
+            if (pt === 'A') {
+                return b1.hitSegment(this.B, this.C) ? b1 : b2;
+            }
+            if (pt === 'B') {
+                return b1.hitSegment(this.A, this.C) ? b1 : b2;
+            }
+            if (pt === 'C') {
+                return b1.hitSegment(this.B, this.A) ? b1 : b2;
+            }
+            // Default returns the first bisector
+            return b1;
+        };
+        if (values.length > 0) {
+            this.parse(...values);
+        }
+        return this;
+    }
+    // ------------------------------------------
+    // Getter and setters
+    // ------------------------------------------
+    get A() {
+        return this._A;
+    }
+    get B() {
+        return this._B;
+    }
+    get C() {
+        return this._C;
+    }
+    get AB() {
+        return this.getSegment('A', 'B');
+    }
+    get BA() {
+        return this.getSegment('B', 'A');
+    }
+    get BC() {
+        return this.getSegment('B', 'C');
+    }
+    get CB() {
+        return this.getSegment('C', 'B');
+    }
+    get AC() {
+        return this.getSegment('A', 'C');
+    }
+    get CA() {
+        return this.getSegment('C', 'A');
+    }
+    get isRectangle() {
+        if (this.AB.isNormalTo(this.BC)) {
+            return true;
+        }
+        if (this.AB.isNormalTo(this.AC)) {
+            return true;
+        }
+        if (this.BC.isNormalTo(this.AC)) {
+            return true;
+        }
+        return false;
+    }
+    get isEquilateral() {
+        return this.AB.normSquare.isEqual(this.BC.normSquare) &&
+            this.AB.normSquare.isEqual(this.AC.normSquare);
+    }
+    get isIsocele() {
+        return this.AB.normSquare.isEqual(this.BC.normSquare) ||
+            this.AB.normSquare.isEqual(this.AC.normSquare) ||
+            this.BC.normSquare.isEqual(this.AC.normSquare);
+    }
+    get lines() {
+        return this._lines;
+    }
+    get remarquables() {
+        return this._remarquables;
+    }
+}
+exports.Triangle = Triangle;
+
+
+/***/ }),
+
+/***/ 586:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Vector = void 0;
+/**
+ * Vector module contains everything necessary to handle 2d or 3d vectors.
+ * @module Vector
+ */
+const fraction_1 = __webpack_require__(506);
+const numeric_1 = __webpack_require__(956);
+const point_1 = __webpack_require__(557);
+class Vector {
+    constructor(...values) {
+        // ------------------------------------------
+        // Creation / parsing functions
+        // ------------------------------------------
+        this.parse = (...values) => {
+            // TODO: Must be more strict about what is given and limit to two dimensional vectors.p
+            // Maybe more than one value was given...
+            // Initialize the vector
+            this.zero();
+            if (values.length === 0) {
+                return this;
+            }
+            if (values.length === 1) {
+                if (values[0] instanceof Vector) {
+                    return values[0].clone();
+                }
+                else {
+                    return this._parseString(values[0]);
+                }
+            }
+            if (values.length >= 2) {
+                // Two points are given - skip the third value.
+                if (values[0] instanceof point_1.Point && values[1] instanceof point_1.Point) {
+                    this._x = values[1].x.clone().subtract(values[0].x);
+                    this._y = values[1].y.clone().subtract(values[0].y);
+                    return this;
+                }
+                // Fractions or a number are give
+                if (values[0] instanceof fraction_1.Fraction || !isNaN(values[0])) {
+                    this._x = new fraction_1.Fraction(values[0]);
+                }
+                if (values[1] instanceof fraction_1.Fraction || !isNaN(values[1])) {
+                    this._y = new fraction_1.Fraction(values[1]);
+                }
+                if ((typeof values[0] === 'object' && !isNaN(values[0].x) && !isNaN(values[0].x)) &&
+                    (typeof values[1] === 'object' && !isNaN(values[1].x) && !isNaN(values[1].x))) {
+                    this._x = new fraction_1.Fraction(+values[1].x - values[0].x);
+                    this._y = new fraction_1.Fraction(+values[1].y - values[0].y);
+                }
+            }
+            return this;
+        };
+        this.clone = () => {
+            let V = new Vector();
+            if (this._x !== null) {
+                V.x = this._x.clone();
+            }
+            if (this._y !== null) {
+                V.y = this._y.clone();
+            }
+            return V;
+        };
+        this.reset = () => {
+            this._x = null;
+            this._y = null;
+            return this;
+        };
+        this.zero = () => {
+            this.reset();
+            this._x = new fraction_1.Fraction(null);
+            this._y = new fraction_1.Fraction(null);
+            return this;
+        };
+        this.one = () => {
+            this._x = new fraction_1.Fraction();
+            this._y = new fraction_1.Fraction();
+            return this;
+        };
+        this._parseString = (value) => {
+            // Split comma, semi colon or single space.
+            let components = value.split(/[,;\s]/g);
+            // Validate the fraction values.
+            this.x = new fraction_1.Fraction(components[0] || null);
+            this.y = new fraction_1.Fraction(components[1] || null);
+            return this;
+        };
+        // ------------------------------------------
+        // Mathematical operations
+        // ------------------------------------------
+        this.opposed = () => {
+            this._x.opposed();
+            this._y.opposed();
+            return this;
+        };
+        this.add = (V) => {
+            this._x.add(V.x);
+            this._y.add(V.y);
+            return this;
+        };
+        this.subtract = (V) => {
+            return this.add(V.clone().opposed());
+        };
+        this.scalarProductWithVector = (V) => {
+            // TODO: Add the scalar factor !!!!
+            return this._x.clone().multiply(V.x).add(this._y.clone().multiply(V.y));
+        };
+        this.normal = () => {
+            let x = this.x.clone().opposed(), y = this.y.clone();
+            this._x = y;
+            this._y = x;
+            return this;
+        };
+        this.isNormalTo = (v) => {
+            return this.scalarProductWithVector(v).isZero();
+        };
+        this.multiplyByScalar = (k) => {
+            let scalar = new fraction_1.Fraction(k);
+            this._x.multiply(scalar);
+            this._y.multiply(scalar);
+            return this;
+        };
+        this.divideByScalar = (k) => {
+            return this.multiplyByScalar(new fraction_1.Fraction(k).invert());
+        };
+        // ------------------------------------------
+        // Vector functions
+        // ------------------------------------------
+        this.simplify = () => {
+            // Multiply by the lcm of denominators.
+            return this.multiplyByScalar(numeric_1.Numeric.lcm(this._x.denominator, this._y.denominator))
+                .divideByScalar(numeric_1.Numeric.gcd(this._x.numerator, this._y.numerator));
+        };
+        this.angleWith = (V, sharp, radian) => {
+            let scalar = this.scalarProductWithVector(V).value, toDegree = radian ? 1 : 180 / Math.PI;
+            if (sharp) {
+                scalar = Math.abs(scalar);
+            }
+            return toDegree * Math.acos(scalar / (this.norm * V.norm));
+        };
+        this._x = new fraction_1.Fraction().zero();
+        this._y = new fraction_1.Fraction().zero();
+        if (values !== undefined) {
+            this.parse(...values);
+        }
+    }
+    ;
+    // ------------------------------------------
+    // Getter and setter
+    // ------------------------------------------
+    get x() {
+        return this._x;
+    }
+    set x(value) {
+        this._x = value;
+    }
+    get y() {
+        return this._y;
+    }
+    set y(value) {
+        this._y = value;
+    }
+    get normSquare() {
+        return this._x.clone().pow(2).add(this._y.clone().pow(2));
+    }
+    get norm() {
+        return Math.sqrt(this.normSquare.value);
+    }
+    get tex() {
+        return `\\begin{pmatrix}${this._x.tex} \\\\\ ${this._y.tex} \\end{pmatrix}`;
+    }
+}
+exports.Vector = Vector;
+Vector.scalarProduct = (v1, v2) => {
+    // TODO: Transform to fraction with nthroot.
+    return v1.x.value * v2.x.value + v1.y.value * v2.y.value;
+};
+
+
+/***/ }),
+
+/***/ 956:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Numeric = void 0;
+class Numeric {
+    static round(value, decimals = 2) {
+        return Number(Math.round(Number(value + 'e' + decimals)) + 'e-' + decimals);
+    }
+    /**
+     * Get the list of the nth first prime numbers.
+     * @param nb : number of primes to choose from
+     */
+    static prime(nb) {
+        let primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249, 1259, 1277, 1279, 1283, 1289, 1291, 1297, 1301, 1303, 1307, 1319, 1321, 1327, 1361, 1367, 1373, 1381, 1399, 1409, 1423, 1427, 1429, 1433, 1439, 1447, 1451, 1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499, 1511, 1523, 1531, 1543, 1549, 1553, 1559, 1567, 1571, 1579, 1583, 1597, 1601, 1607, 1609, 1613, 1619, 1621, 1627, 1637, 1657, 1663, 1667, 1669, 1693, 1697, 1699, 1709, 1721, 1723, 1733, 1741, 1747, 1753, 1759, 1777, 1783, 1787, 1789, 1801, 1811, 1823, 1831, 1847, 1861, 1867, 1871, 1873, 1877, 1879, 1889, 1901, 1907, 1913, 1931, 1933, 1949, 1951, 1973, 1979, 1987, 1993, 1997, 1999, 2003, 2011, 2017, 2027, 2029, 2039, 2053, 2063, 2069, 2081, 2083, 2087, 2089, 2099, 2111, 2113, 2129, 2131, 2137, 2141, 2143, 2153, 2161, 2179, 2203, 2207, 2213, 2221, 2237, 2239, 2243, 2251, 2267, 2269, 2273, 2281, 2287, 2293, 2297, 2309, 2311, 2333, 2339, 2341, 2347, 2351, 2357, 2371, 2377, 2381, 2383, 2389, 2393, 2399, 2411, 2417, 2423, 2437, 2441, 2447, 2459, 2467, 2473, 2477, 2503, 2521, 2531, 2539, 2543, 2549, 2551, 2557, 2579, 2591, 2593, 2609, 2617, 2621, 2633, 2647, 2657, 2659, 2663, 2671, 2677, 2683, 2687, 2689, 2693, 2699, 2707, 2711, 2713, 2719, 2729, 2731, 2741, 2749, 2753, 2767, 2777, 2789, 2791, 2797, 2801, 2803, 2819, 2833, 2837, 2843, 2851, 2857, 2861, 2879, 2887, 2897, 2903, 2909, 2917, 2927, 2939, 2953, 2957, 2963, 2969, 2971, 2999, 3001, 3011, 3019, 3023, 3037, 3041, 3049, 3061, 3067, 3079, 3083, 3089, 3109, 3119, 3121, 3137, 3163, 3167, 3169, 3181, 3187, 3191, 3203, 3209, 3217, 3221, 3229, 3251, 3253, 3257, 3259, 3271, 3299, 3301, 3307, 3313, 3319, 3323, 3329, 3331, 3343, 3347, 3359, 3361, 3371, 3373, 3389, 3391, 3407, 3413, 3433, 3449, 3457, 3461, 3463, 3467, 3469, 3491, 3499, 3511, 3517, 3527, 3529, 3533, 3539, 3541, 3547, 3557, 3559, 3571, 3581, 3583, 3593, 3607, 3613, 3617, 3623, 3631, 3637, 3643, 3659, 3671, 3673, 3677, 3691, 3697, 3701, 3709, 3719, 3727, 3733, 3739, 3761, 3767, 3769, 3779, 3793, 3797, 3803, 3821, 3823, 3833, 3847, 3851, 3853, 3863, 3877, 3881, 3889, 3907, 3911, 3917, 3919, 3923, 3929, 3931, 3943, 3947, 3967, 3989, 4001, 4003, 4007, 4013, 4019, 4021, 4027, 4049, 4051, 4057, 4073, 4079, 4091, 4093, 4099, 4111, 4127, 4129, 4133, 4139, 4153, 4157, 4159, 4177, 4201, 4211, 4217, 4219, 4229, 4231, 4241, 4243, 4253, 4259, 4261, 4271, 4273, 4283, 4289, 4297, 4327, 4337, 4339, 4349, 4357, 4363, 4373, 4391, 4397, 4409, 4421, 4423, 4441, 4447, 4451, 4457, 4463, 4481, 4483, 4493, 4507, 4513, 4517, 4519, 4523, 4547, 4549, 4561, 4567, 4583, 4591, 4597, 4603, 4621, 4637, 4639, 4643, 4649, 4651, 4657, 4663, 4673, 4679, 4691, 4703, 4721, 4723, 4729, 4733, 4751, 4759, 4783, 4787, 4789, 4793, 4799, 4801, 4813, 4817, 4831, 4861, 4871, 4877, 4889, 4903, 4909, 4919, 4931, 4933, 4937, 4943, 4951, 4957, 4967, 4969, 4973, 4987, 4993, 4999, 5003, 5009, 5011, 5021, 5023, 5039, 5051, 5059, 5077, 5081, 5087, 5099, 5101, 5107, 5113, 5119, 5147, 5153, 5167, 5171, 5179, 5189, 5197, 5209, 5227, 5231, 5233, 5237, 5261, 5273, 5279, 5281, 5297, 5303, 5309, 5323, 5333, 5347, 5351, 5381, 5387, 5393, 5399, 5407, 5413, 5417, 5419, 5431, 5437, 5441, 5443, 5449, 5471, 5477, 5479, 5483, 5501, 5503, 5507, 5519, 5521, 5527, 5531, 5557, 5563, 5569, 5573, 5581, 5591, 5623, 5639, 5641, 5647, 5651, 5653, 5657, 5659, 5669, 5683, 5689, 5693, 5701, 5711, 5717, 5737, 5741, 5743, 5749, 5779, 5783, 5791, 5801, 5807, 5813, 5821, 5827, 5839, 5843, 5849, 5851, 5857, 5861, 5867, 5869, 5879, 5881, 5897, 5903, 5923, 5927, 5939, 5953, 5981, 5987, 6007, 6011, 6029, 6037, 6043, 6047, 6053, 6067, 6073, 6079, 6089, 6091, 6101, 6113, 6121, 6131, 6133, 6143, 6151, 6163, 6173, 6197, 6199, 6203, 6211, 6217, 6221, 6229, 6247, 6257, 6263, 6269, 6271, 6277, 6287, 6299, 6301, 6311, 6317, 6323, 6329, 6337, 6343, 6353, 6359, 6361, 6367, 6373, 6379, 6389, 6397, 6421, 6427, 6449, 6451, 6469, 6473, 6481, 6491, 6521, 6529, 6547, 6551, 6553, 6563, 6569, 6571, 6577, 6581, 6599, 6607, 6619, 6637, 6653, 6659, 6661, 6673, 6679, 6689, 6691, 6701, 6703, 6709, 6719, 6733, 6737, 6761, 6763, 6779, 6781, 6791, 6793, 6803, 6823, 6827, 6829, 6833, 6841, 6857, 6863, 6869, 6871, 6883, 6899, 6907, 6911, 6917, 6947, 6949, 6959, 6961, 6967, 6971, 6977, 6983, 6991, 6997, 7001, 7013, 7019, 7027, 7039, 7043, 7057, 7069, 7079, 7103, 7109, 7121, 7127, 7129, 7151, 7159, 7177, 7187, 7193, 7207, 7211, 7213, 7219, 7229, 7237, 7243, 7247, 7253, 7283, 7297, 7307, 7309, 7321, 7331, 7333, 7349, 7351, 7369, 7393, 7411, 7417, 7433, 7451, 7457, 7459, 7477, 7481, 7487, 7489, 7499, 7507, 7517, 7523, 7529, 7537, 7541, 7547, 7549, 7559, 7561, 7573, 7577, 7583, 7589, 7591, 7603, 7607, 7621, 7639, 7643, 7649, 7669, 7673, 7681, 7687, 7691, 7699, 7703, 7717, 7723, 7727, 7741, 7753, 7757, 7759, 7789, 7793, 7817, 7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919, 7927, 7933, 7937, 7949, 7951, 7963, 7993, 8009, 8011, 8017, 8039, 8053, 8059, 8069, 8081, 8087, 8089, 8093, 8101, 8111, 8117, 8123, 8147, 8161, 8167, 8171, 8179, 8191, 8209, 8219, 8221, 8231, 8233, 8237, 8243, 8263, 8269, 8273, 8287, 8291, 8293, 8297, 8311, 8317, 8329, 8353, 8363, 8369, 8377, 8387, 8389, 8419, 8423, 8429, 8431, 8443, 8447, 8461, 8467, 8501, 8513, 8521, 8527, 8537, 8539, 8543, 8563, 8573, 8581, 8597, 8599, 8609, 8623, 8627, 8629, 8641, 8647, 8663, 8669, 8677, 8681, 8689, 8693, 8699, 8707, 8713, 8719, 8731, 8737, 8741, 8747, 8753, 8761, 8779, 8783, 8803, 8807, 8819, 8821, 8831, 8837, 8839, 8849, 8861, 8863, 8867, 8887, 8893, 8923, 8929, 8933, 8941, 8951, 8963, 8969, 8971, 8999, 9001, 9007, 9011, 9013, 9029, 9041, 9043, 9049, 9059, 9067, 9091, 9103, 9109, 9127, 9133, 9137, 9151, 9157, 9161, 9173, 9181, 9187, 9199, 9203, 9209, 9221, 9227, 9239, 9241, 9257, 9277, 9281, 9283, 9293, 9311, 9319, 9323, 9337, 9341, 9343, 9349, 9371, 9377, 9391, 9397, 9403, 9413, 9419, 9421, 9431, 9433, 9437, 9439, 9461, 9463, 9467, 9473, 9479, 9491, 9497, 9511, 9521, 9533, 9539, 9547, 9551, 9587, 9601, 9613, 9619, 9623, 9629, 9631, 9643, 9649, 9661, 9677, 9679, 9689, 9697, 9719, 9721, 9733, 9739, 9743, 9749, 9767, 9769, 9781, 9787, 9791, 9803, 9811, 9817, 9829, 9833, 9839, 9851, 9857, 9859, 9871, 9883, 9887, 9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973];
+        if (nb === undefined) {
+            return primes;
+        }
+        else {
+            return primes.slice(0, Math.max(primes.length, nb));
+        }
+    }
+    /**
+     * Get the list of all dividers of a number.
+     * @param value
+     */
+    static dividers(value) {
+        let D;
+        const maxV = Math.sqrt(Math.abs(value));
+        // Initialize the list of dividers.
+        D = [];
+        for (let i = 1; i <= maxV; i++) {
+            if (value % i === 0) {
+                D.push(i);
+                D.push(value / i);
+            }
+        }
+        // Order numbers.
+        D.sort(function (a, b) { return a - b; });
+        // Make sure the array of value is unique.
+        return [...new Set(D)];
+    }
+    /**
+     * Great Common Divisor
+     * @param values : number values
+     */
+    static gcd(...values) {
+        // Define the gcd for two number
+        let gcd2 = function (a, b) {
+            if (b === 0) {
+                return a;
+            }
+            return gcd2(b, a % b);
+        };
+        let g = 1, i = 2;
+        // Nothing is given
+        if (values.length === 0) {
+            return 1;
+        }
+        // Only one number is given
+        if (values.length === 1) {
+            // The first number is zero
+            if (values[0] === 0) {
+                return 1;
+            }
+            // Return the number
+            return values[0];
+        }
+        // We have at least 2 numbers.
+        g = gcd2(values[0], values[1]);
+        // The gcd of the two first value is one ? It's already finished.
+        if (g === 1) {
+            return 1;
+        }
+        // The current gcd isn't one. Continue with all next values.
+        for (i = 2; i < values.length; i++) {
+            g = gcd2(g, values[i]);
+            // Escape if gcd is already one.
+            if (g === 1) {
+                break;
+            }
+        }
+        return Math.abs(g);
+    }
+    /**
+     * Least Common Multiple
+     * @param values: list of numbers
+     */
+    static lcm(...values) {
+        return values.reduce(function (a, b) {
+            return Math.abs(a * b / Numeric.gcd(a, b));
+        });
+    }
+    static pythagoricianTripletsWithTarget(target, targetIsSquare) {
+        // méthode inverse, à partir du triplet.
+        const triplets = [], targetValue = targetIsSquare === true ? +target : target ** 2;
+        for (let u = 0; u <= target; u++) {
+            for (let v = 0; v <= target; v++) {
+                if (u ** 2 + v ** 2 === targetValue) {
+                    triplets.push([u, v, target]);
+                }
+            }
+        }
+        return triplets;
+    }
+}
+exports.Numeric = Numeric;
+
+
+/***/ }),
+
+/***/ 984:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Random = void 0;
+const rndPolynom_1 = __webpack_require__(773);
+const rndMonom_1 = __webpack_require__(41);
+const rndHelpers_1 = __webpack_require__(890);
+const rndFraction_1 = __webpack_require__(538);
+__exportStar(__webpack_require__(233), exports);
+var Random;
+(function (Random) {
+    function polynom(config) {
+        return (new rndPolynom_1.rndPolynom(config)).generate();
+    }
+    Random.polynom = polynom;
+    function monom(config) {
+        return (new rndMonom_1.rndMonom(config)).generate();
+    }
+    Random.monom = monom;
+    function fraction(config) {
+        return (new rndFraction_1.rndFraction(config)).generate();
+    }
+    Random.fraction = fraction;
+    function number(from, to) {
+        return rndHelpers_1.rndHelpers.randomInt(from, to);
+    }
+    Random.number = number;
+    function numberSym(max, allowZero) {
+        return rndHelpers_1.rndHelpers.randomIntSym(max, allowZero);
+    }
+    Random.numberSym = numberSym;
+    function bool(percent) {
+        return rndHelpers_1.rndHelpers.randomBool(percent);
+    }
+    Random.bool = bool;
+    function array(arr, number) {
+        return rndHelpers_1.rndHelpers.randomArray(arr, number);
+    }
+    Random.array = array;
+    function item(arr) {
+        return rndHelpers_1.rndHelpers.randomItem(arr);
+    }
+    Random.item = item;
+    function shuffle(arr) {
+        rndHelpers_1.rndHelpers.shuffleArray(arr);
+    }
+    Random.shuffle = shuffle;
+})(Random = exports.Random || (exports.Random = {}));
+
+
+/***/ }),
+
+/***/ 43:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.randomCore = void 0;
+class randomCore {
+    constructor() {
+        this.mergeConfig = (config, defaultConfig) => {
+            if (config !== undefined) {
+                return { ...defaultConfig, ...config };
+            }
+            return defaultConfig;
+        };
+        this.generate = () => {
+            return undefined;
+        };
+        this.config = (config) => {
+            this._config = this.mergeConfig(config, this._defaultConfig);
+            return this;
+        };
+    }
+}
+exports.randomCore = randomCore;
+
+
+/***/ }),
+
+/***/ 538:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.rndFraction = void 0;
+const randomCore_1 = __webpack_require__(43);
+const coefficients_1 = __webpack_require__(534);
+const index_1 = __webpack_require__(984);
+/**
+ * Create a random monom based on a based configuration
+ */
+class rndFraction extends randomCore_1.randomCore {
+    constructor(userConfig) {
+        super();
+        this.generate = () => {
+            let Q = new coefficients_1.Fraction();
+            if (this._config.negative) {
+                Q.numerator = index_1.Random.numberSym(this._config.max, this._config.zero);
+            }
+            else {
+                Q.numerator = index_1.Random.number(this._config.zero ? 0 : 1, this._config.max);
+            }
+            if (this._config.natural) {
+                Q.denominator = 1;
+            }
+            else {
+                Q.denominator = index_1.Random.number(1, this._config.max);
+            }
+            return this._config.reduced ? Q.reduce() : Q;
+        };
+        this._defaultConfig = {
+            negative: true,
+            max: 10,
+            reduced: true,
+            zero: true,
+            natural: false
+        };
+        this._config = this.mergeConfig(userConfig, this._defaultConfig);
+    }
+}
+exports.rndFraction = rndFraction;
+
+
+/***/ }),
+
+/***/ 890:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.rndHelpers = void 0;
+/**
+ * Random helpers
+ */
+class rndHelpers {
+    /**
+     * Random boolean with a percent ratio
+     * @param percent
+     */
+    static randomBool(percent = 0.5) {
+        return Math.random() < percent;
+    }
+    /**
+     * Random integer between two values.
+     * @param a (number) : From this value to the second value. If the second is ommited, this value is the max value.
+     * @param b (number) : To this value. If this is ommited.
+     */
+    static randomInt(a, b) {
+        if (b === undefined) {
+            return this.randomInt(0, a);
+        }
+        return Math.floor(Math.random() * (b - a + 1) + a);
+    }
+    /**
+     * Random integer between -max and max value.
+     * @param max (number) : determine the limits.
+     * @param zero (bool) : determine if zero is allowed or not.
+     */
+    static randomIntSym(max, zero) {
+        if (zero === false) {
+            return this.randomBool() ? this.randomInt(1, max) : -this.randomInt(1, max);
+        }
+        else {
+            return this.randomInt(-max, max);
+        }
+    }
+    static randomArray(arr, number) {
+        if (number === undefined) {
+            number = 1;
+        }
+        // Return a clone array
+        if (arr.length <= 0) {
+            return Object.values(arr);
+        }
+        // Randomize the array and return the n first elements.
+        return rndHelpers.shuffleArray(arr).slice(0, number);
+    }
+    static randomItem(arr) {
+        if (arr.length === 0) {
+            return '';
+        }
+        return this.randomArray(arr, 1)[0];
+    }
+    static shuffleArray(arr) {
+        // The Fisher-Yates algorithm
+        let shuffleArray = Object.values(arr);
+        for (let i = shuffleArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = shuffleArray[i];
+            shuffleArray[i] = shuffleArray[j];
+            shuffleArray[j] = temp;
+        }
+        return shuffleArray;
+    }
+}
+exports.rndHelpers = rndHelpers;
+
+
+/***/ }),
+
+/***/ 41:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.rndMonom = void 0;
+const randomCore_1 = __webpack_require__(43);
+const index_1 = __webpack_require__(984);
+const algebra_1 = __webpack_require__(667);
+/**
+ * Create a random monom based on a based configuration
+ */
+class rndMonom extends randomCore_1.randomCore {
+    constructor(userConfig) {
+        super();
+        this.generate = () => {
+            // Create a monom instance
+            let M = new algebra_1.Monom();
+            // Generate the coefficient
+            if (typeof this._config.fraction === "boolean") {
+                M.coefficient = index_1.Random.fraction({
+                    zero: this._config.zero,
+                    reduced: true,
+                    natural: !this._config.fraction
+                });
+            }
+            else {
+                M.coefficient = index_1.Random.fraction(this._config.fraction);
+            }
+            // Calculate the degree of the monom
+            if (this._config.letters.length > 1) {
+                // Initialise each items...
+                for (let L of this._config.letters.split('')) {
+                    M.setLetter(L, 0);
+                }
+                for (let i = 0; i < this._config.degree; i++) {
+                    const L = index_1.Random.item(this._config.letters.split(""));
+                    M.setLetter(L, M.degree(L).clone().add(1));
+                }
+            }
+            else {
+                M.setLetter(this._config.letters, this._config.degree);
+            }
+            return M;
+        };
+        this._defaultConfig = {
+            letters: 'x',
+            degree: 2,
+            fraction: true,
+            zero: false
+        };
+        this._config = this.mergeConfig(userConfig, this._defaultConfig);
+    }
+}
+exports.rndMonom = rndMonom;
+
+
+/***/ }),
+
+/***/ 773:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.rndPolynom = void 0;
+const randomCore_1 = __webpack_require__(43);
+const rndMonom_1 = __webpack_require__(41);
+const index_1 = __webpack_require__(984);
+const algebra_1 = __webpack_require__(667);
+/**
+ * Random polynoms
+ */
+class rndPolynom extends randomCore_1.randomCore {
+    constructor(userConfig) {
+        super();
+        this.generate = () => {
+            if (this._config.factorable && this._config.degree > 1) {
+                return this.factorable();
+            }
+            // Create the polynom
+            let P = new algebra_1.Polynom().empty(), M;
+            for (let i = this._config.degree; i >= 0; i--) {
+                // Create monom of corresponding degree.
+                M = new rndMonom_1.rndMonom({
+                    letters: this._config.letters,
+                    degree: i,
+                    fraction: this._config.fraction,
+                    zero: (i === this._config.degree) ? false : this._config.allowNullMonom
+                }).generate();
+                // If degree is the greatest and unit is true, set the monom value to one.
+                if (this._config.unit && this._config.degree === i) {
+                    M.coefficient.one();
+                }
+                // Add to the polynom
+                P.add(M);
+            }
+            // Make sure the first monom is positive.
+            if (this._config.positive && P.monomByDegree().coefficient.isNegative()) {
+                P.monomByDegree().coefficient.opposed();
+            }
+            // If the number of monoms is greater than the allowed value, remove some of them... except the first one !
+            if (this._config.numberOfMonoms > 0 && this._config.numberOfMonoms < P.length) {
+                // Get the greatest degree monom
+                let M = P.monomByDegree().clone();
+                P.monoms = index_1.Random.array(P.monoms.slice(1), this._config.numberOfMonoms - 1);
+                P.add(M).reorder().reduce();
+            }
+            return P;
+        };
+        this.factorable = () => {
+            let P = new algebra_1.Polynom().one();
+            let _factorableConfig = { ...this._config };
+            _factorableConfig.degree = 1;
+            _factorableConfig.factorable = false;
+            for (let i = 0; i < this._config.degree; i++) {
+                P.multiply(index_1.Random.polynom(_factorableConfig));
+            }
+            return P;
+        };
+        // Default config for a random polynom
+        this._defaultConfig = {
+            letters: 'x',
+            degree: 2,
+            fraction: false,
+            zero: false,
+            unit: false,
+            factorable: false,
+            allowNullMonom: true,
+            numberOfMonoms: 0,
+            positive: true
+        };
+        // Merge config with initialiser
+        this._config = this.mergeConfig(userConfig, this._defaultConfig);
+    }
+}
+exports.rndPolynom = rndPolynom;
+
+
+/***/ }),
+
+/***/ 233:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+
+/***/ 505:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Shutingyard = exports.ShutingyardMode = exports.ShutingyardType = exports.tokenConstant = void 0;
+exports.tokenConstant = {
+    pi: Math.PI,
+    e: Math.exp(1)
+};
+var ShutingyardType;
+(function (ShutingyardType) {
+    ShutingyardType["VARIABLE"] = "variable";
+    ShutingyardType["COEFFICIENT"] = "coefficient";
+    ShutingyardType["OPERATION"] = "operation";
+    ShutingyardType["CONSTANT"] = "constant";
+    ShutingyardType["FUNCTION"] = "function";
+    ShutingyardType["MONOM"] = "monom";
+})(ShutingyardType = exports.ShutingyardType || (exports.ShutingyardType = {}));
+var ShutingyardMode;
+(function (ShutingyardMode) {
+    ShutingyardMode["POLYNOM"] = "polynom";
+    ShutingyardMode["SET"] = "set";
+    ShutingyardMode["NUMERIC"] = "numeric";
+})(ShutingyardMode = exports.ShutingyardMode || (exports.ShutingyardMode = {}));
+class Shutingyard {
+    constructor(mode) {
+        this._rpn = [];
+        this._mode = typeof mode === 'undefined' ? ShutingyardMode.POLYNOM : mode;
+        this.tokenConfigInitialization();
+    }
+    /**
+     * Determin if the token is a defined operation
+     * Defined operations: + - * / ^ sin cos tan
+     * @param token
+     */
+    // isOperation(token: string): boolean {
+    //     if (token[0].match(/[+\-*/^]/g)) {
+    //         return true;
+    //     }
+    //     //
+    //     // if (token.match(/^sin|cos|tan/g)) {
+    //     //     return true;
+    //     // }
+    //
+    //     return false;
+    // }
+    tokenConfigInitialization() {
+        if (this._mode === ShutingyardMode.SET) {
+            this._tokenConfig = {
+                '&': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '|': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '!': { precedence: 4, associative: 'right', type: ShutingyardType.OPERATION },
+                '-': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION }
+            };
+            this._uniformize = false;
+        }
+        else if (this._mode === ShutingyardMode.NUMERIC) {
+            this._tokenConfig = {
+                '^': { precedence: 4, associative: 'right', type: ShutingyardType.OPERATION },
+                '*': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '/': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '+': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
+                '-': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
+                '%': { precedence: 3, associative: 'right', type: ShutingyardType.OPERATION },
+                'sin': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'cos': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'tan': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'sqrt': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+            };
+            this._uniformize = false;
+        }
+        else {
+            this._tokenConfig = {
+                '^': { precedence: 4, associative: 'right', type: ShutingyardType.OPERATION },
+                '*': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '/': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '+': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
+                '-': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
+                // '%': {precedence: 3, associative: 'right', type: ShutingyardType.OPERATION},
+                // 'sin': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                // 'cos': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                // 'tan': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+            };
+            this._uniformize = true;
+        }
+        this._tokenKeys = Object.keys(this._tokenConfig).sort((a, b) => b.length - a.length);
+        return this._tokenConfig;
+    }
+    /**
+     * Get the next token to analyse.
+     * @param expr (string) Expression to analyse
+     * @param start (number) CUrrent position in the expr string.
+     */
+    NextToken(expr, start) {
+        let token, tokenType;
+        token = '';
+        tokenType = '';
+        // Case of parenthesis or comma (generic items)
+        if (expr[start] === '(') {
+            token = '(';
+            tokenType = '(';
+        }
+        // It's a closing parenthese
+        else if (expr[start] === ')') {
+            token = ')';
+            tokenType = ')';
+        }
+        // It's an argument separator for a function
+        else if (expr[start] === ',') {
+            token = ',';
+            tokenType = 'function-argument';
+        }
+        else {
+            // Order token keys by token characters length (descending)
+            // TODO: this is done each time ! SHould be done once !
+            // const keys = Object.keys(this._tokenConfig).sort((a,b)=>b.length-a.length)
+            // Extract operation and function tokens
+            for (let key of this._tokenKeys) {
+                if (expr.substring(start, start + key.length) === key) {
+                    token += key;
+                    tokenType = this._tokenConfig[key].type;
+                    break;
+                }
+            }
+            // Extract constant
+            for (let key in exports.tokenConstant) {
+                if (expr.substring(start, start + key.length) === key) {
+                    token += key;
+                    tokenType = ShutingyardType.CONSTANT;
+                    break;
+                }
+            }
+            if (token === '') {
+                // No function found ! Might be a coefficient !
+                if (expr[start].match(/[0-9]/)) {
+                    if (this._mode === ShutingyardMode.POLYNOM && false) {}
+                    else {
+                        token = expr.substring(start).match(/^([0-9.,]+)/)[0];
+                    }
+                    tokenType = ShutingyardType.COEFFICIENT;
+                }
+                else if (expr[start].match(/[a-zA-Z]/)) {
+                    token = expr.substring(start).match(/^([a-zA-Z])/)[0];
+                    tokenType = ShutingyardType.VARIABLE;
+                }
+                else {
+                    console.log('Unidentified token', expr[start], expr, start);
+                    token = expr[start];
+                    tokenType = ShutingyardType.MONOM;
+                }
+            }
+        }
+        return [token, start + token.length, tokenType];
+    }
+    /**
+     * Sanitize an expression by adding missing common operation (multiplication between parentheseses)
+     * @param expr
+     * @constructor
+     */
+    Uniformizer(expr) {
+        // Determiner if need to be uniformized
+        if (!this._uniformize) {
+            return expr;
+        }
+        let expr2;
+        // Replace missing multiplication between two parenthese
+        expr2 = expr.replace(/\)\(/g, ')*(');
+        // Replace missing multiplication between number or setLetter and parenthese.
+        // 3x(x-4) => 3x*(x-4)
+        expr2 = expr2.replace(/([\da-zA-Z])(\()/g, "$1*$2");
+        // (x-4)3x => (x-4)*3x
+        expr2 = expr2.replace(/(\))([\da-zA-Z])/g, "$1*$2");
+        // Add multiplication between number and letters.
+        // 3x => 3*x
+        expr2 = expr2.replace(/([0-9])([a-zA-Z])/g, "$1*$2");
+        expr2 = expr2.replace(/([a-zA-Z])([0-9])/g, "$1*$2");
+        // Add multiplication between letters ?
+        // TODO: More robust solution to handle all letters ?
+        expr2 = expr2.replace(/([abcxyz])([abcxyz])/g, "$1*$2");
+        // Restore operation auto formating (prevent adding the mutliplcation star)
+        // TODO: Accept list of functions
+        let fnToken = ['sin', 'cos', 'tan'];
+        for (let token of fnToken) {
+            expr2 = expr2.replace(new RegExp(token + '\\*', 'g'), token);
+        }
+        return expr2;
+    }
+    /**
+     * Parse an expression using the shutting yard tree algorithms
+     * @param expr (string) Expression to analyse
+     * Returns a RPN list of items.
+     * @param operators
+     */
+    parse(expr, operators) {
+        let outQueue = [], // Output queue
+        opStack = [], // Operation queue
+        token = '', tokenPos = 0, tokenType = '', previousOpStatckLength = 0;
+        expr = this.Uniformizer(expr);
+        let securityLoopLvl1 = 50, securityLoopLvl2_default = 50, securityLoopLvl2;
+        while (tokenPos < expr.length) {
+            securityLoopLvl1--;
+            if (securityLoopLvl1 === 0) {
+                console.log('SECURITY LEVEL 1 EXIT');
+                break;
+            }
+            // Get the next token and the corresponding new (ending) position
+            [token, tokenPos, tokenType] = this.NextToken(expr, tokenPos);
+            switch (tokenType) {
+                case 'monom':
+                case 'coefficient':
+                case 'variable':
+                case 'constant':
+                    outQueue.push({
+                        token,
+                        tokenType
+                    });
+                    // if(previousOpStatckLength == opStack.length && outQueue.length>=2){
+                    //     console.log('opStatckLength', outQueue, opStack.length)
+                    //     outQueue.push('*')
+                    // }
+                    break;
+                case 'operation':
+                    previousOpStatckLength = opStack.length;
+                    //If the token is an operator, o1, then:
+                    if (opStack.length > 0) {
+                        let opTop = opStack[opStack.length - 1];
+                        securityLoopLvl2 = +securityLoopLvl2_default;
+                        //while there is an operator token o2, at the top of the operator stack and
+                        while (opTop.token in this._tokenConfig && (
+                        //either o1 is left-associative and its precedence is less than or equal to that of o2,
+                        (this._tokenConfig[token].associative === 'left' && this._tokenConfig[token].precedence <= this._tokenConfig[opTop.token].precedence)
+                            ||
+                                //or o1 is right associative, and has precedence less than that of o2,
+                                (this._tokenConfig[token].associative === 'right' && this._tokenConfig[token].precedence < this._tokenConfig[opTop.token].precedence))) {
+                            /* Security exit ! */
+                            securityLoopLvl2--;
+                            if (securityLoopLvl2 === 0) {
+                                console.log('SECURITY LEVEL 2 OPERATION EXIT');
+                                break;
+                            }
+                            // Add the operation to the queue
+                            outQueue.push((opStack.pop()) || { token: '', tokenType: 'operation' });
+                            // Get the next operation on top of the Stack.
+                            if (opStack.length === 0) {
+                                break;
+                            }
+                            opTop = opStack[opStack.length - 1];
+                        }
+                    }
+                    //at the end of iteration push o1 onto the operator stack
+                    opStack.push({ token, tokenType });
+                    break;
+                case 'function-argument':
+                    // TODO: check if the opStack exist.
+                    securityLoopLvl2 = +securityLoopLvl2_default;
+                    while (opStack[opStack.length - 1].token !== '(' && opStack.length > 0) {
+                        securityLoopLvl2--;
+                        if (securityLoopLvl2 === 0) {
+                            console.log('SECURITY LEVEL 2 FUNCTION ARGUMENT EXIT');
+                            break;
+                        }
+                        outQueue.push((opStack.pop()) || { token, tokenType });
+                    }
+                    break;
+                case '(':
+                    opStack.push({ token, tokenType });
+                    // Add an empty value if next element is negative.
+                    if (expr[tokenPos] === '-') {
+                        outQueue.push({ token: '0', tokenType: 'coefficient' });
+                    }
+                    break;
+                case ')':
+                    securityLoopLvl2 = +securityLoopLvl2_default;
+                    //Until the token at the top of the stack is a left parenthesis, pop operators off the stack onto the output queue.
+                    while (opStack[opStack.length - 1].token !== '(' && opStack.length > 1 /*Maybe zero !? */) {
+                        securityLoopLvl2--;
+                        if (securityLoopLvl2 === 0) {
+                            console.log('SECURITY LEVEL 2 CLOSING PARENTHESE EXIT');
+                            break;
+                        }
+                        outQueue.push((opStack.pop()) || { token, tokenType });
+                    }
+                    //Pop the left parenthesis from the stack, but not onto the output queue.
+                    opStack.pop();
+                    break;
+                case 'function':
+                    opStack.push({ token, tokenType });
+                    break;
+                default:
+                    // In theory, everything should be handled.
+                    console.log(`SHUTING YARD: ${tokenType} : ${token} `);
+            }
+            // Output
+            // console.log(outQueue.concat(opStack.reverse()).join(" "));
+        }
+        // console.log(outQueue.concat(opStack.reverse()));
+        this._rpn = outQueue.concat(opStack.reverse());
+        return this;
+    }
+    // Getter
+    get rpn() {
+        // console.log(this._rpn)
+        return this._rpn;
+    }
+}
+exports.Shutingyard = Shutingyard;
+
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+var exports = __webpack_exports__;
+var __webpack_unused_export__;
+
+__webpack_unused_export__ = ({ value: true });
+const numeric_1 = __webpack_require__(956);
+const numexp_1 = __webpack_require__(735);
+const shutingyard_1 = __webpack_require__(505);
+const random_1 = __webpack_require__(984);
+const coefficients_1 = __webpack_require__(534);
+const algebra_1 = __webpack_require__(667);
+const geometry_1 = __webpack_require__(272);
+// Expose as global
+// export let Pi = {
+window.Pi = {
+    ShutingYard: shutingyard_1.Shutingyard,
+    Numeric: numeric_1.Numeric,
+    NumExp: numexp_1.NumExp,
+    Fraction: coefficients_1.Fraction,
+    Root: coefficients_1.Nthroot,
+    Monom: algebra_1.Monom,
+    Polynom: algebra_1.Polynom,
+    Equation: algebra_1.Equation,
+    LinearSystem: algebra_1.LinearSystem,
+    Rational: algebra_1.Rational,
+    Logicalset: algebra_1.Logicalset,
+    Random: random_1.Random,
+    PolynomExpFactor: algebra_1.PolynomExpFactor,
+    PolynomExpProduct: algebra_1.PolynomExpProduct,
+    Geometry: {
+        Vector: geometry_1.Vector,
+        Point: geometry_1.Point,
+        Line: geometry_1.Line,
+        Triangle: geometry_1.Triangle,
+        Circle: geometry_1.Circle
+    }
+};
+
+})();
+
+/******/ })()
+;
 //# sourceMappingURL=pi.js.map

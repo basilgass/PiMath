@@ -3,6 +3,8 @@
  * @module Vector
  */
 import {Fraction} from "../coefficients"
+import {Line} from "./line";
+import {Vector} from "./vector";
 
 /**
  * Helper class - a way to identify an object {x: number, y: number}
@@ -68,8 +70,6 @@ export class Point {
     // ------------------------------------------
     // Creation / parsing functions
     // ------------------------------------------
-
-
     parse = (...values: unknown[]): Point => {
         // Initialize the value.
         this.zero();
@@ -171,4 +171,27 @@ export class Point {
         }
     };
 
+    distanceTo = (item:Point|Line): { value: number, fraction: Fraction, tex: string } => {
+        let value = 0, fraction = new Fraction(), tex = ''
+
+        if(item instanceof Line){
+            return item.distanceTo(this)
+        }else if(item instanceof Point){
+            let V = new Vector(this, item)
+
+            value = V.norm
+            fraction = V.normSquare.sqrt()
+            tex = V.normSquare.isSquare()?fraction.tex:`\\sqrt{\\dfrac{ ${V.normSquare.numerator} }{ ${V.normSquare.denominator} }}`
+        }
+        return { value, fraction, tex }
+    }
+
+    get key(): string {
+      return `${this.x.display};${this.y.display}`
+}
+    isInListOfPoints = (list: Point[]): boolean => {
+        const keyList = list.map(x=>x.key)
+
+        return keyList.includes(this.key)
+    }
 }

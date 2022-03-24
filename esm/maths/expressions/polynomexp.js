@@ -11,35 +11,30 @@ class PolynomExpFactor {
         this._powerAsInteger = true;
         this._forceParenthesis = true;
     }
-    _forceParenthesis;
     get forceParenthesis() {
         return this._forceParenthesis;
     }
     set forceParenthesis(value) {
         this._forceParenthesis = value;
     }
-    _fn;
     get fn() {
         return this._fn;
     }
     set fn(value) {
         this._fn = value;
     }
-    _powerAsInteger;
     get powerAsInteger() {
         return this._powerAsInteger;
     }
     set powerAsInteger(value) {
         this._powerAsInteger = value;
     }
-    _polynom;
     get polynom() {
         return this._polynom;
     }
     set polynom(value) {
         this._polynom = value;
     }
-    _degree;
     get degree() {
         return this._degree;
     }
@@ -49,16 +44,21 @@ class PolynomExpFactor {
     get tex() {
         let tex;
         if (this._degree.isOne() && (this._fn !== undefined || !this._forceParenthesis)) {
+            // If degree is one, no need to add the parenthesis.
             tex = this._polynom.tex;
         }
         else {
+            // the degree is not one, add the parenthesis.
             if (this._powerAsInteger && !this._degree.isRelative()) {
+                // the degree is a fraction and we want natural powers => use sqrt.
                 tex = `\\sqrt${this._degree.denominator !== 2 ? `[ ${this._degree.denominator} ]` : ''}{ ${this._polynom.tex} }^{ ${this._degree.numerator} }`;
             }
             else if (this.isCoefficient && this.firstCoefficient.isNatural()) {
+                // the value is a natural number (eg 3, 7, ...)
                 tex = this._polynom.tex + this._texDegree;
             }
             else {
+                // In any other case, add the parenthesis by default
                 tex = `\\left( ${this._polynom.tex} \\right)${this._texDegree}`;
             }
         }
@@ -68,6 +68,7 @@ class PolynomExpFactor {
         return tex;
     }
     get isCoefficient() {
+        // TODO: Maybe reduce the coefficient if it isn't of degree one.
         return this._polynom.degree().isZero();
     }
     get firstCoefficient() {
@@ -101,28 +102,24 @@ class PolynomExpProduct {
         this._positive = true;
         this._asPositiveDegree = true;
     }
-    _fn;
     get fn() {
         return this._fn;
     }
     set fn(value) {
         this._fn = value;
     }
-    _factors;
     get factors() {
         return this._factors;
     }
     set factors(value) {
         this._factors = value;
     }
-    _positive;
     get positive() {
         return this._positive;
     }
     set positive(value) {
         this._positive = value;
     }
-    _asPositiveDegree;
     get asPositiveDegree() {
         return this._asPositiveDegree;
     }
@@ -131,7 +128,9 @@ class PolynomExpProduct {
     }
     get tex() {
         let parenthesis = this._factors.length > 1;
+        // Default value
         let tex = this._factors.map(factor => factor.setForceParenthesis(parenthesis).tex).join(' \\cdot ');
+        // Change the value in some cases...
         if (this._asPositiveDegree) {
             const numerators = this._factors.filter(x => x.degree.isPositive()), denominators = this._factors.filter(x => x.degree.isNegative());
             let numeratorsAsTex, denominatorsAsTex;
@@ -146,6 +145,7 @@ class PolynomExpProduct {
                     parenthesis = numerators.length > 1;
                     numeratorsAsTex = numerators.map(factor => factor.setForceParenthesis(parenthesis).tex);
                 }
+                // Change all denominators degrees to positive.
                 denominators.map(x => x.degree.opposed());
                 if (denominators.length === 1) {
                     denominatorsAsTex = [denominators[0].setForceParenthesis(false).tex];
@@ -154,10 +154,12 @@ class PolynomExpProduct {
                     parenthesis = denominators.length > 1;
                     denominatorsAsTex = denominators.map(factor => factor.setForceParenthesis(parenthesis).tex);
                 }
+                // restore all degrees to negative again.
                 denominators.map(x => x.degree.opposed());
                 tex = `\\dfrac{ ${numeratorsAsTex.join(' \\cdot ')} }{ ${denominatorsAsTex.join(' \\cdot ')} }`;
             }
         }
+        // Apply the modification
         if (this._fn !== undefined && this._fn.name !== undefined && this._fn.name !== '') {
             tex = `${this._fn.tex}\\left( ${tex} \\right)`;
         }
@@ -198,7 +200,12 @@ class PolynomExpProduct {
         return this;
     }
     integrate(letter) {
+        // Handle this kind of case:
+        // A * f' * F^n
+        // A * f' / F^n, n != 1
+        // A * f_1 * f_2 * f_3, where (f_1 * f_2)' = f_3
         if (this._factors.length === 2) {
+            // Check polynoms degree: one must of one degree less than the other.
             let d1 = this._factors[0].polynom.degree(letter).value, d2 = this._factors[1].polynom.degree(letter).value;
             if (d1 === d2 + 1) {
                 return this._integrateWithInternalDerivative(this._factors[0], this._factors[1], letter);
@@ -214,9 +221,15 @@ class PolynomExpProduct {
         return this;
     }
     _integrateWithInternalDerivative(P, Pinternal, letter) {
+        // Get the internal derivative
         let internalDerivative = P.polynom.clone().derivative(letter);
+        // Get the factor.
         let { quotient, reminder } = Pinternal.polynom.clone().euclidian(internalDerivative);
         if (reminder.isZero() && quotient.degree(letter).isZero()) {
+            // All the conditions are done. Actual situation is
+            // (4x-10)(x^2-5x+7)^9
+            // P1 = (x^2-5x+7), P2 = (2x-5)
+            // => 1/10 * quotient * (x^2-5x+7)^10
             if (P.degree.isEqual(-1)) {
                 return (new PolynomExpProduct(new PolynomExpFactor(quotient, 1), new PolynomExpFactor(P.polynom.clone(), 1, {
                     name: 'ln', tex: '\\ln', fn: (x) => Math.log(x)

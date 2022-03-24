@@ -1,3 +1,6 @@
+/**
+ * Nthroot is something like "a+b\sqrt{3}
+ */
 export declare class Nthroot {
     private _radical;
     private _nth;

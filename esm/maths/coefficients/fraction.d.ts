@@ -1,4 +1,9 @@
 export declare type FractionParsingType = number | string | Fraction;
+/**
+ * The fraction class make possible to handle
+ * TODO: Write the documentation correctly.
+ * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
+ */
 export declare class Fraction {
     private _numerator;
     private _denominator;
@@ -14,6 +19,11 @@ export declare class Fraction {
     get frac(): string;
     get dfrac(): string;
     get tfrac(): string;
+    /**
+     * Parse the value to get the numerator and denominator
+     * @param value : number or string to parse to get the fraction
+     * @param denominatorOrPeriodic (optional|number) : length of the periodic part: 2.333333 => 1 or denominator value
+     */
     parse: (value: unknown, denominatorOrPeriodic?: number) => Fraction;
     clone: () => Fraction;
     zero: () => Fraction;
@@ -34,6 +44,11 @@ export declare class Fraction {
     static min: (...fractions: (Fraction | number)[]) => Fraction;
     reduce: () => Fraction;
     amplify: (k: number) => Fraction;
+    /**
+     * Compare the current coefficient with another coefficient
+     * @param F (Coefficient) The coefficient to compare
+     * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
+     */
     compare: (F: unknown, sign?: string) => boolean;
     lesser: (than: Fraction | number) => Boolean;
     leq: (than: Fraction | number) => Boolean;
@@ -62,5 +77,8 @@ export declare class Fraction {
     isEven: () => boolean;
     isOdd: () => boolean;
     sign: () => number;
+    /**
+     * Simple function to determine if it's a fraction
+     */
     areEquals: (...F: Fraction[]) => boolean;
 }

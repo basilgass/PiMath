@@ -8,7 +8,7 @@ import {Point} from "./point";
 import {Equation, Polynom} from "../algebra";
 import {Numeric} from "../numeric";
 
-enum LinePropriety {
+export enum LinePropriety {
     None,
     Parallel='parallel',
     Perpendicular = 'perpendicular',

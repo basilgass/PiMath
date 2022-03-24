@@ -1,9 +1,23 @@
+/**
+ * Polynom module contains everything necessary to handle polynoms.*
+ */
 import { literalType, Monom } from './monom';
 import { Token } from '../shutingyard';
 import { Fraction } from "../coefficients";
 export declare type PolynomParsingType = string | Polynom | number | Fraction | Monom;
+/**
+ * Polynom class can handle polynoms, reorder, resolve, ...
+ * ```
+ * let P = new Polynom('3x-4')
+ * ```
+ */
 export declare class Polynom {
     private _rawString;
+    /**
+     *
+     * @param {string} polynomString (optional) Default polynom to parse on class creation
+     * @param values
+     */
     constructor(polynomString?: PolynomParsingType, ...values: unknown[]);
     private _monoms;
     get monoms(): Monom[];
@@ -21,9 +35,21 @@ export declare class Polynom {
     get isMultiVariable(): boolean;
     get variables(): string[];
     get numberOfVars(): number;
+    /**
+     * Parse a string to a polynom.
+     * @param inputStr
+     * @param values: as string, numbers or fractions
+     */
     parse: (inputStr: PolynomParsingType, ...values: unknown[]) => Polynom;
     private _parseString;
+    /**
+     * Clone the polynom
+     */
     clone: () => Polynom;
+    /**
+     * Set the polynom to zero.
+     * @returns {this}
+     */
     zero: () => Polynom;
     one: () => Polynom;
     empty: () => Polynom;
@@ -31,12 +57,22 @@ export declare class Polynom {
     add: (...values: unknown[]) => Polynom;
     subtract: (...values: unknown[]) => Polynom;
     multiply: (value: unknown) => Polynom;
+    /**
+     * Divide the current polynom by another polynom.
+     * @param P
+     * returns {quotient: Polynom, reminder: Polynom}
+     */
     euclidian: (P: Polynom) => {
         quotient: Polynom;
         reminder: Polynom;
     };
     divide: (value: unknown) => Polynom;
     pow: (nb: number) => Polynom;
+    /**
+     * Compare the current coefficient with another coefficient
+     * @param P
+     * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
+     */
     compare: (P: Polynom, sign?: string) => boolean;
     isZero(): boolean;
     isOne(): boolean;
@@ -49,11 +85,20 @@ export declare class Polynom {
     reorder: (letter?: string) => Polynom;
     degree: (letter?: string) => Fraction;
     letters: () => string[];
+    /**
+     * Replace a variable (letter) by a polynom.
+     * @param letter
+     * @param P
+     */
     replaceBy: (letter: string, P: Polynom) => Polynom;
     evaluate: (values: literalType | Fraction | number) => Fraction;
     derivative: (letter?: string) => Polynom;
     primitive: (letter?: string) => Polynom;
     integrate: (a: Fraction | number, b: Fraction | number, letter?: string) => Fraction;
+    /**
+     * Factorize a polynom and store the best results in factors.
+     * @param maxValue Defines the greatest value to search to (default is 20).
+     */
     factorize: (letter?: string) => Polynom[];
     getZeroes: () => (Fraction | boolean)[];
     monomByDegree: (degree?: Fraction | number, letter?: string) => Monom;
@@ -68,6 +113,10 @@ export declare class Polynom {
     commonMonom: () => Monom;
     private genDisplay;
     static addToken: (stack: Polynom[], element: Token) => void;
+    /**
+     * Main parse using a shutting yard class
+     * @param inputStr
+     */
     private shutingYardToReducedPolynom;
     private multiplyByPolynom;
     private multiplyByFraction;

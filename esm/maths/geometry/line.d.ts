@@ -1,8 +1,11 @@
+/**
+ * This class works for 2d line in a plane.
+ */
 import { Fraction } from "../coefficients";
 import { Vector } from "./vector";
 import { Point } from "./point";
 import { Equation } from "../algebra";
-declare enum LinePropriety {
+export declare enum LinePropriety {
     None = 0,
     Parallel = "parallel",
     Perpendicular = "perpendicular",
@@ -43,6 +46,11 @@ export declare class Line {
     set d(value: Vector);
     get slope(): Fraction;
     get height(): Fraction;
+    /**
+     * Parse data to a line
+     * @param {any} values
+     * @returns {Line}
+     */
     parse: (...values: unknown[]) => Line;
     parseEquation: (equ: Equation) => Line;
     parseByCoefficient: (a: Fraction | number, b: Fraction | number, c: Fraction | number) => Line;
@@ -71,4 +79,3 @@ export declare class Line {
     getValueAtY: (value: Fraction | number) => Fraction;
     canonicalAsFloatCoefficient(decimals: number): string;
 }
-export {};

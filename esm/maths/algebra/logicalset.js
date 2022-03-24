@@ -1,11 +1,26 @@
 "use strict";
+/**
+ * Polynom module contains everything necessary to handle polynoms.
+ * @module Logicalset
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Logicalset = void 0;
 const shutingyard_1 = require("../shutingyard");
+/**
+ * Polynom class can handle polynoms, reorder, resolve, ...
+ */
 class Logicalset {
-    _rawString;
-    _rpn;
+    /**
+     *
+     * @param {string} value (optional) Default polynom to parse on class creation
+     */
     constructor(value) {
+        this.parse = (value) => {
+            // TODO: Must format the value string to convert some items...
+            // Parse the updated value to the shutingyard algorithm
+            this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.SET).parse(value).rpn;
+            return this;
+        };
         this._rawString = value;
         this.parse(value);
         return this;
@@ -14,10 +29,6 @@ class Logicalset {
         return true;
     }
     ;
-    parse = (value) => {
-        this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.SET).parse(value).rpn;
-        return this;
-    };
     evaluate(tokenSets, reference) {
         let varStack = [];
         let referenceSet;
@@ -32,6 +43,7 @@ class Logicalset {
         }
         for (let token of this._rpn) {
             if (token.tokenType === 'variable') {
+                // The variable has no token - assume it's empty.
                 if (tokenSets[token.token] === undefined) {
                     varStack.push(new Set());
                 }

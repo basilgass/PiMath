@@ -1,5 +1,5 @@
 import {Polynom} from "./polynom";
-import {Monom} from "./monom";
+import {literalType, Monom} from "./monom";
 import {Numeric} from "../numeric";
 import {Fraction, Nthroot} from "../coefficients";
 
@@ -13,13 +13,7 @@ interface ISolution {
 }
 
 export class Equation {
-    private _left: Polynom;  // Left part of the equation
-    private _right: Polynom; // Right part of the equation
-    private _sign: string;   // Signe of the equation, by default =
-
     private _polynom: Polynom;  // Used to solve the equation // TODO: remove the private value ?
-    private _solutions: ISolution[]
-
     // Undetermined texSolutions.
     private _varnothing: string = '\\varnothing';
     private _real: string = '\\mathbb{R}';
@@ -36,21 +30,21 @@ export class Equation {
         this._sign = '=';
 
         if (equations.length === 1) {
-            if(equations[0] instanceof Equation) {
+            if (equations[0] instanceof Equation) {
                 return equations[0].clone();
-            } else if(typeof equations[0] === 'string') {
+            } else if (typeof equations[0] === 'string') {
                 this.parse(equations[0]);
             }
         } else if (equations.length === 2) {
-            if(equations[0] instanceof Polynom){
+            if (equations[0] instanceof Polynom) {
                 this.left = equations[0].clone()
-            }else if(typeof equations[0] === 'string'){
+            } else if (typeof equations[0] === 'string') {
                 this.left = new Polynom(equations[0])
             }
 
-            if(equations[1] instanceof Polynom){
+            if (equations[1] instanceof Polynom) {
                 this.right = equations[1].clone()
-            }else if(typeof equations[1] === 'string'){
+            } else if (typeof equations[1] === 'string') {
                 this.right = new Polynom(equations[1])
             }
         } else {
@@ -61,16 +55,51 @@ export class Equation {
         return this;
     }
 
-    get isEquation() {
-        return true;
+    private _left: Polynom;  // Left part of the equation
+
+    get left(): Polynom {
+        return this._left;
+    }
+
+    set left(value: Polynom) {
+        this._left = value;
+    }
+
+    private _right: Polynom; // Right part of the equation
+
+    get right(): Polynom {
+        return this._right;
     }
 
     // ------------------------------------------
     // Getter and setter
+
+    set right(value: Polynom) {
+        this._right = value;
+    }
+
+    private _sign: string;   // Signe of the equation, by default =
+
+    get sign(): string {
+        return this._sign;
+    }
+
+    set sign(value: string) {
+        // Set the sign value as formatted.
+        this._sign = this._formatSign(value);
+    }
+
+    private _solutions: ISolution[]
+
     // ------------------------------------------
     get solutions(): ISolution[] {
         return this._solutions
     }
+
+    get isEquation() {
+        return true;
+    }
+
     get solution(): string {
         if (this._solutions.length === 1
             &&
@@ -117,7 +146,6 @@ export class Equation {
         return `${this._left.display}${this.signAsTex}${this._right.display}`;
     }
 
-
     get raw(): string {
         return `${this._left.raw}${this.signAsTex}${this._right.raw}`;
     }
@@ -130,34 +158,23 @@ export class Equation {
         return this.variables.length;
     }
 
-    get left(): Polynom {
-        return this._left;
-    }
-
-    set left(value: Polynom) {
-        this._left = value;
-    }
-
-    get right(): Polynom {
-        return this._right;
-    }
-
-    set right(value: Polynom) {
-        this._right = value;
-    }
-
-    get sign(): string {
-        return this._sign;
-    }
-
-    set sign(value: string) {
-        // Set the sign value as formatted.
-        this._sign = this._formatSign(value);
-    }
-
 
     // ------------------------------------------
     // Creation / parsing functions
+
+    // -----------------------------------------------
+    private _randomizeDefaults: { [key: string]: number | string | boolean } = {
+        degree: 2
+    };
+
+    get randomizeDefaults(): { [key: string]: number | string | boolean } {
+        return this._randomizeDefaults;
+    }
+
+    set randomizeDefaults(value) {
+        this._randomizeDefaults = value;
+    }
+
     // ------------------------------------------
     parse = (equationString: string): Equation => {
         let pStr: string[], strSign: string | false;
@@ -175,77 +192,6 @@ export class Equation {
         return this.create(new Polynom(pStr[0]), new Polynom(pStr[1]), this._formatSign(strSign));
     };
 
-    private _findSign = (equationString: string): string | false => {
-        let strSign: string = '';
-
-        if (equationString.includes('geq')) {
-            return (equationString.includes('\\geq')) ? '\\geq' : 'geq';
-        } else if (equationString.includes('leq')) {
-            return (equationString.includes('\\leq')) ? '\\leq' : 'leq';
-        } else if (equationString.includes('>=')) {
-            return '>=';
-        } else if (equationString.includes('=>')) {
-            return '=>';
-        } else if (equationString.includes('>')) {
-            return '>';
-        } else if (equationString.includes('<=')) {
-            return '<=';
-        } else if (equationString.includes('=<')) {
-            return '=<';
-        } else if (equationString.includes('<')) {
-            return '<';
-        } else if (equationString.includes('=')) {
-            return '='
-        }
-        if (strSign === '') {
-            console.log('Equation: parse string : sign not found');
-            return false;
-        }
-    };
-
-    private _formatSign = (signStr: string): string => {
-        if (signStr === undefined) {
-            return '=';
-        }
-
-        if (signStr.includes('geq')) {
-            return '>=';
-        } else if (signStr.includes('>=')) {
-            return '>=';
-        } else if (signStr.includes('=>')) {
-            return '>=';
-        } else if (signStr.includes('>')) {
-            return '>';
-        } else if (signStr.includes('leq')) {
-            return '<=';
-        } else if (signStr.includes('<=')) {
-            return '<=';
-        } else if (signStr.includes('=<')) {
-            return '<=';
-        } else if (signStr.includes('<')) {
-            return '<';
-        } else {
-            return '='
-        }
-    };
-
-    private _reverseSign = (): Equation => {
-        if (this._sign === '=') {
-            return this;
-        }
-
-        if (this._sign.includes('<')) {
-            this._sign.replace('<', '>');
-            return this;
-        }
-        if (this._sign.includes('>')) {
-            this._sign.replace('>', '<');
-            return this;
-        }
-
-        return this;
-    };
-
     create = (left: Polynom, right: Polynom, sign?: string): Equation => {
         this._left = left;
         this._right = right;
@@ -259,26 +205,12 @@ export class Equation {
 
     // -----------------------------------------------
     // Equations generators and randomizers
-    // -----------------------------------------------
-    private _randomizeDefaults: { [key: string]: number | string | boolean } = {
-        degree: 2
-    };
-    get randomizeDefaults(): { [key: string]: number | string | boolean } {
-        return this._randomizeDefaults;
-    }
-
-    set randomizeDefaults(value) {
-        this._randomizeDefaults = value;
-    }
 
     randomize = (opts?: {}, sign?: string): Equation => {
         // TODO: Generate equations randomly, using config.
         return new Equation().create(new Polynom(), new Polynom(), sign);
     };
 
-
-    // -----------------------------------------------
-    // Equations operations
     // -----------------------------------------------
     /**
      * Reorder will move all monoms containing a letter on the left, all the other on the right.
@@ -288,6 +220,7 @@ export class Equation {
         this._right.zero()
         return this;
     }
+
     reorder = (allLeft?: boolean): Equation => {
         // Move all monoms of degree greater than 0 to the left.
         // and all zero degree monoms to the right.
@@ -320,6 +253,10 @@ export class Equation {
         this.divide(Numeric.gcd(...this._left.getNumerators(), ...this._right.getNumerators()));
         return this;
     }
+
+
+    // -----------------------------------------------
+    // Equations operations
 
     /**
      * Reorder the polynom to have only one letter on the left, the rest on the right.
@@ -415,10 +352,6 @@ export class Equation {
         }
     }
 
-    // -----------------------------------------------
-    // Equations helpers
-    // -----------------------------------------------
-
     /**
      * Get the degree of the equation
      * @param letter
@@ -440,7 +373,9 @@ export class Equation {
     }
 
     // -----------------------------------------------
-    // Equations solving algorithms
+    // Equations helpers
+    // -----------------------------------------------
+
     // -----------------------------------------------
     solve = (): Equation => {
         // Initialise the variables:
@@ -464,6 +399,84 @@ export class Equation {
         return this;
     };
 
+    test = (values: literalType): Boolean => {
+        return this.left.evaluate(values).isEqual(this.right.evaluate(values))
+    }
+
+    private _findSign = (equationString: string): string | false => {
+        let strSign: string = '';
+
+        if (equationString.includes('geq')) {
+            return (equationString.includes('\\geq')) ? '\\geq' : 'geq';
+        } else if (equationString.includes('leq')) {
+            return (equationString.includes('\\leq')) ? '\\leq' : 'leq';
+        } else if (equationString.includes('>=')) {
+            return '>=';
+        } else if (equationString.includes('=>')) {
+            return '=>';
+        } else if (equationString.includes('>')) {
+            return '>';
+        } else if (equationString.includes('<=')) {
+            return '<=';
+        } else if (equationString.includes('=<')) {
+            return '=<';
+        } else if (equationString.includes('<')) {
+            return '<';
+        } else if (equationString.includes('=')) {
+            return '='
+        }
+        if (strSign === '') {
+            console.log('Equation: parse string : sign not found');
+            return false;
+        }
+    };
+
+    // -----------------------------------------------
+    // Equations solving algorithms
+
+    private _formatSign = (signStr: string): string => {
+        if (signStr === undefined) {
+            return '=';
+        }
+
+        if (signStr.includes('geq')) {
+            return '>=';
+        } else if (signStr.includes('>=')) {
+            return '>=';
+        } else if (signStr.includes('=>')) {
+            return '>=';
+        } else if (signStr.includes('>')) {
+            return '>';
+        } else if (signStr.includes('leq')) {
+            return '<=';
+        } else if (signStr.includes('<=')) {
+            return '<=';
+        } else if (signStr.includes('=<')) {
+            return '<=';
+        } else if (signStr.includes('<')) {
+            return '<';
+        } else {
+            return '='
+        }
+    };
+
+    private _reverseSign = (): Equation => {
+        if (this._sign === '=') {
+            return this;
+        }
+
+        if (this._sign.includes('<')) {
+            this._sign.replace('<', '>');
+            return this;
+        }
+        if (this._sign.includes('>')) {
+            this._sign.replace('>', '<');
+            return this;
+        }
+
+        return this;
+    };
+
     private isGreater = (): boolean => {
         if (this._sign.indexOf('>') !== -1) {
             return true;
@@ -471,9 +484,11 @@ export class Equation {
         return this._sign.indexOf('geq') !== -1;
 
     };
+
     private isStrictEqual = (): boolean => {
         return this._sign === '=';
     };
+
     private isAlsoEqual = (): boolean => {
         if (this._sign.indexOf('=') !== -1) {
             return true;
@@ -752,5 +767,4 @@ export class Equation {
         this._solutions = [{tex: 'solve x - not yet handled', value: NaN, exact: false}];  // ESLint remove system :(
         return this._solutions;
     };
-
 }

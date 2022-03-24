@@ -53,10 +53,32 @@ export declare class Triangle {
         'AC': Line;
     };
     get remarquables(): remarquableLines;
+    /**
+     * Parse values to a triangle. Supported formats:
+     * Point, Point, Point
+     * x1, y1, x2, y2, x3, y3
+     * TODO: Something else ?
+     * @param values
+     */
     parse: (...values: any) => Triangle;
+    /**
+     * Clone the Triangle class
+     */
     clone: () => Triangle;
+    /**
+     * Generate the Line object for the three segments of the triangle
+     */
     private _updateTriangle;
+    /**
+     * Get the Point class for the given name
+     * @param ptName
+     */
     private getPointByName;
+    /**
+     * Get the vector for the segment given by name.
+     * @param ptName1
+     * @param ptName2
+     */
     private getSegment;
     private _calculateRemarquableLines;
     private _calculateBisectors;

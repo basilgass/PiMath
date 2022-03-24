@@ -4,9 +4,6 @@ exports.NumExp = void 0;
 const shutingyard_1 = require("../shutingyard");
 const coefficients_1 = require("../coefficients");
 class NumExp {
-    _rpn;
-    _expression;
-    _isValid;
     constructor(value) {
         this._expression = value;
         this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value).rpn;
@@ -35,6 +32,12 @@ class NumExp {
         return decimal.substring(0, decimal.length - 2);
     }
     _numberCorrection(value) {
+        // Must modify the number if it's like:
+        // a: 3.0000000000000003
+        // b: 3.9999999999999994
+        // remove the last character
+        // check if around n last characters are either 0 or 9
+        // if it is, 'round' the number.
         const epsilon = 0.00000000000001, number_of_digits = 6;
         const decimal = this._extractDecimalPart(value);
         if (decimal === '') {
@@ -43,14 +46,18 @@ class NumExp {
         const n9 = decimal.match(/9+$/g);
         const n0 = decimal.match(/0+$/g);
         if (n9 && n9[0].length >= number_of_digits) {
+            // New tested values.
             const mod = this._extractDecimalPart(value + epsilon), mod0 = mod.match(/0+$/g);
             if (mod0 && mod0[0].length >= number_of_digits) {
+                // The value can be changed. Remove all zeros!
                 return +((value + epsilon).toString().split(mod0[0])[0]);
             }
         }
         if (n0 && n0[0].length >= number_of_digits) {
+            // New tested values.
             const mod = this._extractDecimalPart(value - epsilon), mod9 = mod.match(/9+$/g);
             if (mod9 && mod9[0].length >= number_of_digits) {
+                // The value can be changed. Remove all nines!
                 return +(value.toString().split(n0[0])[0]);
             }
         }
@@ -64,6 +71,7 @@ class NumExp {
         this.isValid = true;
         for (const element of this._rpn) {
             if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
+                // May be a numeric value or a Fraction.
                 if (!isNaN(+element.token)) {
                     this._addToStack(stack, +element.token);
                 }

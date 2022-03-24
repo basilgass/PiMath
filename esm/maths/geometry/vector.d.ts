@@ -1,3 +1,7 @@
+/**
+ * Vector module contains everything necessary to handle 2d or 3d vectors.
+ * @module Vector
+ */
 import { Fraction } from "../coefficients/fraction";
 export declare class Vector {
     private _x;

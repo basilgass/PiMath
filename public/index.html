@@ -38,7 +38,54 @@
     <div x-html="d"></div>
     <div x-html="i"></div>
 </div>
+
+<div x-data="triplets">
+    <template x-for="(item, index) of tripletsPytha" :key="index">
+        <div x-text="item.join(',')"></div>
+    </template>
+</div>
 <script>
+    function triplets() {
+        let triplets = []
+        let n = 9, v
+
+        for(let u = 2; u<=n; u++){
+            v = ( u%2===0 )?1:2
+            while(v < u){
+                if(Pi.Numeric.gcd(u, v)===1){
+                    triplets.push([
+                        u, v,
+                        u**2-v**2,
+                        2*u*v,
+                        u**2+v**2
+                    ])
+                }
+                    v = v + 2
+            }
+        }
+
+        let target = 13
+        // Filtrer les triplets pour n'avoir que les valeurs 15.
+        triplets = triplets.filter(x=>x[x.length-1]===target)
+
+
+
+        // méthode inverse, à partir du triplet.
+        triplets = []
+        for(let u = 0; u <= target; u++){
+            for(let v = 0; v <=target; v++){
+                if(u**2+v**2===target**2){
+                    triplets.push([u, v, target])
+                }
+            }
+        }
+
+        return {
+            tripletsPytha: triplets
+        }
+    }
+
+
 	// Should be
 	function examplePolynomExpSimple () {
 		const F1 = new Pi.PolynomExpFactor('x^2-4x+7', -1),
