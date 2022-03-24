@@ -10,7 +10,7 @@ export class Vector {
     private _x: Fraction;   // 1st component
     private _y: Fraction;   // 2nd component
 
-    constructor(...values: any) {
+    constructor(...values: unknown[]) {
         this._x = new Fraction().zero();
         this._y = new Fraction().zero();
 

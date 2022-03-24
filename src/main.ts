@@ -16,8 +16,7 @@ import {
 import {Line, Circle, Triangle, Point, Vector} from "./maths/geometry";
 
 // Expose as global
-// export let Pi = {
-(<any>window).Pi = {
+export const PiMath = {
     ShutingYard: Shutingyard,
     Numeric: Numeric,
     NumExp: NumExp,
@@ -40,3 +39,4 @@ import {Line, Circle, Triangle, Point, Vector} from "./maths/geometry";
         Circle: Circle
     }
 };
+(<any>window).Pi = PiMath
