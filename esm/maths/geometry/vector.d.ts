@@ -6,7 +6,7 @@ import { Fraction } from "../coefficients/fraction";
 export declare class Vector {
     private _x;
     private _y;
-    constructor(...values: any);
+    constructor(...values: unknown[]);
     get x(): Fraction;
     set x(value: Fraction);
     get y(): Fraction;

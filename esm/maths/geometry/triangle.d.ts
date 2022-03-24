@@ -34,7 +34,7 @@ export declare class Triangle {
     private _lines;
     private _middles;
     private _remarquables;
-    constructor(...values: any);
+    constructor(...values: unknown[]);
     get A(): Point;
     get B(): Point;
     get C(): Point;

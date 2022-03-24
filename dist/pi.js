@@ -2,6 +2,49 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 519:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+var __webpack_unused_export__;
+
+__webpack_unused_export__ = ({ value: true });
+exports.l = void 0;
+const numeric_1 = __webpack_require__(956);
+const numexp_1 = __webpack_require__(735);
+const shutingyard_1 = __webpack_require__(505);
+const random_1 = __webpack_require__(984);
+const coefficients_1 = __webpack_require__(534);
+const algebra_1 = __webpack_require__(667);
+const geometry_1 = __webpack_require__(272);
+// Expose as global
+exports.l = {
+    ShutingYard: shutingyard_1.Shutingyard,
+    Numeric: numeric_1.Numeric,
+    NumExp: numexp_1.NumExp,
+    Fraction: coefficients_1.Fraction,
+    Root: coefficients_1.Nthroot,
+    Monom: algebra_1.Monom,
+    Polynom: algebra_1.Polynom,
+    Equation: algebra_1.Equation,
+    LinearSystem: algebra_1.LinearSystem,
+    Rational: algebra_1.Rational,
+    Logicalset: algebra_1.Logicalset,
+    Random: random_1.Random,
+    PolynomExpFactor: algebra_1.PolynomExpFactor,
+    PolynomExpProduct: algebra_1.PolynomExpProduct,
+    Geometry: {
+        Vector: geometry_1.Vector,
+        Point: geometry_1.Point,
+        Line: geometry_1.Line,
+        Triangle: geometry_1.Triangle,
+        Circle: geometry_1.Circle
+    }
+};
+window.Pi = exports.l;
+
+
+/***/ }),
+
 /***/ 760:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -6484,48 +6527,12 @@ exports.Shutingyard = Shutingyard;
 /******/ 	}
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
-(() => {
-var exports = __webpack_exports__;
-var __webpack_unused_export__;
-
-__webpack_unused_export__ = ({ value: true });
-const numeric_1 = __webpack_require__(956);
-const numexp_1 = __webpack_require__(735);
-const shutingyard_1 = __webpack_require__(505);
-const random_1 = __webpack_require__(984);
-const coefficients_1 = __webpack_require__(534);
-const algebra_1 = __webpack_require__(667);
-const geometry_1 = __webpack_require__(272);
-// Expose as global
-// export let Pi = {
-window.Pi = {
-    ShutingYard: shutingyard_1.Shutingyard,
-    Numeric: numeric_1.Numeric,
-    NumExp: numexp_1.NumExp,
-    Fraction: coefficients_1.Fraction,
-    Root: coefficients_1.Nthroot,
-    Monom: algebra_1.Monom,
-    Polynom: algebra_1.Polynom,
-    Equation: algebra_1.Equation,
-    LinearSystem: algebra_1.LinearSystem,
-    Rational: algebra_1.Rational,
-    Logicalset: algebra_1.Logicalset,
-    Random: random_1.Random,
-    PolynomExpFactor: algebra_1.PolynomExpFactor,
-    PolynomExpProduct: algebra_1.PolynomExpProduct,
-    Geometry: {
-        Vector: geometry_1.Vector,
-        Point: geometry_1.Point,
-        Line: geometry_1.Line,
-        Triangle: geometry_1.Triangle,
-        Circle: geometry_1.Circle
-    }
-};
-
-})();
-
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__(519);
+/******/ 	
 /******/ })()
 ;
 //# sourceMappingURL=pi.js.map
