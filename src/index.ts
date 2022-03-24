@@ -18,7 +18,7 @@ import {Circle} from "./maths/geometry/circle";
 import {Point} from "./maths/geometry/point";
 
 // Expose as global
-export const Pi = {
+export const PiMath = {
     ShutingYard: Shutingyard,
     Numeric: Numeric,
     NumExp: NumExp,
@@ -41,4 +41,4 @@ export const Pi = {
         Circle: Circle
     }
 };
-(<any>window).Pi = Pi
+(<any>window).Pi = PiMath

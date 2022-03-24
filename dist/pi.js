@@ -2,13 +2,13 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 519:
+/***/ 607:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
-exports.Pi = void 0;
+exports.l = void 0;
 const numeric_1 = __webpack_require__(956);
 const numexp_1 = __webpack_require__(735);
 const shutingyard_1 = __webpack_require__(505);
@@ -28,7 +28,7 @@ const triangle_1 = __webpack_require__(164);
 const circle_1 = __webpack_require__(699);
 const point_1 = __webpack_require__(557);
 // Expose as global
-exports.Pi = {
+exports.l = {
     ShutingYard: shutingyard_1.Shutingyard,
     Numeric: numeric_1.Numeric,
     NumExp: numexp_1.NumExp,
@@ -51,7 +51,7 @@ exports.Pi = {
         Circle: circle_1.Circle
     }
 };
-window.Pi = exports.Pi;
+window.Pi = exports.l;
 
 
 /***/ }),
@@ -6462,7 +6462,7 @@ exports.Shutingyard = Shutingyard;
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__(519);
+/******/ 	var __webpack_exports__ = __webpack_require__(607);
 /******/ 	
 /******/ })()
 ;
