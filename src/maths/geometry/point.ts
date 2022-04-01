@@ -10,8 +10,8 @@ import {Fraction} from "../coefficients/fraction";
  * Helper class - a way to identify an object {x: number, y: number}
  */
 class PointXY {
-    public x: number
-    public y: number
+    x: number
+    y: number
 }
 
 export class Point {
