@@ -111,6 +111,8 @@ export declare class Polynom {
     lcmNumerator: () => number;
     gcdNumerator: () => number;
     commonMonom: () => Monom;
+    limitToInfinity: (letter?: string) => Fraction;
+    limitToNegativeInfinity: (letter?: string) => Fraction;
     private _parseString;
     private genDisplay;
     /**

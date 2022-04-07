@@ -995,6 +995,34 @@ export class Polynom {
         return M;
     }
 
+    limitToInfinity = (letter?: string): Fraction => {
+        const M = this.monomByDegree(undefined, letter),
+            sign = M.coefficient.sign(),
+            degree = M.degree(letter)
+
+        if (degree.isStrictlyPositive()) {
+            return sign === 1 ? (new Fraction()).infinite() : (new Fraction()).infinite().opposed()
+        } else if (degree.isZero()) {
+            return M.coefficient
+        }
+
+        // Any other cases
+        return (new Fraction()).zero()
+    }
+    limitToNegativeInfinity = (letter?: string): Fraction => {
+        const M = this.monomByDegree(undefined, letter),
+            sign = M.coefficient.sign(),
+            degree = M.degree(letter)
+
+        if (degree.isStrictlyPositive()) {
+            return sign === -1 ? (new Fraction()).infinite() : (new Fraction()).infinite().opposed()
+        } else if (degree.isZero()) {
+            return M.coefficient
+        }
+
+        // Any other cases
+        return (new Fraction()).zero()
+    }
     private _parseString(inputStr: string, ...values: unknown[]): Polynom {
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;

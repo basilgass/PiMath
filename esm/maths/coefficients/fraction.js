@@ -399,6 +399,9 @@ class Fraction {
     }
     // Display getter
     get tex() {
+        if (this.isInfinity()) {
+            return `${this.sign() === 1 ? '+' : '-'}\\infty`;
+        }
         if (this._denominator === 1) {
             return `${this._numerator}`;
         }

@@ -701,6 +701,28 @@ class Polynom {
             }
             return M;
         };
+        this.limitToInfinity = (letter) => {
+            const M = this.monomByDegree(undefined, letter), sign = M.coefficient.sign(), degree = M.degree(letter);
+            if (degree.isStrictlyPositive()) {
+                return sign === 1 ? (new fraction_1.Fraction()).infinite() : (new fraction_1.Fraction()).infinite().opposed();
+            }
+            else if (degree.isZero()) {
+                return M.coefficient;
+            }
+            // Any other cases
+            return (new fraction_1.Fraction()).zero();
+        };
+        this.limitToNegativeInfinity = (letter) => {
+            const M = this.monomByDegree(undefined, letter), sign = M.coefficient.sign(), degree = M.degree(letter);
+            if (degree.isStrictlyPositive()) {
+                return sign === -1 ? (new fraction_1.Fraction()).infinite() : (new fraction_1.Fraction()).infinite().opposed();
+            }
+            else if (degree.isZero()) {
+                return M.coefficient;
+            }
+            // Any other cases
+            return (new fraction_1.Fraction()).zero();
+        };
         this.genDisplay = (output, forceSign, wrapParentheses) => {
             let P = '';
             for (const k of this._monoms) {

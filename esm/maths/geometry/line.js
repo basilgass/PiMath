@@ -81,6 +81,14 @@ class Line {
                         return this.parseByPointAndVector(values[0], values[1]);
                     }
                 }
+                else if (values[0] instanceof point_1.Point && values[1] instanceof Line) {
+                    if (values[2] === LinePropriety.Parallel || values[2] === null) {
+                        return this.parseByPointAndLine(values[0], values[1], LinePropriety.Parallel);
+                    }
+                    else {
+                        return this.parseByPointAndLine(values[0], values[1], LinePropriety.Perpendicular);
+                    }
+                }
             }
             // TODO: Add the ability to create line from a normal vector
             console.log('Someting wrong happend while creating the line');

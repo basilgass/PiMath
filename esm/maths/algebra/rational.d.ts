@@ -9,19 +9,19 @@ import { Fraction } from "../coefficients/fraction";
  */
 export declare class Rational {
     private _rawString;
-    private _numerator;
-    private _denominator;
     /**
      *
      * @param numerator
      * @param denominator
      */
     constructor(numerator?: Polynom, denominator?: Polynom);
-    clone: () => Rational;
+    private _numerator;
+    get numerator(): Polynom;
+    private _denominator;
+    get denominator(): Polynom;
     get tex(): string;
     get texFactors(): string;
-    get numerator(): Polynom;
-    get denominator(): Polynom;
+    clone: () => Rational;
     domain: () => string;
     amplify: (P: Polynom) => Rational;
     simplify: (P: Polynom) => Rational;
@@ -29,5 +29,5 @@ export declare class Rational {
     opposed: () => Rational;
     add: (R: Rational) => Rational;
     subtract: (R: Rational) => Rational;
-    limits: (value: Fraction | number, letter?: string) => Fraction | number;
+    limits: (value: Fraction | number, offset?: string, letter?: string) => Fraction;
 }

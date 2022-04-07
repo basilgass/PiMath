@@ -2736,6 +2736,28 @@ class Polynom {
             }
             return M;
         };
+        this.limitToInfinity = (letter) => {
+            const M = this.monomByDegree(undefined, letter), sign = M.coefficient.sign(), degree = M.degree(letter);
+            if (degree.isStrictlyPositive()) {
+                return sign === 1 ? (new fraction_1.Fraction()).infinite() : (new fraction_1.Fraction()).infinite().opposed();
+            }
+            else if (degree.isZero()) {
+                return M.coefficient;
+            }
+            // Any other cases
+            return (new fraction_1.Fraction()).zero();
+        };
+        this.limitToNegativeInfinity = (letter) => {
+            const M = this.monomByDegree(undefined, letter), sign = M.coefficient.sign(), degree = M.degree(letter);
+            if (degree.isStrictlyPositive()) {
+                return sign === -1 ? (new fraction_1.Fraction()).infinite() : (new fraction_1.Fraction()).infinite().opposed();
+            }
+            else if (degree.isZero()) {
+                return M.coefficient;
+            }
+            // Any other cases
+            return (new fraction_1.Fraction()).zero();
+        };
         this.genDisplay = (output, forceSign, wrapParentheses) => {
             let P = '';
             for (const k of this._monoms) {
@@ -3238,9 +3260,7 @@ class Rational {
             return this;
         };
         this.reduce = () => {
-            console.log(this._numerator.tex);
             this._numerator.factorize();
-            console.log(this._numerator.factors.map(x => x.tex));
             for (let f of this._numerator.factors) {
                 this.simplify(f);
             }
@@ -3265,26 +3285,54 @@ class Rational {
         this.subtract = (R) => {
             return this.add(R.clone().opposed());
         };
-        this.limits = (value, letter) => {
+        this.limits = (value, offset, letter) => {
             if (value === Infinity || value === -Infinity) {
-                let N = this._numerator.monomByDegree(this._numerator.degree(letter), letter), D = this._denominator.monomByDegree(this._denominator.degree(letter), letter);
-                N.divide(D);
-                if (N.degree(letter).isStrictlyPositive()) {
-                    return N.coefficient.sign() * (Math.pow((value > 0 ? 1 : -1), N.degree(letter).value % 2)) === 1 ? Infinity : -Infinity;
+                let { quotient, reminder } = this._numerator.clone().euclidian(this._denominator);
+                // quotient is positive => it will be infinite.
+                if (quotient.degree(letter).isStrictlyPositive()) {
+                    return value === Infinity ? quotient.limitToInfinity(letter) : quotient.limitToNegativeInfinity(letter);
+                    // return quotient.monomByDegree(undefined, letter).coefficient.sign()===1?(new Fraction()).infinite():(new Fraction()).infinite().opposed()
                 }
-                if (N.degree(letter).isZero()) {
-                    return N.coefficient;
-                }
-                if (N.degree(letter).isStrictlyPositive()) {
-                    return N.coefficient.sign() * (Math.pow(-1, N.degree(letter).value % 2)) === 1 ? 0 : -0;
+                else {
+                    return quotient.monomByDegree(undefined, letter).coefficient;
                 }
             }
             else {
-                return this._numerator.evaluate({ letter: new fraction_1.Fraction(value) }).divide(this._denominator.evaluate({ letter: new fraction_1.Fraction(value) }));
+                let evalValues = {}, evalValuesOffset = {}, theLimit, theSign, FR = this.clone().reduce();
+                evalValues[letter === undefined ? 'x' : letter] = new fraction_1.Fraction(value);
+                if (offset !== 'above' && offset !== 'below') {
+                    theLimit = FR._numerator.evaluate(evalValues)
+                        .divide(FR._denominator.evaluate(evalValues));
+                    return theLimit.isInfinity() ? theLimit.abs() : theLimit;
+                }
+                else {
+                    if (offset === 'above') {
+                        evalValuesOffset[letter === undefined ? 'x' : letter] = (new fraction_1.Fraction(value)).add(0.000001);
+                    }
+                    else if (offset === 'below') {
+                        evalValuesOffset[letter === undefined ? 'x' : letter] = (new fraction_1.Fraction(value)).subtract(0.000001);
+                    }
+                    theLimit = FR._numerator.evaluate(evalValues)
+                        .divide(FR._denominator.evaluate(evalValues));
+                    theSign = FR._numerator.evaluate(evalValuesOffset)
+                        .divide(FR._denominator.evaluate(evalValuesOffset)).sign();
+                    if (theLimit.isInfinity()) {
+                        return theSign === 1 ? theLimit.abs() : theLimit.abs().opposed();
+                    }
+                    else {
+                        return theLimit;
+                    }
+                }
             }
         };
         this._numerator = numerator ? numerator.clone() : new polynom_1.Polynom();
         this._denominator = denominator ? denominator.clone() : new polynom_1.Polynom();
+    }
+    get numerator() {
+        return this._numerator;
+    }
+    get denominator() {
+        return this._denominator;
     }
     get tex() {
         return `\\dfrac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
@@ -3293,12 +3341,6 @@ class Rational {
         this._numerator.factorize();
         this._denominator.factorize();
         return `\\dfrac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
-    }
-    get numerator() {
-        return this._numerator;
-    }
-    get denominator() {
-        return this._denominator;
     }
 }
 exports.Rational = Rational;
@@ -3710,6 +3752,9 @@ class Fraction {
     }
     // Display getter
     get tex() {
+        if (this.isInfinity()) {
+            return `${this.sign() === 1 ? '+' : '-'}\\infty`;
+        }
         if (this._denominator === 1) {
             return `${this._numerator}`;
         }
@@ -4694,6 +4739,14 @@ class Line {
                     }
                     else if (values[2] === LinePropriety.Parallel) {
                         return this.parseByPointAndVector(values[0], values[1]);
+                    }
+                }
+                else if (values[0] instanceof point_1.Point && values[1] instanceof Line) {
+                    if (values[2] === LinePropriety.Parallel || values[2] === null) {
+                        return this.parseByPointAndLine(values[0], values[1], LinePropriety.Parallel);
+                    }
+                    else {
+                        return this.parseByPointAndLine(values[0], values[1], LinePropriety.Perpendicular);
                     }
                 }
             }
