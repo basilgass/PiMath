@@ -328,7 +328,7 @@ class Fraction {
             return isNaN(this._numerator);
         };
         this.isInfinity = () => {
-            return this._numerator === Infinity;
+            return Math.abs(this._numerator) === Infinity;
         };
         this.isFinite = () => {
             return !this.isInfinity();
