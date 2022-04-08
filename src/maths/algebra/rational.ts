@@ -58,8 +58,8 @@ export class Rational {
         } else if (zeroes[0].tex === PARTICULAR_SOLUTION.varnothing) {
             return PARTICULAR_SOLUTION.varnothing
         } else {
-            return '\\mathbb{R}\\setminus\\left{' +
-                zeroes.map(x => x.tex).join(';') + '\\right}'
+            return '\\mathbb{R}\\setminus\\left\\{' +
+                zeroes.map(x => x.tex).join(';') + '\\right\\}'
         }
     }
 

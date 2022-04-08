@@ -81,6 +81,9 @@ class Equation {
         // Undetermined texSolutions.
         this._varnothing = PARTICULAR_SOLUTION.varnothing;
         this._real = PARTICULAR_SOLUTION.real;
+        this.hasVariable = (letter) => {
+            return this.variables.includes(letter);
+        };
         // ------------------------------------------
         // Creation / parsing functions
         // -----------------------------------------------
@@ -3311,8 +3314,8 @@ class Rational {
                 return equation_1.PARTICULAR_SOLUTION.varnothing;
             }
             else {
-                return '\\mathbb{R}\\setminus\\left{' +
-                    zeroes.map(x => x.tex).join(';') + '\\right}';
+                return '\\mathbb{R}\\setminus\\left\\{' +
+                    zeroes.map(x => x.tex).join(';') + '\\right\\}';
             }
         };
         this.amplify = (P) => {

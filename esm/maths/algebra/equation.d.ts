@@ -44,6 +44,7 @@ export declare class Equation {
     get raw(): string;
     get variables(): string[];
     get numberOfVars(): number;
+    hasVariable: (letter: string) => boolean;
     private _randomizeDefaults;
     get randomizeDefaults(): {
         [key: string]: number | string | boolean;

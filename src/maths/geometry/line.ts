@@ -440,7 +440,6 @@ export class Line {
     }
 
     getValueAtX = (value: Fraction|number): Fraction => {
-
         const equ = this.equation.clone().isolate('y'),
             F = new Fraction(value)
 

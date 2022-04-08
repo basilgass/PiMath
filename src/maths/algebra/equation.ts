@@ -165,6 +165,9 @@ export class Equation {
         return this.variables.length;
     }
 
+    hasVariable = (letter: string): boolean => {
+        return this.variables.includes(letter)
+    }
 
     // ------------------------------------------
     // Creation / parsing functions
