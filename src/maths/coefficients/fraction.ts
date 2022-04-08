@@ -21,10 +21,6 @@ export class Fraction {
         return this;
     }
 
-    get isFraction() {
-        return true;
-    }
-
     // ------------------------------------------
     // Getter and setter
     // ------------------------------------------
@@ -350,6 +346,44 @@ export class Fraction {
         return M
     }
 
+    static average = (...fractions: (Fraction|number)[]): Fraction => {
+        let M = new Fraction().zero()
+
+        for(let f of fractions){
+            M.add(f)
+        }
+
+        M.divide(fractions.length)
+
+        return M
+    }
+
+    static unique = (fractions: Fraction[], sorted?: boolean): Fraction[] => {
+        // TODO: make sure it's wokring -> test !
+        let unique:{[Key:string]:boolean} = {},
+            distinct: Fraction[] = []
+        fractions.forEach(x => {
+            if(!unique[x.clone().reduce().tex]){
+                distinct.push(x.clone())
+                unique[x.tex]=true
+            }
+        })
+
+        if(sorted) {
+            return Fraction.sort(distinct)
+        }else{
+            return distinct
+        }
+    }
+    static sort = (fractions: Fraction[], reverse?:boolean): Fraction[] => {
+        // Todo make sure it's the correct order, not reverse -> make a test
+        let sorted = fractions.sort((a, b)=>a.value-b.value)
+
+        if(reverse){sorted.reverse()}
+
+        return sorted
+    }
+
     // ------------------------------------------
     // Mathematical operations specific to fractions
     // ------------------------------------------
@@ -470,7 +504,7 @@ export class Fraction {
         return Math.abs(this._numerator) === Infinity;
     }
     isFinite = (): boolean => {
-        return !this.isInfinity();
+        return !this.isInfinity() && !this.isNaN();
     }
     isSquare = (): boolean => {
         return Math.sqrt(this._numerator) % 1 === 0 && Math.sqrt(this._denominator) % 1 === 0

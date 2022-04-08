@@ -2,22 +2,28 @@ import {Polynom} from "./polynom";
 import {literalType, Monom} from "./monom";
 import {Numeric} from "../numeric";
 import {Fraction} from "../coefficients/fraction";
-import {Nthroot} from "../coefficients/nthroot";
+import {NthRoot} from "../coefficients/nthRoot";
 
 /**
  * Equation is a class to manage equations...
  */
-interface ISolution {
+export interface ISolution {
     tex: string,
     value: number,
     exact: unknown
 }
 
+export enum PARTICULAR_SOLUTION {
+    real="\\mathbb{R}",
+    varnothing="\\varnothing"
+}
+
 export class Equation {
     private _polynom: Polynom;  // Used to solve the equation // TODO: remove the private value ?
+
     // Undetermined texSolutions.
-    private _varnothing: string = '\\varnothing';
-    private _real: string = '\\mathbb{R}';
+    private _varnothing: string = PARTICULAR_SOLUTION.varnothing;
+    private _real: string = PARTICULAR_SOLUTION.real;
 
     /**
      * Create an Equation using two polynoms.
@@ -397,8 +403,28 @@ export class Equation {
             default:
                 this._solveDegree3plus();
         }
+
+        // cleanup the solutions.
+        this._solutions = Equation.makeSolutionsUnique(this._solutions)
         return this;
     };
+
+    static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean):ISolution[] {
+        let solutionAsTex:string[] = [],
+            uniqueSolutions = solutions.filter(sol=>{
+                if(!solutionAsTex.includes(sol.tex)){
+                    solutionAsTex.push(sol.tex)
+                    return true
+                }else{
+                    return false
+                }
+            })
+
+        if(sorted===true){
+            uniqueSolutions.sort((a, b)=>a.value-b.value)
+        }
+        return uniqueSolutions
+    }
 
     test = (values: literalType): Boolean => {
         return this.left.evaluate(values).isEqual(this.right.evaluate(values))
@@ -526,12 +552,13 @@ export class Equation {
                 }
             } else {
                 this._solutions = [{
-                    tex: v.display,
+                    tex: v.tex,
                     value: v.value,
                     exact: v
                 }]
             }
-        } else {
+        }
+        else {
             if (m1.value === 0) {
                 // In this case, the coefficient of the x variable is zero.
                 if (m0.value === 0 && this.isAlsoEqual()) {
@@ -565,7 +592,7 @@ export class Equation {
         let aF = this._polynom.monomByDegree(2, letter).coefficient,
             bF = this._polynom.monomByDegree(1, letter).coefficient,
             cF = this._polynom.monomByDegree(0, letter).coefficient,
-            delta: number, nthDelta: Nthroot,
+            delta: number, nthDelta: NthRoot,
             lcm = Numeric.lcm(aF.denominator, bF.denominator, cF.denominator),
             a = aF.multiply(lcm).value,
             b = bF.multiply(lcm).value,
@@ -594,7 +621,7 @@ export class Equation {
                     }
                 ]
             } else {
-                nthDelta = new Nthroot(delta).reduce();
+                nthDelta = new NthRoot(delta).reduce();
                 if (nthDelta.hasRadical()) {
                     // -b +- coeff\sqrt{radical}
                     // -------------------------
@@ -696,7 +723,6 @@ export class Equation {
             }];
         }
 
-
         // Handle now the inequations.
         if (!this.isStrictEqual()) {
             if (this._solutions.length === 2) {
@@ -763,9 +789,29 @@ export class Equation {
         return this._solutions;
     };
 
-    private _solveDegree3plus = (): ISolution[] => {
-        // TODO: try to resolve equations with a degree superior than 2.
-        this._solutions = [{tex: 'solve x - not yet handled', value: NaN, exact: false}];  // ESLint remove system :(
+    private _solveDegree3plus = (letter?: string): ISolution[] => {
+        // Push everything to the left
+        // factorize
+        // solve each factors.
+        let equ = this.clone().moveLeft()
+        equ.left.factorize()
+
+        this._solutions = []
+
+        equ.left.factors.forEach(factor=>{
+            if(factor.degree(letter).leq(2)) {
+                let factorAsEquation = new Equation(factor, 0)
+                factorAsEquation.solve()
+                factorAsEquation.solutions.forEach(solution => {
+                    this._solutions.push(solution)
+                })
+            }else{
+                console.log(factor.tex, ': cannot actually get the solution of this equation')
+            }
+        })
+
+        // TODO: check equation resolution for more than degree 2
+        // this._solutions = [{tex: 'solve x - not yet handled', value: NaN, exact: false}];  // ESLint remove system :(
         return this._solutions;
     };
 }

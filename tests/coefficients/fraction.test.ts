@@ -1,5 +1,6 @@
 import {expect} from "chai";
-import {Fraction} from "../../src/maths/coefficients";
+import {Fraction} from "../../src/maths/coefficients/fraction";
+import {describe} from "mocha";
 
 describe('Fraction tests', () => { // the tests container
 
@@ -32,5 +33,46 @@ describe('Fraction tests', () => { // the tests container
 
         expect(F.isReduced()).to.be.true
         expect(Q.isReduced()).to.be.false
+    })
+
+
+})
+
+describe("Fraction static functions", ()=>{
+    it('should sort fractions', function () {
+        let list = [
+            new Fraction('3.5'),
+            new Fraction('-2.5'),
+            new Fraction('3.1'),
+            new Fraction('3.54'),
+            new Fraction('1.5')
+        ]
+
+        expect(Fraction.sort(list).map(x=>x.value)).to.eql([ -2.5, 1.5, 3.1, 3.5, 3.54 ])
+    });
+
+    it('should make a list of fractions unique', function () {
+        let list = [
+            new Fraction('3.5'),
+            new Fraction('-2.5'),
+            new Fraction('7/2'),
+            new Fraction('3.50'),
+            new Fraction('1.5')
+        ]
+
+        expect(Fraction.unique(list, true).map(x=>x.value)).to.be.eql([ -2.5, 1.5, 3.5 ])
+
+    });
+
+    it('shoudl get the average of fractions', function() {
+        let list = [
+            new Fraction('3.5'),
+            new Fraction('-2.5'),
+            new Fraction('7/2'),
+            new Fraction('3.50'),
+            new Fraction('1.5')
+        ]
+
+        expect(Fraction.average(...list).tex).to.be.equal('\\frac{ 19 }{ 10 }')
     })
 })

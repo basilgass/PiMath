@@ -6,7 +6,7 @@ const numexp_1 = require("./maths/expressions/numexp");
 const shutingyard_1 = require("./maths/shutingyard");
 const random_1 = require("./maths/randomization/random");
 const fraction_1 = require("./maths/coefficients/fraction");
-const nthroot_1 = require("./maths/coefficients/nthroot");
+const nthRoot_1 = require("./maths/coefficients/nthRoot");
 const monom_1 = require("./maths/algebra/monom");
 const polynom_1 = require("./maths/algebra/polynom");
 const equation_1 = require("./maths/algebra/equation");
@@ -25,7 +25,7 @@ exports.PiMath = {
     Numeric: numeric_1.Numeric,
     NumExp: numexp_1.NumExp,
     Fraction: fraction_1.Fraction,
-    Root: nthroot_1.Nthroot,
+    Root: nthRoot_1.NthRoot,
     Monom: monom_1.Monom,
     Polynom: polynom_1.Polynom,
     Equation: equation_1.Equation,

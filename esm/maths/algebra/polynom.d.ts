@@ -4,6 +4,7 @@
 import { literalType, Monom } from './monom';
 import { Token } from '../shutingyard';
 import { Fraction } from "../coefficients/fraction";
+import { ISolution } from "./equation";
 export declare type PolynomParsingType = string | Polynom | number | Fraction | Monom;
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
@@ -100,7 +101,7 @@ export declare class Polynom {
      * @param maxValue Defines the greatest value to search to (default is 20).
      */
     factorize: (letter?: string) => Polynom[];
-    getZeroes: () => (Fraction | boolean)[];
+    getZeroes: () => ISolution[];
     monomByDegree: (degree?: Fraction | number, letter?: string) => Monom;
     monomsByDegree: (degree?: number | Fraction, letter?: string) => Monom[];
     monomByLetter: (letter: string) => Monom;

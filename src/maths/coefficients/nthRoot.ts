@@ -1,7 +1,7 @@
 /**
- * Nthroot is something like "a+b\sqrt{3}
+ * NthRoot is something like "a+b\sqrt{3}
  */
-export class Nthroot {
+export class NthRoot {
     private _radical: number;
     private _nth: number;
     private _coefficient: number;
@@ -80,7 +80,7 @@ export class Nthroot {
     // ------------------------------------------
     // Creation / parsing functions
     // ------------------------------------------
-    parse = (radical: number, nthroot?: number, coefficient?: number): Nthroot => {
+    parse = (radical: number, nthroot?: number, coefficient?: number): NthRoot => {
         this._coefficient = (coefficient === undefined) ? 1 : coefficient;
         this._nth = (nthroot === undefined) ? 2 : nthroot;
         this._radical = (radical === undefined) ? 1 : radical;
@@ -94,7 +94,7 @@ export class Nthroot {
     // ------------------------------------------
     // Mathematical operations
     // ------------------------------------------
-    reduce = (): Nthroot => {
+    reduce = (): NthRoot => {
         // Max value to test.
         let V = Math.floor(Math.pow(this._radical, 1 / this._nth));
         while (V > 1) {
@@ -112,7 +112,7 @@ export class Nthroot {
         return this;
     };
 
-    multiply = (N: Nthroot): Nthroot => {
+    multiply = (N: NthRoot): NthRoot => {
         this._radical *= N.radical;
         return this.reduce();
     };

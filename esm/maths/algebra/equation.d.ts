@@ -4,10 +4,14 @@ import { Fraction } from "../coefficients/fraction";
 /**
  * Equation is a class to manage equations...
  */
-interface ISolution {
+export interface ISolution {
     tex: string;
     value: number;
     exact: unknown;
+}
+export declare enum PARTICULAR_SOLUTION {
+    real = "\\mathbb{R}",
+    varnothing = "\\varnothing"
 }
 export declare class Equation {
     private _polynom;
@@ -97,6 +101,7 @@ export declare class Equation {
     isMultiVariable: () => boolean;
     letters: () => string[];
     solve: () => Equation;
+    static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean): ISolution[];
     test: (values: literalType) => Boolean;
     private _findSign;
     private _formatSign;
@@ -108,4 +113,3 @@ export declare class Equation {
     private _solveDegree2;
     private _solveDegree3plus;
 }
-export {};

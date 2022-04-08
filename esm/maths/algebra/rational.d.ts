@@ -4,6 +4,7 @@
  */
 import { Polynom } from "./polynom";
 import { Fraction } from "../coefficients/fraction";
+import { ISolution } from "./equation";
 /**
  * Rational class can handle rational polynoms
  */
@@ -24,10 +25,19 @@ export declare class Rational {
     clone: () => Rational;
     domain: () => string;
     amplify: (P: Polynom) => Rational;
+    derivative: (letter?: string) => Rational;
     simplify: (P: Polynom) => Rational;
     reduce: () => Rational;
     opposed: () => Rational;
     add: (R: Rational) => Rational;
     subtract: (R: Rational) => Rational;
     limits: (value: Fraction | number, offset?: string, letter?: string) => Fraction;
+    makeTableOfSigns: () => {
+        factors: Polynom[];
+        zeroes: ISolution[];
+        signs: (string[])[];
+        tex: string;
+    };
+    private _makeTexFromTableOfSigns;
+    private _makeOneLineOfTableOfSigns;
 }

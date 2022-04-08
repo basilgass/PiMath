@@ -14,7 +14,7 @@ const numexp_1 = __webpack_require__(735);
 const shutingyard_1 = __webpack_require__(505);
 const random_1 = __webpack_require__(330);
 const fraction_1 = __webpack_require__(506);
-const nthroot_1 = __webpack_require__(923);
+const nthRoot_1 = __webpack_require__(872);
 const monom_1 = __webpack_require__(937);
 const polynom_1 = __webpack_require__(38);
 const equation_1 = __webpack_require__(760);
@@ -33,7 +33,7 @@ exports.l = {
     Numeric: numeric_1.Numeric,
     NumExp: numexp_1.NumExp,
     Fraction: fraction_1.Fraction,
-    Root: nthroot_1.Nthroot,
+    Root: nthRoot_1.NthRoot,
     Monom: monom_1.Monom,
     Polynom: polynom_1.Polynom,
     Equation: equation_1.Equation,
@@ -61,11 +61,16 @@ window.Pi = exports.l;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Equation = void 0;
+exports.Equation = exports.PARTICULAR_SOLUTION = void 0;
 const polynom_1 = __webpack_require__(38);
 const numeric_1 = __webpack_require__(956);
 const fraction_1 = __webpack_require__(506);
-const nthroot_1 = __webpack_require__(923);
+const nthRoot_1 = __webpack_require__(872);
+var PARTICULAR_SOLUTION;
+(function (PARTICULAR_SOLUTION) {
+    PARTICULAR_SOLUTION["real"] = "\\mathbb{R}";
+    PARTICULAR_SOLUTION["varnothing"] = "\\varnothing";
+})(PARTICULAR_SOLUTION = exports.PARTICULAR_SOLUTION || (exports.PARTICULAR_SOLUTION = {}));
 class Equation {
     /**
      * Create an Equation using two polynoms.
@@ -74,8 +79,8 @@ class Equation {
      */
     constructor(...equations) {
         // Undetermined texSolutions.
-        this._varnothing = '\\varnothing';
-        this._real = '\\mathbb{R}';
+        this._varnothing = PARTICULAR_SOLUTION.varnothing;
+        this._real = PARTICULAR_SOLUTION.real;
         // ------------------------------------------
         // Creation / parsing functions
         // -----------------------------------------------
@@ -270,6 +275,8 @@ class Equation {
                 default:
                     this._solveDegree3plus();
             }
+            // cleanup the solutions.
+            this._solutions = Equation.makeSolutionsUnique(this._solutions);
             return this;
         };
         this.test = (values) => {
@@ -400,7 +407,7 @@ class Equation {
                 }
                 else {
                     this._solutions = [{
-                            tex: v.display,
+                            tex: v.tex,
                             value: v.value,
                             exact: v
                         }];
@@ -460,7 +467,7 @@ class Equation {
                     ];
                 }
                 else {
-                    nthDelta = new nthroot_1.Nthroot(delta).reduce();
+                    nthDelta = new nthRoot_1.NthRoot(delta).reduce();
                     if (nthDelta.hasRadical()) {
                         // -b +- coeff\sqrt{radical}
                         // -------------------------
@@ -634,9 +641,27 @@ class Equation {
             }
             return this._solutions;
         };
-        this._solveDegree3plus = () => {
-            // TODO: try to resolve equations with a degree superior than 2.
-            this._solutions = [{ tex: 'solve x - not yet handled', value: NaN, exact: false }]; // ESLint remove system :(
+        this._solveDegree3plus = (letter) => {
+            // Push everything to the left
+            // factorize
+            // solve each factors.
+            let equ = this.clone().moveLeft();
+            equ.left.factorize();
+            this._solutions = [];
+            equ.left.factors.forEach(factor => {
+                if (factor.degree(letter).leq(2)) {
+                    let factorAsEquation = new Equation(factor, 0);
+                    factorAsEquation.solve();
+                    factorAsEquation.solutions.forEach(solution => {
+                        this._solutions.push(solution);
+                    });
+                }
+                else {
+                    console.log(factor.tex, ': cannot actually get the solution of this equation');
+                }
+            });
+            // TODO: check equation resolution for more than degree 2
+            // this._solutions = [{tex: 'solve x - not yet handled', value: NaN, exact: false}];  // ESLint remove system :(
             return this._solutions;
         };
         // Default equation
@@ -750,6 +775,21 @@ class Equation {
     }
     set randomizeDefaults(value) {
         this._randomizeDefaults = value;
+    }
+    static makeSolutionsUnique(solutions, sorted) {
+        let solutionAsTex = [], uniqueSolutions = solutions.filter(sol => {
+            if (!solutionAsTex.includes(sol.tex)) {
+                solutionAsTex.push(sol.tex);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+        if (sorted === true) {
+            uniqueSolutions.sort((a, b) => a.value - b.value);
+        }
+        return uniqueSolutions;
     }
 }
 exports.Equation = Equation;
@@ -2043,6 +2083,7 @@ const monom_1 = __webpack_require__(937);
 const shutingyard_1 = __webpack_require__(505);
 const numeric_1 = __webpack_require__(956);
 const fraction_1 = __webpack_require__(506);
+const equation_1 = __webpack_require__(760);
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -2545,6 +2586,7 @@ class Polynom {
                 P = P.euclidian(tempPolynom).quotient;
             }
             let securityLoop = P.degree().clone().multiply(2).value;
+            let result;
             // securityLoop = 0
             while (securityLoop >= 0) {
                 securityLoop--;
@@ -2560,7 +2602,7 @@ class Polynom {
                     for (let m1d of m1) {
                         for (let m2d of m2) {
                             // if(m1d.degree()===m2d.degree()){continue}
-                            let dividerPolynom = new Polynom(), result;
+                            let dividerPolynom = new Polynom();
                             dividerPolynom.monoms = [m1d.clone(), m2d.clone()];
                             result = P.euclidian(dividerPolynom);
                             if (result.reminder.isZero()) {
@@ -2578,72 +2620,103 @@ class Polynom {
                     }
                 }
             }
+            if (!P.isOne()) {
+                factors.push(P.clone());
+            }
             this.factors = factors;
             return factors;
         };
         // TODO: get zeroes for more than first degree and for more than natural degrees
         this.getZeroes = () => {
-            const Z = [];
-            switch (this.degree().value) {
-                case 0:
-                    if (this._monoms[0].coefficient.value === 0) {
-                        return [true];
-                    }
-                    else {
-                        return [false];
-                    }
-                case 1:
-                    // There is only one monoms,
-                    if (this._monoms.length === 1) {
-                        return [new fraction_1.Fraction().zero()];
-                    }
-                    else {
-                        const P = this.clone().reduce().reorder();
-                        return [P.monoms[1].coefficient.opposed().divide(P.monoms[0].coefficient)];
-                    }
-                // TODO: Determine the zeros of an equation of second degree.
-                //case 2:
-                default:
-                    // Make sure the polynom is factorized.
-                    if (this._factors.length === 0) {
-                        this.factorize();
-                    }
-                    let zeroes = [], zeroesAsTex = [];
-                    for (let P of this._factors) {
-                        if (P.degree().greater(2)) {
-                            // TODO: Handle other polynom.
-                        }
-                        else if (P.degree().value === 2) {
-                            let A = P.monomByDegree(2).coefficient, B = P.monomByDegree(1).coefficient, C = P.monomByDegree(0).coefficient, D = B.clone().pow(2).subtract(A.clone().multiply(C).multiply(4));
-                            if (D.value > 0) {
-                                /*console.log('Two zeroes for ', P.tex); */
-                                let x1 = (-(B.value) + Math.sqrt(D.value)) / (2 * A.value), x2 = (-(B.value) - Math.sqrt(D.value)) / (2 * A.value);
-                                zeroes.push(new fraction_1.Fraction(x1.toFixed(3)).reduce());
-                                zeroes.push(new fraction_1.Fraction(x2.toFixed(3)).reduce());
-                            }
-                            else if (D.value === 0) {
-                                /*console.log('One zero for ', P.tex); */
-                            }
-                            else {
-                                console.log('No zero for ', P.tex);
-                            }
-                        }
-                        else {
-                            for (let z of P.getZeroes()) {
-                                // Check if the zero is already in the list.
-                                if (z === false || z === true) {
-                                    continue;
-                                }
-                                if (zeroesAsTex.indexOf(z.frac) === -1) {
-                                    zeroes.push(z);
-                                    zeroesAsTex.push(z.frac);
-                                }
-                            }
-                        }
-                    }
-                    return zeroes;
-            }
-            return Z;
+            let equ = new equation_1.Equation(this.clone(), 0);
+            equ.solve();
+            return equ.solutions;
+            //
+            // const Z: Fraction[] = [];
+            //
+            // // ISolution: {tex: string, value: number, exact: boolean|Fraction|...}
+            //
+            // switch (this.degree().value) {
+            //     case 0:
+            //         if (this._monoms[0].coefficient.value === 0) {
+            //             return [{
+            //                 tex: '\\mathbb{R}',
+            //                 value: NaN,
+            //                 exact: false
+            //             }];
+            //         } else {
+            //             return [{
+            //                 tex: '\\varnothing',
+            //                 value: NaN,
+            //                 exact: false
+            //             }];
+            //         }
+            //     case 1:
+            //         // There is only one monoms,
+            //         if (this._monoms.length === 1) {
+            //             return [{
+            //                 tex: '0',
+            //                 value: 0,
+            //                 exact: new Fraction().zero()
+            //             }];
+            //         } else {
+            //             const P = this.clone().reduce().reorder();
+            //             const coeff = P.monoms[1].coefficient.opposed().divide(P.monoms[0].coefficient)
+            //             return [{
+            //                 tex: coeff.tex,
+            //                 value: coeff.value,
+            //                 exact: coeff
+            //             }];
+            //         }
+            //     // TODO: Determine the zeros of an equation of second degree.
+            //     //case 2:
+            //     default:
+            //         // Make sure the polynom is factorized.
+            //         if (this._factors.length === 0) {
+            //             this.factorize()
+            //         }
+            //
+            //         let zeroes:Fraction[] = [], zeroesAsTex = [];
+            //         for (let P of this._factors) {
+            //             if (P.degree().greater(2)) {
+            //                 // TODO: get zeroes of polynom with a degree greater than 2.
+            //
+            //             } else if (P.degree().value === 2) {
+            //                 let A = P.monomByDegree(2).coefficient,
+            //                     B = P.monomByDegree(1).coefficient,
+            //                     C = P.monomByDegree(0).coefficient,
+            //                     D = B.clone().pow(2).subtract(A.clone().multiply(C).multiply(4));
+            //
+            //                 if (D.value > 0) {
+            //                     /*console.log('Two zeroes for ', P.tex); */
+            //                     let x1 = (-(B.value) + Math.sqrt(D.value)) / (2 * A.value),
+            //                         x2 = (-(B.value) - Math.sqrt(D.value)) / (2 * A.value);
+            //
+            //                     zeroes.push(new Fraction(x1.toFixed(3)).reduce());
+            //                     zeroes.push(new Fraction(x2.toFixed(3)).reduce());
+            //                 } else if (D.value === 0) {
+            //                     /*console.log('One zero for ', P.tex); */
+            //                 } else {
+            //                     console.log('No zero for ', P.tex);
+            //                 }
+            //             } else {
+            //                 for (let z of P.getZeroes()) {
+            //                     // Check if the zero is already in the list.
+            //                     // if (z === false || z === true) {
+            //                     //     continue;
+            //                     // }
+            //                     if (zeroesAsTex.indexOf(z.frac) === -1) {
+            //                         zeroes.push(z);
+            //                         zeroesAsTex.push(z.frac);
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //
+            //
+            //         return zeroes;
+            // }
+            // return Z;
         };
         // TODO: analyse the next functions to determine if they are useful or not...
         this.monomByDegree = (degree, letter) => {
@@ -3015,6 +3088,9 @@ class Polynom {
     }
     get texFactors() {
         this.factorize();
+        if (this.factors.length === 0) {
+            return this.tex;
+        }
         let tex = '';
         for (let f of this.factors) {
             if (f.monoms.length > 1) {
@@ -3210,6 +3286,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Rational = void 0;
 const polynom_1 = __webpack_require__(38);
 const fraction_1 = __webpack_require__(506);
+const equation_1 = __webpack_require__(760);
 /**
  * Rational class can handle rational polynoms
  */
@@ -3227,23 +3304,26 @@ class Rational {
         };
         this.domain = () => {
             let zeroes = this._denominator.getZeroes();
-            if (zeroes.length === 0 || zeroes[0] === false) {
-                return '\\mathbb{R}';
+            if (zeroes.length === 0 || zeroes[0].tex === equation_1.PARTICULAR_SOLUTION.real) {
+                return equation_1.PARTICULAR_SOLUTION.real;
             }
-            else if (zeroes[0] === true) {
-                return '\\varnothing';
+            else if (zeroes[0].tex === equation_1.PARTICULAR_SOLUTION.varnothing) {
+                return equation_1.PARTICULAR_SOLUTION.varnothing;
             }
             else {
                 return '\\mathbb{R}\\setminus\\left{' +
-                    zeroes.map(x => {
-                        return (typeof x === 'boolean') ? '' : x.frac;
-                    })
-                        .join(';') + '\\right}';
+                    zeroes.map(x => x.tex).join(';') + '\\right}';
             }
         };
         this.amplify = (P) => {
             this._numerator.multiply(P);
             this._denominator.multiply(P);
+            return this;
+        };
+        this.derivative = (letter) => {
+            let N = this._numerator.clone(), D = this._denominator.clone(), dN = N.clone().derivative(letter), dD = D.clone().derivative(letter);
+            this._numerator = dN.clone().multiply(D).subtract(N.clone().multiply(dD));
+            this._denominator = D.clone().pow(2);
             return this;
         };
         this.simplify = (P) => {
@@ -3325,6 +3405,95 @@ class Rational {
                 }
             }
         };
+        this.makeTableOfSigns = () => {
+            // Factorize the numerator and the denominator
+            this._numerator.factorize();
+            this._denominator.factorize();
+            let zeroes = equation_1.Equation.makeSolutionsUnique([...this._numerator.getZeroes(), ...this._denominator.getZeroes()], true), NFactors = this._numerator.factors, DFactors = this._denominator.factors;
+            let tableOfSigns = [], result = [];
+            NFactors.forEach(factor => {
+                tableOfSigns.push(this._makeOneLineOfTableOfSigns(factor, zeroes, 'z'));
+            });
+            DFactors.forEach(factor => {
+                tableOfSigns.push(this._makeOneLineOfTableOfSigns(factor, zeroes, 'd'));
+            });
+            // Empty line
+            tableOfSigns.push([]);
+            // Add the final row as cumulative
+            let resultLine = tableOfSigns[0].map((x, index) => {
+                if (index === 0) {
+                    return '';
+                }
+                if (index === tableOfSigns[0].length - 1) {
+                    return '';
+                }
+                if (index % 2 === 0) {
+                    return 't';
+                }
+                return '+';
+            });
+            for (let current of tableOfSigns) {
+                for (let i = 0; i < current.length; i++) {
+                    if (i % 2 === 0) {
+                        // t, z or d
+                        if (resultLine[i] === 'd') {
+                            continue;
+                        }
+                        if (current[i] !== 't') {
+                            resultLine[i] = current[i];
+                        }
+                    }
+                    else {
+                        // + or -
+                        if (current[i] === '-') {
+                            resultLine[i] = resultLine[i] === '+' ? '-' : '+';
+                        }
+                    }
+                }
+            }
+            // Add the variation line.
+            // TODO: add the variation line.
+            tableOfSigns.push(resultLine);
+            let tos = {
+                factors: [...NFactors, ...DFactors],
+                zeroes: zeroes,
+                signs: tableOfSigns,
+                tex: ''
+            };
+            this._makeTexFromTableOfSigns(tos);
+            return tos;
+        };
+        this._makeTexFromTableOfSigns = (tos) => {
+            let tex = `\\begin{tikzpicture}
+\\tkzTabInit[lgt=3,espcl=2,deltacl=0]{/1.2,\\(${tos.factors.map(x => x.tex).join('\\)/1,\\(')}\\)/1,/.1,\\(f(x)\\)/1.2}{{\\scriptsize \\hspace{1cm} \\(-\\infty\\)},\\(${tos.zeroes.map(x => x.tex).join('\\),\\(')}\\),{\\scriptsize \\hspace{-1cm} \\(+\\infty\\)}}`;
+            tos.signs.forEach(list => {
+                tex += (`\n\\tkzTabLine{${list.join(',')}}`);
+            });
+            tex += `\n\\end{tikzpicture}`;
+            tos.tex = tex;
+            return tex;
+        };
+        this._makeOneLineOfTableOfSigns = (factor, zeroes, zeroSign) => {
+            let oneLine = [], 
+            // TODO : check if there is no zero ?
+            currentZero = factor.getZeroes().map(x => x.tex);
+            // First +/- sign, before the first zero
+            oneLine.push('');
+            oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-');
+            for (let i = 0; i < zeroes.length; i++) {
+                // Add the zero if it's the current one
+                oneLine.push(currentZero.includes(zeroes[i].tex) ? zeroSign : 't');
+                // + / - sign after the current zero
+                if (i < zeroes.length - 1) {
+                    oneLine.push(factor.evaluate((zeroes[i].value + zeroes[i + 1].value) / 2).sign() === 1 ? '+' : '-');
+                }
+                else if (i === zeroes.length - 1) {
+                    oneLine.push(factor.evaluate(zeroes[i].value + 1).sign() === 1 ? '+' : '-');
+                }
+            }
+            oneLine.push('');
+            return oneLine;
+        };
         this._numerator = numerator ? numerator.clone() : new polynom_1.Polynom();
         this._denominator = denominator ? denominator.clone() : new polynom_1.Polynom();
     }
@@ -3338,8 +3507,6 @@ class Rational {
         return `\\dfrac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
     }
     get texFactors() {
-        this._numerator.factorize();
-        this._denominator.factorize();
         return `\\dfrac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
     }
 }
@@ -3684,7 +3851,7 @@ class Fraction {
             return Math.abs(this._numerator) === Infinity;
         };
         this.isFinite = () => {
-            return !this.isInfinity();
+            return !this.isInfinity() && !this.isNaN();
         };
         this.isSquare = () => {
             return Math.sqrt(this._numerator) % 1 === 0 && Math.sqrt(this._denominator) % 1 === 0;
@@ -3728,9 +3895,6 @@ class Fraction {
             this.parse(value, denominatorOrPeriodic);
         }
         return this;
-    }
-    get isFraction() {
-        return true;
     }
     // ------------------------------------------
     // Getter and setter
@@ -3805,20 +3969,52 @@ Fraction.min = (...fractions) => {
     }
     return M;
 };
+Fraction.average = (...fractions) => {
+    let M = new Fraction().zero();
+    for (let f of fractions) {
+        M.add(f);
+    }
+    M.divide(fractions.length);
+    return M;
+};
+Fraction.unique = (fractions, sorted) => {
+    // TODO: make sure it's wokring -> test !
+    let unique = {}, distinct = [];
+    fractions.forEach(x => {
+        if (!unique[x.clone().reduce().tex]) {
+            distinct.push(x.clone());
+            unique[x.tex] = true;
+        }
+    });
+    if (sorted) {
+        return Fraction.sort(distinct);
+    }
+    else {
+        return distinct;
+    }
+};
+Fraction.sort = (fractions, reverse) => {
+    // Todo make sure it's the correct order, not reverse -> make a test
+    let sorted = fractions.sort((a, b) => a.value - b.value);
+    if (reverse) {
+        sorted.reverse();
+    }
+    return sorted;
+};
 
 
 /***/ }),
 
-/***/ 923:
+/***/ 872:
 /***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Nthroot = void 0;
+exports.NthRoot = void 0;
 /**
- * Nthroot is something like "a+b\sqrt{3}
+ * NthRoot is something like "a+b\sqrt{3}
  */
-class Nthroot {
+class NthRoot {
     constructor(...values) {
         // ------------------------------------------
         // Creation / parsing functions
@@ -3924,7 +4120,7 @@ class Nthroot {
         return this._coefficient * Math.pow(this._radical, 1 / this._nth);
     }
 }
-exports.Nthroot = Nthroot;
+exports.NthRoot = NthRoot;
 
 
 /***/ }),

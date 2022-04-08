@@ -3,7 +3,7 @@ import { NumExp } from "./maths/expressions/numexp";
 import { Shutingyard } from "./maths/shutingyard";
 import { Random } from "./maths/randomization/random";
 import { Fraction } from "./maths/coefficients/fraction";
-import { Nthroot } from "./maths/coefficients/nthroot";
+import { NthRoot } from "./maths/coefficients/nthRoot";
 import { Monom } from "./maths/algebra/monom";
 import { Polynom } from "./maths/algebra/polynom";
 import { Equation } from "./maths/algebra/equation";
@@ -21,7 +21,7 @@ export declare const PiMath: {
     Numeric: typeof Numeric;
     NumExp: typeof NumExp;
     Fraction: typeof Fraction;
-    Root: typeof Nthroot;
+    Root: typeof NthRoot;
     Monom: typeof Monom;
     Polynom: typeof Polynom;
     Equation: typeof Equation;

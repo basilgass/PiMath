@@ -6,6 +6,7 @@ import {literalType, Monom} from './monom';
 import {Shutingyard, ShutingyardType, Token} from '../shutingyard';
 import {Numeric} from '../numeric';
 import {Fraction} from "../coefficients/fraction";
+import {Equation, ISolution} from "./equation";
 
 export type PolynomParsingType = string | Polynom | number | Fraction | Monom
 
@@ -65,6 +66,9 @@ export class Polynom {
     get texFactors(): string {
         this.factorize()
 
+        if(this.factors.length===0){
+            return this.tex
+        }
         let tex = ''
         for (let f of this.factors) {
             if (f.monoms.length > 1) {
@@ -773,6 +777,7 @@ export class Polynom {
         }
 
         let securityLoop = P.degree().clone().multiply(2).value
+        let result
         // securityLoop = 0
 
         while (securityLoop >= 0) {
@@ -791,8 +796,8 @@ export class Polynom {
                 for (let m1d of m1) {
                     for (let m2d of m2) {
                         // if(m1d.degree()===m2d.degree()){continue}
-                        let dividerPolynom = new Polynom(),
-                            result
+                        let dividerPolynom = new Polynom()
+
                         dividerPolynom.monoms = [m1d.clone(), m2d.clone()]
                         result = P.euclidian(dividerPolynom)
 
@@ -813,77 +818,104 @@ export class Polynom {
             }
         }
 
+        if(!P.isOne()){factors.push(P.clone())}
+
         this.factors = factors
         return factors;
     }
 
     // TODO: get zeroes for more than first degree and for more than natural degrees
-    getZeroes = (): (Fraction | boolean)[] => {
-        const Z: Fraction[] = [];
+    getZeroes = (): ISolution[] => {
+        let equ = new Equation(this.clone(), 0)
+        equ.solve()
+        return equ.solutions
 
-        switch (this.degree().value) {
-            case 0:
-                if (this._monoms[0].coefficient.value === 0) {
-                    return [true];
-                } else {
-                    return [false];
-                }
-            case 1:
-                // There is only one monoms,
-                if (this._monoms.length === 1) {
-                    return [new Fraction().zero()];
-                } else {
-                    const P = this.clone().reduce().reorder();
-                    return [P.monoms[1].coefficient.opposed().divide(P.monoms[0].coefficient)];
-                }
-            // TODO: Determine the zeros of an equation of second degree.
-            //case 2:
-            default:
-                // Make sure the polynom is factorized.
-                if (this._factors.length === 0) {
-                    this.factorize()
-                }
-
-                let zeroes = [], zeroesAsTex = [];
-                for (let P of this._factors) {
-                    if (P.degree().greater(2)) {
-                        // TODO: Handle other polynom.
-
-                    } else if (P.degree().value === 2) {
-                        let A = P.monomByDegree(2).coefficient,
-                            B = P.monomByDegree(1).coefficient,
-                            C = P.monomByDegree(0).coefficient,
-                            D = B.clone().pow(2).subtract(A.clone().multiply(C).multiply(4));
-
-                        if (D.value > 0) {
-                            /*console.log('Two zeroes for ', P.tex); */
-                            let x1 = (-(B.value) + Math.sqrt(D.value)) / (2 * A.value),
-                                x2 = (-(B.value) - Math.sqrt(D.value)) / (2 * A.value);
-
-                            zeroes.push(new Fraction(x1.toFixed(3)).reduce());
-                            zeroes.push(new Fraction(x2.toFixed(3)).reduce());
-                        } else if (D.value === 0) {
-                            /*console.log('One zero for ', P.tex); */
-
-                        } else {
-                            console.log('No zero for ', P.tex);
-                        }
-                    } else {
-                        for (let z of P.getZeroes()) {
-                            // Check if the zero is already in the list.
-                            if (z === false || z === true) {
-                                continue;
-                            }
-                            if (zeroesAsTex.indexOf(z.frac) === -1) {
-                                zeroes.push(z);
-                                zeroesAsTex.push(z.frac);
-                            }
-                        }
-                    }
-                }
-                return zeroes;
-        }
-        return Z;
+        //
+        // const Z: Fraction[] = [];
+        //
+        // // ISolution: {tex: string, value: number, exact: boolean|Fraction|...}
+        //
+        // switch (this.degree().value) {
+        //     case 0:
+        //         if (this._monoms[0].coefficient.value === 0) {
+        //             return [{
+        //                 tex: '\\mathbb{R}',
+        //                 value: NaN,
+        //                 exact: false
+        //             }];
+        //         } else {
+        //             return [{
+        //                 tex: '\\varnothing',
+        //                 value: NaN,
+        //                 exact: false
+        //             }];
+        //         }
+        //     case 1:
+        //         // There is only one monoms,
+        //         if (this._monoms.length === 1) {
+        //             return [{
+        //                 tex: '0',
+        //                 value: 0,
+        //                 exact: new Fraction().zero()
+        //             }];
+        //         } else {
+        //             const P = this.clone().reduce().reorder();
+        //             const coeff = P.monoms[1].coefficient.opposed().divide(P.monoms[0].coefficient)
+        //             return [{
+        //                 tex: coeff.tex,
+        //                 value: coeff.value,
+        //                 exact: coeff
+        //             }];
+        //         }
+        //     // TODO: Determine the zeros of an equation of second degree.
+        //     //case 2:
+        //     default:
+        //         // Make sure the polynom is factorized.
+        //         if (this._factors.length === 0) {
+        //             this.factorize()
+        //         }
+        //
+        //         let zeroes:Fraction[] = [], zeroesAsTex = [];
+        //         for (let P of this._factors) {
+        //             if (P.degree().greater(2)) {
+        //                 // TODO: get zeroes of polynom with a degree greater than 2.
+        //
+        //             } else if (P.degree().value === 2) {
+        //                 let A = P.monomByDegree(2).coefficient,
+        //                     B = P.monomByDegree(1).coefficient,
+        //                     C = P.monomByDegree(0).coefficient,
+        //                     D = B.clone().pow(2).subtract(A.clone().multiply(C).multiply(4));
+        //
+        //                 if (D.value > 0) {
+        //                     /*console.log('Two zeroes for ', P.tex); */
+        //                     let x1 = (-(B.value) + Math.sqrt(D.value)) / (2 * A.value),
+        //                         x2 = (-(B.value) - Math.sqrt(D.value)) / (2 * A.value);
+        //
+        //                     zeroes.push(new Fraction(x1.toFixed(3)).reduce());
+        //                     zeroes.push(new Fraction(x2.toFixed(3)).reduce());
+        //                 } else if (D.value === 0) {
+        //                     /*console.log('One zero for ', P.tex); */
+        //                 } else {
+        //                     console.log('No zero for ', P.tex);
+        //                 }
+        //             } else {
+        //                 for (let z of P.getZeroes()) {
+        //                     // Check if the zero is already in the list.
+        //                     // if (z === false || z === true) {
+        //                     //     continue;
+        //                     // }
+        //                     if (zeroesAsTex.indexOf(z.frac) === -1) {
+        //                         zeroes.push(z);
+        //                         zeroesAsTex.push(z.frac);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //
+        //
+        //         return zeroes;
+        // }
+        // return Z;
     };
 
     // TODO: analyse the next functions to determine if they are useful or not...

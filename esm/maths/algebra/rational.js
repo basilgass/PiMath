@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Rational = void 0;
 const polynom_1 = require("./polynom");
 const fraction_1 = require("../coefficients/fraction");
+const equation_1 = require("./equation");
 /**
  * Rational class can handle rational polynoms
  */
@@ -24,23 +25,26 @@ class Rational {
         };
         this.domain = () => {
             let zeroes = this._denominator.getZeroes();
-            if (zeroes.length === 0 || zeroes[0] === false) {
-                return '\\mathbb{R}';
+            if (zeroes.length === 0 || zeroes[0].tex === equation_1.PARTICULAR_SOLUTION.real) {
+                return equation_1.PARTICULAR_SOLUTION.real;
             }
-            else if (zeroes[0] === true) {
-                return '\\varnothing';
+            else if (zeroes[0].tex === equation_1.PARTICULAR_SOLUTION.varnothing) {
+                return equation_1.PARTICULAR_SOLUTION.varnothing;
             }
             else {
                 return '\\mathbb{R}\\setminus\\left{' +
-                    zeroes.map(x => {
-                        return (typeof x === 'boolean') ? '' : x.frac;
-                    })
-                        .join(';') + '\\right}';
+                    zeroes.map(x => x.tex).join(';') + '\\right}';
             }
         };
         this.amplify = (P) => {
             this._numerator.multiply(P);
             this._denominator.multiply(P);
+            return this;
+        };
+        this.derivative = (letter) => {
+            let N = this._numerator.clone(), D = this._denominator.clone(), dN = N.clone().derivative(letter), dD = D.clone().derivative(letter);
+            this._numerator = dN.clone().multiply(D).subtract(N.clone().multiply(dD));
+            this._denominator = D.clone().pow(2);
             return this;
         };
         this.simplify = (P) => {
@@ -122,6 +126,95 @@ class Rational {
                 }
             }
         };
+        this.makeTableOfSigns = () => {
+            // Factorize the numerator and the denominator
+            this._numerator.factorize();
+            this._denominator.factorize();
+            let zeroes = equation_1.Equation.makeSolutionsUnique([...this._numerator.getZeroes(), ...this._denominator.getZeroes()], true), NFactors = this._numerator.factors, DFactors = this._denominator.factors;
+            let tableOfSigns = [], result = [];
+            NFactors.forEach(factor => {
+                tableOfSigns.push(this._makeOneLineOfTableOfSigns(factor, zeroes, 'z'));
+            });
+            DFactors.forEach(factor => {
+                tableOfSigns.push(this._makeOneLineOfTableOfSigns(factor, zeroes, 'd'));
+            });
+            // Empty line
+            tableOfSigns.push([]);
+            // Add the final row as cumulative
+            let resultLine = tableOfSigns[0].map((x, index) => {
+                if (index === 0) {
+                    return '';
+                }
+                if (index === tableOfSigns[0].length - 1) {
+                    return '';
+                }
+                if (index % 2 === 0) {
+                    return 't';
+                }
+                return '+';
+            });
+            for (let current of tableOfSigns) {
+                for (let i = 0; i < current.length; i++) {
+                    if (i % 2 === 0) {
+                        // t, z or d
+                        if (resultLine[i] === 'd') {
+                            continue;
+                        }
+                        if (current[i] !== 't') {
+                            resultLine[i] = current[i];
+                        }
+                    }
+                    else {
+                        // + or -
+                        if (current[i] === '-') {
+                            resultLine[i] = resultLine[i] === '+' ? '-' : '+';
+                        }
+                    }
+                }
+            }
+            // Add the variation line.
+            // TODO: add the variation line.
+            tableOfSigns.push(resultLine);
+            let tos = {
+                factors: [...NFactors, ...DFactors],
+                zeroes: zeroes,
+                signs: tableOfSigns,
+                tex: ''
+            };
+            this._makeTexFromTableOfSigns(tos);
+            return tos;
+        };
+        this._makeTexFromTableOfSigns = (tos) => {
+            let tex = `\\begin{tikzpicture}
+\\tkzTabInit[lgt=3,espcl=2,deltacl=0]{/1.2,\\(${tos.factors.map(x => x.tex).join('\\)/1,\\(')}\\)/1,/.1,\\(f(x)\\)/1.2}{{\\scriptsize \\hspace{1cm} \\(-\\infty\\)},\\(${tos.zeroes.map(x => x.tex).join('\\),\\(')}\\),{\\scriptsize \\hspace{-1cm} \\(+\\infty\\)}}`;
+            tos.signs.forEach(list => {
+                tex += (`\n\\tkzTabLine{${list.join(',')}}`);
+            });
+            tex += `\n\\end{tikzpicture}`;
+            tos.tex = tex;
+            return tex;
+        };
+        this._makeOneLineOfTableOfSigns = (factor, zeroes, zeroSign) => {
+            let oneLine = [], 
+            // TODO : check if there is no zero ?
+            currentZero = factor.getZeroes().map(x => x.tex);
+            // First +/- sign, before the first zero
+            oneLine.push('');
+            oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-');
+            for (let i = 0; i < zeroes.length; i++) {
+                // Add the zero if it's the current one
+                oneLine.push(currentZero.includes(zeroes[i].tex) ? zeroSign : 't');
+                // + / - sign after the current zero
+                if (i < zeroes.length - 1) {
+                    oneLine.push(factor.evaluate((zeroes[i].value + zeroes[i + 1].value) / 2).sign() === 1 ? '+' : '-');
+                }
+                else if (i === zeroes.length - 1) {
+                    oneLine.push(factor.evaluate(zeroes[i].value + 1).sign() === 1 ? '+' : '-');
+                }
+            }
+            oneLine.push('');
+            return oneLine;
+        };
         this._numerator = numerator ? numerator.clone() : new polynom_1.Polynom();
         this._denominator = denominator ? denominator.clone() : new polynom_1.Polynom();
     }
@@ -135,8 +228,6 @@ class Rational {
         return `\\dfrac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
     }
     get texFactors() {
-        this._numerator.factorize();
-        this._denominator.factorize();
         return `\\dfrac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
     }
 }

@@ -331,7 +331,7 @@ class Fraction {
             return Math.abs(this._numerator) === Infinity;
         };
         this.isFinite = () => {
-            return !this.isInfinity();
+            return !this.isInfinity() && !this.isNaN();
         };
         this.isSquare = () => {
             return Math.sqrt(this._numerator) % 1 === 0 && Math.sqrt(this._denominator) % 1 === 0;
@@ -375,9 +375,6 @@ class Fraction {
             this.parse(value, denominatorOrPeriodic);
         }
         return this;
-    }
-    get isFraction() {
-        return true;
     }
     // ------------------------------------------
     // Getter and setter
@@ -451,5 +448,37 @@ Fraction.min = (...fractions) => {
         }
     }
     return M;
+};
+Fraction.average = (...fractions) => {
+    let M = new Fraction().zero();
+    for (let f of fractions) {
+        M.add(f);
+    }
+    M.divide(fractions.length);
+    return M;
+};
+Fraction.unique = (fractions, sorted) => {
+    // TODO: make sure it's wokring -> test !
+    let unique = {}, distinct = [];
+    fractions.forEach(x => {
+        if (!unique[x.clone().reduce().tex]) {
+            distinct.push(x.clone());
+            unique[x.tex] = true;
+        }
+    });
+    if (sorted) {
+        return Fraction.sort(distinct);
+    }
+    else {
+        return distinct;
+    }
+};
+Fraction.sort = (fractions, reverse) => {
+    // Todo make sure it's the correct order, not reverse -> make a test
+    let sorted = fractions.sort((a, b) => a.value - b.value);
+    if (reverse) {
+        sorted.reverse();
+    }
+    return sorted;
 };
 //# sourceMappingURL=fraction.js.map

@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Nthroot = void 0;
+exports.NthRoot = void 0;
 /**
- * Nthroot is something like "a+b\sqrt{3}
+ * NthRoot is something like "a+b\sqrt{3}
  */
-class Nthroot {
+class NthRoot {
     constructor(...values) {
         // ------------------------------------------
         // Creation / parsing functions
@@ -110,5 +110,5 @@ class Nthroot {
         return this._coefficient * Math.pow(this._radical, 1 / this._nth);
     }
 }
-exports.Nthroot = Nthroot;
-//# sourceMappingURL=nthroot.js.map
+exports.NthRoot = NthRoot;
+//# sourceMappingURL=nthRoot.js.map

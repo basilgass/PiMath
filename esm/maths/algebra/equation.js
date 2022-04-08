@@ -1,10 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Equation = void 0;
+exports.Equation = exports.PARTICULAR_SOLUTION = void 0;
 const polynom_1 = require("./polynom");
 const numeric_1 = require("../numeric");
 const fraction_1 = require("../coefficients/fraction");
-const nthroot_1 = require("../coefficients/nthroot");
+const nthRoot_1 = require("../coefficients/nthRoot");
+var PARTICULAR_SOLUTION;
+(function (PARTICULAR_SOLUTION) {
+    PARTICULAR_SOLUTION["real"] = "\\mathbb{R}";
+    PARTICULAR_SOLUTION["varnothing"] = "\\varnothing";
+})(PARTICULAR_SOLUTION = exports.PARTICULAR_SOLUTION || (exports.PARTICULAR_SOLUTION = {}));
 class Equation {
     /**
      * Create an Equation using two polynoms.
@@ -13,8 +18,8 @@ class Equation {
      */
     constructor(...equations) {
         // Undetermined texSolutions.
-        this._varnothing = '\\varnothing';
-        this._real = '\\mathbb{R}';
+        this._varnothing = PARTICULAR_SOLUTION.varnothing;
+        this._real = PARTICULAR_SOLUTION.real;
         // ------------------------------------------
         // Creation / parsing functions
         // -----------------------------------------------
@@ -209,6 +214,8 @@ class Equation {
                 default:
                     this._solveDegree3plus();
             }
+            // cleanup the solutions.
+            this._solutions = Equation.makeSolutionsUnique(this._solutions);
             return this;
         };
         this.test = (values) => {
@@ -339,7 +346,7 @@ class Equation {
                 }
                 else {
                     this._solutions = [{
-                            tex: v.display,
+                            tex: v.tex,
                             value: v.value,
                             exact: v
                         }];
@@ -399,7 +406,7 @@ class Equation {
                     ];
                 }
                 else {
-                    nthDelta = new nthroot_1.Nthroot(delta).reduce();
+                    nthDelta = new nthRoot_1.NthRoot(delta).reduce();
                     if (nthDelta.hasRadical()) {
                         // -b +- coeff\sqrt{radical}
                         // -------------------------
@@ -573,9 +580,27 @@ class Equation {
             }
             return this._solutions;
         };
-        this._solveDegree3plus = () => {
-            // TODO: try to resolve equations with a degree superior than 2.
-            this._solutions = [{ tex: 'solve x - not yet handled', value: NaN, exact: false }]; // ESLint remove system :(
+        this._solveDegree3plus = (letter) => {
+            // Push everything to the left
+            // factorize
+            // solve each factors.
+            let equ = this.clone().moveLeft();
+            equ.left.factorize();
+            this._solutions = [];
+            equ.left.factors.forEach(factor => {
+                if (factor.degree(letter).leq(2)) {
+                    let factorAsEquation = new Equation(factor, 0);
+                    factorAsEquation.solve();
+                    factorAsEquation.solutions.forEach(solution => {
+                        this._solutions.push(solution);
+                    });
+                }
+                else {
+                    console.log(factor.tex, ': cannot actually get the solution of this equation');
+                }
+            });
+            // TODO: check equation resolution for more than degree 2
+            // this._solutions = [{tex: 'solve x - not yet handled', value: NaN, exact: false}];  // ESLint remove system :(
             return this._solutions;
         };
         // Default equation
@@ -689,6 +714,21 @@ class Equation {
     }
     set randomizeDefaults(value) {
         this._randomizeDefaults = value;
+    }
+    static makeSolutionsUnique(solutions, sorted) {
+        let solutionAsTex = [], uniqueSolutions = solutions.filter(sol => {
+            if (!solutionAsTex.includes(sol.tex)) {
+                solutionAsTex.push(sol.tex);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+        if (sorted === true) {
+            uniqueSolutions.sort((a, b) => a.value - b.value);
+        }
+        return uniqueSolutions;
     }
 }
 exports.Equation = Equation;

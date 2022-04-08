@@ -1,10 +1,7 @@
 import {expect} from 'chai';
-import {Monom} from "../../src/maths/algebra";
 import {Random} from "../../src/maths/randomization/random";
 import {describe} from "mocha";
-import {Fraction} from "../../src/maths/coefficients";
-import {Shutingyard} from "../../src/maths/shutingyard";
-import {log} from "util";
+import {Monom} from "../../src/maths/algebra/monom";
 
 describe('Monom with integer power', () => {
     it('parsing', () => {

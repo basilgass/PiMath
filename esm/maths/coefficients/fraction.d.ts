@@ -8,7 +8,6 @@ export declare class Fraction {
     private _numerator;
     private _denominator;
     constructor(value?: unknown, denominatorOrPeriodic?: number);
-    get isFraction(): boolean;
     get numerator(): number;
     set numerator(value: number);
     get denominator(): number;
@@ -42,6 +41,9 @@ export declare class Fraction {
     abs: () => Fraction;
     static max: (...fractions: (Fraction | number)[]) => Fraction;
     static min: (...fractions: (Fraction | number)[]) => Fraction;
+    static average: (...fractions: (Fraction | number)[]) => Fraction;
+    static unique: (fractions: Fraction[], sorted?: boolean) => Fraction[];
+    static sort: (fractions: Fraction[], reverse?: boolean) => Fraction[];
     reduce: () => Fraction;
     amplify: (k: number) => Fraction;
     /**

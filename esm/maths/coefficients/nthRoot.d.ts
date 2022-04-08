@@ -1,7 +1,7 @@
 /**
- * Nthroot is something like "a+b\sqrt{3}
+ * NthRoot is something like "a+b\sqrt{3}
  */
-export declare class Nthroot {
+export declare class NthRoot {
     private _radical;
     private _nth;
     private _coefficient;
@@ -15,8 +15,8 @@ export declare class Nthroot {
     set coefficient(value: number);
     get tex(): string;
     get value(): number;
-    parse: (radical: number, nthroot?: number, coefficient?: number) => Nthroot;
-    reduce: () => Nthroot;
-    multiply: (N: Nthroot) => Nthroot;
+    parse: (radical: number, nthroot?: number, coefficient?: number) => NthRoot;
+    reduce: () => NthRoot;
+    multiply: (N: NthRoot) => NthRoot;
     hasRadical: () => boolean;
 }
