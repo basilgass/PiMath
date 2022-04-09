@@ -15,4 +15,4 @@ let B = new Pi.Fraction('2/5');
 A.add(B);
 console.log(A.frac) // -> \frac{ 16 }{ 15 }
 ```
-New version
+New version today
