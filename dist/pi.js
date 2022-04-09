@@ -2113,8 +2113,15 @@ class Polynom {
             if (typeof inputStr === 'string') {
                 return this._parseString(inputStr, ...values);
             }
-            else if (typeof inputStr === 'number' || inputStr instanceof fraction_1.Fraction || inputStr instanceof monom_1.Monom) {
+            else if ((typeof inputStr === 'number' || inputStr instanceof fraction_1.Fraction || inputStr instanceof monom_1.Monom)
+                && (values === undefined || values.length === 0)) {
                 this._monoms.push(new monom_1.Monom(inputStr));
+            }
+            else if (inputStr instanceof monom_1.Monom && values.length > 0) {
+                this._monoms.push(new monom_1.Monom(inputStr));
+                values.forEach(m => {
+                    this._monoms.push(new monom_1.Monom(m));
+                });
             }
             else if (inputStr instanceof Polynom) {
                 for (const m of inputStr.monoms) {
@@ -2596,31 +2603,29 @@ class Polynom {
                 if (P.monoms.length < 2) {
                     if (!P.isOne()) {
                         factors.push(P.clone());
+                        P.one();
                     }
                     break;
                 }
+                else if (P.degree(letter).isOne()) {
+                    factors.push(P.clone());
+                    P.one();
+                    break;
+                }
                 else {
-                    // Get the first and last monom.
+                    // Get the first and last monom and build all their dividers.
                     let m1 = P.monoms[0].dividers, m2 = P.monoms[P.monoms.length - 1].dividers;
-                    for (let m1d of m1) {
-                        for (let m2d of m2) {
-                            // if(m1d.degree()===m2d.degree()){continue}
-                            let dividerPolynom = new Polynom();
-                            dividerPolynom.monoms = [m1d.clone(), m2d.clone()];
-                            result = P.euclidian(dividerPolynom);
-                            if (result.reminder.isZero()) {
-                                P = result.quotient.clone();
-                                factors.push(dividerPolynom);
-                                continue;
-                            }
-                            dividerPolynom.monoms = [m1d.clone(), m2d.clone().opposed()];
-                            result = P.euclidian(dividerPolynom);
-                            if (result.reminder.isZero()) {
-                                P = result.quotient.clone();
-                                factors.push(dividerPolynom);
-                            }
+                    // Create the list of all "potential" polynom dividers.
+                    let allDividers = this._getAllPotentialFactors(P, letter);
+                    allDividers.every(div => {
+                        result = P.euclidian(div);
+                        if (result.reminder.isZero()) {
+                            P = result.quotient.clone();
+                            factors.push(div);
+                            return false;
                         }
-                    }
+                        return true;
+                    });
                 }
             }
             if (!P.isOne()) {
@@ -2628,6 +2633,19 @@ class Polynom {
             }
             this.factors = factors;
             return factors;
+        };
+        this._getAllPotentialFactors = (P, letter) => {
+            let m1 = P.monoms[0].dividers, m2 = P.monoms[P.monoms.length - 1].dividers;
+            let allDividers = [];
+            m1.forEach(m1d => {
+                m2.forEach(m2d => {
+                    if (m1d.degree(letter).isNotEqual(m2d.degree(letter))) {
+                        allDividers.push(new Polynom(m1d, m2d));
+                        allDividers.push(new Polynom(m1d, m2d.clone().opposed()));
+                    }
+                });
+            });
+            return allDividers;
         };
         // TODO: get zeroes for more than first degree and for more than natural degrees
         this.getZeroes = () => {
@@ -6012,11 +6030,7 @@ exports.Numeric = Numeric;
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];

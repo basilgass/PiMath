@@ -1,12 +1,23 @@
 {
   "typedocOptions": {
     "entryPoints": [
-      "src/maths/algebra/index.ts",
-      "src/maths/geometry/index.ts",
-      "src/maths/coefficients/index.ts",
-      "src/maths/random/index.ts",
+      "src/maths/algebra/equation.ts",
+      "src/maths/algebra/linearSystem.ts",
+      "src/maths/algebra/logicalset.ts",
+      "src/maths/algebra/monom.ts",
+      "src/maths/algebra/polynom.ts",
+      "src/maths/algebra/rational.ts",
+      "src/maths/coefficients/fraction.ts",
+      "src/maths/coefficients/nthroot.ts",
+      "src/maths/expressions/numexp.ts",
+      "src/maths/expressions/polynomexp.ts",
+      "src/maths/geometry/circle.ts",
+      "src/maths/geometry/line.ts",
+      "src/maths/geometry/point.ts",
+      "src/maths/geometry/triangle.ts",
+      "src/maths/geometry/vector.ts",
       "src/maths/numeric.ts",
-      "src/maths/shutingyard.ts"
+      "src/maths/shutingyard.ts",
     ],
     "plugin": [
       "./typedoc.katex.js"

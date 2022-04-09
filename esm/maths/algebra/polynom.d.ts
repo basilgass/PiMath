@@ -101,6 +101,7 @@ export declare class Polynom {
      * @param maxValue Defines the greatest value to search to (default is 20).
      */
     factorize: (letter?: string) => Polynom[];
+    private _getAllPotentialFactors;
     getZeroes: () => ISolution[];
     monomByDegree: (degree?: Fraction | number, letter?: string) => Monom;
     monomsByDegree: (degree?: number | Fraction, letter?: string) => Monom[];

@@ -10,6 +10,7 @@ export class PolynomExpFactor {
         this._fn = mathFunction
         this._powerAsInteger = true
         this._forceParenthesis = true
+
     }
 
     private _forceParenthesis: boolean

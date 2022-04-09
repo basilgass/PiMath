@@ -66,7 +66,7 @@ export class Polynom {
     get texFactors(): string {
         this.factorize()
 
-        if(this.factors.length===0){
+        if (this.factors.length === 0) {
             return this.tex
         }
         let tex = ''
@@ -213,8 +213,16 @@ export class Polynom {
 
         if (typeof inputStr === 'string') {
             return this._parseString(inputStr, ...values)
-        } else if (typeof inputStr === 'number' || inputStr instanceof Fraction || inputStr instanceof Monom) {
+        } else if (
+            (typeof inputStr === 'number' || inputStr instanceof Fraction || inputStr instanceof Monom)
+            && (values === undefined || values.length===0)
+        ) {
             this._monoms.push(new Monom(inputStr))
+        } else if (inputStr instanceof Monom && values.length > 0) {
+            this._monoms.push(new Monom(inputStr))
+            values.forEach(m => {
+                this._monoms.push(new Monom(m))
+            })
         } else if (inputStr instanceof Polynom) {
             for (const m of inputStr.monoms) {
                 this._monoms.push(m.clone())
@@ -785,45 +793,59 @@ export class Polynom {
 
             if (P.monoms.length < 2) {
                 if (!P.isOne()) {
-                    factors.push(P.clone());
+                    factors.push(P.clone())
+                    P.one()
                 }
-                break;
+                break
+            } else if (P.degree(letter).isOne()){
+                factors.push(P.clone())
+                P.one()
+                break
             } else {
-                // Get the first and last monom.
+                // Get the first and last monom and build all their dividers.
                 let m1 = P.monoms[0].dividers,
                     m2 = P.monoms[P.monoms.length - 1].dividers
 
-                for (let m1d of m1) {
-                    for (let m2d of m2) {
-                        // if(m1d.degree()===m2d.degree()){continue}
-                        let dividerPolynom = new Polynom()
+                // Create the list of all "potential" polynom dividers.
+                let allDividers:Polynom[] = this._getAllPotentialFactors(P,letter)
 
-                        dividerPolynom.monoms = [m1d.clone(), m2d.clone()]
-                        result = P.euclidian(dividerPolynom)
-
-                        if (result.reminder.isZero()) {
-                            P = result.quotient.clone();
-                            factors.push(dividerPolynom)
-                            continue;
-                        }
-
-                        dividerPolynom.monoms = [m1d.clone(), m2d.clone().opposed()]
-                        result = P.euclidian(dividerPolynom)
-                        if (result.reminder.isZero()) {
-                            P = result.quotient.clone();
-                            factors.push(dividerPolynom)
-                        }
+                allDividers.every(div => {
+                    result = P.euclidian(div)
+                    if(result.reminder.isZero()){
+                        P = result.quotient.clone()
+                        factors.push(div)
+                        return false
                     }
-                }
+                    return true
+                })
             }
         }
 
-        if(!P.isOne()){factors.push(P.clone())}
+        if (!P.isOne()) {
+            factors.push(P.clone())
+        }
 
         this.factors = factors
         return factors;
     }
 
+    private _getAllPotentialFactors = (P: Polynom, letter?: string): Polynom[] => {
+        let m1 = P.monoms[0].dividers,
+            m2 = P.monoms[P.monoms.length - 1].dividers
+
+        let allDividers: Polynom[] = []
+        m1.forEach(m1d => {
+            m2.forEach(m2d => {
+                if (m1d.degree(letter).isNotEqual(m2d.degree(letter))) {
+                    allDividers.push(new Polynom(m1d, m2d))
+                    allDividers.push(new Polynom(m1d, m2d.clone().opposed()))
+                }
+            })
+        })
+
+        return allDividers
+
+    }
     // TODO: get zeroes for more than first degree and for more than natural degrees
     getZeroes = (): ISolution[] => {
         let equ = new Equation(this.clone(), 0)
@@ -1055,6 +1077,7 @@ export class Polynom {
         // Any other cases
         return (new Fraction()).zero()
     }
+
     private _parseString(inputStr: string, ...values: unknown[]): Polynom {
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;

@@ -43,7 +43,7 @@ describe('Polynom tests', () => {
         expect(F.integrate(0, 2).value).to.be.equal(-4)
         expect(G.integrate(-3, 3).display).to.be.equal('174/5')
     })
-    it('Random Polynom of degree 5', () => {
+    it('Random Polynom of degree 6', () => {
         let P = Random.polynom({
             degree: 6,
             numberOfMonoms: 3,
@@ -72,6 +72,10 @@ describe('Polynom tests', () => {
 
         P.factorize()
         expect(P.factors.map(x => x.tex)).to.have.all.members(['x-2', 'x-3'])
+
+        let P2 = new Polynom('x^4-32x^2+256')
+        P2.factorize()
+        expect(P2.factors.map(x => x.tex)).to.have.all.members(['x-4', 'x-4', 'x+4', 'x+4'])
     })
 })
 
