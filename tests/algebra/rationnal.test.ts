@@ -43,18 +43,13 @@ describe('Rational tests', () => {
 
     it('should make a table of signs', function () {
 
-        // const FR = new Rational(
-        //     new Polynom('(x-2)'),
-        //     new Polynom('(x+2)')
-        // )
-        // let tos = FR.makeTableOfSigns()
-        // expect(tos.zeroes.map(x => x.tex)).to.have.all.members(['-2', '2'])
-        // expect(tos.signs).to.be.eql([['', '-', 't', '-', 'z', '+', ''], ['', '-', 'd', '+', 't', '+', ''], [], ['', '+', 'd', '-', 'z', '+', '']])
-        const FR2 = new Rational(
-            new Polynom('(x-2)(x+5)(x^2+5x-31'),
+        const FR = new Rational(
+            new Polynom('(x-2)'),
             new Polynom('(x+2)')
         )
-        let tos2 = FR2.makeTableOfSigns()
+        let tos = FR.makeTableOfSigns()
+        expect(tos.zeroes.map(x => x.tex)).to.have.all.members(['-2', '2'])
+        expect(tos.signs).to.be.eql([['', '-', 't', '-', 'z', '+', ''], ['', '-', 'd', '+', 't', '+', ''], [], ['', '+', 'd', '-', 'z', '+', '']])
     });
 
     it('should calculate the derivative', function () {
