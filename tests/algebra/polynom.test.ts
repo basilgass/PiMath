@@ -15,7 +15,7 @@ describe('Polynom tests', () => {
         const P = new Polynom('-3/5x-2')
 
         console.log(P.tex)
-        expect(P.tex).to.be.equal('-\\dfrac{ 3 }{ 5 }x-2')
+        expect(P.tex).to.be.equal('-\\frac{ 3 }{ 5 }x-2')
     })
 
     it('Tex display', () => {
@@ -83,7 +83,7 @@ describe('Polynom parsing with rational power', () => {
     it('should parse with rational powers', () => {
         const P = new Polynom('3x^(2/3)-5x+5/3');
 
-        expect(P.tex).to.be.equal('3x^{\\tfrac{ 2 }{ 3 }}-5x+\\dfrac{ 5 }{ 3 }')
+        expect(P.tex).to.be.equal('3x^{\\tfrac{ 2 }{ 3 }}-5x+\\frac{ 5 }{ 3 }')
     })
 })
 

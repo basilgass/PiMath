@@ -497,12 +497,12 @@ class Equation {
                             else {
                                 this._solutions = [
                                     {
-                                        tex: `\\dfrac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        tex: `\\frac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
                                         value: realX1,
                                         exact: false
                                     },
                                     {
-                                        tex: `\\dfrac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        tex: `\\frac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
                                         value: realX2,
                                         exact: false
                                     },
@@ -527,12 +527,12 @@ class Equation {
                             else {
                                 this._solutions = [
                                     {
-                                        tex: `\\dfrac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        tex: `\\frac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
                                         value: realX1,
                                         exact: false
                                     },
                                     {
-                                        tex: `\\dfrac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        tex: `\\frac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
                                         value: realX2,
                                         exact: false
                                     },
@@ -545,12 +545,12 @@ class Equation {
                         const S1 = new fraction_1.Fraction(-b - nthDelta.coefficient, 2 * a).reduce(), S2 = new fraction_1.Fraction(-b + nthDelta.coefficient, 2 * a).reduce();
                         this._solutions = [
                             {
-                                tex: S1.dfrac,
+                                tex: S1.frac,
                                 value: realX1,
                                 exact: S1
                             },
                             {
-                                tex: S2.dfrac,
+                                tex: S2.frac,
                                 value: realX2,
                                 exact: S2
                             }
@@ -561,7 +561,7 @@ class Equation {
             else if (delta === 0) {
                 const sol = new fraction_1.Fraction(-b, 2 * a).reduce();
                 this._solutions = [{
-                        tex: sol.dfrac,
+                        tex: sol.frac,
                         value: sol.value,
                         exact: sol
                     }];
@@ -1017,7 +1017,7 @@ class LinearSystem {
                 console.log(`Undefined (letter ${letter})`);
                 return;
             }
-            tex.push(this._solutions[letter].value.dfrac);
+            tex.push(this._solutions[letter].value.frac);
         }
         return `(${tex.join(';')})`;
     }
@@ -1943,7 +1943,7 @@ class Monom {
         if (L === '') {
             // No setLetter - means it's only a number !
             if (this._coefficient.value != 0) {
-                return `${this._coefficient.dfrac}`;
+                return `${this._coefficient.frac}`;
             }
             else {
                 return '0';
@@ -1960,7 +1960,7 @@ class Monom {
                 return '0';
             }
             else {
-                return `${this._coefficient.dfrac}${L}`;
+                return `${this._coefficient.frac}${L}`;
             }
         }
     }
@@ -3495,9 +3495,7 @@ class Rational {
             return tex;
         };
         this._makeOneLineOfTableOfSigns = (factor, zeroes, zeroSign) => {
-            let oneLine = [], 
-            // TODO : check if there is no zero ?
-            currentZero = factor.getZeroes().map(x => x.tex);
+            let oneLine = [], currentZero = factor.getZeroes().map(x => x.tex);
             // First +/- sign, before the first zero
             oneLine.push('');
             oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-');
@@ -3525,10 +3523,10 @@ class Rational {
         return this._denominator;
     }
     get tex() {
-        return `\\dfrac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
+        return `\\frac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
     }
     get texFactors() {
-        return `\\dfrac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
+        return `\\frac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
     }
 }
 exports.Rational = Rational;
@@ -4468,7 +4466,7 @@ class PolynomExpProduct {
                 }
                 // restore all degrees to negative again.
                 denominators.map(x => x.degree.opposed());
-                tex = `\\dfrac{ ${numeratorsAsTex.join(' \\cdot ')} }{ ${denominatorsAsTex.join(' \\cdot ')} }`;
+                tex = `\\frac{ ${numeratorsAsTex.join(' \\cdot ')} }{ ${denominatorsAsTex.join(' \\cdot ')} }`;
             }
         }
         // Apply the modification
@@ -5384,7 +5382,7 @@ class Point {
                 let V = new vector_1.Vector(this, item);
                 value = V.norm;
                 fraction = V.normSquare.sqrt();
-                tex = V.normSquare.isSquare() ? fraction.tex : `\\sqrt{\\dfrac{ ${V.normSquare.numerator} }{ ${V.normSquare.denominator} }}`;
+                tex = V.normSquare.isSquare() ? fraction.tex : `\\sqrt{\\frac{ ${V.normSquare.numerator} }{ ${V.normSquare.denominator} }}`;
             }
             return { value, fraction, tex };
         };
@@ -6030,7 +6028,11 @@ exports.Numeric = Numeric;
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];

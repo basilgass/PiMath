@@ -207,7 +207,7 @@ export class PolynomExpProduct {
                 // restore all degrees to negative again.
                 denominators.map(x => x.degree.opposed())
 
-                tex = `\\dfrac{ ${numeratorsAsTex.join(' \\cdot ')} }{ ${denominatorsAsTex.join(' \\cdot ')} }`
+                tex = `\\frac{ ${numeratorsAsTex.join(' \\cdot ')} }{ ${denominatorsAsTex.join(' \\cdot ')} }`
             }
         }
 

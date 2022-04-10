@@ -181,7 +181,7 @@ export class Point {
 
             value = V.norm
             fraction = V.normSquare.sqrt()
-            tex = V.normSquare.isSquare()?fraction.tex:`\\sqrt{\\dfrac{ ${V.normSquare.numerator} }{ ${V.normSquare.denominator} }}`
+            tex = V.normSquare.isSquare() ? fraction.tex : `\\sqrt{\\frac{ ${V.normSquare.numerator} }{ ${V.normSquare.denominator} }}`
         }
         return { value, fraction, tex }
     }

@@ -195,9 +195,7 @@ class Rational {
             return tex;
         };
         this._makeOneLineOfTableOfSigns = (factor, zeroes, zeroSign) => {
-            let oneLine = [], 
-            // TODO : check if there is no zero ?
-            currentZero = factor.getZeroes().map(x => x.tex);
+            let oneLine = [], currentZero = factor.getZeroes().map(x => x.tex);
             // First +/- sign, before the first zero
             oneLine.push('');
             oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-');
@@ -225,10 +223,10 @@ class Rational {
         return this._denominator;
     }
     get tex() {
-        return `\\dfrac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
+        return `\\frac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
     }
     get texFactors() {
-        return `\\dfrac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
+        return `\\frac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
     }
 }
 exports.Rational = Rational;

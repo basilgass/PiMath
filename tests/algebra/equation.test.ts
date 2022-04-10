@@ -1,6 +1,4 @@
 import {describe} from "mocha";
-import {Rational} from "../../src/maths/algebra/rational";
-import {Polynom} from "../../src/maths/algebra/polynom";
 import {expect} from "chai";
 import {Equation} from "../../src/maths/algebra/equation";
 
@@ -31,8 +29,8 @@ describe('Equations tests', () => {
         let E6 = new Equation('5x^2+7x-31', 0)
         E6.solve()
         expect(E6.solutions.map(x=>x.tex)).to.have.all.members([
-            '\\dfrac{-7 - \\sqrt{669} }{ 10 }',
-            '\\dfrac{-7 + \\sqrt{669} }{ 10 }'
+            '\\frac{-7 - \\sqrt{669} }{ 10 }',
+            '\\frac{-7 + \\sqrt{669} }{ 10 }'
         ] )
     })
 })
