@@ -182,7 +182,6 @@ export class Polynom {
                     if (element.token === '-') {
                         stack.push(stack.pop().opposed())
                     } else {
-                        console.error('While parsing, cannot apply ', element.token, 'to', stack[0].tex)
                         throw "Error parsing the polynom " + this._rawString
                     }
                 }
@@ -405,9 +404,14 @@ export class Polynom {
         const quotient: Polynom = new Polynom().zero();
         const reminder: Polynom = this.clone().reorder(letter);
 
-        // There is no variable !
+        // There is no variable - means it's a number
         if (P.variables.length === 0) {
-            return {quotient, reminder}
+            let q = this.clone().divide(P)
+            return {
+                quotient: this.clone().divide(P),
+                reminder: new Polynom().zero()
+            }
+
         }
 
         // Get at least a letter
@@ -444,8 +448,11 @@ export class Polynom {
             return this.divideByFraction(value);
         } else if (typeof value === 'number' && Number.isSafeInteger(value)) {
             return this.divideByInteger(value);
+        } else if (value instanceof Polynom) {
+            if (value.monoms.length === 1 && value.variables.length === 0) {
+                return this.divideByFraction(value.monoms[0].coefficient)
+            }
         }
-
     }
 
     pow = (nb: number): Polynom => {
@@ -778,8 +785,7 @@ export class Polynom {
 
         // It has a common monom.
         if (!M.isOne()) {
-            tempPolynom = new Polynom()
-            tempPolynom.monoms = [M]
+            tempPolynom = new Polynom(M)
             factors = [tempPolynom.clone()]
             P = P.euclidian(tempPolynom).quotient;
         }

@@ -4,11 +4,9 @@ import {Fraction} from "../coefficients/fraction";
 export declare type literalType = {
     [Key: string]: Fraction;
 };
-
 export declare class Monom {
     private _coefficient;
     private _literal;
-
     /**
      * Create a Monom
      * Defined as \\(k \\cdot x^{n}\\), where \\( k,n \in \\mathbb{Q}\\).
@@ -66,7 +64,6 @@ export declare class Monom {
      * Get the tex output of the monom
      */
     get tex(): string;
-
     /**
      * Parse a string to a monom. The string may include fraction.
      * @param inputStr

@@ -7,7 +7,6 @@ import {Fraction} from "../coefficients/fraction";
 import {ISolution} from "./equation";
 
 export declare type PolynomParsingType = string | Polynom | number | Fraction | Monom;
-
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -38,7 +37,6 @@ export declare class Polynom {
     get isMultiVariable(): boolean;
     get variables(): string[];
     get numberOfVars(): number;
-
     addToken: (stack: Polynom[], element: Token) => void;
     /**
      * Parse a string to a polynom.

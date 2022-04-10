@@ -76,7 +76,11 @@ describe('Polynom tests', () => {
         let P2 = new Polynom('x^4-32x^2+256')
         P2.factorize()
         expect(P2.factors.map(x => x.tex)).to.have.all.members(['x-4', 'x-4', 'x+4', 'x+4'])
-    })
+
+        let P3 = new Polynom('6x^2-48x-8')
+        P3.factorize()
+        expect(P3.factors.map(x => x.tex)).to.have.all.members(['2', '3x^{2}-24x-4'])
+    });
 })
 
 describe('Polynom parsing with rational power', () => {

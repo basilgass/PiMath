@@ -93,8 +93,7 @@ class Monom {
                 this.one();
                 if (element.tokenType === 'coefficient') {
                     this.coefficient = new fraction_1.Fraction(element.token);
-                }
-                else if (element.tokenType === 'variable') {
+                } else if (element.tokenType === 'variable') {
                     this.setLetter(element.token, 1);
                 }
                 return this;
