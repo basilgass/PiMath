@@ -29,16 +29,56 @@ class Monom {
             else if (typeof inputStr === 'number') {
                 this._coefficient = new fraction_1.Fraction(inputStr);
                 this._literal = {};
-            }
-            else if (inputStr instanceof fraction_1.Fraction) {
+            } else if (inputStr instanceof fraction_1.Fraction) {
                 this._coefficient = inputStr.clone();
                 this._literal = {};
-            }
-            else if (inputStr instanceof Monom) {
+            } else if (inputStr instanceof Monom) {
                 this._coefficient = inputStr._coefficient.clone();
                 this._literal = this.copyLiterals(inputStr.literal);
             }
             return this;
+        };
+        this.addToken = (stack, element) => {
+            let q1, q2, m, letter, pow;
+            if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
+                stack.push(new Monom(new fraction_1.Fraction(element.token)));
+            } else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
+                let M = new Monom().one();
+                M.setLetter(element.token, 1);
+                stack.push(M.clone());
+            } else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
+                switch (element.token) {
+                    case '-':
+                        // this should only happen for negative powers or for negative coefficient.
+                        q2 = (stack.pop()) || new Monom().zero();
+                        q1 = (stack.pop()) || new Monom().zero();
+                        stack.push(q1.subtract(q2));
+                        break;
+                    case '*':
+                        // Get the last element in the stack
+                        q2 = (stack.pop()) || new Monom().one();
+                        q1 = (stack.pop()) || new Monom().one();
+                        stack.push(q1.multiply(q2));
+                        break;
+                    case '/':
+                        // Get the last element in the stack
+                        q2 = (stack.pop()) || new Monom().one();
+                        q1 = (stack.pop()) || new Monom().one();
+                        stack.push(q1.divide(q2));
+                        break;
+                    case '^':
+                        // get the two last elements in the stack
+                        pow = (stack.pop().coefficient) || new fraction_1.Fraction().one();
+                        m = (stack.pop()) || new Monom().one();
+                        letter = m.variables[0];
+                        if (letter !== undefined) {
+                            m.setLetter(letter, pow);
+                        }
+                        stack.push(m);
+                        // this.multiply(m.clone())
+                        break;
+                }
+            }
         };
         this._shutingYardToReducedMonom = (inputStr) => {
             // Get the RPN array of the current expression
@@ -48,8 +88,7 @@ class Monom {
             if (rpn.length === 0) {
                 this.zero();
                 return this;
-            }
-            else if (rpn.length === 1) {
+            } else if (rpn.length === 1) {
                 const element = rpn[0];
                 this.one();
                 if (element.tokenType === 'coefficient') {
@@ -63,7 +102,7 @@ class Monom {
             else {
                 // Reset the monom
                 for (const element of rpn) {
-                    Monom.addToken(stack, element);
+                    this.addToken(stack, element);
                 }
             }
             this.one();
@@ -742,50 +781,6 @@ class Monom {
     }
 }
 exports.Monom = Monom;
-Monom.addToken = (stack, element) => {
-    let q1, q2, m, letter, pow;
-    if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
-        stack.push(new Monom(new fraction_1.Fraction(element.token)));
-    }
-    else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
-        let M = new Monom().one();
-        M.setLetter(element.token, 1);
-        stack.push(M.clone());
-    }
-    else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
-        switch (element.token) {
-            case '-':
-                // this should only happen for negative powers or for negative coefficient.
-                q2 = (stack.pop()) || new Monom().zero();
-                q1 = (stack.pop()) || new Monom().zero();
-                stack.push(q1.subtract(q2));
-                break;
-            case '*':
-                // Get the last element in the stack
-                q2 = (stack.pop()) || new Monom().one();
-                q1 = (stack.pop()) || new Monom().one();
-                stack.push(q1.multiply(q2));
-                break;
-            case '/':
-                // Get the last element in the stack
-                q2 = (stack.pop()) || new Monom().one();
-                q1 = (stack.pop()) || new Monom().one();
-                stack.push(q1.divide(q2));
-                break;
-            case '^':
-                // get the two last elements in the stack
-                pow = (stack.pop().coefficient) || new fraction_1.Fraction().one();
-                m = (stack.pop()) || new Monom().one();
-                letter = m.variables[0];
-                if (letter !== undefined) {
-                    m.setLetter(letter, pow);
-                }
-                stack.push(m);
-                // this.multiply(m.clone())
-                break;
-        }
-    }
-};
 // ----------------------------------------
 // Static functions
 // ----------------------------------------

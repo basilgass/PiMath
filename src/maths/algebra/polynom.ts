@@ -124,7 +124,7 @@ export class Polynom {
         return this.variables.length;
     }
 
-    static addToken = (stack: Polynom[], element: Token): void => {
+    addToken = (stack: Polynom[], element: Token): void => {
 
         switch (element.tokenType) {
             case ShutingyardType.COEFFICIENT:
@@ -179,11 +179,11 @@ export class Polynom {
                         }
                     }
                 } else {
-                    console.log('Stack size: ', stack.length)
                     if (element.token === '-') {
                         stack.push(stack.pop().opposed())
                     } else {
-                        console.log('While parsing, cannot apply ', element.token, 'to', stack[0].tex)
+                        console.error('While parsing, cannot apply ', element.token, 'to', stack[0].tex)
+                        throw "Error parsing the polynom " + this._rawString
                     }
                 }
                 break
@@ -195,7 +195,7 @@ export class Polynom {
 
             case ShutingyardType.FUNCTION:
                 // Should never appear.
-                console.log('The function token should not appear here - might be introduced later.')
+                console.error('The function token should not appear here - might be introduced later.')
                 break;
         }
     }
@@ -1173,7 +1173,7 @@ export class Polynom {
 
         // Loop through the
         for (const element of rpn) {
-            Polynom.addToken(stack, element);
+            this.addToken(stack, element);
         }
 
         if (stack.length === 1) {

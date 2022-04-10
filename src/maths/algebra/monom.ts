@@ -314,7 +314,7 @@ export class Monom {
         return this;
     };
 
-    static addToken = (stack: Monom[], element: Token): void => {
+    addToken = (stack: Monom[], element: Token): void => {
 
         let q1: Monom, q2: Monom, m: Monom, letter: string, pow: Fraction
 
@@ -390,7 +390,7 @@ export class Monom {
         } else {
             // Reset the monom
             for (const element of rpn) {
-                Monom.addToken(stack, element)
+                this.addToken(stack, element)
             }
         }
 
