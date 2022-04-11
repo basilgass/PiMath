@@ -15,7 +15,7 @@ describe('Polynom tests', () => {
         const P = new Polynom('-3/5x-2')
 
         console.log(P.tex)
-        expect(P.tex).to.be.equal('-\\dfrac{ 3 }{ 5 }x-2')
+        expect(P.tex).to.be.equal('-\\frac{ 3 }{ 5 }x-2')
     })
 
     it('Tex display', () => {
@@ -43,7 +43,7 @@ describe('Polynom tests', () => {
         expect(F.integrate(0, 2).value).to.be.equal(-4)
         expect(G.integrate(-3, 3).display).to.be.equal('174/5')
     })
-    it('Random Polynom of degree 5', () => {
+    it('Random Polynom of degree 6', () => {
         let P = Random.polynom({
             degree: 6,
             numberOfMonoms: 3,
@@ -72,14 +72,22 @@ describe('Polynom tests', () => {
 
         P.factorize()
         expect(P.factors.map(x => x.tex)).to.have.all.members(['x-2', 'x-3'])
-    })
+
+        let P2 = new Polynom('x^4-32x^2+256')
+        P2.factorize()
+        expect(P2.factors.map(x => x.tex)).to.have.all.members(['x-4', 'x-4', 'x+4', 'x+4'])
+
+        let P3 = new Polynom('6x^2-48x-8')
+        P3.factorize()
+        expect(P3.factors.map(x => x.tex)).to.have.all.members(['2', '3x^{2}-24x-4'])
+    });
 })
 
 describe('Polynom parsing with rational power', () => {
     it('should parse with rational powers', () => {
         const P = new Polynom('3x^(2/3)-5x+5/3');
 
-        expect(P.tex).to.be.equal('3x^{\\tfrac{ 2 }{ 3 }}-5x+\\dfrac{ 5 }{ 3 }')
+        expect(P.tex).to.be.equal('3x^{\\tfrac{ 2 }{ 3 }}-5x+\\frac{ 5 }{ 3 }')
     })
 })
 

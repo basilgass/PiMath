@@ -2,8 +2,7 @@
  * Monom class
  */
 import {Numeric} from "../numeric";
-import {Shutingyard, ShutingyardType, Token, tokenType} from "../shutingyard";
-import {log} from "util";
+import {Shutingyard, ShutingyardType, Token} from "../shutingyard";
 import {Fraction} from "../coefficients/fraction";
 
 export type literalType = {
@@ -273,7 +272,7 @@ export class Monom {
         if (L === '') {
             // No setLetter - means it's only a number !
             if (this._coefficient.value != 0) {
-                return `${this._coefficient.dfrac}`;
+                return `${this._coefficient.frac}`;
             } else {
                 return '0';
             }
@@ -285,7 +284,7 @@ export class Monom {
             } else if (this._coefficient.value === 0) {
                 return '0';
             } else {
-                return `${this._coefficient.dfrac}${L}`;
+                return `${this._coefficient.frac}${L}`;
             }
         }
     }
@@ -315,7 +314,7 @@ export class Monom {
         return this;
     };
 
-    static addToken = (stack: Monom[], element: Token): void => {
+    addToken = (stack: Monom[], element: Token): void => {
 
         let q1: Monom, q2: Monom, m: Monom, letter: string, pow: Fraction
 
@@ -391,7 +390,7 @@ export class Monom {
         } else {
             // Reset the monom
             for (const element of rpn) {
-                Monom.addToken(stack, element)
+                this.addToken(stack, element)
             }
         }
 

@@ -497,12 +497,12 @@ class Equation {
                             else {
                                 this._solutions = [
                                     {
-                                        tex: `\\dfrac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        tex: `\\frac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
                                         value: realX1,
                                         exact: false
                                     },
                                     {
-                                        tex: `\\dfrac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        tex: `\\frac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
                                         value: realX2,
                                         exact: false
                                     },
@@ -527,12 +527,12 @@ class Equation {
                             else {
                                 this._solutions = [
                                     {
-                                        tex: `\\dfrac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        tex: `\\frac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
                                         value: realX1,
                                         exact: false
                                     },
                                     {
-                                        tex: `\\dfrac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        tex: `\\frac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
                                         value: realX2,
                                         exact: false
                                     },
@@ -545,12 +545,12 @@ class Equation {
                         const S1 = new fraction_1.Fraction(-b - nthDelta.coefficient, 2 * a).reduce(), S2 = new fraction_1.Fraction(-b + nthDelta.coefficient, 2 * a).reduce();
                         this._solutions = [
                             {
-                                tex: S1.dfrac,
+                                tex: S1.frac,
                                 value: realX1,
                                 exact: S1
                             },
                             {
-                                tex: S2.dfrac,
+                                tex: S2.frac,
                                 value: realX2,
                                 exact: S2
                             }
@@ -561,7 +561,7 @@ class Equation {
             else if (delta === 0) {
                 const sol = new fraction_1.Fraction(-b, 2 * a).reduce();
                 this._solutions = [{
-                        tex: sol.dfrac,
+                        tex: sol.frac,
                         value: sol.value,
                         exact: sol
                     }];
@@ -1017,7 +1017,7 @@ class LinearSystem {
                 console.log(`Undefined (letter ${letter})`);
                 return;
             }
-            tex.push(this._solutions[letter].value.dfrac);
+            tex.push(this._solutions[letter].value.frac);
         }
         return `(${tex.join(';')})`;
     }
@@ -1276,6 +1276,50 @@ class Monom {
             }
             return this;
         };
+        this.addToken = (stack, element) => {
+            let q1, q2, m, letter, pow;
+            if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
+                stack.push(new Monom(new fraction_1.Fraction(element.token)));
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
+                let M = new Monom().one();
+                M.setLetter(element.token, 1);
+                stack.push(M.clone());
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
+                switch (element.token) {
+                    case '-':
+                        // this should only happen for negative powers or for negative coefficient.
+                        q2 = (stack.pop()) || new Monom().zero();
+                        q1 = (stack.pop()) || new Monom().zero();
+                        stack.push(q1.subtract(q2));
+                        break;
+                    case '*':
+                        // Get the last element in the stack
+                        q2 = (stack.pop()) || new Monom().one();
+                        q1 = (stack.pop()) || new Monom().one();
+                        stack.push(q1.multiply(q2));
+                        break;
+                    case '/':
+                        // Get the last element in the stack
+                        q2 = (stack.pop()) || new Monom().one();
+                        q1 = (stack.pop()) || new Monom().one();
+                        stack.push(q1.divide(q2));
+                        break;
+                    case '^':
+                        // get the two last elements in the stack
+                        pow = (stack.pop().coefficient) || new fraction_1.Fraction().one();
+                        m = (stack.pop()) || new Monom().one();
+                        letter = m.variables[0];
+                        if (letter !== undefined) {
+                            m.setLetter(letter, pow);
+                        }
+                        stack.push(m);
+                        // this.multiply(m.clone())
+                        break;
+                }
+            }
+        };
         this._shutingYardToReducedMonom = (inputStr) => {
             // Get the RPN array of the current expression
             const SY = new shutingyard_1.Shutingyard().parse(inputStr);
@@ -1299,7 +1343,7 @@ class Monom {
             else {
                 // Reset the monom
                 for (const element of rpn) {
-                    Monom.addToken(stack, element);
+                    this.addToken(stack, element);
                 }
             }
             this.one();
@@ -1943,7 +1987,7 @@ class Monom {
         if (L === '') {
             // No setLetter - means it's only a number !
             if (this._coefficient.value != 0) {
-                return `${this._coefficient.dfrac}`;
+                return `${this._coefficient.frac}`;
             }
             else {
                 return '0';
@@ -1960,7 +2004,7 @@ class Monom {
                 return '0';
             }
             else {
-                return `${this._coefficient.dfrac}${L}`;
+                return `${this._coefficient.frac}${L}`;
             }
         }
     }
@@ -1978,50 +2022,6 @@ class Monom {
     }
 }
 exports.Monom = Monom;
-Monom.addToken = (stack, element) => {
-    let q1, q2, m, letter, pow;
-    if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
-        stack.push(new Monom(new fraction_1.Fraction(element.token)));
-    }
-    else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
-        let M = new Monom().one();
-        M.setLetter(element.token, 1);
-        stack.push(M.clone());
-    }
-    else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
-        switch (element.token) {
-            case '-':
-                // this should only happen for negative powers or for negative coefficient.
-                q2 = (stack.pop()) || new Monom().zero();
-                q1 = (stack.pop()) || new Monom().zero();
-                stack.push(q1.subtract(q2));
-                break;
-            case '*':
-                // Get the last element in the stack
-                q2 = (stack.pop()) || new Monom().one();
-                q1 = (stack.pop()) || new Monom().one();
-                stack.push(q1.multiply(q2));
-                break;
-            case '/':
-                // Get the last element in the stack
-                q2 = (stack.pop()) || new Monom().one();
-                q1 = (stack.pop()) || new Monom().one();
-                stack.push(q1.divide(q2));
-                break;
-            case '^':
-                // get the two last elements in the stack
-                pow = (stack.pop().coefficient) || new fraction_1.Fraction().one();
-                m = (stack.pop()) || new Monom().one();
-                letter = m.variables[0];
-                if (letter !== undefined) {
-                    m.setLetter(letter, pow);
-                }
-                stack.push(m);
-                // this.multiply(m.clone())
-                break;
-        }
-    }
-};
 // ----------------------------------------
 // Static functions
 // ----------------------------------------
@@ -2100,6 +2100,81 @@ class Polynom {
      * @param values
      */
     constructor(polynomString, ...values) {
+        this.addToken = (stack, element) => {
+            switch (element.tokenType) {
+                case shutingyard_1.ShutingyardType.COEFFICIENT:
+                    stack.push(new Polynom(element.token));
+                    break;
+                case shutingyard_1.ShutingyardType.VARIABLE:
+                    stack.push(new Polynom().add(new monom_1.Monom(element.token)));
+                    break;
+                case shutingyard_1.ShutingyardType.CONSTANT:
+                    // TODO: add constant support to Polynom parsing.
+                    console.log('Actually, not supported - will be added later !');
+                    break;
+                case shutingyard_1.ShutingyardType.OPERATION:
+                    if (stack.length >= 2) {
+                        const b = stack.pop(), a = stack.pop();
+                        if (element.token === '+') {
+                            stack.push(a.add(b));
+                        }
+                        else if (element.token === '-') {
+                            stack.push(a.subtract(b));
+                        }
+                        else if (element.token === '*') {
+                            stack.push(a.multiply(b));
+                        }
+                        else if (element.token === '/') {
+                            if (b.degree().isStrictlyPositive()) {
+                                console.log('divide by a polynom -> should create a rational polynom !');
+                            }
+                            else {
+                                stack.push(a.divide(b.monoms[0].coefficient));
+                            }
+                        }
+                        else if (element.token === '^') {
+                            if (b.degree().isStrictlyPositive()) {
+                                console.error('Cannot elevate a polynom with another polynom !');
+                            }
+                            else {
+                                if (b.monoms[0].coefficient.isRelative()) {
+                                    // Integer power
+                                    stack.push(a.pow(b.monoms[0].coefficient.value));
+                                }
+                                else {
+                                    // Only allow power if the previous polynom is only a monom, without coefficient.
+                                    if (a.monoms.length === 1 && a.monoms[0].coefficient.isOne()) {
+                                        for (let letter in a.monoms[0].literal) {
+                                            a.monoms[0].literal[letter].multiply(b.monoms[0].coefficient);
+                                        }
+                                        stack.push(a);
+                                    }
+                                    else {
+                                        console.error('Cannot have power with fraction');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        if (element.token === '-') {
+                            stack.push(stack.pop().opposed());
+                        }
+                        else {
+                            throw "Error parsing the polynom " + this._rawString;
+                        }
+                    }
+                    break;
+                case shutingyard_1.ShutingyardType.MONOM:
+                    // Should never appear.
+                    console.error('The monom token should not appear here');
+                    break;
+                case shutingyard_1.ShutingyardType.FUNCTION:
+                    // Should never appear.
+                    console.error('The function token should not appear here - might be introduced later.');
+                    break;
+            }
+        };
         // ------------------------------------------
         /**
          * Parse a string to a polynom.
@@ -2113,8 +2188,15 @@ class Polynom {
             if (typeof inputStr === 'string') {
                 return this._parseString(inputStr, ...values);
             }
-            else if (typeof inputStr === 'number' || inputStr instanceof fraction_1.Fraction || inputStr instanceof monom_1.Monom) {
+            else if ((typeof inputStr === 'number' || inputStr instanceof fraction_1.Fraction || inputStr instanceof monom_1.Monom)
+                && (values === undefined || values.length === 0)) {
                 this._monoms.push(new monom_1.Monom(inputStr));
+            }
+            else if (inputStr instanceof monom_1.Monom && values.length > 0) {
+                this._monoms.push(new monom_1.Monom(inputStr));
+                values.forEach(m => {
+                    this._monoms.push(new monom_1.Monom(m));
+                });
             }
             else if (inputStr instanceof Polynom) {
                 for (const m of inputStr.monoms) {
@@ -2285,9 +2367,13 @@ class Polynom {
             const letter = P.variables[0];
             const quotient = new Polynom().zero();
             const reminder = this.clone().reorder(letter);
-            // There is no variable !
+            // There is no variable - means it's a number
             if (P.variables.length === 0) {
-                return { quotient, reminder };
+                let q = this.clone().divide(P);
+                return {
+                    quotient: this.clone().divide(P),
+                    reminder: new Polynom().zero()
+                };
             }
             // Get at least a letter
             const maxMP = P.monomByDegree(undefined, letter);
@@ -2316,6 +2402,11 @@ class Polynom {
             }
             else if (typeof value === 'number' && Number.isSafeInteger(value)) {
                 return this.divideByInteger(value);
+            }
+            else if (value instanceof Polynom) {
+                if (value.monoms.length === 1 && value.variables.length === 0) {
+                    return this.divideByFraction(value.monoms[0].coefficient);
+                }
             }
         };
         this.pow = (nb) => {
@@ -2583,8 +2674,7 @@ class Polynom {
             let P = this.clone().reorder(), M = P.commonMonom(), tempPolynom;
             // It has a common monom.
             if (!M.isOne()) {
-                tempPolynom = new Polynom();
-                tempPolynom.monoms = [M];
+                tempPolynom = new Polynom(M);
                 factors = [tempPolynom.clone()];
                 P = P.euclidian(tempPolynom).quotient;
             }
@@ -2596,31 +2686,29 @@ class Polynom {
                 if (P.monoms.length < 2) {
                     if (!P.isOne()) {
                         factors.push(P.clone());
+                        P.one();
                     }
                     break;
                 }
+                else if (P.degree(letter).isOne()) {
+                    factors.push(P.clone());
+                    P.one();
+                    break;
+                }
                 else {
-                    // Get the first and last monom.
+                    // Get the first and last monom and build all their dividers.
                     let m1 = P.monoms[0].dividers, m2 = P.monoms[P.monoms.length - 1].dividers;
-                    for (let m1d of m1) {
-                        for (let m2d of m2) {
-                            // if(m1d.degree()===m2d.degree()){continue}
-                            let dividerPolynom = new Polynom();
-                            dividerPolynom.monoms = [m1d.clone(), m2d.clone()];
-                            result = P.euclidian(dividerPolynom);
-                            if (result.reminder.isZero()) {
-                                P = result.quotient.clone();
-                                factors.push(dividerPolynom);
-                                continue;
-                            }
-                            dividerPolynom.monoms = [m1d.clone(), m2d.clone().opposed()];
-                            result = P.euclidian(dividerPolynom);
-                            if (result.reminder.isZero()) {
-                                P = result.quotient.clone();
-                                factors.push(dividerPolynom);
-                            }
+                    // Create the list of all "potential" polynom dividers.
+                    let allDividers = this._getAllPotentialFactors(P, letter);
+                    allDividers.every(div => {
+                        result = P.euclidian(div);
+                        if (result.reminder.isZero()) {
+                            P = result.quotient.clone();
+                            factors.push(div);
+                            return false;
                         }
-                    }
+                        return true;
+                    });
                 }
             }
             if (!P.isOne()) {
@@ -2628,6 +2716,19 @@ class Polynom {
             }
             this.factors = factors;
             return factors;
+        };
+        this._getAllPotentialFactors = (P, letter) => {
+            let m1 = P.monoms[0].dividers, m2 = P.monoms[P.monoms.length - 1].dividers;
+            let allDividers = [];
+            m1.forEach(m1d => {
+                m2.forEach(m2d => {
+                    if (m1d.degree(letter).isNotEqual(m2d.degree(letter))) {
+                        allDividers.push(new Polynom(m1d, m2d));
+                        allDividers.push(new Polynom(m1d, m2d.clone().opposed()));
+                    }
+                });
+            });
+            return allDividers;
         };
         // TODO: get zeroes for more than first degree and for more than natural degrees
         this.getZeroes = () => {
@@ -2868,7 +2969,7 @@ class Polynom {
             let stack = [], monom = new monom_1.Monom();
             // Loop through the
             for (const element of rpn) {
-                Polynom.addToken(stack, element);
+                this.addToken(stack, element);
             }
             if (stack.length === 1) {
                 this.add(stack[0]);
@@ -3197,82 +3298,6 @@ class Polynom {
     }
 }
 exports.Polynom = Polynom;
-Polynom.addToken = (stack, element) => {
-    switch (element.tokenType) {
-        case shutingyard_1.ShutingyardType.COEFFICIENT:
-            stack.push(new Polynom(element.token));
-            break;
-        case shutingyard_1.ShutingyardType.VARIABLE:
-            stack.push(new Polynom().add(new monom_1.Monom(element.token)));
-            break;
-        case shutingyard_1.ShutingyardType.CONSTANT:
-            // TODO: add constant support to Polynom parsing.
-            console.log('Actually, not supported - will be added later !');
-            break;
-        case shutingyard_1.ShutingyardType.OPERATION:
-            if (stack.length >= 2) {
-                const b = stack.pop(), a = stack.pop();
-                if (element.token === '+') {
-                    stack.push(a.add(b));
-                }
-                else if (element.token === '-') {
-                    stack.push(a.subtract(b));
-                }
-                else if (element.token === '*') {
-                    stack.push(a.multiply(b));
-                }
-                else if (element.token === '/') {
-                    if (b.degree().isStrictlyPositive()) {
-                        console.log('divide by a polynom -> should create a rational polynom !');
-                    }
-                    else {
-                        stack.push(a.divide(b.monoms[0].coefficient));
-                    }
-                }
-                else if (element.token === '^') {
-                    if (b.degree().isStrictlyPositive()) {
-                        console.error('Cannot elevate a polynom with another polynom !');
-                    }
-                    else {
-                        if (b.monoms[0].coefficient.isRelative()) {
-                            // Integer power
-                            stack.push(a.pow(b.monoms[0].coefficient.value));
-                        }
-                        else {
-                            // Only allow power if the previous polynom is only a monom, without coefficient.
-                            if (a.monoms.length === 1 && a.monoms[0].coefficient.isOne()) {
-                                for (let letter in a.monoms[0].literal) {
-                                    a.monoms[0].literal[letter].multiply(b.monoms[0].coefficient);
-                                }
-                                stack.push(a);
-                            }
-                            else {
-                                console.error('Cannot have power with fraction');
-                            }
-                        }
-                    }
-                }
-            }
-            else {
-                console.log('Stack size: ', stack.length);
-                if (element.token === '-') {
-                    stack.push(stack.pop().opposed());
-                }
-                else {
-                    console.log('While parsing, cannot apply ', element.token, 'to', stack[0].tex);
-                }
-            }
-            break;
-        case shutingyard_1.ShutingyardType.MONOM:
-            // Should never appear.
-            console.error('The monom token should not appear here');
-            break;
-        case shutingyard_1.ShutingyardType.FUNCTION:
-            // Should never appear.
-            console.log('The function token should not appear here - might be introduced later.');
-            break;
-    }
-};
 
 
 /***/ }),
@@ -3477,9 +3502,7 @@ class Rational {
             return tex;
         };
         this._makeOneLineOfTableOfSigns = (factor, zeroes, zeroSign) => {
-            let oneLine = [], 
-            // TODO : check if there is no zero ?
-            currentZero = factor.getZeroes().map(x => x.tex);
+            let oneLine = [], currentZero = factor.getZeroes().map(x => x.tex);
             // First +/- sign, before the first zero
             oneLine.push('');
             oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-');
@@ -3507,10 +3530,10 @@ class Rational {
         return this._denominator;
     }
     get tex() {
-        return `\\dfrac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
+        return `\\frac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
     }
     get texFactors() {
-        return `\\dfrac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
+        return `\\frac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
     }
 }
 exports.Rational = Rational;
@@ -4450,7 +4473,7 @@ class PolynomExpProduct {
                 }
                 // restore all degrees to negative again.
                 denominators.map(x => x.degree.opposed());
-                tex = `\\dfrac{ ${numeratorsAsTex.join(' \\cdot ')} }{ ${denominatorsAsTex.join(' \\cdot ')} }`;
+                tex = `\\frac{ ${numeratorsAsTex.join(' \\cdot ')} }{ ${denominatorsAsTex.join(' \\cdot ')} }`;
             }
         }
         // Apply the modification
@@ -5366,7 +5389,7 @@ class Point {
                 let V = new vector_1.Vector(this, item);
                 value = V.norm;
                 fraction = V.normSquare.sqrt();
-                tex = V.normSquare.isSquare() ? fraction.tex : `\\sqrt{\\dfrac{ ${V.normSquare.numerator} }{ ${V.normSquare.denominator} }}`;
+                tex = V.normSquare.isSquare() ? fraction.tex : `\\sqrt{\\frac{ ${V.normSquare.numerator} }{ ${V.normSquare.denominator} }}`;
             }
             return { value, fraction, tex };
         };

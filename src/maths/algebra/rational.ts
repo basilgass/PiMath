@@ -37,11 +37,11 @@ export class Rational {
     }
 
     get tex(): string {
-        return `\\dfrac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
+        return `\\frac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
     }
 
     get texFactors(): string {
-        return `\\dfrac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`
+        return `\\frac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`
     }
 
     clone = (): Rational => {
@@ -265,8 +265,8 @@ export class Rational {
     }
     private _makeOneLineOfTableOfSigns = (factor: Polynom, zeroes: ISolution[], zeroSign: string): string[] => {
         let oneLine: string[] = [],
-            // TODO : check if there is no zero ?
             currentZero = factor.getZeroes().map(x=>x.tex)
+
 
         // First +/- sign, before the first zero
         oneLine.push('')
@@ -284,6 +284,7 @@ export class Rational {
             }
 
         }
+
         oneLine.push('')
 
         return oneLine

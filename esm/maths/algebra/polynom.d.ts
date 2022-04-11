@@ -1,10 +1,11 @@
 /**
  * Polynom module contains everything necessary to handle polynoms.*
  */
-import { literalType, Monom } from './monom';
-import { Token } from '../shutingyard';
-import { Fraction } from "../coefficients/fraction";
-import { ISolution } from "./equation";
+import {literalType, Monom} from './monom';
+import {Token} from '../shutingyard';
+import {Fraction} from "../coefficients/fraction";
+import {ISolution} from "./equation";
+
 export declare type PolynomParsingType = string | Polynom | number | Fraction | Monom;
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
@@ -36,7 +37,7 @@ export declare class Polynom {
     get isMultiVariable(): boolean;
     get variables(): string[];
     get numberOfVars(): number;
-    static addToken: (stack: Polynom[], element: Token) => void;
+    addToken: (stack: Polynom[], element: Token) => void;
     /**
      * Parse a string to a polynom.
      * @param inputStr
@@ -101,6 +102,7 @@ export declare class Polynom {
      * @param maxValue Defines the greatest value to search to (default is 20).
      */
     factorize: (letter?: string) => Polynom[];
+    private _getAllPotentialFactors;
     getZeroes: () => ISolution[];
     monomByDegree: (degree?: Fraction | number, letter?: string) => Monom;
     monomsByDegree: (degree?: number | Fraction, letter?: string) => Monom[];

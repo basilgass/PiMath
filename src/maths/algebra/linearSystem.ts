@@ -118,7 +118,7 @@ export class LinearSystem {
                 return;
             }
 
-            tex.push(this._solutions[letter].value.dfrac);
+            tex.push(this._solutions[letter].value.frac);
         }
         return `(${tex.join(';')})`;
     }

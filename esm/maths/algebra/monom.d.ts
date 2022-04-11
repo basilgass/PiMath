@@ -1,5 +1,6 @@
-import { Token } from "../shutingyard";
-import { Fraction } from "../coefficients/fraction";
+import {Token} from "../shutingyard";
+import {Fraction} from "../coefficients/fraction";
+
 export declare type literalType = {
     [Key: string]: Fraction;
 };
@@ -68,7 +69,7 @@ export declare class Monom {
      * @param inputStr
      */
     parse: (inputStr: unknown) => Monom;
-    static addToken: (stack: Monom[], element: Token) => void;
+    addToken: (stack: Monom[], element: Token) => void;
     private _shutingYardToReducedMonom;
     /**
      * Clone the current Monom.

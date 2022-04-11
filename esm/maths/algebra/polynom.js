@@ -22,6 +22,71 @@ class Polynom {
      * @param values
      */
     constructor(polynomString, ...values) {
+        this.addToken = (stack, element) => {
+            switch (element.tokenType) {
+                case shutingyard_1.ShutingyardType.COEFFICIENT:
+                    stack.push(new Polynom(element.token));
+                    break;
+                case shutingyard_1.ShutingyardType.VARIABLE:
+                    stack.push(new Polynom().add(new monom_1.Monom(element.token)));
+                    break;
+                case shutingyard_1.ShutingyardType.CONSTANT:
+                    // TODO: add constant support to Polynom parsing.
+                    console.log('Actually, not supported - will be added later !');
+                    break;
+                case shutingyard_1.ShutingyardType.OPERATION:
+                    if (stack.length >= 2) {
+                        const b = stack.pop(), a = stack.pop();
+                        if (element.token === '+') {
+                            stack.push(a.add(b));
+                        } else if (element.token === '-') {
+                            stack.push(a.subtract(b));
+                        } else if (element.token === '*') {
+                            stack.push(a.multiply(b));
+                        } else if (element.token === '/') {
+                            if (b.degree().isStrictlyPositive()) {
+                                console.log('divide by a polynom -> should create a rational polynom !');
+                            } else {
+                                stack.push(a.divide(b.monoms[0].coefficient));
+                            }
+                        } else if (element.token === '^') {
+                            if (b.degree().isStrictlyPositive()) {
+                                console.error('Cannot elevate a polynom with another polynom !');
+                            } else {
+                                if (b.monoms[0].coefficient.isRelative()) {
+                                    // Integer power
+                                    stack.push(a.pow(b.monoms[0].coefficient.value));
+                                } else {
+                                    // Only allow power if the previous polynom is only a monom, without coefficient.
+                                    if (a.monoms.length === 1 && a.monoms[0].coefficient.isOne()) {
+                                        for (let letter in a.monoms[0].literal) {
+                                            a.monoms[0].literal[letter].multiply(b.monoms[0].coefficient);
+                                        }
+                                        stack.push(a);
+                                    } else {
+                                        console.error('Cannot have power with fraction');
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (element.token === '-') {
+                            stack.push(stack.pop().opposed());
+                        } else {
+                            throw "Error parsing the polynom " + this._rawString;
+                        }
+                    }
+                    break;
+                case shutingyard_1.ShutingyardType.MONOM:
+                    // Should never appear.
+                    console.error('The monom token should not appear here');
+                    break;
+                case shutingyard_1.ShutingyardType.FUNCTION:
+                    // Should never appear.
+                    console.error('The function token should not appear here - might be introduced later.');
+                    break;
+            }
+        };
         // ------------------------------------------
         /**
          * Parse a string to a polynom.
@@ -35,8 +100,15 @@ class Polynom {
             if (typeof inputStr === 'string') {
                 return this._parseString(inputStr, ...values);
             }
-            else if (typeof inputStr === 'number' || inputStr instanceof fraction_1.Fraction || inputStr instanceof monom_1.Monom) {
+            else if ((typeof inputStr === 'number' || inputStr instanceof fraction_1.Fraction || inputStr instanceof monom_1.Monom)
+                && (values === undefined || values.length === 0)) {
                 this._monoms.push(new monom_1.Monom(inputStr));
+            }
+            else if (inputStr instanceof monom_1.Monom && values.length > 0) {
+                this._monoms.push(new monom_1.Monom(inputStr));
+                values.forEach(m => {
+                    this._monoms.push(new monom_1.Monom(m));
+                });
             }
             else if (inputStr instanceof Polynom) {
                 for (const m of inputStr.monoms) {
@@ -207,9 +279,13 @@ class Polynom {
             const letter = P.variables[0];
             const quotient = new Polynom().zero();
             const reminder = this.clone().reorder(letter);
-            // There is no variable !
+            // There is no variable - means it's a number
             if (P.variables.length === 0) {
-                return { quotient, reminder };
+                let q = this.clone().divide(P);
+                return {
+                    quotient: this.clone().divide(P),
+                    reminder: new Polynom().zero()
+                };
             }
             // Get at least a letter
             const maxMP = P.monomByDegree(undefined, letter);
@@ -238,6 +314,10 @@ class Polynom {
             }
             else if (typeof value === 'number' && Number.isSafeInteger(value)) {
                 return this.divideByInteger(value);
+            } else if (value instanceof Polynom) {
+                if (value.monoms.length === 1 && value.variables.length === 0) {
+                    return this.divideByFraction(value.monoms[0].coefficient);
+                }
             }
         };
         this.pow = (nb) => {
@@ -505,8 +585,7 @@ class Polynom {
             let P = this.clone().reorder(), M = P.commonMonom(), tempPolynom;
             // It has a common monom.
             if (!M.isOne()) {
-                tempPolynom = new Polynom();
-                tempPolynom.monoms = [M];
+                tempPolynom = new Polynom(M);
                 factors = [tempPolynom.clone()];
                 P = P.euclidian(tempPolynom).quotient;
             }
@@ -518,31 +597,29 @@ class Polynom {
                 if (P.monoms.length < 2) {
                     if (!P.isOne()) {
                         factors.push(P.clone());
+                        P.one();
                     }
                     break;
                 }
+                else if (P.degree(letter).isOne()) {
+                    factors.push(P.clone());
+                    P.one();
+                    break;
+                }
                 else {
-                    // Get the first and last monom.
+                    // Get the first and last monom and build all their dividers.
                     let m1 = P.monoms[0].dividers, m2 = P.monoms[P.monoms.length - 1].dividers;
-                    for (let m1d of m1) {
-                        for (let m2d of m2) {
-                            // if(m1d.degree()===m2d.degree()){continue}
-                            let dividerPolynom = new Polynom();
-                            dividerPolynom.monoms = [m1d.clone(), m2d.clone()];
-                            result = P.euclidian(dividerPolynom);
-                            if (result.reminder.isZero()) {
-                                P = result.quotient.clone();
-                                factors.push(dividerPolynom);
-                                continue;
-                            }
-                            dividerPolynom.monoms = [m1d.clone(), m2d.clone().opposed()];
-                            result = P.euclidian(dividerPolynom);
-                            if (result.reminder.isZero()) {
-                                P = result.quotient.clone();
-                                factors.push(dividerPolynom);
-                            }
+                    // Create the list of all "potential" polynom dividers.
+                    let allDividers = this._getAllPotentialFactors(P, letter);
+                    allDividers.every(div => {
+                        result = P.euclidian(div);
+                        if (result.reminder.isZero()) {
+                            P = result.quotient.clone();
+                            factors.push(div);
+                            return false;
                         }
-                    }
+                        return true;
+                    });
                 }
             }
             if (!P.isOne()) {
@@ -550,6 +627,19 @@ class Polynom {
             }
             this.factors = factors;
             return factors;
+        };
+        this._getAllPotentialFactors = (P, letter) => {
+            let m1 = P.monoms[0].dividers, m2 = P.monoms[P.monoms.length - 1].dividers;
+            let allDividers = [];
+            m1.forEach(m1d => {
+                m2.forEach(m2d => {
+                    if (m1d.degree(letter).isNotEqual(m2d.degree(letter))) {
+                        allDividers.push(new Polynom(m1d, m2d));
+                        allDividers.push(new Polynom(m1d, m2d.clone().opposed()));
+                    }
+                });
+            });
+            return allDividers;
         };
         // TODO: get zeroes for more than first degree and for more than natural degrees
         this.getZeroes = () => {
@@ -790,7 +880,7 @@ class Polynom {
             let stack = [], monom = new monom_1.Monom();
             // Loop through the
             for (const element of rpn) {
-                Polynom.addToken(stack, element);
+                this.addToken(stack, element);
             }
             if (stack.length === 1) {
                 this.add(stack[0]);
@@ -1119,80 +1209,4 @@ class Polynom {
     }
 }
 exports.Polynom = Polynom;
-Polynom.addToken = (stack, element) => {
-    switch (element.tokenType) {
-        case shutingyard_1.ShutingyardType.COEFFICIENT:
-            stack.push(new Polynom(element.token));
-            break;
-        case shutingyard_1.ShutingyardType.VARIABLE:
-            stack.push(new Polynom().add(new monom_1.Monom(element.token)));
-            break;
-        case shutingyard_1.ShutingyardType.CONSTANT:
-            // TODO: add constant support to Polynom parsing.
-            console.log('Actually, not supported - will be added later !');
-            break;
-        case shutingyard_1.ShutingyardType.OPERATION:
-            if (stack.length >= 2) {
-                const b = stack.pop(), a = stack.pop();
-                if (element.token === '+') {
-                    stack.push(a.add(b));
-                }
-                else if (element.token === '-') {
-                    stack.push(a.subtract(b));
-                }
-                else if (element.token === '*') {
-                    stack.push(a.multiply(b));
-                }
-                else if (element.token === '/') {
-                    if (b.degree().isStrictlyPositive()) {
-                        console.log('divide by a polynom -> should create a rational polynom !');
-                    }
-                    else {
-                        stack.push(a.divide(b.monoms[0].coefficient));
-                    }
-                }
-                else if (element.token === '^') {
-                    if (b.degree().isStrictlyPositive()) {
-                        console.error('Cannot elevate a polynom with another polynom !');
-                    }
-                    else {
-                        if (b.monoms[0].coefficient.isRelative()) {
-                            // Integer power
-                            stack.push(a.pow(b.monoms[0].coefficient.value));
-                        }
-                        else {
-                            // Only allow power if the previous polynom is only a monom, without coefficient.
-                            if (a.monoms.length === 1 && a.monoms[0].coefficient.isOne()) {
-                                for (let letter in a.monoms[0].literal) {
-                                    a.monoms[0].literal[letter].multiply(b.monoms[0].coefficient);
-                                }
-                                stack.push(a);
-                            }
-                            else {
-                                console.error('Cannot have power with fraction');
-                            }
-                        }
-                    }
-                }
-            }
-            else {
-                console.log('Stack size: ', stack.length);
-                if (element.token === '-') {
-                    stack.push(stack.pop().opposed());
-                }
-                else {
-                    console.log('While parsing, cannot apply ', element.token, 'to', stack[0].tex);
-                }
-            }
-            break;
-        case shutingyard_1.ShutingyardType.MONOM:
-            // Should never appear.
-            console.error('The monom token should not appear here');
-            break;
-        case shutingyard_1.ShutingyardType.FUNCTION:
-            // Should never appear.
-            console.log('The function token should not appear here - might be introduced later.');
-            break;
-    }
-};
 //# sourceMappingURL=polynom.js.map

@@ -8,8 +8,5 @@ describe('PolynomExpression concepts', () => {
             PP = new PolynomExpProduct(F1, F2)
 
         const D = F1.derivative()
-
-        console.log(D.tex)
-        console.log(D.reduce().tex)
     });
 })

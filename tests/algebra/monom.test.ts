@@ -76,6 +76,6 @@ describe('Monom with fraction power', () => {
         console.log(M.tex)
 
         // TODO: Problem while displaying numerical expression
-        expect(M.tex).to.be.equal('-\\dfrac{ 7 }{ 5 }x^{\\tfrac{ 22 }{ 15 }}')
+        expect(M.tex).to.be.equal('-\\frac{ 7 }{ 5 }x^{\\tfrac{ 22 }{ 15 }}')
     })
 })

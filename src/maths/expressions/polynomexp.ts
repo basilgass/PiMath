@@ -10,6 +10,7 @@ export class PolynomExpFactor {
         this._fn = mathFunction
         this._powerAsInteger = true
         this._forceParenthesis = true
+
     }
 
     private _forceParenthesis: boolean
@@ -206,7 +207,7 @@ export class PolynomExpProduct {
                 // restore all degrees to negative again.
                 denominators.map(x => x.degree.opposed())
 
-                tex = `\\dfrac{ ${numeratorsAsTex.join(' \\cdot ')} }{ ${denominatorsAsTex.join(' \\cdot ')} }`
+                tex = `\\frac{ ${numeratorsAsTex.join(' \\cdot ')} }{ ${denominatorsAsTex.join(' \\cdot ')} }`
             }
         }
 

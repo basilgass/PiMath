@@ -436,12 +436,12 @@ class Equation {
                             else {
                                 this._solutions = [
                                     {
-                                        tex: `\\dfrac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        tex: `\\frac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
                                         value: realX1,
                                         exact: false
                                     },
                                     {
-                                        tex: `\\dfrac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        tex: `\\frac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
                                         value: realX2,
                                         exact: false
                                     },
@@ -466,12 +466,12 @@ class Equation {
                             else {
                                 this._solutions = [
                                     {
-                                        tex: `\\dfrac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        tex: `\\frac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
                                         value: realX1,
                                         exact: false
                                     },
                                     {
-                                        tex: `\\dfrac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                                        tex: `\\frac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
                                         value: realX2,
                                         exact: false
                                     },
@@ -484,12 +484,12 @@ class Equation {
                         const S1 = new fraction_1.Fraction(-b - nthDelta.coefficient, 2 * a).reduce(), S2 = new fraction_1.Fraction(-b + nthDelta.coefficient, 2 * a).reduce();
                         this._solutions = [
                             {
-                                tex: S1.dfrac,
+                                tex: S1.frac,
                                 value: realX1,
                                 exact: S1
                             },
                             {
-                                tex: S2.dfrac,
+                                tex: S2.frac,
                                 value: realX2,
                                 exact: S2
                             }
@@ -500,10 +500,10 @@ class Equation {
             else if (delta === 0) {
                 const sol = new fraction_1.Fraction(-b, 2 * a).reduce();
                 this._solutions = [{
-                        tex: sol.dfrac,
-                        value: sol.value,
-                        exact: sol
-                    }];
+                    tex: sol.frac,
+                    value: sol.value,
+                    exact: sol
+                }];
             }
             else {
                 this._solutions = [{
