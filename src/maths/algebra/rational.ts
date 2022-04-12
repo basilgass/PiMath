@@ -312,4 +312,13 @@ export class Rational {
     get plotFunction():string {
         return `(${this._numerator.plotFunction})/(${this._denominator.plotFunction})`
     }
+
+    evaluate = (values: literalType | Fraction | number): Fraction => {
+        const r = new Fraction().zero();
+
+        let N = this._numerator.evaluate(values),
+            D = this._numerator.evaluate(values)
+
+        return N.divide(D)
+    };
 }

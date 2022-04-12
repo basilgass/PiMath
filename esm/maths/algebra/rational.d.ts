@@ -4,6 +4,7 @@
  */
 import { Polynom } from "./polynom";
 import { Fraction } from "../coefficients/fraction";
+import { literalType } from "./monom";
 import { ISolution } from "./equation";
 /**
  * Rational class can handle rational polynoms
@@ -41,4 +42,5 @@ export declare class Rational {
     private _makeTexFromTableOfSigns;
     private _makeOneLineOfTableOfSigns;
     get plotFunction(): string;
+    evaluate: (values: literalType | Fraction | number) => Fraction;
 }

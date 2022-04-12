@@ -218,6 +218,11 @@ class Rational {
             oneLine.push('');
             return oneLine;
         };
+        this.evaluate = (values) => {
+            const r = new fraction_1.Fraction().zero();
+            let N = this._numerator.evaluate(values), D = this._numerator.evaluate(values);
+            return N.divide(D);
+        };
         if (numerator instanceof polynom_1.Polynom) {
             this._numerator = numerator.clone();
         }
