@@ -93,4 +93,10 @@ describe('Rational tests', () => {
 
         FR.derivative()
     });
+
+    it('should test', function () {
+        let P = new Rational('245', '3x-5')
+        console.log(P.tex)
+        console.log(P.makeTableOfSigns())
+    });
 })

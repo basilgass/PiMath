@@ -15,7 +15,7 @@ export declare class Rational {
      * @param numerator
      * @param denominator
      */
-    constructor(numerator?: Polynom, denominator?: Polynom);
+    constructor(numerator?: Polynom | string, denominator?: Polynom | string);
     private _numerator;
     get numerator(): Polynom;
     private _denominator;

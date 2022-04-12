@@ -19,9 +19,23 @@ export class Rational {
      * @param numerator
      * @param denominator
      */
-    constructor(numerator?: Polynom, denominator?: Polynom) {
-        this._numerator = numerator ? numerator.clone() : new Polynom();
-        this._denominator = denominator ? denominator.clone() : new Polynom();
+    constructor(numerator?: Polynom | string, denominator?: Polynom | string) {
+        if (numerator instanceof Polynom) {
+            this._numerator = numerator.clone()
+        } else if (typeof numerator === 'string') {
+            this._numerator = new Polynom(numerator)
+        } else {
+            this._numerator = new Polynom()
+        }
+
+        if (denominator instanceof Polynom) {
+            this._denominator = denominator.clone()
+        } else if (typeof denominator === 'string') {
+            this._denominator = new Polynom(denominator)
+        } else {
+            this._denominator = new Polynom()
+        }
+
     }
 
     private _numerator: Polynom;
@@ -183,7 +197,7 @@ export class Rational {
         this._numerator.factorize()
         this._denominator.factorize()
 
-        let zeroes = Equation.makeSolutionsUnique([...this._numerator.getZeroes(), ...this._denominator.getZeroes()], true),
+        let zeroes = Equation.makeSolutionsUnique([...this._numerator.getZeroes(), ...this._denominator.getZeroes()], true).filter(x => !isNaN(x.value)),
             NFactors = this._numerator.factors,
             DFactors = this._denominator.factors
 
@@ -265,12 +279,16 @@ export class Rational {
     }
     private _makeOneLineOfTableOfSigns = (factor: Polynom, zeroes: ISolution[], zeroSign: string): string[] => {
         let oneLine: string[] = [],
-            currentZero = factor.getZeroes().map(x=>x.tex)
-
+            currentZero = factor.getZeroes().map(x => x.tex)
 
         // First +/- sign, before the first zero
         oneLine.push('')
-        oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-')
+        if (factor.degree().isZero()) {
+            oneLine.push(factor.monoms[0].coefficient.sign() === 1 ? '+' : '-')
+        } else {
+            oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-')
+        }
+
 
         for (let i = 0; i < zeroes.length; i++) {
             // Add the zero if it's the current one
@@ -284,6 +302,7 @@ export class Rational {
             }
 
         }
+
 
         oneLine.push('')
 

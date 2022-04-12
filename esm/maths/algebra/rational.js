@@ -130,7 +130,7 @@ class Rational {
             // Factorize the numerator and the denominator
             this._numerator.factorize();
             this._denominator.factorize();
-            let zeroes = equation_1.Equation.makeSolutionsUnique([...this._numerator.getZeroes(), ...this._denominator.getZeroes()], true), NFactors = this._numerator.factors, DFactors = this._denominator.factors;
+            let zeroes = equation_1.Equation.makeSolutionsUnique([...this._numerator.getZeroes(), ...this._denominator.getZeroes()], true).filter(x => !isNaN(x.value)), NFactors = this._numerator.factors, DFactors = this._denominator.factors;
             let tableOfSigns = [], result = [];
             NFactors.forEach(factor => {
                 tableOfSigns.push(this._makeOneLineOfTableOfSigns(factor, zeroes, 'z'));
@@ -198,7 +198,12 @@ class Rational {
             let oneLine = [], currentZero = factor.getZeroes().map(x => x.tex);
             // First +/- sign, before the first zero
             oneLine.push('');
-            oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-');
+            if (factor.degree().isZero()) {
+                oneLine.push(factor.monoms[0].coefficient.sign() === 1 ? '+' : '-');
+            }
+            else {
+                oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-');
+            }
             for (let i = 0; i < zeroes.length; i++) {
                 // Add the zero if it's the current one
                 oneLine.push(currentZero.includes(zeroes[i].tex) ? zeroSign : 't');
@@ -213,8 +218,24 @@ class Rational {
             oneLine.push('');
             return oneLine;
         };
-        this._numerator = numerator ? numerator.clone() : new polynom_1.Polynom();
-        this._denominator = denominator ? denominator.clone() : new polynom_1.Polynom();
+        if (numerator instanceof polynom_1.Polynom) {
+            this._numerator = numerator.clone();
+        }
+        else if (typeof numerator === 'string') {
+            this._numerator = new polynom_1.Polynom(numerator);
+        }
+        else {
+            this._numerator = new polynom_1.Polynom();
+        }
+        if (denominator instanceof polynom_1.Polynom) {
+            this._denominator = denominator.clone();
+        }
+        else if (typeof denominator === 'string') {
+            this._denominator = new polynom_1.Polynom(denominator);
+        }
+        else {
+            this._denominator = new polynom_1.Polynom();
+        }
     }
     get numerator() {
         return this._numerator;
