@@ -26,10 +26,10 @@ class Rational {
         this.domain = () => {
             let zeroes = this._denominator.getZeroes();
             if (zeroes.length === 0 || zeroes[0].tex === equation_1.PARTICULAR_SOLUTION.real) {
-                return equation_1.PARTICULAR_SOLUTION.real;
+                return equation_1.PARTICULAR_SOLUTION.varnothing;
             }
             else if (zeroes[0].tex === equation_1.PARTICULAR_SOLUTION.varnothing) {
-                return equation_1.PARTICULAR_SOLUTION.varnothing;
+                return equation_1.PARTICULAR_SOLUTION.real;
             }
             else {
                 return '\\mathbb{R}\\setminus\\left\\{' +
