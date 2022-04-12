@@ -189,6 +189,7 @@ export class Shutingyard {
         }
 
         let expr2;
+
         // Replace missing multiplication between two parenthese
         expr2 = expr.replace(/\)\(/g, ')*(');
 

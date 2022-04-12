@@ -308,4 +308,8 @@ export class Rational {
 
         return oneLine
     }
+
+    get plotFunction():string {
+        return `(${this._numerator.plotFunction})/(${this._denominator.plotFunction})`
+    }
 }

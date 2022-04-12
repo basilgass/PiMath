@@ -623,7 +623,7 @@ class Monom {
             if (this._literal[letter].isNotZero()) {
                 L += `${letter}`;
                 if (this._literal[letter].isNotEqual(1)) {
-                    L += `^${this._literal[letter].display}`;
+                    L += `^(${this._literal[letter].display})`;
                 }
             }
         }
@@ -733,6 +733,41 @@ class Monom {
             return '+' + this.tex;
         }
         return this.tex;
+    }
+    get plotFunction() {
+        let L = '', letters = Object.keys(this._literal).sort();
+        for (let letter of letters) {
+            if (this._literal[letter].isNotZero()) {
+                L += (L === '' ? "" : "*") + `${letter}`;
+                if (this._literal[letter].isNotEqual(1)) {
+                    L += `^(${this._literal[letter].display})`;
+                }
+            }
+        }
+        // No literal part
+        if (L === '') {
+            // No setLetter - means it's only a number !
+            if (this._coefficient.value != 0) {
+                return `${this._coefficient.display}`;
+            }
+            else {
+                return '';
+            }
+        }
+        else {
+            if (this._coefficient.value === 1) {
+                return L;
+            }
+            else if (this._coefficient.value === -1) {
+                return `-${L}`;
+            }
+            else if (this._coefficient.value === 0) {
+                return '0';
+            }
+            else {
+                return `${this._coefficient.display}*${L}`;
+            }
+        }
     }
     /**
      * Get the tex output of the monom

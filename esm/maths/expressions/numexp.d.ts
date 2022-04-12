@@ -2,7 +2,7 @@ export declare class NumExp {
     private _rpn;
     private _expression;
     private _isValid;
-    constructor(value: string);
+    constructor(value: string, uniformize?: boolean);
     get rpn(): {
         token: string;
         tokenType: string;

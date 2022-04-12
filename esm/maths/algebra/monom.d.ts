@@ -59,6 +59,7 @@ export declare class Monom {
      */
     get displayWithSign(): string;
     get texWithSign(): string;
+    get plotFunction(): string;
     /**
      * Get the tex output of the monom
      */

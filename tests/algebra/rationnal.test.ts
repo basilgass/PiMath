@@ -95,8 +95,8 @@ describe('Rational tests', () => {
     });
 
     it('should test', function () {
-        let P = new Rational('245', '3x-5')
-        console.log(P.tex)
-        console.log(P.makeTableOfSigns())
+        let P = new Rational('245(x-2)', '(3x-5)(2x-3)')
+
+        console.log(P.plotFunction)
     });
 })

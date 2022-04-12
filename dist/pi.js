@@ -1859,7 +1859,7 @@ class Monom {
             if (this._literal[letter].isNotZero()) {
                 L += `${letter}`;
                 if (this._literal[letter].isNotEqual(1)) {
-                    L += `^${this._literal[letter].display}`;
+                    L += `^(${this._literal[letter].display})`;
                 }
             }
         }
@@ -1969,6 +1969,41 @@ class Monom {
             return '+' + this.tex;
         }
         return this.tex;
+    }
+    get plotFunction() {
+        let L = '', letters = Object.keys(this._literal).sort();
+        for (let letter of letters) {
+            if (this._literal[letter].isNotZero()) {
+                L += (L === '' ? "" : "*") + `${letter}`;
+                if (this._literal[letter].isNotEqual(1)) {
+                    L += `^(${this._literal[letter].display})`;
+                }
+            }
+        }
+        // No literal part
+        if (L === '') {
+            // No setLetter - means it's only a number !
+            if (this._coefficient.value != 0) {
+                return `${this._coefficient.display}`;
+            }
+            else {
+                return '';
+            }
+        }
+        else {
+            if (this._coefficient.value === 1) {
+                return L;
+            }
+            else if (this._coefficient.value === -1) {
+                return `-${L}`;
+            }
+            else if (this._coefficient.value === 0) {
+                return '0';
+            }
+            else {
+                return `${this._coefficient.display}*${L}`;
+            }
+        }
     }
     /**
      * Get the tex output of the monom
@@ -2176,6 +2211,8 @@ class Polynom {
             }
         };
         // ------------------------------------------
+        // Creation / parsing functions
+        // ------------------------------------------
         /**
          * Parse a string to a polynom.
          * @param inputStr
@@ -2205,8 +2242,6 @@ class Polynom {
             }
             return this;
         };
-        // ------------------------------------------
-        // Creation / parsing functions
         /**
          * Clone the polynom
          */
@@ -2244,23 +2279,6 @@ class Polynom {
         this.opposed = () => {
             this._monoms = this._monoms.map(m => m.opposed());
             return this;
-        };
-        this.add = (...values) => {
-            for (let value of values) {
-                if (value instanceof Polynom) {
-                    this._monoms = this._monoms.concat(value.monoms);
-                }
-                else if (value instanceof monom_1.Monom) {
-                    this._monoms.push(value.clone());
-                }
-                else if (Number.isSafeInteger(value)) {
-                    this._monoms.push(new monom_1.Monom(value.toString()));
-                }
-                else {
-                    this._monoms.push(new monom_1.Monom(value));
-                }
-            }
-            return this.reduce();
         };
         // // -----------------------------------------------
         // // Polynom generators and randomizers
@@ -2325,6 +2343,23 @@ class Polynom {
         // };
         // ------------------------------------------
         // Mathematical operations
+        this.add = (...values) => {
+            for (let value of values) {
+                if (value instanceof Polynom) {
+                    this._monoms = this._monoms.concat(value.monoms);
+                }
+                else if (value instanceof monom_1.Monom) {
+                    this._monoms.push(value.clone());
+                }
+                else if (Number.isSafeInteger(value)) {
+                    this._monoms.push(new monom_1.Monom(value.toString()));
+                }
+                else {
+                    this._monoms.push(new monom_1.Monom(value));
+                }
+            }
+            return this.reduce();
+        };
         this.subtract = (...values) => {
             for (let value of values) {
                 if (value instanceof Polynom) {
@@ -2530,6 +2565,8 @@ class Polynom {
             // The polyfactors must be empty and the cumulative opposite factors must be 1.
             return (polyFactors.length === 0 && sign === 1);
         };
+        // ------------------------------------------
+        // Compare functions
         this.isDeveloped = (polynomString) => {
             let P;
             // There is at least one parenthese - it is not developed.
@@ -2557,8 +2594,6 @@ class Polynom {
             // TODO: Maybe it's enough to just make this test !
             return polynomStringNormalized === P.reduce().reorder().display;
         };
-        // ------------------------------------------
-        // Compare functions
         // -------------------------------------
         this.reduce = () => {
             for (let i = 0; i < this._monoms.length; i++) {
@@ -2644,6 +2679,8 @@ class Polynom {
             }
             return dP;
         };
+        // ------------------------------------------
+        // Misc polynoms functions
         this.primitive = (letter) => {
             let dP = new Polynom();
             for (let m of this._monoms) {
@@ -2651,8 +2688,6 @@ class Polynom {
             }
             return dP;
         };
-        // ------------------------------------------
-        // Misc polynoms functions
         this.integrate = (a, b, letter) => {
             const primitive = this.primitive(letter);
             if (letter === undefined) {
@@ -2717,19 +2752,6 @@ class Polynom {
             }
             this.factors = factors;
             return factors;
-        };
-        this._getAllPotentialFactors = (P, letter) => {
-            let m1 = P.monoms[0].dividers, m2 = P.monoms[P.monoms.length - 1].dividers;
-            let allDividers = [];
-            m1.forEach(m1d => {
-                m2.forEach(m2d => {
-                    if (m1d.degree(letter).isNotEqual(m2d.degree(letter))) {
-                        allDividers.push(new Polynom(m1d, m2d));
-                        allDividers.push(new Polynom(m1d, m2d.clone().opposed()));
-                    }
-                });
-            });
-            return allDividers;
         };
         // TODO: get zeroes for more than first degree and for more than natural degrees
         this.getZeroes = () => {
@@ -2936,13 +2958,34 @@ class Polynom {
             // Any other cases
             return (new fraction_1.Fraction()).zero();
         };
-        this.genDisplay = (output, forceSign, wrapParentheses) => {
+        this._getAllPotentialFactors = (P, letter) => {
+            let m1 = P.monoms[0].dividers, m2 = P.monoms[P.monoms.length - 1].dividers;
+            let allDividers = [];
+            m1.forEach(m1d => {
+                m2.forEach(m2d => {
+                    if (m1d.degree(letter).isNotEqual(m2d.degree(letter))) {
+                        allDividers.push(new Polynom(m1d, m2d));
+                        allDividers.push(new Polynom(m1d, m2d.clone().opposed()));
+                    }
+                });
+            });
+            return allDividers;
+        };
+        this.genDisplay = (output, forceSign, wrapParentheses, withAllMultSign) => {
             let P = '';
             for (const k of this._monoms) {
                 if (k.coefficient.value === 0) {
                     continue;
                 }
-                P += `${(k.coefficient.sign() === 1 && (P !== '' || forceSign === true)) ? '+' : ''}${(output === 'tex') ? k.tex : k.display}`;
+                // The monom to be displayed
+                let m;
+                if (withAllMultSign) {
+                    m = k.plotFunction;
+                }
+                else {
+                    m = (output === 'tex') ? k.tex : k.display;
+                }
+                P += `${(k.coefficient.sign() === 1 && (P !== '' || forceSign === true)) ? '+' : ''}${m}`;
             }
             if (wrapParentheses === true && this.length > 1) {
                 if (output === 'tex') {
@@ -3240,6 +3283,9 @@ class Polynom {
     }
     get numberOfVars() {
         return this.variables.length;
+    }
+    get plotFunction() {
+        return this.genDisplay('tex', false, false, true);
     }
     isZero() {
         return (this._monoms.length === 1 && this._monoms[0].coefficient.isZero()) || this._monoms.length === 0;
@@ -3556,6 +3602,9 @@ class Rational {
     }
     get texFactors() {
         return `\\frac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
+    }
+    get plotFunction() {
+        return `(${this._numerator.plotFunction})/(${this._denominator.plotFunction})`;
     }
 }
 exports.Rational = Rational;
@@ -4182,7 +4231,7 @@ exports.NumExp = void 0;
 const shutingyard_1 = __webpack_require__(505);
 const fraction_1 = __webpack_require__(506);
 class NumExp {
-    constructor(value) {
+    constructor(value, uniformize) {
         this._expression = value;
         this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value).rpn;
     }

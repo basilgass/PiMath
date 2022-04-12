@@ -36,6 +36,7 @@ export declare class Polynom {
     get isMultiVariable(): boolean;
     get variables(): string[];
     get numberOfVars(): number;
+    get plotFunction(): string;
     addToken: (stack: Polynom[], element: Token) => void;
     /**
      * Parse a string to a polynom.
@@ -101,7 +102,6 @@ export declare class Polynom {
      * @param maxValue Defines the greatest value to search to (default is 20).
      */
     factorize: (letter?: string) => Polynom[];
-    private _getAllPotentialFactors;
     getZeroes: () => ISolution[];
     monomByDegree: (degree?: Fraction | number, letter?: string) => Monom;
     monomsByDegree: (degree?: number | Fraction, letter?: string) => Monom[];
@@ -115,6 +115,7 @@ export declare class Polynom {
     commonMonom: () => Monom;
     limitToInfinity: (letter?: string) => Fraction;
     limitToNegativeInfinity: (letter?: string) => Fraction;
+    private _getAllPotentialFactors;
     private _parseString;
     private genDisplay;
     /**

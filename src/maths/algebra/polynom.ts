@@ -124,6 +124,10 @@ export class Polynom {
         return this.variables.length;
     }
 
+    get plotFunction(): string {
+        return this.genDisplay('tex', false, false, true)
+    }
+
     addToken = (stack: Polynom[], element: Token): void => {
 
         switch (element.tokenType) {
@@ -199,6 +203,10 @@ export class Polynom {
         }
     }
 
+
+    // ------------------------------------------
+    // Creation / parsing functions
+
     // ------------------------------------------
     /**
      * Parse a string to a polynom.
@@ -214,7 +222,7 @@ export class Polynom {
             return this._parseString(inputStr, ...values)
         } else if (
             (typeof inputStr === 'number' || inputStr instanceof Fraction || inputStr instanceof Monom)
-            && (values === undefined || values.length===0)
+            && (values === undefined || values.length === 0)
         ) {
             this._monoms.push(new Monom(inputStr))
         } else if (inputStr instanceof Monom && values.length > 0) {
@@ -230,10 +238,6 @@ export class Polynom {
 
         return this
     };
-
-
-    // ------------------------------------------
-    // Creation / parsing functions
 
     /**
      * Clone the polynom
@@ -278,23 +282,6 @@ export class Polynom {
     opposed = (): Polynom => {
         this._monoms = this._monoms.map(m => m.opposed());
         return this;
-    };
-
-    add = (...values: unknown[]): Polynom => {
-
-        for (let value of values) {
-            if (value instanceof Polynom) {
-                this._monoms = this._monoms.concat(value.monoms);
-            } else if (value instanceof Monom) {
-                this._monoms.push(value.clone());
-            } else if (Number.isSafeInteger(value)) {
-                this._monoms.push(new Monom(value.toString()));
-            } else {
-                this._monoms.push(new Monom(value));
-            }
-        }
-
-        return this.reduce();
     };
 
     // // -----------------------------------------------
@@ -361,6 +348,23 @@ export class Polynom {
 
     // ------------------------------------------
     // Mathematical operations
+
+    add = (...values: unknown[]): Polynom => {
+
+        for (let value of values) {
+            if (value instanceof Polynom) {
+                this._monoms = this._monoms.concat(value.monoms);
+            } else if (value instanceof Monom) {
+                this._monoms.push(value.clone());
+            } else if (Number.isSafeInteger(value)) {
+                this._monoms.push(new Monom(value.toString()));
+            } else {
+                this._monoms.push(new Monom(value));
+            }
+        }
+
+        return this.reduce();
+    };
 
     subtract = (...values: unknown[]): Polynom => {
 
@@ -603,6 +607,10 @@ export class Polynom {
         return (polyFactors.length === 0 && sign === 1);
     }
 
+
+    // ------------------------------------------
+    // Compare functions
+
     isDeveloped = (polynomString: string): Boolean => {
         let P: Polynom;
 
@@ -636,10 +644,6 @@ export class Polynom {
         // TODO: Maybe it's enough to just make this test !
         return polynomStringNormalized === P.reduce().reorder().display
     }
-
-
-    // ------------------------------------------
-    // Compare functions
 
     // -------------------------------------
     reduce = (): Polynom => {
@@ -743,6 +747,8 @@ export class Polynom {
         return dP;
 
     }
+    // ------------------------------------------
+    // Misc polynoms functions
 
     primitive = (letter?: string): Polynom => {
         let dP = new Polynom();
@@ -752,8 +758,6 @@ export class Polynom {
         }
         return dP
     }
-    // ------------------------------------------
-    // Misc polynoms functions
 
     integrate = (a: Fraction | number, b: Fraction | number, letter?: string): Fraction => {
         const primitive = this.primitive(letter)
@@ -803,7 +807,7 @@ export class Polynom {
                     P.one()
                 }
                 break
-            } else if (P.degree(letter).isOne()){
+            } else if (P.degree(letter).isOne()) {
                 factors.push(P.clone())
                 P.one()
                 break
@@ -813,11 +817,11 @@ export class Polynom {
                 //     m2 = P.monoms[P.monoms.length - 1].dividers
 
                 // Create the list of all "potential" polynom dividers.
-                let allDividers:Polynom[] = this._getAllPotentialFactors(P,letter)
+                let allDividers: Polynom[] = this._getAllPotentialFactors(P, letter)
 
                 allDividers.every(div => {
                     result = P.euclidian(div)
-                    if(result.reminder.isZero()){
+                    if (result.reminder.isZero()) {
                         P = result.quotient.clone()
                         factors.push(div)
                         return false
@@ -835,23 +839,6 @@ export class Polynom {
         return factors;
     }
 
-    private _getAllPotentialFactors = (P: Polynom, letter?: string): Polynom[] => {
-        let m1 = P.monoms[0].dividers,
-            m2 = P.monoms[P.monoms.length - 1].dividers
-
-        let allDividers: Polynom[] = []
-        m1.forEach(m1d => {
-            m2.forEach(m2d => {
-                if (m1d.degree(letter).isNotEqual(m2d.degree(letter))) {
-                    allDividers.push(new Polynom(m1d, m2d))
-                    allDividers.push(new Polynom(m1d, m2d.clone().opposed()))
-                }
-            })
-        })
-
-        return allDividers
-
-    }
     // TODO: get zeroes for more than first degree and for more than natural degrees
     getZeroes = (): ISolution[] => {
         let equ = new Equation(this.clone(), 0)
@@ -1084,6 +1071,24 @@ export class Polynom {
         return (new Fraction()).zero()
     }
 
+    private _getAllPotentialFactors = (P: Polynom, letter?: string): Polynom[] => {
+        let m1 = P.monoms[0].dividers,
+            m2 = P.monoms[P.monoms.length - 1].dividers
+
+        let allDividers: Polynom[] = []
+        m1.forEach(m1d => {
+            m2.forEach(m2d => {
+                if (m1d.degree(letter).isNotEqual(m2d.degree(letter))) {
+                    allDividers.push(new Polynom(m1d, m2d))
+                    allDividers.push(new Polynom(m1d, m2d.clone().opposed()))
+                }
+            })
+        })
+
+        return allDividers
+
+    }
+
     private _parseString(inputStr: string, ...values: unknown[]): Polynom {
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;
@@ -1137,7 +1142,7 @@ export class Polynom {
         }
     }
 
-    private genDisplay = (output?: string, forceSign?: boolean, wrapParentheses?: boolean): string => {
+    private genDisplay = (output?: string, forceSign?: boolean, wrapParentheses?: boolean, withAllMultSign?: boolean): string => {
         let P: string = '';
 
         for (const k of this._monoms) {
@@ -1145,7 +1150,15 @@ export class Polynom {
                 continue;
             }
 
-            P += `${(k.coefficient.sign() === 1 && (P !== '' || forceSign === true)) ? '+' : ''}${(output === 'tex') ? k.tex : k.display}`;
+            // The monom to be displayed
+            let m
+            if (withAllMultSign) {
+                m = k.plotFunction
+            } else {
+                m = (output === 'tex') ? k.tex : k.display
+            }
+
+            P += `${(k.coefficient.sign() === 1 && (P !== '' || forceSign === true)) ? '+' : ''}${m}`;
         }
 
         if (wrapParentheses === true && this.length > 1) {

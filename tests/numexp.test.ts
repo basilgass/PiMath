@@ -31,4 +31,12 @@ describe('Numerical expression', () => { // the tests container
         expect(exprValid.isValid).to.be.true
         expect(exprInvalid.isValid).to.be.false
     });
+
+    it('should parse without mult sign', function () {
+
+        const expr = new NumExp('3x+5')
+
+        console.log(expr.rpn)
+
+    });
 });

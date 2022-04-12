@@ -40,4 +40,5 @@ export declare class Rational {
     };
     private _makeTexFromTableOfSigns;
     private _makeOneLineOfTableOfSigns;
+    get plotFunction(): string;
 }

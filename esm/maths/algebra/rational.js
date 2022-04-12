@@ -249,6 +249,9 @@ class Rational {
     get texFactors() {
         return `\\frac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
     }
+    get plotFunction() {
+        return `(${this._numerator.plotFunction})/(${this._denominator.plotFunction})`;
+    }
 }
 exports.Rational = Rational;
 //# sourceMappingURL=rational.js.map

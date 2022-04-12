@@ -6,7 +6,7 @@ export class NumExp {
     private _expression: string
     private _isValid: boolean
 
-    constructor(value: string) {
+    constructor(value: string, uniformize?:boolean) {
         this._expression = value
         this._rpn = new Shutingyard(ShutingyardMode.NUMERIC).parse(value).rpn
     }
