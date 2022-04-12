@@ -500,10 +500,10 @@ class Equation {
             else if (delta === 0) {
                 const sol = new fraction_1.Fraction(-b, 2 * a).reduce();
                 this._solutions = [{
-                    tex: sol.frac,
-                    value: sol.value,
-                    exact: sol
-                }];
+                        tex: sol.frac,
+                        value: sol.value,
+                        exact: sol
+                    }];
             }
             else {
                 this._solutions = [{

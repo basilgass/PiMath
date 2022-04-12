@@ -809,8 +809,8 @@ export class Polynom {
                 break
             } else {
                 // Get the first and last monom and build all their dividers.
-                let m1 = P.monoms[0].dividers,
-                    m2 = P.monoms[P.monoms.length - 1].dividers
+                // let m1 = P.monoms[0].dividers,
+                //     m2 = P.monoms[P.monoms.length - 1].dividers
 
                 // Create the list of all "potential" polynom dividers.
                 let allDividers:Polynom[] = this._getAllPotentialFactors(P,letter)

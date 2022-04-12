@@ -171,10 +171,9 @@ export class Monom {
         }
 
         // Security : do not do this if greater than 10000
-        if (this.coefficient.numerator > 10000) {
+        if (this.coefficient.numerator > 1000000) {
             return [this.clone()]
         }
-
 
         const dividers = Numeric.dividers(Math.abs(this.coefficient.numerator))
 

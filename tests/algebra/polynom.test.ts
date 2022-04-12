@@ -81,6 +81,14 @@ describe('Polynom tests', () => {
         P3.factorize()
         expect(P3.factors.map(x => x.tex)).to.have.all.members(['2', '3x^{2}-24x-4'])
     });
+
+    it('should factorize special polynom', function () {
+        let P = new Polynom('x^6-16x^5-58x^4+1592x^3-1207x^2-37576x+94864')
+
+        P.factorize()
+
+        console.log(P.factors.map(x=>x.tex))
+    });
 })
 
 describe('Polynom parsing with rational power', () => {

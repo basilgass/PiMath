@@ -42,7 +42,7 @@ class PolynomExpFactor {
                     polynom: A.polynom.derivative(letter),
                 }));
             }
-
+            return;
         };
         this._factorDerivative = (factor, letter) => {
             let derivativeExpression = new PolynomExpFactor();

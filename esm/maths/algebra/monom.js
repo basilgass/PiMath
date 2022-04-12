@@ -29,10 +29,12 @@ class Monom {
             else if (typeof inputStr === 'number') {
                 this._coefficient = new fraction_1.Fraction(inputStr);
                 this._literal = {};
-            } else if (inputStr instanceof fraction_1.Fraction) {
+            }
+            else if (inputStr instanceof fraction_1.Fraction) {
                 this._coefficient = inputStr.clone();
                 this._literal = {};
-            } else if (inputStr instanceof Monom) {
+            }
+            else if (inputStr instanceof Monom) {
                 this._coefficient = inputStr._coefficient.clone();
                 this._literal = this.copyLiterals(inputStr.literal);
             }
@@ -42,11 +44,13 @@ class Monom {
             let q1, q2, m, letter, pow;
             if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
                 stack.push(new Monom(new fraction_1.Fraction(element.token)));
-            } else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
                 let M = new Monom().one();
                 M.setLetter(element.token, 1);
                 stack.push(M.clone());
-            } else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
                 switch (element.token) {
                     case '-':
                         // this should only happen for negative powers or for negative coefficient.
@@ -88,12 +92,14 @@ class Monom {
             if (rpn.length === 0) {
                 this.zero();
                 return this;
-            } else if (rpn.length === 1) {
+            }
+            else if (rpn.length === 1) {
                 const element = rpn[0];
                 this.one();
                 if (element.tokenType === 'coefficient') {
                     this.coefficient = new fraction_1.Fraction(element.token);
-                } else if (element.tokenType === 'variable') {
+                }
+                else if (element.tokenType === 'variable') {
                     this.setLetter(element.token, 1);
                 }
                 return this;
@@ -655,7 +661,7 @@ class Monom {
             return [this.clone()];
         }
         // Security : do not do this if greater than 10000
-        if (this.coefficient.numerator > 10000) {
+        if (this.coefficient.numerator > 1000000) {
             return [this.clone()];
         }
         const dividers = numeric_1.Numeric.dividers(Math.abs(this.coefficient.numerator));

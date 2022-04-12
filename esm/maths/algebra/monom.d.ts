@@ -1,6 +1,5 @@
-import {Token} from "../shutingyard";
-import {Fraction} from "../coefficients/fraction";
-
+import { Token } from "../shutingyard";
+import { Fraction } from "../coefficients/fraction";
 export declare type literalType = {
     [Key: string]: Fraction;
 };

@@ -39,40 +39,50 @@ class Polynom {
                         const b = stack.pop(), a = stack.pop();
                         if (element.token === '+') {
                             stack.push(a.add(b));
-                        } else if (element.token === '-') {
+                        }
+                        else if (element.token === '-') {
                             stack.push(a.subtract(b));
-                        } else if (element.token === '*') {
+                        }
+                        else if (element.token === '*') {
                             stack.push(a.multiply(b));
-                        } else if (element.token === '/') {
+                        }
+                        else if (element.token === '/') {
                             if (b.degree().isStrictlyPositive()) {
                                 console.log('divide by a polynom -> should create a rational polynom !');
-                            } else {
+                            }
+                            else {
                                 stack.push(a.divide(b.monoms[0].coefficient));
                             }
-                        } else if (element.token === '^') {
+                        }
+                        else if (element.token === '^') {
                             if (b.degree().isStrictlyPositive()) {
                                 console.error('Cannot elevate a polynom with another polynom !');
-                            } else {
+                            }
+                            else {
                                 if (b.monoms[0].coefficient.isRelative()) {
                                     // Integer power
                                     stack.push(a.pow(b.monoms[0].coefficient.value));
-                                } else {
+                                }
+                                else {
                                     // Only allow power if the previous polynom is only a monom, without coefficient.
                                     if (a.monoms.length === 1 && a.monoms[0].coefficient.isOne()) {
                                         for (let letter in a.monoms[0].literal) {
                                             a.monoms[0].literal[letter].multiply(b.monoms[0].coefficient);
                                         }
                                         stack.push(a);
-                                    } else {
+                                    }
+                                    else {
                                         console.error('Cannot have power with fraction');
                                     }
                                 }
                             }
                         }
-                    } else {
+                    }
+                    else {
                         if (element.token === '-') {
                             stack.push(stack.pop().opposed());
-                        } else {
+                        }
+                        else {
                             throw "Error parsing the polynom " + this._rawString;
                         }
                     }
@@ -314,7 +324,8 @@ class Polynom {
             }
             else if (typeof value === 'number' && Number.isSafeInteger(value)) {
                 return this.divideByInteger(value);
-            } else if (value instanceof Polynom) {
+            }
+            else if (value instanceof Polynom) {
                 if (value.monoms.length === 1 && value.variables.length === 0) {
                     return this.divideByFraction(value.monoms[0].coefficient);
                 }
@@ -608,7 +619,8 @@ class Polynom {
                 }
                 else {
                     // Get the first and last monom and build all their dividers.
-                    let m1 = P.monoms[0].dividers, m2 = P.monoms[P.monoms.length - 1].dividers;
+                    // let m1 = P.monoms[0].dividers,
+                    //     m2 = P.monoms[P.monoms.length - 1].dividers
                     // Create the list of all "potential" polynom dividers.
                     let allDividers = this._getAllPotentialFactors(P, letter);
                     allDividers.every(div => {

@@ -214,7 +214,7 @@ class PolynomExpProduct {
                 return this._integrateWithInternalDerivative(this._factors[1], this._factors[0], letter);
             }
         }
-
+        return;
     }
     applyMathFunction(mathFn) {
         this._fn = mathFn;
@@ -239,7 +239,7 @@ class PolynomExpProduct {
                 return new PolynomExpProduct(new PolynomExpFactor(P.degree.clone().add(1).invert(), 1), new PolynomExpFactor(quotient, 1), new PolynomExpFactor(P.polynom.clone(), P.degree.clone().add(1)));
             }
         }
-
+        return;
     }
 }
 exports.PolynomExpProduct = PolynomExpProduct;
