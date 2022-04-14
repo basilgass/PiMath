@@ -199,4 +199,5 @@ export declare class Monom {
      * @param M
      */
     areEquals: (...M: Monom[]) => boolean;
+    isDivisible: (div: Monom) => boolean;
 }

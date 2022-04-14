@@ -973,4 +973,20 @@ export class Monom {
         return true;
     };
 
+    isDivisible = (div:Monom):boolean => {
+        // For all variables (letters), the current monom must have a degree higher than the divider
+        if(div.degree().isStrictlyPositive()) {
+            for (let letter of div.variables) {
+                if (!this.degree(letter).geq(div.degree(letter))) {
+                    return false
+                }
+            }
+        }
+
+        // If the coefficient is rational, we suppose we don't need to check the division by the coefficient.
+        if(this.coefficient.isRational() || div.coefficient.isRational()){return true}
+
+        return this.coefficient.clone().divide(div.coefficient).isRelative()
+    }
+
 }

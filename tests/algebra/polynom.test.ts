@@ -3,6 +3,7 @@ import {Random} from "../../src/maths/randomization/random";
 import {describe} from "mocha";
 import {Polynom} from "../../src/maths/algebra/polynom";
 import {Fraction} from "../../src/maths/coefficients/fraction";
+import exp = require("constants");
 
 describe('Polynom tests', () => {
     it('Parse polynom', () => {
@@ -14,7 +15,6 @@ describe('Polynom tests', () => {
     it('Parse polynom with coefficient as fraction', () => {
         const P = new Polynom('-3/5x-2')
 
-        console.log(P.tex)
         expect(P.tex).to.be.equal('-\\frac{ 3 }{ 5 }x-2')
     })
 
@@ -86,8 +86,7 @@ describe('Polynom tests', () => {
         let P = new Polynom('x^6-16x^5-58x^4+1592x^3-1207x^2-37576x+94864')
 
         P.factorize()
-
-        console.log(P.factors.map(x=>x.tex))
+        expect(P.factors.map(x=>x.tex)).to.have.all.members([ 'x-4', 'x-4', 'x+7', 'x+7', 'x-11', 'x-11' ])
     });
 })
 

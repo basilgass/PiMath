@@ -524,6 +524,21 @@ class Monom {
             // All checks passed.
             return true;
         };
+        this.isDivisible = (div) => {
+            // For all variables (letters), the current monom must have a degree higher than the divider
+            if (div.degree().isStrictlyPositive()) {
+                for (let letter of div.variables) {
+                    if (!this.degree(letter).geq(div.degree(letter))) {
+                        return false;
+                    }
+                }
+            }
+            // If the coefficient is rational, we suppose we don't need to check the division by the coefficient.
+            if (this.coefficient.isRational() || div.coefficient.isRational()) {
+                return true;
+            }
+            return this.coefficient.clone().divide(div.coefficient).isRelative();
+        };
         this.zero();
         if (value !== undefined) {
             // A string is given - try to parse the value.

@@ -36,7 +36,7 @@ describe('Numerical expression', () => { // the tests container
 
         const expr = new NumExp('3x+5')
 
-        console.log(expr.rpn)
+        // console.log(expr.rpn)
 
     });
 });

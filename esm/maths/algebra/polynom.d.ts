@@ -6,6 +6,10 @@ import { Token } from '../shutingyard';
 import { Fraction } from "../coefficients/fraction";
 import { ISolution } from "./equation";
 export declare type PolynomParsingType = string | Polynom | number | Fraction | Monom;
+interface IEuclidian {
+    quotient: Polynom;
+    reminder: Polynom;
+}
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -14,15 +18,30 @@ export declare type PolynomParsingType = string | Polynom | number | Fraction | 
  */
 export declare class Polynom {
     private _rawString;
+    private _euclidianCache;
+    get euclidianCache(): {
+        [p: string]: IEuclidian;
+    };
+    set euclidianCache(value: {
+        [p: string]: IEuclidian;
+    });
     /**
      *
      * @param {string} polynomString (optional) Default polynom to parse on class creation
      * @param values
      */
     constructor(polynomString?: PolynomParsingType, ...values: unknown[]);
+    private _dirty_zeroes;
+    get dirty_zeroes(): boolean;
+    set dirty_zeroes(value: boolean);
+    private _dirty_factors;
+    get dirty_factors(): boolean;
+    set dirty_factors(value: boolean);
     private _monoms;
     get monoms(): Monom[];
     set monoms(M: Monom[]);
+    private _zeroes;
+    get zeroes(): ISolution[];
     private _factors;
     get factors(): Polynom[];
     set factors(value: Polynom[]);
@@ -37,6 +56,7 @@ export declare class Polynom {
     get variables(): string[];
     get numberOfVars(): number;
     get plotFunction(): string;
+    mark_as_dirty: () => void;
     addToken: (stack: Polynom[], element: Token) => void;
     /**
      * Parse a string to a polynom.
@@ -64,10 +84,7 @@ export declare class Polynom {
      * @param P
      * returns {quotient: Polynom, reminder: Polynom}
      */
-    euclidian: (P: Polynom) => {
-        quotient: Polynom;
-        reminder: Polynom;
-    };
+    euclidian: (P: Polynom) => IEuclidian;
     divide: (value: unknown) => Polynom;
     pow: (nb: number) => Polynom;
     /**
@@ -102,6 +119,7 @@ export declare class Polynom {
      * @param maxValue Defines the greatest value to search to (default is 20).
      */
     factorize: (letter?: string) => Polynom[];
+    isDividableBy: (div: Polynom) => boolean;
     getZeroes: () => ISolution[];
     monomByDegree: (degree?: Fraction | number, letter?: string) => Monom;
     monomsByDegree: (degree?: number | Fraction, letter?: string) => Monom[];
@@ -132,3 +150,4 @@ export declare class Polynom {
     private _factorize2ndDegree;
     private _factorizeByGroups;
 }
+export {};

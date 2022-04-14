@@ -18,7 +18,7 @@ describe('Monom with integer power', () => {
         expect(M1.tex).to.be.equal('3x^{5}')
 
         const M2 = new Monom('2/3x^2yz^3y^4')
-        expect(M2.display).to.be.equal('2/3x^2y^5z^3')
+        expect(M2.display).to.be.equal('2/3x^(2)y^(5)z^(3)')
 
         const M3 = new Monom('-3x^(-2)')
         expect(M3.tex).to.be.equal('-3x^{-2}')
@@ -49,7 +49,7 @@ describe('Monom with integer power', () => {
 
     it('integrate', () => { // the single test
         const options = new Monom('7x^3'); // this will be your class
-        expect(options.primitive().display).to.be.equal('7/4x^4');
+        expect(options.primitive().display).to.be.equal('7/4x^(4)');
     });
 
     it('randomize', function () {
@@ -73,9 +73,6 @@ describe('Monom with fraction power', () => {
 
         M.multiply(N.clone())
 
-        console.log(M.tex)
-
-        // TODO: Problem while displaying numerical expression
         expect(M.tex).to.be.equal('-\\frac{ 7 }{ 5 }x^{\\tfrac{ 22 }{ 15 }}')
     })
 })
