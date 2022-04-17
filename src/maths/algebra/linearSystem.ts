@@ -325,7 +325,6 @@ export class LinearSystem {
         let str: string = '';
 
         for (let E of this._equations) {
-            console.log(E.tex);
             str += `${E.tex}\\n}`;
         }
 

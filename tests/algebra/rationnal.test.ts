@@ -85,6 +85,24 @@ describe('Rational tests', () => {
         ])
     });
 
+    it('should make a table of grows', function () {
+        const FR = new Rational(
+                'x(x+6)',
+                'x-2'
+            ),
+            FRdx = FR.clone().derivative()
+
+        let tos = FRdx.makeTableOfSigns(FR)
+
+        expect(tos.zeroes.map(x => x.tex)).to.have.all.members(['-2', '2', '6'])
+
+        console.log(tos.tex)
+        console.log(tos.variation.join(','))
+        console.log(tos.signs)
+        expect(tos.signs).to.be.eql([['', '-', 't', '-', 'z', '+', ''], ['', '-', 'd', '+', 't', '+', ''], [], ['', '+', 'd', '-', 'z', '+', '']])
+
+    });
+
     it('should calculate the derivative', function () {
         const FR = new Rational(
             new Polynom('x^2+5x+6'),

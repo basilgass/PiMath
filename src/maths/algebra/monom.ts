@@ -808,6 +808,9 @@ export class Monom {
         }
 
         if (typeof values === 'object') {
+            if(this.variables.length===0){
+                return this.coefficient
+            }
             for (let L in this._literal) {
                 if (values[L] === undefined) {
                     return new Fraction().zero();

@@ -10,7 +10,11 @@ import {Equation, ISolution} from "./equation";
 
 export type PolynomParsingType = string | Polynom | number | Fraction | Monom
 
-interface IEuclidian{ quotient: Polynom, reminder: Polynom }
+export interface IEuclidian {
+    quotient: Polynom,
+    reminder: Polynom
+}
+
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -18,16 +22,14 @@ interface IEuclidian{ quotient: Polynom, reminder: Polynom }
  * ```
  */
 export class Polynom {
+    private _dirty_factors: boolean
+    private _dirty_zeroes: boolean
+    private _euclidianCache: { [Key: string]: IEuclidian }
+    private _factors: Polynom[];
+    private _monoms: Monom[];
     private _rawString: string;
-
-    private _euclidianCache: {[Key:string]:IEuclidian}
-    get euclidianCache(): { [p: string]: IEuclidian } {
-        return this._euclidianCache;
-    }
-
-    set euclidianCache(value: { [p: string]: IEuclidian }) {
-        this._euclidianCache = value;
-    }
+    private _texString: string;
+    private _zeroes: ISolution[]
 
     /**
      *
@@ -45,8 +47,13 @@ export class Polynom {
         return this;
     }
 
-    // Getter and setter
-    private _dirty_zeroes: boolean
+    get euclidianCache(): { [p: string]: IEuclidian } {
+        return this._euclidianCache;
+    }
+
+    set euclidianCache(value: { [p: string]: IEuclidian }) {
+        this._euclidianCache = value;
+    }
 
     get dirty_zeroes(): boolean {
         return this._dirty_zeroes;
@@ -55,8 +62,6 @@ export class Polynom {
     set dirty_zeroes(value: boolean) {
         this._dirty_zeroes = value;
     }
-
-    private _dirty_factors: boolean
 
     // ------------------------------------------
     get dirty_factors(): boolean {
@@ -67,8 +72,6 @@ export class Polynom {
         this._dirty_factors = value;
     }
 
-    private _monoms: Monom[];
-
     // ------------------------------------------
     get monoms() {
         return this._monoms;
@@ -78,24 +81,18 @@ export class Polynom {
         this._monoms = M;
     }
 
-    private _zeroes: ISolution[]
-
     get zeroes(): ISolution[] {
         return this.getZeroes()
     }
 
-    private _factors: Polynom[];
-
     get factors(): Polynom[] {
-        return this._factors;
+        return this.factorize()
     }
 
     set factors(value: Polynom[]) {
         this.mark_as_dirty()
         this._factors = value;
     }
-
-    private _texString: string;
 
     get texString(): string {
         return this._texString;
@@ -397,7 +394,7 @@ export class Polynom {
      */
     euclidian = (P: Polynom): IEuclidian => {
 
-        if(this.euclidianCache[P.tex]!==undefined){
+        if (this.euclidianCache[P.tex] !== undefined) {
             return this.euclidianCache[P.tex]
         }
 
@@ -748,7 +745,6 @@ export class Polynom {
             dP.add(m.derivative(letter));
         }
         return dP;
-
     }
     // ------------------------------------------
     // Misc polynoms functions
@@ -784,7 +780,6 @@ export class Polynom {
      */
     factorize = (letter?: string): Polynom[] => {
         if (this.dirty_factors) {
-
             let factors: Polynom[] = [];
 
             let P = this.clone().reorder()
@@ -803,7 +798,6 @@ export class Polynom {
                 maxDegree = 1
             while (securityLoop >= 0) {
                 securityLoop--
-
                 if (P.monoms.length < 2) {
                     // The polynom has only one monom => 7x^2
                     // No need to continue.
@@ -823,7 +817,6 @@ export class Polynom {
                     let allDividers: Polynom[] = this._getAllPotentialFactors(P, maxDegree, letter)
                     maxDegree = P.degree(letter).value
 
-
                     // Actually: 100ms
                     while (allDividers.length > 0) {
                         let div = allDividers[0]
@@ -832,11 +825,11 @@ export class Polynom {
                             // Not dividable. Remove it from the list
                             allDividers.shift()
                         } else {
-                            // Add the factor
-                            factors.push(div)
-
                             // It's dividable - so make the division
                             let result = P.euclidian(div)
+
+                            // Add the factor
+                            factors.push(div)
 
                             // As it's dividable, get the quotient.
                             P = result.quotient.clone()
@@ -849,10 +842,14 @@ export class Polynom {
                                     dC = x.monoms[x.monoms.length - 1]
 
                                 // Check last item (degree zero)
-                                if(!pC.isDivisible(dC)){return false}
+                                if (!pC.isDivisible(dC)) {
+                                    return false
+                                }
 
                                 // Check the first item (degree max)
-                                if(!pX.isDivisible(dX)){return false}
+                                if (!pX.isDivisible(dX)) {
+                                    return false
+                                }
 
                                 return true
                             })
@@ -867,13 +864,13 @@ export class Polynom {
             }
 
             // Save the factors
-            this.factors = factors
+            this._factors = factors
 
             // The factors list is no more dirty
             this.dirty_factors = false
         }
 
-        return this.factors;
+        return this._factors;
     }
 
     isDividableBy = (div: Polynom): boolean => {
@@ -1048,7 +1045,7 @@ export class Polynom {
         let allDividers: Polynom[] = []
         m1.forEach(m1d => {
             // Get only polynom that has a degree less than a specific value
-            if(m1d.degree(letter).leq(maxDegree)) {
+            if (m1d.degree(letter).leq(maxDegree)) {
                 m2.forEach(m2d => {
                     if (m1d.degree(letter).isNotEqual(m2d.degree(letter))) {
                         allDividers.push(new Polynom(m1d, m2d))

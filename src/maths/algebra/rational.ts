@@ -3,15 +3,48 @@
  * @module Polynom
  */
 
-import {Polynom} from "./polynom";
+import {IEuclidian, Polynom} from "./polynom";
 import {Fraction} from "../coefficients/fraction";
 import {literalType} from "./monom";
 import {Equation, ISolution, PARTICULAR_SOLUTION} from "./equation";
+import {Point} from "../geometry/point";
+
+export enum FUNCTION_EXTREMA {
+    MIN = "min",
+    MAX = "max",
+    FLAT = "flat",
+    NOTHING = ""
+}
+
+interface IExtrema {
+    tex: {
+        x: string,
+        y: string
+    },
+    type: FUNCTION_EXTREMA,
+    value: {
+        x: number,
+        y: number
+    }
+
+}
+
+interface ITableOfSign {
+    extrema: IExtrema[]
+    factors: Polynom[],
+    hasGrow: boolean,
+    signs: (string[])[],
+    tex: string
+    variation: string[]
+    zeroes: ISolution[],
+}
 
 /**
  * Rational class can handle rational polynoms
  */
 export class Rational {
+    private _denominator: Polynom;
+    private _numerator: Polynom;
     private _rawString: string;
 
     /**
@@ -38,13 +71,9 @@ export class Rational {
 
     }
 
-    private _numerator: Polynom;
-
     get numerator(): Polynom {
         return this._numerator
     }
-
-    private _denominator: Polynom;
 
     get denominator(): Polynom {
         return this._denominator
@@ -58,11 +87,15 @@ export class Rational {
         return `\\frac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`
     }
 
-    clone = (): Rational => {
-        this._numerator = this._numerator.clone()
-        this._denominator = this._denominator.clone()
+    get plotFunction(): string {
+        return `(${this._numerator.plotFunction})/(${this._denominator.plotFunction})`
+    }
 
-        return this;
+    clone = (): Rational => {
+        return new Rational(
+            this._numerator.clone(),
+            this._denominator.clone()
+        )
     }
 
     domain = (): string => {
@@ -126,6 +159,7 @@ export class Rational {
         this._numerator.opposed();
         return this;
     }
+
     add = (R: Rational): Rational => {
         // 1. Make sure both rational are at the same denominator
         // 2. Add the numerators.
@@ -147,6 +181,11 @@ export class Rational {
         return this.add(R.clone().opposed())
     }
 
+    euclidian = (): IEuclidian => {
+        return this._numerator.euclidian(this._denominator)
+    }
+
+    // TODO : where and how is used limits ?
     limits = (value: Fraction | number, offset?: string, letter?: string): Fraction => {
         if (value === Infinity || value === -Infinity) {
             let {quotient, reminder} = this._numerator.clone().euclidian(this._denominator)
@@ -193,14 +232,16 @@ export class Rational {
         }
     }
 
-    makeTableOfSigns = (): { factors: Polynom[], zeroes: ISolution[], signs: (string[])[], tex: string } => {
+    makeTableOfSigns = (dxFromFx?: Rational): ITableOfSign => {
         // Factorize the numerator and the denominator
         this._numerator.factorize()
         this._denominator.factorize()
 
         let zeroes = Equation.makeSolutionsUnique([...this._numerator.getZeroes(), ...this._denominator.getZeroes()], true).filter(x => !isNaN(x.value)),
             NFactors = this._numerator.factors,
-            DFactors = this._denominator.factors
+            DFactors = this._denominator.factors,
+            extrema: IExtrema[] = [],
+            varLine: string[] = []
 
         let tableOfSigns: (string[])[] = [],
             result: string[] = []
@@ -216,6 +257,8 @@ export class Rational {
         tableOfSigns.push([])
 
         // Add the final row as cumulative
+
+        // Initiaise the line.
         let resultLine: string[] = tableOfSigns[0].map((x, index) => {
             if (index === 0) {
                 return ''
@@ -248,24 +291,100 @@ export class Rational {
             }
         }
 
-        // Add the variation line.
         // TODO: add the variation line.
 
+        if (dxFromFx !== undefined) {
+            // Add the variation line.
+
+
+            // \tkzTabLine{  ,  +  ,  z    ,  -  ,  d  ,  -  ,  z  ,  +  ,  }
+            // \tkzTabVar{     -/  , +/$3$ ,       -D+/ , -/$1$  , +/  }
+            // The first and last line aren't used.
+            varLine.push(resultLine[1] === '+' ? '/-' : '/+')
+            for (let i = 1; i < resultLine.length - 1; i++) {
+                if (resultLine[i] === "z") {
+                    varLine.push(`${resultLine[i - 1]}/\\(EXT\\)/${resultLine[i + 1] === '+' ? '-' : '+'}`)
+                } else if (resultLine[i] === 'd') {
+                    varLine.push(`${resultLine[i - 1]}D${resultLine[i + 1] === '+' ? '-' : '+'}/`)
+                }
+            }
+            varLine.push(`${resultLine[resultLine.length - 2]}/`)
+
+            // Add the min and max
+            for (let i = 0; i < zeroes.length; i++) {
+                let pos = 2 * i + 2
+                if (resultLine[pos] === 'z') {
+                    // It's a zero. Get the coordinates
+                    let x: number, y: number, zero = zeroes[i].exact,
+                        pt: Point,
+                        xTex: string, yTex: string,
+                        pointType: FUNCTION_EXTREMA
+
+
+                    if (zero instanceof Fraction) {
+                        let value: Fraction = zero,
+                            evalY = dxFromFx.evaluate(value)
+
+                        x = zero.value
+                        y = evalY.value
+                        xTex = zero.tex
+                        yTex = evalY.tex
+                    } else {
+                        x = zeroes[i].value
+                        y = dxFromFx.evaluate(zeroes[i].value).value
+
+                        xTex = x.toFixed(2)
+                        yTex = y.toFixed(2)
+                    }
+
+                    if (resultLine[pos - 1] === resultLine[pos + 1]) {
+                        pointType = FUNCTION_EXTREMA.FLAT
+                    } else if (resultLine[pos - 1] === '+') {
+                        pointType = FUNCTION_EXTREMA.MAX
+                    } else {
+                        pointType = FUNCTION_EXTREMA.MIN
+
+                    }
+
+                    // Add the point to the list
+                    extrema.push({
+                        type: pointType,
+                        tex: {x: xTex, y: yTex},
+                        value: {x, y}
+                    })
+                }
+            }
+        }
+
+        // Add the result line.
         tableOfSigns.push(resultLine)
 
         let tos = {
+            hasGrow: dxFromFx !== undefined,
             factors: [...NFactors, ...DFactors],
-            zeroes: zeroes,
+            zeroes,
             signs: tableOfSigns,
-            tex: ''
+            tex: '',
+            extrema: extrema,
+            variation: varLine
         }
+
 
         this._makeTexFromTableOfSigns(tos)
 
         return tos
     }
 
-    private _makeTexFromTableOfSigns = (tos: { factors: Polynom[], zeroes: ISolution[], signs: (string[])[], tex: string }): string => {
+    evaluate = (values: literalType | Fraction | number): Fraction => {
+        const r = new Fraction().zero();
+
+        let N = this._numerator.evaluate(values),
+            D = this._denominator.evaluate(values)
+
+        return N.divide(D)
+    };
+
+    private _makeTexFromTableOfSigns = (tos: ITableOfSign): string => {
 
         let tex = `\\begin{tikzpicture}
 \\tkzTabInit[lgt=3,espcl=2,deltacl=0]{/1.2,\\(${tos.factors.map(x => x.tex).join('\\)/1,\\(')}\\)/1,/.1,\\(f(x)\\)/1.2}{{\\scriptsize \\hspace{1cm} \\(-\\infty\\)},\\(${tos.zeroes.map(x => x.tex).join('\\),\\(')}\\),{\\scriptsize \\hspace{-1cm} \\(+\\infty\\)}}`
@@ -278,6 +397,7 @@ export class Rational {
 
         return tex
     }
+
     private _makeOneLineOfTableOfSigns = (factor: Polynom, zeroes: ISolution[], zeroSign: string): string[] => {
         let oneLine: string[] = [],
             currentZero = factor.getZeroes().map(x => x.tex)
@@ -289,8 +409,6 @@ export class Rational {
         } else {
             oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-')
         }
-
-
         for (let i = 0; i < zeroes.length; i++) {
             // Add the zero if it's the current one
             oneLine.push(currentZero.includes(zeroes[i].tex) ? zeroSign : 't')
@@ -303,23 +421,8 @@ export class Rational {
             }
 
         }
-
-
         oneLine.push('')
 
         return oneLine
     }
-
-    get plotFunction():string {
-        return `(${this._numerator.plotFunction})/(${this._denominator.plotFunction})`
-    }
-
-    evaluate = (values: literalType | Fraction | number): Fraction => {
-        const r = new Fraction().zero();
-
-        let N = this._numerator.evaluate(values),
-            D = this._numerator.evaluate(values)
-
-        return N.divide(D)
-    };
 }
