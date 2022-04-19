@@ -21,7 +21,6 @@ const rational_1 = require("../rational");
 const fraction_1 = require("../../coefficients/fraction");
 class RationalStudy extends study_1.Study {
     constructor(fx) {
-        console.log('RATIONAL STUDY');
         super(fx);
         return this;
     }
@@ -31,7 +30,8 @@ class RationalStudy extends study_1.Study {
     }
     ;
     makeSigns() {
-        return this._getSigns(this.fx, this.zeroes);
+        let tos = this._getSigns(this.fx, this.zeroes);
+        return tos;
     }
     ;
     makeAsymptotes() {
@@ -99,10 +99,9 @@ class RationalStudy extends study_1.Study {
         let dx = this.fx.clone().derivative(),
             tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
         console.log(tos.factors.length, tos.signs.length);
-        let result = this.makeGrowsResult(this.fx, tos);
+        let result = this.makeGrowsResult(tos);
         tos.signs.push(result.growsLine);
         tos.extremes = result.extremes;
-        console.log(tos.signs.length);
         return tos;
     }
     ;
@@ -110,7 +109,7 @@ class RationalStudy extends study_1.Study {
         // Get the zeroes, make signs.
         let dx = this.derivative.fx.clone().derivative(),
             tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
-        let result = this.makeVariationsResult(this.fx, tos);
+        let result = this.makeVariationsResult(tos);
         tos.signs.push(result.varsLine);
         tos.extremes = result.extremes;
         return tos;
@@ -166,7 +165,8 @@ class RationalStudy extends study_1.Study {
             factors,
             zeroes,
             signs,
-            extremes: {}
+            extremes: {},
+            tex: ''
         };
     }
 }

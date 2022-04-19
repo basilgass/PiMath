@@ -9,7 +9,7 @@ describe('Study tests', () => {
             new Rational('(3x-2)(x-3)(x+4)', 'x^2-5x+6')
         )
 
-        console.log(study.tex)
+        console.log(study.texSigns)
         console.log(study.asymptotes)
         console.log(study.derivative.fx.texFactors)
         console.log(study.texGrows)

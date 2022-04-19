@@ -65,6 +65,7 @@ export interface ITableOfSigns {
     signs: (string[])[],
     type: TABLE_OF_SIGNS
     zeroes: IZero[],
+    tex: string
 }
 
 export enum TABLE_OF_SIGNS {
@@ -122,7 +123,7 @@ export class Study {
         return this._derivative;
     }
 
-    get tex(): string {
+    get texSigns(): string {
         return this._makeTexFromTableOfSigns(this._signs)
     }
 
@@ -144,6 +145,11 @@ export class Study {
         this._derivative = this.makeDerivative()
 
         this._variations = this.makeVariation()
+
+        this._signs.tex = this.texSigns
+        this._derivative.tex = this.texGrows
+        this._variations.tex = this.texVariations
+
     };
 
     indexOfZero = (zeroes: IZero[], zero: IZero | ISolution): number => {
@@ -223,7 +229,7 @@ export class Study {
         return resultLine
     }
 
-    makeGrowsResult = (fx: StudyableFunction, tos: ITableOfSigns): { growsLine: string[], extremes: { [Key: string]: IExtrema } } => {
+    makeGrowsResult = (tos: ITableOfSigns): { growsLine: string[], extremes: { [Key: string]: IExtrema } } => {
 
         // Use the last line (=> resultLine) to grab the necessary information
         let signsAsArray = Object.values(tos.signs),
@@ -247,7 +253,7 @@ export class Study {
 
                 if (zero instanceof Fraction) {
                     let value: Fraction = zero,
-                        evalY = fx.evaluate(value)
+                        evalY = this.fx.evaluate(value)
 
                     x = zero.value
                     y = evalY.value
@@ -255,7 +261,7 @@ export class Study {
                     yTex = evalY.tex
                 } else {
                     x = zeroes[i].value
-                    y = fx.evaluate(zeroes[i].value).value
+                    y = this.fx.evaluate(zeroes[i].value).value
 
                     xTex = x.toFixed(2)
                     yTex = y.toFixed(2)
@@ -298,7 +304,7 @@ export class Study {
         return {growsLine, extremes}
     }
 
-    makeVariationsResult = (fx: StudyableFunction, tos: ITableOfSigns): { varsLine: string[], extremes: { [Key: string]: IExtrema } } => {
+    makeVariationsResult = (tos: ITableOfSigns): { varsLine: string[], extremes: { [Key: string]: IExtrema } } => {
         // TODO: make variations result is not yet implemented.
         let extremes = {},
             varsLine: string[] = []
@@ -316,7 +322,8 @@ export class Study {
             factors: [],
             zeroes: [],
             signs: [],
-            extremes: {}
+            extremes: {},
+            tex: ''
         }
     };
 
@@ -331,7 +338,8 @@ export class Study {
             factors: [],
             zeroes: [],
             signs: [],
-            extremes: {}
+            extremes: {},
+            tex: ''
         }
     }
 
@@ -342,7 +350,8 @@ export class Study {
             factors: [],
             zeroes: [],
             signs: [],
-            extremes: {}
+            extremes: {},
+            tex: ''
         }
     }
 

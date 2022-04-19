@@ -24,7 +24,6 @@ export declare class Rational {
     get denominator(): Polynom;
     get tex(): string;
     get texFactors(): string;
-
     study: () => RationalStudy;
     clone: () => Rational;
     domain: () => string;

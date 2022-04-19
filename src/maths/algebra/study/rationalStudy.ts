@@ -30,8 +30,6 @@ import {Polynom} from "../polynom";
 
 export class RationalStudy extends Study {
     constructor(fx: StudyableFunction) {
-        console.log('RATIONAL STUDY')
-
         super(fx)
 
         return this
@@ -43,7 +41,8 @@ export class RationalStudy extends Study {
     };
 
     makeSigns(): ITableOfSigns {
-        return this._getSigns(this.fx, this.zeroes)
+        let tos = this._getSigns(this.fx, this.zeroes)
+        return tos
     };
 
     makeAsymptotes(): IAsymptote[] {
@@ -121,11 +120,9 @@ export class RationalStudy extends Study {
             tos = this._getSigns(dx, this._getZeroes(dx), TABLE_OF_SIGNS.GROWS)
 
         console.log(tos.factors.length, tos.signs.length)
-        let result = this.makeGrowsResult(this.fx, tos)
+        let result = this.makeGrowsResult(tos)
         tos.signs.push(result.growsLine)
         tos.extremes = result.extremes
-
-        console.log(tos.signs.length)
         return tos
     };
 
@@ -134,10 +131,9 @@ export class RationalStudy extends Study {
         let dx = this.derivative.fx.clone().derivative(),
             tos = this._getSigns(dx, this._getZeroes(dx), TABLE_OF_SIGNS.VARIATIONS)
 
-        let result = this.makeVariationsResult(this.fx, tos)
+        let result = this.makeVariationsResult(tos)
         tos.signs.push(result.varsLine)
         tos.extremes = result.extremes
-
         return tos
     };
 
@@ -202,7 +198,8 @@ export class RationalStudy extends Study {
             factors,
             zeroes,
             signs,
-            extremes: {}
+            extremes: {},
+            tex: ''
         }
     }
 }

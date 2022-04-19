@@ -17,17 +17,11 @@ import {IAsymptote, ITableOfSigns, IZero, Study, StudyableFunction} from "../stu
 
 export declare class RationalStudy extends Study {
     constructor(fx: StudyableFunction);
-
     makeZeroes(): IZero[];
-
     makeSigns(): ITableOfSigns;
-
     makeAsymptotes(): IAsymptote[];
-
     makeDerivative(): ITableOfSigns;
-
     makeVariation(): ITableOfSigns;
-
-    private _getSigns;
     private _getZeroes;
+    private _getSigns;
 }

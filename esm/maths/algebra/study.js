@@ -55,6 +55,9 @@ class Study {
             this._asymptotes = this.makeAsymptotes();
             this._derivative = this.makeDerivative();
             this._variations = this.makeVariation();
+            this._signs.tex = this.texSigns;
+            this._derivative.tex = this.texGrows;
+            this._variations.tex = this.texVariations;
         };
         this.indexOfZero = (zeroes, zero) => {
             for (let i = 0; i < zeroes.length; i++) {
@@ -118,7 +121,7 @@ class Study {
             }
             return resultLine;
         };
-        this.makeGrowsResult = (fx, tos) => {
+        this.makeGrowsResult = (tos) => {
             // Use the last line (=> resultLine) to grab the necessary information
             let signsAsArray = Object.values(tos.signs), resultLine = signsAsArray[signsAsArray.length - 1],
                 growsLine = [], extremes = {}, zeroes = tos.zeroes;
@@ -130,14 +133,14 @@ class Study {
                     // It's a zero. Get the coordinates
                     let x, y, zero = zeroes[i].exact, pt, xTex, yTex, pointType;
                     if (zero instanceof fraction_1.Fraction) {
-                        let value = zero, evalY = fx.evaluate(value);
+                        let value = zero, evalY = this.fx.evaluate(value);
                         x = zero.value;
                         y = evalY.value;
                         xTex = zero.tex;
                         yTex = evalY.tex;
                     } else {
                         x = zeroes[i].value;
-                        y = fx.evaluate(zeroes[i].value).value;
+                        y = this.fx.evaluate(zeroes[i].value).value;
                         xTex = x.toFixed(2);
                         yTex = y.toFixed(2);
                     }
@@ -172,7 +175,7 @@ class Study {
             growsLine.push(`${resultLine[resultLine.length - 2]}/`);
             return {growsLine, extremes};
         };
-        this.makeVariationsResult = (fx, tos) => {
+        this.makeVariationsResult = (tos) => {
             // TODO: make variations result is not yet implemented.
             let extremes = {}, varsLine = [];
             return {varsLine, extremes};
@@ -220,12 +223,15 @@ class Study {
     get asymptotes() {
         return this._asymptotes;
     }
+
     get derivative() {
         return this._derivative;
     }
-    get tex() {
+
+    get texSigns() {
         return this._makeTexFromTableOfSigns(this._signs);
     }
+
     get texGrows() {
         return this._makeTexFromTableOfSigns(this._derivative);
     }
@@ -243,7 +249,8 @@ class Study {
             factors: [],
             zeroes: [],
             signs: [],
-            extremes: {}
+            extremes: {},
+            tex: ''
         };
     }
     ;
@@ -257,7 +264,8 @@ class Study {
             factors: [],
             zeroes: [],
             signs: [],
-            extremes: {}
+            extremes: {},
+            tex: ''
         };
     }
     makeVariation() {
@@ -267,7 +275,8 @@ class Study {
             factors: [],
             zeroes: [],
             signs: [],
-            extremes: {}
+            extremes: {},
+            tex: ''
         };
     }
 }

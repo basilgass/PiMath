@@ -145,8 +145,7 @@ class Rational {
         }
         if (denominator instanceof polynom_1.Polynom) {
             this._denominator = denominator.clone();
-        }
-        else if (typeof denominator === 'string') {
+        } else if (typeof denominator === 'string') {
             this._denominator = new polynom_1.Polynom(denominator);
         }
         else {

@@ -55,6 +55,7 @@ export interface ITableOfSigns {
     signs: (string[])[];
     type: TABLE_OF_SIGNS;
     zeroes: IZero[];
+    tex: string;
 }
 export declare enum TABLE_OF_SIGNS {
     DEFAULT = 0,
@@ -83,9 +84,7 @@ export declare class Study {
     private _signs;
     private _variations;
     private _zeroes;
-
     constructor(fx: StudyableFunction);
-
     get zeroes(): IZero[];
 
     get domain(): string;
@@ -96,38 +95,34 @@ export declare class Study {
 
     get derivative(): ITableOfSigns;
 
-    get tex(): string;
-
-    get texGrows(): string;
-
-    get texVariations(): string;
-
-    indexOfZero: (zeroes: IZero[], zero: IZero | ISolution) => number;
-    makeGrowsResult: (fx: StudyableFunction, tos: ITableOfSigns) => {
+    makeGrowsResult: (tos: ITableOfSigns) => {
         growsLine: string[];
         extremes: {
             [Key: string]: IExtrema;
         };
     };
+
+    get texGrows(): string;
+
+    get texVariations(): string;
+
     makeOneLineForSigns: (factor: Polynom, zeroes: IZero[], zeroSign: ZEROTYPE) => string[];
+    indexOfZero: (zeroes: IZero[], zero: IZero | ISolution) => number;
     makeSignsResult: (signs: (string[])[]) => string[];
     makeStudy: () => void;
-    makeVariationsResult: (fx: StudyableFunction, tos: ITableOfSigns) => {
+    makeVariationsResult: (tos: ITableOfSigns) => {
         varsLine: string[];
         extremes: {
             [Key: string]: IExtrema;
         };
     };
 
+    get texSigns(): string;
+
     makeZeroes(): IZero[];
-
     makeSigns(): ITableOfSigns;
-
     makeAsymptotes(): IAsymptote[];
-
     makeDerivative(): ITableOfSigns;
-
     makeVariation(): ITableOfSigns;
-
     private _makeTexFromTableOfSigns;
 }

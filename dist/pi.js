@@ -3493,6 +3493,9 @@ class Study {
             this._asymptotes = this.makeAsymptotes();
             this._derivative = this.makeDerivative();
             this._variations = this.makeVariation();
+            this._signs.tex = this.texSigns;
+            this._derivative.tex = this.texGrows;
+            this._variations.tex = this.texVariations;
         };
         this.indexOfZero = (zeroes, zero) => {
             for (let i = 0; i < zeroes.length; i++) {
@@ -3559,7 +3562,7 @@ class Study {
             }
             return resultLine;
         };
-        this.makeGrowsResult = (fx, tos) => {
+        this.makeGrowsResult = (tos) => {
             // Use the last line (=> resultLine) to grab the necessary information
             let signsAsArray = Object.values(tos.signs), resultLine = signsAsArray[signsAsArray.length - 1], growsLine = [], extremes = {}, zeroes = tos.zeroes;
             // Get the extremes
@@ -3570,7 +3573,7 @@ class Study {
                     // It's a zero. Get the coordinates
                     let x, y, zero = zeroes[i].exact, pt, xTex, yTex, pointType;
                     if (zero instanceof fraction_1.Fraction) {
-                        let value = zero, evalY = fx.evaluate(value);
+                        let value = zero, evalY = this.fx.evaluate(value);
                         x = zero.value;
                         y = evalY.value;
                         xTex = zero.tex;
@@ -3578,7 +3581,7 @@ class Study {
                     }
                     else {
                         x = zeroes[i].value;
-                        y = fx.evaluate(zeroes[i].value).value;
+                        y = this.fx.evaluate(zeroes[i].value).value;
                         xTex = x.toFixed(2);
                         yTex = y.toFixed(2);
                     }
@@ -3616,7 +3619,7 @@ class Study {
             growsLine.push(`${resultLine[resultLine.length - 2]}/`);
             return { growsLine, extremes };
         };
-        this.makeVariationsResult = (fx, tos) => {
+        this.makeVariationsResult = (tos) => {
             // TODO: make variations result is not yet implemented.
             let extremes = {}, varsLine = [];
             return { varsLine, extremes };
@@ -3669,7 +3672,7 @@ class Study {
     get derivative() {
         return this._derivative;
     }
-    get tex() {
+    get texSigns() {
         return this._makeTexFromTableOfSigns(this._signs);
     }
     get texGrows() {
@@ -3689,7 +3692,8 @@ class Study {
             factors: [],
             zeroes: [],
             signs: [],
-            extremes: {}
+            extremes: {},
+            tex: ''
         };
     }
     ;
@@ -3703,7 +3707,8 @@ class Study {
             factors: [],
             zeroes: [],
             signs: [],
-            extremes: {}
+            extremes: {},
+            tex: ''
         };
     }
     makeVariation() {
@@ -3713,7 +3718,8 @@ class Study {
             factors: [],
             zeroes: [],
             signs: [],
-            extremes: {}
+            extremes: {},
+            tex: ''
         };
     }
 }
@@ -3748,7 +3754,6 @@ const rational_1 = __webpack_require__(107);
 const fraction_1 = __webpack_require__(506);
 class RationalStudy extends study_1.Study {
     constructor(fx) {
-        console.log('RATIONAL STUDY');
         super(fx);
         return this;
     }
@@ -3758,7 +3763,8 @@ class RationalStudy extends study_1.Study {
     }
     ;
     makeSigns() {
-        return this._getSigns(this.fx, this.zeroes);
+        let tos = this._getSigns(this.fx, this.zeroes);
+        return tos;
     }
     ;
     makeAsymptotes() {
@@ -3828,17 +3834,16 @@ class RationalStudy extends study_1.Study {
     makeDerivative() {
         let dx = this.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
         console.log(tos.factors.length, tos.signs.length);
-        let result = this.makeGrowsResult(this.fx, tos);
+        let result = this.makeGrowsResult(tos);
         tos.signs.push(result.growsLine);
         tos.extremes = result.extremes;
-        console.log(tos.signs.length);
         return tos;
     }
     ;
     makeVariation() {
         // Get the zeroes, make signs.
         let dx = this.derivative.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
-        let result = this.makeVariationsResult(this.fx, tos);
+        let result = this.makeVariationsResult(tos);
         tos.signs.push(result.varsLine);
         tos.extremes = result.extremes;
         return tos;
@@ -3895,7 +3900,8 @@ class RationalStudy extends study_1.Study {
             factors,
             zeroes,
             signs,
-            extremes: {}
+            extremes: {},
+            tex: ''
         };
     }
 }
