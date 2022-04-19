@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", {value: true});
 exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
 const fraction_1 = require("../coefficients/fraction");
+const numexp_1 = require("../expressions/numexp");
 var ZEROTYPE;
 (function (ZEROTYPE) {
     ZEROTYPE["ZERO"] = "z";
@@ -132,6 +133,8 @@ class Study {
                 if (resultLine[pos] === 'z') {
                     // It's a zero. Get the coordinates
                     let x, y, zero = zeroes[i].exact, pt, xTex, yTex, pointType;
+                    // TODO: NumExp should parse something that isn't yet plotFunction
+                    let exp = new numexp_1.NumExp(this.fx.plotFunction);
                     if (zero instanceof fraction_1.Fraction) {
                         let value = zero, evalY = this.fx.evaluate(value);
                         x = zero.value;
@@ -140,7 +143,7 @@ class Study {
                         yTex = evalY.tex;
                     } else {
                         x = zeroes[i].value;
-                        y = this.fx.evaluate(zeroes[i].value).value;
+                        y = exp.evaluate({x});
                         xTex = x.toFixed(2);
                         yTex = y.toFixed(2);
                     }
@@ -207,6 +210,37 @@ class Study {
             tex += `\n\\end{tikzpicture}`;
             return tex;
         };
+        this.drawCode = () => {
+            // Function as string
+            let code = `f(x)=${this.fx.plotFunction}`;
+            // Asymptotes
+            let i = 1;
+            this.asymptotes.forEach(asymptote => {
+                if (asymptote.type === ASYMPTOTE.VERTICAL) {
+                    code += `\nav_${i}=line x=${asymptote.zero.value}->red,dash`;
+                    i++;
+                } else if (asymptote.type === ASYMPTOTE.HORIZONTAL) {
+                    code += `\nah=line y=${asymptote.fx.monoms[0].coefficient.value}->orange,dash`;
+                } else if (asymptote.type === ASYMPTOTE.SLOPE) {
+                    code += `\nao=line y=${asymptote.fx.plotFunction}->red,dash`;
+                }
+                i++;
+            });
+            // Extremes
+            for (let zero in this.derivative.extremes) {
+                let extreme = this.derivative.extremes[zero];
+                code += `\nM_${i}(${extreme.value.x},${extreme.value.y})*`;
+                i++;
+            }
+            // Zeroes
+            this.zeroes.forEach(zero => {
+                if (zero.type === ZEROTYPE.ZERO) {
+                    code += `\nZ_${i}(${zero.value},0)*`;
+                    i++;
+                }
+            });
+            return code;
+        };
         this.fx = fx;
         this.makeStudy();
         return this;
@@ -223,15 +257,12 @@ class Study {
     get asymptotes() {
         return this._asymptotes;
     }
-
     get derivative() {
         return this._derivative;
     }
-
     get texSigns() {
         return this._makeTexFromTableOfSigns(this._signs);
     }
-
     get texGrows() {
         return this._makeTexFromTableOfSigns(this._derivative);
     }

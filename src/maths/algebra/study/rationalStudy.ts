@@ -36,7 +36,6 @@ export class RationalStudy extends Study {
     }
 
     makeZeroes(): IZero[] {
-        console.log('GETTING ZEROES')
         return this._getZeroes(this.fx)
     };
 
@@ -68,6 +67,7 @@ export class RationalStudy extends Study {
             }
 
             asymptotes.push({
+                fx: null,
                 type: Ztype,
                 tex: tex,
                 zero: zero,
@@ -80,19 +80,22 @@ export class RationalStudy extends Study {
         let NDegree = this.fx.numerator.degree(),
             DDegree = this.fx.denominator.degree()
         if (NDegree.isEqual(DDegree)) {
-            let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient).tex
+            let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient),
+                Htex = H.tex
 
             let {reminder} = reduced.euclidian()
 
             asymptotes.push({
+                fx: new Polynom(H),
                 type: ASYMPTOTE.HORIZONTAL,
-                tex: `y=${H}`,
+                tex: `y=${Htex}`,
                 zero: null,
-                limits: `\\lim_{x\\to\\infty}\\ f(x) = ${H}`,
+                limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX: new Rational(reminder, reduced.denominator)
             })
         } else if (DDegree.greater(NDegree)) {
             asymptotes.push({
+                fx: new Polynom('0'),
                 type: ASYMPTOTE.HORIZONTAL,
                 tex: `y=0`,
                 zero: null,
@@ -104,6 +107,7 @@ export class RationalStudy extends Study {
             let {quotient, reminder} = reduced.euclidian()
 
             asymptotes.push({
+                fx: quotient.clone(),
                 type: ASYMPTOTE.SLOPE,
                 tex: `y=${quotient.tex}`,
                 zero: null,
@@ -119,7 +123,6 @@ export class RationalStudy extends Study {
         let dx = this.fx.clone().derivative(),
             tos = this._getSigns(dx, this._getZeroes(dx), TABLE_OF_SIGNS.GROWS)
 
-        console.log(tos.factors.length, tos.signs.length)
         let result = this.makeGrowsResult(tos)
         tos.signs.push(result.growsLine)
         tos.extremes = result.extremes

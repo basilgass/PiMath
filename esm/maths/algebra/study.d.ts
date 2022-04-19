@@ -23,6 +23,7 @@ export declare enum ASYMPTOTE {
     HOLE = "hole"
 }
 export interface IAsymptote {
+    fx: Polynom;
     deltaX: StudyableFunction;
     limits: string;
     tex: string;
@@ -84,7 +85,9 @@ export declare class Study {
     private _signs;
     private _variations;
     private _zeroes;
+
     constructor(fx: StudyableFunction);
+
     get zeroes(): IZero[];
 
     get domain(): string;
@@ -95,19 +98,20 @@ export declare class Study {
 
     get derivative(): ITableOfSigns;
 
+    drawCode: () => string;
+
+    get texGrows(): string;
+
+    get texVariations(): string;
+
     makeGrowsResult: (tos: ITableOfSigns) => {
         growsLine: string[];
         extremes: {
             [Key: string]: IExtrema;
         };
     };
-
-    get texGrows(): string;
-
-    get texVariations(): string;
-
-    makeOneLineForSigns: (factor: Polynom, zeroes: IZero[], zeroSign: ZEROTYPE) => string[];
     indexOfZero: (zeroes: IZero[], zero: IZero | ISolution) => number;
+    makeOneLineForSigns: (factor: Polynom, zeroes: IZero[], zeroSign: ZEROTYPE) => string[];
     makeSignsResult: (signs: (string[])[]) => string[];
     makeStudy: () => void;
     makeVariationsResult: (tos: ITableOfSigns) => {
@@ -117,12 +121,17 @@ export declare class Study {
         };
     };
 
-    get texSigns(): string;
-
     makeZeroes(): IZero[];
+
     makeSigns(): ITableOfSigns;
+
     makeAsymptotes(): IAsymptote[];
+
     makeDerivative(): ITableOfSigns;
+
     makeVariation(): ITableOfSigns;
+
     private _makeTexFromTableOfSigns;
+
+    get texSigns(): string;
 }

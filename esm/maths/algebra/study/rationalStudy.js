@@ -19,13 +19,13 @@ exports.RationalStudy = void 0;
 const study_1 = require("../study");
 const rational_1 = require("../rational");
 const fraction_1 = require("../../coefficients/fraction");
+const polynom_1 = require("../polynom");
 class RationalStudy extends study_1.Study {
     constructor(fx) {
         super(fx);
         return this;
     }
     makeZeroes() {
-        console.log('GETTING ZEROES');
         return this._getZeroes(this.fx);
     }
     ;
@@ -54,6 +54,7 @@ class RationalStudy extends study_1.Study {
                 }
             }
             asymptotes.push({
+                fx: null,
                 type: Ztype,
                 tex: tex,
                 zero: zero,
@@ -64,17 +65,20 @@ class RationalStudy extends study_1.Study {
         // Sloped asymptote
         let NDegree = this.fx.numerator.degree(), DDegree = this.fx.denominator.degree();
         if (NDegree.isEqual(DDegree)) {
-            let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient).tex;
+            let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient),
+                Htex = H.tex;
             let {reminder} = reduced.euclidian();
             asymptotes.push({
+                fx: new polynom_1.Polynom(H),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
-                tex: `y=${H}`,
+                tex: `y=${Htex}`,
                 zero: null,
-                limits: `\\lim_{x\\to\\infty}\\ f(x) = ${H}`,
+                limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX: new rational_1.Rational(reminder, reduced.denominator)
             });
         } else if (DDegree.greater(NDegree)) {
             asymptotes.push({
+                fx: new polynom_1.Polynom('0'),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
                 tex: `y=0`,
                 zero: null,
@@ -85,6 +89,7 @@ class RationalStudy extends study_1.Study {
             // Calculate the slope
             let {quotient, reminder} = reduced.euclidian();
             asymptotes.push({
+                fx: quotient.clone(),
                 type: study_1.ASYMPTOTE.SLOPE,
                 tex: `y=${quotient.tex}`,
                 zero: null,
@@ -98,7 +103,6 @@ class RationalStudy extends study_1.Study {
     makeDerivative() {
         let dx = this.fx.clone().derivative(),
             tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
-        console.log(tos.factors.length, tos.signs.length);
         let result = this.makeGrowsResult(tos);
         tos.signs.push(result.growsLine);
         tos.extremes = result.extremes;

@@ -3444,6 +3444,7 @@ exports.Rational = Rational;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
 const fraction_1 = __webpack_require__(506);
+const numexp_1 = __webpack_require__(735);
 var ZEROTYPE;
 (function (ZEROTYPE) {
     ZEROTYPE["ZERO"] = "z";
@@ -3572,6 +3573,8 @@ class Study {
                 if (resultLine[pos] === 'z') {
                     // It's a zero. Get the coordinates
                     let x, y, zero = zeroes[i].exact, pt, xTex, yTex, pointType;
+                    // TODO: NumExp should parse something that isn't yet plotFunction
+                    let exp = new numexp_1.NumExp(this.fx.plotFunction);
                     if (zero instanceof fraction_1.Fraction) {
                         let value = zero, evalY = this.fx.evaluate(value);
                         x = zero.value;
@@ -3581,7 +3584,7 @@ class Study {
                     }
                     else {
                         x = zeroes[i].value;
-                        y = this.fx.evaluate(zeroes[i].value).value;
+                        y = exp.evaluate({ x });
                         xTex = x.toFixed(2);
                         yTex = y.toFixed(2);
                     }
@@ -3652,6 +3655,39 @@ class Study {
             }
             tex += `\n\\end{tikzpicture}`;
             return tex;
+        };
+        this.drawCode = () => {
+            // Function as string
+            let code = `f(x)=${this.fx.plotFunction}`;
+            // Asymptotes
+            let i = 1;
+            this.asymptotes.forEach(asymptote => {
+                if (asymptote.type === ASYMPTOTE.VERTICAL) {
+                    code += `\nav_${i}=line x=${asymptote.zero.value}->red,dash`;
+                    i++;
+                }
+                else if (asymptote.type === ASYMPTOTE.HORIZONTAL) {
+                    code += `\nah=line y=${asymptote.fx.monoms[0].coefficient.value}->orange,dash`;
+                }
+                else if (asymptote.type === ASYMPTOTE.SLOPE) {
+                    code += `\nao=line y=${asymptote.fx.plotFunction}->red,dash`;
+                }
+                i++;
+            });
+            // Extremes
+            for (let zero in this.derivative.extremes) {
+                let extreme = this.derivative.extremes[zero];
+                code += `\nM_${i}(${extreme.value.x},${extreme.value.y})*`;
+                i++;
+            }
+            // Zeroes
+            this.zeroes.forEach(zero => {
+                if (zero.type === ZEROTYPE.ZERO) {
+                    code += `\nZ_${i}(${zero.value},0)*`;
+                    i++;
+                }
+            });
+            return code;
         };
         this.fx = fx;
         this.makeStudy();
@@ -3752,13 +3788,13 @@ exports.RationalStudy = void 0;
 const study_1 = __webpack_require__(996);
 const rational_1 = __webpack_require__(107);
 const fraction_1 = __webpack_require__(506);
+const polynom_1 = __webpack_require__(38);
 class RationalStudy extends study_1.Study {
     constructor(fx) {
         super(fx);
         return this;
     }
     makeZeroes() {
-        console.log('GETTING ZEROES');
         return this._getZeroes(this.fx);
     }
     ;
@@ -3788,6 +3824,7 @@ class RationalStudy extends study_1.Study {
                 }
             }
             asymptotes.push({
+                fx: null,
                 type: Ztype,
                 tex: tex,
                 zero: zero,
@@ -3798,18 +3835,20 @@ class RationalStudy extends study_1.Study {
         // Sloped asymptote
         let NDegree = this.fx.numerator.degree(), DDegree = this.fx.denominator.degree();
         if (NDegree.isEqual(DDegree)) {
-            let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient).tex;
+            let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient), Htex = H.tex;
             let { reminder } = reduced.euclidian();
             asymptotes.push({
+                fx: new polynom_1.Polynom(H),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
-                tex: `y=${H}`,
+                tex: `y=${Htex}`,
                 zero: null,
-                limits: `\\lim_{x\\to\\infty}\\ f(x) = ${H}`,
+                limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX: new rational_1.Rational(reminder, reduced.denominator)
             });
         }
         else if (DDegree.greater(NDegree)) {
             asymptotes.push({
+                fx: new polynom_1.Polynom('0'),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
                 tex: `y=0`,
                 zero: null,
@@ -3821,6 +3860,7 @@ class RationalStudy extends study_1.Study {
             // Calculate the slope
             let { quotient, reminder } = reduced.euclidian();
             asymptotes.push({
+                fx: quotient.clone(),
                 type: study_1.ASYMPTOTE.SLOPE,
                 tex: `y=${quotient.tex}`,
                 zero: null,
@@ -3833,7 +3873,6 @@ class RationalStudy extends study_1.Study {
     ;
     makeDerivative() {
         let dx = this.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
-        console.log(tos.factors.length, tos.signs.length);
         let result = this.makeGrowsResult(tos);
         tos.signs.push(result.growsLine);
         tos.extremes = result.extremes;

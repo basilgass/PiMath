@@ -8,6 +8,7 @@ import {ISolution} from "./equation";
 import {Polynom} from "./polynom";
 import {Fraction} from "../coefficients/fraction";
 import {Point} from "../geometry/point";
+import {NumExp} from "../expressions/numexp";
 
 export type StudyableFunction = Rational
 
@@ -31,6 +32,7 @@ export enum ASYMPTOTE {
 }
 
 export interface IAsymptote {
+    fx: Polynom,
     deltaX: StudyableFunction
     limits: string,
     tex: string,
@@ -251,6 +253,9 @@ export class Study {
                     xTex: string, yTex: string,
                     pointType: FUNCTION_EXTREMA
 
+                // TODO: NumExp should parse something that isn't yet plotFunction
+                let exp = new NumExp(this.fx.plotFunction)
+
                 if (zero instanceof Fraction) {
                     let value: Fraction = zero,
                         evalY = this.fx.evaluate(value)
@@ -261,7 +266,7 @@ export class Study {
                     yTex = evalY.tex
                 } else {
                     x = zeroes[i].value
-                    y = this.fx.evaluate(zeroes[i].value).value
+                    y = exp.evaluate({x})
 
                     xTex = x.toFixed(2)
                     yTex = y.toFixed(2)
@@ -389,5 +394,42 @@ export class Study {
         tex += `\n\\end{tikzpicture}`
 
         return tex
+    }
+
+    drawCode = (): string => {
+        // Function as string
+        let code = `f(x)=${this.fx.plotFunction}`
+
+        // Asymptotes
+        let i: number = 1
+        this.asymptotes.forEach(asymptote => {
+            if (asymptote.type === ASYMPTOTE.VERTICAL) {
+                code += `\nav_${i}=line x=${asymptote.zero.value}->red,dash`
+                i++
+            } else if (asymptote.type === ASYMPTOTE.HORIZONTAL) {
+                code += `\nah=line y=${asymptote.fx.monoms[0].coefficient.value}->orange,dash`
+            } else if (asymptote.type === ASYMPTOTE.SLOPE) {
+                code += `\nao=line y=${asymptote.fx.plotFunction}->red,dash`
+            }
+            i++
+        })
+
+        // Extremes
+        for (let zero in this.derivative.extremes) {
+            let extreme = this.derivative.extremes[zero]
+
+            code += `\nM_${i}(${extreme.value.x},${extreme.value.y})*`
+            i++
+        }
+
+        // Zeroes
+        this.zeroes.forEach(zero => {
+            if (zero.type === ZEROTYPE.ZERO) {
+                code += `\nZ_${i}(${zero.value},0)*`
+                i++
+            }
+        })
+
+        return code
     }
 }
