@@ -127,7 +127,6 @@ class LinearSystem {
         this.log = () => {
             let str = '';
             for (let E of this._equations) {
-                console.log(E.tex);
                 str += `${E.tex}\\n}`;
             }
             return str;

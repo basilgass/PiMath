@@ -1,15 +1,18 @@
 /**
  * Polynom module contains everything necessary to handle polynoms.*
  */
-import { literalType, Monom } from './monom';
-import { Token } from '../shutingyard';
-import { Fraction } from "../coefficients/fraction";
-import { ISolution } from "./equation";
+import {literalType, Monom} from './monom';
+import {Token} from '../shutingyard';
+import {Fraction} from "../coefficients/fraction";
+import {ISolution} from "./equation";
+
 export declare type PolynomParsingType = string | Polynom | number | Fraction | Monom;
-interface IEuclidian {
+
+export interface IEuclidian {
     quotient: Polynom;
     reminder: Polynom;
 }
+
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -17,35 +20,39 @@ interface IEuclidian {
  * ```
  */
 export declare class Polynom {
-    private _rawString;
+    private _dirty_factors;
+    private _dirty_zeroes;
     private _euclidianCache;
-    get euclidianCache(): {
-        [p: string]: IEuclidian;
-    };
-    set euclidianCache(value: {
-        [p: string]: IEuclidian;
-    });
+    private _factors;
+    private _monoms;
+    private _rawString;
+    private _texString;
+    private _zeroes;
+
     /**
      *
      * @param {string} polynomString (optional) Default polynom to parse on class creation
      * @param values
      */
     constructor(polynomString?: PolynomParsingType, ...values: unknown[]);
-    private _dirty_zeroes;
+
+    get euclidianCache(): {
+        [p: string]: IEuclidian;
+    };
+    set euclidianCache(value: {
+        [p: string]: IEuclidian;
+    });
+
     get dirty_zeroes(): boolean;
     set dirty_zeroes(value: boolean);
-    private _dirty_factors;
+
     get dirty_factors(): boolean;
     set dirty_factors(value: boolean);
-    private _monoms;
     get monoms(): Monom[];
     set monoms(M: Monom[]);
-    private _zeroes;
     get zeroes(): ISolution[];
-    private _factors;
     get factors(): Polynom[];
     set factors(value: Polynom[]);
-    private _texString;
     get texString(): string;
     get texFactors(): string;
     get length(): number;
@@ -150,4 +157,3 @@ export declare class Polynom {
     private _factorize2ndDegree;
     private _factorizeByGroups;
 }
-export {};

@@ -592,15 +592,16 @@ class Polynom {
                                 allDividers.shift();
                             }
                             else {
-                                // Add the factor
-                                factors.push(div);
                                 // It's dividable - so make the division
                                 let result = P.euclidian(div);
+                                // Add the factor
+                                factors.push(div);
                                 // As it's dividable, get the quotient.
                                 P = result.quotient.clone();
                                 // filter all dividers that are no more suitable.
                                 allDividers = allDividers.filter(x => {
-                                    let pX = P.monoms[0], pC = P.monoms[P.monoms.length - 1], dX = x.monoms[0], dC = x.monoms[x.monoms.length - 1];
+                                    let pX = P.monoms[0], pC = P.monoms[P.monoms.length - 1], dX = x.monoms[0],
+                                        dC = x.monoms[x.monoms.length - 1];
                                     // Check last item (degree zero)
                                     if (!pC.isDivisible(dC)) {
                                         return false;
@@ -620,11 +621,11 @@ class Polynom {
                     factors.push(P.clone());
                 }
                 // Save the factors
-                this.factors = factors;
+                this._factors = factors;
                 // The factors list is no more dirty
                 this.dirty_factors = false;
             }
-            return this.factors;
+            return this._factors;
         };
         this.isDividableBy = (div) => {
             // Quick evaluation.
@@ -997,7 +998,7 @@ class Polynom {
         return this.getZeroes();
     }
     get factors() {
-        return this._factors;
+        return this.factorize();
     }
     set factors(value) {
         this.mark_as_dirty();

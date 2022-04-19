@@ -3,19 +3,16 @@
  * @module Polynom
  */
 
-import {FUNCTION_EXTREMA, Rational} from "./rational";
+import {Rational} from "./rational";
 import {ISolution} from "./equation";
 import {Polynom} from "./polynom";
 import {Fraction} from "../coefficients/fraction";
+import {Point} from "../geometry/point";
 
 export type StudyableFunction = Rational
 
-export interface IStudy {
-    domain: string,
-    zeroes: ISolution[]
-}
 
-enum ZEROTYPE {
+export enum ZEROTYPE {
     ZERO = 'z',
     DEFENCE = 'd',
     NOTHING = 't'
@@ -26,7 +23,7 @@ export interface IZero extends ISolution {
     type: ZEROTYPE
 }
 
-enum ASYMPTOTE {
+export enum ASYMPTOTE {
     VERTICAL = "av",
     HORIZONTAL = "ah",
     SLOPE = "ao",
@@ -34,11 +31,46 @@ enum ASYMPTOTE {
 }
 
 export interface IAsymptote {
-    type: ASYMPTOTE,
-    tex: string,
-    zero: IZero,
-    limits: string,
     deltaX: StudyableFunction
+    limits: string,
+    tex: string,
+    type: ASYMPTOTE,
+    zero: IZero,
+}
+
+export enum FUNCTION_EXTREMA {
+    MIN = "min",
+    MAX = "max",
+    FLAT = "flat",
+    NOTHING = ""
+}
+
+export interface IExtrema {
+    tex: {
+        x: string,
+        y: string
+    },
+    type: FUNCTION_EXTREMA,
+    value: {
+        x: number,
+        y: number
+    }
+
+}
+
+export interface ITableOfSigns {
+    extremes: { [Key: string]: IExtrema },
+    factors: Polynom[],
+    fx: StudyableFunction,
+    signs: (string[])[],
+    type: TABLE_OF_SIGNS
+    zeroes: IZero[],
+}
+
+export enum TABLE_OF_SIGNS {
+    DEFAULT,
+    GROWS,
+    VARIATIONS
 }
 
 /**
@@ -57,20 +89,17 @@ export interface IAsymptote {
  * variations       : variation table + tex output  using tkz-tab
  */
 export class Study {
-    private _fx: StudyableFunction
-    private _signs: (string[])[]
-    private _zeroes: IZero[]
+    fx: StudyableFunction
     private _asymptotes: IAsymptote[]
+    private _derivative: ITableOfSigns
+    private _signs: ITableOfSigns
+    private _variations: ITableOfSigns
+    private _zeroes: IZero[]
 
     constructor(fx: StudyableFunction) {
-        if (fx instanceof Rational) {
-            this._makeRationalStudy(fx)
-        }
+        this.fx = fx
+        this.makeStudy()
         return this
-    }
-
-    get fx(): StudyableFunction {
-        return this._fx;
     }
 
     get zeroes(): IZero[] {
@@ -78,10 +107,10 @@ export class Study {
     }
 
     get domain(): string {
-        return this._fx.domain()
+        return this.fx.domain()
     }
 
-    get signs(): string[][] {
+    get signs(): ITableOfSigns {
         return this._signs;
     }
 
@@ -89,66 +118,46 @@ export class Study {
         return this._asymptotes;
     }
 
-    private _makeRationalStudy(fx: Rational) {
-        this._fx = fx
-        this._makeZeroesForRational()
-        this._makeSignsForRational()
-        this._makeAsymptotesForRational()
+    get derivative(): ITableOfSigns {
+        return this._derivative;
     }
 
-    private _makeZeroesForRational(): void {
-        // All zeroes.
-        this._zeroes = []
-        this._fx.numerator.getZeroes().filter(x => !isNaN(x.value)).forEach(z => {
-            // add the item
-            this._zeroes.push({
-                tex: z.tex,
-                value: z.value,
-                exact: z.exact,
-                extrema: FUNCTION_EXTREMA.NOTHING,
-                type: ZEROTYPE.ZERO
-            })
-        })
-        this._fx.denominator.getZeroes().filter(x => !isNaN(x.value)).forEach(z => {
-            let idx = this.indexOfZero(z)
-            if (idx !== -1) {
-                this._zeroes[idx].type = ZEROTYPE.DEFENCE
-            } else {
-                // Add the item
-                this._zeroes.push({
-                    tex: z.tex,
-                    value: z.value,
-                    exact: z.exact,
-                    extrema: FUNCTION_EXTREMA.NOTHING,
-                    type: ZEROTYPE.DEFENCE
-                })
+    get tex(): string {
+        return this._makeTexFromTableOfSigns(this._signs)
+    }
+
+    get texGrows(): string {
+        return this._makeTexFromTableOfSigns(this._derivative)
+    }
+
+    get texVariations(): string {
+        return this._makeTexFromTableOfSigns(this._variations)
+    }
+
+    makeStudy = (): void => {
+        this._zeroes = this.makeZeroes()
+
+        this._signs = this.makeSigns()
+
+        this._asymptotes = this.makeAsymptotes()
+
+        this._derivative = this.makeDerivative()
+
+        this._variations = this.makeVariation()
+    };
+
+    indexOfZero = (zeroes: IZero[], zero: IZero | ISolution): number => {
+        for (let i = 0; i < zeroes.length; i++) {
+            if (zeroes[i].tex === zero.tex) {
+                return i
             }
-        })
+        }
+        return -1
+    };
 
-        // sort all zeroes
-        this._zeroes.sort((a, b) => a.value - b.value)
-    }
-
-    private _makeSignsForRational(): void {
-        // Factorize the rational
-        let NFactors = this._fx.numerator.factors,
-            DFactors = this._fx.denominator.factors
-
-        this._signs = []
-        NFactors.forEach(factor => {
-            this._signs.push(this._makeSignsForRationalOneLine(factor, ZEROTYPE.ZERO))
-        })
-        DFactors.forEach(factor => {
-            this._signs.push(this._makeSignsForRationalOneLine(factor, ZEROTYPE.DEFENCE))
-        })
-        this._signs.push(this._makeSignsResult())
-    }
-
-    private _makeSignsForRationalOneLine = (factor: Polynom, zeroSign: ZEROTYPE): string[] => {
+    makeOneLineForSigns = (factor: Polynom, zeroes: IZero[], zeroSign: ZEROTYPE): string[] => {
         let oneLine: string[] = [],
             currentZero = factor.getZeroes().map(x => x.tex)
-
-        let zeroes = Object.values(this._zeroes)
 
         // First +/- sign, before the first zero
         oneLine.push('')
@@ -157,9 +166,10 @@ export class Study {
         } else {
             oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-')
         }
+
         for (let i = 0; i < zeroes.length; i++) {
             // Add the zero if it's the current one
-            oneLine.push(currentZero.includes(zeroes[i].tex) ? zeroSign : 't')
+            oneLine.push(currentZero.includes(zeroes[i].tex) ? zeroSign : ZEROTYPE.NOTHING)
 
             // + / - sign after the current zero
             if (i < zeroes.length - 1) {
@@ -174,97 +184,24 @@ export class Study {
         return oneLine
     }
 
-    private _makeAsymptotesForRational(): void {
-        const reduced:Rational = this._fx.clone().reduce()
-        // Vertical
-        this._asymptotes = []
-        this._zeroes.filter(x=>x.type===ZEROTYPE.DEFENCE).forEach(zero => {
-            // Check if it's a hole or an asymptote
-            // TODO: Check for a hole ! Means calculate the limits !
-            let Ztype = ASYMPTOTE.VERTICAL,
-                tex = `x=${zero.tex}`
-            if(zero.exact instanceof Fraction){
-                if(reduced.denominator.evaluate(zero.exact).isNotZero()){
-                    Ztype = ASYMPTOTE.HOLE
-                    tex = `(${zero.tex};${reduced.evaluate(zero.exact).tex})`
-                }
-            }else{
-                if(reduced.denominator.evaluate(zero.value).isNotZero()){
-                    Ztype = ASYMPTOTE.HOLE
-                    tex = `(${zero.tex};${reduced.evaluate(zero.value).tex})`
-                }
-            }
+    makeSignsResult = (signs: (string[])[]): string[] => {
 
-            this._asymptotes.push({
-                type: Ztype,
-                tex: tex,
-                zero: zero,
-                limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = \\pm\\infty`,
-                deltaX: null
-            })
-        })
-
-        // Sloped asymptote
-        let NDegree = this._fx.numerator.degree(),
-            DDegree = this._fx.denominator.degree()
-        if(NDegree.isEqual(DDegree)){
-            let H = this._fx.numerator.monomByDegree().coefficient.clone().divide(this._fx.denominator.monomByDegree().coefficient).tex
-            this._asymptotes.push({
-                type: ASYMPTOTE.HORIZONTAL,
-                tex: `y=${H}`,
-                zero: null,
-                limits: `\\lim_{x\\to\\infty}\\ f(x) = ${H}`,
-                deltaX: null
-            })
-        }else if(DDegree.greater(NDegree)){
-            this._asymptotes.push({
-                type: ASYMPTOTE.HORIZONTAL,
-                tex: `y=0`,
-                zero: null,
-                limits: `\\lim_{x\\to\\infty}\\ f(x) = ${0}`,
-                deltaX: null
-            })
-        }else if(NDegree.value-1 === DDegree.value){
-            // Calculate the slope
-            let {quotient, reminder} = reduced.euclidian()
-
-            this._asymptotes.push({
-                type: ASYMPTOTE.SLOPE,
-                tex: `y=${quotient.tex}`,
-                zero: null,
-                limits: ``,
-                deltaX: new Rational(reminder, reduced.denominator)
-            })
-        }
-    }
-    private _makeDerivativeForRational = (): void => {
-
-    }
-
-    private indexOfZero(zero: IZero | ISolution): number {
-        for (let i = 0; i < this._zeroes.length; i++) {
-            if (this._zeroes[i].tex === zero.tex) {
-                return i
-            }
-        }
-        return -1
-    }
-
-    private _makeSignsResult = (): string[] => {
-        let resultLine: string[] = this._signs[0].map((x, index) => {
-            if (index === 0) {
+        // Initialize the result line with the first line of the signs table
+        let resultLine: string[] = signs[0].map((x, index) => {
+            if (index === 0 || index === signs[0].length - 1) {
                 return ''
             }
-            if (index === this._signs[0].length - 1) {
-                return ''
-            }
+
             if (index % 2 === 0) {
                 return 't'
             }
+
             return '+'
         })
 
-        for (let current of this._signs) {
+        // Go through each lines (except the first)
+        for (let current of signs) {
+
             for (let i = 0; i < current.length; i++) {
                 if (i % 2 === 0) {
                     // t, z or d
@@ -284,5 +221,164 @@ export class Study {
         }
 
         return resultLine
+    }
+
+    makeGrowsResult = (fx: StudyableFunction, tos: ITableOfSigns): { growsLine: string[], extremes: { [Key: string]: IExtrema } } => {
+
+        // Use the last line (=> resultLine) to grab the necessary information
+        let signsAsArray = Object.values(tos.signs),
+            resultLine = signsAsArray[signsAsArray.length - 1],
+            growsLine: string[] = [],
+            extremes: { [Key: string]: IExtrema } = {},
+            zeroes = tos.zeroes
+
+        // Get the extremes
+        for (let i = 0; i < zeroes.length; i++) {
+
+            // Get the corresponding item in the resultLine.
+            let pos = 2 * i + 2
+            if (resultLine[pos] === 'z') {
+
+                // It's a zero. Get the coordinates
+                let x: number, y: number, zero = zeroes[i].exact,
+                    pt: Point,
+                    xTex: string, yTex: string,
+                    pointType: FUNCTION_EXTREMA
+
+                if (zero instanceof Fraction) {
+                    let value: Fraction = zero,
+                        evalY = fx.evaluate(value)
+
+                    x = zero.value
+                    y = evalY.value
+                    xTex = zero.tex
+                    yTex = evalY.tex
+                } else {
+                    x = zeroes[i].value
+                    y = fx.evaluate(zeroes[i].value).value
+
+                    xTex = x.toFixed(2)
+                    yTex = y.toFixed(2)
+                }
+
+                // Determine the type of the zero.
+                if (resultLine[pos - 1] === resultLine[pos + 1]) {
+                    pointType = FUNCTION_EXTREMA.FLAT
+                } else if (resultLine[pos - 1] === '+') {
+                    pointType = FUNCTION_EXTREMA.MAX
+                } else {
+                    pointType = FUNCTION_EXTREMA.MIN
+
+                }
+
+                // Add the point to the list
+                extremes[zeroes[i].tex] = {
+                    type: pointType,
+                    tex: {x: xTex, y: yTex},
+                    value: {x, y}
+                }
+            }
+        }
+
+        // Create the grows line, based on tkz-tab
+        // \tkzTabLine{  ,  +  ,  z    ,  -  ,  d  ,  -  ,  z  ,  +  ,  }
+        // \tkzTabVar{     -/  , +/$3$ ,       -D+/ , -/$1$  , +/  }
+        growsLine.push(resultLine[1] === '+' ? '-/' : '+/')
+        for (let i = 1; i < resultLine.length - 1; i++) {
+            if (resultLine[i] === "z") {
+                let extr = extremes[zeroes[(i - 2) / 2].tex]
+
+                growsLine.push(`${resultLine[i - 1]}/\\(${extr.type}(${extr.tex.x};${extr.tex.y})\\)`)
+            } else if (resultLine[i] === 'd') {
+                growsLine.push(`${resultLine[i - 1]}D${resultLine[i + 1] === '+' ? '-' : '+'}/`)
+            }
+        }
+        growsLine.push(`${resultLine[resultLine.length - 2]}/`)
+
+        return {growsLine, extremes}
+    }
+
+    makeVariationsResult = (fx: StudyableFunction, tos: ITableOfSigns): { varsLine: string[], extremes: { [Key: string]: IExtrema } } => {
+        // TODO: make variations result is not yet implemented.
+        let extremes = {},
+            varsLine: string[] = []
+        return {varsLine, extremes}
+    }
+
+    makeZeroes(): IZero[] {
+        return []
+    };
+
+    makeSigns(): ITableOfSigns {
+        return {
+            type: TABLE_OF_SIGNS.DEFAULT,
+            fx: null,
+            factors: [],
+            zeroes: [],
+            signs: [],
+            extremes: {}
+        }
+    };
+
+    makeAsymptotes(): IAsymptote[] {
+        return []
+    }
+
+    makeDerivative(): ITableOfSigns {
+        return {
+            type: TABLE_OF_SIGNS.GROWS,
+            fx: null,
+            factors: [],
+            zeroes: [],
+            signs: [],
+            extremes: {}
+        }
+    }
+
+    makeVariation(): ITableOfSigns {
+        return {
+            type: TABLE_OF_SIGNS.VARIATIONS,
+            fx: null,
+            factors: [],
+            zeroes: [],
+            signs: [],
+            extremes: {}
+        }
+    }
+
+    private _makeTexFromTableOfSigns = (tos: ITableOfSigns): string => {
+        let factors = tos.factors.map(x => `\\(${x.tex}\\)/1`),
+            factorsFx = "\\(fx\\)/1.2",
+            zeroes = tos.zeroes
+
+        // Add the last lines "label"
+        if (tos.type === TABLE_OF_SIGNS.GROWS) {
+            factorsFx = "\\(f'(x)\\)/1.2,\\(f(x)\\)/2"
+        } else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
+            factorsFx = "\\(f''(x)\\)/1.2,\\(f(x)\\)/2"
+        }
+
+        // Create the tikzPicture header
+        let tex = `\\begin{tikzpicture}
+\\tkzTabInit[lgt=3,espcl=2,deltacl=0]{/1.2,${factors.join(',')},/.1,${factorsFx} }{{\\scriptsize \\hspace{1cm} \\(-\\infty\\)},\\(${zeroes.map(x => x.tex).join('\\),\\(')}\\),{\\scriptsize \\hspace{-1cm} \\(+\\infty\\)}}`
+
+        let pos
+        for (pos = 0; pos < tos.factors.length; pos++) {
+            tex += (`\n\\tkzTabLine{${tos.signs[pos].join(',')}}`)
+        }
+
+        // Add the result line
+        tex += (`\n\\tkzTabLine{${tos.signs[pos].join(',')}}`)
+        // Add the grows / vars line
+        if (tos.type === TABLE_OF_SIGNS.GROWS) {
+            tex += (`\n\\tkzTabVar{${tos.signs[pos + 1].join(',')}}`)
+        } else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
+            // TODO: Check variations table for as tex
+            tex += (`\n\\tkzTabVar{${tos.signs[pos + 1].join(',')}}`)
+        }
+
+        tex += `\n\\end{tikzpicture}`
+
+        return tex
     }
 }

@@ -41,67 +41,6 @@ describe('Rational tests', () => {
         expect(FR3.limits(-Infinity).value).to.be.equal(-Infinity)
     })
 
-    it('should make a table of signs', function () {
-        const FR = new Rational(
-            new Polynom('(x-2)'),
-            new Polynom('(x+2)')
-        )
-        let tos = FR.makeTableOfSigns()
-        expect(tos.zeroes.map(x => x.tex)).to.have.all.members(['-2', '2'])
-        expect(tos.signs).to.be.eql([['', '-', 't', '-', 'z', '+', ''], ['', '-', 'd', '+', 't', '+', ''], [], ['', '+', 'd', '-', 'z', '+', '']])
-
-        const FR2 = new Rational(
-            new Polynom('6x^2+7x-20'),
-            new Polynom('x^2-16')
-        )
-        let tos2 = FR2.makeTableOfSigns()
-        expect(tos2.signs).to.be.eql([
-            [
-                '', '-', 't', '-',
-                'z', '+', 't', '+',
-                't', '+', ''
-            ],
-            [
-                '', '-', 't', '-',
-                't', '-', 'z', '+',
-                't', '+', ''
-            ],
-            [
-                '', '-', 'd', '+',
-                't', '+', 't', '+',
-                't', '+', ''
-            ],
-            [
-                '', '-', 't', '-',
-                't', '-', 't', '-',
-                'd', '+', ''
-            ],
-            [],
-            [
-                '', '+', 'd', '-',
-                'z', '+', 'z', '-',
-                'd', '+', ''
-            ]
-        ])
-    });
-
-    it('should make a table of grows', function () {
-        const FR = new Rational(
-                'x(x+6)',
-                'x-2'
-            ),
-            FRdx = FR.clone().derivative()
-
-        let tos = FRdx.makeTableOfSigns(FR)
-
-        expect(tos.zeroes.map(x => x.tex)).to.have.all.members(['-2', '2', '6'])
-
-        console.log(tos.tex)
-        console.log(tos.variation.join(','))
-        console.log(tos.signs)
-        expect(tos.signs).to.be.eql([['', '-', 't', '-', 'z', '+', ''], ['', '-', 'd', '+', 't', '+', ''], [], ['', '+', 'd', '-', 'z', '+', '']])
-
-    });
 
     it('should calculate the derivative', function () {
         const FR = new Rational(

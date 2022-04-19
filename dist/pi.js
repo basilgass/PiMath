@@ -932,7 +932,6 @@ class LinearSystem {
         this.log = () => {
             let str = '';
             for (let E of this._equations) {
-                console.log(E.tex);
                 str += `${E.tex}\\n}`;
             }
             return str;
@@ -1673,6 +1672,9 @@ class Monom {
                 return this.evaluate(tmpValues);
             }
             if (typeof values === 'object') {
+                if (this.variables.length === 0) {
+                    return this.coefficient;
+                }
                 for (let L in this._literal) {
                     if (values[L] === undefined) {
                         return new fraction_1.Fraction().zero();
@@ -2720,10 +2722,10 @@ class Polynom {
                                 allDividers.shift();
                             }
                             else {
-                                // Add the factor
-                                factors.push(div);
                                 // It's dividable - so make the division
                                 let result = P.euclidian(div);
+                                // Add the factor
+                                factors.push(div);
                                 // As it's dividable, get the quotient.
                                 P = result.quotient.clone();
                                 // filter all dividers that are no more suitable.
@@ -2748,11 +2750,11 @@ class Polynom {
                     factors.push(P.clone());
                 }
                 // Save the factors
-                this.factors = factors;
+                this._factors = factors;
                 // The factors list is no more dirty
                 this.dirty_factors = false;
             }
-            return this.factors;
+            return this._factors;
         };
         this.isDividableBy = (div) => {
             // Quick evaluation.
@@ -3125,7 +3127,7 @@ class Polynom {
         return this.getZeroes();
     }
     get factors() {
-        return this._factors;
+        return this.factorize();
     }
     set factors(value) {
         this.mark_as_dirty();
@@ -3273,9 +3275,7 @@ class Rational {
      */
     constructor(numerator, denominator) {
         this.clone = () => {
-            this._numerator = this._numerator.clone();
-            this._denominator = this._denominator.clone();
-            return this;
+            return new Rational(this._numerator.clone(), this._denominator.clone());
         };
         this.domain = () => {
             let zeroes = this._denominator.getZeroes();
@@ -3340,6 +3340,10 @@ class Rational {
         this.subtract = (R) => {
             return this.add(R.clone().opposed());
         };
+        this.euclidian = () => {
+            return this._numerator.euclidian(this._denominator);
+        };
+        // TODO : where and how is used limits ?
         this.limits = (value, offset, letter) => {
             if (value === Infinity || value === -Infinity) {
                 let { quotient, reminder } = this._numerator.clone().euclidian(this._denominator);
@@ -3380,101 +3384,9 @@ class Rational {
                 }
             }
         };
-        this.makeTableOfSigns = () => {
-            // Factorize the numerator and the denominator
-            this._numerator.factorize();
-            this._denominator.factorize();
-            let zeroes = equation_1.Equation.makeSolutionsUnique([...this._numerator.getZeroes(), ...this._denominator.getZeroes()], true).filter(x => !isNaN(x.value)), NFactors = this._numerator.factors, DFactors = this._denominator.factors;
-            let tableOfSigns = [], result = [];
-            NFactors.forEach(factor => {
-                tableOfSigns.push(this._makeOneLineOfTableOfSigns(factor, zeroes, 'z'));
-            });
-            DFactors.forEach(factor => {
-                tableOfSigns.push(this._makeOneLineOfTableOfSigns(factor, zeroes, 'd'));
-            });
-            // Empty line
-            tableOfSigns.push([]);
-            // Add the final row as cumulative
-            let resultLine = tableOfSigns[0].map((x, index) => {
-                if (index === 0) {
-                    return '';
-                }
-                if (index === tableOfSigns[0].length - 1) {
-                    return '';
-                }
-                if (index % 2 === 0) {
-                    return 't';
-                }
-                return '+';
-            });
-            for (let current of tableOfSigns) {
-                for (let i = 0; i < current.length; i++) {
-                    if (i % 2 === 0) {
-                        // t, z or d
-                        if (resultLine[i] === 'd') {
-                            continue;
-                        }
-                        if (current[i] !== 't') {
-                            resultLine[i] = current[i];
-                        }
-                    }
-                    else {
-                        // + or -
-                        if (current[i] === '-') {
-                            resultLine[i] = resultLine[i] === '+' ? '-' : '+';
-                        }
-                    }
-                }
-            }
-            // Add the variation line.
-            // TODO: add the variation line.
-            tableOfSigns.push(resultLine);
-            let tos = {
-                factors: [...NFactors, ...DFactors],
-                zeroes: zeroes,
-                signs: tableOfSigns,
-                tex: ''
-            };
-            this._makeTexFromTableOfSigns(tos);
-            return tos;
-        };
-        this._makeTexFromTableOfSigns = (tos) => {
-            let tex = `\\begin{tikzpicture}
-\\tkzTabInit[lgt=3,espcl=2,deltacl=0]{/1.2,\\(${tos.factors.map(x => x.tex).join('\\)/1,\\(')}\\)/1,/.1,\\(f(x)\\)/1.2}{{\\scriptsize \\hspace{1cm} \\(-\\infty\\)},\\(${tos.zeroes.map(x => x.tex).join('\\),\\(')}\\),{\\scriptsize \\hspace{-1cm} \\(+\\infty\\)}}`;
-            tos.signs.forEach(list => {
-                tex += (`\n\\tkzTabLine{${list.join(',')}}`);
-            });
-            tex += `\n\\end{tikzpicture}`;
-            tos.tex = tex;
-            return tex;
-        };
-        this._makeOneLineOfTableOfSigns = (factor, zeroes, zeroSign) => {
-            let oneLine = [], currentZero = factor.getZeroes().map(x => x.tex);
-            // First +/- sign, before the first zero
-            oneLine.push('');
-            if (factor.degree().isZero()) {
-                oneLine.push(factor.monoms[0].coefficient.sign() === 1 ? '+' : '-');
-            }
-            else {
-                oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-');
-            }
-            for (let i = 0; i < zeroes.length; i++) {
-                // Add the zero if it's the current one
-                oneLine.push(currentZero.includes(zeroes[i].tex) ? zeroSign : 't');
-                // + / - sign after the current zero
-                if (i < zeroes.length - 1) {
-                    oneLine.push(factor.evaluate((zeroes[i].value + zeroes[i + 1].value) / 2).sign() === 1 ? '+' : '-');
-                }
-                else if (i === zeroes.length - 1) {
-                    oneLine.push(factor.evaluate(zeroes[i].value + 1).sign() === 1 ? '+' : '-');
-                }
-            }
-            oneLine.push('');
-            return oneLine;
-        };
         this.evaluate = (values) => {
             const r = new fraction_1.Fraction().zero();
-            let N = this._numerator.evaluate(values), D = this._numerator.evaluate(values);
+            let N = this._numerator.evaluate(values), D = this._denominator.evaluate(values);
             return N.divide(D);
         };
         if (numerator instanceof polynom_1.Polynom) {
