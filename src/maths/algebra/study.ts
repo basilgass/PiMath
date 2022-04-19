@@ -38,6 +38,7 @@ export interface IAsymptote {
     tex: string,
     type: ASYMPTOTE,
     zero: IZero,
+    tableOfSign: ITableOfSigns
 }
 
 export enum FUNCTION_EXTREMA {

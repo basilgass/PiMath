@@ -2,6 +2,7 @@ import {describe} from "mocha";
 import {Rational} from "../../src/maths/algebra/rational";
 import {RationalStudy} from "../../src/maths/algebra/study/rationalStudy";
 import {expect} from "chai";
+import {ASYMPTOTE} from "../../src/maths/algebra/study";
 
 describe('Study tests', () => {
     it('should get the zeroes', function () {
@@ -10,14 +11,18 @@ describe('Study tests', () => {
             new Rational('(3x-2)(x-3)(x+4)', 'x^2-5x+6')
         )
 
-        console.log(study.texSigns)
-        console.log(study.asymptotes)
-        console.log(study.derivative.fx.texFactors)
-        console.log(study.texGrows)
+        // console.log(study.texSigns)
+        // console.log(study.asymptotes)
+        // console.log(study.derivative.fx.texFactors)
+        // console.log(study.texGrows)
+        //
+        //
+        // console.log('----------------')
 
 
-        console.log('----------------')
+        let AO = study.asymptotes.filter(x => x.type === ASYMPTOTE.SLOPE)[0]
 
+        console.log(AO.tableOfSign.signs)
     });
 
     it('should create draw code block', function () {
@@ -34,4 +39,5 @@ describe('Study tests', () => {
             "Z_8(-2.5,0)*\n" +
             "Z_9(1.3333333333333333,0)*")
     });
+
 })

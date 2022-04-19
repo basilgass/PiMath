@@ -72,7 +72,8 @@ export class RationalStudy extends Study {
                 tex: tex,
                 zero: zero,
                 limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = \\pm\\infty`,
-                deltaX: null
+                deltaX: null,
+                tableOfSign: null
             })
         })
 
@@ -83,7 +84,9 @@ export class RationalStudy extends Study {
             let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient),
                 Htex = H.tex
 
-            let {reminder} = reduced.euclidian()
+            let {reminder} = reduced.euclidian(),
+                deltaX = new Rational(reminder, reduced.denominator)
+
 
             asymptotes.push({
                 fx: new Polynom(H),
@@ -91,7 +94,8 @@ export class RationalStudy extends Study {
                 tex: `y=${Htex}`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
-                deltaX: new Rational(reminder, reduced.denominator)
+                deltaX,
+                tableOfSign: this._getSigns(deltaX)
             })
         } else if (DDegree.greater(NDegree)) {
             asymptotes.push({
@@ -100,11 +104,13 @@ export class RationalStudy extends Study {
                 tex: `y=0`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${0}`,
-                deltaX: null
+                deltaX: null,
+                tableOfSign: null
             })
         } else if (NDegree.value - 1 === DDegree.value) {
             // Calculate the slope
-            let {quotient, reminder} = reduced.euclidian()
+            let {quotient, reminder} = reduced.euclidian(),
+                deltaX = new Rational(reminder, reduced.denominator)
 
             asymptotes.push({
                 fx: quotient.clone(),
@@ -112,7 +118,8 @@ export class RationalStudy extends Study {
                 tex: `y=${quotient.tex}`,
                 zero: null,
                 limits: ``,
-                deltaX: new Rational(reminder, reduced.denominator)
+                deltaX: new Rational(reminder, reduced.denominator),
+                tableOfSign: this._getSigns(deltaX)
             })
         }
 
@@ -178,10 +185,14 @@ export class RationalStudy extends Study {
         return zeroes
     }
 
-    private _getSigns(fx: Rational, zeroes: IZero[], typeOfTable?: TABLE_OF_SIGNS): ITableOfSigns {
+    private _getSigns(fx: Rational, zeroes?: IZero[], typeOfTable?: TABLE_OF_SIGNS): ITableOfSigns {
         // Factorize the rational
         let signs: (string[])[] = [],
             factors: Polynom[] = []
+
+        if (zeroes === undefined) {
+            zeroes = this._getZeroes(fx)
+        }
 
         fx.numerator.factors.forEach(factor => {
             signs.push(this.makeOneLineForSigns(factor, zeroes, ZEROTYPE.ZERO))

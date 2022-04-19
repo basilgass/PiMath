@@ -59,7 +59,8 @@ class RationalStudy extends study_1.Study {
                 tex: tex,
                 zero: zero,
                 limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = \\pm\\infty`,
-                deltaX: null
+                deltaX: null,
+                tableOfSign: null
             });
         });
         // Sloped asymptote
@@ -67,14 +68,15 @@ class RationalStudy extends study_1.Study {
         if (NDegree.isEqual(DDegree)) {
             let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient),
                 Htex = H.tex;
-            let {reminder} = reduced.euclidian();
+            let {reminder} = reduced.euclidian(), deltaX = new rational_1.Rational(reminder, reduced.denominator);
             asymptotes.push({
                 fx: new polynom_1.Polynom(H),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
                 tex: `y=${Htex}`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
-                deltaX: new rational_1.Rational(reminder, reduced.denominator)
+                deltaX,
+                tableOfSign: this._getSigns(deltaX)
             });
         } else if (DDegree.greater(NDegree)) {
             asymptotes.push({
@@ -83,18 +85,21 @@ class RationalStudy extends study_1.Study {
                 tex: `y=0`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${0}`,
-                deltaX: null
+                deltaX: null,
+                tableOfSign: null
             });
         } else if (NDegree.value - 1 === DDegree.value) {
             // Calculate the slope
-            let {quotient, reminder} = reduced.euclidian();
+            let {quotient, reminder} = reduced.euclidian(),
+                deltaX = new rational_1.Rational(reminder, reduced.denominator);
             asymptotes.push({
                 fx: quotient.clone(),
                 type: study_1.ASYMPTOTE.SLOPE,
                 tex: `y=${quotient.tex}`,
                 zero: null,
                 limits: ``,
-                deltaX: new rational_1.Rational(reminder, reduced.denominator)
+                deltaX: new rational_1.Rational(reminder, reduced.denominator),
+                tableOfSign: this._getSigns(deltaX)
             });
         }
         return asymptotes;
@@ -154,6 +159,9 @@ class RationalStudy extends study_1.Study {
     _getSigns(fx, zeroes, typeOfTable) {
         // Factorize the rational
         let signs = [], factors = [];
+        if (zeroes === undefined) {
+            zeroes = this._getZeroes(fx);
+        }
         fx.numerator.factors.forEach(factor => {
             signs.push(this.makeOneLineForSigns(factor, zeroes, study_1.ZEROTYPE.ZERO));
             factors.push(factor.clone());

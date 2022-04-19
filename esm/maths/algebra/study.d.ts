@@ -29,6 +29,7 @@ export interface IAsymptote {
     tex: string;
     type: ASYMPTOTE;
     zero: IZero;
+    tableOfSign: ITableOfSigns;
 }
 export declare enum FUNCTION_EXTREMA {
     MIN = "min",
@@ -85,11 +86,8 @@ export declare class Study {
     private _signs;
     private _variations;
     private _zeroes;
-
     constructor(fx: StudyableFunction);
-
     get zeroes(): IZero[];
-
     get domain(): string;
 
     get signs(): ITableOfSigns;
@@ -104,16 +102,16 @@ export declare class Study {
 
     get texVariations(): string;
 
+    indexOfZero: (zeroes: IZero[], zero: IZero | ISolution) => number;
+    makeOneLineForSigns: (factor: Polynom, zeroes: IZero[], zeroSign: ZEROTYPE) => string[];
+    makeSignsResult: (signs: (string[])[]) => string[];
+    makeStudy: () => void;
     makeGrowsResult: (tos: ITableOfSigns) => {
         growsLine: string[];
         extremes: {
             [Key: string]: IExtrema;
         };
     };
-    indexOfZero: (zeroes: IZero[], zero: IZero | ISolution) => number;
-    makeOneLineForSigns: (factor: Polynom, zeroes: IZero[], zeroSign: ZEROTYPE) => string[];
-    makeSignsResult: (signs: (string[])[]) => string[];
-    makeStudy: () => void;
     makeVariationsResult: (tos: ITableOfSigns) => {
         varsLine: string[];
         extremes: {
@@ -128,9 +126,7 @@ export declare class Study {
     makeAsymptotes(): IAsymptote[];
 
     makeDerivative(): ITableOfSigns;
-
     makeVariation(): ITableOfSigns;
-
     private _makeTexFromTableOfSigns;
 
     get texSigns(): string;
