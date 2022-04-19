@@ -16,9 +16,6 @@
 import {IAsymptote, ITableOfSigns, IZero, Study, StudyableFunction} from "../study";
 
 export declare class RationalStudy extends Study {
-    private _getSigns;
-    private _getZeroes;
-
     constructor(fx: StudyableFunction);
 
     makeZeroes(): IZero[];
@@ -30,4 +27,7 @@ export declare class RationalStudy extends Study {
     makeDerivative(): ITableOfSigns;
 
     makeVariation(): ITableOfSigns;
+
+    private _getSigns;
+    private _getZeroes;
 }

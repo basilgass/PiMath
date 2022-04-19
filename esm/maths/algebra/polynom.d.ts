@@ -7,12 +7,10 @@ import {Fraction} from "../coefficients/fraction";
 import {ISolution} from "./equation";
 
 export declare type PolynomParsingType = string | Polynom | number | Fraction | Monom;
-
 export interface IEuclidian {
     quotient: Polynom;
     reminder: Polynom;
 }
-
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -28,24 +26,20 @@ export declare class Polynom {
     private _rawString;
     private _texString;
     private _zeroes;
-
     /**
      *
      * @param {string} polynomString (optional) Default polynom to parse on class creation
      * @param values
      */
     constructor(polynomString?: PolynomParsingType, ...values: unknown[]);
-
     get euclidianCache(): {
         [p: string]: IEuclidian;
     };
     set euclidianCache(value: {
         [p: string]: IEuclidian;
     });
-
     get dirty_zeroes(): boolean;
     set dirty_zeroes(value: boolean);
-
     get dirty_factors(): boolean;
     set dirty_factors(value: boolean);
     get monoms(): Monom[];

@@ -7,6 +7,7 @@ import {IEuclidian, Polynom} from "./polynom";
 import {Fraction} from "../coefficients/fraction";
 import {literalType} from "./monom";
 import {PARTICULAR_SOLUTION} from "./equation";
+import {RationalStudy} from "./study/rationalStudy";
 
 /**
  * Rational class can handle rational polynoms
@@ -210,4 +211,7 @@ export class Rational {
         return N.divide(D)
     };
 
+    study = (): RationalStudy => {
+        return new RationalStudy(this)
+    }
 }

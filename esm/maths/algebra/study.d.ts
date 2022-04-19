@@ -7,25 +7,21 @@ import {ISolution} from "./equation";
 import {Polynom} from "./polynom";
 
 export declare type StudyableFunction = Rational;
-
 export declare enum ZEROTYPE {
     ZERO = "z",
     DEFENCE = "d",
     NOTHING = "t"
 }
-
 export interface IZero extends ISolution {
     extrema: FUNCTION_EXTREMA;
     type: ZEROTYPE;
 }
-
 export declare enum ASYMPTOTE {
     VERTICAL = "av",
     HORIZONTAL = "ah",
     SLOPE = "ao",
     HOLE = "hole"
 }
-
 export interface IAsymptote {
     deltaX: StudyableFunction;
     limits: string;
@@ -33,14 +29,12 @@ export interface IAsymptote {
     type: ASYMPTOTE;
     zero: IZero;
 }
-
 export declare enum FUNCTION_EXTREMA {
     MIN = "min",
     MAX = "max",
     FLAT = "flat",
     NOTHING = ""
 }
-
 export interface IExtrema {
     tex: {
         x: string;
@@ -52,7 +46,6 @@ export interface IExtrema {
         y: number;
     };
 }
-
 export interface ITableOfSigns {
     extremes: {
         [Key: string]: IExtrema;
@@ -63,13 +56,11 @@ export interface ITableOfSigns {
     type: TABLE_OF_SIGNS;
     zeroes: IZero[];
 }
-
 export declare enum TABLE_OF_SIGNS {
     DEFAULT = 0,
     GROWS = 1,
     VARIATIONS = 2
 }
-
 /**
  * The study class is a "function study" class that will get:
  * fx               : get the function
@@ -87,25 +78,8 @@ export declare enum TABLE_OF_SIGNS {
  */
 export declare class Study {
     fx: StudyableFunction;
-    indexOfZero: (zeroes: IZero[], zero: IZero | ISolution) => number;
-    makeGrowsResult: (fx: StudyableFunction, tos: ITableOfSigns) => {
-        growsLine: string[];
-        extremes: {
-            [Key: string]: IExtrema;
-        };
-    };
-    makeOneLineForSigns: (factor: Polynom, zeroes: IZero[], zeroSign: ZEROTYPE) => string[];
-    makeSignsResult: (signs: (string[])[]) => string[];
-    makeStudy: () => void;
-    makeVariationsResult: (fx: StudyableFunction, tos: ITableOfSigns) => {
-        varsLine: string[];
-        extremes: {
-            [Key: string]: IExtrema;
-        };
-    };
     private _asymptotes;
     private _derivative;
-    private _makeTexFromTableOfSigns;
     private _signs;
     private _variations;
     private _zeroes;
@@ -128,6 +102,23 @@ export declare class Study {
 
     get texVariations(): string;
 
+    indexOfZero: (zeroes: IZero[], zero: IZero | ISolution) => number;
+    makeGrowsResult: (fx: StudyableFunction, tos: ITableOfSigns) => {
+        growsLine: string[];
+        extremes: {
+            [Key: string]: IExtrema;
+        };
+    };
+    makeOneLineForSigns: (factor: Polynom, zeroes: IZero[], zeroSign: ZEROTYPE) => string[];
+    makeSignsResult: (signs: (string[])[]) => string[];
+    makeStudy: () => void;
+    makeVariationsResult: (fx: StudyableFunction, tos: ITableOfSigns) => {
+        varsLine: string[];
+        extremes: {
+            [Key: string]: IExtrema;
+        };
+    };
+
     makeZeroes(): IZero[];
 
     makeSigns(): ITableOfSigns;
@@ -137,4 +128,6 @@ export declare class Study {
     makeDerivative(): ITableOfSigns;
 
     makeVariation(): ITableOfSigns;
+
+    private _makeTexFromTableOfSigns;
 }

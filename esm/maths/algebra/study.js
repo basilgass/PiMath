@@ -32,7 +32,6 @@ var TABLE_OF_SIGNS;
     TABLE_OF_SIGNS[TABLE_OF_SIGNS["GROWS"] = 1] = "GROWS";
     TABLE_OF_SIGNS[TABLE_OF_SIGNS["VARIATIONS"] = 2] = "VARIATIONS";
 })(TABLE_OF_SIGNS = exports.TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = {}));
-
 /**
  * The study class is a "function study" class that will get:
  * fx               : get the function
@@ -209,44 +208,34 @@ class Study {
         this.makeStudy();
         return this;
     }
-
     get zeroes() {
         return this._zeroes;
     }
-
     get domain() {
         return this.fx.domain();
     }
-
     get signs() {
         return this._signs;
     }
-
     get asymptotes() {
         return this._asymptotes;
     }
-
     get derivative() {
         return this._derivative;
     }
-
     get tex() {
         return this._makeTexFromTableOfSigns(this._signs);
     }
-
     get texGrows() {
         return this._makeTexFromTableOfSigns(this._derivative);
     }
-
     get texVariations() {
         return this._makeTexFromTableOfSigns(this._variations);
     }
-
     makeZeroes() {
         return [];
     }
     ;
-
     makeSigns() {
         return {
             type: TABLE_OF_SIGNS.DEFAULT,
@@ -258,11 +247,9 @@ class Study {
         };
     }
     ;
-
     makeAsymptotes() {
         return [];
     }
-
     makeDerivative() {
         return {
             type: TABLE_OF_SIGNS.GROWS,
@@ -273,7 +260,6 @@ class Study {
             extremes: {}
         };
     }
-
     makeVariation() {
         return {
             type: TABLE_OF_SIGNS.VARIATIONS,
@@ -285,6 +271,5 @@ class Study {
         };
     }
 }
-
 exports.Study = Study;
 //# sourceMappingURL=study.js.map

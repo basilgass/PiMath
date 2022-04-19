@@ -19,25 +19,21 @@ exports.RationalStudy = void 0;
 const study_1 = require("../study");
 const rational_1 = require("../rational");
 const fraction_1 = require("../../coefficients/fraction");
-
 class RationalStudy extends study_1.Study {
     constructor(fx) {
         console.log('RATIONAL STUDY');
         super(fx);
         return this;
     }
-
     makeZeroes() {
         console.log('GETTING ZEROES');
         return this._getZeroes(this.fx);
     }
     ;
-
     makeSigns() {
         return this._getSigns(this.fx, this.zeroes);
     }
     ;
-
     makeAsymptotes() {
         const reduced = this.fx.clone().reduce();
         // Vertical
@@ -99,7 +95,6 @@ class RationalStudy extends study_1.Study {
         return asymptotes;
     }
     ;
-
     makeDerivative() {
         let dx = this.fx.clone().derivative(),
             tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
@@ -111,7 +106,6 @@ class RationalStudy extends study_1.Study {
         return tos;
     }
     ;
-
     makeVariation() {
         // Get the zeroes, make signs.
         let dx = this.derivative.fx.clone().derivative(),
@@ -122,7 +116,6 @@ class RationalStudy extends study_1.Study {
         return tos;
     }
     ;
-
     _getZeroes(fx) {
         // All zeroes.
         let zeroes = [];
@@ -155,7 +148,6 @@ class RationalStudy extends study_1.Study {
         zeroes.sort((a, b) => a.value - b.value);
         return zeroes;
     }
-
     _getSigns(fx, zeroes, typeOfTable) {
         // Factorize the rational
         let signs = [], factors = [];
@@ -178,6 +170,5 @@ class RationalStudy extends study_1.Study {
         };
     }
 }
-
 exports.RationalStudy = RationalStudy;
 //# sourceMappingURL=rationalStudy.js.map

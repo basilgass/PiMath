@@ -8,6 +8,7 @@ exports.Rational = void 0;
 const polynom_1 = require("./polynom");
 const fraction_1 = require("../coefficients/fraction");
 const equation_1 = require("./equation");
+const rationalStudy_1 = require("./study/rationalStudy");
 /**
  * Rational class can handle rational polynoms
  */
@@ -132,13 +133,14 @@ class Rational {
             let N = this._numerator.evaluate(values), D = this._denominator.evaluate(values);
             return N.divide(D);
         };
+        this.study = () => {
+            return new rationalStudy_1.RationalStudy(this);
+        };
         if (numerator instanceof polynom_1.Polynom) {
             this._numerator = numerator.clone();
-        }
-        else if (typeof numerator === 'string') {
+        } else if (typeof numerator === 'string') {
             this._numerator = new polynom_1.Polynom(numerator);
-        }
-        else {
+        } else {
             this._numerator = new polynom_1.Polynom();
         }
         if (denominator instanceof polynom_1.Polynom) {

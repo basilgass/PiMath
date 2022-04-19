@@ -3264,6 +3264,7 @@ exports.Rational = void 0;
 const polynom_1 = __webpack_require__(38);
 const fraction_1 = __webpack_require__(506);
 const equation_1 = __webpack_require__(760);
+const rationalStudy_1 = __webpack_require__(572);
 /**
  * Rational class can handle rational polynoms
  */
@@ -3389,6 +3390,9 @@ class Rational {
             let N = this._numerator.evaluate(values), D = this._denominator.evaluate(values);
             return N.divide(D);
         };
+        this.study = () => {
+            return new rationalStudy_1.RationalStudy(this);
+        };
         if (numerator instanceof polynom_1.Polynom) {
             this._numerator = numerator.clone();
         }
@@ -3425,6 +3429,477 @@ class Rational {
     }
 }
 exports.Rational = Rational;
+
+
+/***/ }),
+
+/***/ 996:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+/**
+ * Rational polynom module contains everything necessary to handle rational polynoms.
+ * @module Polynom
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
+const fraction_1 = __webpack_require__(506);
+var ZEROTYPE;
+(function (ZEROTYPE) {
+    ZEROTYPE["ZERO"] = "z";
+    ZEROTYPE["DEFENCE"] = "d";
+    ZEROTYPE["NOTHING"] = "t";
+})(ZEROTYPE = exports.ZEROTYPE || (exports.ZEROTYPE = {}));
+var ASYMPTOTE;
+(function (ASYMPTOTE) {
+    ASYMPTOTE["VERTICAL"] = "av";
+    ASYMPTOTE["HORIZONTAL"] = "ah";
+    ASYMPTOTE["SLOPE"] = "ao";
+    ASYMPTOTE["HOLE"] = "hole";
+})(ASYMPTOTE = exports.ASYMPTOTE || (exports.ASYMPTOTE = {}));
+var FUNCTION_EXTREMA;
+(function (FUNCTION_EXTREMA) {
+    FUNCTION_EXTREMA["MIN"] = "min";
+    FUNCTION_EXTREMA["MAX"] = "max";
+    FUNCTION_EXTREMA["FLAT"] = "flat";
+    FUNCTION_EXTREMA["NOTHING"] = "";
+})(FUNCTION_EXTREMA = exports.FUNCTION_EXTREMA || (exports.FUNCTION_EXTREMA = {}));
+var TABLE_OF_SIGNS;
+(function (TABLE_OF_SIGNS) {
+    TABLE_OF_SIGNS[TABLE_OF_SIGNS["DEFAULT"] = 0] = "DEFAULT";
+    TABLE_OF_SIGNS[TABLE_OF_SIGNS["GROWS"] = 1] = "GROWS";
+    TABLE_OF_SIGNS[TABLE_OF_SIGNS["VARIATIONS"] = 2] = "VARIATIONS";
+})(TABLE_OF_SIGNS = exports.TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = {}));
+/**
+ * The study class is a "function study" class that will get:
+ * fx               : get the function
+ * domain           : string
+ * zeroes           : Object (tex, IZero)
+ * signs            : table of signs + tex output  using tkz-tab
+ * av               : vertical asymptotic
+ * ah               : horizontal asymptotic
+ * ao               : obliques
+ * deltaX           : position relative
+ * dx               : derivative
+ * grows            : growing table + tex output  using tkz-tab
+ * ddx              : dérivée seconde
+ * variations       : variation table + tex output  using tkz-tab
+ */
+class Study {
+    constructor(fx) {
+        this.makeStudy = () => {
+            this._zeroes = this.makeZeroes();
+            this._signs = this.makeSigns();
+            this._asymptotes = this.makeAsymptotes();
+            this._derivative = this.makeDerivative();
+            this._variations = this.makeVariation();
+        };
+        this.indexOfZero = (zeroes, zero) => {
+            for (let i = 0; i < zeroes.length; i++) {
+                if (zeroes[i].tex === zero.tex) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+        this.makeOneLineForSigns = (factor, zeroes, zeroSign) => {
+            let oneLine = [], currentZero = factor.getZeroes().map(x => x.tex);
+            // First +/- sign, before the first zero
+            oneLine.push('');
+            if (factor.degree().isZero()) {
+                oneLine.push(factor.monoms[0].coefficient.sign() === 1 ? '+' : '-');
+            }
+            else {
+                oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-');
+            }
+            for (let i = 0; i < zeroes.length; i++) {
+                // Add the zero if it's the current one
+                oneLine.push(currentZero.includes(zeroes[i].tex) ? zeroSign : ZEROTYPE.NOTHING);
+                // + / - sign after the current zero
+                if (i < zeroes.length - 1) {
+                    oneLine.push(factor.evaluate((zeroes[i].value + zeroes[i + 1].value) / 2).sign() === 1 ? '+' : '-');
+                }
+                else if (i === zeroes.length - 1) {
+                    oneLine.push(factor.evaluate(zeroes[i].value + 1).sign() === 1 ? '+' : '-');
+                }
+            }
+            oneLine.push('');
+            return oneLine;
+        };
+        this.makeSignsResult = (signs) => {
+            // Initialize the result line with the first line of the signs table
+            let resultLine = signs[0].map((x, index) => {
+                if (index === 0 || index === signs[0].length - 1) {
+                    return '';
+                }
+                if (index % 2 === 0) {
+                    return 't';
+                }
+                return '+';
+            });
+            // Go through each lines (except the first)
+            for (let current of signs) {
+                for (let i = 0; i < current.length; i++) {
+                    if (i % 2 === 0) {
+                        // t, z or d
+                        if (resultLine[i] === 'd') {
+                            continue;
+                        }
+                        if (current[i] !== 't') {
+                            resultLine[i] = current[i];
+                        }
+                    }
+                    else {
+                        // + or -
+                        if (current[i] === '-') {
+                            resultLine[i] = resultLine[i] === '+' ? '-' : '+';
+                        }
+                    }
+                }
+            }
+            return resultLine;
+        };
+        this.makeGrowsResult = (fx, tos) => {
+            // Use the last line (=> resultLine) to grab the necessary information
+            let signsAsArray = Object.values(tos.signs), resultLine = signsAsArray[signsAsArray.length - 1], growsLine = [], extremes = {}, zeroes = tos.zeroes;
+            // Get the extremes
+            for (let i = 0; i < zeroes.length; i++) {
+                // Get the corresponding item in the resultLine.
+                let pos = 2 * i + 2;
+                if (resultLine[pos] === 'z') {
+                    // It's a zero. Get the coordinates
+                    let x, y, zero = zeroes[i].exact, pt, xTex, yTex, pointType;
+                    if (zero instanceof fraction_1.Fraction) {
+                        let value = zero, evalY = fx.evaluate(value);
+                        x = zero.value;
+                        y = evalY.value;
+                        xTex = zero.tex;
+                        yTex = evalY.tex;
+                    }
+                    else {
+                        x = zeroes[i].value;
+                        y = fx.evaluate(zeroes[i].value).value;
+                        xTex = x.toFixed(2);
+                        yTex = y.toFixed(2);
+                    }
+                    // Determine the type of the zero.
+                    if (resultLine[pos - 1] === resultLine[pos + 1]) {
+                        pointType = FUNCTION_EXTREMA.FLAT;
+                    }
+                    else if (resultLine[pos - 1] === '+') {
+                        pointType = FUNCTION_EXTREMA.MAX;
+                    }
+                    else {
+                        pointType = FUNCTION_EXTREMA.MIN;
+                    }
+                    // Add the point to the list
+                    extremes[zeroes[i].tex] = {
+                        type: pointType,
+                        tex: { x: xTex, y: yTex },
+                        value: { x, y }
+                    };
+                }
+            }
+            // Create the grows line, based on tkz-tab
+            // \tkzTabLine{  ,  +  ,  z    ,  -  ,  d  ,  -  ,  z  ,  +  ,  }
+            // \tkzTabVar{     -/  , +/$3$ ,       -D+/ , -/$1$  , +/  }
+            growsLine.push(resultLine[1] === '+' ? '-/' : '+/');
+            for (let i = 1; i < resultLine.length - 1; i++) {
+                if (resultLine[i] === "z") {
+                    let extr = extremes[zeroes[(i - 2) / 2].tex];
+                    growsLine.push(`${resultLine[i - 1]}/\\(${extr.type}(${extr.tex.x};${extr.tex.y})\\)`);
+                }
+                else if (resultLine[i] === 'd') {
+                    growsLine.push(`${resultLine[i - 1]}D${resultLine[i + 1] === '+' ? '-' : '+'}/`);
+                }
+            }
+            growsLine.push(`${resultLine[resultLine.length - 2]}/`);
+            return { growsLine, extremes };
+        };
+        this.makeVariationsResult = (fx, tos) => {
+            // TODO: make variations result is not yet implemented.
+            let extremes = {}, varsLine = [];
+            return { varsLine, extremes };
+        };
+        this._makeTexFromTableOfSigns = (tos) => {
+            let factors = tos.factors.map(x => `\\(${x.tex}\\)/1`), factorsFx = "\\(fx\\)/1.2", zeroes = tos.zeroes;
+            // Add the last lines "label"
+            if (tos.type === TABLE_OF_SIGNS.GROWS) {
+                factorsFx = "\\(f'(x)\\)/1.2,\\(f(x)\\)/2";
+            }
+            else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
+                factorsFx = "\\(f''(x)\\)/1.2,\\(f(x)\\)/2";
+            }
+            // Create the tikzPicture header
+            let tex = `\\begin{tikzpicture}
+\\tkzTabInit[lgt=3,espcl=2,deltacl=0]{/1.2,${factors.join(',')},/.1,${factorsFx} }{{\\scriptsize \\hspace{1cm} \\(-\\infty\\)},\\(${zeroes.map(x => x.tex).join('\\),\\(')}\\),{\\scriptsize \\hspace{-1cm} \\(+\\infty\\)}}`;
+            let pos;
+            for (pos = 0; pos < tos.factors.length; pos++) {
+                tex += (`\n\\tkzTabLine{${tos.signs[pos].join(',')}}`);
+            }
+            // Add the result line
+            tex += (`\n\\tkzTabLine{${tos.signs[pos].join(',')}}`);
+            // Add the grows / vars line
+            if (tos.type === TABLE_OF_SIGNS.GROWS) {
+                tex += (`\n\\tkzTabVar{${tos.signs[pos + 1].join(',')}}`);
+            }
+            else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
+                // TODO: Check variations table for as tex
+                tex += (`\n\\tkzTabVar{${tos.signs[pos + 1].join(',')}}`);
+            }
+            tex += `\n\\end{tikzpicture}`;
+            return tex;
+        };
+        this.fx = fx;
+        this.makeStudy();
+        return this;
+    }
+    get zeroes() {
+        return this._zeroes;
+    }
+    get domain() {
+        return this.fx.domain();
+    }
+    get signs() {
+        return this._signs;
+    }
+    get asymptotes() {
+        return this._asymptotes;
+    }
+    get derivative() {
+        return this._derivative;
+    }
+    get tex() {
+        return this._makeTexFromTableOfSigns(this._signs);
+    }
+    get texGrows() {
+        return this._makeTexFromTableOfSigns(this._derivative);
+    }
+    get texVariations() {
+        return this._makeTexFromTableOfSigns(this._variations);
+    }
+    makeZeroes() {
+        return [];
+    }
+    ;
+    makeSigns() {
+        return {
+            type: TABLE_OF_SIGNS.DEFAULT,
+            fx: null,
+            factors: [],
+            zeroes: [],
+            signs: [],
+            extremes: {}
+        };
+    }
+    ;
+    makeAsymptotes() {
+        return [];
+    }
+    makeDerivative() {
+        return {
+            type: TABLE_OF_SIGNS.GROWS,
+            fx: null,
+            factors: [],
+            zeroes: [],
+            signs: [],
+            extremes: {}
+        };
+    }
+    makeVariation() {
+        return {
+            type: TABLE_OF_SIGNS.VARIATIONS,
+            fx: null,
+            factors: [],
+            zeroes: [],
+            signs: [],
+            extremes: {}
+        };
+    }
+}
+exports.Study = Study;
+
+
+/***/ }),
+
+/***/ 572:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RationalStudy = void 0;
+/**
+ * The study class is a "function study" class that will get:
+ * fx               : get the function
+ * domain           : string
+ * zeroes           : Object (tex, IZero)
+ * signs            : table of signs + tex output  using tkz-tab
+ * av               : vertical asymptotic
+ * ah               : horizontal asymptotic
+ * ao               : obliques
+ * deltaX           : position relative
+ * dx               : derivative
+ * grows            : growing table + tex output  using tkz-tab
+ * ddx              : dérivée seconde
+ * variations       : variation table + tex output  using tkz-tab
+ */
+const study_1 = __webpack_require__(996);
+const rational_1 = __webpack_require__(107);
+const fraction_1 = __webpack_require__(506);
+class RationalStudy extends study_1.Study {
+    constructor(fx) {
+        console.log('RATIONAL STUDY');
+        super(fx);
+        return this;
+    }
+    makeZeroes() {
+        console.log('GETTING ZEROES');
+        return this._getZeroes(this.fx);
+    }
+    ;
+    makeSigns() {
+        return this._getSigns(this.fx, this.zeroes);
+    }
+    ;
+    makeAsymptotes() {
+        const reduced = this.fx.clone().reduce();
+        // Vertical
+        let asymptotes = [];
+        this.zeroes.filter(x => x.type === study_1.ZEROTYPE.DEFENCE).forEach(zero => {
+            // Check if it's a hole or an asymptote
+            // TODO: Check for a hole ! Means calculate the limits !
+            let Ztype = study_1.ASYMPTOTE.VERTICAL, tex = `x=${zero.tex}`;
+            if (zero.exact instanceof fraction_1.Fraction) {
+                if (reduced.denominator.evaluate(zero.exact).isNotZero()) {
+                    Ztype = study_1.ASYMPTOTE.HOLE;
+                    tex = `(${zero.tex};${reduced.evaluate(zero.exact).tex})`;
+                }
+            }
+            else {
+                if (reduced.denominator.evaluate(zero.value).isNotZero()) {
+                    Ztype = study_1.ASYMPTOTE.HOLE;
+                    tex = `(${zero.tex};${reduced.evaluate(zero.value).tex})`;
+                }
+            }
+            asymptotes.push({
+                type: Ztype,
+                tex: tex,
+                zero: zero,
+                limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = \\pm\\infty`,
+                deltaX: null
+            });
+        });
+        // Sloped asymptote
+        let NDegree = this.fx.numerator.degree(), DDegree = this.fx.denominator.degree();
+        if (NDegree.isEqual(DDegree)) {
+            let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient).tex;
+            let { reminder } = reduced.euclidian();
+            asymptotes.push({
+                type: study_1.ASYMPTOTE.HORIZONTAL,
+                tex: `y=${H}`,
+                zero: null,
+                limits: `\\lim_{x\\to\\infty}\\ f(x) = ${H}`,
+                deltaX: new rational_1.Rational(reminder, reduced.denominator)
+            });
+        }
+        else if (DDegree.greater(NDegree)) {
+            asymptotes.push({
+                type: study_1.ASYMPTOTE.HORIZONTAL,
+                tex: `y=0`,
+                zero: null,
+                limits: `\\lim_{x\\to\\infty}\\ f(x) = ${0}`,
+                deltaX: null
+            });
+        }
+        else if (NDegree.value - 1 === DDegree.value) {
+            // Calculate the slope
+            let { quotient, reminder } = reduced.euclidian();
+            asymptotes.push({
+                type: study_1.ASYMPTOTE.SLOPE,
+                tex: `y=${quotient.tex}`,
+                zero: null,
+                limits: ``,
+                deltaX: new rational_1.Rational(reminder, reduced.denominator)
+            });
+        }
+        return asymptotes;
+    }
+    ;
+    makeDerivative() {
+        let dx = this.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
+        console.log(tos.factors.length, tos.signs.length);
+        let result = this.makeGrowsResult(this.fx, tos);
+        tos.signs.push(result.growsLine);
+        tos.extremes = result.extremes;
+        console.log(tos.signs.length);
+        return tos;
+    }
+    ;
+    makeVariation() {
+        // Get the zeroes, make signs.
+        let dx = this.derivative.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
+        let result = this.makeVariationsResult(this.fx, tos);
+        tos.signs.push(result.varsLine);
+        tos.extremes = result.extremes;
+        return tos;
+    }
+    ;
+    _getZeroes(fx) {
+        // All zeroes.
+        let zeroes = [];
+        fx.numerator.getZeroes().filter(x => !isNaN(x.value)).forEach(z => {
+            // add the item
+            zeroes.push({
+                tex: z.tex,
+                value: z.value,
+                exact: z.exact,
+                extrema: study_1.FUNCTION_EXTREMA.NOTHING,
+                type: study_1.ZEROTYPE.ZERO
+            });
+        });
+        fx.denominator.getZeroes().filter(x => !isNaN(x.value)).forEach(z => {
+            let idx = this.indexOfZero(zeroes, z);
+            if (idx !== -1) {
+                zeroes[idx].type = study_1.ZEROTYPE.DEFENCE;
+            }
+            else {
+                // Add the item
+                zeroes.push({
+                    tex: z.tex,
+                    value: z.value,
+                    exact: z.exact,
+                    extrema: study_1.FUNCTION_EXTREMA.NOTHING,
+                    type: study_1.ZEROTYPE.DEFENCE
+                });
+            }
+        });
+        // sort all zeroes
+        zeroes.sort((a, b) => a.value - b.value);
+        return zeroes;
+    }
+    _getSigns(fx, zeroes, typeOfTable) {
+        // Factorize the rational
+        let signs = [], factors = [];
+        fx.numerator.factors.forEach(factor => {
+            signs.push(this.makeOneLineForSigns(factor, zeroes, study_1.ZEROTYPE.ZERO));
+            factors.push(factor.clone());
+        });
+        fx.denominator.factors.forEach(factor => {
+            signs.push(this.makeOneLineForSigns(factor, zeroes, study_1.ZEROTYPE.DEFENCE));
+            factors.push(factor.clone());
+        });
+        signs.push(this.makeSignsResult(signs));
+        return {
+            type: typeOfTable,
+            fx,
+            factors,
+            zeroes,
+            signs,
+            extremes: {}
+        };
+    }
+}
+exports.RationalStudy = RationalStudy;
 
 
 /***/ }),

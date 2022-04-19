@@ -5,30 +5,27 @@
 import {IEuclidian, Polynom} from "./polynom";
 import {Fraction} from "../coefficients/fraction";
 import {literalType} from "./monom";
+import {RationalStudy} from "./study/rationalStudy";
 
 /**
  * Rational class can handle rational polynoms
  */
 export declare class Rational {
-    euclidian: () => IEuclidian;
     private _denominator;
+    euclidian: () => IEuclidian;
     private _rawString;
-
     /**
      *
      * @param numerator
      * @param denominator
      */
     constructor(numerator?: Polynom | string, denominator?: Polynom | string);
-
     get numerator(): Polynom;
-
     get denominator(): Polynom;
-
     get tex(): string;
     get texFactors(): string;
 
-    private _numerator;
+    study: () => RationalStudy;
     clone: () => Rational;
     domain: () => string;
     amplify: (P: Polynom) => Rational;
@@ -38,9 +35,9 @@ export declare class Rational {
     opposed: () => Rational;
     add: (R: Rational) => Rational;
     subtract: (R: Rational) => Rational;
-
-    get plotFunction(): string;
-
+    private _numerator;
     limits: (value: Fraction | number, offset?: string, letter?: string) => Fraction;
     evaluate: (values: literalType | Fraction | number) => Fraction;
+
+    get plotFunction(): string;
 }
