@@ -259,6 +259,7 @@ export class Polynom {
         this._factors = []
         this.mark_as_dirty()
 
+        // TODO: allow to enter a liste of Fraction (a, b, c, ...) to make a polynom ax^n + bx^(n-1) + cx^(n-2) + ...
         if (typeof inputStr === 'string') {
             return this._parseString(inputStr, ...values)
         } else if (

@@ -76,3 +76,20 @@ describe("Fraction static functions", ()=>{
         expect(Fraction.average(...list).tex).to.be.equal('\\frac{ 19 }{ 10 }')
     })
 })
+
+describe("Evaluate fraction", () => {
+    it('should evaluate and convert to decimal if not exact', function () {
+        let F = new Fraction(Math.sqrt(2))
+
+        expect(F.isApproximative()).to.be.true
+        expect(F.isExact()).to.be.false
+
+        console.log(F.tex, F.value)
+
+        let G = new Fraction('1/7')
+        expect(G.isApproximative()).to.be.false
+        expect(G.isExact()).to.be.true
+
+        console.log(G.tex, G.value)
+    });
+})

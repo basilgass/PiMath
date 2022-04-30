@@ -72,9 +72,9 @@ export interface ITableOfSigns {
 }
 
 export enum TABLE_OF_SIGNS {
-    DEFAULT,
-    GROWS,
-    VARIATIONS
+    SIGNS = "signs",
+    GROWS = "grows",
+    VARIATIONS = "variatins"
 }
 
 /**
@@ -323,7 +323,7 @@ export class Study {
 
     makeSigns(): ITableOfSigns {
         return {
-            type: TABLE_OF_SIGNS.DEFAULT,
+            type: TABLE_OF_SIGNS.SIGNS,
             fx: null,
             factors: [],
             zeroes: [],
