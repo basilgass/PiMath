@@ -1,4 +1,4 @@
-import {ExpressionFactor} from "../ExpressionFactor";
+import {ExpressionFactor} from "../expressionFactor";
 import {Expression} from "../expression";
 
 

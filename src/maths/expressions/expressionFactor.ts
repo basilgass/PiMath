@@ -5,7 +5,6 @@ export abstract class ExpressionFactor {
         private _argument: Expression | string | number,
         private _power?: number,
         private _root?: number,
-        private _modifier?: number
     ) {
         if (this._power === undefined) {
             this._power = 1
@@ -13,13 +12,18 @@ export abstract class ExpressionFactor {
         if (this._root === undefined) {
             this._root = 1
         }
-        if (this._modifier === undefined) {
-            this._modifier = null
-        }
     }
 
     get tex(): string {
-        return this.template()
+        return this.template().replace('@', this.texArgument)
+    }
+
+    get texArgument(): string {
+        if (this._argument instanceof Expression) {
+            return this._argument.tex
+        } else {
+            return this._argument.toString()
+        }
     }
 
     get power(): number {
@@ -84,5 +88,13 @@ export abstract class ExpressionFactor {
         }
 
         return tex
+    }
+
+    isZero(): Boolean {
+        if (this._argument instanceof Expression) {
+            return this._argument.isZero()
+        }
+
+        return this._argument === 0
     }
 }

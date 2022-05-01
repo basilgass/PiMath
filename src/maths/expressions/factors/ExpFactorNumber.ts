@@ -1,6 +1,5 @@
-import {ExpressionFactor} from "../ExpressionFactor";
+import {ExpressionFactor} from "../expressionFactor";
 import {Expression} from "../expression";
-
 
 export class ExpFactorNumber extends ExpressionFactor {
     constructor(variable: number, power?: number, root?: number) {

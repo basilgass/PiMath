@@ -1,7 +1,7 @@
 import {ExpressionFactor} from "../expressionFactor";
 import {Expression} from "../expression";
 
-export class ExpFactorSin extends ExpressionFactor {
+export class ExpFactorExponential extends ExpressionFactor {
 
     derivative(variable: string): Expression {
         return undefined
@@ -12,14 +12,13 @@ export class ExpFactorSin extends ExpressionFactor {
     }
 
     template(): string {
-        let tex: string = `\\sin`
+        let tex: string = `\\text{e}^{@}`
 
         // The power is different from one
         if (this.power !== 1 && this.power !== -1) {
             tex += `^{${this.power}}`
         }
 
-        tex += `(@)`
         // The root value is two or greater
         tex = this.texRoot(tex)
 
