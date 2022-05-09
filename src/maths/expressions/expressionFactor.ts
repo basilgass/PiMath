@@ -1,10 +1,11 @@
-import {Expression} from "./expression";
+import {Expression} from "./internals";
 
 export abstract class ExpressionFactor {
     constructor(
-        private _argument: Expression | string | number,
+        private _argument: Expression,
         private _power?: number,
         private _root?: number,
+        private _inline?: boolean
     ) {
         if (this._power === undefined) {
             this._power = 1
@@ -12,18 +13,21 @@ export abstract class ExpressionFactor {
         if (this._root === undefined) {
             this._root = 1
         }
+        if (this._inline === undefined) {
+            this._inline = false
+        }
+    }
+
+    get inline(): boolean {
+        return this._inline;
+    }
+
+    set inline(value: boolean) {
+        this._inline = value;
     }
 
     get tex(): string {
-        return this.template().replace('@', this.texArgument)
-    }
-
-    get texArgument(): string {
-        if (this._argument instanceof Expression) {
-            return this._argument.tex
-        } else {
-            return this._argument.toString()
-        }
+        return this.makeTeX()
     }
 
     get power(): number {
@@ -48,36 +52,70 @@ export abstract class ExpressionFactor {
         this._root = value;
     }
 
-
-    get argument(): Expression | string | number {
+    get argument(): Expression {
         return this._argument;
     }
 
-    set argument(value: Expression | string | number) {
+    set argument(value: Expression) {
         this._argument = value;
     }
 
-    abstract template(): string
+    abstract makeTeX(numberOfFactors?: number, position?: number): string
 
     abstract derivative(variable: string): Expression
 
     abstract integrate(variable: string): Expression
 
-    hasVariable(variable: string): boolean {
+    hasVariable(variable?: string): boolean {
+
+        if (variable === undefined) {
+            return !this.isNumeric()
+        }
+
         // The argument is an Expression
         if (this._argument instanceof Expression) {
             return this._argument.hasVariable(variable)
         }
 
-        // The argument is either a number (falsy) or a string (might be truthy)
-        return variable === this._argument;
+        return false
 
     }
 
+    isNumeric(): boolean {
+        if (this._argument instanceof Expression) {
+            return this.isNumeric()
+        }
+
+
+    }
+
+    hasRoot(): boolean {
+        return this.root > 1
+    }
+
+    hasPower(inline?: boolean): boolean {
+        if (inline === true) {
+            return !(this.power === 1)
+        } else {
+            return !(this.power === 1 || this.power === -1)
+        }
+    }
+
+
+    texPowerAndRoot(tex: string): string {
+        return this.texPower(this.texRoot(tex))
+    }
+
     texPower(tex: string): string {
-        if (this.power !== 1 && this.power !== -1) {
+        if (this.hasPower(this.inline)) {
             return `${tex}^{ ${Math.abs(this.power)} }`
         }
+
+        return tex
+    }
+
+    wrapWithParentheses(tex: string): string {
+        return `\\left( ${tex} \\right)`
     }
 
     texRoot(tex: string): string {

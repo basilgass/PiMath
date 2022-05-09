@@ -1,14 +1,29 @@
-import {ExpressionFactor} from "../expressionFactor";
-import {Expression} from "../expression";
-
+import {Expression} from "../internals";
+import {ExpressionFactor} from "../internals";
 
 export class ExpFactorVariable extends ExpressionFactor {
-    constructor(variable: string, power?: number, root?: number) {
-        if (typeof variable !== "string") {
-            throw `The variable ${variable} is not a valid value.`
+    private _variable: string
+    constructor(value: string, power?: number, root?: number) {
+        super(null, power, root);
+
+        if (typeof value !== "string") {
+            throw `The variable ${value} is not a valid value.`
         }
 
-        super(variable, power, root);
+        this._variable = value
+    }
+
+
+    get variable(): string {
+        return this._variable;
+    }
+
+    set variable(value: string) {
+        this._variable = value;
+    }
+
+    makeTeX(): string {
+        return this.texPower(this.texRoot(this._variable))
     }
 
     derivative(variable: string): Expression {
@@ -19,8 +34,7 @@ export class ExpFactorVariable extends ExpressionFactor {
         return undefined;
     }
 
-    template(): string {
-        // the argument is a string !
-        return this.texPower(this.texRoot(`${this.argument}`))
+    hasVariable(variable?: string): boolean {
+        return this._variable === variable
     }
 }

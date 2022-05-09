@@ -5,8 +5,8 @@ export declare type FractionParsingType = number | string | Fraction;
  * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
  */
 export declare class Fraction {
-    private _numerator;
     private _denominator;
+    private _numerator;
     constructor(value?: unknown, denominatorOrPeriodic?: number);
     get numerator(): number;
     set numerator(value: number);
@@ -18,6 +18,13 @@ export declare class Fraction {
     get frac(): string;
     get dfrac(): string;
     get tfrac(): string;
+    static max: (...fractions: (Fraction | number)[]) => Fraction;
+    static min: (...fractions: (Fraction | number)[]) => Fraction;
+    static average: (...fractions: (Fraction | number)[]) => Fraction;
+    static unique: (fractions: Fraction[], sorted?: boolean) => Fraction[];
+    static sort: (fractions: Fraction[], reverse?: boolean) => Fraction[];
+    isApproximative: () => boolean;
+    isExact: () => boolean;
     /**
      * Parse the value to get the numerator and denominator
      * @param value : number or string to parse to get the fraction
@@ -39,11 +46,6 @@ export declare class Fraction {
     root: (p: number) => Fraction;
     sqrt: () => Fraction;
     abs: () => Fraction;
-    static max: (...fractions: (Fraction | number)[]) => Fraction;
-    static min: (...fractions: (Fraction | number)[]) => Fraction;
-    static average: (...fractions: (Fraction | number)[]) => Fraction;
-    static unique: (fractions: Fraction[], sorted?: boolean) => Fraction[];
-    static sort: (fractions: Fraction[], reverse?: boolean) => Fraction[];
     reduce: () => Fraction;
     amplify: (k: number) => Fraction;
     /**

@@ -2,10 +2,9 @@
  * Rational polynom module contains everything necessary to handle rational polynoms.
  * @module Polynom
  */
-import {Rational} from "./rational";
-import {ISolution} from "./equation";
-import {Polynom} from "./polynom";
-
+import { Rational } from "./rational";
+import { ISolution } from "./equation";
+import { Polynom } from "./polynom";
 export declare type StudyableFunction = Rational;
 export declare enum ZEROTYPE {
     ZERO = "z",
@@ -60,9 +59,9 @@ export interface ITableOfSigns {
     tex: string;
 }
 export declare enum TABLE_OF_SIGNS {
-    DEFAULT = 0,
-    GROWS = 1,
-    VARIATIONS = 2
+    SIGNS = "signs",
+    GROWS = "grows",
+    VARIATIONS = "variatins"
 }
 /**
  * The study class is a "function study" class that will get:
@@ -89,23 +88,16 @@ export declare class Study {
     constructor(fx: StudyableFunction);
     get zeroes(): IZero[];
     get domain(): string;
-
     get signs(): ITableOfSigns;
-
     get asymptotes(): IAsymptote[];
-
     get derivative(): ITableOfSigns;
-
-    drawCode: () => string;
-
+    get texSigns(): string;
     get texGrows(): string;
-
     get texVariations(): string;
-
+    makeStudy: () => void;
     indexOfZero: (zeroes: IZero[], zero: IZero | ISolution) => number;
     makeOneLineForSigns: (factor: Polynom, zeroes: IZero[], zeroSign: ZEROTYPE) => string[];
     makeSignsResult: (signs: (string[])[]) => string[];
-    makeStudy: () => void;
     makeGrowsResult: (tos: ITableOfSigns) => {
         growsLine: string[];
         extremes: {
@@ -118,16 +110,11 @@ export declare class Study {
             [Key: string]: IExtrema;
         };
     };
-
     makeZeroes(): IZero[];
-
     makeSigns(): ITableOfSigns;
-
     makeAsymptotes(): IAsymptote[];
-
     makeDerivative(): ITableOfSigns;
     makeVariation(): ITableOfSigns;
     private _makeTexFromTableOfSigns;
-
-    get texSigns(): string;
+    drawCode: () => string;
 }

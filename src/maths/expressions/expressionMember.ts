@@ -1,7 +1,11 @@
-import {ExpressionFactor} from "./expressionFactor";
+import {ExpFactorNumber, ExpFactorVariable, ExpressionFactor} from "./internals";
 
 export class ExpressionMember {
     private _factors: ExpressionFactor[]
+
+    constructor(...values: ExpressionFactor[]) {
+        this._factors = values
+    }
 
     get factors(): ExpressionFactor[] {
         return this._factors;
@@ -17,6 +21,45 @@ export class ExpressionMember {
 
     get denominator(): ExpressionFactor[] {
         return this._factors.filter(factor => factor.power < 0)
+    }
+
+    get tex(): string {
+        let num = this.numerator,
+            den = this.denominator,
+            numTex = num.map((x, index) => x.makeTeX(num.length, index)),
+            denTex = den.map((x, index) => x.makeTeX(den.length, index))
+
+        if (den.length > 0) {
+            return `\\frac{ ${numTex.join("")} }{ ${denTex.join("")} }`
+        } else {
+            return numTex.join("")
+        }
+    }
+
+    opposed(): ExpressionMember {
+        let firstMember = this.factors[0]
+
+        if (firstMember === undefined) {
+            return this
+        }
+
+        if (firstMember instanceof ExpFactorNumber) {
+            if (firstMember.hasPower() || firstMember.hasRoot()) {
+                this.factors.unshift(new ExpFactorNumber(-1))
+            } else {
+                firstMember.number = -firstMember.number
+            }
+        } else {
+            this.factors.unshift(new ExpFactorNumber(-1))
+        }
+
+
+        return this
+    }
+
+    add(value: ExpressionFactor): ExpressionMember {
+        this._factors.push(value)
+        return this
     }
 
     addFactors(...values: ExpressionFactor[]): ExpressionMember {
@@ -43,7 +86,13 @@ export class ExpressionMember {
         return false
     }
 
-    hasVariable(variable: string): boolean {
+    hasVariable(variable?: string): boolean {
+
+        if (variable === undefined) {
+            return !this.isNumeric()
+        }
+
+
         for (let factor of this._factors) {
             if (factor.hasVariable(variable)) {
                 return true
@@ -51,5 +100,15 @@ export class ExpressionMember {
         }
 
         return false
+    }
+
+    isNumeric(): boolean {
+        for (let factor of this._factors) {
+            if (factor instanceof ExpFactorVariable) {
+                return false
+            }
+        }
+
+        return true
     }
 }

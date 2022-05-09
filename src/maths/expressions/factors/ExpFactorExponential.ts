@@ -1,5 +1,5 @@
-import {ExpressionFactor} from "../expressionFactor";
-import {Expression} from "../expression";
+import {Expression} from "../internals";
+import {ExpressionFactor} from "../internals";
 
 export class ExpFactorExponential extends ExpressionFactor {
 
@@ -11,17 +11,9 @@ export class ExpFactorExponential extends ExpressionFactor {
         return undefined
     }
 
-    template(): string {
-        let tex: string = `\\text{e}^{@}`
+    makeTeX(): string {
+        let tex: string = `\\text{e}^{ ${ this.argument.tex } }`
 
-        // The power is different from one
-        if (this.power !== 1 && this.power !== -1) {
-            tex += `^{${this.power}}`
-        }
-
-        // The root value is two or greater
-        tex = this.texRoot(tex)
-
-        return tex
+        return this.texPowerAndRoot(tex)
     }
 }

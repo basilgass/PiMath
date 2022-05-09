@@ -115,6 +115,7 @@ class Polynom {
             this._monoms = [];
             this._factors = [];
             this.mark_as_dirty();
+            // TODO: allow to enter a liste of Fraction (a, b, c, ...) to make a polynom ax^n + bx^(n-1) + cx^(n-2) + ...
             if (typeof inputStr === 'string') {
                 return this._parseString(inputStr, ...values);
             }
@@ -600,8 +601,7 @@ class Polynom {
                                 P = result.quotient.clone();
                                 // filter all dividers that are no more suitable.
                                 allDividers = allDividers.filter(x => {
-                                    let pX = P.monoms[0], pC = P.monoms[P.monoms.length - 1], dX = x.monoms[0],
-                                        dC = x.monoms[x.monoms.length - 1];
+                                    let pX = P.monoms[0], pC = P.monoms[P.monoms.length - 1], dX = x.monoms[0], dC = x.monoms[x.monoms.length - 1];
                                     // Check last item (degree zero)
                                     if (!pC.isDivisible(dC)) {
                                         return false;

@@ -3,7 +3,7 @@
  * Rational polynom module contains everything necessary to handle rational polynoms.
  * @module Polynom
  */
-Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
 const fraction_1 = require("../coefficients/fraction");
 const numexp_1 = require("../expressions/numexp");
@@ -29,9 +29,9 @@ var FUNCTION_EXTREMA;
 })(FUNCTION_EXTREMA = exports.FUNCTION_EXTREMA || (exports.FUNCTION_EXTREMA = {}));
 var TABLE_OF_SIGNS;
 (function (TABLE_OF_SIGNS) {
-    TABLE_OF_SIGNS[TABLE_OF_SIGNS["DEFAULT"] = 0] = "DEFAULT";
-    TABLE_OF_SIGNS[TABLE_OF_SIGNS["GROWS"] = 1] = "GROWS";
-    TABLE_OF_SIGNS[TABLE_OF_SIGNS["VARIATIONS"] = 2] = "VARIATIONS";
+    TABLE_OF_SIGNS["SIGNS"] = "signs";
+    TABLE_OF_SIGNS["GROWS"] = "grows";
+    TABLE_OF_SIGNS["VARIATIONS"] = "variatins";
 })(TABLE_OF_SIGNS = exports.TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = {}));
 /**
  * The study class is a "function study" class that will get:
@@ -74,7 +74,8 @@ class Study {
             oneLine.push('');
             if (factor.degree().isZero()) {
                 oneLine.push(factor.monoms[0].coefficient.sign() === 1 ? '+' : '-');
-            } else {
+            }
+            else {
                 oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-');
             }
             for (let i = 0; i < zeroes.length; i++) {
@@ -83,7 +84,8 @@ class Study {
                 // + / - sign after the current zero
                 if (i < zeroes.length - 1) {
                     oneLine.push(factor.evaluate((zeroes[i].value + zeroes[i + 1].value) / 2).sign() === 1 ? '+' : '-');
-                } else if (i === zeroes.length - 1) {
+                }
+                else if (i === zeroes.length - 1) {
                     oneLine.push(factor.evaluate(zeroes[i].value + 1).sign() === 1 ? '+' : '-');
                 }
             }
@@ -112,7 +114,8 @@ class Study {
                         if (current[i] !== 't') {
                             resultLine[i] = current[i];
                         }
-                    } else {
+                    }
+                    else {
                         // + or -
                         if (current[i] === '-') {
                             resultLine[i] = resultLine[i] === '+' ? '-' : '+';
@@ -124,8 +127,7 @@ class Study {
         };
         this.makeGrowsResult = (tos) => {
             // Use the last line (=> resultLine) to grab the necessary information
-            let signsAsArray = Object.values(tos.signs), resultLine = signsAsArray[signsAsArray.length - 1],
-                growsLine = [], extremes = {}, zeroes = tos.zeroes;
+            let signsAsArray = Object.values(tos.signs), resultLine = signsAsArray[signsAsArray.length - 1], growsLine = [], extremes = {}, zeroes = tos.zeroes;
             // Get the extremes
             for (let i = 0; i < zeroes.length; i++) {
                 // Get the corresponding item in the resultLine.
@@ -141,25 +143,28 @@ class Study {
                         y = evalY.value;
                         xTex = zero.tex;
                         yTex = evalY.tex;
-                    } else {
+                    }
+                    else {
                         x = zeroes[i].value;
-                        y = exp.evaluate({x});
+                        y = exp.evaluate({ x });
                         xTex = x.toFixed(2);
                         yTex = y.toFixed(2);
                     }
                     // Determine the type of the zero.
                     if (resultLine[pos - 1] === resultLine[pos + 1]) {
                         pointType = FUNCTION_EXTREMA.FLAT;
-                    } else if (resultLine[pos - 1] === '+') {
+                    }
+                    else if (resultLine[pos - 1] === '+') {
                         pointType = FUNCTION_EXTREMA.MAX;
-                    } else {
+                    }
+                    else {
                         pointType = FUNCTION_EXTREMA.MIN;
                     }
                     // Add the point to the list
                     extremes[zeroes[i].tex] = {
                         type: pointType,
-                        tex: {x: xTex, y: yTex},
-                        value: {x, y}
+                        tex: { x: xTex, y: yTex },
+                        value: { x, y }
                     };
                 }
             }
@@ -171,24 +176,26 @@ class Study {
                 if (resultLine[i] === "z") {
                     let extr = extremes[zeroes[(i - 2) / 2].tex];
                     growsLine.push(`${resultLine[i - 1]}/\\(${extr.type}(${extr.tex.x};${extr.tex.y})\\)`);
-                } else if (resultLine[i] === 'd') {
+                }
+                else if (resultLine[i] === 'd') {
                     growsLine.push(`${resultLine[i - 1]}D${resultLine[i + 1] === '+' ? '-' : '+'}/`);
                 }
             }
             growsLine.push(`${resultLine[resultLine.length - 2]}/`);
-            return {growsLine, extremes};
+            return { growsLine, extremes };
         };
         this.makeVariationsResult = (tos) => {
             // TODO: make variations result is not yet implemented.
             let extremes = {}, varsLine = [];
-            return {varsLine, extremes};
+            return { varsLine, extremes };
         };
         this._makeTexFromTableOfSigns = (tos) => {
             let factors = tos.factors.map(x => `\\(${x.tex}\\)/1`), factorsFx = "\\(fx\\)/1.2", zeroes = tos.zeroes;
             // Add the last lines "label"
             if (tos.type === TABLE_OF_SIGNS.GROWS) {
                 factorsFx = "\\(f'(x)\\)/1.2,\\(f(x)\\)/2";
-            } else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
+            }
+            else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
                 factorsFx = "\\(f''(x)\\)/1.2,\\(f(x)\\)/2";
             }
             // Create the tikzPicture header
@@ -203,7 +210,8 @@ class Study {
             // Add the grows / vars line
             if (tos.type === TABLE_OF_SIGNS.GROWS) {
                 tex += (`\n\\tkzTabVar{${tos.signs[pos + 1].join(',')}}`);
-            } else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
+            }
+            else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
                 // TODO: Check variations table for as tex
                 tex += (`\n\\tkzTabVar{${tos.signs[pos + 1].join(',')}}`);
             }
@@ -219,9 +227,11 @@ class Study {
                 if (asymptote.type === ASYMPTOTE.VERTICAL) {
                     code += `\nav_${i}=line x=${asymptote.zero.value}->red,dash`;
                     i++;
-                } else if (asymptote.type === ASYMPTOTE.HORIZONTAL) {
+                }
+                else if (asymptote.type === ASYMPTOTE.HORIZONTAL) {
                     code += `\nah=line y=${asymptote.fx.monoms[0].coefficient.value}->orange,dash`;
-                } else if (asymptote.type === ASYMPTOTE.SLOPE) {
+                }
+                else if (asymptote.type === ASYMPTOTE.SLOPE) {
                     code += `\nao=line y=${asymptote.fx.plotFunction}->red,dash`;
                 }
                 i++;
@@ -275,7 +285,7 @@ class Study {
     ;
     makeSigns() {
         return {
-            type: TABLE_OF_SIGNS.DEFAULT,
+            type: TABLE_OF_SIGNS.SIGNS,
             fx: null,
             factors: [],
             zeroes: [],

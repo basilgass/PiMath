@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.RationalStudy = void 0;
 /**
  * The study class is a "function study" class that will get:
@@ -47,7 +47,8 @@ class RationalStudy extends study_1.Study {
                     Ztype = study_1.ASYMPTOTE.HOLE;
                     tex = `(${zero.tex};${reduced.evaluate(zero.exact).tex})`;
                 }
-            } else {
+            }
+            else {
                 if (reduced.denominator.evaluate(zero.value).isNotZero()) {
                     Ztype = study_1.ASYMPTOTE.HOLE;
                     tex = `(${zero.tex};${reduced.evaluate(zero.value).tex})`;
@@ -66,9 +67,8 @@ class RationalStudy extends study_1.Study {
         // Sloped asymptote
         let NDegree = this.fx.numerator.degree(), DDegree = this.fx.denominator.degree();
         if (NDegree.isEqual(DDegree)) {
-            let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient),
-                Htex = H.tex;
-            let {reminder} = reduced.euclidian(), deltaX = new rational_1.Rational(reminder, reduced.denominator);
+            let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient), Htex = H.tex;
+            let { reminder } = reduced.euclidian(), deltaX = new rational_1.Rational(reminder, reduced.denominator);
             asymptotes.push({
                 fx: new polynom_1.Polynom(H),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
@@ -78,7 +78,8 @@ class RationalStudy extends study_1.Study {
                 deltaX,
                 tableOfSign: this._getSigns(deltaX)
             });
-        } else if (DDegree.greater(NDegree)) {
+        }
+        else if (DDegree.greater(NDegree)) {
             asymptotes.push({
                 fx: new polynom_1.Polynom('0'),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
@@ -88,10 +89,10 @@ class RationalStudy extends study_1.Study {
                 deltaX: null,
                 tableOfSign: null
             });
-        } else if (NDegree.value - 1 === DDegree.value) {
+        }
+        else if (NDegree.value - 1 === DDegree.value) {
             // Calculate the slope
-            let {quotient, reminder} = reduced.euclidian(),
-                deltaX = new rational_1.Rational(reminder, reduced.denominator);
+            let { quotient, reminder } = reduced.euclidian(), deltaX = new rational_1.Rational(reminder, reduced.denominator);
             asymptotes.push({
                 fx: quotient.clone(),
                 type: study_1.ASYMPTOTE.SLOPE,
@@ -106,8 +107,7 @@ class RationalStudy extends study_1.Study {
     }
     ;
     makeDerivative() {
-        let dx = this.fx.clone().derivative(),
-            tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
+        let dx = this.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
         let result = this.makeGrowsResult(tos);
         tos.signs.push(result.growsLine);
         tos.extremes = result.extremes;
@@ -116,8 +116,7 @@ class RationalStudy extends study_1.Study {
     ;
     makeVariation() {
         // Get the zeroes, make signs.
-        let dx = this.derivative.fx.clone().derivative(),
-            tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
+        let dx = this.derivative.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
         let result = this.makeVariationsResult(tos);
         tos.signs.push(result.varsLine);
         tos.extremes = result.extremes;
@@ -141,7 +140,8 @@ class RationalStudy extends study_1.Study {
             let idx = this.indexOfZero(zeroes, z);
             if (idx !== -1) {
                 zeroes[idx].type = study_1.ZEROTYPE.DEFENCE;
-            } else {
+            }
+            else {
                 // Add the item
                 zeroes.push({
                     tex: z.tex,
