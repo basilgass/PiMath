@@ -373,10 +373,10 @@ class Equation {
                 else {
                     // Must handle the case if the m1 monom is negative.
                     if ((this.isGreater() && m1.sign() === 1) || (!this.isGreater() && m1.sign() === -1)) {
-                        s = `\\left${this.isAlsoEqual() ? '\\[' : '\\]'}${v};+\\infty\\right\\[`;
+                        s = `\\left${this.isAlsoEqual() ? '\\[' : '\\]'}${v.tex};+\\infty\\right\\[`;
                     }
                     else {
-                        s = `\\left\\]-\\infty;${v} \\right\\${this.isAlsoEqual() ? '\\]' : '\\['}`;
+                        s = `\\left\\]-\\infty;${v.tex} \\right\\${this.isAlsoEqual() ? '\\]' : '\\['}`;
                     }
                 }
                 this._solutions = [{
