@@ -437,7 +437,7 @@ class Equation {
                         s = `\\left${this.isAlsoEqual() ? '[' : ']'}${v.tex};+\\infty\\right[`;
                     }
                     else {
-                        s = `\\left]-\\infty;${v.tex} \\right\\${this.isAlsoEqual() ? ']' : '['}`;
+                        s = `\\left]-\\infty;${v.tex} \\right${this.isAlsoEqual() ? ']' : '['}`;
                     }
                 }
                 this._solutions = [{
