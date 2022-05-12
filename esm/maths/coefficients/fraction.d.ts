@@ -14,6 +14,7 @@ export declare class Fraction {
     set denominator(value: number);
     get value(): number;
     get tex(): string;
+    get texWithSign(): string;
     get display(): string;
     get frac(): string;
     get dfrac(): string;

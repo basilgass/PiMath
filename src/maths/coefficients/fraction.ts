@@ -65,6 +65,10 @@ export class Fraction {
         }
     }
 
+    get texWithSign():string {
+        return this.isPositive() ? `+${this.tex}` : this.tex;
+    }
+
     get display(): string {
         if (this.isExact()) {
             if (this._denominator === 1) {

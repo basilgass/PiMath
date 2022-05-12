@@ -419,6 +419,9 @@ class Fraction {
             return this.value.toFixed(3);
         }
     }
+    get texWithSign() {
+        return this.isPositive() ? `+${this.tex}` : this.tex;
+    }
     get display() {
         if (this.isExact()) {
             if (this._denominator === 1) {
