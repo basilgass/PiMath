@@ -6,6 +6,7 @@ export declare class ExpFactorVariable extends ExpressionFactor {
     get variable(): string;
     set variable(value: string);
     makeTeX(): string;
+    makeDisplay(numberOfFactors?: number, position?: number): string;
     derivative(variable: string): Expression;
     integrate(variable: string): Expression;
     hasVariable(variable?: string): boolean;

@@ -189,6 +189,8 @@ export class Shutingyard {
     }
 
     normalize(expr: string): string {
+        if(expr.length===1){return expr}
+
         // Get the list of function token.
         let fnToken: string[] = [],
             kToken: string[] = []
@@ -205,6 +207,8 @@ export class Shutingyard {
         }
         // sort if from the lengthy to the smallest function
         kToken.sort((a, b) => b.length - a.length)
+
+
 
 
         let normalizedExpr: string = "",
@@ -369,7 +373,6 @@ export class Shutingyard {
 
         // Normalize the input if required.
         if (this._uniformize) expr = this.normalize(expr)
-
 
         let securityLoopLvl1 = 50,
             securityLoopLvl2_default = 50,

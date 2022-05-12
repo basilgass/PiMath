@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExpressionFactor = void 0;
 const internals_1 = require("./internals");
+const numeric_1 = require("../numeric");
 class ExpressionFactor {
     constructor(_argument, _power, _root, _inline) {
         this._argument = _argument;
@@ -27,6 +28,9 @@ class ExpressionFactor {
     get tex() {
         return this.makeTeX();
     }
+    get display() {
+        return this.makeDisplay();
+    }
     get power() {
         return this._power;
     }
@@ -51,6 +55,12 @@ class ExpressionFactor {
     set argument(value) {
         this._argument = value;
     }
+    getArguments() {
+        if (this._argument !== null) {
+            return [this.argument];
+        }
+        return [];
+    }
     hasVariable(variable) {
         if (variable === undefined) {
             return !this.isNumeric();
@@ -62,9 +72,12 @@ class ExpressionFactor {
         return false;
     }
     isNumeric() {
-        if (this._argument instanceof internals_1.Expression) {
-            return this.isNumeric();
+        for (let expressionArgument of this.getArguments()) {
+            if (!expressionArgument.isNumeric()) {
+                return false;
+            }
         }
+        return true;
     }
     hasRoot() {
         return this.root > 1;
@@ -80,14 +93,37 @@ class ExpressionFactor {
     texPowerAndRoot(tex) {
         return this.texPower(this.texRoot(tex));
     }
+    displayPowerAndRoot(display) {
+        return this.displayPower(this.displayRoot(display));
+    }
+    displayPower(display) {
+        if (this.hasPower(this.inline)) {
+            return `${display}^(${Math.abs(this.power)})`;
+        }
+        return display;
+    }
+    displayRoot(display) {
+        if (this.root === 2) {
+            return `sqrt( ${display} )`;
+        }
+        else if (this.root > 2) {
+            return `nthrt(${display},${this.root})`;
+        }
+        return display;
+    }
     texPower(tex) {
         if (this.hasPower(this.inline)) {
             return `${tex}^{ ${Math.abs(this.power)} }`;
         }
         return tex;
     }
-    wrapWithParentheses(tex) {
-        return `\\left( ${tex} \\right)`;
+    wrapWithParentheses(tex, asTex) {
+        if (asTex === undefined || asTex === true) {
+            return `\\left( ${tex} \\right)`;
+        }
+        else {
+            return `( ${tex} )`;
+        }
     }
     texRoot(tex) {
         if (this.root === 2) {
@@ -103,6 +139,17 @@ class ExpressionFactor {
             return this._argument.isZero();
         }
         return this._argument === 0;
+    }
+    reduce() {
+        let gcd = numeric_1.Numeric.gcd(this.root, this.power);
+        if (gcd > 1) {
+            this.root = this.root / gcd;
+            this.power = this.power / gcd;
+        }
+        for (let expressionArgument of this.getArguments()) {
+            expressionArgument.reduce();
+        }
+        return this;
     }
 }
 exports.ExpressionFactor = ExpressionFactor;

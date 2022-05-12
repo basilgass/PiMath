@@ -13,6 +13,10 @@ class ExpFactorExponential extends internals_1.ExpressionFactor {
         let tex = `\\text{e}^{ ${this.argument.tex} }`;
         return this.texPowerAndRoot(tex);
     }
+    makeDisplay(numberOfFactors, position) {
+        let display = `e^( ${this.argument.tex} )`;
+        return this.displayPowerAndRoot(display);
+    }
 }
 exports.ExpFactorExponential = ExpFactorExponential;
 //# sourceMappingURL=ExpFactorExponential.js.map

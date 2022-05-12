@@ -12,7 +12,6 @@ export enum TRIGONOMETRIC {
     acot='acot'
 }
 export class ExpFactorTrigo extends ExpressionFactor {
-
     private _trigo: string
     constructor(trigo: string, argument: Expression, power?: number, root?: number) {
 
@@ -40,5 +39,15 @@ export class ExpFactorTrigo extends ExpressionFactor {
 
         tex+= `\\left( ${this.argument.tex} \\right)`
         return this.texRoot(tex);
+    }
+
+    makeDisplay(numberOfFactors?: number, position?: number): string {
+        let display = `${this._trigo}`
+        if(this.root>1){
+            display += `^( ${this.root} )`
+        }
+
+        display+= `( ${this.argument.display} )`
+        return this.displayRoot(display);
     }
 }

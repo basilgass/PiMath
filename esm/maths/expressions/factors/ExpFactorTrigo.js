@@ -35,6 +35,14 @@ class ExpFactorTrigo extends internals_1.ExpressionFactor {
         tex += `\\left( ${this.argument.tex} \\right)`;
         return this.texRoot(tex);
     }
+    makeDisplay(numberOfFactors, position) {
+        let display = `${this._trigo}`;
+        if (this.root > 1) {
+            display += `^( ${this.root} )`;
+        }
+        display += `( ${this.argument.display} )`;
+        return this.displayRoot(display);
+    }
 }
 exports.ExpFactorTrigo = ExpFactorTrigo;
 //# sourceMappingURL=ExpFactorTrigo.js.map

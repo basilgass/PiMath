@@ -25,6 +25,7 @@ export class ExpressionParser {
 
     constructor(value: string) {
         this._expression = this.parse(value)
+
     }
 
     get expression(): Expression {
@@ -92,26 +93,13 @@ export class ExpressionParser {
                     let a = stack.pop()
 
                     if (item.token === 'sqrt') {
-                        let b = stack.pop()
-                        // Transform the argument to expression
-                        if(! (a instanceof Expression)){a = new Expression(a)}
-                        stack.push(new ExpFactor(a, 1, 2))
+                        stack.push(this.tokenOperationSqrt(a))
                     } else if (item.token === 'nthrt') {
-                        // TODO: suppose it's a number
-                        let b = stack.pop()
-                        // Transform the argument to expression
-                        if(! (b instanceof Expression)){b = new Expression(b)}
-                        // the "a" value is the nth root. It must be a number
-                        let n = 2
-                        if(a instanceof ExpFactorNumber){
-                           n = a.number
-                        }else{
-                            throw "The nth root value must be a number, not " + a.tex
-                        }
-
-                        stack.push(new ExpFactor(b, 1, n))
+                        stack.push(this.tokenOperationRoot(a, stack.pop()))
                     } else if (item.token in TRIGONOMETRIC) {
-                        if(! (a instanceof Expression)){a = new Expression(a)}
+                        if (!(a instanceof Expression)) {
+                            a = new Expression(a)
+                        }
                         stack.push(new ExpFactorTrigo(item.token, a))
                     }
                     break
@@ -158,48 +146,56 @@ export class ExpressionParser {
     }
 
     private tokenOperationMultiply(a: Expression | ExpressionMember | ExpressionFactor, b: Expression | ExpressionMember | ExpressionFactor): ExpressionMember {
+        let EM = new ExpressionMember()
         if (a instanceof Expression) {
-            a = new ExpFactor(a)
+            EM.addFactors(new ExpFactor(a))
+            // a = new ExpFactor(a)
         } else if (a instanceof ExpressionMember) {
-            a = new ExpFactor(new Expression(a))
+            // a.add()
+            EM.addFactors(...a.factors)
+            // a = new ExpFactor(new Expression(a))
         } else if (a instanceof ExpressionFactor) {
             // Do nothing
+            EM.addFactors(a)
         }
 
         if (b instanceof Expression) {
-            b = new ExpFactor(b)
+            // b = new ExpFactor(b)
+            EM.addFactors(new ExpFactor(b))
         } else if (b instanceof ExpressionMember) {
-            b = new ExpFactor(new Expression(b))
+            // b = new ExpFactor(new Expression(b))
+            EM.addFactors(...b.factors)
         } else if (b instanceof ExpressionFactor) {
             // Do nothing
+            EM.addFactors(b)
         }
 
-        // a and b are ExpressionFactors - multiply them
-
-        return new ExpressionMember(a, b)
-
+        return EM
     }
 
     private tokenOperationDivide(a: Expression | ExpressionMember | ExpressionFactor, b: Expression | ExpressionMember | ExpressionFactor): ExpressionMember {
+        let EM = new ExpressionMember()
+
         if (a instanceof Expression) {
-            a = new ExpFactor(a)
+            EM.addFactors(new ExpFactor(a))
         } else if (a instanceof ExpressionMember) {
-            a = new ExpFactor(new Expression(a))
+            EM.addFactors(...a.factors)
         } else if (a instanceof ExpressionFactor) {
             // Do nothing
+            EM.addFactors(a)
         }
 
         if (b instanceof Expression) {
-            b = new ExpFactor(b, -1)
+            EM.addFactors(new ExpFactor(b, -1))
         } else if (b instanceof ExpressionMember) {
-            b = new ExpFactor(new Expression(b), -1)
+            EM.addFactors(new ExpFactor(new Expression(b), -1))
         } else if (b instanceof ExpressionFactor) {
             // Do nothing
             b.power = -b.power
+            EM.addFactors(b)
         }
 
-        // a and b are ExpressionFactors - multiply them
-        return new ExpressionMember(a, b)
+        return EM
     }
 
     private tokenOperationPower(a: Expression | ExpressionMember | ExpressionFactor, b: Expression | ExpressionMember | ExpressionFactor): ExpressionFactor {
@@ -209,7 +205,13 @@ export class ExpressionParser {
             a = new Expression(a)
         } else if (a instanceof ExpressionFactor) {
             // Make a new factor of itself
-            a = new Expression(new ExpressionMember(a))
+            console.log(a)
+            if (a.power === 1 && b instanceof ExpFactorNumber) {
+                a.power = b.value
+                return a
+            } else {
+                a = new Expression(new ExpressionMember(a))
+            }
         }
 
         // b can be :
@@ -246,4 +248,48 @@ export class ExpressionParser {
 
     }
 
+    private tokenOperationSqrt(a: Expression | ExpressionMember | ExpressionFactor): Expression | ExpressionFactor {
+
+            // Transform the argument to expression
+            if (a instanceof Expression) {
+                return new ExpFactor(a, 1, 2)
+            } else if (a instanceof ExpressionMember) {
+                if (a.factors.length === 1 && !a.factors[0].hasPower()) {
+                    a.factors[0].root = 2
+                    return a.factors[0]
+                } else {
+                    return new ExpFactor(new Expression(a), 1, 2)
+                }
+            } else if (a instanceof ExpressionFactor) {
+                if (!a.hasPower()) {
+                    a.root = 2
+                    return a
+                } else {
+                    return new ExpFactor(new Expression(a), 1, 2)
+                }
+            }
+        // Fallback
+        return a
+    }
+
+    private tokenOperationRoot(a:Expression | ExpressionMember | ExpressionFactor, b:Expression | ExpressionMember | ExpressionFactor): ExpFactor {
+        // a is the power
+        // b is the argument
+
+
+
+        // Transform the argument to expression
+        if (!(b instanceof Expression)) {
+            b = new Expression(b)
+        }
+        // the "a" value is the nth root. It must be a number
+        let n = 2
+        if (a instanceof ExpFactorNumber) {
+            n = a.number
+        } else {
+            throw "The nth root value must be a number, not " + a.tex
+        }
+
+        return new ExpFactor(b, 1, n)
+    }
 }

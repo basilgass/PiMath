@@ -19,6 +19,9 @@ class ExpFactorVariable extends internals_1.ExpressionFactor {
     makeTeX() {
         return this.texPower(this.texRoot(this._variable));
     }
+    makeDisplay(numberOfFactors, position) {
+        return this.displayPower(this.displayRoot(this._variable));
+    }
     derivative(variable) {
         return undefined;
     }

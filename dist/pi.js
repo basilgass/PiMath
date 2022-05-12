@@ -2191,7 +2191,7 @@ class Polynom {
                         }
                         else if (element.token === '^') {
                             if (b.degree().isStrictlyPositive()) {
-                                console.error('Cannot elevate a polynom with another polynom !');
+                                console.error('Cannot elevate a polynom with another polynom !', a.tex, b.tex);
                             }
                             else {
                                 if (b.monoms[0].coefficient.isRelative()) {
@@ -7002,6 +7002,9 @@ class Shutingyard {
         return [token, start + token.length, tokenType];
     }
     normalize(expr) {
+        if (expr.length === 1) {
+            return expr;
+        }
         // Get the list of function token.
         let fnToken = [], kToken = [];
         for (let token in this._tokenConfig) {

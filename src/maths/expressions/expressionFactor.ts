@@ -1,4 +1,5 @@
 import {Expression} from "./internals";
+import {Numeric} from "../numeric";
 
 export abstract class ExpressionFactor {
     constructor(
@@ -28,6 +29,10 @@ export abstract class ExpressionFactor {
 
     get tex(): string {
         return this.makeTeX()
+    }
+
+    get display(): string {
+        return this.makeDisplay()
     }
 
     get power(): number {
@@ -62,10 +67,18 @@ export abstract class ExpressionFactor {
 
     abstract makeTeX(numberOfFactors?: number, position?: number): string
 
+    abstract makeDisplay(numberOfFactors?: number, position?: number): string
+
     abstract derivative(variable: string): Expression
 
     abstract integrate(variable: string): Expression
 
+    getArguments(): Expression[] {
+        if (this._argument !== null){
+            return [this.argument]
+        }
+        return []
+    }
     hasVariable(variable?: string): boolean {
 
         if (variable === undefined) {
@@ -78,15 +91,13 @@ export abstract class ExpressionFactor {
         }
 
         return false
-
     }
 
     isNumeric(): boolean {
-        if (this._argument instanceof Expression) {
-            return this.isNumeric()
+        for(let expressionArgument of this.getArguments()){
+            if(!expressionArgument.isNumeric()){return false}
         }
-
-
+        return true
     }
 
     hasRoot(): boolean {
@@ -106,6 +117,28 @@ export abstract class ExpressionFactor {
         return this.texPower(this.texRoot(tex))
     }
 
+    displayPowerAndRoot(display: string): string {
+        return this.displayPower(this.displayRoot(display))
+    }
+
+    displayPower(display: string):string {
+        if (this.hasPower(this.inline)) {
+            return `${display}^(${Math.abs(this.power)})`
+        }
+
+        return display
+    }
+
+    displayRoot(display: string): string {
+        if (this.root === 2) {
+            return `sqrt( ${display} )`
+        } else if (this.root > 2) {
+            return `nthrt(${display},${this.root})`
+        }
+
+        return display
+    }
+
     texPower(tex: string): string {
         if (this.hasPower(this.inline)) {
             return `${tex}^{ ${Math.abs(this.power)} }`
@@ -114,8 +147,12 @@ export abstract class ExpressionFactor {
         return tex
     }
 
-    wrapWithParentheses(tex: string): string {
-        return `\\left( ${tex} \\right)`
+    wrapWithParentheses(tex: string, asTex?: boolean): string {
+        if(asTex===undefined || asTex===true) {
+            return `\\left( ${tex} \\right)`
+        }else{
+            return `( ${tex} )`
+        }
     }
 
     texRoot(tex: string): string {
@@ -134,5 +171,20 @@ export abstract class ExpressionFactor {
         }
 
         return this._argument === 0
+    }
+
+    reduce(): ExpressionFactor {
+        let gcd = Numeric.gcd(this.root, this.power)
+
+        if(gcd>1){
+            this.root = this.root/gcd
+            this.power = this.power/gcd
+        }
+
+        for(let expressionArgument of this.getArguments()){
+            expressionArgument.reduce()
+        }
+
+        return this
     }
 }

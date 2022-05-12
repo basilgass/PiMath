@@ -204,7 +204,7 @@ export class Polynom {
                         }
                     } else if (element.token === '^') {
                         if (b.degree().isStrictlyPositive()) {
-                            console.error('Cannot elevate a polynom with another polynom !')
+                            console.error('Cannot elevate a polynom with another polynom !', a.tex, b.tex)
                         } else {
                             if (b.monoms[0].coefficient.isRelative()) {
                                 // Integer power

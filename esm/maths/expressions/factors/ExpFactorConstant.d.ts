@@ -10,4 +10,5 @@ export declare class ExpFactorConstant extends ExpressionFactor {
     derivative(variable: string): Expression;
     integrate(variable: string): Expression;
     hasVariable(variable?: string): boolean;
+    makeDisplay(numberOfFactors?: number, position?: number): string;
 }

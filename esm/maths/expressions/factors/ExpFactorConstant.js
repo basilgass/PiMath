@@ -44,6 +44,9 @@ class ExpFactorConstant extends internals_1.ExpressionFactor {
     hasVariable(variable) {
         return false;
     }
+    makeDisplay(numberOfFactors, position) {
+        return this._constant;
+    }
 }
 exports.ExpFactorConstant = ExpFactorConstant;
 //# sourceMappingURL=ExpFactorConstant.js.map

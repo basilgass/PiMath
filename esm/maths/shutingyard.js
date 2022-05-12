@@ -171,6 +171,9 @@ class Shutingyard {
         return [token, start + token.length, tokenType];
     }
     normalize(expr) {
+        if (expr.length === 1) {
+            return expr;
+        }
         // Get the list of function token.
         let fnToken = [], kToken = [];
         for (let token in this._tokenConfig) {

@@ -10,12 +10,24 @@ class ExpFactor extends internals_1.ExpressionFactor {
         return undefined;
     }
     makeTeX(numberOfFactors, position) {
-        // If there is a root value, no need to make further checks
         // TODO: no need to wrap if it's single ?
         if (this.hasRoot() || this.hasPower()) {
-            return this.texPower(this.texRoot(this.wrapWithParentheses(this.argument.tex)));
+            return this.texPower(this.texRoot(this.argument.tex
+            // this.wrapWithParentheses(this.argument.tex)
+            ));
         }
-        return this.argument.isFactor() ? this.argument.tex : this.wrapWithParentheses(this.argument.tex);
+        if (numberOfFactors === 1) {
+            return this.argument.tex;
+        }
+        else {
+            return this.argument.isFactor() ? this.argument.tex : this.wrapWithParentheses(this.argument.tex);
+        }
+    }
+    makeDisplay(numberOfFactors, position) {
+        if (this.hasRoot() || this.hasPower()) {
+            return this.displayPower(this.texRoot(this.wrapWithParentheses(this.argument.display, false)));
+        }
+        return this.argument.isFactor() ? this.argument.display : this.wrapWithParentheses(this.argument.display);
     }
 }
 exports.ExpFactor = ExpFactor;

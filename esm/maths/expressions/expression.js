@@ -25,6 +25,23 @@ class Expression {
         }
         return tex;
     }
+    get display() {
+        let display = "";
+        for (let item of this._members) {
+            try {
+                if (display === "") {
+                    display = (item.sign === -1 ? "-" : "") + item.member.display;
+                }
+                else {
+                    display += (item.sign === -1 ? "-" : "+") + item.member.display;
+                }
+            }
+            catch {
+                console.log('Error while generating the display code for ', item.constructor.name);
+            }
+        }
+        return display;
+    }
     get members() {
         return this._members;
     }
@@ -90,6 +107,53 @@ class Expression {
         }
         return this;
     }
+    variables() {
+        let values = [], varFactor;
+        values = this.getAllFactors().filter(x => x instanceof internals_1.ExpFactorVariable).map(x => {
+            return x instanceof internals_1.ExpFactorVariable ? x.variable : null;
+        });
+        return [...new Set(values)];
+    }
+    isPolynom() {
+        // Allow variable, number, factor, power, constant
+        let factors = this.getAllFactors();
+        for (let factor of factors) {
+            // No root
+            if (factor.root > 1) {
+                return false;
+            }
+            // Allow power, as long as the power argument is numeric
+            if (factor instanceof internals_1.ExpFactorPower) {
+                if (!factor.powerArgument.isNumeric()) {
+                    return false;
+                }
+                // TODO: the power must be an integer value.
+                if (!factor.powerArgument.isNumber()) {
+                    return false;
+                }
+            }
+            // Allow some type of factors.
+            if (!(factor instanceof internals_1.ExpFactor ||
+                factor instanceof internals_1.ExpFactorConstant ||
+                factor instanceof internals_1.ExpFactorNumber ||
+                factor instanceof internals_1.ExpFactorVariable)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    getAllFactors() {
+        let EF = [];
+        for (let item of this._members) {
+            for (let factor of item.member.factors) {
+                EF.push(factor);
+                for (let expr of factor.getArguments()) {
+                    EF = EF.concat(...expr.getAllFactors());
+                }
+            }
+        }
+        return EF;
+    }
     hasVariable(variable) {
         if (variable === undefined) {
             return !this.isNumeric();
@@ -122,6 +186,14 @@ class Expression {
         }
         return true;
     }
+    isNumber() {
+        if (this._members.length === 1) {
+            if (this._members[0]?.member.factors[0] instanceof internals_1.ExpFactorNumber) {
+                return this._members[0].member.factors[0].root === 1;
+            }
+        }
+        return false;
+    }
     isSingle() {
         if (this.members.length > 1) {
             return false;
@@ -148,13 +220,19 @@ class Expression {
         for (let item of this._members) {
             struct.push(`${indent}${dftIndent}${item.member.constructor.name}: ${item.member.tex}`);
             for (let factor of item.member.factors) {
-                struct.push(`${indent}${dftIndent}${dftIndent}${factor.constructor.name}: ${factor.tex}`);
+                struct.push(`${indent}${dftIndent}${dftIndent}${factor.constructor.name}: ${factor.tex} ; power: ${factor.power}; root: ${factor.root}`);
                 if (factor.argument !== null) {
                     struct.push(factor.argument.structure(depth + 3));
                 }
             }
         }
         return struct.join('\n');
+    }
+    reduce() {
+        for (let item of this.members) {
+            item.member.reduce();
+        }
+        return this;
     }
 }
 exports.Expression = Expression;

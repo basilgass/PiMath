@@ -8,6 +8,7 @@ export declare abstract class ExpressionFactor {
     get inline(): boolean;
     set inline(value: boolean);
     get tex(): string;
+    get display(): string;
     get power(): number;
     set power(value: number);
     get root(): number;
@@ -15,15 +16,21 @@ export declare abstract class ExpressionFactor {
     get argument(): Expression;
     set argument(value: Expression);
     abstract makeTeX(numberOfFactors?: number, position?: number): string;
+    abstract makeDisplay(numberOfFactors?: number, position?: number): string;
     abstract derivative(variable: string): Expression;
     abstract integrate(variable: string): Expression;
+    getArguments(): Expression[];
     hasVariable(variable?: string): boolean;
     isNumeric(): boolean;
     hasRoot(): boolean;
     hasPower(inline?: boolean): boolean;
     texPowerAndRoot(tex: string): string;
+    displayPowerAndRoot(display: string): string;
+    displayPower(display: string): string;
+    displayRoot(display: string): string;
     texPower(tex: string): string;
-    wrapWithParentheses(tex: string): string;
+    wrapWithParentheses(tex: string, asTex?: boolean): string;
     texRoot(tex: string): string;
     isZero(): Boolean;
+    reduce(): ExpressionFactor;
 }

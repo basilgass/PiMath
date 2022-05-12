@@ -162,7 +162,6 @@ export class PolynomExp {
         this._factors = []
         if (values !== undefined) {
             for (const factor of values) {
-                console.log('ADDING', factor.tex)
                 this._factors.push({
                     factors: factor,
                     positive: true

@@ -22,6 +22,9 @@ class ExpFactorNumber extends internals_1.ExpressionFactor {
     makeTeX() {
         return this.texPower(this.texRoot(this._number.toString()));
     }
+    makeDisplay(numberOfFactors, position) {
+        return this.displayPower(this.displayRoot(this._number.toString()));
+    }
     derivative(variable) {
         return undefined;
     }
@@ -30,6 +33,26 @@ class ExpFactorNumber extends internals_1.ExpressionFactor {
     }
     hasVariable(variable) {
         return false;
+    }
+    reduce() {
+        // Reduce the power / root value
+        super.reduce();
+        if (this.power > 1) {
+            this.number = this.number ** this.power;
+            this.power = 1;
+        }
+        if (this.power < -1) {
+            this.number = this.number ** (-this.power);
+            this.power = -1;
+        }
+        if (this.root > 1) {
+            // Maybe it's a perfect root ?
+            if (Number.isSafeInteger(Math.pow(this.number, 1 / this.root))) {
+                this.number = Math.pow(this.number, 1 / this.root);
+                this.root = 1;
+            }
+        }
+        return this;
     }
 }
 exports.ExpFactorNumber = ExpFactorNumber;

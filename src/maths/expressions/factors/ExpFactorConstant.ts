@@ -53,4 +53,8 @@ export class ExpFactorConstant extends ExpressionFactor {
     hasVariable(variable?: string): boolean {
         return false
     }
+
+    makeDisplay(numberOfFactors?: number, position?: number): string {
+        return this._constant;
+    }
 }

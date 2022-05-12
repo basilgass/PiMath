@@ -26,6 +26,11 @@ export class ExpFactorVariable extends ExpressionFactor {
         return this.texPower(this.texRoot(this._variable))
     }
 
+    makeDisplay(numberOfFactors?: number, position?: number): string {
+        return this.displayPower(this.displayRoot(this._variable))
+    }
+
+
     derivative(variable: string): Expression {
         return undefined;
     }

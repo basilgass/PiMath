@@ -16,4 +16,5 @@ export declare class ExpFactorTrigo extends ExpressionFactor {
     derivative(variable: string): Expression;
     integrate(variable: string): Expression;
     makeTeX(): string;
+    makeDisplay(numberOfFactors?: number, position?: number): string;
 }

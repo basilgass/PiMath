@@ -17,10 +17,31 @@ describe('Expressions tests', () => { // the tests container
         // let a = new ExpressionParser('3x^(2/3)+5').expression
         // let a = new ExpressionParser('3x(x+4)').expression
         // let a = new ExpressionParser('sin(cos(3picos(3pi)-5))+sqrt(e-sin(3pi/2))').expression
-        let a = new ExpressionParser('3+nthrt(x-3,5)').expression
-        console.log('TeX output: ', a.tex)
-        console.log(a.structure())
+        // let a = new ExpressionParser('3-nthrt(x-3,5)').expression
+        // console.log(a.isPolynom())
+        // let b = new ExpressionParser('3/2x^2-5x+7').expression
+        // console.log(b.tex, b.isPolynom())
+        // console.log(b.members[0].member.coefficient().tex)
+        // console.log(b.members[0].member.litteral().tex)
+        // console.log(b.structure())
+        //
 
+        // let c = new ExpressionParser('3/2x^2+5/3x-7').expression
+        // console.log(c.tex)
+        // console.log(c.display)
+
+        // let d = new ExpressionParser('sqrt(16)*sqrt(15^4)+9/15').expression
+        let d = new ExpressionParser('nthrt(16,4)').expression
+        console.log(d.tex)
+        console.log(d.members[0].member.reduce().tex)
+        console.log(d.structure())
+        // console.log(d.display)
+
+        // console.log(d.structure())
+        // console.log(c.display)
+        // console.log(c.members[0].member.literal().factors.length)
+        // console.log(c.members[0].member.reduce().tex);
+        // console.log(c.members[1].member.reduce().tex);
     })
 
     it('should make some operations', ()=>{

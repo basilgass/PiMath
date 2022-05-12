@@ -60,29 +60,10 @@ class ExpressionParser {
                 case internals_1.ShutingyardType.FUNCTION:
                     let a = stack.pop();
                     if (item.token === 'sqrt') {
-                        let b = stack.pop();
-                        // Transform the argument to expression
-                        if (!(a instanceof internals_1.Expression)) {
-                            a = new internals_1.Expression(a);
-                        }
-                        stack.push(new internals_1.ExpFactor(a, 1, 2));
+                        stack.push(this.tokenOperationSqrt(a));
                     }
                     else if (item.token === 'nthrt') {
-                        // TODO: suppose it's a number
-                        let b = stack.pop();
-                        // Transform the argument to expression
-                        if (!(b instanceof internals_1.Expression)) {
-                            b = new internals_1.Expression(b);
-                        }
-                        // the "a" value is the nth root. It must be a number
-                        let n = 2;
-                        if (a instanceof internals_1.ExpFactorNumber) {
-                            n = a.number;
-                        }
-                        else {
-                            throw "The nth root value must be a number, not " + a.tex;
-                        }
-                        stack.push(new internals_1.ExpFactor(b, 1, n));
+                        stack.push(this.tokenOperationRoot(a, stack.pop()));
                     }
                     else if (item.token in internals_1.TRIGONOMETRIC) {
                         if (!(a instanceof internals_1.Expression)) {
@@ -126,49 +107,58 @@ class ExpressionParser {
         return a.add(b);
     }
     tokenOperationMultiply(a, b) {
+        let EM = new internals_1.ExpressionMember();
         if (a instanceof internals_1.Expression) {
-            a = new internals_1.ExpFactor(a);
+            EM.addFactors(new internals_1.ExpFactor(a));
+            // a = new ExpFactor(a)
         }
         else if (a instanceof internals_1.ExpressionMember) {
-            a = new internals_1.ExpFactor(new internals_1.Expression(a));
+            // a.add()
+            EM.addFactors(...a.factors);
+            // a = new ExpFactor(new Expression(a))
         }
         else if (a instanceof internals_1.ExpressionFactor) {
             // Do nothing
+            EM.addFactors(a);
         }
         if (b instanceof internals_1.Expression) {
-            b = new internals_1.ExpFactor(b);
+            // b = new ExpFactor(b)
+            EM.addFactors(new internals_1.ExpFactor(b));
         }
         else if (b instanceof internals_1.ExpressionMember) {
-            b = new internals_1.ExpFactor(new internals_1.Expression(b));
+            // b = new ExpFactor(new Expression(b))
+            EM.addFactors(...b.factors);
         }
         else if (b instanceof internals_1.ExpressionFactor) {
             // Do nothing
+            EM.addFactors(b);
         }
-        // a and b are ExpressionFactors - multiply them
-        return new internals_1.ExpressionMember(a, b);
+        return EM;
     }
     tokenOperationDivide(a, b) {
+        let EM = new internals_1.ExpressionMember();
         if (a instanceof internals_1.Expression) {
-            a = new internals_1.ExpFactor(a);
+            EM.addFactors(new internals_1.ExpFactor(a));
         }
         else if (a instanceof internals_1.ExpressionMember) {
-            a = new internals_1.ExpFactor(new internals_1.Expression(a));
+            EM.addFactors(...a.factors);
         }
         else if (a instanceof internals_1.ExpressionFactor) {
             // Do nothing
+            EM.addFactors(a);
         }
         if (b instanceof internals_1.Expression) {
-            b = new internals_1.ExpFactor(b, -1);
+            EM.addFactors(new internals_1.ExpFactor(b, -1));
         }
         else if (b instanceof internals_1.ExpressionMember) {
-            b = new internals_1.ExpFactor(new internals_1.Expression(b), -1);
+            EM.addFactors(new internals_1.ExpFactor(new internals_1.Expression(b), -1));
         }
         else if (b instanceof internals_1.ExpressionFactor) {
             // Do nothing
             b.power = -b.power;
+            EM.addFactors(b);
         }
-        // a and b are ExpressionFactors - multiply them
-        return new internals_1.ExpressionMember(a, b);
+        return EM;
     }
     tokenOperationPower(a, b) {
         if (a instanceof internals_1.Expression) {
@@ -179,7 +169,14 @@ class ExpressionParser {
         }
         else if (a instanceof internals_1.ExpressionFactor) {
             // Make a new factor of itself
-            a = new internals_1.Expression(new internals_1.ExpressionMember(a));
+            console.log(a);
+            if (a.power === 1 && b instanceof internals_1.ExpFactorNumber) {
+                a.power = b.value;
+                return a;
+            }
+            else {
+                a = new internals_1.Expression(new internals_1.ExpressionMember(a));
+            }
         }
         // b can be :
         // number       3
@@ -213,6 +210,49 @@ class ExpressionParser {
             b = new internals_1.Expression(new internals_1.ExpressionMember(b));
         }
         return a.subtract(b);
+    }
+    tokenOperationSqrt(a) {
+        // Transform the argument to expression
+        if (a instanceof internals_1.Expression) {
+            return new internals_1.ExpFactor(a, 1, 2);
+        }
+        else if (a instanceof internals_1.ExpressionMember) {
+            if (a.factors.length === 1 && !a.factors[0].hasPower()) {
+                a.factors[0].root = 2;
+                return a.factors[0];
+            }
+            else {
+                return new internals_1.ExpFactor(new internals_1.Expression(a), 1, 2);
+            }
+        }
+        else if (a instanceof internals_1.ExpressionFactor) {
+            if (!a.hasPower()) {
+                a.root = 2;
+                return a;
+            }
+            else {
+                return new internals_1.ExpFactor(new internals_1.Expression(a), 1, 2);
+            }
+        }
+        // Fallback
+        return a;
+    }
+    tokenOperationRoot(a, b) {
+        // a is the power
+        // b is the argument
+        // Transform the argument to expression
+        if (!(b instanceof internals_1.Expression)) {
+            b = new internals_1.Expression(b);
+        }
+        // the "a" value is the nth root. It must be a number
+        let n = 2;
+        if (a instanceof internals_1.ExpFactorNumber) {
+            n = a.number;
+        }
+        else {
+            throw "The nth root value must be a number, not " + a.tex;
+        }
+        return new internals_1.ExpFactor(b, 1, n);
     }
 }
 exports.ExpressionParser = ExpressionParser;

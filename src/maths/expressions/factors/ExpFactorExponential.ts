@@ -16,4 +16,11 @@ export class ExpFactorExponential extends ExpressionFactor {
 
         return this.texPowerAndRoot(tex)
     }
+
+    makeDisplay(numberOfFactors?: number, position?: number): string {
+        let display: string = `e^( ${ this.argument.tex } )`
+
+        return this.displayPowerAndRoot(display)
+    }
+
 }

@@ -9,4 +9,6 @@ export declare class ExpressionParser {
     private tokenOperationDivide;
     private tokenOperationPower;
     private tokenOperationMinus;
+    private tokenOperationSqrt;
+    private tokenOperationRoot;
 }

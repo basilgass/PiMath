@@ -60,4 +60,10 @@ describe('Circle', function () {
 
         expect(pts.map(x=>x.x.display + ',' + x.y.display)).to.have.all.members([ '3,0', '3,-8', '7,-4', '-1,-4' ])
     });
+
+    it('should calculate the circle from center and radius', function(){
+        let circle = new Circle("x^2+6x+y^2-8y+12=0")
+
+        console.log(circle.tex)
+    })
 });

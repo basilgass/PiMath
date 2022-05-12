@@ -5,7 +5,13 @@ const internals_1 = require("../internals");
 class ExpFactorPower extends internals_1.ExpressionFactor {
     constructor(radical, power, power2, root) {
         super(radical, power2, root);
-        this.powerArgument = power;
+        this._powerArgument = power;
+    }
+    get powerArgument() {
+        return this._powerArgument;
+    }
+    set powerArgument(value) {
+        this._powerArgument = value;
     }
     derivative(variable) {
         return undefined;
@@ -14,8 +20,15 @@ class ExpFactorPower extends internals_1.ExpressionFactor {
         return undefined;
     }
     makeTeX() {
-        let tex = `{ ${this.argument.tex} }^{ ${this.powerArgument.tex} }`;
+        let tex = `{ ${this.argument.tex} }^{ ${this._powerArgument.tex} }`;
         return this.texPowerAndRoot(this.wrapWithParentheses(tex));
+    }
+    getArguments() {
+        return [this.argument, this.powerArgument];
+    }
+    makeDisplay(numberOfFactors, position) {
+        let display = `( ${this.argument.display} )^( ${this._powerArgument.display} )`;
+        return this.displayPowerAndRoot(this.wrapWithParentheses(display, false));
     }
 }
 exports.ExpFactorPower = ExpFactorPower;
