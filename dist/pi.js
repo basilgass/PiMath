@@ -4120,6 +4120,17 @@ class Fraction {
             this._denominator = this._denominator * Q.denominator;
             return this.reduce();
         };
+        this.xMultiply = (...values) => {
+            // Parse the value.
+            // If it's a fraction, return a clone of it
+            // If it's an integer, return the fraction F/1
+            for (let value of values) {
+                let F = new Fraction(value);
+                this._numerator = this._numerator * F.numerator;
+                this._denominator = this._denominator * F.denominator;
+            }
+            return this;
+        };
         this.divide = (F) => {
             let Q = new Fraction(F);
             if (Q.numerator === 0) {

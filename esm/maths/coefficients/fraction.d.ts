@@ -41,6 +41,7 @@ export declare class Fraction {
     add: (F: Fraction | number) => Fraction;
     subtract: (F: Fraction | number) => Fraction;
     multiply: (F: Fraction | number) => Fraction;
+    xMultiply: (...values: (Fraction | number)[]) => Fraction;
     divide: (F: Fraction | number) => Fraction;
     invert: () => Fraction;
     pow: (p: number | Fraction) => Fraction;

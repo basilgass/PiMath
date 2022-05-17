@@ -75,6 +75,17 @@ describe("Fraction static functions", ()=>{
 
         expect(Fraction.average(...list).tex).to.be.equal('\\frac{ 19 }{ 10 }')
     })
+
+    it('should multiply and notreduce', function () {
+        let list = [
+            new Fraction('1/2'),
+            new Fraction('4/3'),
+            2.5,
+            3
+        ]
+
+        console.log(new Fraction().xMultiply(...list))
+    });
 })
 
 describe("Evaluate fraction", () => {
