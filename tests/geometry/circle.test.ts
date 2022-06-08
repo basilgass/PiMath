@@ -66,4 +66,19 @@ describe('Circle', function () {
 
         console.log(circle.tex)
     })
+
+    it('should parse a line', function () {
+        let a1 = 133.33333333333331,
+            b1 = 700,
+            a2 = 134.33333333333331,
+            b2 = 700.75
+
+        let A = new Point(a1, a2),
+            B = new Point(b1, b2)
+
+        console.log(A.tex, B.tex)
+
+        let L = new Line(A, B)
+        console.log(L.tex.canonical)
+    });
 });
