@@ -141,6 +141,16 @@ class NumExp {
                 else if (element.token === 'sqrt') {
                     this._addToStack(stack, Math.sqrt(a));
                 }
+                else if (element.token === 'nthrt') {
+                    // TODO: support nthrt in num. exp.
+                    // this._addToStack(stack, Math.pow(a, 1/b))
+                }
+                else if (element.token === 'ln') {
+                    this._addToStack(stack, Math.log(a));
+                }
+                else if (element.token === 'log') {
+                    this._addToStack(stack, Math.log10(a));
+                }
             }
         }
         if (stack.length === 1) {

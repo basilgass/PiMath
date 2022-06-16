@@ -73,6 +73,9 @@ class Shutingyard {
                 'cos': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
                 'tan': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
                 'sqrt': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'nthrt': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'ln': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'log': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
             };
             this._uniformize = false;
         }
