@@ -28,6 +28,7 @@ export declare class Rational {
     domain: () => string;
     amplify: (P: Polynom) => Rational;
     derivative: (letter?: string) => Rational;
+    factorize: (letter?: string) => Rational;
     simplify: (P: Polynom) => Rational;
     reduce: () => Rational;
     opposed: () => Rational;

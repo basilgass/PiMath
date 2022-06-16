@@ -46,6 +46,11 @@ class Rational {
             this._denominator = D.clone().pow(2);
             return this;
         };
+        this.factorize = (letter) => {
+            this._numerator.factorize(letter);
+            this._denominator.factorize(letter);
+            return this;
+        };
         this.simplify = (P) => {
             let NumeratorEuclidien = this._numerator.euclidian(P);
             if (!NumeratorEuclidien.reminder.isZero()) {

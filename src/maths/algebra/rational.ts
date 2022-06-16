@@ -100,6 +100,12 @@ export class Rational {
         return this
     }
 
+    factorize = (letter?: string): Rational => {
+        this._numerator.factorize(letter)
+        this._denominator.factorize(letter)
+        return this
+    }
+
     simplify = (P: Polynom): Rational => {
         let NumeratorEuclidien = this._numerator.euclidian(P);
         if (!NumeratorEuclidien.reminder.isZero()) {

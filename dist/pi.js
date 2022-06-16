@@ -3139,18 +3139,40 @@ class Polynom {
     }
     get texFactors() {
         this.factorize();
-        if (this.factors.length === 0) {
+        if (this.factors.length <= 1) {
             return this.tex;
         }
         let tex = '';
+        // Build an array of texFactors with the number of similar items.
+        let factorsCount = {};
         for (let f of this.factors) {
-            if (f.monoms.length > 1) {
-                tex += `(${f.tex})`;
+            if (factorsCount[f.tex] !== undefined) {
+                factorsCount[f.tex].degree++;
             }
             else {
-                tex = f.tex + tex;
+                factorsCount[f.tex] = {
+                    degree: 1,
+                    factor: f
+                };
             }
         }
+        for (let item of Object.values(factorsCount)) {
+            if (item.factor.length > 1) {
+                tex += `\\left( ${item.factor.tex} \\right)${item.degree > 1 ? '^{ ' + item.degree + ' }' : ''}`;
+            }
+            else {
+                tex += item.degree === 1 ? item.factor.tex : `\\left( ${item.factor} \\right^{ ${item.degree} }`;
+            }
+        }
+        //
+        // // Actual system
+        // for (let f of this.factors) {
+        //     if (f.monoms.length > 1) {
+        //         tex += `(${f.tex})`
+        //     } else {
+        //         tex = f.tex + tex;
+        //     }
+        // }
         return tex;
     }
     get length() {
@@ -3301,6 +3323,11 @@ class Rational {
             let N = this._numerator.clone(), D = this._denominator.clone(), dN = N.clone().derivative(letter), dD = D.clone().derivative(letter);
             this._numerator = dN.clone().multiply(D).subtract(N.clone().multiply(dD));
             this._denominator = D.clone().pow(2);
+            return this;
+        };
+        this.factorize = (letter) => {
+            this._numerator.factorize(letter);
+            this._denominator.factorize(letter);
             return this;
         };
         this.simplify = (P) => {
