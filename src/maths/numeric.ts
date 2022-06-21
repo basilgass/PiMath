@@ -104,4 +104,59 @@ export class Numeric{
 
         return triplets
     }
+
+    static numberCorrection(value: number){
+        // Must modify the number if it's like:
+        // a: 3.0000000000000003
+        // b: 3.9999999999999994
+        // remove the last character
+        // check if around n last characters are either 0 or 9
+        // if it is, 'round' the number.
+
+        function extractDecimalPart(valueToExtract: number){
+            let decimal = valueToExtract.toString()
+
+            if (!decimal.includes('.')) {
+                return ''
+            }
+
+            decimal = decimal.split('.')[1]
+
+            return decimal.substring(0, decimal.length - 2)
+        }
+
+
+        const epsilon = 0.00000000000001,
+            number_of_digits = 6
+
+        const decimal = extractDecimalPart(value)
+        if(decimal===''){return value}
+
+        const n9 = decimal.match(/9+$/g)
+        const n0 = decimal.match(/0+$/g)
+
+        if (n9 && n9[0].length >= number_of_digits) {
+            // New tested values.
+            const mod = extractDecimalPart(value + epsilon),
+                mod0 = mod.match(/0+$/g)
+
+            if(mod0 && mod0[0].length>= number_of_digits){
+                // The value can be changed. Remove all zeros!
+                return +((value+epsilon).toString().split(mod0[0])[0])
+            }
+        }
+
+        if (n0 && n0[0].length >= number_of_digits) {
+            // New tested values.
+            const mod = extractDecimalPart(value - epsilon),
+                mod9 = mod.match(/9+$/g)
+
+            if(mod9 && mod9[0].length>= number_of_digits){
+                // The value can be changed. Remove all nines!
+                return +(value.toString().split(n0[0])[0])
+            }
+        }
+
+        return value
+    }
 }

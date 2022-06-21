@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import {NumExp} from "../src/maths/expressions/numexp";
-import exp = require("constants");
+import {Numeric} from "../src/maths/numeric";
 
 describe('Numerical expression', () => { // the tests container
     it('RPN for numerical expression', () => {
@@ -8,7 +8,7 @@ describe('Numerical expression', () => { // the tests container
         expect(RPN.map(x => x.token)).to.have.all.members(['3', 'x', '*', '5', '+'])
 
         const RPN2 = new NumExp('-3*x^2-5').rpn
-        expect(RPN2.map(x=>x.token)).to.have.all.members(['3', 'x', '2', '^', '*', '-', '5', '-'])
+        expect(RPN2.map(x => x.token)).to.have.all.members(['3', 'x', '2', '^', '*', '-', '5', '-'])
     })
 
     it('Evaluate for numerical expression', () => {
@@ -34,9 +34,10 @@ describe('Numerical expression', () => { // the tests container
 
     it('should parse without mult sign', function () {
 
-        const expr = new NumExp('3x+5')
+        let a = 1 / 5
+
+        console.log(a, Numeric.numberCorrection(a))
 
         // console.log(expr.rpn)
-
     });
 });
