@@ -12,5 +12,5 @@ export declare namespace Random {
     function bool(percent?: number): boolean;
     function array(arr: any[], number?: number): any[];
     function item(arr: any[]): any;
-    function shuffle(arr: any[]): any;
+    function shuffle(arr: any[]): any[];
 }

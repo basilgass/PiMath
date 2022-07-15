@@ -4063,7 +4063,9 @@ class Fraction {
                     else {
                         // The given value is a float number
                         // Get the number of decimals after the float sign
-                        let p = (value.toString()).split('.')[1].length;
+                        let [unit, decimal] = (value.toString()).split('.');
+                        let p = decimal.length;
+                        // Detect if the decimal part is periodic or not...
                         // Transform the float number in two integer
                         if (denominatorOrPeriodic === undefined) {
                             this._numerator = value * Math.pow(10, p);
@@ -6563,6 +6565,18 @@ class Numeric {
         }
         return value;
     }
+    static periodic(value) {
+        if (Number.isSafeInteger(value)) {
+            return 0;
+        }
+        // Assume it's with decimal.
+        let decimal = (value.toString()).split('.')[0];
+        // The decimal part is limited
+        if (decimal.length < 10) {
+            return 0;
+        }
+        // Find the periodic if it exists.
+    }
 }
 exports.Numeric = Numeric;
 
@@ -6629,7 +6643,7 @@ var Random;
     }
     Random.item = item;
     function shuffle(arr) {
-        rndHelpers_1.rndHelpers.shuffleArray(arr);
+        return rndHelpers_1.rndHelpers.shuffleArray(arr);
     }
     Random.shuffle = shuffle;
 })(Random = exports.Random || (exports.Random = {}));

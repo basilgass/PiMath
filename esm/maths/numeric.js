@@ -141,6 +141,18 @@ class Numeric {
         }
         return value;
     }
+    static periodic(value) {
+        if (Number.isSafeInteger(value)) {
+            return 0;
+        }
+        // Assume it's with decimal.
+        let decimal = (value.toString()).split('.')[0];
+        // The decimal part is limited
+        if (decimal.length < 10) {
+            return 0;
+        }
+        // Find the periodic if it exists.
+    }
 }
 exports.Numeric = Numeric;
 //# sourceMappingURL=numeric.js.map

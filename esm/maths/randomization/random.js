@@ -55,7 +55,7 @@ var Random;
     }
     Random.item = item;
     function shuffle(arr) {
-        rndHelpers_1.rndHelpers.shuffleArray(arr);
+        return rndHelpers_1.rndHelpers.shuffleArray(arr);
     }
     Random.shuffle = shuffle;
 })(Random = exports.Random || (exports.Random = {}));
