@@ -42,7 +42,7 @@ export namespace Random {
         return rndHelpers.randomItem(arr)
     }
 
-    export function shuffle(arr: any[]): any {
-        rndHelpers.shuffleArray(arr)
+    export function shuffle(arr: any[]): any[] {
+        return rndHelpers.shuffleArray(arr)
     }
 }

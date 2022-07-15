@@ -35,7 +35,17 @@ describe('Fraction tests', () => { // the tests container
         expect(Q.isReduced()).to.be.false
     })
 
+    it('Should parse a number with lots of decimals', ()=>{
+        let A = 3.45,
+            B = 3.333333333333322,
+            C = 5.314171717171717
 
+        let FA = new Fraction(A),
+            FB = new Fraction(B),
+            FC = new Fraction(C)
+
+        console.log(FA.tex, FB.tex, FC.tex)
+    })
 })
 
 describe("Fraction static functions", ()=>{
@@ -76,7 +86,7 @@ describe("Fraction static functions", ()=>{
         expect(Fraction.average(...list).tex).to.be.equal('\\frac{ 19 }{ 10 }')
     })
 
-    it('should multiply and notreduce', function () {
+    it('should multiply and not reduce', function () {
         let list = [
             new Fraction('1/2'),
             new Fraction('4/3'),
@@ -100,7 +110,5 @@ describe("Evaluate fraction", () => {
         let G = new Fraction('1/7')
         expect(G.isApproximative()).to.be.false
         expect(G.isExact()).to.be.true
-
-        console.log(G.tex, G.value)
     });
 })
