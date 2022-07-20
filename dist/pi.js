@@ -3191,7 +3191,7 @@ class Polynom {
         }
         return tex;
     }
-    get texDisplay() {
+    get displayFactors() {
         this.factorize();
         if (this.factors.length <= 1) {
             return this.display;
@@ -3218,7 +3218,7 @@ class Polynom {
         // Loop through all factors that contains at least 2 monoms.
         for (let item of Object.values(factorsCount).filter(item => item.factor.monoms.length > 1)) {
             if (item.factor.length > 1) {
-                display += `\\left( ${item.factor.display} \\right)${item.degree > 1 ? '^{ ' + item.degree + ' }' : ''}`;
+                display += `( ${item.factor.display})${item.degree > 1 ? '^(' + item.degree + ')' : ''}`;
             }
         }
         return display;

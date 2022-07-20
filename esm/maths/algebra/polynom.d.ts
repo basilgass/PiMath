@@ -48,7 +48,7 @@ export declare class Polynom {
     set factors(value: Polynom[]);
     get texString(): string;
     get texFactors(): string;
-    get texDisplay(): string;
+    get displayFactors(): string;
     get length(): number;
     get display(): string;
     get raw(): string;

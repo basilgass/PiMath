@@ -98,6 +98,8 @@ describe('Polynom tests', () => {
         const P2 = new Polynom('-2x^3+18x')
         P2.factorize()
         expect(P2.texFactors).to.be.equal('-2x\\left( x+3 \\right)\\left( x-3 \\right)')
+
+        console.log(P2.texDisplay)
     });
 })
 
