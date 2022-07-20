@@ -1088,10 +1088,10 @@ class Polynom {
         // Loop through all factors that contains at least 2 monoms.
         for (let item of Object.values(factorsCount).filter(item => item.factor.monoms.length > 1)) {
             if (item.factor.length > 1) {
-                display += `( ${item.factor.display})${item.degree > 1 ? '^(' + item.degree + ')' : ''}`;
+                display += `(${item.factor.display})${item.degree > 1 ? '^(' + item.degree + ')' : ''}`;
             }
         }
-        return display;
+        return display.replaceAll(' ', '');
     }
     get length() {
         // TODO: Must reduce the monoms list to remove the zero coefficient.

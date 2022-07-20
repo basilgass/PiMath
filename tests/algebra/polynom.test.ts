@@ -99,7 +99,7 @@ describe('Polynom tests', () => {
         P2.factorize()
         expect(P2.texFactors).to.be.equal('-2x\\left( x+3 \\right)\\left( x-3 \\right)')
 
-        console.log(P2.texDisplay)
+        console.log(P2.displayFactors)
     });
 })
 
