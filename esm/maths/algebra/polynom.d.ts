@@ -48,6 +48,7 @@ export declare class Polynom {
     set factors(value: Polynom[]);
     get texString(): string;
     get texFactors(): string;
+    get texDisplay(): string;
     get length(): number;
     get display(): string;
     get raw(): string;
@@ -99,6 +100,7 @@ export declare class Polynom {
     isSameAs: (P: Polynom) => boolean;
     isOpposedAt: (P: Polynom) => boolean;
     isFactorized: (polynomString: string) => boolean;
+    isReduced: (polynomString: string) => Boolean;
     isDeveloped: (polynomString: string) => Boolean;
     reduce: () => Polynom;
     reorder: (letter?: string) => Polynom;

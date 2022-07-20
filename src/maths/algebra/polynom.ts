@@ -7,6 +7,8 @@ import {Shutingyard, ShutingyardType, Token} from '../shutingyard';
 import {Numeric} from '../numeric';
 import {Fraction} from "../coefficients/fraction";
 import {Equation, ISolution} from "./equation";
+import {Random} from "../randomization/random";
+import monom = Random.monom;
 
 export type PolynomParsingType = string | Polynom | number | Fraction | Monom
 
@@ -135,6 +137,45 @@ export class Polynom {
         }
 
         return tex;
+    }
+
+    get texDisplay() {
+        this.factorize()
+
+        if (this.factors.length <= 1) {
+            return this.display
+        }
+
+        // Build an array of texFactors with the number of similar items.
+        let factorsCount: { [Key: string]: { degree: number, factor: Polynom } } = {}
+        for (let f of this.factors) {
+            if (factorsCount[f.display] !== undefined) {
+                factorsCount[f.display].degree++
+            } else {
+                factorsCount[f.display] = {
+                    degree: 1,
+                    factor: f
+                }
+            }
+        }
+
+        // First round to put the 'monom' first
+        let simpleFactor = new Polynom().one()
+
+        for (let item of Object.values(factorsCount).filter(item => item.factor.monoms.length === 1)) {
+            simpleFactor.multiply(item.factor)
+        }
+
+        let display = simpleFactor.isOne() ? '' : simpleFactor.display
+
+        // Loop through all factors that contains at least 2 monoms.
+        for (let item of Object.values(factorsCount).filter(item => item.factor.monoms.length > 1)) {
+            if (item.factor.length > 1) {
+                display += `\\left( ${item.factor.display} \\right)${item.degree > 1 ? '^{ ' + item.degree + ' }' : ''}`
+            }
+        }
+
+        return display;
     }
 
     get length() {
@@ -631,6 +672,21 @@ export class Polynom {
 
     // ------------------------------------------
     // Compare functions
+
+    isReduced = (polynomString: string): Boolean => {
+        // The polynom must be developed to be reduced.
+        if(!this.isDeveloped(polynomString)){return false}
+
+        let P = new Polynom(polynomString)
+        if(P.monoms.length > this.monoms.length){return false}
+
+        // TODO: Not ur the reduced systme checking is working properly !
+        for(let m of P.monoms){
+            if(!m.coefficient.isReduced()){return false}
+        }
+
+        return false
+    }
 
     isDeveloped = (polynomString: string): Boolean => {
         let P: Polynom;
