@@ -175,7 +175,7 @@ export class Polynom {
             }
         }
 
-        return display.replaceAll(' ', '');
+        return display;
     }
 
     get length() {
@@ -1148,7 +1148,7 @@ export class Polynom {
     private _parseString(inputStr: string, ...values: unknown[]): Polynom {
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;
-            this._rawString = inputStr;
+            this._rawString = inputStr.trim().replaceAll(' ','');
 
             // Parse the polynom using the shutting yard algorithm
             if (inputStr !== '' && !isNaN(Number(inputStr))) {

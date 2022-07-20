@@ -3221,7 +3221,7 @@ class Polynom {
                 display += `(${item.factor.display})${item.degree > 1 ? '^(' + item.degree + ')' : ''}`;
             }
         }
-        return display.replaceAll(' ', '');
+        return display;
     }
     get length() {
         // TODO: Must reduce the monoms list to remove the zero coefficient.
@@ -3269,7 +3269,7 @@ class Polynom {
     _parseString(inputStr, ...values) {
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;
-            this._rawString = inputStr;
+            this._rawString = inputStr.trim().replaceAll(' ', '');
             // Parse the polynom using the shutting yard algorithm
             if (inputStr !== '' && !isNaN(Number(inputStr))) {
                 this.empty();
