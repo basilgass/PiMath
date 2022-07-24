@@ -6589,7 +6589,7 @@ class Numeric {
             decimal = decimal.split('.')[1];
             return decimal.substring(0, decimal.length - 2);
         }
-        const epsilon = 0.00000000000001, number_of_digits = 6;
+        const epsilon = 0.00000000000005, number_of_digits = 6;
         const decimal = extractDecimalPart(value);
         if (decimal === '') {
             return value;
