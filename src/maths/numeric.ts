@@ -105,7 +105,7 @@ export class Numeric{
         return triplets
     }
 
-    static numberCorrection(value: number, epsilon:number = 0.00000000000005, number_of_digits: number = 6){
+    static numberCorrection(value: number, epsilonDigit:number = 1, epsilonNumberOfDigits: number = 10, number_of_digits: number = 6){
 
         // Must modify the number if it's like:
         // a: 3.0000000000000003
@@ -113,8 +113,7 @@ export class Numeric{
         // remove the last character
         // check if around n last characters are either 0 or 9
         // if it is, 'round' the number.
-
-        function extractDecimalPart(valueToExtract: number){
+        function extractDecimalPart(valueToExtract: number, decimalLength: number){
             let decimal = valueToExtract.toString()
 
             if (!decimal.includes('.')) {
@@ -122,11 +121,11 @@ export class Numeric{
             }
 
             decimal = decimal.split('.')[1]
-
-            return decimal.substring(0, decimal.length - 2)
+            return decimal.substring(0, decimalLength)
         }
 
-        const decimal = extractDecimalPart(value)
+        const epsilon = Number(`0.${"0".repeat(epsilonNumberOfDigits-1)}${epsilonDigit}`)
+        const decimal = extractDecimalPart(value, epsilonNumberOfDigits)
         if(decimal===''){return value}
 
         const n9 = decimal.match(/9+$/g)
@@ -134,7 +133,7 @@ export class Numeric{
 
         if (n9 && n9[0].length >= number_of_digits) {
             // New tested values.
-            const mod = extractDecimalPart(value + epsilon),
+            const mod = extractDecimalPart(value + epsilon, epsilonNumberOfDigits),
                 mod0 = mod.match(/0+$/g)
 
             if(mod0 && mod0[0].length>= number_of_digits){
@@ -145,7 +144,7 @@ export class Numeric{
 
         if (n0 && n0[0].length >= number_of_digits) {
             // New tested values.
-            const mod = extractDecimalPart(value - epsilon),
+            const mod = extractDecimalPart(value - epsilon, epsilonNumberOfDigits),
                 mod9 = mod.match(/9+$/g)
 
             if(mod9 && mod9[0].length>= number_of_digits){
