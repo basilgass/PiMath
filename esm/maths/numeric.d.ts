@@ -21,6 +21,6 @@ export declare class Numeric {
      */
     static lcm(...values: number[]): number;
     static pythagoricianTripletsWithTarget(target: number, targetIsSquare?: boolean): number[][];
-    static numberCorrection(value: number): number;
+    static numberCorrection(value: number, epsilon?: number, number_of_digits?: number): number;
     static periodic(value: number): number;
 }
