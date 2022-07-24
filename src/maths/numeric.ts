@@ -126,7 +126,7 @@ export class Numeric{
         }
 
 
-        const epsilon = 0.00000000000001,
+        const epsilon = 0.00000000000005,
             number_of_digits = 6
 
         const decimal = extractDecimalPart(value)
