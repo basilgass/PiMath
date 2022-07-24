@@ -101,7 +101,7 @@ class Numeric {
         }
         return triplets;
     }
-    static numberCorrection(value) {
+    static numberCorrection(value, epsilon = 0.00000000000005, number_of_digits = 6) {
         // Must modify the number if it's like:
         // a: 3.0000000000000003
         // b: 3.9999999999999994
@@ -116,7 +116,6 @@ class Numeric {
             decimal = decimal.split('.')[1];
             return decimal.substring(0, decimal.length - 2);
         }
-        const epsilon = 0.00000000000005, number_of_digits = 6;
         const decimal = extractDecimalPart(value);
         if (decimal === '') {
             return value;
