@@ -40,4 +40,10 @@ describe('Numerical expression', () => { // the tests container
 
         // console.log(expr.rpn)
     });
+
+    it('should calculate sqrt from exp', function(){
+        let a = new NumExp('x^(1/2)')
+
+        console.log(a.evaluate({x: -2}))
+    })
 });
