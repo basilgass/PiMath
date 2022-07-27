@@ -131,7 +131,6 @@ export class NumExp {
                 } else if (element.token === '^') {
                     const b = stack.pop(),
                         a = stack.pop()
-                    console.log(a, b)
                     if(a === undefined || b === undefined){this.isValid = false}
                     this._addToStack(stack, Math.pow(a, b))
                 }
