@@ -42,8 +42,15 @@ describe('Numerical expression', () => { // the tests container
     });
 
     it('should calculate sqrt from exp', function(){
-        let a = new NumExp('x^(1/2)')
+        // let a = new NumExp('x^(1/3)')
+        // console.log(a.evaluate({x: 8}))
 
-        console.log(a.evaluate({x: -2}))
+        let k = new NumExp('nthrt(x,3)')
+        expect(k.evaluate({x: -8})).to.be.equal(-2)
+        expect(k.evaluate({x: 27})).to.be.equal(3)
+
+        let p = new NumExp('nthrt(x,4)')
+        expect(p.evaluate({x: 16})).to.be.equal(2)
+        expect(p.evaluate({x: -16})).to.be.NaN
     })
 });
