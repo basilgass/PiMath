@@ -1,6 +1,3 @@
-/**
- * Random helpers
- */
 export declare class rndHelpers {
     /**
      * Random boolean with a percent ratio
@@ -19,6 +16,7 @@ export declare class rndHelpers {
      * @param zero (bool) : determine if zero is allowed or not.
      */
     static randomIntSym(max: number, zero?: boolean): number;
+    static randomPrime(max: number): number;
     static randomArray(arr: any[], number?: number): any[];
     static randomItem(arr: any[]): any;
     static shuffleArray(arr: any[]): any[];

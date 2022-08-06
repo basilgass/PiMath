@@ -1,6 +1,8 @@
 /**
  * Random helpers
  */
+import {Numeric} from "../numeric";
+
 export class rndHelpers {
 
     /**
@@ -33,6 +35,14 @@ export class rndHelpers {
         }else{
             return this.randomInt(-max, max);
         }
+    }
+
+    static randomPrime(max: number): number {
+        let primes = Numeric.primes()
+        if(max!==undefined){
+            primes = primes.filter(x=>x<max)
+        }
+        return this.randomItem(primes)
     }
 
     static randomArray(arr: any[], number?:number):any[]{

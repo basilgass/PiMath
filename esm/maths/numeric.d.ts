@@ -4,7 +4,7 @@ export declare class Numeric {
      * Get the list of the nth first prime numbers.
      * @param nb : number of primes to choose from
      */
-    static prime(nb?: number): number[];
+    static primes(nb?: number): number[];
     /**
      * Get the list of all dividers of a number.
      * @param value
