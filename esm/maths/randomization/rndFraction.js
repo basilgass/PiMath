@@ -22,7 +22,11 @@ class rndFraction extends randomCore_1.randomCore {
                 Q.denominator = 1;
             }
             else {
-                Q.denominator = random_1.Random.number(1, this._config.max);
+                let securityCount = 0;
+                while (Q.isRelative() && securityCount < 10) {
+                    Q.denominator = random_1.Random.number(1, this._config.max);
+                    securityCount++;
+                }
             }
             return this._config.reduced ? Q.reduce() : Q;
         };

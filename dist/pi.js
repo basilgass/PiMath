@@ -475,70 +475,85 @@ class Equation {
                         // -b +- coeff\sqrt{radical}
                         // -------------------------
                         //           2a
-                        let gcd = numeric_1.Numeric.gcd(b, 2 * a, nthDelta.coefficient);
+                        let gcd = numeric_1.Numeric.gcd(b, 2 * a, nthDelta.coefficient), am = a / gcd, bm = b / gcd;
                         nthDelta.coefficient = nthDelta.coefficient / gcd;
-                        // TODO: Can i delete the next line ?
-                        // let deltaC = nthDelta.coefficient, deltaR = nthDelta.radical;
-                        if (b !== 0) {
-                            if (2 * a / gcd === 1) {
-                                this._solutions = [
-                                    {
-                                        tex: `${-b / gcd} - ${nthDelta.tex}`,
-                                        value: realX1,
-                                        exact: false // TODO: implement exact value with nthroot
-                                    },
-                                    {
-                                        tex: `${-b / gcd} + ${nthDelta.tex}`,
-                                        value: realX2,
-                                        exact: false
-                                    },
-                                ];
-                            }
-                            else {
-                                this._solutions = [
-                                    {
-                                        tex: `\\frac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                                        value: realX1,
-                                        exact: false
-                                    },
-                                    {
-                                        tex: `\\frac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                                        value: realX2,
-                                        exact: false
-                                    },
-                                ];
-                            }
+                        if (a < 0) {
+                            am = -am;
+                            bm = -bm;
                         }
-                        else {
-                            if (2 * a / gcd === 1) {
-                                this._solutions = [
-                                    {
-                                        tex: `- ${nthDelta.tex}`,
-                                        value: realX1,
-                                        exact: false
-                                    },
-                                    {
-                                        tex: `${nthDelta.tex}`,
-                                        value: realX2,
-                                        exact: false
-                                    },
-                                ];
-                            }
-                            else {
-                                this._solutions = [
-                                    {
-                                        tex: `\\frac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                                        value: realX1,
-                                        exact: false
-                                    },
-                                    {
-                                        tex: `\\frac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                                        value: realX2,
-                                        exact: false
-                                    },
-                                ];
-                            }
+                        let tex1 = "", tex2 = "";
+                        tex1 = `${bm !== 0 ? ((-bm) + ' - ') : ''}${nthDelta.tex}`;
+                        tex2 = `${bm !== 0 ? ((-bm) + ' + ') : ''}${nthDelta.tex}`;
+                        if (am !== 1) {
+                            tex1 = `\\frac{ ${tex1} }{ ${2 * am} }`;
+                            tex2 = `\\frac{ ${tex2} }{ ${2 * am} }`;
                         }
+                        this._solutions = [
+                            {
+                                tex: tex1, value: realX1, exact: false
+                            },
+                            {
+                                tex: tex2, value: realX2, exact: false
+                            },
+                        ];
+                        // if (b !== 0) {
+                        //     if (2 * a / gcd === 1) {
+                        //         this._solutions = [
+                        //             {
+                        //                 tex: `${-b / gcd} - ${nthDelta.tex}`,
+                        //                 value: realX1,
+                        //                 exact: false // TODO: implement exact value with nthroot
+                        //             },
+                        //             {
+                        //                 tex: `${-b / gcd} + ${nthDelta.tex}`,
+                        //                 value: realX2,
+                        //                 exact: false
+                        //             },
+                        //
+                        //         ]
+                        //     } else {
+                        //         this._solutions = [
+                        //             {
+                        //                 tex: `\\frac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                        //                 value: realX1,
+                        //                 exact: false
+                        //             },
+                        //             {
+                        //                 tex: `\\frac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                        //                 value: realX2,
+                        //                 exact: false
+                        //             },
+                        //         ]
+                        //     }
+                        // } else {
+                        //     if (2 * a / gcd === 1) {
+                        //         this._solutions = [
+                        //             {
+                        //                 tex: `- ${nthDelta.tex}`,
+                        //                 value: realX1,
+                        //                 exact: false
+                        //             },
+                        //             {
+                        //                 tex: `${nthDelta.tex}`,
+                        //                 value: realX2,
+                        //                 exact: false
+                        //             },
+                        //         ]
+                        //     } else {
+                        //         this._solutions = [
+                        //             {
+                        //                 tex: `\\frac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                        //                 value: realX1,
+                        //                 exact: false
+                        //             },
+                        //             {
+                        //                 tex: `\\frac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                        //                 value: realX2,
+                        //                 exact: false
+                        //             },
+                        //         ]
+                        //     }
+                        // }
                     }
                     else {
                         // -b +- d / 2a
@@ -4113,7 +4128,7 @@ class Fraction {
                         // The given value is a float number
                         // Get the number of decimals after the float sign
                         let [unit, decimal] = (value.toString()).split('.');
-                        let p = decimal.length;
+                        let p = decimal ? decimal.length : 0;
                         // Detect if the decimal part is periodic or not...
                         // Transform the float number in two integer
                         if (denominatorOrPeriodic === undefined) {
@@ -6559,6 +6574,10 @@ class Numeric {
         }
         return Math.abs(g);
     }
+    static divideNumbersByGCD(...values) {
+        let gcd = Numeric.gcd(...values);
+        return values.map(x => x / gcd);
+    }
     /**
      * Least Common Multiple
      * @param values: list of numbers
@@ -6606,7 +6625,6 @@ class Numeric {
             // New tested values.
             const mod = extractDecimalPart(value + epsilon, epsilonNumberOfDigits), mod0 = mod.match(/0+$/g);
             if (mod0 && mod0[0].length >= number_of_digits) {
-                // The value can be changed. Remove all zeros!
                 return +((value + epsilon).toString().split(mod0[0])[0]);
             }
         }
@@ -6765,7 +6783,11 @@ class rndFraction extends randomCore_1.randomCore {
                 Q.denominator = 1;
             }
             else {
-                Q.denominator = random_1.Random.number(1, this._config.max);
+                let securityCount = 0;
+                while (Q.isRelative() && securityCount < 10) {
+                    Q.denominator = random_1.Random.number(1, this._config.max);
+                    securityCount++;
+                }
             }
             return this._config.reduced ? Q.reduce() : Q;
         };

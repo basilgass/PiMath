@@ -231,7 +231,7 @@ export class Fraction {
                     // The given value is a float number
                     // Get the number of decimals after the float sign
                     let [unit, decimal] = (value.toString()).split('.')
-                    let p: number = decimal.length;
+                    let p: number = decimal?decimal.length:0;
 
                     // Detect if the decimal part is periodic or not...
 

@@ -80,6 +80,11 @@ export class Numeric{
         return Math.abs(g);
     }
 
+    static divideNumbersByGCD(...values: number[]): number[]{
+        let gcd = Numeric.gcd(...values)
+
+        return values.map(x=>x/gcd)
+    }
     /**
      * Least Common Multiple
      * @param values: list of numbers
@@ -137,7 +142,6 @@ export class Numeric{
                 mod0 = mod.match(/0+$/g)
 
             if(mod0 && mod0[0].length>= number_of_digits){
-                // The value can be changed. Remove all zeros!
                 return +((value+epsilon).toString().split(mod0[0])[0])
             }
         }

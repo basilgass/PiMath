@@ -1,6 +1,8 @@
 import {expect} from "chai";
 import {Fraction} from "../../src/maths/coefficients/fraction";
 import {describe} from "mocha";
+import {Random} from "../../src/maths/randomization/random";
+import exp = require("constants");
 
 describe('Fraction tests', () => { // the tests container
 
@@ -110,5 +112,20 @@ describe("Evaluate fraction", () => {
         let G = new Fraction('1/7')
         expect(G.isApproximative()).to.be.false
         expect(G.isExact()).to.be.true
+    });
+})
+
+describe('Generate function', ()=>{
+    it('should generate a non natural fraction', function () {
+        let F, result = true
+
+        for(let i=0; i<100; i++){
+            F  = Random.fraction()
+            if(!F.isRelative()){
+                result = false
+                break
+            }
+        }
+        expect(F.isNatural()).to.be.false;
     });
 })

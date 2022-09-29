@@ -629,69 +629,93 @@ export class Equation {
                     // -b +- coeff\sqrt{radical}
                     // -------------------------
                     //           2a
-                    let gcd = Numeric.gcd(b, 2 * a, nthDelta.coefficient);
+                    let gcd = Numeric.gcd(b, 2 * a, nthDelta.coefficient),
+                        am = a/gcd, bm = b/gcd
                     nthDelta.coefficient = nthDelta.coefficient / gcd;
 
-                    // TODO: Can i delete the next line ?
-                    // let deltaC = nthDelta.coefficient, deltaR = nthDelta.radical;
-                    if (b !== 0) {
-                        if (2 * a / gcd === 1) {
-                            this._solutions = [
-                                {
-                                    tex: `${-b / gcd} - ${nthDelta.tex}`,
-                                    value: realX1,
-                                    exact: false // TODO: implement exact value with nthroot
-                                },
-                                {
-                                    tex: `${-b / gcd} + ${nthDelta.tex}`,
-                                    value: realX2,
-                                    exact: false
-                                },
-
-                            ]
-                        } else {
-                            this._solutions = [
-                                {
-                                    tex: `\\frac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                                    value: realX1,
-                                    exact: false
-                                },
-                                {
-                                    tex: `\\frac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                                    value: realX2,
-                                    exact: false
-                                },
-                            ]
-                        }
-                    } else {
-                        if (2 * a / gcd === 1) {
-                            this._solutions = [
-                                {
-                                    tex: `- ${nthDelta.tex}`,
-                                    value: realX1,
-                                    exact: false
-                                },
-                                {
-                                    tex: `${nthDelta.tex}`,
-                                    value: realX2,
-                                    exact: false
-                                },
-                            ]
-                        } else {
-                            this._solutions = [
-                                {
-                                    tex: `\\frac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                                    value: realX1,
-                                    exact: false
-                                },
-                                {
-                                    tex: `\\frac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                                    value: realX2,
-                                    exact: false
-                                },
-                            ]
-                        }
+                    if(a<0){
+                        am = -am
+                        bm = -bm
                     }
+
+                    let tex1 = "", tex2 = ""
+
+                    tex1 = `${bm!==0?((-bm) + ' - '):''}${nthDelta.tex}`
+                    tex2 = `${bm!==0?((-bm) + ' + '):''}${nthDelta.tex}`
+
+                    if(am!==1){
+                        tex1 = `\\frac{ ${tex1} }{ ${2*am} }`
+                        tex2 = `\\frac{ ${tex2} }{ ${2*am} }`
+                    }
+
+                    this._solutions = [
+                        {
+                            tex: tex1, value: realX1, exact: false
+                        },
+                        {
+                            tex: tex2, value: realX2, exact: false
+                        },
+                    ]
+
+
+                    // if (b !== 0) {
+                    //     if (2 * a / gcd === 1) {
+                    //         this._solutions = [
+                    //             {
+                    //                 tex: `${-b / gcd} - ${nthDelta.tex}`,
+                    //                 value: realX1,
+                    //                 exact: false // TODO: implement exact value with nthroot
+                    //             },
+                    //             {
+                    //                 tex: `${-b / gcd} + ${nthDelta.tex}`,
+                    //                 value: realX2,
+                    //                 exact: false
+                    //             },
+                    //
+                    //         ]
+                    //     } else {
+                    //         this._solutions = [
+                    //             {
+                    //                 tex: `\\frac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                    //                 value: realX1,
+                    //                 exact: false
+                    //             },
+                    //             {
+                    //                 tex: `\\frac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                    //                 value: realX2,
+                    //                 exact: false
+                    //             },
+                    //         ]
+                    //     }
+                    // } else {
+                    //     if (2 * a / gcd === 1) {
+                    //         this._solutions = [
+                    //             {
+                    //                 tex: `- ${nthDelta.tex}`,
+                    //                 value: realX1,
+                    //                 exact: false
+                    //             },
+                    //             {
+                    //                 tex: `${nthDelta.tex}`,
+                    //                 value: realX2,
+                    //                 exact: false
+                    //             },
+                    //         ]
+                    //     } else {
+                    //         this._solutions = [
+                    //             {
+                    //                 tex: `\\frac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                    //                 value: realX1,
+                    //                 exact: false
+                    //             },
+                    //             {
+                    //                 tex: `\\frac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                    //                 value: realX2,
+                    //                 exact: false
+                    //             },
+                    //         ]
+                    //     }
+                    // }
                 } else {
                     // -b +- d / 2a
                     const S1 = new Fraction(-b - nthDelta.coefficient, 2 * a).reduce(),

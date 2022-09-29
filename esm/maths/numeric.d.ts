@@ -15,6 +15,7 @@ export declare class Numeric {
      * @param values : number values
      */
     static gcd(...values: number[]): number;
+    static divideNumbersByGCD(...values: number[]): number[];
     /**
      * Least Common Multiple
      * @param values: list of numbers

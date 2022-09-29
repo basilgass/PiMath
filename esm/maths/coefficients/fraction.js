@@ -76,7 +76,7 @@ class Fraction {
                         // The given value is a float number
                         // Get the number of decimals after the float sign
                         let [unit, decimal] = (value.toString()).split('.');
-                        let p = decimal.length;
+                        let p = decimal ? decimal.length : 0;
                         // Detect if the decimal part is periodic or not...
                         // Transform the float number in two integer
                         if (denominatorOrPeriodic === undefined) {
