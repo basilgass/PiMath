@@ -41,4 +41,10 @@ describe('Equations tests', () => {
         P.solve()
         expect(P.solutions[0].tex).to.have.oneOf(['\\frac{ -2 - 2\\sqrt{6} }{ 5 }', '\\frac{ -2 + 2\\sqrt{6} }{ 5 }'])
     })
+
+    it('should solve this equation please', function () {
+        let P = new Equation("2/7(3x+5)=9-(3-x)/7")
+        P.solve()
+        console.log(P.solutions.map(x=>x.tex))
+    });
 })
