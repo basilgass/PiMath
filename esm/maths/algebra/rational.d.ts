@@ -2,10 +2,11 @@
  * Rational polynom module contains everything necessary to handle rational polynoms.
  * @module Polynom
  */
-import { IEuclidian, Polynom } from "./polynom";
-import { Fraction } from "../coefficients/fraction";
-import { literalType } from "./monom";
-import { RationalStudy } from "./study/rationalStudy";
+import {IEuclidian, Polynom} from "./polynom";
+import {Fraction} from "../coefficients/fraction";
+import {literalType} from "./monom";
+import {RationalStudy} from "./study/rationalStudy";
+
 /**
  * Rational class can handle rational polynoms
  */
@@ -37,5 +38,8 @@ export declare class Rational {
     euclidian: () => IEuclidian;
     limits: (value: Fraction | number, offset?: string, letter?: string) => Fraction;
     evaluate: (values: literalType | Fraction | number) => Fraction;
+    evaluateAsNumeric: (values: number | {
+        [Key: string]: number;
+    }) => number;
     study: () => RationalStudy;
 }

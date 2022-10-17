@@ -2,9 +2,10 @@
  * Rational polynom module contains everything necessary to handle rational polynoms.
  * @module Polynom
  */
-import { Rational } from "./rational";
-import { ISolution } from "./equation";
-import { Polynom } from "./polynom";
+import {Rational} from "./rational";
+import {ISolution} from "./equation";
+import {Polynom} from "./polynom";
+
 export declare type StudyableFunction = Rational;
 export declare enum ZEROTYPE {
     ZERO = "z",
@@ -21,6 +22,13 @@ export declare enum ASYMPTOTE {
     SLOPE = "ao",
     HOLE = "hole"
 }
+
+export declare enum ASYMPTOTE_POSITION {
+    "LT" = "LT",
+    "RT" = "RT",
+    "LB" = "LB",
+    "RB" = "RB"
+}
 export interface IAsymptote {
     fx: Polynom;
     deltaX: StudyableFunction;
@@ -28,6 +36,7 @@ export interface IAsymptote {
     tex: string;
     type: ASYMPTOTE;
     zero: IZero;
+    position: ASYMPTOTE_POSITION[];
     tableOfSign: ITableOfSigns;
 }
 export declare enum FUNCTION_EXTREMA {
@@ -61,7 +70,7 @@ export interface ITableOfSigns {
 export declare enum TABLE_OF_SIGNS {
     SIGNS = "signs",
     GROWS = "grows",
-    VARIATIONS = "variatins"
+    VARIATIONS = "variations"
 }
 /**
  * The study class is a "function study" class that will get:
