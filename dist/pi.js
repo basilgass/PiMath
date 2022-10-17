@@ -3516,9 +3516,11 @@ class Rational {
         };
         if (numerator instanceof polynom_1.Polynom) {
             this._numerator = numerator.clone();
-        } else if (typeof numerator === 'string') {
+        }
+        else if (typeof numerator === 'string') {
             this._numerator = new polynom_1.Polynom(numerator);
-        } else {
+        }
+        else {
             this._numerator = new polynom_1.Polynom();
         }
         if (denominator instanceof polynom_1.Polynom) {
@@ -3556,12 +3558,12 @@ exports.Rational = Rational;
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
-            /**
-             * Rational polynom module contains everything necessary to handle rational polynoms.
-             * @module Polynom
-             */
-            Object.defineProperty(exports, "__esModule", ({value: true}));
-            exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE_POSITION = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
+/**
+ * Rational polynom module contains everything necessary to handle rational polynoms.
+ * @module Polynom
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE_POSITION = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
 const fraction_1 = __webpack_require__(506);
 const numexp_1 = __webpack_require__(735);
 var ZEROTYPE;
@@ -3570,32 +3572,32 @@ var ZEROTYPE;
     ZEROTYPE["DEFENCE"] = "d";
     ZEROTYPE["NOTHING"] = "t";
 })(ZEROTYPE = exports.ZEROTYPE || (exports.ZEROTYPE = {}));
-            var ASYMPTOTE;
-            (function (ASYMPTOTE) {
-                ASYMPTOTE["VERTICAL"] = "av";
-                ASYMPTOTE["HORIZONTAL"] = "ah";
-                ASYMPTOTE["SLOPE"] = "ao";
-                ASYMPTOTE["HOLE"] = "hole";
-            })(ASYMPTOTE = exports.ASYMPTOTE || (exports.ASYMPTOTE = {}));
-            var ASYMPTOTE_POSITION;
-            (function (ASYMPTOTE_POSITION) {
-                ASYMPTOTE_POSITION["LT"] = "LT";
-                ASYMPTOTE_POSITION["RT"] = "RT";
-                ASYMPTOTE_POSITION["LB"] = "LB";
-                ASYMPTOTE_POSITION["RB"] = "RB";
-            })(ASYMPTOTE_POSITION = exports.ASYMPTOTE_POSITION || (exports.ASYMPTOTE_POSITION = {}));
-            var FUNCTION_EXTREMA;
-            (function (FUNCTION_EXTREMA) {
-                FUNCTION_EXTREMA["MIN"] = "min";
-                FUNCTION_EXTREMA["MAX"] = "max";
-                FUNCTION_EXTREMA["FLAT"] = "flat";
-                FUNCTION_EXTREMA["NOTHING"] = "";
-            })(FUNCTION_EXTREMA = exports.FUNCTION_EXTREMA || (exports.FUNCTION_EXTREMA = {}));
-            var TABLE_OF_SIGNS;
-            (function (TABLE_OF_SIGNS) {
-                TABLE_OF_SIGNS["SIGNS"] = "signs";
-                TABLE_OF_SIGNS["GROWS"] = "grows";
-                TABLE_OF_SIGNS["VARIATIONS"] = "variations";
+var ASYMPTOTE;
+(function (ASYMPTOTE) {
+    ASYMPTOTE["VERTICAL"] = "av";
+    ASYMPTOTE["HORIZONTAL"] = "ah";
+    ASYMPTOTE["SLOPE"] = "ao";
+    ASYMPTOTE["HOLE"] = "hole";
+})(ASYMPTOTE = exports.ASYMPTOTE || (exports.ASYMPTOTE = {}));
+var ASYMPTOTE_POSITION;
+(function (ASYMPTOTE_POSITION) {
+    ASYMPTOTE_POSITION["LT"] = "LT";
+    ASYMPTOTE_POSITION["RT"] = "RT";
+    ASYMPTOTE_POSITION["LB"] = "LB";
+    ASYMPTOTE_POSITION["RB"] = "RB";
+})(ASYMPTOTE_POSITION = exports.ASYMPTOTE_POSITION || (exports.ASYMPTOTE_POSITION = {}));
+var FUNCTION_EXTREMA;
+(function (FUNCTION_EXTREMA) {
+    FUNCTION_EXTREMA["MIN"] = "min";
+    FUNCTION_EXTREMA["MAX"] = "max";
+    FUNCTION_EXTREMA["FLAT"] = "flat";
+    FUNCTION_EXTREMA["NOTHING"] = "";
+})(FUNCTION_EXTREMA = exports.FUNCTION_EXTREMA || (exports.FUNCTION_EXTREMA = {}));
+var TABLE_OF_SIGNS;
+(function (TABLE_OF_SIGNS) {
+    TABLE_OF_SIGNS["SIGNS"] = "signs";
+    TABLE_OF_SIGNS["GROWS"] = "grows";
+    TABLE_OF_SIGNS["VARIATIONS"] = "variations";
 })(TABLE_OF_SIGNS = exports.TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = {}));
 /**
  * The study class is a "function study" class that will get:
@@ -3924,21 +3926,10 @@ class RationalStudy extends study_1.Study {
         return this._getZeroes(this.fx);
     }
     ;
-    _getHorizontalAsymptoteRelativePositon(deltaX, delta = 1000000) {
-        let position = [], before = deltaX.evaluateAsNumeric(-delta), after = deltaX.evaluateAsNumeric(delta);
-        if (before >= 0) {
-            position.push(study_1.ASYMPTOTE_POSITION.LT);
-        } else {
-            position.push(study_1.ASYMPTOTE_POSITION.LB);
-        }
-        if (after >= 0) {
-            position.push(study_1.ASYMPTOTE_POSITION.RT);
-        } else {
-            position.push(study_1.ASYMPTOTE_POSITION.RB);
-        }
-        return position;
+    makeSigns() {
+        return this._getSigns(this.fx, this.zeroes);
     }
-
+    ;
     makeAsymptotes() {
         const reduced = this.fx.clone().reduce();
         // Vertical
@@ -3952,7 +3943,8 @@ class RationalStudy extends study_1.Study {
                     Ztype = study_1.ASYMPTOTE.HOLE;
                     tex = `(${zero.tex};${reduced.evaluate(zero.exact).tex})`;
                 }
-            } else {
+            }
+            else {
                 if (reduced.denominator.evaluate(zero.value).isNotZero()) {
                     Ztype = study_1.ASYMPTOTE.HOLE;
                     tex = `(${zero.tex};${reduced.evaluate(zero.value).tex})`;
@@ -3960,19 +3952,20 @@ class RationalStudy extends study_1.Study {
             }
             // Get the position before and after the asymptote.
             const delta = 0.000001;
-            let before = this.fx.evaluateAsNumeric(zero.value - delta),
-                after = this.fx.evaluateAsNumeric(zero.value + delta), position = [], pm = "";
+            let before = this.fx.evaluateAsNumeric(zero.value - delta), after = this.fx.evaluateAsNumeric(zero.value + delta), position = [], pm = "";
             if (after < -10000) {
                 position.push(study_1.ASYMPTOTE_POSITION.RB);
                 pm += "m";
-            } else if (after > 10000) {
+            }
+            else if (after > 10000) {
                 position.push(study_1.ASYMPTOTE_POSITION.RT);
                 pm += "p";
             }
             if (before < -10000) {
                 position.push(study_1.ASYMPTOTE_POSITION.LB);
                 pm += "m";
-            } else if (before > 10000) {
+            }
+            else if (before > 10000) {
                 position.push(study_1.ASYMPTOTE_POSITION.LT);
                 pm += "p";
             }
@@ -3980,9 +3973,11 @@ class RationalStudy extends study_1.Study {
             // TODO: handle the case were one side of the asymptote isn't infinity (not possible in rational study?!)
             if (pm === "pp") {
                 pm = "+";
-            } else if (pm === "mm") {
+            }
+            else if (pm === "mm") {
                 pm = "-";
-            } else {
+            }
+            else {
                 pm = `\\${pm}`;
             }
             asymptotes.push({
@@ -4042,22 +4037,30 @@ class RationalStudy extends study_1.Study {
         return asymptotes;
     }
     ;
-
+    _getHorizontalAsymptoteRelativePositon(deltaX, delta = 1000000) {
+        let position = [], before = deltaX.evaluateAsNumeric(-delta), after = deltaX.evaluateAsNumeric(delta);
+        if (before >= 0) {
+            position.push(study_1.ASYMPTOTE_POSITION.LT);
+        }
+        else {
+            position.push(study_1.ASYMPTOTE_POSITION.LB);
+        }
+        if (after >= 0) {
+            position.push(study_1.ASYMPTOTE_POSITION.RT);
+        }
+        else {
+            position.push(study_1.ASYMPTOTE_POSITION.RB);
+        }
+        return position;
+    }
     makeDerivative() {
-        let dx = this.fx.clone().derivative(),
-            tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
+        let dx = this.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
         let result = this.makeGrowsResult(tos);
         tos.signs.push(result.growsLine);
         tos.extremes = result.extremes;
         return tos;
     }
     ;
-
-    makeSigns() {
-        return this._getSigns(this.fx, this.zeroes);
-    }
-    ;
-
     makeVariation() {
         // Get the zeroes, make signs.
         let dx = this.derivative.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
@@ -5170,7 +5173,7 @@ class PolynomExpProduct {
                 return this._integrateWithInternalDerivative(this._factors[1], this._factors[0], letter);
             }
         }
-
+        return;
     }
     applyMathFunction(mathFn) {
         this._fn = mathFn;
@@ -5195,7 +5198,7 @@ class PolynomExpProduct {
                 return new PolynomExpProduct(new PolynomExpFactor(P.degree.clone().add(1).invert(), 1), new PolynomExpFactor(quotient, 1), new PolynomExpFactor(P.polynom.clone(), P.degree.clone().add(1)));
             }
         }
-
+        return;
     }
 }
 exports.PolynomExpProduct = PolynomExpProduct;
@@ -5779,14 +5782,14 @@ class Line {
             if (equ instanceof equation_1.Equation) {
                 return equ.right.evaluate({ x: F });
             }
-
+            return;
         };
         this.getValueAtY = (value) => {
             const equ = this.equation.clone().isolate('x'), F = new fraction_1.Fraction(value);
             if (equ instanceof equation_1.Equation) {
                 return equ.right.evaluate({ y: F });
             }
-
+            return;
         };
         this._exists = false;
         if (values.length > 0) {

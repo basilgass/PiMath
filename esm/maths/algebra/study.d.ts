@@ -7,11 +7,13 @@ import {ISolution} from "./equation";
 import {Polynom} from "./polynom";
 
 export declare type StudyableFunction = Rational;
+
 export declare enum ZEROTYPE {
     ZERO = "z",
     DEFENCE = "d",
     NOTHING = "t"
 }
+
 export interface IZero extends ISolution {
     extrema: FUNCTION_EXTREMA;
     type: ZEROTYPE;
@@ -22,7 +24,6 @@ export declare enum ASYMPTOTE {
     SLOPE = "ao",
     HOLE = "hole"
 }
-
 export declare enum ASYMPTOTE_POSITION {
     "LT" = "LT",
     "RT" = "RT",

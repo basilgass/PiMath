@@ -14,6 +14,7 @@ export declare class Rational {
     private _denominator;
     private _numerator;
     private _rawString;
+
     /**
      *
      * @param numerator
