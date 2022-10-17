@@ -214,6 +214,7 @@ export class RationalStudy extends Study {
             // add the item
             zeroes.push({
                 tex: z.tex,
+                display: z.display,
                 value: z.value,
                 exact: z.exact,
                 extrema: FUNCTION_EXTREMA.NOTHING,
@@ -230,6 +231,7 @@ export class RationalStudy extends Study {
                 // Add the item
                 zeroes.push({
                     tex: z.tex,
+                    display: z.display,
                     value: z.value,
                     exact: z.exact,
                     extrema: FUNCTION_EXTREMA.NOTHING,

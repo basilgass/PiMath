@@ -25,10 +25,12 @@ class RationalStudy extends study_1.Study {
         super(fx);
         return this;
     }
+
     makeZeroes() {
         return this._getZeroes(this.fx);
     }
     ;
+
     _getHorizontalAsymptoteRelativePositon(deltaX, delta = 1000000) {
         let position = [], before = deltaX.evaluateAsNumeric(-delta), after = deltaX.evaluateAsNumeric(delta);
         if (before >= 0) {
@@ -148,30 +150,6 @@ class RationalStudy extends study_1.Study {
     }
     ;
 
-    makeDerivative() {
-        let dx = this.fx.clone().derivative(),
-            tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
-        let result = this.makeGrowsResult(tos);
-        tos.signs.push(result.growsLine);
-        tos.extremes = result.extremes;
-        return tos;
-    }
-    ;
-
-    makeSigns() {
-        return this._getSigns(this.fx, this.zeroes);
-    }
-    ;
-
-    makeVariation() {
-        // Get the zeroes, make signs.
-        let dx = this.derivative.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
-        let result = this.makeVariationsResult(tos);
-        tos.signs.push(result.varsLine);
-        tos.extremes = result.extremes;
-        return tos;
-    }
-    ;
     _getZeroes(fx) {
         // All zeroes.
         let zeroes = [];
@@ -179,6 +157,7 @@ class RationalStudy extends study_1.Study {
             // add the item
             zeroes.push({
                 tex: z.tex,
+                display: z.display,
                 value: z.value,
                 exact: z.exact,
                 extrema: study_1.FUNCTION_EXTREMA.NOTHING,
@@ -194,6 +173,7 @@ class RationalStudy extends study_1.Study {
                 // Add the item
                 zeroes.push({
                     tex: z.tex,
+                    display: z.display,
                     value: z.value,
                     exact: z.exact,
                     extrema: study_1.FUNCTION_EXTREMA.NOTHING,
@@ -205,6 +185,31 @@ class RationalStudy extends study_1.Study {
         zeroes.sort((a, b) => a.value - b.value);
         return zeroes;
     }
+
+    makeDerivative() {
+        let dx = this.fx.clone().derivative(),
+            tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
+        let result = this.makeGrowsResult(tos);
+        tos.signs.push(result.growsLine);
+        tos.extremes = result.extremes;
+        return tos;
+    }
+    ;
+
+    makeVariation() {
+        // Get the zeroes, make signs.
+        let dx = this.derivative.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
+        let result = this.makeVariationsResult(tos);
+        tos.signs.push(result.varsLine);
+        tos.extremes = result.extremes;
+        return tos;
+    }
+    ;
+
+    makeSigns() {
+        return this._getSigns(this.fx, this.zeroes);
+    }
+    ;
     _getSigns(fx, zeroes, typeOfTable) {
         // Factorize the rational
         let signs = [], factors = [];

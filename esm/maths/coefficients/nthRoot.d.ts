@@ -14,6 +14,9 @@ export declare class NthRoot {
     get coefficient(): number;
     set coefficient(value: number);
     get tex(): string;
+
+    get display(): string;
+
     get value(): number;
     parse: (radical: number, nthroot?: number, coefficient?: number) => NthRoot;
     reduce: () => NthRoot;
