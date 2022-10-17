@@ -1,6 +1,6 @@
 {
   "name": "pimath",
-  "version": "0.0.93",
+  "version": "0.0.94",
   "description": "A math library for teacher :)",
   "scripts": {
     "test": "mocha -r ts-node/register 'tests/**/*.test.ts'",
