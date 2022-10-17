@@ -21,6 +21,7 @@ export enum ShutingyardType {
 }
 
 export enum ShutingyardMode {
+    EXPRESSION = 'expression',
     POLYNOM = 'polynom',
     SET = 'set',
     NUMERIC = 'numeric'
@@ -30,6 +31,7 @@ export type Token = { token: string, tokenType: string }
 
 export class Shutingyard {
     readonly _mode: ShutingyardMode;
+    private _rpn: Token[] = [];
     private _tokenConfig: tokenType;
     private _tokenConstant: { [Key: string]: number }
     private _tokenKeys: string[]
@@ -40,12 +42,14 @@ export class Shutingyard {
         this.tokenConfigInitialization()
     }
 
-    private _rpn: Token[] = [];
-
     // Getter
     get rpn() {
         // console.log(this._rpn)
         return this._rpn;
+    }
+
+    get rpnToken() {
+        return this._rpn.map(x => x.token)
     }
 
     /**
@@ -86,8 +90,26 @@ export class Shutingyard {
                 'cos': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
                 'tan': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
                 'sqrt': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                'nthrt': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                'ln': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                'log': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
             }
             this._uniformize = false
+        } else if (this._mode === ShutingyardMode.EXPRESSION) {
+            this._tokenConfig = {
+                '^': {precedence: 4, associative: 'right', type: ShutingyardType.OPERATION},
+                '*': {precedence: 3, associative: 'left', type: ShutingyardType.OPERATION},
+                '/': {precedence: 3, associative: 'left', type: ShutingyardType.OPERATION},
+                '+': {precedence: 2, associative: 'left', type: ShutingyardType.OPERATION},
+                '-': {precedence: 2, associative: 'left', type: ShutingyardType.OPERATION},
+                '%': {precedence: 3, associative: 'right', type: ShutingyardType.OPERATION},
+                'sin': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                'cos': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                'tan': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                'sqrt': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+                'nthrt': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
+            }
+            this._uniformize = true
         } else {
             this._tokenConfig = {
                 '^': {precedence: 4, associative: 'right', type: ShutingyardType.OPERATION},
@@ -95,10 +117,6 @@ export class Shutingyard {
                 '/': {precedence: 3, associative: 'left', type: ShutingyardType.OPERATION},
                 '+': {precedence: 2, associative: 'left', type: ShutingyardType.OPERATION},
                 '-': {precedence: 2, associative: 'left', type: ShutingyardType.OPERATION},
-                // '%': {precedence: 3, associative: 'right', type: ShutingyardType.OPERATION},
-                // 'sin': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
-                // 'cos': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
-                // 'tan': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
             }
             this._uniformize = true
         }
@@ -131,10 +149,6 @@ export class Shutingyard {
             token = ',';
             tokenType = 'function-argument';
         } else {
-            // Order token keys by token characters length (descending)
-            // TODO: this is done each time ! SHould be done once !
-            // const keys = Object.keys(this._tokenConfig).sort((a,b)=>b.length-a.length)
-
             // Extract operation and function tokens
             for (let key of this._tokenKeys) {
                 if (expr.substring(start, start + key.length) === key) {
@@ -159,7 +173,7 @@ export class Shutingyard {
                     if (this._mode === ShutingyardMode.POLYNOM && false) {
                         token = expr.substring(start).match(/^([0-9.,/]+)/)[0]
                     } else {
-                        token = expr.substring(start).match(/^([0-9.,]+)/)[0]
+                        token = expr.substring(start).match(/^([0-9.]+)/)[0]
                     }
                     tokenType = ShutingyardType.COEFFICIENT
                 } else if (expr[start].match(/[a-zA-Z]/)) {
@@ -177,21 +191,135 @@ export class Shutingyard {
         return [token, start + token.length, tokenType];
     }
 
+    normalize(expr: string): string {
+        if(expr.length===1){return expr}
+
+        // Get the list of function token.
+        let fnToken: string[] = [],
+            kToken: string[] = []
+        for (let token in this._tokenConfig) {
+            if (this._tokenConfig[token].type === ShutingyardType.FUNCTION) {
+                fnToken.push(token)
+            }
+        }
+        // sort if from the lengthy to the smallest function
+        fnToken.sort((a, b) => b.length - a.length)
+
+        for (let token in tokenConstant) {
+                kToken.push(token)
+        }
+        // sort if from the lengthy to the smallest function
+        kToken.sort((a, b) => b.length - a.length)
+
+
+
+
+        let normalizedExpr: string = "",
+            i = 0,
+            crtToken,
+            nextToken
+
+        while (i < expr.length - 1) {
+            // Check if we have a function token.
+            // The function MUST have an open parentheses
+            let tokenIdx = 0
+            while (tokenIdx < fnToken.length) {
+                let token = fnToken[tokenIdx]
+                if (expr.slice(i, i + token.length + 1) === token + '(') {
+                    normalizedExpr += token + '('
+                    i += token.length + 1
+
+                    // Restart the scan for the function token
+                    tokenIdx = 0
+                } else {
+                    // scan for a next function token
+                    tokenIdx++
+                }
+            }
+
+            // Check for a constant
+            tokenIdx = 0
+            while (tokenIdx < kToken.length) {
+                let token = kToken[tokenIdx]
+                if (expr.slice(i, i + token.length) === token) {
+                    // We have found a constant.
+                    // add it, but with remove the last letter
+                    normalizedExpr += token.slice(0, -1)
+                    i += token.length-1
+
+                    // Exit the loop
+                    break
+                }
+                tokenIdx++
+            }
+
+            // The function token are solved.
+            crtToken = expr[i]
+            nextToken = expr[i + 1]
+            normalizedExpr += crtToken
+            if (crtToken.match(/[a-zA-Z]/g)) {
+                // Current element is a letter.
+                // if the next element is a letter, a number or an opening parentheses, add the multiplication sign.
+                if (nextToken.match(/[a-zA-Z\d(]/)) {
+                    normalizedExpr += '*'
+                }
+            } else if (crtToken.match(/\d/)) {
+                // Current element is a number.
+                // if the next element is a letter or a parentheses, add the multiplication sign.
+                if (nextToken.match(/[a-zA-Z(]/)) {
+                    normalizedExpr += '*'
+                }
+            } else if (crtToken === ')') {
+                // Current element is a closing parentheses.
+                // if the next element is a letter, a number or an opening parentheses, add the multiplication sign
+                if (nextToken.match(/[a-zA-Z\d(]/)) {
+                    normalizedExpr += '*'
+                }
+            }
+
+            // Go to next token
+            i++
+        }
+
+        // add the last token
+        return normalizedExpr + nextToken
+    }
+
     /**
      * Sanitize an expression by adding missing common operation (multiplication between parentheseses)
      * @param expr
      * @constructor
      */
     Uniformizer(expr: string): string {
+        // TODO: Delete this old version
+        // Prefere "normalize", much more robust !
         // Determiner if need to be uniformized
         if (!this._uniformize) {
             return expr
         }
 
+        // Generate the list of function token.
+        let fnToken: string[] = []
+        for (let token in this._tokenConfig) {
+            if (this._tokenConfig[token].type === ShutingyardType.FUNCTION) {
+                fnToken.push(token)
+            }
+        }
+        // sort if from the lengthy to the smallest function
+        fnToken.sort((a, b) => b.length - a.length)
+        let tokenRegExp = new RegExp(`(${fnToken.join('|')})`, 'g')
+        let functionTokenOrder = Array.from(expr.matchAll(tokenRegExp))
+
+
         let expr2;
 
+        // Replace all function by @
+        expr2 = expr.replace(tokenRegExp, '@')
+        // Add * before @ (functionn)
+        expr2 = expr2.replace(/([\da-zA-Z])(@)/g, "$1*$2");
+
         // Replace missing multiplication between two parenthese
-        expr2 = expr.replace(/\)\(/g, ')*(');
+        expr2 = expr2.replace(/\)\(/g, ')*(');
 
         // Replace missing multiplication between number or setLetter and parenthese.
 
@@ -206,15 +334,27 @@ export class Shutingyard {
         expr2 = expr2.replace(/([0-9])([a-zA-Z])/g, "$1*$2");
         expr2 = expr2.replace(/([a-zA-Z])([0-9])/g, "$1*$2");
 
+        // Remove letter between function token and it's parenthese.
+        // for (let token of fnToken) {
+        //     // Remove
+        //     expr2 = expr2.replace(new RegExp(token + '\\*', 'g'), token);
+        // }
         // Add multiplication between letters ?
-        // TODO: More robust solution to handle all letters ?
-        expr2 = expr2.replace(/([abcxyz])([abcxyz])/g, "$1*$2");
+        expr2 = expr2.replace(/([a-zA-Z])([a-zA-Z])/g, "$1*$2");
+        expr2 = expr2.replace(/([a-zA-Z])([a-zA-Z])/g, "$1*$2");
 
-        // Restore operation auto formating (prevent adding the mutliplcation star)
-        // TODO: Accept list of functions
-        let fnToken = ['sin', 'cos', 'tan']
-        for (let token of fnToken) {
-            expr2 = expr2.replace(new RegExp(token + '\\*', 'g'), token);
+        // Restore operation auto formatting (prevent adding the multiplication star)
+        let exprAsArray = expr2.split('@')
+
+        if (exprAsArray.length > 0) {
+            expr2 = ""
+            for (let idx in exprAsArray) {
+            }
+            for (let token of fnToken) {
+                // Remove
+
+                // expr2 = expr2.replace(new RegExp(token + '\\*', 'g'), token);
+            }
         }
 
         return expr2;
@@ -234,7 +374,8 @@ export class Shutingyard {
             tokenType: string = '',
             previousOpStatckLength = 0
 
-        expr = this.Uniformizer(expr);
+        // Normalize the input if required.
+        if (this._uniformize) expr = this.normalize(expr)
 
         let securityLoopLvl1 = 50,
             securityLoopLvl2_default = 50,
@@ -259,17 +400,12 @@ export class Shutingyard {
                         token,
                         tokenType
                     });
-                    // if(previousOpStatckLength == opStack.length && outQueue.length>=2){
-                    //     console.log('opStatckLength', outQueue, opStack.length)
-                    //     outQueue.push('*')
-                    // }
                     break;
                 case 'operation':
                     previousOpStatckLength = opStack.length;
                     //If the token is an operator, o1, then:
                     if (opStack.length > 0) {
                         let opTop = opStack[opStack.length - 1];
-
 
                         securityLoopLvl2 = +securityLoopLvl2_default;
 

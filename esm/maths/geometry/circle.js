@@ -183,9 +183,26 @@ class Circle {
     get developed() {
         return this._cartesian.tex;
     }
-    // TODO: reformat code for better display.
     get display() {
-        return this._cartesian.display;
+        if (this._exists) {
+            let cx, cy;
+            if (this._center.x.isZero()) {
+                cx = 'x^2';
+            }
+            else {
+                cx = `(x${this._center.x.isNegative() ? '+' : '-'}${this._center.x.clone().abs().tex})^2`;
+            }
+            if (this._center.y.isZero()) {
+                cy = 'y^2';
+            }
+            else {
+                cy = `(y${this._center.y.isNegative() ? '+' : '-'}${this._center.y.clone().abs().tex})^2`;
+            }
+            return `${cx}+${cy}=${this._squareRadius.display}`;
+        }
+        else {
+            return `\\text{le cercle n'existe pas.}`;
+        }
     }
     clone() {
         this._center = this._center.clone();

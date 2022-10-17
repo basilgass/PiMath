@@ -280,6 +280,21 @@ class Line {
             parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(this._d.x, this._d.y)}`
         };
     }
+    get display() {
+        // canonical    =>  ax + by + c = 0
+        // mxh          =>  y = -a/b x - c/b
+        // parametric   =>  (xy) = OA + k*d // not relevant in display mode.
+        let canonical = this.equation;
+        // Make sur the first item is positive.
+        if (this._a.isNegative()) {
+            canonical.multiply(-1);
+        }
+        return {
+            canonical: canonical.display,
+            mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.display : 'y=' + new polynom_1.Polynom().parse('x', this.slope, this.height).display,
+            parametric: ""
+        };
+    }
     get a() {
         return this._a;
     }

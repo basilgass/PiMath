@@ -145,6 +145,18 @@ export class NumExp {
                     this._addToStack(stack, Math.tan(a))
                 } else if(element.token === 'sqrt') {
                     this._addToStack(stack, Math.sqrt(a))
+                }else if(element.token ==='nthrt') {
+                    // TODO: support nthrt in num. exp.
+                    let b = stack.pop()
+                    if(a%2===0 && b<0){
+                        this._addToStack(stack, NaN)
+                    }else {
+                        this._addToStack(stack, (b < 0 ? -1 : 1) * Math.pow(Math.abs(b), 1 / a))
+                    }
+                } else if(element.token === 'ln'){
+                    this._addToStack(stack, Math.log(a))
+                } else if(element.token === 'log') {
+                    this._addToStack(stack, Math.log10(a))
                 }
             }
         }

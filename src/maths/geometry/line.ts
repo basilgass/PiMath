@@ -73,6 +73,24 @@ export class Line {
         }
     }
 
+    get display(): { canonical: string, mxh: string, parametric: string } {
+        // canonical    =>  ax + by + c = 0
+        // mxh          =>  y = -a/b x - c/b
+        // parametric   =>  (xy) = OA + k*d // not relevant in display mode.
+
+        let canonical = this.equation;
+        // Make sur the first item is positive.
+        if (this._a.isNegative()) {
+            canonical.multiply(-1);
+        }
+
+        return {
+            canonical: canonical.display,
+            mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.display : 'y=' + new Polynom().parse('x', this.slope, this.height).display,
+            parametric: ""
+        }
+    }
+
     get a(): Fraction {
         return this._a;
     }

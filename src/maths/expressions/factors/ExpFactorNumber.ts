@@ -1,13 +1,37 @@
-import {ExpressionFactor} from "../expressionFactor";
-import {Expression} from "../expression";
+import {Expression, ExpressionFactor} from "../internals";
 
 export class ExpFactorNumber extends ExpressionFactor {
-    constructor(variable: number, power?: number, root?: number) {
-        if (typeof variable !== "number") {
-            throw `The number ${variable} is not a valid value.`
+    private _number: number
+
+    constructor(value: number, power?: number, root?: number) {
+        super(null, power, root);
+
+        if (typeof value !== "number") {
+            throw `The number ${value} is not a valid value.`
         }
 
-        super(variable, power, root);
+        this._number = value
+    }
+
+    get value(): number {
+        return Math.pow(this._number, this.root / this.root)
+    }
+
+    get number(): number {
+        return this._number
+    }
+
+
+    set number(value: number) {
+        this._number = value;
+    }
+
+    makeTeX(): string {
+        return this.texPower(this.texRoot(this._number.toString()))
+    }
+
+    makeDisplay(numberOfFactors?: number, position?: number): string {
+        return this.displayPower(this.displayRoot(this._number.toString()))
     }
 
     derivative(variable: string): Expression {
@@ -18,8 +42,31 @@ export class ExpFactorNumber extends ExpressionFactor {
         return undefined;
     }
 
-    template(): string {
-        // the argument is a string !
-        return this.texPower(this.texRoot(`${this.argument}`))
+    hasVariable(variable?: string): boolean {
+        return false
+    }
+
+    reduce(): ExpressionFactor {
+        // Reduce the power / root value
+        super.reduce()
+
+        if (this.power > 1) {
+            this.number = this.number ** this.power
+            this.power = 1
+        }
+        if (this.power < -1) {
+            this.number = this.number ** (-this.power)
+            this.power = -1
+        }
+
+        if(this.root>1){
+            // Maybe it's a perfect root ?
+            if(Number.isSafeInteger(Math.pow(this.number, 1/this.root))){
+                this.number = Math.pow(this.number, 1/this.root)
+                this.root = 1
+            }
+        }
+
+        return this
     }
 }

@@ -42,6 +42,10 @@ var Random;
         return rndHelpers_1.rndHelpers.randomIntSym(max, allowZero);
     }
     Random.numberSym = numberSym;
+    function prime(max) {
+        return rndHelpers_1.rndHelpers.randomPrime(max);
+    }
+    Random.prime = prime;
     function bool(percent) {
         return rndHelpers_1.rndHelpers.randomBool(percent);
     }
@@ -55,7 +59,7 @@ var Random;
     }
     Random.item = item;
     function shuffle(arr) {
-        rndHelpers_1.rndHelpers.shuffleArray(arr);
+        return rndHelpers_1.rndHelpers.shuffleArray(arr);
     }
     Random.shuffle = shuffle;
 })(Random = exports.Random || (exports.Random = {}));

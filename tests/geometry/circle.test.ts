@@ -60,4 +60,25 @@ describe('Circle', function () {
 
         expect(pts.map(x=>x.x.display + ',' + x.y.display)).to.have.all.members([ '3,0', '3,-8', '7,-4', '-1,-4' ])
     });
+
+    it('should calculate the circle from center and radius', function(){
+        let circle = new Circle("x^2+6x+y^2-8y+12=0")
+
+        console.log(circle.tex)
+    })
+
+    it('should parse a line', function () {
+        let a1 = 133.33333333333331,
+            b1 = 700,
+            a2 = 134.33333333333331,
+            b2 = 700.75
+
+        let A = new Point(a1, a2),
+            B = new Point(b1, b2)
+
+        console.log(A.tex, B.tex)
+
+        let L = new Line(A, B)
+        console.log(L.tex.canonical)
+    });
 });

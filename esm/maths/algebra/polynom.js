@@ -61,7 +61,7 @@ class Polynom {
                         }
                         else if (element.token === '^') {
                             if (b.degree().isStrictlyPositive()) {
-                                console.error('Cannot elevate a polynom with another polynom !');
+                                console.error('Cannot elevate a polynom with another polynom !', a.tex, b.tex);
                             }
                             else {
                                 if (b.monoms[0].coefficient.isRelative()) {
@@ -412,6 +412,23 @@ class Polynom {
         };
         // ------------------------------------------
         // Compare functions
+        this.isReduced = (polynomString) => {
+            // The polynom must be developed to be reduced.
+            if (!this.isDeveloped(polynomString)) {
+                return false;
+            }
+            let P = new Polynom(polynomString);
+            if (P.monoms.length > this.monoms.length) {
+                return false;
+            }
+            // TODO: Not ur the reduced systme checking is working properly !
+            for (let m of P.monoms) {
+                if (!m.coefficient.isReduced()) {
+                    return false;
+                }
+            }
+            return false;
+        };
         this.isDeveloped = (polynomString) => {
             let P;
             // There is at least one parenthese - it is not developed.
@@ -557,82 +574,86 @@ class Polynom {
          * @param maxValue Defines the greatest value to search to (default is 20).
          */
         this.factorize = (letter) => {
-            if (this.dirty_factors) {
-                let factors = [];
-                let P = this.clone().reorder();
-                // Extract the common monom
-                // 2x^3+6x^2 => 2x^2
-                let M = P.commonMonom();
-                if (!M.isOne()) {
-                    let tempPolynom = new Polynom(M);
-                    factors = [tempPolynom.clone()];
-                    P = P.euclidian(tempPolynom).quotient;
-                }
-                // Main loop
-                let securityLoop = P.degree().clone().multiply(2).value, maxDegree = 1;
-                while (securityLoop >= 0) {
-                    securityLoop--;
-                    if (P.monoms.length < 2) {
-                        // The polynom has only one monom => 7x^2
-                        // No need to continue.
-                        if (!P.isOne()) {
-                            factors.push(P.clone());
-                            P.one();
-                        }
-                        break;
-                    }
-                    else if (P.degree(letter).isOne()) {
-                        // The polynom is a first degree polynom => 3x-5
-                        // No need to continue
+            if (!this.dirty_factors) {
+                return this._factors;
+            }
+            let factors = [];
+            let P = this.clone().reorder();
+            // Extract the common monom
+            // 2x^3+6x^2 => 2x^2
+            let M = P.commonMonom();
+            // If the polynom starts with a negative monom, factorize it.
+            if (P.monomByDegree().coefficient.isStrictlyNegative() && M.coefficient.isStrictlyPositive()) {
+                M.opposed();
+            }
+            if (!M.isOne()) {
+                let tempPolynom = new Polynom(M);
+                factors = [tempPolynom.clone()];
+                P = P.euclidian(tempPolynom).quotient;
+            }
+            // Main loop
+            let securityLoop = P.degree().clone().multiply(2).value, maxDegree = 1;
+            while (securityLoop >= 0) {
+                securityLoop--;
+                if (P.monoms.length < 2) {
+                    // The polynom has only one monom => 7x^2
+                    // No need to continue.
+                    if (!P.isOne()) {
                         factors.push(P.clone());
                         P.one();
-                        break;
                     }
-                    else {
-                        // Create the list of all "potential" polynom dividers.
-                        let allDividers = this._getAllPotentialFactors(P, maxDegree, letter);
-                        maxDegree = P.degree(letter).value;
-                        // Actually: 100ms
-                        while (allDividers.length > 0) {
-                            let div = allDividers[0];
-                            if (!P.isDividableBy(div)) {
-                                // Not dividable. Remove it from the list
-                                allDividers.shift();
-                            }
-                            else {
-                                // It's dividable - so make the division
-                                let result = P.euclidian(div);
-                                // Add the factor
-                                factors.push(div);
-                                // As it's dividable, get the quotient.
-                                P = result.quotient.clone();
-                                // filter all dividers that are no more suitable.
-                                allDividers = allDividers.filter(x => {
-                                    let pX = P.monoms[0], pC = P.monoms[P.monoms.length - 1], dX = x.monoms[0],
-                                        dC = x.monoms[x.monoms.length - 1];
-                                    // Check last item (degree zero)
-                                    if (!pC.isDivisible(dC)) {
-                                        return false;
-                                    }
-                                    // Check the first item (degree max)
-                                    if (!pX.isDivisible(dX)) {
-                                        return false;
-                                    }
-                                    return true;
-                                });
-                            }
+                    break;
+                }
+                else if (P.degree(letter).isOne()) {
+                    // The polynom is a first degree polynom => 3x-5
+                    // No need to continue
+                    factors.push(P.clone());
+                    P.one();
+                    break;
+                }
+                else {
+                    // Create the list of all "potential" polynom dividers.
+                    let allDividers = this._getAllPotentialFactors(P, maxDegree, letter);
+                    maxDegree = P.degree(letter).value;
+                    // Actually: 100ms
+                    while (allDividers.length > 0) {
+                        let div = allDividers[0];
+                        if (!P.isDividableBy(div)) {
+                            // Not dividable. Remove it from the list
+                            allDividers.shift();
+                        }
+                        else {
+                            // It's dividable - so make the division
+                            let result = P.euclidian(div);
+                            // Add the factor
+                            factors.push(div);
+                            // As it's dividable, get the quotient.
+                            P = result.quotient.clone();
+                            // filter all dividers that are no more suitable.
+                            allDividers = allDividers.filter(x => {
+                                let pX = P.monoms[0], pC = P.monoms[P.monoms.length - 1], dX = x.monoms[0], dC = x.monoms[x.monoms.length - 1];
+                                // Check last item (degree zero)
+                                if (!pC.isDivisible(dC)) {
+                                    return false;
+                                }
+                                // Check the first item (degree max)
+                                if (!pX.isDivisible(dX)) {
+                                    return false;
+                                }
+                                return true;
+                            });
                         }
                     }
                 }
-                // Maybe there is still something in the Polynom (not everything was possible to factorize)
-                if (!P.isOne()) {
-                    factors.push(P.clone());
-                }
-                // Save the factors
-                this._factors = factors;
-                // The factors list is no more dirty
-                this.dirty_factors = false;
             }
+            // Maybe there is still something in the Polynom (not everything was possible to factorize)
+            if (!P.isOne()) {
+                factors.push(P.clone());
+            }
+            // Save the factors
+            this._factors = factors;
+            // The factors list is no more dirty
+            this.dirty_factors = false;
             return this._factors;
         };
         this.isDividableBy = (div) => {
@@ -1017,19 +1038,67 @@ class Polynom {
     }
     get texFactors() {
         this.factorize();
-        if (this.factors.length === 0) {
+        if (this.factors.length <= 1) {
             return this.tex;
         }
-        let tex = '';
+        // Build an array of texFactors with the number of similar items.
+        let factorsCount = {};
         for (let f of this.factors) {
-            if (f.monoms.length > 1) {
-                tex += `(${f.tex})`;
+            if (factorsCount[f.tex] !== undefined) {
+                factorsCount[f.tex].degree++;
             }
             else {
-                tex = f.tex + tex;
+                factorsCount[f.tex] = {
+                    degree: 1,
+                    factor: f
+                };
+            }
+        }
+        // First round to put the 'monom' first
+        let simpleFactor = new Polynom().one();
+        for (let item of Object.values(factorsCount).filter(item => item.factor.monoms.length === 1)) {
+            simpleFactor.multiply(item.factor);
+        }
+        let tex = simpleFactor.isOne() ? '' : simpleFactor.tex;
+        // Loop through all factors that contains at least 2 monoms.
+        for (let item of Object.values(factorsCount).filter(item => item.factor.monoms.length > 1)) {
+            if (item.factor.length > 1) {
+                tex += `\\left( ${item.factor.tex} \\right)${item.degree > 1 ? '^{ ' + item.degree + ' }' : ''}`;
             }
         }
         return tex;
+    }
+    get displayFactors() {
+        this.factorize();
+        if (this.factors.length <= 1) {
+            return this.display;
+        }
+        // Build an array of texFactors with the number of similar items.
+        let factorsCount = {};
+        for (let f of this.factors) {
+            if (factorsCount[f.display] !== undefined) {
+                factorsCount[f.display].degree++;
+            }
+            else {
+                factorsCount[f.display] = {
+                    degree: 1,
+                    factor: f
+                };
+            }
+        }
+        // First round to put the 'monom' first
+        let simpleFactor = new Polynom().one();
+        for (let item of Object.values(factorsCount).filter(item => item.factor.monoms.length === 1)) {
+            simpleFactor.multiply(item.factor);
+        }
+        let display = simpleFactor.isOne() ? '' : simpleFactor.display;
+        // Loop through all factors that contains at least 2 monoms.
+        for (let item of Object.values(factorsCount).filter(item => item.factor.monoms.length > 1)) {
+            if (item.factor.length > 1) {
+                display += `(${item.factor.display})${item.degree > 1 ? '^(' + item.degree + ')' : ''}`;
+            }
+        }
+        return display;
     }
     get length() {
         // TODO: Must reduce the monoms list to remove the zero coefficient.
@@ -1077,7 +1146,7 @@ class Polynom {
     _parseString(inputStr, ...values) {
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;
-            this._rawString = inputStr;
+            this._rawString = inputStr.trim().replaceAll(' ', '');
             // Parse the polynom using the shutting yard algorithm
             if (inputStr !== '' && !isNaN(Number(inputStr))) {
                 this.empty();

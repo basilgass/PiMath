@@ -1,29 +1,36 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExpFactorVariable = void 0;
-const expressionFactor_1 = require("../expressionFactor");
-
-class ExpFactorVariable extends expressionFactor_1.ExpressionFactor {
-    constructor(variable, power, root) {
-        if (typeof variable !== "string") {
-            throw `The variable ${variable} is not a valid value.`;
+const internals_1 = require("../internals");
+class ExpFactorVariable extends internals_1.ExpressionFactor {
+    constructor(value, power, root) {
+        super(null, power, root);
+        if (typeof value !== "string") {
+            throw `The variable ${value} is not a valid value.`;
         }
-        super(variable, power, root);
+        this._variable = value;
     }
-
+    get variable() {
+        return this._variable;
+    }
+    set variable(value) {
+        this._variable = value;
+    }
+    makeTeX() {
+        return this.texPower(this.texRoot(this._variable));
+    }
+    makeDisplay(numberOfFactors, position) {
+        return this.displayPower(this.displayRoot(this._variable));
+    }
     derivative(variable) {
         return undefined;
     }
-
     integrate(variable) {
         return undefined;
     }
-
-    template() {
-        // the argument is a string !
-        return this.texPower(this.texRoot(`${this.argument}`));
+    hasVariable(variable) {
+        return this._variable === variable;
     }
 }
-
 exports.ExpFactorVariable = ExpFactorVariable;
 //# sourceMappingURL=ExpFactorVariable.js.map

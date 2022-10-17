@@ -33,4 +33,26 @@ describe('Shuting yard', () => { // the tests container
 		expect(SY1.rpn.map(x=>x.token)).to.have.all.members(['A', 'B', '|', 'C', '&'])
 		expect(SY2.rpn.map(x=>x.token)).to.have.all.members(['A', 'B', '-', 'C', '!', '&'])
 	})
+
+    it('should uniformize the expression', ()=>{
+        // const SY1: Shutingyard = new Shutingyard(ShutingyardMode.POLYNOM).parse('3xx^2(x+5)')
+        // expect(SY1.rpn.map(x=>x.token)).to.have.all.members([
+        //     '3', 'x', '*', 'x',
+        //     '2', '^', '*', 'x',
+        //     '5', '+', '*'
+        // ])
+        //
+        // const SY2: Shutingyard = new Shutingyard(ShutingyardMode.EXPRESSION).parse('3xysqrt(x-b)-ab')
+        // expect(SY2.rpn.map(x=>x.token)).to.have.all.members([
+        //     '3', 'x',    '*',
+        //     'y', 'x',    'b',
+        //     '-', 'sqrt', '*',
+        //     'a', 'b',    '*',
+        //     '-'
+        // ])
+
+        console.log(new Shutingyard(ShutingyardMode.EXPRESSION).normalize('3x(x-5)^(2(x+7))'))
+        console.log(new Shutingyard(ShutingyardMode.EXPRESSION).normalize('sin(cos(3pi-5))+sqrt(e-sin(3pi/2))'))
+        console.log(new Shutingyard(ShutingyardMode.EXPRESSION).normalize('sin(cos(3picos(3pi)-5))+sqrt(e-sin(3pi/2))'))
+    })
 });

@@ -31,6 +31,11 @@ export declare class Line {
         mxh: string;
         parametric: string;
     };
+    get display(): {
+        canonical: string;
+        mxh: string;
+        parametric: string;
+    };
     get a(): Fraction;
     set a(value: Fraction);
     get b(): Fraction;

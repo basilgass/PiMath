@@ -1,6 +1,8 @@
 import {expect} from "chai";
 import {Fraction} from "../../src/maths/coefficients/fraction";
 import {describe} from "mocha";
+import {Random} from "../../src/maths/randomization/random";
+import exp = require("constants");
 
 describe('Fraction tests', () => { // the tests container
 
@@ -35,7 +37,17 @@ describe('Fraction tests', () => { // the tests container
         expect(Q.isReduced()).to.be.false
     })
 
+    it('Should parse a number with lots of decimals', ()=>{
+        let A = 3.45,
+            B = 3.333333333333322,
+            C = 5.314171717171717
 
+        let FA = new Fraction(A),
+            FB = new Fraction(B),
+            FC = new Fraction(C)
+
+        console.log(FA.tex, FB.tex, FC.tex)
+    })
 })
 
 describe("Fraction static functions", ()=>{
@@ -75,6 +87,17 @@ describe("Fraction static functions", ()=>{
 
         expect(Fraction.average(...list).tex).to.be.equal('\\frac{ 19 }{ 10 }')
     })
+
+    it('should multiply and not reduce', function () {
+        let list = [
+            new Fraction('1/2'),
+            new Fraction('4/3'),
+            2.5,
+            3
+        ]
+
+        console.log(new Fraction().xMultiply(...list))
+    });
 })
 
 describe("Evaluate fraction", () => {
@@ -89,7 +112,20 @@ describe("Evaluate fraction", () => {
         let G = new Fraction('1/7')
         expect(G.isApproximative()).to.be.false
         expect(G.isExact()).to.be.true
+    });
+})
 
-        console.log(G.tex, G.value)
+describe('Generate function', ()=>{
+    it('should generate a non natural fraction', function () {
+        let F, result = true
+
+        for(let i=0; i<100; i++){
+            F  = Random.fraction()
+            if(!F.isRelative()){
+                result = false
+                break
+            }
+        }
+        expect(F.isNatural()).to.be.false;
     });
 })

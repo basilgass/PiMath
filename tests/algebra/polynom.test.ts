@@ -5,6 +5,7 @@ import {Polynom} from "../../src/maths/algebra/polynom";
 import {Fraction} from "../../src/maths/coefficients/fraction";
 import exp = require("constants");
 
+
 describe('Polynom tests', () => {
     it('Parse polynom', () => {
         const options = new Polynom('2x(x+3)^2(x-1)');
@@ -86,14 +87,23 @@ describe('Polynom tests', () => {
         let P = new Polynom('x^6-16x^5-58x^4+1592x^3-1207x^2-37576x+94864')
 
         P.factorize()
-        expect(P.factors.map(x=>x.tex)).to.have.all.members([ 'x-4', 'x-4', 'x+7', 'x+7', 'x-11', 'x-11' ])
+        expect(P.factors.map(x => x.tex)).to.have.all.members(['x-4', 'x-4', 'x+7', 'x+7', 'x-11', 'x-11'])
+    });
+
+    it('should factorize and regroup', function () {
+        let P = new Polynom('7x(x-3)(x+5)(x^2-9)3x')
+        P.factorize()
+        expect(P.texFactors).to.be.equal('21x^{2}\\left( x+3 \\right)\\left( x-3 \\right)^{ 2 }\\left( x+5 \\right)')
+
+        const P2 = new Polynom('-2x^3+18x')
+        P2.factorize()
+        expect(P2.texFactors).to.be.equal('-2x\\left( x+3 \\right)\\left( x-3 \\right)')
     });
 })
 
 describe('Polynom parsing with rational power', () => {
     it('should parse with rational powers', () => {
         const P = new Polynom('3x^(2/3)-5x+5/3');
-
         expect(P.tex).to.be.equal('3x^{\\tfrac{ 2 }{ 3 }}-5x+\\frac{ 5 }{ 3 }')
     })
 })

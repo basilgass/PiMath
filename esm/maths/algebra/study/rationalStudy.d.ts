@@ -13,24 +13,14 @@
  * ddx              : dérivée seconde
  * variations       : variation table + tex output  using tkz-tab
  */
-import {ASYMPTOTE_POSITION, IAsymptote, ITableOfSigns, IZero, Study, StudyableFunction} from "../study";
-import {Rational} from "../rational";
-
+import { IAsymptote, ITableOfSigns, IZero, Study, StudyableFunction } from "../study";
 export declare class RationalStudy extends Study {
     constructor(fx: StudyableFunction);
-
     makeZeroes(): IZero[];
-
     makeSigns(): ITableOfSigns;
-
     makeAsymptotes(): IAsymptote[];
-
-    _getHorizontalAsymptoteRelativePositon(deltaX: Rational, delta?: number): ASYMPTOTE_POSITION[];
-
     makeDerivative(): ITableOfSigns;
-
     makeVariation(): ITableOfSigns;
-
     private _getZeroes;
     private _getSigns;
 }

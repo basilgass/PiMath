@@ -1,11 +1,10 @@
 /**
  * Polynom module contains everything necessary to handle polynoms.*
  */
-import {literalType, Monom} from './monom';
-import {Token} from '../shutingyard';
-import {Fraction} from "../coefficients/fraction";
-import {ISolution} from "./equation";
-
+import { literalType, Monom } from './monom';
+import { Token } from '../shutingyard';
+import { Fraction } from "../coefficients/fraction";
+import { ISolution } from "./equation";
 export declare type PolynomParsingType = string | Polynom | number | Fraction | Monom;
 
 export interface IEuclidian {
@@ -51,6 +50,7 @@ export declare class Polynom {
     set factors(value: Polynom[]);
     get texString(): string;
     get texFactors(): string;
+    get displayFactors(): string;
     get length(): number;
     get display(): string;
     get raw(): string;
@@ -102,6 +102,7 @@ export declare class Polynom {
     isSameAs: (P: Polynom) => boolean;
     isOpposedAt: (P: Polynom) => boolean;
     isFactorized: (polynomString: string) => boolean;
+    isReduced: (polynomString: string) => Boolean;
     isDeveloped: (polynomString: string) => Boolean;
     reduce: () => Polynom;
     reorder: (letter?: string) => Polynom;

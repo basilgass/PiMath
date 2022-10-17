@@ -1,28 +1,22 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExpFactorExponential = void 0;
-const expressionFactor_1 = require("../expressionFactor");
-
-class ExpFactorExponential extends expressionFactor_1.ExpressionFactor {
+const internals_1 = require("../internals");
+class ExpFactorExponential extends internals_1.ExpressionFactor {
     derivative(variable) {
         return undefined;
     }
-
     integrate(variable) {
         return undefined;
     }
-
-    template() {
-        let tex = `\\text{e}^{@}`;
-        // The power is different from one
-        if (this.power !== 1 && this.power !== -1) {
-            tex += `^{${this.power}}`;
-        }
-        // The root value is two or greater
-        tex = this.texRoot(tex);
-        return tex;
+    makeTeX() {
+        let tex = `\\text{e}^{ ${this.argument.tex} }`;
+        return this.texPowerAndRoot(tex);
+    }
+    makeDisplay(numberOfFactors, position) {
+        let display = `e^( ${this.argument.tex} )`;
+        return this.displayPowerAndRoot(display);
     }
 }
-
 exports.ExpFactorExponential = ExpFactorExponential;
 //# sourceMappingURL=ExpFactorExponential.js.map

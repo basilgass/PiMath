@@ -1,12 +1,14 @@
-import {ExpressionFactor} from "../expressionFactor";
-import {Expression} from "../expression";
-
+import { Expression, ExpressionFactor } from "../internals";
 export declare class ExpFactorNumber extends ExpressionFactor {
-    constructor(variable: number, power?: number, root?: number);
-
+    private _number;
+    constructor(value: number, power?: number, root?: number);
+    get value(): number;
+    get number(): number;
+    set number(value: number);
+    makeTeX(): string;
+    makeDisplay(numberOfFactors?: number, position?: number): string;
     derivative(variable: string): Expression;
-
     integrate(variable: string): Expression;
-
-    template(): string;
+    hasVariable(variable?: string): boolean;
+    reduce(): ExpressionFactor;
 }

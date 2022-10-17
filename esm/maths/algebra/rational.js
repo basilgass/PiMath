@@ -46,6 +46,11 @@ class Rational {
             this._denominator = D.clone().pow(2);
             return this;
         };
+        this.factorize = (letter) => {
+            this._numerator.factorize(letter);
+            this._denominator.factorize(letter);
+            return this;
+        };
         this.simplify = (P) => {
             let NumeratorEuclidien = this._numerator.euclidian(P);
             if (!NumeratorEuclidien.reminder.isZero()) {
@@ -91,12 +96,13 @@ class Rational {
         // TODO : where and how is used limits ?
         this.limits = (value, offset, letter) => {
             if (value === Infinity || value === -Infinity) {
-                let {quotient, reminder} = this._numerator.clone().euclidian(this._denominator);
+                let { quotient, reminder } = this._numerator.clone().euclidian(this._denominator);
                 // quotient is positive => it will be infinite.
                 if (quotient.degree(letter).isStrictlyPositive()) {
                     return value === Infinity ? quotient.limitToInfinity(letter) : quotient.limitToNegativeInfinity(letter);
                     // return quotient.monomByDegree(undefined, letter).coefficient.sign()===1?(new Fraction()).infinite():(new Fraction()).infinite().opposed()
-                } else {
+                }
+                else {
                     return quotient.monomByDegree(undefined, letter).coefficient;
                 }
             }
@@ -141,16 +147,20 @@ class Rational {
         };
         if (numerator instanceof polynom_1.Polynom) {
             this._numerator = numerator.clone();
-        } else if (typeof numerator === 'string') {
+        }
+        else if (typeof numerator === 'string') {
             this._numerator = new polynom_1.Polynom(numerator);
-        } else {
+        }
+        else {
             this._numerator = new polynom_1.Polynom();
         }
         if (denominator instanceof polynom_1.Polynom) {
             this._denominator = denominator.clone();
-        } else if (typeof denominator === 'string') {
+        }
+        else if (typeof denominator === 'string') {
             this._denominator = new polynom_1.Polynom(denominator);
-        } else {
+        }
+        else {
             this._denominator = new polynom_1.Polynom();
         }
     }

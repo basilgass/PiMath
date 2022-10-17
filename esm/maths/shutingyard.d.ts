@@ -17,6 +17,7 @@ export declare enum ShutingyardType {
     MONOM = "monom"
 }
 export declare enum ShutingyardMode {
+    EXPRESSION = "expression",
     POLYNOM = "polynom",
     SET = "set",
     NUMERIC = "numeric"
@@ -27,13 +28,14 @@ export declare type Token = {
 };
 export declare class Shutingyard {
     readonly _mode: ShutingyardMode;
+    private _rpn;
     private _tokenConfig;
     private _tokenConstant;
     private _tokenKeys;
     private _uniformize;
     constructor(mode?: ShutingyardMode);
-    private _rpn;
     get rpn(): Token[];
+    get rpnToken(): string[];
     /**
      * Determin if the token is a defined operation
      * Defined operations: + - * / ^ sin cos tan
@@ -46,6 +48,7 @@ export declare class Shutingyard {
      * @param start (number) CUrrent position in the expr string.
      */
     NextToken(expr: string, start: number): [string, number, string];
+    normalize(expr: string): string;
     /**
      * Sanitize an expression by adding missing common operation (multiplication between parentheseses)
      * @param expr

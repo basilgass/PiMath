@@ -434,10 +434,10 @@ class Equation {
                 else {
                     // Must handle the case if the m1 monom is negative.
                     if ((this.isGreater() && m1.sign() === 1) || (!this.isGreater() && m1.sign() === -1)) {
-                        s = `\\left${this.isAlsoEqual() ? '\\[' : '\\]'}${v};+\\infty\\right\\[`;
+                        s = `\\left${this.isAlsoEqual() ? '[' : ']'}${v.tex};+\\infty\\right[`;
                     }
                     else {
-                        s = `\\left\\]-\\infty;${v} \\right\\${this.isAlsoEqual() ? '\\]' : '\\['}`;
+                        s = `\\left]-\\infty;${v.tex} \\right${this.isAlsoEqual() ? ']' : '['}`;
                     }
                 }
                 this._solutions = [{
@@ -475,70 +475,85 @@ class Equation {
                         // -b +- coeff\sqrt{radical}
                         // -------------------------
                         //           2a
-                        let gcd = numeric_1.Numeric.gcd(b, 2 * a, nthDelta.coefficient);
+                        let gcd = numeric_1.Numeric.gcd(b, 2 * a, nthDelta.coefficient), am = a / gcd, bm = b / gcd;
                         nthDelta.coefficient = nthDelta.coefficient / gcd;
-                        // TODO: Can i delete the next line ?
-                        // let deltaC = nthDelta.coefficient, deltaR = nthDelta.radical;
-                        if (b !== 0) {
-                            if (2 * a / gcd === 1) {
-                                this._solutions = [
-                                    {
-                                        tex: `${-b / gcd} - ${nthDelta.tex}`,
-                                        value: realX1,
-                                        exact: false // TODO: implement exact value with nthroot
-                                    },
-                                    {
-                                        tex: `${-b / gcd} + ${nthDelta.tex}`,
-                                        value: realX2,
-                                        exact: false
-                                    },
-                                ];
-                            }
-                            else {
-                                this._solutions = [
-                                    {
-                                        tex: `\\frac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                                        value: realX1,
-                                        exact: false
-                                    },
-                                    {
-                                        tex: `\\frac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                                        value: realX2,
-                                        exact: false
-                                    },
-                                ];
-                            }
+                        if (a < 0) {
+                            am = -am;
+                            bm = -bm;
                         }
-                        else {
-                            if (2 * a / gcd === 1) {
-                                this._solutions = [
-                                    {
-                                        tex: `- ${nthDelta.tex}`,
-                                        value: realX1,
-                                        exact: false
-                                    },
-                                    {
-                                        tex: `${nthDelta.tex}`,
-                                        value: realX2,
-                                        exact: false
-                                    },
-                                ];
-                            }
-                            else {
-                                this._solutions = [
-                                    {
-                                        tex: `\\frac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                                        value: realX1,
-                                        exact: false
-                                    },
-                                    {
-                                        tex: `\\frac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                                        value: realX2,
-                                        exact: false
-                                    },
-                                ];
-                            }
+                        let tex1 = "", tex2 = "";
+                        tex1 = `${bm !== 0 ? ((-bm) + ' - ') : ''}${nthDelta.tex}`;
+                        tex2 = `${bm !== 0 ? ((-bm) + ' + ') : ''}${nthDelta.tex}`;
+                        if (am !== 1) {
+                            tex1 = `\\frac{ ${tex1} }{ ${2 * am} }`;
+                            tex2 = `\\frac{ ${tex2} }{ ${2 * am} }`;
                         }
+                        this._solutions = [
+                            {
+                                tex: tex1, value: realX1, exact: false
+                            },
+                            {
+                                tex: tex2, value: realX2, exact: false
+                            },
+                        ];
+                        // if (b !== 0) {
+                        //     if (2 * a / gcd === 1) {
+                        //         this._solutions = [
+                        //             {
+                        //                 tex: `${-b / gcd} - ${nthDelta.tex}`,
+                        //                 value: realX1,
+                        //                 exact: false // TODO: implement exact value with nthroot
+                        //             },
+                        //             {
+                        //                 tex: `${-b / gcd} + ${nthDelta.tex}`,
+                        //                 value: realX2,
+                        //                 exact: false
+                        //             },
+                        //
+                        //         ]
+                        //     } else {
+                        //         this._solutions = [
+                        //             {
+                        //                 tex: `\\frac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                        //                 value: realX1,
+                        //                 exact: false
+                        //             },
+                        //             {
+                        //                 tex: `\\frac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                        //                 value: realX2,
+                        //                 exact: false
+                        //             },
+                        //         ]
+                        //     }
+                        // } else {
+                        //     if (2 * a / gcd === 1) {
+                        //         this._solutions = [
+                        //             {
+                        //                 tex: `- ${nthDelta.tex}`,
+                        //                 value: realX1,
+                        //                 exact: false
+                        //             },
+                        //             {
+                        //                 tex: `${nthDelta.tex}`,
+                        //                 value: realX2,
+                        //                 exact: false
+                        //             },
+                        //         ]
+                        //     } else {
+                        //         this._solutions = [
+                        //             {
+                        //                 tex: `\\frac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                        //                 value: realX1,
+                        //                 exact: false
+                        //             },
+                        //             {
+                        //                 tex: `\\frac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
+                        //                 value: realX2,
+                        //                 exact: false
+                        //             },
+                        //         ]
+                        //     }
+                        // }
                     }
                     else {
                         // -b +- d / 2a
@@ -1685,26 +1700,6 @@ class Monom {
             }
             return r;
         };
-        this.evaluateAsNumeric = (values) => {
-            let r = this.coefficient.value;
-            if (typeof values === 'number') {
-                let tmpValues = {};
-                tmpValues[this.variables[0]] = values;
-                return this.evaluateAsNumeric(tmpValues);
-            }
-            if (typeof values === 'object') {
-                if (this.variables.length === 0) {
-                    return this.coefficient.value;
-                }
-                for (let L in this._literal) {
-                    if (values[L] === undefined) {
-                        return 0;
-                    }
-                    r *= values[L] ** (this._literal[L].value);
-                }
-            }
-            return r;
-        };
         /**
          * Derivative the monom
          * @param letter
@@ -2211,7 +2206,7 @@ class Polynom {
                         }
                         else if (element.token === '^') {
                             if (b.degree().isStrictlyPositive()) {
-                                console.error('Cannot elevate a polynom with another polynom !');
+                                console.error('Cannot elevate a polynom with another polynom !', a.tex, b.tex);
                             }
                             else {
                                 if (b.monoms[0].coefficient.isRelative()) {
@@ -2562,6 +2557,23 @@ class Polynom {
         };
         // ------------------------------------------
         // Compare functions
+        this.isReduced = (polynomString) => {
+            // The polynom must be developed to be reduced.
+            if (!this.isDeveloped(polynomString)) {
+                return false;
+            }
+            let P = new Polynom(polynomString);
+            if (P.monoms.length > this.monoms.length) {
+                return false;
+            }
+            // TODO: Not ur the reduced systme checking is working properly !
+            for (let m of P.monoms) {
+                if (!m.coefficient.isReduced()) {
+                    return false;
+                }
+            }
+            return false;
+        };
         this.isDeveloped = (polynomString) => {
             let P;
             // There is at least one parenthese - it is not developed.
@@ -2668,13 +2680,6 @@ class Polynom {
             });
             return r;
         };
-        this.evaluateAsNumeric = (values) => {
-            let r = 0;
-            this._monoms.forEach(monom => {
-                r += monom.evaluateAsNumeric(values);
-            });
-            return r;
-        };
         this.derivative = (letter) => {
             let dP = new Polynom();
             for (let m of this._monoms) {
@@ -2707,81 +2712,86 @@ class Polynom {
          * @param maxValue Defines the greatest value to search to (default is 20).
          */
         this.factorize = (letter) => {
-            if (this.dirty_factors) {
-                let factors = [];
-                let P = this.clone().reorder();
-                // Extract the common monom
-                // 2x^3+6x^2 => 2x^2
-                let M = P.commonMonom();
-                if (!M.isOne()) {
-                    let tempPolynom = new Polynom(M);
-                    factors = [tempPolynom.clone()];
-                    P = P.euclidian(tempPolynom).quotient;
-                }
-                // Main loop
-                let securityLoop = P.degree().clone().multiply(2).value, maxDegree = 1;
-                while (securityLoop >= 0) {
-                    securityLoop--;
-                    if (P.monoms.length < 2) {
-                        // The polynom has only one monom => 7x^2
-                        // No need to continue.
-                        if (!P.isOne()) {
-                            factors.push(P.clone());
-                            P.one();
-                        }
-                        break;
-                    }
-                    else if (P.degree(letter).isOne()) {
-                        // The polynom is a first degree polynom => 3x-5
-                        // No need to continue
+            if (!this.dirty_factors) {
+                return this._factors;
+            }
+            let factors = [];
+            let P = this.clone().reorder();
+            // Extract the common monom
+            // 2x^3+6x^2 => 2x^2
+            let M = P.commonMonom();
+            // If the polynom starts with a negative monom, factorize it.
+            if (P.monomByDegree().coefficient.isStrictlyNegative() && M.coefficient.isStrictlyPositive()) {
+                M.opposed();
+            }
+            if (!M.isOne()) {
+                let tempPolynom = new Polynom(M);
+                factors = [tempPolynom.clone()];
+                P = P.euclidian(tempPolynom).quotient;
+            }
+            // Main loop
+            let securityLoop = P.degree().clone().multiply(2).value, maxDegree = 1;
+            while (securityLoop >= 0) {
+                securityLoop--;
+                if (P.monoms.length < 2) {
+                    // The polynom has only one monom => 7x^2
+                    // No need to continue.
+                    if (!P.isOne()) {
                         factors.push(P.clone());
                         P.one();
-                        break;
                     }
-                    else {
-                        // Create the list of all "potential" polynom dividers.
-                        let allDividers = this._getAllPotentialFactors(P, maxDegree, letter);
-                        maxDegree = P.degree(letter).value;
-                        // Actually: 100ms
-                        while (allDividers.length > 0) {
-                            let div = allDividers[0];
-                            if (!P.isDividableBy(div)) {
-                                // Not dividable. Remove it from the list
-                                allDividers.shift();
-                            }
-                            else {
-                                // It's dividable - so make the division
-                                let result = P.euclidian(div);
-                                // Add the factor
-                                factors.push(div);
-                                // As it's dividable, get the quotient.
-                                P = result.quotient.clone();
-                                // filter all dividers that are no more suitable.
-                                allDividers = allDividers.filter(x => {
-                                    let pX = P.monoms[0], pC = P.monoms[P.monoms.length - 1], dX = x.monoms[0], dC = x.monoms[x.monoms.length - 1];
-                                    // Check last item (degree zero)
-                                    if (!pC.isDivisible(dC)) {
-                                        return false;
-                                    }
-                                    // Check the first item (degree max)
-                                    if (!pX.isDivisible(dX)) {
-                                        return false;
-                                    }
-                                    return true;
-                                });
-                            }
+                    break;
+                }
+                else if (P.degree(letter).isOne()) {
+                    // The polynom is a first degree polynom => 3x-5
+                    // No need to continue
+                    factors.push(P.clone());
+                    P.one();
+                    break;
+                }
+                else {
+                    // Create the list of all "potential" polynom dividers.
+                    let allDividers = this._getAllPotentialFactors(P, maxDegree, letter);
+                    maxDegree = P.degree(letter).value;
+                    // Actually: 100ms
+                    while (allDividers.length > 0) {
+                        let div = allDividers[0];
+                        if (!P.isDividableBy(div)) {
+                            // Not dividable. Remove it from the list
+                            allDividers.shift();
+                        }
+                        else {
+                            // It's dividable - so make the division
+                            let result = P.euclidian(div);
+                            // Add the factor
+                            factors.push(div);
+                            // As it's dividable, get the quotient.
+                            P = result.quotient.clone();
+                            // filter all dividers that are no more suitable.
+                            allDividers = allDividers.filter(x => {
+                                let pX = P.monoms[0], pC = P.monoms[P.monoms.length - 1], dX = x.monoms[0], dC = x.monoms[x.monoms.length - 1];
+                                // Check last item (degree zero)
+                                if (!pC.isDivisible(dC)) {
+                                    return false;
+                                }
+                                // Check the first item (degree max)
+                                if (!pX.isDivisible(dX)) {
+                                    return false;
+                                }
+                                return true;
+                            });
                         }
                     }
                 }
-                // Maybe there is still something in the Polynom (not everything was possible to factorize)
-                if (!P.isOne()) {
-                    factors.push(P.clone());
-                }
-                // Save the factors
-                this._factors = factors;
-                // The factors list is no more dirty
-                this.dirty_factors = false;
             }
+            // Maybe there is still something in the Polynom (not everything was possible to factorize)
+            if (!P.isOne()) {
+                factors.push(P.clone());
+            }
+            // Save the factors
+            this._factors = factors;
+            // The factors list is no more dirty
+            this.dirty_factors = false;
             return this._factors;
         };
         this.isDividableBy = (div) => {
@@ -3166,19 +3176,67 @@ class Polynom {
     }
     get texFactors() {
         this.factorize();
-        if (this.factors.length === 0) {
+        if (this.factors.length <= 1) {
             return this.tex;
         }
-        let tex = '';
+        // Build an array of texFactors with the number of similar items.
+        let factorsCount = {};
         for (let f of this.factors) {
-            if (f.monoms.length > 1) {
-                tex += `(${f.tex})`;
+            if (factorsCount[f.tex] !== undefined) {
+                factorsCount[f.tex].degree++;
             }
             else {
-                tex = f.tex + tex;
+                factorsCount[f.tex] = {
+                    degree: 1,
+                    factor: f
+                };
+            }
+        }
+        // First round to put the 'monom' first
+        let simpleFactor = new Polynom().one();
+        for (let item of Object.values(factorsCount).filter(item => item.factor.monoms.length === 1)) {
+            simpleFactor.multiply(item.factor);
+        }
+        let tex = simpleFactor.isOne() ? '' : simpleFactor.tex;
+        // Loop through all factors that contains at least 2 monoms.
+        for (let item of Object.values(factorsCount).filter(item => item.factor.monoms.length > 1)) {
+            if (item.factor.length > 1) {
+                tex += `\\left( ${item.factor.tex} \\right)${item.degree > 1 ? '^{ ' + item.degree + ' }' : ''}`;
             }
         }
         return tex;
+    }
+    get displayFactors() {
+        this.factorize();
+        if (this.factors.length <= 1) {
+            return this.display;
+        }
+        // Build an array of texFactors with the number of similar items.
+        let factorsCount = {};
+        for (let f of this.factors) {
+            if (factorsCount[f.display] !== undefined) {
+                factorsCount[f.display].degree++;
+            }
+            else {
+                factorsCount[f.display] = {
+                    degree: 1,
+                    factor: f
+                };
+            }
+        }
+        // First round to put the 'monom' first
+        let simpleFactor = new Polynom().one();
+        for (let item of Object.values(factorsCount).filter(item => item.factor.monoms.length === 1)) {
+            simpleFactor.multiply(item.factor);
+        }
+        let display = simpleFactor.isOne() ? '' : simpleFactor.display;
+        // Loop through all factors that contains at least 2 monoms.
+        for (let item of Object.values(factorsCount).filter(item => item.factor.monoms.length > 1)) {
+            if (item.factor.length > 1) {
+                display += `(${item.factor.display})${item.degree > 1 ? '^(' + item.degree + ')' : ''}`;
+            }
+        }
+        return display;
     }
     get length() {
         // TODO: Must reduce the monoms list to remove the zero coefficient.
@@ -3226,7 +3284,7 @@ class Polynom {
     _parseString(inputStr, ...values) {
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;
-            this._rawString = inputStr;
+            this._rawString = inputStr.trim().replaceAll(' ', '');
             // Parse the polynom using the shutting yard algorithm
             if (inputStr !== '' && !isNaN(Number(inputStr))) {
                 this.empty();
@@ -3330,6 +3388,11 @@ class Rational {
             this._denominator = D.clone().pow(2);
             return this;
         };
+        this.factorize = (letter) => {
+            this._numerator.factorize(letter);
+            this._denominator.factorize(letter);
+            return this;
+        };
         this.simplify = (P) => {
             let NumeratorEuclidien = this._numerator.euclidian(P);
             if (!NumeratorEuclidien.reminder.isZero()) {
@@ -3418,9 +3481,6 @@ class Rational {
             let N = this._numerator.evaluate(values), D = this._denominator.evaluate(values);
             return N.divide(D);
         };
-        this.evaluateAsNumeric = (values) => {
-            return this._numerator.evaluateAsNumeric(values) / this._denominator.evaluateAsNumeric(values);
-        };
         this.study = () => {
             return new rationalStudy_1.RationalStudy(this);
         };
@@ -3473,7 +3533,7 @@ exports.Rational = Rational;
  * @module Polynom
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE_POSITION = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
+exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
 const fraction_1 = __webpack_require__(506);
 const numexp_1 = __webpack_require__(735);
 var ZEROTYPE;
@@ -3489,13 +3549,6 @@ var ASYMPTOTE;
     ASYMPTOTE["SLOPE"] = "ao";
     ASYMPTOTE["HOLE"] = "hole";
 })(ASYMPTOTE = exports.ASYMPTOTE || (exports.ASYMPTOTE = {}));
-var ASYMPTOTE_POSITION;
-(function (ASYMPTOTE_POSITION) {
-    ASYMPTOTE_POSITION["LT"] = "LT";
-    ASYMPTOTE_POSITION["RT"] = "RT";
-    ASYMPTOTE_POSITION["LB"] = "LB";
-    ASYMPTOTE_POSITION["RB"] = "RB";
-})(ASYMPTOTE_POSITION = exports.ASYMPTOTE_POSITION || (exports.ASYMPTOTE_POSITION = {}));
 var FUNCTION_EXTREMA;
 (function (FUNCTION_EXTREMA) {
     FUNCTION_EXTREMA["MIN"] = "min";
@@ -3507,7 +3560,7 @@ var TABLE_OF_SIGNS;
 (function (TABLE_OF_SIGNS) {
     TABLE_OF_SIGNS["SIGNS"] = "signs";
     TABLE_OF_SIGNS["GROWS"] = "grows";
-    TABLE_OF_SIGNS["VARIATIONS"] = "variations";
+    TABLE_OF_SIGNS["VARIATIONS"] = "variatins";
 })(TABLE_OF_SIGNS = exports.TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = {}));
 /**
  * The study class is a "function study" class that will get:
@@ -3837,7 +3890,8 @@ class RationalStudy extends study_1.Study {
     }
     ;
     makeSigns() {
-        return this._getSigns(this.fx, this.zeroes);
+        let tos = this._getSigns(this.fx, this.zeroes);
+        return tos;
     }
     ;
     makeAsymptotes() {
@@ -3846,8 +3900,8 @@ class RationalStudy extends study_1.Study {
         let asymptotes = [];
         this.zeroes.filter(x => x.type === study_1.ZEROTYPE.DEFENCE).forEach(zero => {
             // Check if it's a hole or an asymptote
+            // TODO: Check for a hole ! Means calculate the limits !
             let Ztype = study_1.ASYMPTOTE.VERTICAL, tex = `x=${zero.tex}`;
-            // Check if it's a hole: the reduced polynom should not be null
             if (zero.exact instanceof fraction_1.Fraction) {
                 if (reduced.denominator.evaluate(zero.exact).isNotZero()) {
                     Ztype = study_1.ASYMPTOTE.HOLE;
@@ -3860,45 +3914,14 @@ class RationalStudy extends study_1.Study {
                     tex = `(${zero.tex};${reduced.evaluate(zero.value).tex})`;
                 }
             }
-            // Get the position before and after the asymptote.
-            const delta = 0.000001;
-            let before = this.fx.evaluateAsNumeric(zero.value - delta), after = this.fx.evaluateAsNumeric(zero.value + delta), position = [], pm = "";
-            if (after < -10000) {
-                position.push(study_1.ASYMPTOTE_POSITION.RB);
-                pm += "m";
-            }
-            else if (after > 10000) {
-                position.push(study_1.ASYMPTOTE_POSITION.RT);
-                pm += "p";
-            }
-            if (before < -10000) {
-                position.push(study_1.ASYMPTOTE_POSITION.LB);
-                pm += "m";
-            }
-            else if (before > 10000) {
-                position.push(study_1.ASYMPTOTE_POSITION.LT);
-                pm += "p";
-            }
-            // Left and right are to infinity
-            // TODO: handle the case were one side of the asymptote isn't infinity (not possible in rational study?!)
-            if (pm === "pp") {
-                pm = "+";
-            }
-            else if (pm === "mm") {
-                pm = "-";
-            }
-            else {
-                pm = `\\${pm}`;
-            }
             asymptotes.push({
                 fx: null,
                 type: Ztype,
                 tex: tex,
                 zero: zero,
-                limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = ${pm}\\infty`,
+                limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = \\pm\\infty`,
                 deltaX: null,
-                tableOfSign: null,
-                position
+                tableOfSign: null
             });
         });
         // Sloped asymptote
@@ -3906,7 +3929,6 @@ class RationalStudy extends study_1.Study {
         if (NDegree.isEqual(DDegree)) {
             let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient), Htex = H.tex;
             let { reminder } = reduced.euclidian(), deltaX = new rational_1.Rational(reminder, reduced.denominator);
-            // Determine the position above or below on the left / right of the asymptote.
             asymptotes.push({
                 fx: new polynom_1.Polynom(H),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
@@ -3914,8 +3936,7 @@ class RationalStudy extends study_1.Study {
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX,
-                tableOfSign: this._getSigns(deltaX),
-                position: this._getHorizontalAsymptoteRelativePositon(deltaX)
+                tableOfSign: this._getSigns(deltaX)
             });
         }
         else if (DDegree.greater(NDegree)) {
@@ -3926,8 +3947,7 @@ class RationalStudy extends study_1.Study {
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${0}`,
                 deltaX: null,
-                tableOfSign: null,
-                position: this._getHorizontalAsymptoteRelativePositon(this.fx)
+                tableOfSign: null
             });
         }
         else if (NDegree.value - 1 === DDegree.value) {
@@ -3940,29 +3960,12 @@ class RationalStudy extends study_1.Study {
                 zero: null,
                 limits: ``,
                 deltaX: new rational_1.Rational(reminder, reduced.denominator),
-                tableOfSign: this._getSigns(deltaX),
-                position: this._getHorizontalAsymptoteRelativePositon(deltaX)
+                tableOfSign: this._getSigns(deltaX)
             });
         }
         return asymptotes;
     }
     ;
-    _getHorizontalAsymptoteRelativePositon(deltaX, delta = 1000000) {
-        let position = [], before = deltaX.evaluateAsNumeric(-delta), after = deltaX.evaluateAsNumeric(delta);
-        if (before >= 0) {
-            position.push(study_1.ASYMPTOTE_POSITION.LT);
-        }
-        else {
-            position.push(study_1.ASYMPTOTE_POSITION.LB);
-        }
-        if (after >= 0) {
-            position.push(study_1.ASYMPTOTE_POSITION.RT);
-        }
-        else {
-            position.push(study_1.ASYMPTOTE_POSITION.RB);
-        }
-        return position;
-    }
     makeDerivative() {
         let dx = this.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
         let result = this.makeGrowsResult(tos);
@@ -4124,7 +4127,9 @@ class Fraction {
                     else {
                         // The given value is a float number
                         // Get the number of decimals after the float sign
-                        let p = (value.toString()).split('.')[1].length;
+                        let [unit, decimal] = (value.toString()).split('.');
+                        let p = decimal ? decimal.length : 0;
+                        // Detect if the decimal part is periodic or not...
                         // Transform the float number in two integer
                         if (denominatorOrPeriodic === undefined) {
                             this._numerator = value * Math.pow(10, p);
@@ -4206,6 +4211,17 @@ class Fraction {
             this._numerator = this._numerator * Q.numerator;
             this._denominator = this._denominator * Q.denominator;
             return this.reduce();
+        };
+        this.xMultiply = (...values) => {
+            // Parse the value.
+            // If it's a fraction, return a clone of it
+            // If it's an integer, return the fraction F/1
+            for (let value of values) {
+                let F = new Fraction(value);
+                this._numerator = this._numerator * F.numerator;
+                this._denominator = this._denominator * F.denominator;
+            }
+            return this;
         };
         this.divide = (F) => {
             let Q = new Fraction(F);
@@ -4467,6 +4483,9 @@ class Fraction {
         else {
             return this.value.toFixed(3);
         }
+    }
+    get texWithSign() {
+        return this.isPositive() ? `+${this.tex}` : this.tex;
     }
     get display() {
         if (this.isExact()) {
@@ -4816,6 +4835,22 @@ class NumExp {
                 }
                 else if (element.token === 'sqrt') {
                     this._addToStack(stack, Math.sqrt(a));
+                }
+                else if (element.token === 'nthrt') {
+                    // TODO: support nthrt in num. exp.
+                    let b = stack.pop();
+                    if (a % 2 === 0 && b < 0) {
+                        this._addToStack(stack, NaN);
+                    }
+                    else {
+                        this._addToStack(stack, (b < 0 ? -1 : 1) * Math.pow(Math.abs(b), 1 / a));
+                    }
+                }
+                else if (element.token === 'ln') {
+                    this._addToStack(stack, Math.log(a));
+                }
+                else if (element.token === 'log') {
+                    this._addToStack(stack, Math.log10(a));
                 }
             }
         }
@@ -5272,9 +5307,26 @@ class Circle {
     get developed() {
         return this._cartesian.tex;
     }
-    // TODO: reformat code for better display.
     get display() {
-        return this._cartesian.display;
+        if (this._exists) {
+            let cx, cy;
+            if (this._center.x.isZero()) {
+                cx = 'x^2';
+            }
+            else {
+                cx = `(x${this._center.x.isNegative() ? '+' : '-'}${this._center.x.clone().abs().tex})^2`;
+            }
+            if (this._center.y.isZero()) {
+                cy = 'y^2';
+            }
+            else {
+                cy = `(y${this._center.y.isNegative() ? '+' : '-'}${this._center.y.clone().abs().tex})^2`;
+            }
+            return `${cx}+${cy}=${this._squareRadius.display}`;
+        }
+        else {
+            return `\\text{le cercle n'existe pas.}`;
+        }
     }
     clone() {
         this._center = this._center.clone();
@@ -5680,6 +5732,21 @@ class Line {
             canonical: canonical.tex,
             mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new polynom_1.Polynom().parse('x', this.slope, this.height).tex,
             parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(this._d.x, this._d.y)}`
+        };
+    }
+    get display() {
+        // canonical    =>  ax + by + c = 0
+        // mxh          =>  y = -a/b x - c/b
+        // parametric   =>  (xy) = OA + k*d // not relevant in display mode.
+        let canonical = this.equation;
+        // Make sur the first item is positive.
+        if (this._a.isNegative()) {
+            canonical.multiply(-1);
+        }
+        return {
+            canonical: canonical.display,
+            mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.display : 'y=' + new polynom_1.Polynom().parse('x', this.slope, this.height).display,
+            parametric: ""
         };
     }
     get a() {
@@ -6451,13 +6518,13 @@ class Numeric {
      * Get the list of the nth first prime numbers.
      * @param nb : number of primes to choose from
      */
-    static prime(nb) {
-        let primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249, 1259, 1277, 1279, 1283, 1289, 1291, 1297, 1301, 1303, 1307, 1319, 1321, 1327, 1361, 1367, 1373, 1381, 1399, 1409, 1423, 1427, 1429, 1433, 1439, 1447, 1451, 1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499, 1511, 1523, 1531, 1543, 1549, 1553, 1559, 1567, 1571, 1579, 1583, 1597, 1601, 1607, 1609, 1613, 1619, 1621, 1627, 1637, 1657, 1663, 1667, 1669, 1693, 1697, 1699, 1709, 1721, 1723, 1733, 1741, 1747, 1753, 1759, 1777, 1783, 1787, 1789, 1801, 1811, 1823, 1831, 1847, 1861, 1867, 1871, 1873, 1877, 1879, 1889, 1901, 1907, 1913, 1931, 1933, 1949, 1951, 1973, 1979, 1987, 1993, 1997, 1999, 2003, 2011, 2017, 2027, 2029, 2039, 2053, 2063, 2069, 2081, 2083, 2087, 2089, 2099, 2111, 2113, 2129, 2131, 2137, 2141, 2143, 2153, 2161, 2179, 2203, 2207, 2213, 2221, 2237, 2239, 2243, 2251, 2267, 2269, 2273, 2281, 2287, 2293, 2297, 2309, 2311, 2333, 2339, 2341, 2347, 2351, 2357, 2371, 2377, 2381, 2383, 2389, 2393, 2399, 2411, 2417, 2423, 2437, 2441, 2447, 2459, 2467, 2473, 2477, 2503, 2521, 2531, 2539, 2543, 2549, 2551, 2557, 2579, 2591, 2593, 2609, 2617, 2621, 2633, 2647, 2657, 2659, 2663, 2671, 2677, 2683, 2687, 2689, 2693, 2699, 2707, 2711, 2713, 2719, 2729, 2731, 2741, 2749, 2753, 2767, 2777, 2789, 2791, 2797, 2801, 2803, 2819, 2833, 2837, 2843, 2851, 2857, 2861, 2879, 2887, 2897, 2903, 2909, 2917, 2927, 2939, 2953, 2957, 2963, 2969, 2971, 2999, 3001, 3011, 3019, 3023, 3037, 3041, 3049, 3061, 3067, 3079, 3083, 3089, 3109, 3119, 3121, 3137, 3163, 3167, 3169, 3181, 3187, 3191, 3203, 3209, 3217, 3221, 3229, 3251, 3253, 3257, 3259, 3271, 3299, 3301, 3307, 3313, 3319, 3323, 3329, 3331, 3343, 3347, 3359, 3361, 3371, 3373, 3389, 3391, 3407, 3413, 3433, 3449, 3457, 3461, 3463, 3467, 3469, 3491, 3499, 3511, 3517, 3527, 3529, 3533, 3539, 3541, 3547, 3557, 3559, 3571, 3581, 3583, 3593, 3607, 3613, 3617, 3623, 3631, 3637, 3643, 3659, 3671, 3673, 3677, 3691, 3697, 3701, 3709, 3719, 3727, 3733, 3739, 3761, 3767, 3769, 3779, 3793, 3797, 3803, 3821, 3823, 3833, 3847, 3851, 3853, 3863, 3877, 3881, 3889, 3907, 3911, 3917, 3919, 3923, 3929, 3931, 3943, 3947, 3967, 3989, 4001, 4003, 4007, 4013, 4019, 4021, 4027, 4049, 4051, 4057, 4073, 4079, 4091, 4093, 4099, 4111, 4127, 4129, 4133, 4139, 4153, 4157, 4159, 4177, 4201, 4211, 4217, 4219, 4229, 4231, 4241, 4243, 4253, 4259, 4261, 4271, 4273, 4283, 4289, 4297, 4327, 4337, 4339, 4349, 4357, 4363, 4373, 4391, 4397, 4409, 4421, 4423, 4441, 4447, 4451, 4457, 4463, 4481, 4483, 4493, 4507, 4513, 4517, 4519, 4523, 4547, 4549, 4561, 4567, 4583, 4591, 4597, 4603, 4621, 4637, 4639, 4643, 4649, 4651, 4657, 4663, 4673, 4679, 4691, 4703, 4721, 4723, 4729, 4733, 4751, 4759, 4783, 4787, 4789, 4793, 4799, 4801, 4813, 4817, 4831, 4861, 4871, 4877, 4889, 4903, 4909, 4919, 4931, 4933, 4937, 4943, 4951, 4957, 4967, 4969, 4973, 4987, 4993, 4999, 5003, 5009, 5011, 5021, 5023, 5039, 5051, 5059, 5077, 5081, 5087, 5099, 5101, 5107, 5113, 5119, 5147, 5153, 5167, 5171, 5179, 5189, 5197, 5209, 5227, 5231, 5233, 5237, 5261, 5273, 5279, 5281, 5297, 5303, 5309, 5323, 5333, 5347, 5351, 5381, 5387, 5393, 5399, 5407, 5413, 5417, 5419, 5431, 5437, 5441, 5443, 5449, 5471, 5477, 5479, 5483, 5501, 5503, 5507, 5519, 5521, 5527, 5531, 5557, 5563, 5569, 5573, 5581, 5591, 5623, 5639, 5641, 5647, 5651, 5653, 5657, 5659, 5669, 5683, 5689, 5693, 5701, 5711, 5717, 5737, 5741, 5743, 5749, 5779, 5783, 5791, 5801, 5807, 5813, 5821, 5827, 5839, 5843, 5849, 5851, 5857, 5861, 5867, 5869, 5879, 5881, 5897, 5903, 5923, 5927, 5939, 5953, 5981, 5987, 6007, 6011, 6029, 6037, 6043, 6047, 6053, 6067, 6073, 6079, 6089, 6091, 6101, 6113, 6121, 6131, 6133, 6143, 6151, 6163, 6173, 6197, 6199, 6203, 6211, 6217, 6221, 6229, 6247, 6257, 6263, 6269, 6271, 6277, 6287, 6299, 6301, 6311, 6317, 6323, 6329, 6337, 6343, 6353, 6359, 6361, 6367, 6373, 6379, 6389, 6397, 6421, 6427, 6449, 6451, 6469, 6473, 6481, 6491, 6521, 6529, 6547, 6551, 6553, 6563, 6569, 6571, 6577, 6581, 6599, 6607, 6619, 6637, 6653, 6659, 6661, 6673, 6679, 6689, 6691, 6701, 6703, 6709, 6719, 6733, 6737, 6761, 6763, 6779, 6781, 6791, 6793, 6803, 6823, 6827, 6829, 6833, 6841, 6857, 6863, 6869, 6871, 6883, 6899, 6907, 6911, 6917, 6947, 6949, 6959, 6961, 6967, 6971, 6977, 6983, 6991, 6997, 7001, 7013, 7019, 7027, 7039, 7043, 7057, 7069, 7079, 7103, 7109, 7121, 7127, 7129, 7151, 7159, 7177, 7187, 7193, 7207, 7211, 7213, 7219, 7229, 7237, 7243, 7247, 7253, 7283, 7297, 7307, 7309, 7321, 7331, 7333, 7349, 7351, 7369, 7393, 7411, 7417, 7433, 7451, 7457, 7459, 7477, 7481, 7487, 7489, 7499, 7507, 7517, 7523, 7529, 7537, 7541, 7547, 7549, 7559, 7561, 7573, 7577, 7583, 7589, 7591, 7603, 7607, 7621, 7639, 7643, 7649, 7669, 7673, 7681, 7687, 7691, 7699, 7703, 7717, 7723, 7727, 7741, 7753, 7757, 7759, 7789, 7793, 7817, 7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919, 7927, 7933, 7937, 7949, 7951, 7963, 7993, 8009, 8011, 8017, 8039, 8053, 8059, 8069, 8081, 8087, 8089, 8093, 8101, 8111, 8117, 8123, 8147, 8161, 8167, 8171, 8179, 8191, 8209, 8219, 8221, 8231, 8233, 8237, 8243, 8263, 8269, 8273, 8287, 8291, 8293, 8297, 8311, 8317, 8329, 8353, 8363, 8369, 8377, 8387, 8389, 8419, 8423, 8429, 8431, 8443, 8447, 8461, 8467, 8501, 8513, 8521, 8527, 8537, 8539, 8543, 8563, 8573, 8581, 8597, 8599, 8609, 8623, 8627, 8629, 8641, 8647, 8663, 8669, 8677, 8681, 8689, 8693, 8699, 8707, 8713, 8719, 8731, 8737, 8741, 8747, 8753, 8761, 8779, 8783, 8803, 8807, 8819, 8821, 8831, 8837, 8839, 8849, 8861, 8863, 8867, 8887, 8893, 8923, 8929, 8933, 8941, 8951, 8963, 8969, 8971, 8999, 9001, 9007, 9011, 9013, 9029, 9041, 9043, 9049, 9059, 9067, 9091, 9103, 9109, 9127, 9133, 9137, 9151, 9157, 9161, 9173, 9181, 9187, 9199, 9203, 9209, 9221, 9227, 9239, 9241, 9257, 9277, 9281, 9283, 9293, 9311, 9319, 9323, 9337, 9341, 9343, 9349, 9371, 9377, 9391, 9397, 9403, 9413, 9419, 9421, 9431, 9433, 9437, 9439, 9461, 9463, 9467, 9473, 9479, 9491, 9497, 9511, 9521, 9533, 9539, 9547, 9551, 9587, 9601, 9613, 9619, 9623, 9629, 9631, 9643, 9649, 9661, 9677, 9679, 9689, 9697, 9719, 9721, 9733, 9739, 9743, 9749, 9767, 9769, 9781, 9787, 9791, 9803, 9811, 9817, 9829, 9833, 9839, 9851, 9857, 9859, 9871, 9883, 9887, 9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973];
+    static primes(nb) {
+        let primesValues = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249, 1259, 1277, 1279, 1283, 1289, 1291, 1297, 1301, 1303, 1307, 1319, 1321, 1327, 1361, 1367, 1373, 1381, 1399, 1409, 1423, 1427, 1429, 1433, 1439, 1447, 1451, 1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499, 1511, 1523, 1531, 1543, 1549, 1553, 1559, 1567, 1571, 1579, 1583, 1597, 1601, 1607, 1609, 1613, 1619, 1621, 1627, 1637, 1657, 1663, 1667, 1669, 1693, 1697, 1699, 1709, 1721, 1723, 1733, 1741, 1747, 1753, 1759, 1777, 1783, 1787, 1789, 1801, 1811, 1823, 1831, 1847, 1861, 1867, 1871, 1873, 1877, 1879, 1889, 1901, 1907, 1913, 1931, 1933, 1949, 1951, 1973, 1979, 1987, 1993, 1997, 1999, 2003, 2011, 2017, 2027, 2029, 2039, 2053, 2063, 2069, 2081, 2083, 2087, 2089, 2099, 2111, 2113, 2129, 2131, 2137, 2141, 2143, 2153, 2161, 2179, 2203, 2207, 2213, 2221, 2237, 2239, 2243, 2251, 2267, 2269, 2273, 2281, 2287, 2293, 2297, 2309, 2311, 2333, 2339, 2341, 2347, 2351, 2357, 2371, 2377, 2381, 2383, 2389, 2393, 2399, 2411, 2417, 2423, 2437, 2441, 2447, 2459, 2467, 2473, 2477, 2503, 2521, 2531, 2539, 2543, 2549, 2551, 2557, 2579, 2591, 2593, 2609, 2617, 2621, 2633, 2647, 2657, 2659, 2663, 2671, 2677, 2683, 2687, 2689, 2693, 2699, 2707, 2711, 2713, 2719, 2729, 2731, 2741, 2749, 2753, 2767, 2777, 2789, 2791, 2797, 2801, 2803, 2819, 2833, 2837, 2843, 2851, 2857, 2861, 2879, 2887, 2897, 2903, 2909, 2917, 2927, 2939, 2953, 2957, 2963, 2969, 2971, 2999, 3001, 3011, 3019, 3023, 3037, 3041, 3049, 3061, 3067, 3079, 3083, 3089, 3109, 3119, 3121, 3137, 3163, 3167, 3169, 3181, 3187, 3191, 3203, 3209, 3217, 3221, 3229, 3251, 3253, 3257, 3259, 3271, 3299, 3301, 3307, 3313, 3319, 3323, 3329, 3331, 3343, 3347, 3359, 3361, 3371, 3373, 3389, 3391, 3407, 3413, 3433, 3449, 3457, 3461, 3463, 3467, 3469, 3491, 3499, 3511, 3517, 3527, 3529, 3533, 3539, 3541, 3547, 3557, 3559, 3571, 3581, 3583, 3593, 3607, 3613, 3617, 3623, 3631, 3637, 3643, 3659, 3671, 3673, 3677, 3691, 3697, 3701, 3709, 3719, 3727, 3733, 3739, 3761, 3767, 3769, 3779, 3793, 3797, 3803, 3821, 3823, 3833, 3847, 3851, 3853, 3863, 3877, 3881, 3889, 3907, 3911, 3917, 3919, 3923, 3929, 3931, 3943, 3947, 3967, 3989, 4001, 4003, 4007, 4013, 4019, 4021, 4027, 4049, 4051, 4057, 4073, 4079, 4091, 4093, 4099, 4111, 4127, 4129, 4133, 4139, 4153, 4157, 4159, 4177, 4201, 4211, 4217, 4219, 4229, 4231, 4241, 4243, 4253, 4259, 4261, 4271, 4273, 4283, 4289, 4297, 4327, 4337, 4339, 4349, 4357, 4363, 4373, 4391, 4397, 4409, 4421, 4423, 4441, 4447, 4451, 4457, 4463, 4481, 4483, 4493, 4507, 4513, 4517, 4519, 4523, 4547, 4549, 4561, 4567, 4583, 4591, 4597, 4603, 4621, 4637, 4639, 4643, 4649, 4651, 4657, 4663, 4673, 4679, 4691, 4703, 4721, 4723, 4729, 4733, 4751, 4759, 4783, 4787, 4789, 4793, 4799, 4801, 4813, 4817, 4831, 4861, 4871, 4877, 4889, 4903, 4909, 4919, 4931, 4933, 4937, 4943, 4951, 4957, 4967, 4969, 4973, 4987, 4993, 4999, 5003, 5009, 5011, 5021, 5023, 5039, 5051, 5059, 5077, 5081, 5087, 5099, 5101, 5107, 5113, 5119, 5147, 5153, 5167, 5171, 5179, 5189, 5197, 5209, 5227, 5231, 5233, 5237, 5261, 5273, 5279, 5281, 5297, 5303, 5309, 5323, 5333, 5347, 5351, 5381, 5387, 5393, 5399, 5407, 5413, 5417, 5419, 5431, 5437, 5441, 5443, 5449, 5471, 5477, 5479, 5483, 5501, 5503, 5507, 5519, 5521, 5527, 5531, 5557, 5563, 5569, 5573, 5581, 5591, 5623, 5639, 5641, 5647, 5651, 5653, 5657, 5659, 5669, 5683, 5689, 5693, 5701, 5711, 5717, 5737, 5741, 5743, 5749, 5779, 5783, 5791, 5801, 5807, 5813, 5821, 5827, 5839, 5843, 5849, 5851, 5857, 5861, 5867, 5869, 5879, 5881, 5897, 5903, 5923, 5927, 5939, 5953, 5981, 5987, 6007, 6011, 6029, 6037, 6043, 6047, 6053, 6067, 6073, 6079, 6089, 6091, 6101, 6113, 6121, 6131, 6133, 6143, 6151, 6163, 6173, 6197, 6199, 6203, 6211, 6217, 6221, 6229, 6247, 6257, 6263, 6269, 6271, 6277, 6287, 6299, 6301, 6311, 6317, 6323, 6329, 6337, 6343, 6353, 6359, 6361, 6367, 6373, 6379, 6389, 6397, 6421, 6427, 6449, 6451, 6469, 6473, 6481, 6491, 6521, 6529, 6547, 6551, 6553, 6563, 6569, 6571, 6577, 6581, 6599, 6607, 6619, 6637, 6653, 6659, 6661, 6673, 6679, 6689, 6691, 6701, 6703, 6709, 6719, 6733, 6737, 6761, 6763, 6779, 6781, 6791, 6793, 6803, 6823, 6827, 6829, 6833, 6841, 6857, 6863, 6869, 6871, 6883, 6899, 6907, 6911, 6917, 6947, 6949, 6959, 6961, 6967, 6971, 6977, 6983, 6991, 6997, 7001, 7013, 7019, 7027, 7039, 7043, 7057, 7069, 7079, 7103, 7109, 7121, 7127, 7129, 7151, 7159, 7177, 7187, 7193, 7207, 7211, 7213, 7219, 7229, 7237, 7243, 7247, 7253, 7283, 7297, 7307, 7309, 7321, 7331, 7333, 7349, 7351, 7369, 7393, 7411, 7417, 7433, 7451, 7457, 7459, 7477, 7481, 7487, 7489, 7499, 7507, 7517, 7523, 7529, 7537, 7541, 7547, 7549, 7559, 7561, 7573, 7577, 7583, 7589, 7591, 7603, 7607, 7621, 7639, 7643, 7649, 7669, 7673, 7681, 7687, 7691, 7699, 7703, 7717, 7723, 7727, 7741, 7753, 7757, 7759, 7789, 7793, 7817, 7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919, 7927, 7933, 7937, 7949, 7951, 7963, 7993, 8009, 8011, 8017, 8039, 8053, 8059, 8069, 8081, 8087, 8089, 8093, 8101, 8111, 8117, 8123, 8147, 8161, 8167, 8171, 8179, 8191, 8209, 8219, 8221, 8231, 8233, 8237, 8243, 8263, 8269, 8273, 8287, 8291, 8293, 8297, 8311, 8317, 8329, 8353, 8363, 8369, 8377, 8387, 8389, 8419, 8423, 8429, 8431, 8443, 8447, 8461, 8467, 8501, 8513, 8521, 8527, 8537, 8539, 8543, 8563, 8573, 8581, 8597, 8599, 8609, 8623, 8627, 8629, 8641, 8647, 8663, 8669, 8677, 8681, 8689, 8693, 8699, 8707, 8713, 8719, 8731, 8737, 8741, 8747, 8753, 8761, 8779, 8783, 8803, 8807, 8819, 8821, 8831, 8837, 8839, 8849, 8861, 8863, 8867, 8887, 8893, 8923, 8929, 8933, 8941, 8951, 8963, 8969, 8971, 8999, 9001, 9007, 9011, 9013, 9029, 9041, 9043, 9049, 9059, 9067, 9091, 9103, 9109, 9127, 9133, 9137, 9151, 9157, 9161, 9173, 9181, 9187, 9199, 9203, 9209, 9221, 9227, 9239, 9241, 9257, 9277, 9281, 9283, 9293, 9311, 9319, 9323, 9337, 9341, 9343, 9349, 9371, 9377, 9391, 9397, 9403, 9413, 9419, 9421, 9431, 9433, 9437, 9439, 9461, 9463, 9467, 9473, 9479, 9491, 9497, 9511, 9521, 9533, 9539, 9547, 9551, 9587, 9601, 9613, 9619, 9623, 9629, 9631, 9643, 9649, 9661, 9677, 9679, 9689, 9697, 9719, 9721, 9733, 9739, 9743, 9749, 9767, 9769, 9781, 9787, 9791, 9803, 9811, 9817, 9829, 9833, 9839, 9851, 9857, 9859, 9871, 9883, 9887, 9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973];
         if (nb === undefined) {
-            return primes;
+            return primesValues;
         }
         else {
-            return primes.slice(0, Math.max(primes.length, nb));
+            return primesValues.slice(0, Math.min(primesValues.length, nb));
         }
     }
     /**
@@ -6522,6 +6589,10 @@ class Numeric {
         }
         return Math.abs(g);
     }
+    static divideNumbersByGCD(...values) {
+        let gcd = Numeric.gcd(...values);
+        return values.map(x => x / gcd);
+    }
     /**
      * Least Common Multiple
      * @param values: list of numbers
@@ -6542,6 +6613,57 @@ class Numeric {
             }
         }
         return triplets;
+    }
+    static numberCorrection(value, epsilonDigit = 1, epsilonNumberOfDigits = 10, number_of_digits = 6) {
+        // Must modify the number if it's like:
+        // a: 3.0000000000000003
+        // b: 3.9999999999999994
+        // remove the last character
+        // check if around n last characters are either 0 or 9
+        // if it is, 'round' the number.
+        function extractDecimalPart(valueToExtract, decimalLength) {
+            let decimal = valueToExtract.toString();
+            if (!decimal.includes('.')) {
+                return '';
+            }
+            decimal = decimal.split('.')[1];
+            return decimal.substring(0, decimalLength);
+        }
+        const epsilon = Number(`0.${"0".repeat(epsilonNumberOfDigits - 1)}${epsilonDigit}`);
+        const decimal = extractDecimalPart(value, epsilonNumberOfDigits);
+        if (decimal === '') {
+            return value;
+        }
+        const n9 = decimal.match(/9+$/g);
+        const n0 = decimal.match(/0+$/g);
+        if (n9 && n9[0].length >= number_of_digits) {
+            // New tested values.
+            const mod = extractDecimalPart(value + epsilon, epsilonNumberOfDigits), mod0 = mod.match(/0+$/g);
+            if (mod0 && mod0[0].length >= number_of_digits) {
+                return +((value + epsilon).toString().split(mod0[0])[0]);
+            }
+        }
+        if (n0 && n0[0].length >= number_of_digits) {
+            // New tested values.
+            const mod = extractDecimalPart(value - epsilon, epsilonNumberOfDigits), mod9 = mod.match(/9+$/g);
+            if (mod9 && mod9[0].length >= number_of_digits) {
+                // The value can be changed. Remove all nines!
+                return +(value.toString().split(n0[0])[0]);
+            }
+        }
+        return value;
+    }
+    static periodic(value) {
+        if (Number.isSafeInteger(value)) {
+            return 0;
+        }
+        // Assume it's with decimal.
+        let decimal = (value.toString()).split('.')[0];
+        // The decimal part is limited
+        if (decimal.length < 10) {
+            return 0;
+        }
+        // Find the periodic if it exists.
     }
 }
 exports.Numeric = Numeric;
@@ -6596,6 +6718,10 @@ var Random;
         return rndHelpers_1.rndHelpers.randomIntSym(max, allowZero);
     }
     Random.numberSym = numberSym;
+    function prime(max) {
+        return rndHelpers_1.rndHelpers.randomPrime(max);
+    }
+    Random.prime = prime;
     function bool(percent) {
         return rndHelpers_1.rndHelpers.randomBool(percent);
     }
@@ -6609,7 +6735,7 @@ var Random;
     }
     Random.item = item;
     function shuffle(arr) {
-        rndHelpers_1.rndHelpers.shuffleArray(arr);
+        return rndHelpers_1.rndHelpers.shuffleArray(arr);
     }
     Random.shuffle = shuffle;
 })(Random = exports.Random || (exports.Random = {}));
@@ -6672,7 +6798,11 @@ class rndFraction extends randomCore_1.randomCore {
                 Q.denominator = 1;
             }
             else {
-                Q.denominator = random_1.Random.number(1, this._config.max);
+                let securityCount = 0;
+                while (Q.isRelative() && securityCount < 10) {
+                    Q.denominator = random_1.Random.number(1, this._config.max);
+                    securityCount++;
+                }
             }
             return this._config.reduced ? Q.reduce() : Q;
         };
@@ -6692,7 +6822,7 @@ exports.rndFraction = rndFraction;
 /***/ }),
 
 /***/ 140:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
@@ -6700,6 +6830,7 @@ exports.rndHelpers = void 0;
 /**
  * Random helpers
  */
+const numeric_1 = __webpack_require__(956);
 class rndHelpers {
     /**
      * Random boolean with a percent ratio
@@ -6731,6 +6862,13 @@ class rndHelpers {
         else {
             return this.randomInt(-max, max);
         }
+    }
+    static randomPrime(max) {
+        let primes = numeric_1.Numeric.primes();
+        if (max !== undefined) {
+            primes = primes.filter(x => x < max);
+        }
+        return this.randomItem(primes);
     }
     static randomArray(arr, number) {
         if (number === undefined) {
@@ -6936,6 +7074,7 @@ var ShutingyardType;
 })(ShutingyardType = exports.ShutingyardType || (exports.ShutingyardType = {}));
 var ShutingyardMode;
 (function (ShutingyardMode) {
+    ShutingyardMode["EXPRESSION"] = "expression";
     ShutingyardMode["POLYNOM"] = "polynom";
     ShutingyardMode["SET"] = "set";
     ShutingyardMode["NUMERIC"] = "numeric";
@@ -6950,6 +7089,9 @@ class Shutingyard {
     get rpn() {
         // console.log(this._rpn)
         return this._rpn;
+    }
+    get rpnToken() {
+        return this._rpn.map(x => x.token);
     }
     /**
      * Determin if the token is a defined operation
@@ -6989,8 +7131,27 @@ class Shutingyard {
                 'cos': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
                 'tan': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
                 'sqrt': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'nthrt': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'ln': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'log': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
             };
             this._uniformize = false;
+        }
+        else if (this._mode === ShutingyardMode.EXPRESSION) {
+            this._tokenConfig = {
+                '^': { precedence: 4, associative: 'right', type: ShutingyardType.OPERATION },
+                '*': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '/': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
+                '+': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
+                '-': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
+                '%': { precedence: 3, associative: 'right', type: ShutingyardType.OPERATION },
+                'sin': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'cos': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'tan': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'sqrt': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+                'nthrt': { precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION },
+            };
+            this._uniformize = true;
         }
         else {
             this._tokenConfig = {
@@ -6999,10 +7160,6 @@ class Shutingyard {
                 '/': { precedence: 3, associative: 'left', type: ShutingyardType.OPERATION },
                 '+': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
                 '-': { precedence: 2, associative: 'left', type: ShutingyardType.OPERATION },
-                // '%': {precedence: 3, associative: 'right', type: ShutingyardType.OPERATION},
-                // 'sin': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
-                // 'cos': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
-                // 'tan': {precedence: 4, associative: 'right', type: ShutingyardType.FUNCTION},
             };
             this._uniformize = true;
         }
@@ -7034,9 +7191,6 @@ class Shutingyard {
             tokenType = 'function-argument';
         }
         else {
-            // Order token keys by token characters length (descending)
-            // TODO: this is done each time ! SHould be done once !
-            // const keys = Object.keys(this._tokenConfig).sort((a,b)=>b.length-a.length)
             // Extract operation and function tokens
             for (let key of this._tokenKeys) {
                 if (expr.substring(start, start + key.length) === key) {
@@ -7058,7 +7212,7 @@ class Shutingyard {
                 if (expr[start].match(/[0-9]/)) {
                     if (this._mode === ShutingyardMode.POLYNOM && false) {}
                     else {
-                        token = expr.substring(start).match(/^([0-9.,]+)/)[0];
+                        token = expr.substring(start).match(/^([0-9.]+)/)[0];
                     }
                     tokenType = ShutingyardType.COEFFICIENT;
                 }
@@ -7075,19 +7229,117 @@ class Shutingyard {
         }
         return [token, start + token.length, tokenType];
     }
+    normalize(expr) {
+        if (expr.length === 1) {
+            return expr;
+        }
+        // Get the list of function token.
+        let fnToken = [], kToken = [];
+        for (let token in this._tokenConfig) {
+            if (this._tokenConfig[token].type === ShutingyardType.FUNCTION) {
+                fnToken.push(token);
+            }
+        }
+        // sort if from the lengthy to the smallest function
+        fnToken.sort((a, b) => b.length - a.length);
+        for (let token in exports.tokenConstant) {
+            kToken.push(token);
+        }
+        // sort if from the lengthy to the smallest function
+        kToken.sort((a, b) => b.length - a.length);
+        let normalizedExpr = "", i = 0, crtToken, nextToken;
+        while (i < expr.length - 1) {
+            // Check if we have a function token.
+            // The function MUST have an open parentheses
+            let tokenIdx = 0;
+            while (tokenIdx < fnToken.length) {
+                let token = fnToken[tokenIdx];
+                if (expr.slice(i, i + token.length + 1) === token + '(') {
+                    normalizedExpr += token + '(';
+                    i += token.length + 1;
+                    // Restart the scan for the function token
+                    tokenIdx = 0;
+                }
+                else {
+                    // scan for a next function token
+                    tokenIdx++;
+                }
+            }
+            // Check for a constant
+            tokenIdx = 0;
+            while (tokenIdx < kToken.length) {
+                let token = kToken[tokenIdx];
+                if (expr.slice(i, i + token.length) === token) {
+                    // We have found a constant.
+                    // add it, but with remove the last letter
+                    normalizedExpr += token.slice(0, -1);
+                    i += token.length - 1;
+                    // Exit the loop
+                    break;
+                }
+                tokenIdx++;
+            }
+            // The function token are solved.
+            crtToken = expr[i];
+            nextToken = expr[i + 1];
+            normalizedExpr += crtToken;
+            if (crtToken.match(/[a-zA-Z]/g)) {
+                // Current element is a letter.
+                // if the next element is a letter, a number or an opening parentheses, add the multiplication sign.
+                if (nextToken.match(/[a-zA-Z\d(]/)) {
+                    normalizedExpr += '*';
+                }
+            }
+            else if (crtToken.match(/\d/)) {
+                // Current element is a number.
+                // if the next element is a letter or a parentheses, add the multiplication sign.
+                if (nextToken.match(/[a-zA-Z(]/)) {
+                    normalizedExpr += '*';
+                }
+            }
+            else if (crtToken === ')') {
+                // Current element is a closing parentheses.
+                // if the next element is a letter, a number or an opening parentheses, add the multiplication sign
+                if (nextToken.match(/[a-zA-Z\d(]/)) {
+                    normalizedExpr += '*';
+                }
+            }
+            // Go to next token
+            i++;
+        }
+        // add the last token
+        return normalizedExpr + nextToken;
+    }
     /**
      * Sanitize an expression by adding missing common operation (multiplication between parentheseses)
      * @param expr
      * @constructor
      */
     Uniformizer(expr) {
+        // TODO: Delete this old version
+        // Prefere "normalize", much more robust !
         // Determiner if need to be uniformized
         if (!this._uniformize) {
             return expr;
         }
+        // Generate the list of function token.
+        let fnToken = [];
+        for (let token in this._tokenConfig) {
+            if (this._tokenConfig[token].type === ShutingyardType.FUNCTION) {
+                fnToken.push(token);
+            }
+        }
+        // sort if from the lengthy to the smallest function
+        fnToken.sort((a, b) => b.length - a.length);
+        let tokenRegExp = new RegExp(`(${fnToken.join('|')})`, 'g');
+        let functionTokenOrder = Array.from(expr.matchAll(tokenRegExp));
         let expr2;
+        // Replace all function by @
+        expr2 = expr.replace(tokenRegExp, '@');
+        // Add * before @ (functionn)
+        expr2 = expr2.replace(/([\da-zA-Z])(@)/g, "$1*$2");
         // Replace missing multiplication between two parenthese
-        expr2 = expr.replace(/\)\(/g, ')*(');
+        expr2 = expr2.replace(/\)\(/g, ')*(');
         // Replace missing multiplication between number or setLetter and parenthese.
         // 3x(x-4) => 3x*(x-4)
         expr2 = expr2.replace(/([\da-zA-Z])(\()/g, "$1*$2");
@@ -7097,14 +7349,24 @@ class Shutingyard {
         // 3x => 3*x
         expr2 = expr2.replace(/([0-9])([a-zA-Z])/g, "$1*$2");
         expr2 = expr2.replace(/([a-zA-Z])([0-9])/g, "$1*$2");
+        // Remove letter between function token and it's parenthese.
+        // for (let token of fnToken) {
+        //     // Remove
+        //     expr2 = expr2.replace(new RegExp(token + '\\*', 'g'), token);
+        // }
         // Add multiplication between letters ?
-        // TODO: More robust solution to handle all letters ?
-        expr2 = expr2.replace(/([abcxyz])([abcxyz])/g, "$1*$2");
-        // Restore operation auto formating (prevent adding the mutliplcation star)
-        // TODO: Accept list of functions
-        let fnToken = ['sin', 'cos', 'tan'];
-        for (let token of fnToken) {
-            expr2 = expr2.replace(new RegExp(token + '\\*', 'g'), token);
+        expr2 = expr2.replace(/([a-zA-Z])([a-zA-Z])/g, "$1*$2");
+        expr2 = expr2.replace(/([a-zA-Z])([a-zA-Z])/g, "$1*$2");
+        // Restore operation auto formatting (prevent adding the multiplication star)
+        let exprAsArray = expr2.split('@');
+        if (exprAsArray.length > 0) {
+            expr2 = "";
+            for (let idx in exprAsArray) {
+            }
+            for (let token of fnToken) {
+                // Remove
+                // expr2 = expr2.replace(new RegExp(token + '\\*', 'g'), token);
+            }
         }
         return expr2;
     }
@@ -7118,7 +7380,9 @@ class Shutingyard {
         let outQueue = [], // Output queue
         opStack = [], // Operation queue
         token = '', tokenPos = 0, tokenType = '', previousOpStatckLength = 0;
-        expr = this.Uniformizer(expr);
+        // Normalize the input if required.
+        if (this._uniformize)
+            expr = this.normalize(expr);
         let securityLoopLvl1 = 50, securityLoopLvl2_default = 50, securityLoopLvl2;
         while (tokenPos < expr.length) {
             securityLoopLvl1--;
@@ -7137,10 +7401,6 @@ class Shutingyard {
                         token,
                         tokenType
                     });
-                    // if(previousOpStatckLength == opStack.length && outQueue.length>=2){
-                    //     console.log('opStatckLength', outQueue, opStack.length)
-                    //     outQueue.push('*')
-                    // }
                     break;
                 case 'operation':
                     previousOpStatckLength = opStack.length;

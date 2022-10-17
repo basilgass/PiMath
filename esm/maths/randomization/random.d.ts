@@ -9,8 +9,9 @@ export declare namespace Random {
     function fraction(config?: randomCoefficientConfig): Fraction;
     function number(from: number, to: number): number;
     function numberSym(max: number, allowZero?: boolean): number;
+    function prime(max: number): number;
     function bool(percent?: number): boolean;
     function array(arr: any[], number?: number): any[];
     function item(arr: any[]): any;
-    function shuffle(arr: any[]): any;
+    function shuffle(arr: any[]): any[];
 }

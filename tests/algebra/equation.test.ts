@@ -1,6 +1,8 @@
 import {describe} from "mocha";
 import {expect} from "chai";
 import {Equation} from "../../src/maths/algebra/equation";
+import {PiMath} from "../../src";
+import exp = require("constants");
 
 describe('Equations tests', () => {
     it('should get the solutions', () => {
@@ -33,4 +35,16 @@ describe('Equations tests', () => {
             '\\frac{-7 + \\sqrt{669} }{ 10 }'
         ] )
     })
+
+    it('should resolve an equation of second degree', ()=>{
+        let P = new Equation('-10x^2-8x+8=0')
+        P.solve()
+        expect(P.solutions[0].tex).to.have.oneOf(['\\frac{ -2 - 2\\sqrt{6} }{ 5 }', '\\frac{ -2 + 2\\sqrt{6} }{ 5 }'])
+    })
+
+    it('should solve this equation please', function () {
+        let P = new Equation("2/7(3x+5)=9-(3-x)/7")
+        P.solve()
+        console.log(P.solutions.map(x=>x.tex))
+    });
 })

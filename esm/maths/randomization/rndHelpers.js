@@ -4,6 +4,7 @@ exports.rndHelpers = void 0;
 /**
  * Random helpers
  */
+const numeric_1 = require("../numeric");
 class rndHelpers {
     /**
      * Random boolean with a percent ratio
@@ -35,6 +36,13 @@ class rndHelpers {
         else {
             return this.randomInt(-max, max);
         }
+    }
+    static randomPrime(max) {
+        let primes = numeric_1.Numeric.primes();
+        if (max !== undefined) {
+            primes = primes.filter(x => x < max);
+        }
+        return this.randomItem(primes);
     }
     static randomArray(arr, number) {
         if (number === undefined) {

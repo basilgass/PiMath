@@ -4,7 +4,7 @@ export declare class Numeric {
      * Get the list of the nth first prime numbers.
      * @param nb : number of primes to choose from
      */
-    static prime(nb?: number): number[];
+    static primes(nb?: number): number[];
     /**
      * Get the list of all dividers of a number.
      * @param value
@@ -15,10 +15,13 @@ export declare class Numeric {
      * @param values : number values
      */
     static gcd(...values: number[]): number;
+    static divideNumbersByGCD(...values: number[]): number[];
     /**
      * Least Common Multiple
      * @param values: list of numbers
      */
     static lcm(...values: number[]): number;
     static pythagoricianTripletsWithTarget(target: number, targetIsSquare?: boolean): number[][];
+    static numberCorrection(value: number, epsilonDigit?: number, epsilonNumberOfDigits?: number, number_of_digits?: number): number;
+    static periodic(value: number): number;
 }

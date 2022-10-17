@@ -30,6 +30,10 @@ export namespace Random {
         return rndHelpers.randomIntSym(max, allowZero)
     }
 
+    export function prime(max: number): number {
+        return rndHelpers.randomPrime(max)
+    }
+
     export function bool(percent?: number): boolean {
         return rndHelpers.randomBool(percent)
     }
@@ -42,7 +46,7 @@ export namespace Random {
         return rndHelpers.randomItem(arr)
     }
 
-    export function shuffle(arr: any[]): any {
-        rndHelpers.shuffleArray(arr)
+    export function shuffle(arr: any[]): any[] {
+        return rndHelpers.shuffleArray(arr)
     }
 }
