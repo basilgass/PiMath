@@ -52,18 +52,21 @@ export class RationalStudy extends Study {
         this.zeroes.filter(x => x.type === ZEROTYPE.DEFENCE).forEach(zero => {
             // Check if it's a hole or an asymptote
             let Ztype = ASYMPTOTE.VERTICAL,
-                tex = `x=${zero.tex}`
+                tex = `x=${zero.tex}`,
+                display = `x=${zero.display}`
 
             // Check if it's a hole: the reduced polynom should not be null
             if (zero.exact instanceof Fraction) {
                 if (reduced.denominator.evaluate(zero.exact).isNotZero()) {
                     Ztype = ASYMPTOTE.HOLE
                     tex = `(${zero.tex};${reduced.evaluate(zero.exact).tex})`
+                    display = `(${zero.display};${reduced.evaluate(zero.exact).display})`
                 }
             } else {
                 if (reduced.denominator.evaluate(zero.value).isNotZero()) {
                     Ztype = ASYMPTOTE.HOLE
                     tex = `(${zero.tex};${reduced.evaluate(zero.value).tex})`
+                    display = `(${zero.display};${reduced.evaluate(zero.value).display})`
                 }
             }
 
@@ -103,7 +106,8 @@ export class RationalStudy extends Study {
             asymptotes.push({
                 fx: null,
                 type: Ztype,
-                tex: tex,
+                tex,
+                display,
                 zero: zero,
                 limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = ${pm}\\infty`,
                 deltaX: null,
@@ -127,6 +131,7 @@ export class RationalStudy extends Study {
                 fx: new Polynom(H),
                 type: ASYMPTOTE.HORIZONTAL,
                 tex: `y=${Htex}`,
+                display: H.display,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX,
@@ -138,6 +143,7 @@ export class RationalStudy extends Study {
                 fx: new Polynom('0'),
                 type: ASYMPTOTE.HORIZONTAL,
                 tex: `y=0`,
+                display: `y=0`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${0}`,
                 deltaX: null,
@@ -153,6 +159,7 @@ export class RationalStudy extends Study {
                 fx: quotient.clone(),
                 type: ASYMPTOTE.SLOPE,
                 tex: `y=${quotient.tex}`,
+                display: `y=${quotient.display}`,
                 zero: null,
                 limits: ``,
                 deltaX: new Rational(reminder, reduced.denominator),

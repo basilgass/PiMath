@@ -11,6 +11,7 @@ export interface ISolution {
     value: number;
     exact: unknown;
 }
+
 export declare enum PARTICULAR_SOLUTION {
     real = "\\mathbb{R}",
     varnothing = "\\varnothing"

@@ -87,11 +87,9 @@ class NthRoot {
         let C;
         if (this._coefficient === 1) {
             C = '';
-        }
-        else if (this._coefficient === -1) {
+        } else if (this._coefficient === -1) {
             C = '-';
-        }
-        else {
+        } else {
             C = this._coefficient.toString();
         }
         if (this._radical === 1) {
@@ -104,7 +102,6 @@ class NthRoot {
             }
         }
     }
-
     get display() {
         let C;
         if (this._coefficient === 1) {
@@ -124,7 +121,6 @@ class NthRoot {
             }
         }
     }
-
     get value() {
         return this._coefficient * Math.pow(this._radical, 1 / this._nth);
     }

@@ -52,17 +52,19 @@ class RationalStudy extends study_1.Study {
         let asymptotes = [];
         this.zeroes.filter(x => x.type === study_1.ZEROTYPE.DEFENCE).forEach(zero => {
             // Check if it's a hole or an asymptote
-            let Ztype = study_1.ASYMPTOTE.VERTICAL, tex = `x=${zero.tex}`;
+            let Ztype = study_1.ASYMPTOTE.VERTICAL, tex = `x=${zero.tex}`, display = `x=${zero.display}`;
             // Check if it's a hole: the reduced polynom should not be null
             if (zero.exact instanceof fraction_1.Fraction) {
                 if (reduced.denominator.evaluate(zero.exact).isNotZero()) {
                     Ztype = study_1.ASYMPTOTE.HOLE;
                     tex = `(${zero.tex};${reduced.evaluate(zero.exact).tex})`;
+                    display = `(${zero.display};${reduced.evaluate(zero.exact).display})`;
                 }
             } else {
                 if (reduced.denominator.evaluate(zero.value).isNotZero()) {
                     Ztype = study_1.ASYMPTOTE.HOLE;
                     tex = `(${zero.tex};${reduced.evaluate(zero.value).tex})`;
+                    display = `(${zero.display};${reduced.evaluate(zero.value).display})`;
                 }
             }
             // Get the position before and after the asymptote.
@@ -95,7 +97,8 @@ class RationalStudy extends study_1.Study {
             asymptotes.push({
                 fx: null,
                 type: Ztype,
-                tex: tex,
+                tex,
+                display,
                 zero: zero,
                 limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = ${pm}\\infty`,
                 deltaX: null,
@@ -113,6 +116,7 @@ class RationalStudy extends study_1.Study {
                 fx: new polynom_1.Polynom(H),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
                 tex: `y=${Htex}`,
+                display: H.display,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX,
@@ -125,6 +129,7 @@ class RationalStudy extends study_1.Study {
                 fx: new polynom_1.Polynom('0'),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
                 tex: `y=0`,
+                display: `y=0`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${0}`,
                 deltaX: null,
@@ -139,6 +144,7 @@ class RationalStudy extends study_1.Study {
                 fx: quotient.clone(),
                 type: study_1.ASYMPTOTE.SLOPE,
                 tex: `y=${quotient.tex}`,
+                display: `y=${quotient.display}`,
                 zero: null,
                 limits: ``,
                 deltaX: new rational_1.Rational(reminder, reduced.denominator),
@@ -147,6 +153,32 @@ class RationalStudy extends study_1.Study {
             });
         }
         return asymptotes;
+    }
+    ;
+
+    makeDerivative() {
+        let dx = this.fx.clone().derivative(),
+            tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
+        let result = this.makeGrowsResult(tos);
+        tos.signs.push(result.growsLine);
+        tos.extremes = result.extremes;
+        return tos;
+    }
+    ;
+
+    makeSigns() {
+        return this._getSigns(this.fx, this.zeroes);
+    }
+    ;
+
+    makeVariation() {
+        // Get the zeroes, make signs.
+        let dx = this.derivative.fx.clone().derivative(),
+            tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
+        let result = this.makeVariationsResult(tos);
+        tos.signs.push(result.varsLine);
+        tos.extremes = result.extremes;
+        return tos;
     }
     ;
 
@@ -185,31 +217,6 @@ class RationalStudy extends study_1.Study {
         zeroes.sort((a, b) => a.value - b.value);
         return zeroes;
     }
-
-    makeDerivative() {
-        let dx = this.fx.clone().derivative(),
-            tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
-        let result = this.makeGrowsResult(tos);
-        tos.signs.push(result.growsLine);
-        tos.extremes = result.extremes;
-        return tos;
-    }
-    ;
-
-    makeVariation() {
-        // Get the zeroes, make signs.
-        let dx = this.derivative.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
-        let result = this.makeVariationsResult(tos);
-        tos.signs.push(result.varsLine);
-        tos.extremes = result.extremes;
-        return tos;
-    }
-    ;
-
-    makeSigns() {
-        return this._getSigns(this.fx, this.zeroes);
-    }
-    ;
     _getSigns(fx, zeroes, typeOfTable) {
         // Factorize the rational
         let signs = [], factors = [];

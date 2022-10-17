@@ -35,6 +35,7 @@ export interface IAsymptote {
     deltaX: StudyableFunction;
     limits: string;
     tex: string;
+    display: string;
     type: ASYMPTOTE;
     zero: IZero;
     position: ASYMPTOTE_POSITION[];
