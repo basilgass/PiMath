@@ -14,6 +14,7 @@ export declare class Rational {
     private _denominator;
     euclidian: () => IEuclidian;
     private _rawString;
+
     /**
      *
      * @param numerator
@@ -23,8 +24,11 @@ export declare class Rational {
     get numerator(): Polynom;
     get denominator(): Polynom;
     get tex(): string;
+
     get texFactors(): string;
-    study: () => RationalStudy;
+    evaluateAsNumeric: (values: number | {
+        [Key: string]: number;
+    }) => number;
     clone: () => Rational;
     domain: () => string;
     amplify: (P: Polynom) => Rational;
@@ -34,9 +38,10 @@ export declare class Rational {
     opposed: () => Rational;
     add: (R: Rational) => Rational;
     subtract: (R: Rational) => Rational;
-    private _numerator;
+    study: () => RationalStudy;
     limits: (value: Fraction | number, offset?: string, letter?: string) => Fraction;
     evaluate: (values: literalType | Fraction | number) => Fraction;
+    private _numerator;
 
     get plotFunction(): string;
 }

@@ -825,6 +825,31 @@ export class Monom {
         return r;
     };
 
+    evaluateAsNumeric = (values: { [Key: string]: number } | number): number => {
+        let r = this.coefficient.value
+
+        if (typeof values === 'number') {
+            let tmpValues: { [Key: string]: number } = {}
+            tmpValues[this.variables[0]] = values
+            return this.evaluateAsNumeric(tmpValues);
+        }
+
+        if (typeof values === 'object') {
+            if (this.variables.length === 0) {
+                return this.coefficient.value
+            }
+            for (let L in this._literal) {
+                if (values[L] === undefined) {
+                    return 0;
+                }
+
+                r *= values[L] ** (this._literal[L].value)
+            }
+        }
+
+        return r
+    }
+
     /**
      * Derivative the monom
      * @param letter

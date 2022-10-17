@@ -115,6 +115,7 @@ class Polynom {
             this._monoms = [];
             this._factors = [];
             this.mark_as_dirty();
+            // TODO: allow to enter a liste of Fraction (a, b, c, ...) to make a polynom ax^n + bx^(n-1) + cx^(n-2) + ...
             if (typeof inputStr === 'string') {
                 return this._parseString(inputStr, ...values);
             }
@@ -514,6 +515,13 @@ class Polynom {
             this._monoms.forEach(monom => {
                 //console.log('Evaluate polynom: ', monom.display, values, monom.evaluate(values).display);
                 r.add(monom.evaluate(values));
+            });
+            return r;
+        };
+        this.evaluateAsNumeric = (values) => {
+            let r = 0;
+            this._monoms.forEach(monom => {
+                r += monom.evaluateAsNumeric(values);
             });
             return r;
         };

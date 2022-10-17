@@ -1,5 +1,6 @@
-import { Token } from "../shutingyard";
-import { Fraction } from "../coefficients/fraction";
+import {Token} from "../shutingyard";
+import {Fraction} from "../coefficients/fraction";
+
 export declare type literalType = {
     [Key: string]: Fraction;
 };
@@ -173,6 +174,9 @@ export declare class Monom {
      * @param values    Dictionary of <setLetter: Fraction>
      */
     evaluate: (values: literalType | Fraction | number) => Fraction;
+    evaluateAsNumeric: (values: number | {
+        [Key: string]: number;
+    }) => number;
     /**
      * Derivative the monom
      * @param letter

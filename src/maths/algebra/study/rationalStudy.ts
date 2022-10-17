@@ -15,6 +15,7 @@
  */
 import {
     ASYMPTOTE,
+    ASYMPTOTE_POSITION,
     FUNCTION_EXTREMA,
     IAsymptote,
     ITableOfSigns,
@@ -40,8 +41,7 @@ export class RationalStudy extends Study {
     };
 
     makeSigns(): ITableOfSigns {
-        let tos = this._getSigns(this.fx, this.zeroes)
-        return tos
+        return this._getSigns(this.fx, this.zeroes)
     };
 
     makeAsymptotes(): IAsymptote[] {
@@ -51,9 +51,10 @@ export class RationalStudy extends Study {
         let asymptotes: IAsymptote[] = []
         this.zeroes.filter(x => x.type === ZEROTYPE.DEFENCE).forEach(zero => {
             // Check if it's a hole or an asymptote
-            // TODO: Check for a hole ! Means calculate the limits !
             let Ztype = ASYMPTOTE.VERTICAL,
                 tex = `x=${zero.tex}`
+
+            // Check if it's a hole: the reduced polynom should not be null
             if (zero.exact instanceof Fraction) {
                 if (reduced.denominator.evaluate(zero.exact).isNotZero()) {
                     Ztype = ASYMPTOTE.HOLE
@@ -66,14 +67,48 @@ export class RationalStudy extends Study {
                 }
             }
 
+            // Get the position before and after the asymptote.
+            const delta = 0.000001
+            let before = this.fx.evaluateAsNumeric(zero.value - delta),
+                after = this.fx.evaluateAsNumeric(zero.value + delta),
+                position: ASYMPTOTE_POSITION[] = [],
+                pm = ""
+
+            if (after < -10000) {
+                position.push(ASYMPTOTE_POSITION.RB)
+                pm += "m"
+            } else if (after > 10000) {
+                position.push(ASYMPTOTE_POSITION.RT)
+                pm += "p"
+            }
+
+            if (before < -10000) {
+                position.push(ASYMPTOTE_POSITION.LB)
+                pm += "m"
+            } else if (before > 10000) {
+                position.push(ASYMPTOTE_POSITION.LT)
+                pm += "p"
+            }
+
+            // Left and right are to infinity
+            // TODO: handle the case were one side of the asymptote isn't infinity (not possible in rational study?!)
+            if (pm === "pp") {
+                pm = "+"
+            } else if (pm === "mm") {
+                pm = "-"
+            } else {
+                pm = `\\${pm}`
+            }
+
             asymptotes.push({
                 fx: null,
                 type: Ztype,
                 tex: tex,
                 zero: zero,
-                limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = \\pm\\infty`,
+                limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = ${pm}\\infty`,
                 deltaX: null,
-                tableOfSign: null
+                tableOfSign: null,
+                position
             })
         })
 
@@ -87,7 +122,7 @@ export class RationalStudy extends Study {
             let {reminder} = reduced.euclidian(),
                 deltaX = new Rational(reminder, reduced.denominator)
 
-
+            // Determine the position above or below on the left / right of the asymptote.
             asymptotes.push({
                 fx: new Polynom(H),
                 type: ASYMPTOTE.HORIZONTAL,
@@ -95,7 +130,8 @@ export class RationalStudy extends Study {
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX,
-                tableOfSign: this._getSigns(deltaX)
+                tableOfSign: this._getSigns(deltaX),
+                position: this._getHorizontalAsymptoteRelativePositon(deltaX)
             })
         } else if (DDegree.greater(NDegree)) {
             asymptotes.push({
@@ -105,7 +141,8 @@ export class RationalStudy extends Study {
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${0}`,
                 deltaX: null,
-                tableOfSign: null
+                tableOfSign: null,
+                position: this._getHorizontalAsymptoteRelativePositon(this.fx)
             })
         } else if (NDegree.value - 1 === DDegree.value) {
             // Calculate the slope
@@ -119,12 +156,34 @@ export class RationalStudy extends Study {
                 zero: null,
                 limits: ``,
                 deltaX: new Rational(reminder, reduced.denominator),
-                tableOfSign: this._getSigns(deltaX)
+                tableOfSign: this._getSigns(deltaX),
+                position: this._getHorizontalAsymptoteRelativePositon(deltaX)
             })
         }
 
         return asymptotes
     };
+
+    _getHorizontalAsymptoteRelativePositon(deltaX: Rational, delta: number = 1000000): ASYMPTOTE_POSITION[] {
+
+        let position: ASYMPTOTE_POSITION[] = [],
+            before = deltaX.evaluateAsNumeric(-delta),
+            after = deltaX.evaluateAsNumeric(delta)
+
+        if (before >= 0) {
+            position.push(ASYMPTOTE_POSITION.LT)
+        } else {
+            position.push(ASYMPTOTE_POSITION.LB)
+        }
+
+        if (after >= 0) {
+            position.push(ASYMPTOTE_POSITION.RT)
+        } else {
+            position.push(ASYMPTOTE_POSITION.RB)
+        }
+
+        return position
+    }
 
     makeDerivative(): ITableOfSigns {
         let dx = this.fx.clone().derivative(),

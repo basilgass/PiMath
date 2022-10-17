@@ -739,6 +739,15 @@ export class Polynom {
         return r;
     };
 
+    evaluateAsNumeric = (values: { [Key: string]: number } | number): number => {
+        let r = 0
+        this._monoms.forEach(monom => {
+            r += monom.evaluateAsNumeric(values)
+        })
+
+        return r
+    }
+
     derivative = (letter?: string): Polynom => {
         let dP = new Polynom();
 

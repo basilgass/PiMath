@@ -7,10 +7,12 @@ import {Fraction} from "../coefficients/fraction";
 import {ISolution} from "./equation";
 
 export declare type PolynomParsingType = string | Polynom | number | Fraction | Monom;
+
 export interface IEuclidian {
     quotient: Polynom;
     reminder: Polynom;
 }
+
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -112,6 +114,9 @@ export declare class Polynom {
      */
     replaceBy: (letter: string, P: Polynom) => Polynom;
     evaluate: (values: literalType | Fraction | number) => Fraction;
+    evaluateAsNumeric: (values: number | {
+        [Key: string]: number;
+    }) => number;
     derivative: (letter?: string) => Polynom;
     primitive: (letter?: string) => Polynom;
     integrate: (a: Fraction | number, b: Fraction | number, letter?: string) => Fraction;

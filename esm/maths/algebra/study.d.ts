@@ -7,20 +7,30 @@ import {ISolution} from "./equation";
 import {Polynom} from "./polynom";
 
 export declare type StudyableFunction = Rational;
+
 export declare enum ZEROTYPE {
     ZERO = "z",
     DEFENCE = "d",
     NOTHING = "t"
 }
+
 export interface IZero extends ISolution {
     extrema: FUNCTION_EXTREMA;
     type: ZEROTYPE;
 }
+
 export declare enum ASYMPTOTE {
     VERTICAL = "av",
     HORIZONTAL = "ah",
     SLOPE = "ao",
     HOLE = "hole"
+}
+
+export declare enum ASYMPTOTE_POSITION {
+    "LT" = "LT",
+    "RT" = "RT",
+    "LB" = "LB",
+    "RB" = "RB"
 }
 export interface IAsymptote {
     fx: Polynom;
@@ -30,6 +40,7 @@ export interface IAsymptote {
     type: ASYMPTOTE;
     zero: IZero;
     tableOfSign: ITableOfSigns;
+    position: ASYMPTOTE_POSITION[];
 }
 export declare enum FUNCTION_EXTREMA {
     MIN = "min",
@@ -59,10 +70,11 @@ export interface ITableOfSigns {
     zeroes: IZero[];
     tex: string;
 }
+
 export declare enum TABLE_OF_SIGNS {
-    DEFAULT = 0,
-    GROWS = 1,
-    VARIATIONS = 2
+    SIGNS = "signs",
+    GROWS = "grows",
+    VARIATIONS = "variations"
 }
 /**
  * The study class is a "function study" class that will get:
@@ -89,9 +101,7 @@ export declare class Study {
     constructor(fx: StudyableFunction);
     get zeroes(): IZero[];
     get domain(): string;
-
     get signs(): ITableOfSigns;
-
     get asymptotes(): IAsymptote[];
 
     get derivative(): ITableOfSigns;
@@ -99,13 +109,11 @@ export declare class Study {
     drawCode: () => string;
 
     get texGrows(): string;
-
     get texVariations(): string;
-
+    makeStudy: () => void;
     indexOfZero: (zeroes: IZero[], zero: IZero | ISolution) => number;
     makeOneLineForSigns: (factor: Polynom, zeroes: IZero[], zeroSign: ZEROTYPE) => string[];
     makeSignsResult: (signs: (string[])[]) => string[];
-    makeStudy: () => void;
     makeGrowsResult: (tos: ITableOfSigns) => {
         growsLine: string[];
         extremes: {
@@ -118,15 +126,12 @@ export declare class Study {
             [Key: string]: IExtrema;
         };
     };
-
     makeZeroes(): IZero[];
-
     makeSigns(): ITableOfSigns;
-
     makeAsymptotes(): IAsymptote[];
-
     makeDerivative(): ITableOfSigns;
     makeVariation(): ITableOfSigns;
+
     private _makeTexFromTableOfSigns;
 
     get texSigns(): string;

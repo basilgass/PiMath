@@ -1685,6 +1685,26 @@ class Monom {
             }
             return r;
         };
+        this.evaluateAsNumeric = (values) => {
+            let r = this.coefficient.value;
+            if (typeof values === 'number') {
+                let tmpValues = {};
+                tmpValues[this.variables[0]] = values;
+                return this.evaluateAsNumeric(tmpValues);
+            }
+            if (typeof values === 'object') {
+                if (this.variables.length === 0) {
+                    return this.coefficient.value;
+                }
+                for (let L in this._literal) {
+                    if (values[L] === undefined) {
+                        return 0;
+                    }
+                    r *= values[L] ** (this._literal[L].value);
+                }
+            }
+            return r;
+        };
         /**
          * Derivative the monom
          * @param letter
@@ -2245,6 +2265,7 @@ class Polynom {
             this._monoms = [];
             this._factors = [];
             this.mark_as_dirty();
+            // TODO: allow to enter a liste of Fraction (a, b, c, ...) to make a polynom ax^n + bx^(n-1) + cx^(n-2) + ...
             if (typeof inputStr === 'string') {
                 return this._parseString(inputStr, ...values);
             }
@@ -2644,6 +2665,13 @@ class Polynom {
             this._monoms.forEach(monom => {
                 //console.log('Evaluate polynom: ', monom.display, values, monom.evaluate(values).display);
                 r.add(monom.evaluate(values));
+            });
+            return r;
+        };
+        this.evaluateAsNumeric = (values) => {
+            let r = 0;
+            this._monoms.forEach(monom => {
+                r += monom.evaluateAsNumeric(values);
             });
             return r;
         };
@@ -3390,6 +3418,9 @@ class Rational {
             let N = this._numerator.evaluate(values), D = this._denominator.evaluate(values);
             return N.divide(D);
         };
+        this.evaluateAsNumeric = (values) => {
+            return this._numerator.evaluateAsNumeric(values) / this._denominator.evaluateAsNumeric(values);
+        };
         this.study = () => {
             return new rationalStudy_1.RationalStudy(this);
         };
@@ -3442,7 +3473,7 @@ exports.Rational = Rational;
  * @module Polynom
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
+exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE_POSITION = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
 const fraction_1 = __webpack_require__(506);
 const numexp_1 = __webpack_require__(735);
 var ZEROTYPE;
@@ -3458,6 +3489,13 @@ var ASYMPTOTE;
     ASYMPTOTE["SLOPE"] = "ao";
     ASYMPTOTE["HOLE"] = "hole";
 })(ASYMPTOTE = exports.ASYMPTOTE || (exports.ASYMPTOTE = {}));
+var ASYMPTOTE_POSITION;
+(function (ASYMPTOTE_POSITION) {
+    ASYMPTOTE_POSITION["LT"] = "LT";
+    ASYMPTOTE_POSITION["RT"] = "RT";
+    ASYMPTOTE_POSITION["LB"] = "LB";
+    ASYMPTOTE_POSITION["RB"] = "RB";
+})(ASYMPTOTE_POSITION = exports.ASYMPTOTE_POSITION || (exports.ASYMPTOTE_POSITION = {}));
 var FUNCTION_EXTREMA;
 (function (FUNCTION_EXTREMA) {
     FUNCTION_EXTREMA["MIN"] = "min";
@@ -3467,9 +3505,9 @@ var FUNCTION_EXTREMA;
 })(FUNCTION_EXTREMA = exports.FUNCTION_EXTREMA || (exports.FUNCTION_EXTREMA = {}));
 var TABLE_OF_SIGNS;
 (function (TABLE_OF_SIGNS) {
-    TABLE_OF_SIGNS[TABLE_OF_SIGNS["DEFAULT"] = 0] = "DEFAULT";
-    TABLE_OF_SIGNS[TABLE_OF_SIGNS["GROWS"] = 1] = "GROWS";
-    TABLE_OF_SIGNS[TABLE_OF_SIGNS["VARIATIONS"] = 2] = "VARIATIONS";
+    TABLE_OF_SIGNS["SIGNS"] = "signs";
+    TABLE_OF_SIGNS["GROWS"] = "grows";
+    TABLE_OF_SIGNS["VARIATIONS"] = "variations";
 })(TABLE_OF_SIGNS = exports.TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = {}));
 /**
  * The study class is a "function study" class that will get:
@@ -3723,7 +3761,7 @@ class Study {
     ;
     makeSigns() {
         return {
-            type: TABLE_OF_SIGNS.DEFAULT,
+            type: TABLE_OF_SIGNS.SIGNS,
             fx: null,
             factors: [],
             zeroes: [],
@@ -3799,8 +3837,7 @@ class RationalStudy extends study_1.Study {
     }
     ;
     makeSigns() {
-        let tos = this._getSigns(this.fx, this.zeroes);
-        return tos;
+        return this._getSigns(this.fx, this.zeroes);
     }
     ;
     makeAsymptotes() {
@@ -3809,8 +3846,8 @@ class RationalStudy extends study_1.Study {
         let asymptotes = [];
         this.zeroes.filter(x => x.type === study_1.ZEROTYPE.DEFENCE).forEach(zero => {
             // Check if it's a hole or an asymptote
-            // TODO: Check for a hole ! Means calculate the limits !
             let Ztype = study_1.ASYMPTOTE.VERTICAL, tex = `x=${zero.tex}`;
+            // Check if it's a hole: the reduced polynom should not be null
             if (zero.exact instanceof fraction_1.Fraction) {
                 if (reduced.denominator.evaluate(zero.exact).isNotZero()) {
                     Ztype = study_1.ASYMPTOTE.HOLE;
@@ -3823,14 +3860,45 @@ class RationalStudy extends study_1.Study {
                     tex = `(${zero.tex};${reduced.evaluate(zero.value).tex})`;
                 }
             }
+            // Get the position before and after the asymptote.
+            const delta = 0.000001;
+            let before = this.fx.evaluateAsNumeric(zero.value - delta), after = this.fx.evaluateAsNumeric(zero.value + delta), position = [], pm = "";
+            if (after < -10000) {
+                position.push(study_1.ASYMPTOTE_POSITION.RB);
+                pm += "m";
+            }
+            else if (after > 10000) {
+                position.push(study_1.ASYMPTOTE_POSITION.RT);
+                pm += "p";
+            }
+            if (before < -10000) {
+                position.push(study_1.ASYMPTOTE_POSITION.LB);
+                pm += "m";
+            }
+            else if (before > 10000) {
+                position.push(study_1.ASYMPTOTE_POSITION.LT);
+                pm += "p";
+            }
+            // Left and right are to infinity
+            // TODO: handle the case were one side of the asymptote isn't infinity (not possible in rational study?!)
+            if (pm === "pp") {
+                pm = "+";
+            }
+            else if (pm === "mm") {
+                pm = "-";
+            }
+            else {
+                pm = `\\${pm}`;
+            }
             asymptotes.push({
                 fx: null,
                 type: Ztype,
                 tex: tex,
                 zero: zero,
-                limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = \\pm\\infty`,
+                limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = ${pm}\\infty`,
                 deltaX: null,
-                tableOfSign: null
+                tableOfSign: null,
+                position
             });
         });
         // Sloped asymptote
@@ -3838,6 +3906,7 @@ class RationalStudy extends study_1.Study {
         if (NDegree.isEqual(DDegree)) {
             let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient), Htex = H.tex;
             let { reminder } = reduced.euclidian(), deltaX = new rational_1.Rational(reminder, reduced.denominator);
+            // Determine the position above or below on the left / right of the asymptote.
             asymptotes.push({
                 fx: new polynom_1.Polynom(H),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
@@ -3845,7 +3914,8 @@ class RationalStudy extends study_1.Study {
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX,
-                tableOfSign: this._getSigns(deltaX)
+                tableOfSign: this._getSigns(deltaX),
+                position: this._getHorizontalAsymptoteRelativePositon(deltaX)
             });
         }
         else if (DDegree.greater(NDegree)) {
@@ -3856,7 +3926,8 @@ class RationalStudy extends study_1.Study {
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${0}`,
                 deltaX: null,
-                tableOfSign: null
+                tableOfSign: null,
+                position: this._getHorizontalAsymptoteRelativePositon(this.fx)
             });
         }
         else if (NDegree.value - 1 === DDegree.value) {
@@ -3869,12 +3940,29 @@ class RationalStudy extends study_1.Study {
                 zero: null,
                 limits: ``,
                 deltaX: new rational_1.Rational(reminder, reduced.denominator),
-                tableOfSign: this._getSigns(deltaX)
+                tableOfSign: this._getSigns(deltaX),
+                position: this._getHorizontalAsymptoteRelativePositon(deltaX)
             });
         }
         return asymptotes;
     }
     ;
+    _getHorizontalAsymptoteRelativePositon(deltaX, delta = 1000000) {
+        let position = [], before = deltaX.evaluateAsNumeric(-delta), after = deltaX.evaluateAsNumeric(delta);
+        if (before >= 0) {
+            position.push(study_1.ASYMPTOTE_POSITION.LT);
+        }
+        else {
+            position.push(study_1.ASYMPTOTE_POSITION.LB);
+        }
+        if (after >= 0) {
+            position.push(study_1.ASYMPTOTE_POSITION.RT);
+        }
+        else {
+            position.push(study_1.ASYMPTOTE_POSITION.RB);
+        }
+        return position;
+    }
     makeDerivative() {
         let dx = this.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
         let result = this.makeGrowsResult(tos);
@@ -3970,8 +4058,12 @@ const numeric_1 = __webpack_require__(956);
  */
 class Fraction {
     constructor(value, denominatorOrPeriodic) {
-        // ------------------------------------------
-        // Creation / parsing functions
+        this.isApproximative = () => {
+            return this._numerator.toString().length >= 15 && this._denominator.toString().length >= 15;
+        };
+        this.isExact = () => {
+            return !this.isApproximative();
+        };
         // ------------------------------------------
         /**
          * Parse the value to get the numerator and denominator
@@ -3988,15 +4080,15 @@ class Fraction {
             }
             switch (typeof value) {
                 case "string":
-                    // Split the sting value in two parts: Numerator/Denominator
+                    // Split the string value in two parts: Numerator/Denominator
                     S = value.split('/');
                     // Security checks
                     if (S.length > 2)
-                        throw "Two many divide signs";
+                        throw value + " has too many divide signs";
                     if (S.map(x => x === '' || isNaN(Number(x))).includes(true))
-                        throw "Not a number";
+                        throw value + " is not a valid number";
                     if (S.length === 1) {
-                        // No divide sign
+                        // No divide sign - it's a number
                         return this.parse(+S[0]);
                     }
                     else if (S.length === 2) {
@@ -4013,6 +4105,7 @@ class Fraction {
                     }
                     else {
                         // More than one divide sign ?
+                        // This is impossible
                         this._numerator = NaN;
                         this._denominator = 1;
                     }
@@ -4053,6 +4146,8 @@ class Fraction {
             }
             return this;
         };
+        // ------------------------------------------
+        // Mathematical operations
         this.clone = () => {
             let F = new Fraction();
             F.numerator = +this._numerator;
@@ -4079,8 +4174,6 @@ class Fraction {
             this._denominator = 1;
             return this;
         };
-        // ------------------------------------------
-        // Mathematical operations
         // ------------------------------------------
         this.opposed = () => {
             this._numerator = -this._numerator;
@@ -4360,22 +4453,32 @@ class Fraction {
         if (this.isInfinity()) {
             return `${this.sign() === 1 ? '+' : '-'}\\infty`;
         }
-        if (this._denominator === 1) {
-            return `${this._numerator}`;
-        }
-        else if (this._numerator < 0) {
-            return `-\\frac{ ${-this._numerator} }{ ${this._denominator} }`;
+        if (this.isExact()) {
+            if (this._denominator === 1) {
+                return `${this._numerator}`;
+            }
+            else if (this._numerator < 0) {
+                return `-\\frac{ ${-this._numerator} }{ ${this._denominator} }`;
+            }
+            else {
+                return `\\frac{ ${this._numerator} }{ ${this._denominator} }`;
+            }
         }
         else {
-            return `\\frac{ ${this._numerator} }{ ${this._denominator} }`;
+            return this.value.toFixed(3);
         }
     }
     get display() {
-        if (this._denominator === 1) {
-            return `${this._numerator}`;
+        if (this.isExact()) {
+            if (this._denominator === 1) {
+                return `${this._numerator}`;
+            }
+            else {
+                return `${this._numerator}/${this._denominator}`;
+            }
         }
         else {
-            return `${this._numerator}/${this._denominator}`;
+            return this.value.toFixed(3);
         }
     }
     // Helper function to display fractions
@@ -4410,6 +4513,8 @@ Fraction.min = (...fractions) => {
     }
     return M;
 };
+// ------------------------------------------
+// Creation / parsing functions
 Fraction.average = (...fractions) => {
     let M = new Fraction().zero();
     for (let f of fractions) {

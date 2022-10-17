@@ -31,6 +31,12 @@ export enum ASYMPTOTE {
     HOLE = "hole"
 }
 
+export enum ASYMPTOTE_POSITION {
+    "LT" = "LT",
+    "RT" = "RT",
+    "LB" = "LB",
+    "RB" = "RB"
+}
 export interface IAsymptote {
     fx: Polynom,
     deltaX: StudyableFunction
@@ -38,7 +44,8 @@ export interface IAsymptote {
     tex: string,
     type: ASYMPTOTE,
     zero: IZero,
-    tableOfSign: ITableOfSigns
+    position: ASYMPTOTE_POSITION[]
+    tableOfSign: ITableOfSigns,
 }
 
 export enum FUNCTION_EXTREMA {
@@ -74,7 +81,7 @@ export interface ITableOfSigns {
 export enum TABLE_OF_SIGNS {
     SIGNS = "signs",
     GROWS = "grows",
-    VARIATIONS = "variatins"
+    VARIATIONS = "variations"
 }
 
 /**
@@ -150,7 +157,9 @@ export class Study {
         this._variations = this.makeVariation()
 
         this._signs.tex = this.texSigns
+
         this._derivative.tex = this.texGrows
+
         this._variations.tex = this.texVariations
 
     };

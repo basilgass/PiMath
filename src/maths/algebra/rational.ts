@@ -211,6 +211,10 @@ export class Rational {
         return N.divide(D)
     };
 
+    evaluateAsNumeric = (values: { [Key: string]: number } | number): number => {
+        return this._numerator.evaluateAsNumeric(values) / this._denominator.evaluateAsNumeric(values)
+    }
+
     study = (): RationalStudy => {
         return new RationalStudy(this)
     }

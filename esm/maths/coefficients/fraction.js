@@ -9,8 +9,12 @@ const numeric_1 = require("../numeric");
  */
 class Fraction {
     constructor(value, denominatorOrPeriodic) {
-        // ------------------------------------------
-        // Creation / parsing functions
+        this.isApproximative = () => {
+            return this._numerator.toString().length >= 15 && this._denominator.toString().length >= 15;
+        };
+        this.isExact = () => {
+            return !this.isApproximative();
+        };
         // ------------------------------------------
         /**
          * Parse the value to get the numerator and denominator
@@ -27,15 +31,15 @@ class Fraction {
             }
             switch (typeof value) {
                 case "string":
-                    // Split the sting value in two parts: Numerator/Denominator
+                    // Split the string value in two parts: Numerator/Denominator
                     S = value.split('/');
                     // Security checks
                     if (S.length > 2)
-                        throw "Two many divide signs";
+                        throw value + " has too many divide signs";
                     if (S.map(x => x === '' || isNaN(Number(x))).includes(true))
-                        throw "Not a number";
+                        throw value + " is not a valid number";
                     if (S.length === 1) {
-                        // No divide sign
+                        // No divide sign - it's a number
                         return this.parse(+S[0]);
                     }
                     else if (S.length === 2) {
@@ -52,6 +56,7 @@ class Fraction {
                     }
                     else {
                         // More than one divide sign ?
+                        // This is impossible
                         this._numerator = NaN;
                         this._denominator = 1;
                     }
@@ -92,6 +97,8 @@ class Fraction {
             }
             return this;
         };
+        // ------------------------------------------
+        // Mathematical operations
         this.clone = () => {
             let F = new Fraction();
             F.numerator = +this._numerator;
@@ -118,8 +125,6 @@ class Fraction {
             this._denominator = 1;
             return this;
         };
-        // ------------------------------------------
-        // Mathematical operations
         // ------------------------------------------
         this.opposed = () => {
             this._numerator = -this._numerator;
@@ -399,22 +404,27 @@ class Fraction {
         if (this.isInfinity()) {
             return `${this.sign() === 1 ? '+' : '-'}\\infty`;
         }
-        if (this._denominator === 1) {
-            return `${this._numerator}`;
-        }
-        else if (this._numerator < 0) {
-            return `-\\frac{ ${-this._numerator} }{ ${this._denominator} }`;
-        }
-        else {
-            return `\\frac{ ${this._numerator} }{ ${this._denominator} }`;
+        if (this.isExact()) {
+            if (this._denominator === 1) {
+                return `${this._numerator}`;
+            } else if (this._numerator < 0) {
+                return `-\\frac{ ${-this._numerator} }{ ${this._denominator} }`;
+            } else {
+                return `\\frac{ ${this._numerator} }{ ${this._denominator} }`;
+            }
+        } else {
+            return this.value.toFixed(3);
         }
     }
     get display() {
-        if (this._denominator === 1) {
-            return `${this._numerator}`;
-        }
-        else {
-            return `${this._numerator}/${this._denominator}`;
+        if (this.isExact()) {
+            if (this._denominator === 1) {
+                return `${this._numerator}`;
+            } else {
+                return `${this._numerator}/${this._denominator}`;
+            }
+        } else {
+            return this.value.toFixed(3);
         }
     }
     // Helper function to display fractions
@@ -449,6 +459,8 @@ Fraction.min = (...fractions) => {
     }
     return M;
 };
+// ------------------------------------------
+// Creation / parsing functions
 Fraction.average = (...fractions) => {
     let M = new Fraction().zero();
     for (let f of fractions) {
