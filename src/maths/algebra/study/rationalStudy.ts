@@ -131,7 +131,7 @@ export class RationalStudy extends Study {
                 fx: new Polynom(H),
                 type: ASYMPTOTE.HORIZONTAL,
                 tex: `y=${Htex}`,
-                display: H.display,
+                display: `y=${H.display}`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX,

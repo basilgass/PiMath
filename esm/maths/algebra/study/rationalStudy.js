@@ -116,7 +116,7 @@ class RationalStudy extends study_1.Study {
                 fx: new polynom_1.Polynom(H),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
                 tex: `y=${Htex}`,
-                display: H.display,
+                display: `y=${H.display}`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX,
@@ -156,6 +156,11 @@ class RationalStudy extends study_1.Study {
     }
     ;
 
+    makeSigns() {
+        return this._getSigns(this.fx, this.zeroes);
+    }
+    ;
+
     makeDerivative() {
         let dx = this.fx.clone().derivative(),
             tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
@@ -163,11 +168,6 @@ class RationalStudy extends study_1.Study {
         tos.signs.push(result.growsLine);
         tos.extremes = result.extremes;
         return tos;
-    }
-    ;
-
-    makeSigns() {
-        return this._getSigns(this.fx, this.zeroes);
     }
     ;
 
@@ -181,7 +181,6 @@ class RationalStudy extends study_1.Study {
         return tos;
     }
     ;
-
     _getZeroes(fx) {
         // All zeroes.
         let zeroes = [];

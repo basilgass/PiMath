@@ -4035,7 +4035,7 @@ class RationalStudy extends study_1.Study {
                 fx: new polynom_1.Polynom(H),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
                 tex: `y=${Htex}`,
-                display: H.display,
+                display: `y=${H.display}`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX,
