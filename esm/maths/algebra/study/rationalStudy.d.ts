@@ -16,7 +16,7 @@
 import { ASYMPTOTE_POSITION, IAsymptote, ITableOfSigns, IZero, Study, StudyableFunction, StudyConfig } from "../study";
 import { Rational } from "../rational";
 export declare class RationalStudy extends Study {
-    constructor(fx: StudyableFunction, config?: StudyConfig);
+    constructor(fx: StudyableFunction, config?: StudyConfig | string);
     makeZeroes(): IZero[];
     makeSigns(): ITableOfSigns;
     makeAsymptotes(): IAsymptote[];

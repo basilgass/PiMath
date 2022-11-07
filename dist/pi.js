@@ -3542,8 +3542,8 @@ class Rational {
         this.evaluateAsNumeric = (values) => {
             return this._numerator.evaluateAsNumeric(values) / this._denominator.evaluateAsNumeric(values);
         };
-        this.study = () => {
-            return new rationalStudy_1.RationalStudy(this);
+        this.study = (config) => {
+            return new rationalStudy_1.RationalStudy(this, config);
         };
         if (numerator instanceof polynom_1.Polynom) {
             this._numerator = numerator.clone();

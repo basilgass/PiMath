@@ -8,6 +8,7 @@ import {Fraction} from "../coefficients/fraction";
 import {literalType} from "./monom";
 import {PARTICULAR_SOLUTION} from "./equation";
 import {RationalStudy} from "./study/rationalStudy";
+import {StudyConfig} from "./study";
 
 /**
  * Rational class can handle rational polynoms
@@ -221,7 +222,7 @@ export class Rational {
         return this._numerator.evaluateAsNumeric(values) / this._denominator.evaluateAsNumeric(values)
     }
 
-    study = (): RationalStudy => {
-        return new RationalStudy(this)
+    study = (config?:StudyConfig|string): RationalStudy => {
+        return new RationalStudy(this, config)
     }
 }

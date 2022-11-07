@@ -30,7 +30,7 @@ import {Fraction} from "../../coefficients/fraction";
 import {Polynom} from "../polynom";
 
 export class RationalStudy extends Study {
-    constructor(fx: StudyableFunction, config?: StudyConfig) {
+    constructor(fx: StudyableFunction, config?: StudyConfig|string) {
         super(fx, config)
 
         return this

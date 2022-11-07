@@ -6,6 +6,7 @@ import { IEuclidian, Polynom } from "./polynom";
 import { Fraction } from "../coefficients/fraction";
 import { literalType } from "./monom";
 import { RationalStudy } from "./study/rationalStudy";
+import { StudyConfig } from "./study";
 /**
  * Rational class can handle rational polynoms
  */
@@ -40,5 +41,5 @@ export declare class Rational {
     evaluateAsNumeric: (values: number | {
         [Key: string]: number;
     }) => number;
-    study: () => RationalStudy;
+    study: (config?: StudyConfig | string) => RationalStudy;
 }
