@@ -49,16 +49,24 @@ var TABLE_OF_SIGNS;
  * variations       : variation table + tex output  using tkz-tab
  */
 class Study {
-    constructor(fx) {
+    constructor(fx, config) {
         this.makeStudy = () => {
             this._zeroes = this.makeZeroes();
-            this._signs = this.makeSigns();
-            this._asymptotes = this.makeAsymptotes();
-            this._derivative = this.makeDerivative();
-            this._variations = this.makeVariation();
-            this._signs.tex = this.texSigns;
-            this._derivative.tex = this.texGrows;
-            this._variations.tex = this.texVariations;
+            if (this.config.signs)
+                this._signs = this.makeSigns();
+            if (this.config.asymptotes)
+                this._asymptotes = this.makeAsymptotes();
+            if (this.config.derivative)
+                this._derivative = this.makeDerivative();
+            if (this.config.variations)
+                this._variations = this.makeVariation();
+            // Table of signs / derivative / variation
+            if (this.config.signs)
+                this._signs.tex = this.texSigns;
+            if (this.config.derivative)
+                this._derivative.tex = this.texGrows;
+            if (this.config.variations)
+                this._variations.tex = this.texVariations;
         };
         this.indexOfZero = (zeroes, zero) => {
             for (let i = 0; i < zeroes.length; i++) {
@@ -189,35 +197,6 @@ class Study {
             let extremes = {}, varsLine = [];
             return { varsLine, extremes };
         };
-        this._makeTexFromTableOfSigns = (tos) => {
-            let factors = tos.factors.map(x => `\\(${x.tex}\\)/1`), factorsFx = "\\(fx\\)/1.2", zeroes = tos.zeroes;
-            // Add the last lines "label"
-            if (tos.type === TABLE_OF_SIGNS.GROWS) {
-                factorsFx = "\\(f'(x)\\)/1.2,\\(f(x)\\)/2";
-            }
-            else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
-                factorsFx = "\\(f''(x)\\)/1.2,\\(f(x)\\)/2";
-            }
-            // Create the tikzPicture header
-            let tex = `\\begin{tikzpicture}
-\\tkzTabInit[lgt=3,espcl=2,deltacl=0]{/1.2,${factors.join(',')},/.1,${factorsFx} }{{\\scriptsize \\hspace{1cm} \\(-\\infty\\)},\\(${zeroes.map(x => x.tex).join('\\),\\(')}\\),{\\scriptsize \\hspace{-1cm} \\(+\\infty\\)}}`;
-            let pos;
-            for (pos = 0; pos < tos.factors.length; pos++) {
-                tex += (`\n\\tkzTabLine{${tos.signs[pos].join(',')}}`);
-            }
-            // Add the result line
-            tex += (`\n\\tkzTabLine{${tos.signs[pos].join(',')}}`);
-            // Add the grows / vars line
-            if (tos.type === TABLE_OF_SIGNS.GROWS) {
-                tex += (`\n\\tkzTabVar{${tos.signs[pos + 1].join(',')}}`);
-            }
-            else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
-                // TODO: Check variations table for as tex
-                tex += (`\n\\tkzTabVar{${tos.signs[pos + 1].join(',')}}`);
-            }
-            tex += `\n\\end{tikzpicture}`;
-            return tex;
-        };
         this.drawCode = () => {
             // Function as string
             let code = `f(x)=${this.fx.plotFunction}`;
@@ -251,7 +230,63 @@ class Study {
             });
             return code;
         };
+        this._makeTexFromTableOfSigns = (tos) => {
+            let factors = tos.factors.map(x => `\\(${x.tex}\\)/1`), factorsFx = `\\(${this.name}(x)\\)/1.2`, zeroes = tos.zeroes;
+            // Add the last lines "label"
+            if (tos.type === TABLE_OF_SIGNS.GROWS) {
+                factorsFx = `\\(${this.name}'(x)\\)/1.2,\\(f(x)\\)/2`;
+            }
+            else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
+                factorsFx = `\\(${this.name}''(x)\\)/1.2,\\(f(x)\\)/2`;
+            }
+            // Create the tikzPicture header
+            let tex = `\\begin{tikzpicture}
+\\tkzTabInit[lgt=3,espcl=2,deltacl=0]{/1.2,${factors.join(',')},/.1,${factorsFx} }{{\\scriptsize \\hspace{1cm} \\(-\\infty\\)},\\(${zeroes.map(x => x.tex).join('\\),\\(')}\\),{\\scriptsize \\hspace{-1cm} \\(+\\infty\\)}}`;
+            let pos;
+            for (pos = 0; pos < tos.factors.length; pos++) {
+                tex += (`\n\\tkzTabLine{${tos.signs[pos].join(',')}}`);
+            }
+            // Add the result line
+            tex += (`\n\\tkzTabLine{${tos.signs[pos].join(',')}}`);
+            // Add the grows / vars line
+            if (tos.type === TABLE_OF_SIGNS.GROWS) {
+                tex += (`\n\\tkzTabVar{${tos.signs[pos + 1].join(',')}}`);
+            }
+            else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
+                // TODO: Check variations table for as tex
+                tex += (`\n\\tkzTabVar{${tos.signs[pos + 1].join(',')}}`);
+            }
+            tex += `\n\\end{tikzpicture}`;
+            return tex;
+        };
         this.fx = fx;
+        this.config = {
+            name: 'f',
+            domain: true,
+            asymptotes: true,
+            signs: true,
+            derivative: true,
+            variations: true,
+        };
+        if (config) {
+            if (typeof config === 'string') {
+                const d = config.split(',');
+                this.config = {};
+                let n = d.filter(x => x.includes('(x)'));
+                if (n.length === 1) {
+                    this.config.name = n[0].split('(x)')[0];
+                }
+                this.config.domain = d.includes('d');
+                this.config.asymptotes = d.includes('a');
+                this.config.signs = d.includes('signs');
+                this.config.derivative = d.includes('dx');
+                this.config.variations = d.includes('ddx');
+            }
+            else {
+                this.config = config;
+            }
+        }
+        this.name = this.config?.name ?? 'f';
         this.makeStudy();
         return this;
     }

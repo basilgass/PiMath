@@ -13,9 +13,9 @@
  * ddx              : dérivée seconde
  * variations       : variation table + tex output  using tkz-tab
  */
-import { IAsymptote, ITableOfSigns, IZero, Study, StudyableFunction } from "../study";
+import { IAsymptote, ITableOfSigns, IZero, Study, StudyableFunction, StudyConfig } from "../study";
 export declare class RationalStudy extends Study {
-    constructor(fx: StudyableFunction);
+    constructor(fx: StudyableFunction, config?: StudyConfig);
     makeZeroes(): IZero[];
     makeSigns(): ITableOfSigns;
     makeAsymptotes(): IAsymptote[];

@@ -40,4 +40,17 @@ describe('Study tests', () => {
             "Z_9(1.3333333333333333,0)*")
     });
 
+    it('should make table of sign', function () {
+        const stud = new RationalStudy(
+            new Rational('3x-5', 'x+5'),
+            {
+                name: 'g',
+                domain: true,
+                signs: true
+            }
+        )
+
+        console.log(stud)
+    });
+
 })

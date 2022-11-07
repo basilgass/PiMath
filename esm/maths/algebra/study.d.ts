@@ -22,13 +22,13 @@ export declare enum ASYMPTOTE {
     HOLE = "hole"
 }
 export interface IAsymptote {
-    fx: Polynom;
     deltaX: StudyableFunction;
+    fx: Polynom;
     limits: string;
+    tableOfSign: ITableOfSigns;
     tex: string;
     type: ASYMPTOTE;
     zero: IZero;
-    tableOfSign: ITableOfSigns;
 }
 export declare enum FUNCTION_EXTREMA {
     MIN = "min",
@@ -54,14 +54,22 @@ export interface ITableOfSigns {
     factors: Polynom[];
     fx: StudyableFunction;
     signs: (string[])[];
+    tex: string;
     type: TABLE_OF_SIGNS;
     zeroes: IZero[];
-    tex: string;
 }
 export declare enum TABLE_OF_SIGNS {
     SIGNS = "signs",
     GROWS = "grows",
     VARIATIONS = "variatins"
+}
+export interface StudyConfig {
+    asymptotes?: boolean;
+    derivative?: boolean;
+    domain?: boolean;
+    name?: string;
+    signs?: boolean;
+    variations?: boolean;
 }
 /**
  * The study class is a "function study" class that will get:
@@ -85,7 +93,9 @@ export declare class Study {
     private _signs;
     private _variations;
     private _zeroes;
-    constructor(fx: StudyableFunction);
+    private config;
+    private name;
+    constructor(fx: StudyableFunction, config?: StudyConfig | string);
     get zeroes(): IZero[];
     get domain(): string;
     get signs(): ITableOfSigns;
@@ -115,6 +125,6 @@ export declare class Study {
     makeAsymptotes(): IAsymptote[];
     makeDerivative(): ITableOfSigns;
     makeVariation(): ITableOfSigns;
-    private _makeTexFromTableOfSigns;
     drawCode: () => string;
+    private _makeTexFromTableOfSigns;
 }

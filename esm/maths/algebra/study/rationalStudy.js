@@ -21,8 +21,8 @@ const rational_1 = require("../rational");
 const fraction_1 = require("../../coefficients/fraction");
 const polynom_1 = require("../polynom");
 class RationalStudy extends study_1.Study {
-    constructor(fx) {
-        super(fx);
+    constructor(fx, config) {
+        super(fx, config);
         return this;
     }
     makeZeroes() {

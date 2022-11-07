@@ -20,7 +20,7 @@ import {
     ITableOfSigns,
     IZero,
     Study,
-    StudyableFunction,
+    StudyableFunction, StudyConfig,
     TABLE_OF_SIGNS,
     ZEROTYPE
 } from "../study";
@@ -29,8 +29,8 @@ import {Fraction} from "../../coefficients/fraction";
 import {Polynom} from "../polynom";
 
 export class RationalStudy extends Study {
-    constructor(fx: StudyableFunction) {
-        super(fx)
+    constructor(fx: StudyableFunction, config?: StudyConfig) {
+        super(fx, config)
 
         return this
     }
