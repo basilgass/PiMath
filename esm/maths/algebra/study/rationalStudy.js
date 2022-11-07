@@ -25,27 +25,14 @@ class RationalStudy extends study_1.Study {
         super(fx, config);
         return this;
     }
-
     makeZeroes() {
         return this._getZeroes(this.fx);
     }
     ;
-
-    _getHorizontalAsymptoteRelativePositon(deltaX, delta = 1000000) {
-        let position = [], before = deltaX.evaluateAsNumeric(-delta), after = deltaX.evaluateAsNumeric(delta);
-        if (before >= 0) {
-            position.push(study_1.ASYMPTOTE_POSITION.LT);
-        } else {
-            position.push(study_1.ASYMPTOTE_POSITION.LB);
-        }
-        if (after >= 0) {
-            position.push(study_1.ASYMPTOTE_POSITION.RT);
-        } else {
-            position.push(study_1.ASYMPTOTE_POSITION.RB);
-        }
-        return position;
+    makeSigns() {
+        return this._getSigns(this.fx, this.zeroes);
     }
-
+    ;
     makeAsymptotes() {
         const reduced = this.fx.clone().reduce();
         // Vertical
@@ -60,7 +47,8 @@ class RationalStudy extends study_1.Study {
                     tex = `(${zero.tex};${reduced.evaluate(zero.exact).tex})`;
                     display = `(${zero.display};${reduced.evaluate(zero.exact).display})`;
                 }
-            } else {
+            }
+            else {
                 if (reduced.denominator.evaluate(zero.value).isNotZero()) {
                     Ztype = study_1.ASYMPTOTE.HOLE;
                     tex = `(${zero.tex};${reduced.evaluate(zero.value).tex})`;
@@ -69,19 +57,20 @@ class RationalStudy extends study_1.Study {
             }
             // Get the position before and after the asymptote.
             const delta = 0.000001;
-            let before = this.fx.evaluateAsNumeric(zero.value - delta),
-                after = this.fx.evaluateAsNumeric(zero.value + delta), position = [], pm = "";
+            let before = this.fx.evaluateAsNumeric(zero.value - delta), after = this.fx.evaluateAsNumeric(zero.value + delta), position = [], pm = "";
             if (after < -10000) {
                 position.push(study_1.ASYMPTOTE_POSITION.RB);
                 pm += "m";
-            } else if (after > 10000) {
+            }
+            else if (after > 10000) {
                 position.push(study_1.ASYMPTOTE_POSITION.RT);
                 pm += "p";
             }
             if (before < -10000) {
                 position.push(study_1.ASYMPTOTE_POSITION.LB);
                 pm += "m";
-            } else if (before > 10000) {
+            }
+            else if (before > 10000) {
                 position.push(study_1.ASYMPTOTE_POSITION.LT);
                 pm += "p";
             }
@@ -89,9 +78,11 @@ class RationalStudy extends study_1.Study {
             // TODO: handle the case were one side of the asymptote isn't infinity (not possible in rational study?!)
             if (pm === "pp") {
                 pm = "+";
-            } else if (pm === "mm") {
+            }
+            else if (pm === "mm") {
                 pm = "-";
-            } else {
+            }
+            else {
                 pm = `\\${pm}`;
             }
             asymptotes.push({
@@ -155,26 +146,33 @@ class RationalStudy extends study_1.Study {
         return asymptotes;
     }
     ;
-
-    makeSigns() {
-        return this._getSigns(this.fx, this.zeroes);
+    _getHorizontalAsymptoteRelativePositon(deltaX, delta = 1000000) {
+        let position = [], before = deltaX.evaluateAsNumeric(-delta), after = deltaX.evaluateAsNumeric(delta);
+        if (before >= 0) {
+            position.push(study_1.ASYMPTOTE_POSITION.LT);
+        }
+        else {
+            position.push(study_1.ASYMPTOTE_POSITION.LB);
+        }
+        if (after >= 0) {
+            position.push(study_1.ASYMPTOTE_POSITION.RT);
+        }
+        else {
+            position.push(study_1.ASYMPTOTE_POSITION.RB);
+        }
+        return position;
     }
-    ;
-
     makeDerivative() {
-        let dx = this.fx.clone().derivative(),
-            tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
+        let dx = this.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
         let result = this.makeGrowsResult(tos);
         tos.signs.push(result.growsLine);
         tos.extremes = result.extremes;
         return tos;
     }
     ;
-
     makeVariation() {
         // Get the zeroes, make signs.
-        let dx = this.derivative.fx.clone().derivative(),
-            tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
+        let dx = this.derivative.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
         let result = this.makeVariationsResult(tos);
         tos.signs.push(result.varsLine);
         tos.extremes = result.extremes;

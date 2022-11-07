@@ -2,18 +2,15 @@
  * Rational polynom module contains everything necessary to handle rational polynoms.
  * @module Polynom
  */
-import {Rational} from "./rational";
-import {ISolution} from "./equation";
-import {Polynom} from "./polynom";
-
+import { Rational } from "./rational";
+import { ISolution } from "./equation";
+import { Polynom } from "./polynom";
 export declare type StudyableFunction = Rational;
-
 export declare enum ZEROTYPE {
     ZERO = "z",
     DEFENCE = "d",
     NOTHING = "t"
 }
-
 export interface IZero extends ISolution {
     extrema: FUNCTION_EXTREMA;
     type: ZEROTYPE;
@@ -31,15 +28,15 @@ export declare enum ASYMPTOTE_POSITION {
     "RB" = "RB"
 }
 export interface IAsymptote {
-    fx: Polynom;
     deltaX: StudyableFunction;
-    limits: string;
-    tex: string;
     display: string;
-    type: ASYMPTOTE;
-    zero: IZero;
+    fx: Polynom;
+    limits: string;
     position: ASYMPTOTE_POSITION[];
     tableOfSign: ITableOfSigns;
+    tex: string;
+    type: ASYMPTOTE;
+    zero: IZero;
 }
 export declare enum FUNCTION_EXTREMA {
     MIN = "min",
@@ -65,14 +62,22 @@ export interface ITableOfSigns {
     factors: Polynom[];
     fx: StudyableFunction;
     signs: (string[])[];
+    tex: string;
     type: TABLE_OF_SIGNS;
     zeroes: IZero[];
-    tex: string;
 }
 export declare enum TABLE_OF_SIGNS {
     SIGNS = "signs",
     GROWS = "grows",
-    VARIATIONS = "variations"
+    VARIATIONS = "variatins"
+}
+export interface StudyConfig {
+    asymptotes?: boolean;
+    derivative?: boolean;
+    domain?: boolean;
+    name?: string;
+    signs?: boolean;
+    variations?: boolean;
 }
 /**
  * The study class is a "function study" class that will get:
@@ -96,7 +101,9 @@ export declare class Study {
     private _signs;
     private _variations;
     private _zeroes;
-    constructor(fx: StudyableFunction);
+    private config;
+    private name;
+    constructor(fx: StudyableFunction, config?: StudyConfig | string);
     get zeroes(): IZero[];
     get domain(): string;
     get signs(): ITableOfSigns;
@@ -126,6 +133,6 @@ export declare class Study {
     makeAsymptotes(): IAsymptote[];
     makeDerivative(): ITableOfSigns;
     makeVariation(): ITableOfSigns;
-    private _makeTexFromTableOfSigns;
     drawCode: () => string;
+    private _makeTexFromTableOfSigns;
 }

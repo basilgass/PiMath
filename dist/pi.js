@@ -3628,7 +3628,7 @@ var TABLE_OF_SIGNS;
 (function (TABLE_OF_SIGNS) {
     TABLE_OF_SIGNS["SIGNS"] = "signs";
     TABLE_OF_SIGNS["GROWS"] = "grows";
-    TABLE_OF_SIGNS["VARIATIONS"] = "variations";
+    TABLE_OF_SIGNS["VARIATIONS"] = "variatins";
 })(TABLE_OF_SIGNS = exports.TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = {}));
 /**
  * The study class is a "function study" class that will get:

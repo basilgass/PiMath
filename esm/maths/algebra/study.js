@@ -3,7 +3,7 @@
  * Rational polynom module contains everything necessary to handle rational polynoms.
  * @module Polynom
  */
-Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE_POSITION = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
 const fraction_1 = require("../coefficients/fraction");
 const numexp_1 = require("../expressions/numexp");
@@ -38,7 +38,7 @@ var TABLE_OF_SIGNS;
 (function (TABLE_OF_SIGNS) {
     TABLE_OF_SIGNS["SIGNS"] = "signs";
     TABLE_OF_SIGNS["GROWS"] = "grows";
-    TABLE_OF_SIGNS["VARIATIONS"] = "variations";
+    TABLE_OF_SIGNS["VARIATIONS"] = "variatins";
 })(TABLE_OF_SIGNS = exports.TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = {}));
 /**
  * The study class is a "function study" class that will get:

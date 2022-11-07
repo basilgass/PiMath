@@ -327,36 +327,35 @@ class Equation {
             }
         };
         this._solveDegree1 = (letter) => {
-            const m1 = this._polynom.monomByDegree(1, letter).coefficient,
-                m0 = this._polynom.monomByDegree(0, letter).coefficient, v = m0.clone().opposed().divide(m1);
+            const m1 = this._polynom.monomByDegree(1, letter).coefficient, m0 = this._polynom.monomByDegree(0, letter).coefficient, v = m0.clone().opposed().divide(m1);
             let s, d;
             if (this.isStrictEqual()) {
                 if (m1.value === 0) {
                     // In this case, the coefficient of the x variable is zero.
                     if (m0.value === 0) {
                         this._solutions = [{
-                            tex: this._real,
-                            display: "RR",
-                            value: NaN,
-                            exact: false
-                        }];
+                                tex: this._real,
+                                display: "RR",
+                                value: NaN,
+                                exact: false
+                            }];
                     }
                     else {
                         this._solutions = [{
-                            tex: this._varnothing,
-                            display: "O/",
-                            value: NaN,
-                            exact: false
-                        }];
+                                tex: this._varnothing,
+                                display: "O/",
+                                value: NaN,
+                                exact: false
+                            }];
                     }
                 }
                 else {
                     this._solutions = [{
-                        tex: v.tex,
-                        display: v.display,
-                        value: v.value,
-                        exact: v
-                    }];
+                            tex: v.tex,
+                            display: v.display,
+                            value: v.value,
+                            exact: v
+                        }];
                 }
             }
             else {
@@ -389,11 +388,11 @@ class Equation {
                     }
                 }
                 this._solutions = [{
-                    tex: s,
-                    display: d,
-                    value: NaN,
-                    exact: false
-                }];
+                        tex: s,
+                        display: d,
+                        value: NaN,
+                        exact: false
+                    }];
             }
             return this._solutions;
         };
@@ -405,8 +404,7 @@ class Equation {
                 realX2 = (-b + Math.sqrt(delta)) / (2 * a);
                 if (delta > 1.0e5) {
                     // The delta is too big to be parsed !
-                    let v1 = ((-b - Math.sqrt(delta)) / (2 * a)).toFixed(5),
-                        v2 = ((-b + Math.sqrt(delta)) / (2 * a)).toFixed(5);
+                    let v1 = ((-b - Math.sqrt(delta)) / (2 * a)).toFixed(5), v2 = ((-b + Math.sqrt(delta)) / (2 * a)).toFixed(5);
                     this._solutions = [
                         {
                             tex: v1,
@@ -539,19 +537,19 @@ class Equation {
             else if (delta === 0) {
                 const sol = new fraction_1.Fraction(-b, 2 * a).reduce();
                 this._solutions = [{
-                    tex: sol.frac,
-                    display: sol.display,
-                    value: sol.value,
-                    exact: sol
-                }];
+                        tex: sol.frac,
+                        display: sol.display,
+                        value: sol.value,
+                        exact: sol
+                    }];
             }
             else {
                 this._solutions = [{
-                    tex: this._varnothing,
-                    display: "O/",
-                    value: NaN,
-                    exact: false
-                }];
+                        tex: this._varnothing,
+                        display: "O/",
+                        value: NaN,
+                        exact: false
+                    }];
             }
             // Handle now the inequations.
             if (!this.isStrictEqual()) {
@@ -560,50 +558,50 @@ class Equation {
                     sX2 = (realX1 < realX2) ? this._solutions[1].tex : this._solutions[0].tex;
                     if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
                         this._solutions = [{
-                            tex: `\\left]-\\infty ; ${sX1}\\right${this.isAlsoEqual() ? ']' : '['} \\cup \\left${this.isAlsoEqual() ? '[' : ']'}${sX2};+\\infty\\right[`,
-                            display: `]-oo;${sX1}${this.isAlsoEqual() ? ']' : '['}uu${this.isAlsoEqual() ? '[' : ']'}${sX2};+oo[`,
-                            value: NaN,
-                            exact: false
-                        }
+                                tex: `\\left]-\\infty ; ${sX1}\\right${this.isAlsoEqual() ? ']' : '['} \\cup \\left${this.isAlsoEqual() ? '[' : ']'}${sX2};+\\infty\\right[`,
+                                display: `]-oo;${sX1}${this.isAlsoEqual() ? ']' : '['}uu${this.isAlsoEqual() ? '[' : ']'}${sX2};+oo[`,
+                                value: NaN,
+                                exact: false
+                            }
                         ];
                     }
                     else {
                         this._solutions = [{
-                            tex: `\\left${this.isAlsoEqual() ? '[' : ']'}${sX1} ; ${sX2}\\right${this.isAlsoEqual() ? ']' : '['}`,
-                            display: `${this.isAlsoEqual() ? '[' : ']'}${sX1};${sX2}${this.isAlsoEqual() ? ']' : '['}`,
-                            value: NaN,
-                            exact: false
-                        }];
+                                tex: `\\left${this.isAlsoEqual() ? '[' : ']'}${sX1} ; ${sX2}\\right${this.isAlsoEqual() ? ']' : '['}`,
+                                display: `${this.isAlsoEqual() ? '[' : ']'}${sX1};${sX2}${this.isAlsoEqual() ? ']' : '['}`,
+                                value: NaN,
+                                exact: false
+                            }];
                     }
                 }
                 else if (this._solutions.length === 1 && this._solutions[0].tex !== this._varnothing) {
                     if (!this.isAlsoEqual()) {
                         if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
                             this._solutions = [{
-                                tex: `\\left]-\\infty ; ${this._solutions[0].tex}\\right[ \\cup \\left]${this._solutions[0].tex};+\\infty\\right[`,
-                                display: `]-oo;${this._solutions[0].tex}[uu]${this._solutions[0].tex};+oo[`,
-                                value: NaN,
-                                exact: false
-                            }
+                                    tex: `\\left]-\\infty ; ${this._solutions[0].tex}\\right[ \\cup \\left]${this._solutions[0].tex};+\\infty\\right[`,
+                                    display: `]-oo;${this._solutions[0].tex}[uu]${this._solutions[0].tex};+oo[`,
+                                    value: NaN,
+                                    exact: false
+                                }
                             ];
                         }
                         else {
                             this._solutions = [{
-                                tex: this._varnothing,
-                                display: "O/",
-                                value: NaN,
-                                exact: false
-                            }];
+                                    tex: this._varnothing,
+                                    display: "O/",
+                                    value: NaN,
+                                    exact: false
+                                }];
                         }
                     }
                     else {
                         if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
                             this._solutions = [{
-                                tex: this._real,
-                                display: "RR",
-                                value: NaN,
-                                exact: false
-                            }];
+                                    tex: this._real,
+                                    display: "RR",
+                                    value: NaN,
+                                    exact: false
+                                }];
                         }
                         else {
                             // this._texSolutions = [ this._texSolutions[0] ];
@@ -613,19 +611,19 @@ class Equation {
                 else {
                     if (this.isGreater()) {
                         this._solutions = [{
-                            tex: aF.sign() === 1 ? this._real : this._varnothing,
-                            display: aF.sign() === 1 ? "RR" : "O/",
-                            value: NaN,
-                            exact: false
-                        }];
+                                tex: aF.sign() === 1 ? this._real : this._varnothing,
+                                display: aF.sign() === 1 ? "RR" : "O/",
+                                value: NaN,
+                                exact: false
+                            }];
                     }
                     else {
                         this._solutions = [{
-                            tex: aF.sign() === -1 ? this._real : this._varnothing,
-                            display: aF.sign() === -1 ? "RR" : "O/",
-                            value: NaN,
-                            exact: false
-                        }];
+                                tex: aF.sign() === -1 ? this._real : this._varnothing,
+                                display: aF.sign() === -1 ? "RR" : "O/",
+                                value: NaN,
+                                exact: false
+                            }];
                     }
                 }
             }
