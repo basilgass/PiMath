@@ -10,16 +10,6 @@ describe('Study tests', () => {
             // new Rational('x^2-4x-4', 'x+7')
             new Rational('(3x-2)(x-3)(x+4)', 'x^2-5x+6')
         )
-
-        // console.log(study.texSigns)
-        // console.log(study.asymptotes)
-        // console.log(study.derivative.fx.texFactors)
-        // console.log(study.texGrows)
-        //
-        //
-        // console.log('----------------')
-
-
         let AO = study.asymptotes.filter(x => x.type === ASYMPTOTE.SLOPE)[0]
 
         console.log(AO.tableOfSign.signs)
@@ -40,17 +30,12 @@ describe('Study tests', () => {
             "Z_9(1.3333333333333333,0)*")
     });
 
-    it('should make table of sign', function () {
-        const stud = new RationalStudy(
-            new Rational('3x-5', 'x+5'),
-            {
-                name: 'g',
-                domain: true,
-                signs: true
-            }
+    it('should get the before/after state of asymptotes', function () {
+        const study = new RationalStudy(
+            new Rational("x+5", "x-3")
+            // new Rational("x^2+5", "(x-3)^2")
         )
 
-        console.log(stud)
+        expect(study.asymptotes[0].position).to.have.all.members(["LB", "RT"])
     });
-
 })

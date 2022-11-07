@@ -1,14 +1,17 @@
-import { Polynom } from "./polynom";
-import { literalType } from "./monom";
-import { Fraction } from "../coefficients/fraction";
+import {Polynom} from "./polynom";
+import {literalType} from "./monom";
+import {Fraction} from "../coefficients/fraction";
+
 /**
  * Equation is a class to manage equations...
  */
 export interface ISolution {
     tex: string;
+    display: string;
     value: number;
     exact: unknown;
 }
+
 export declare enum PARTICULAR_SOLUTION {
     real = "\\mathbb{R}",
     varnothing = "\\varnothing"

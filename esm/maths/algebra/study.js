@@ -3,8 +3,8 @@
  * Rational polynom module contains everything necessary to handle rational polynoms.
  * @module Polynom
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
+Object.defineProperty(exports, "__esModule", {value: true});
+exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE_POSITION = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
 const fraction_1 = require("../coefficients/fraction");
 const numexp_1 = require("../expressions/numexp");
 var ZEROTYPE;
@@ -20,6 +20,13 @@ var ASYMPTOTE;
     ASYMPTOTE["SLOPE"] = "ao";
     ASYMPTOTE["HOLE"] = "hole";
 })(ASYMPTOTE = exports.ASYMPTOTE || (exports.ASYMPTOTE = {}));
+var ASYMPTOTE_POSITION;
+(function (ASYMPTOTE_POSITION) {
+    ASYMPTOTE_POSITION["LT"] = "LT";
+    ASYMPTOTE_POSITION["RT"] = "RT";
+    ASYMPTOTE_POSITION["LB"] = "LB";
+    ASYMPTOTE_POSITION["RB"] = "RB";
+})(ASYMPTOTE_POSITION = exports.ASYMPTOTE_POSITION || (exports.ASYMPTOTE_POSITION = {}));
 var FUNCTION_EXTREMA;
 (function (FUNCTION_EXTREMA) {
     FUNCTION_EXTREMA["MIN"] = "min";
@@ -31,7 +38,7 @@ var TABLE_OF_SIGNS;
 (function (TABLE_OF_SIGNS) {
     TABLE_OF_SIGNS["SIGNS"] = "signs";
     TABLE_OF_SIGNS["GROWS"] = "grows";
-    TABLE_OF_SIGNS["VARIATIONS"] = "variatins";
+    TABLE_OF_SIGNS["VARIATIONS"] = "variations";
 })(TABLE_OF_SIGNS = exports.TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = {}));
 /**
  * The study class is a "function study" class that will get:

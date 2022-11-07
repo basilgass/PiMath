@@ -139,6 +139,9 @@ class Rational {
             let N = this._numerator.evaluate(values), D = this._denominator.evaluate(values);
             return N.divide(D);
         };
+        this.evaluateAsNumeric = (values) => {
+            return this._numerator.evaluateAsNumeric(values) / this._denominator.evaluateAsNumeric(values);
+        };
         this.study = () => {
             return new rationalStudy_1.RationalStudy(this);
         };

@@ -87,22 +87,37 @@ class NthRoot {
         let C;
         if (this._coefficient === 1) {
             C = '';
-        }
-        else if (this._coefficient === -1) {
+        } else if (this._coefficient === -1) {
             C = '-';
-        }
-        else {
+        } else {
             C = this._coefficient.toString();
         }
         if (this._radical === 1) {
             return `${this._coefficient}`;
-        }
-        else {
+        } else {
             if (this._nth === 2) {
                 return `${C}\\sqrt{${this._radical}}`;
-            }
-            else {
+            } else {
                 return `${C}\\sqrt[${this._nth}]{${this._radical}}`;
+            }
+        }
+    }
+    get display() {
+        let C;
+        if (this._coefficient === 1) {
+            C = '';
+        } else if (this._coefficient === -1) {
+            C = '-';
+        } else {
+            C = this._coefficient.toString();
+        }
+        if (this._radical === 1) {
+            return `${this._coefficient}`;
+        } else {
+            if (this._nth === 2) {
+                return `${C}sqrt{${this._radical}}`;
+            } else {
+                return `${C}root(${this._nth}){${this._radical}}`;
             }
         }
     }

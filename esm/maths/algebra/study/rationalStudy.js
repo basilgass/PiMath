@@ -25,43 +25,85 @@ class RationalStudy extends study_1.Study {
         super(fx, config);
         return this;
     }
+
     makeZeroes() {
         return this._getZeroes(this.fx);
     }
     ;
-    makeSigns() {
-        let tos = this._getSigns(this.fx, this.zeroes);
-        return tos;
+
+    _getHorizontalAsymptoteRelativePositon(deltaX, delta = 1000000) {
+        let position = [], before = deltaX.evaluateAsNumeric(-delta), after = deltaX.evaluateAsNumeric(delta);
+        if (before >= 0) {
+            position.push(study_1.ASYMPTOTE_POSITION.LT);
+        } else {
+            position.push(study_1.ASYMPTOTE_POSITION.LB);
+        }
+        if (after >= 0) {
+            position.push(study_1.ASYMPTOTE_POSITION.RT);
+        } else {
+            position.push(study_1.ASYMPTOTE_POSITION.RB);
+        }
+        return position;
     }
-    ;
+
     makeAsymptotes() {
         const reduced = this.fx.clone().reduce();
         // Vertical
         let asymptotes = [];
         this.zeroes.filter(x => x.type === study_1.ZEROTYPE.DEFENCE).forEach(zero => {
             // Check if it's a hole or an asymptote
-            // TODO: Check for a hole ! Means calculate the limits !
-            let Ztype = study_1.ASYMPTOTE.VERTICAL, tex = `x=${zero.tex}`;
+            let Ztype = study_1.ASYMPTOTE.VERTICAL, tex = `x=${zero.tex}`, display = `x=${zero.display}`;
+            // Check if it's a hole: the reduced polynom should not be null
             if (zero.exact instanceof fraction_1.Fraction) {
                 if (reduced.denominator.evaluate(zero.exact).isNotZero()) {
                     Ztype = study_1.ASYMPTOTE.HOLE;
                     tex = `(${zero.tex};${reduced.evaluate(zero.exact).tex})`;
+                    display = `(${zero.display};${reduced.evaluate(zero.exact).display})`;
                 }
-            }
-            else {
+            } else {
                 if (reduced.denominator.evaluate(zero.value).isNotZero()) {
                     Ztype = study_1.ASYMPTOTE.HOLE;
                     tex = `(${zero.tex};${reduced.evaluate(zero.value).tex})`;
+                    display = `(${zero.display};${reduced.evaluate(zero.value).display})`;
                 }
+            }
+            // Get the position before and after the asymptote.
+            const delta = 0.000001;
+            let before = this.fx.evaluateAsNumeric(zero.value - delta),
+                after = this.fx.evaluateAsNumeric(zero.value + delta), position = [], pm = "";
+            if (after < -10000) {
+                position.push(study_1.ASYMPTOTE_POSITION.RB);
+                pm += "m";
+            } else if (after > 10000) {
+                position.push(study_1.ASYMPTOTE_POSITION.RT);
+                pm += "p";
+            }
+            if (before < -10000) {
+                position.push(study_1.ASYMPTOTE_POSITION.LB);
+                pm += "m";
+            } else if (before > 10000) {
+                position.push(study_1.ASYMPTOTE_POSITION.LT);
+                pm += "p";
+            }
+            // Left and right are to infinity
+            // TODO: handle the case were one side of the asymptote isn't infinity (not possible in rational study?!)
+            if (pm === "pp") {
+                pm = "+";
+            } else if (pm === "mm") {
+                pm = "-";
+            } else {
+                pm = `\\${pm}`;
             }
             asymptotes.push({
                 fx: null,
                 type: Ztype,
-                tex: tex,
+                tex,
+                display,
                 zero: zero,
-                limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = \\pm\\infty`,
+                limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = ${pm}\\infty`,
                 deltaX: null,
-                tableOfSign: null
+                tableOfSign: null,
+                position
             });
         });
         // Sloped asymptote
@@ -69,14 +111,17 @@ class RationalStudy extends study_1.Study {
         if (NDegree.isEqual(DDegree)) {
             let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient), Htex = H.tex;
             let { reminder } = reduced.euclidian(), deltaX = new rational_1.Rational(reminder, reduced.denominator);
+            // Determine the position above or below on the left / right of the asymptote.
             asymptotes.push({
                 fx: new polynom_1.Polynom(H),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
                 tex: `y=${Htex}`,
+                display: `y=${H.display}`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX,
-                tableOfSign: this._getSigns(deltaX)
+                tableOfSign: this._getSigns(deltaX),
+                position: this._getHorizontalAsymptoteRelativePositon(deltaX)
             });
         }
         else if (DDegree.greater(NDegree)) {
@@ -84,10 +129,12 @@ class RationalStudy extends study_1.Study {
                 fx: new polynom_1.Polynom('0'),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
                 tex: `y=0`,
+                display: `y=0`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${0}`,
                 deltaX: null,
-                tableOfSign: null
+                tableOfSign: null,
+                position: this._getHorizontalAsymptoteRelativePositon(this.fx)
             });
         }
         else if (NDegree.value - 1 === DDegree.value) {
@@ -97,26 +144,37 @@ class RationalStudy extends study_1.Study {
                 fx: quotient.clone(),
                 type: study_1.ASYMPTOTE.SLOPE,
                 tex: `y=${quotient.tex}`,
+                display: `y=${quotient.display}`,
                 zero: null,
                 limits: ``,
                 deltaX: new rational_1.Rational(reminder, reduced.denominator),
-                tableOfSign: this._getSigns(deltaX)
+                tableOfSign: this._getSigns(deltaX),
+                position: this._getHorizontalAsymptoteRelativePositon(deltaX)
             });
         }
         return asymptotes;
     }
     ;
+
+    makeSigns() {
+        return this._getSigns(this.fx, this.zeroes);
+    }
+    ;
+
     makeDerivative() {
-        let dx = this.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
+        let dx = this.fx.clone().derivative(),
+            tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
         let result = this.makeGrowsResult(tos);
         tos.signs.push(result.growsLine);
         tos.extremes = result.extremes;
         return tos;
     }
     ;
+
     makeVariation() {
         // Get the zeroes, make signs.
-        let dx = this.derivative.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
+        let dx = this.derivative.fx.clone().derivative(),
+            tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.VARIATIONS);
         let result = this.makeVariationsResult(tos);
         tos.signs.push(result.varsLine);
         tos.extremes = result.extremes;
@@ -130,6 +188,7 @@ class RationalStudy extends study_1.Study {
             // add the item
             zeroes.push({
                 tex: z.tex,
+                display: z.display,
                 value: z.value,
                 exact: z.exact,
                 extrema: study_1.FUNCTION_EXTREMA.NOTHING,
@@ -145,6 +204,7 @@ class RationalStudy extends study_1.Study {
                 // Add the item
                 zeroes.push({
                     tex: z.tex,
+                    display: z.display,
                     value: z.value,
                     exact: z.exact,
                     extrema: study_1.FUNCTION_EXTREMA.NOTHING,

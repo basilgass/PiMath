@@ -73,6 +73,28 @@ export class NthRoot {
         }
     }
 
+    get display(): string {
+        let C: string;
+
+        if (this._coefficient === 1) {
+            C = '';
+        } else if (this._coefficient === -1) {
+            C = '-';
+        } else {
+            C = this._coefficient.toString();
+        }
+
+        if (this._radical === 1) {
+            return `${this._coefficient}`;
+        } else {
+            if (this._nth === 2) {
+                return `${C}sqrt{${this._radical}}`
+            } else {
+                return `${C}root(${this._nth}){${this._radical}}`
+            }
+        }
+    }
+
     get value(): number {
         return this._coefficient * Math.pow(this._radical, 1 / this._nth);
     }

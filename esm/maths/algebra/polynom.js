@@ -535,6 +535,13 @@ class Polynom {
             });
             return r;
         };
+        this.evaluateAsNumeric = (values) => {
+            let r = 0;
+            this._monoms.forEach(monom => {
+                r += monom.evaluateAsNumeric(values);
+            });
+            return r;
+        };
         this.derivative = (letter) => {
             let dP = new Polynom();
             for (let m of this._monoms) {

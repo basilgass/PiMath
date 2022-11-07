@@ -389,13 +389,14 @@ class Equation {
         };
         this._solveDegree1 = (letter) => {
             const m1 = this._polynom.monomByDegree(1, letter).coefficient, m0 = this._polynom.monomByDegree(0, letter).coefficient, v = m0.clone().opposed().divide(m1);
-            let s;
+            let s, d;
             if (this.isStrictEqual()) {
                 if (m1.value === 0) {
                     // In this case, the coefficient of the x variable is zero.
                     if (m0.value === 0) {
                         this._solutions = [{
                                 tex: this._real,
+                                display: "RR",
                                 value: NaN,
                                 exact: false
                             }];
@@ -403,6 +404,7 @@ class Equation {
                     else {
                         this._solutions = [{
                                 tex: this._varnothing,
+                                display: "O/",
                                 value: NaN,
                                 exact: false
                             }];
@@ -411,6 +413,7 @@ class Equation {
                 else {
                     this._solutions = [{
                             tex: v.tex,
+                            display: v.display,
                             value: v.value,
                             exact: v
                         }];
@@ -421,13 +424,16 @@ class Equation {
                     // In this case, the coefficient of the x variable is zero.
                     if (m0.value === 0 && this.isAlsoEqual()) {
                         s = '\\mathbb{R}';
+                        d = "RR";
                     }
                     else {
                         if (m0.value > 0) {
                             s = this.isGreater() ? this._real : this._varnothing;
+                            s = this.isGreater() ? "RR" : "O/";
                         }
                         else {
                             s = !this.isGreater() ? this._real : this._varnothing;
+                            s = !this.isGreater() ? "RR" : "O/";
                         }
                     }
                 }
@@ -435,13 +441,16 @@ class Equation {
                     // Must handle the case if the m1 monom is negative.
                     if ((this.isGreater() && m1.sign() === 1) || (!this.isGreater() && m1.sign() === -1)) {
                         s = `\\left${this.isAlsoEqual() ? '[' : ']'}${v.tex};+\\infty\\right[`;
+                        d = `${this.isAlsoEqual() ? '[' : ']'}${v.tex};+oo[`;
                     }
                     else {
                         s = `\\left]-\\infty;${v.tex} \\right${this.isAlsoEqual() ? ']' : '['}`;
+                        d = `]-oo;${v.tex}${this.isAlsoEqual() ? ']' : '['}`;
                     }
                 }
                 this._solutions = [{
                         tex: s,
+                        display: d,
                         value: NaN,
                         exact: false
                     }];
@@ -456,14 +465,17 @@ class Equation {
                 realX2 = (-b + Math.sqrt(delta)) / (2 * a);
                 if (delta > 1.0e5) {
                     // The delta is too big to be parsed !
+                    let v1 = ((-b - Math.sqrt(delta)) / (2 * a)).toFixed(5), v2 = ((-b + Math.sqrt(delta)) / (2 * a)).toFixed(5);
                     this._solutions = [
                         {
-                            tex: ((-b - Math.sqrt(delta)) / (2 * a)).toFixed(5),
+                            tex: v1,
+                            display: v1,
                             value: realX1,
                             exact: false
                         },
                         {
-                            tex: ((-b + Math.sqrt(delta)) / (2 * a)).toFixed(5),
+                            tex: v2,
+                            display: v2,
                             value: realX2,
                             exact: false
                         }
@@ -481,19 +493,27 @@ class Equation {
                             am = -am;
                             bm = -bm;
                         }
-                        let tex1 = "", tex2 = "";
+                        let tex1 = "", tex2 = "", display1 = "", display2 = "";
                         tex1 = `${bm !== 0 ? ((-bm) + ' - ') : ''}${nthDelta.tex}`;
                         tex2 = `${bm !== 0 ? ((-bm) + ' + ') : ''}${nthDelta.tex}`;
+                        display1 = `${bm !== 0 ? ((-bm) + ' - ') : ''}${nthDelta.display}`;
+                        display2 = `${bm !== 0 ? ((-bm) + ' + ') : ''}${nthDelta.display}`;
                         if (am !== 1) {
                             tex1 = `\\frac{ ${tex1} }{ ${2 * am} }`;
                             tex2 = `\\frac{ ${tex2} }{ ${2 * am} }`;
                         }
                         this._solutions = [
                             {
-                                tex: tex1, value: realX1, exact: false
+                                tex: tex1,
+                                display: tex1,
+                                value: realX1,
+                                exact: false
                             },
                             {
-                                tex: tex2, value: realX2, exact: false
+                                tex: tex2,
+                                display: tex2,
+                                value: realX2,
+                                exact: false
                             },
                         ];
                         // if (b !== 0) {
@@ -561,11 +581,13 @@ class Equation {
                         this._solutions = [
                             {
                                 tex: S1.frac,
+                                display: S1.display,
                                 value: realX1,
                                 exact: S1
                             },
                             {
                                 tex: S2.frac,
+                                display: S2.display,
                                 value: realX2,
                                 exact: S2
                             }
@@ -577,6 +599,7 @@ class Equation {
                 const sol = new fraction_1.Fraction(-b, 2 * a).reduce();
                 this._solutions = [{
                         tex: sol.frac,
+                        display: sol.display,
                         value: sol.value,
                         exact: sol
                     }];
@@ -584,6 +607,7 @@ class Equation {
             else {
                 this._solutions = [{
                         tex: this._varnothing,
+                        display: "O/",
                         value: NaN,
                         exact: false
                     }];
@@ -596,6 +620,7 @@ class Equation {
                     if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
                         this._solutions = [{
                                 tex: `\\left]-\\infty ; ${sX1}\\right${this.isAlsoEqual() ? ']' : '['} \\cup \\left${this.isAlsoEqual() ? '[' : ']'}${sX2};+\\infty\\right[`,
+                                display: `]-oo;${sX1}${this.isAlsoEqual() ? ']' : '['}uu${this.isAlsoEqual() ? '[' : ']'}${sX2};+oo[`,
                                 value: NaN,
                                 exact: false
                             }
@@ -604,6 +629,7 @@ class Equation {
                     else {
                         this._solutions = [{
                                 tex: `\\left${this.isAlsoEqual() ? '[' : ']'}${sX1} ; ${sX2}\\right${this.isAlsoEqual() ? ']' : '['}`,
+                                display: `${this.isAlsoEqual() ? '[' : ']'}${sX1};${sX2}${this.isAlsoEqual() ? ']' : '['}`,
                                 value: NaN,
                                 exact: false
                             }];
@@ -614,6 +640,7 @@ class Equation {
                         if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
                             this._solutions = [{
                                     tex: `\\left]-\\infty ; ${this._solutions[0].tex}\\right[ \\cup \\left]${this._solutions[0].tex};+\\infty\\right[`,
+                                    display: `]-oo;${this._solutions[0].tex}[uu]${this._solutions[0].tex};+oo[`,
                                     value: NaN,
                                     exact: false
                                 }
@@ -622,6 +649,7 @@ class Equation {
                         else {
                             this._solutions = [{
                                     tex: this._varnothing,
+                                    display: "O/",
                                     value: NaN,
                                     exact: false
                                 }];
@@ -631,6 +659,7 @@ class Equation {
                         if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
                             this._solutions = [{
                                     tex: this._real,
+                                    display: "RR",
                                     value: NaN,
                                     exact: false
                                 }];
@@ -644,6 +673,7 @@ class Equation {
                     if (this.isGreater()) {
                         this._solutions = [{
                                 tex: aF.sign() === 1 ? this._real : this._varnothing,
+                                display: aF.sign() === 1 ? "RR" : "O/",
                                 value: NaN,
                                 exact: false
                             }];
@@ -651,6 +681,7 @@ class Equation {
                     else {
                         this._solutions = [{
                                 tex: aF.sign() === -1 ? this._real : this._varnothing,
+                                display: aF.sign() === -1 ? "RR" : "O/",
                                 value: NaN,
                                 exact: false
                             }];
@@ -1700,6 +1731,26 @@ class Monom {
             }
             return r;
         };
+        this.evaluateAsNumeric = (values) => {
+            let r = this.coefficient.value;
+            if (typeof values === 'number') {
+                let tmpValues = {};
+                tmpValues[this.variables[0]] = values;
+                return this.evaluateAsNumeric(tmpValues);
+            }
+            if (typeof values === 'object') {
+                if (this.variables.length === 0) {
+                    return this.coefficient.value;
+                }
+                for (let L in this._literal) {
+                    if (values[L] === undefined) {
+                        return 0;
+                    }
+                    r *= values[L] ** (this._literal[L].value);
+                }
+            }
+            return r;
+        };
         /**
          * Derivative the monom
          * @param letter
@@ -2680,6 +2731,13 @@ class Polynom {
             });
             return r;
         };
+        this.evaluateAsNumeric = (values) => {
+            let r = 0;
+            this._monoms.forEach(monom => {
+                r += monom.evaluateAsNumeric(values);
+            });
+            return r;
+        };
         this.derivative = (letter) => {
             let dP = new Polynom();
             for (let m of this._monoms) {
@@ -3481,6 +3539,9 @@ class Rational {
             let N = this._numerator.evaluate(values), D = this._denominator.evaluate(values);
             return N.divide(D);
         };
+        this.evaluateAsNumeric = (values) => {
+            return this._numerator.evaluateAsNumeric(values) / this._denominator.evaluateAsNumeric(values);
+        };
         this.study = () => {
             return new rationalStudy_1.RationalStudy(this);
         };
@@ -3533,7 +3594,7 @@ exports.Rational = Rational;
  * @module Polynom
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
+exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE_POSITION = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
 const fraction_1 = __webpack_require__(506);
 const numexp_1 = __webpack_require__(735);
 var ZEROTYPE;
@@ -3549,6 +3610,13 @@ var ASYMPTOTE;
     ASYMPTOTE["SLOPE"] = "ao";
     ASYMPTOTE["HOLE"] = "hole";
 })(ASYMPTOTE = exports.ASYMPTOTE || (exports.ASYMPTOTE = {}));
+var ASYMPTOTE_POSITION;
+(function (ASYMPTOTE_POSITION) {
+    ASYMPTOTE_POSITION["LT"] = "LT";
+    ASYMPTOTE_POSITION["RT"] = "RT";
+    ASYMPTOTE_POSITION["LB"] = "LB";
+    ASYMPTOTE_POSITION["RB"] = "RB";
+})(ASYMPTOTE_POSITION = exports.ASYMPTOTE_POSITION || (exports.ASYMPTOTE_POSITION = {}));
 var FUNCTION_EXTREMA;
 (function (FUNCTION_EXTREMA) {
     FUNCTION_EXTREMA["MIN"] = "min";
@@ -3560,7 +3628,7 @@ var TABLE_OF_SIGNS;
 (function (TABLE_OF_SIGNS) {
     TABLE_OF_SIGNS["SIGNS"] = "signs";
     TABLE_OF_SIGNS["GROWS"] = "grows";
-    TABLE_OF_SIGNS["VARIATIONS"] = "variatins";
+    TABLE_OF_SIGNS["VARIATIONS"] = "variations";
 })(TABLE_OF_SIGNS = exports.TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = {}));
 /**
  * The study class is a "function study" class that will get:
@@ -3925,8 +3993,7 @@ class RationalStudy extends study_1.Study {
     }
     ;
     makeSigns() {
-        let tos = this._getSigns(this.fx, this.zeroes);
-        return tos;
+        return this._getSigns(this.fx, this.zeroes);
     }
     ;
     makeAsymptotes() {
@@ -3935,28 +4002,62 @@ class RationalStudy extends study_1.Study {
         let asymptotes = [];
         this.zeroes.filter(x => x.type === study_1.ZEROTYPE.DEFENCE).forEach(zero => {
             // Check if it's a hole or an asymptote
-            // TODO: Check for a hole ! Means calculate the limits !
-            let Ztype = study_1.ASYMPTOTE.VERTICAL, tex = `x=${zero.tex}`;
+            let Ztype = study_1.ASYMPTOTE.VERTICAL, tex = `x=${zero.tex}`, display = `x=${zero.display}`;
+            // Check if it's a hole: the reduced polynom should not be null
             if (zero.exact instanceof fraction_1.Fraction) {
                 if (reduced.denominator.evaluate(zero.exact).isNotZero()) {
                     Ztype = study_1.ASYMPTOTE.HOLE;
                     tex = `(${zero.tex};${reduced.evaluate(zero.exact).tex})`;
+                    display = `(${zero.display};${reduced.evaluate(zero.exact).display})`;
                 }
             }
             else {
                 if (reduced.denominator.evaluate(zero.value).isNotZero()) {
                     Ztype = study_1.ASYMPTOTE.HOLE;
                     tex = `(${zero.tex};${reduced.evaluate(zero.value).tex})`;
+                    display = `(${zero.display};${reduced.evaluate(zero.value).display})`;
                 }
+            }
+            // Get the position before and after the asymptote.
+            const delta = 0.000001;
+            let before = this.fx.evaluateAsNumeric(zero.value - delta), after = this.fx.evaluateAsNumeric(zero.value + delta), position = [], pm = "";
+            if (after < -10000) {
+                position.push(study_1.ASYMPTOTE_POSITION.RB);
+                pm += "m";
+            }
+            else if (after > 10000) {
+                position.push(study_1.ASYMPTOTE_POSITION.RT);
+                pm += "p";
+            }
+            if (before < -10000) {
+                position.push(study_1.ASYMPTOTE_POSITION.LB);
+                pm += "m";
+            }
+            else if (before > 10000) {
+                position.push(study_1.ASYMPTOTE_POSITION.LT);
+                pm += "p";
+            }
+            // Left and right are to infinity
+            // TODO: handle the case were one side of the asymptote isn't infinity (not possible in rational study?!)
+            if (pm === "pp") {
+                pm = "+";
+            }
+            else if (pm === "mm") {
+                pm = "-";
+            }
+            else {
+                pm = `\\${pm}`;
             }
             asymptotes.push({
                 fx: null,
                 type: Ztype,
-                tex: tex,
+                tex,
+                display,
                 zero: zero,
-                limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = \\pm\\infty`,
+                limits: `\\lim_{x\\to${zero.tex} }\\ f(x) = ${pm}\\infty`,
                 deltaX: null,
-                tableOfSign: null
+                tableOfSign: null,
+                position
             });
         });
         // Sloped asymptote
@@ -3964,14 +4065,17 @@ class RationalStudy extends study_1.Study {
         if (NDegree.isEqual(DDegree)) {
             let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient), Htex = H.tex;
             let { reminder } = reduced.euclidian(), deltaX = new rational_1.Rational(reminder, reduced.denominator);
+            // Determine the position above or below on the left / right of the asymptote.
             asymptotes.push({
                 fx: new polynom_1.Polynom(H),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
                 tex: `y=${Htex}`,
+                display: `y=${H.display}`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${Htex}`,
                 deltaX,
-                tableOfSign: this._getSigns(deltaX)
+                tableOfSign: this._getSigns(deltaX),
+                position: this._getHorizontalAsymptoteRelativePositon(deltaX)
             });
         }
         else if (DDegree.greater(NDegree)) {
@@ -3979,10 +4083,12 @@ class RationalStudy extends study_1.Study {
                 fx: new polynom_1.Polynom('0'),
                 type: study_1.ASYMPTOTE.HORIZONTAL,
                 tex: `y=0`,
+                display: `y=0`,
                 zero: null,
                 limits: `\\lim_{x\\to\\infty}\\ f(x) = ${0}`,
                 deltaX: null,
-                tableOfSign: null
+                tableOfSign: null,
+                position: this._getHorizontalAsymptoteRelativePositon(this.fx)
             });
         }
         else if (NDegree.value - 1 === DDegree.value) {
@@ -3992,15 +4098,33 @@ class RationalStudy extends study_1.Study {
                 fx: quotient.clone(),
                 type: study_1.ASYMPTOTE.SLOPE,
                 tex: `y=${quotient.tex}`,
+                display: `y=${quotient.display}`,
                 zero: null,
                 limits: ``,
                 deltaX: new rational_1.Rational(reminder, reduced.denominator),
-                tableOfSign: this._getSigns(deltaX)
+                tableOfSign: this._getSigns(deltaX),
+                position: this._getHorizontalAsymptoteRelativePositon(deltaX)
             });
         }
         return asymptotes;
     }
     ;
+    _getHorizontalAsymptoteRelativePositon(deltaX, delta = 1000000) {
+        let position = [], before = deltaX.evaluateAsNumeric(-delta), after = deltaX.evaluateAsNumeric(delta);
+        if (before >= 0) {
+            position.push(study_1.ASYMPTOTE_POSITION.LT);
+        }
+        else {
+            position.push(study_1.ASYMPTOTE_POSITION.LB);
+        }
+        if (after >= 0) {
+            position.push(study_1.ASYMPTOTE_POSITION.RT);
+        }
+        else {
+            position.push(study_1.ASYMPTOTE_POSITION.RB);
+        }
+        return position;
+    }
     makeDerivative() {
         let dx = this.fx.clone().derivative(), tos = this._getSigns(dx, this._getZeroes(dx), study_1.TABLE_OF_SIGNS.GROWS);
         let result = this.makeGrowsResult(tos);
@@ -4025,6 +4149,7 @@ class RationalStudy extends study_1.Study {
             // add the item
             zeroes.push({
                 tex: z.tex,
+                display: z.display,
                 value: z.value,
                 exact: z.exact,
                 extrema: study_1.FUNCTION_EXTREMA.NOTHING,
@@ -4040,6 +4165,7 @@ class RationalStudy extends study_1.Study {
                 // Add the item
                 zeroes.push({
                     tex: z.tex,
+                    display: z.display,
                     value: z.value,
                     exact: z.exact,
                     extrema: study_1.FUNCTION_EXTREMA.NOTHING,
@@ -4713,6 +4839,29 @@ class NthRoot {
             }
             else {
                 return `${C}\\sqrt[${this._nth}]{${this._radical}}`;
+            }
+        }
+    }
+    get display() {
+        let C;
+        if (this._coefficient === 1) {
+            C = '';
+        }
+        else if (this._coefficient === -1) {
+            C = '-';
+        }
+        else {
+            C = this._coefficient.toString();
+        }
+        if (this._radical === 1) {
+            return `${this._coefficient}`;
+        }
+        else {
+            if (this._nth === 2) {
+                return `${C}sqrt{${this._radical}}`;
+            }
+            else {
+                return `${C}root(${this._nth}){${this._radical}}`;
             }
         }
     }
