@@ -38,4 +38,19 @@ describe('Study tests', () => {
 
         expect(study.asymptotes[0].position).to.have.all.members(["LB", "RT"])
     });
+
+    it('should get only the domain and the signs of a rational', function () {
+        const R = new Rational('x-3', 'x^2-4')
+        const study = R.study('\\delta(x),d,signs')
+
+        console.log('CONFIG')
+        console.log(study.config)
+        console.log('DOMAIN')
+        console.log(study.domain)
+        console.log('SIGNS')
+        console.log(Object.keys(study.signs))
+
+        console.log(study.signs.tex)
+        console.log(study.signs.signs)
+    });
 })

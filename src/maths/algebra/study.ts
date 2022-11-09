@@ -117,13 +117,13 @@ export class Study {
     private _signs: ITableOfSigns
     private _variations: ITableOfSigns
     private _zeroes: IZero[]
-    private config: StudyConfig
-    private name: string
+    private _config: StudyConfig
+    private _name: string
 
     constructor(fx: StudyableFunction, config?: StudyConfig | string) {
         this.fx = fx
 
-        this.config = {
+        this._config = {
             name :'f',
             domain :true,
             asymptotes :true,
@@ -135,25 +135,41 @@ export class Study {
         if (config) {
             if (typeof config === 'string') {
                 const d = config.split(',')
-                this.config = {}
+                this._config = {}
                 let n = d.filter(x=>x.includes('(x)'))
                 if(n.length===1){
-                    this.config.name = n[0].split('(x)')[0]
+                    this._config.name = n[0].split('(x)')[0]
                 }
-                this.config.domain = d.includes('d')
-                this.config.asymptotes = d.includes('a')
-                this.config.signs = d.includes('signs')
-                this.config.derivative = d.includes('dx')
-                this.config.variations = d.includes('ddx')
+                this._config.domain = d.includes('d')
+                this._config.asymptotes = d.includes('a')
+                this._config.signs = d.includes('signs')
+                this._config.derivative = d.includes('dx')
+                this._config.variations = d.includes('ddx')
             } else {
-                this.config = config
+                this._config = config
             }
         }
 
-        this.name = this.config?.name ?? 'f'
+        this._name = this._config?.name ?? 'f'
 
         this.makeStudy()
         return this
+    }
+
+    get name(): string {
+        return this._name;
+    }
+
+    set name(value: string) {
+        this._name = value;
+    }
+
+    get config(): StudyConfig {
+        return this._config;
+    }
+
+    set config(value: StudyConfig) {
+        this._config = value;
     }
 
     get zeroes(): IZero[] {
@@ -191,20 +207,20 @@ export class Study {
     makeStudy = (): void => {
         this._zeroes = this.makeZeroes()
 
-        if (this.config.signs) this._signs = this.makeSigns()
+        if (this._config.signs) this._signs = this.makeSigns()
 
-        if (this.config.asymptotes) this._asymptotes = this.makeAsymptotes()
+        if (this._config.asymptotes) this._asymptotes = this.makeAsymptotes()
 
-        if (this.config.derivative) this._derivative = this.makeDerivative()
+        if (this._config.derivative) this._derivative = this.makeDerivative()
 
-        if (this.config.variations) this._variations = this.makeVariation()
+        if (this._config.variations) this._variations = this.makeVariation()
 
         // Table of signs / derivative / variation
-        if (this.config.signs) this._signs.tex = this.texSigns
+        if (this._config.signs) this._signs.tex = this.texSigns
 
-        if (this.config.derivative) this._derivative.tex = this.texGrows
+        if (this._config.derivative) this._derivative.tex = this.texGrows
 
-        if (this.config.variations) this._variations.tex = this.texVariations
+        if (this._config.variations) this._variations.tex = this.texVariations
     };
 
     indexOfZero = (zeroes: IZero[], zero: IZero | ISolution): number => {
@@ -452,14 +468,14 @@ export class Study {
 
     private _makeTexFromTableOfSigns = (tos: ITableOfSigns): string => {
         let factors = tos.factors.map(x => `\\(${x.tex}\\)/1`),
-            factorsFx = `\\(${this.name}(x)\\)/1.2`,
+            factorsFx = `\\(${this._name}(x)\\)/1.2`,
             zeroes = tos.zeroes
 
         // Add the last lines "label"
         if (tos.type === TABLE_OF_SIGNS.GROWS) {
-            factorsFx = `\\(${this.name}'(x)\\)/1.2,\\(f(x)\\)/2`
+            factorsFx = `\\(${this._name}'(x)\\)/1.2,\\(f(x)\\)/2`
         } else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
-            factorsFx = `\\(${this.name}''(x)\\)/1.2,\\(f(x)\\)/2`
+            factorsFx = `\\(${this._name}''(x)\\)/1.2,\\(f(x)\\)/2`
         }
 
         // Create the tikzPicture header
