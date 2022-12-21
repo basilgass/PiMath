@@ -692,7 +692,7 @@ export class Polynom {
         let P: Polynom;
 
         // There is at least one parenthese - it is not developed.
-        if (polynomString.match(/\(/g).length + polynomString.match(/\)/g).length) {
+        if(polynomString.split('(').length + polynomString.split(')').length > 0){
             return false
         }
 

@@ -2628,7 +2628,7 @@ class Polynom {
         this.isDeveloped = (polynomString) => {
             let P;
             // There is at least one parenthese - it is not developed.
-            if (polynomString.match(/\(/g).length + polynomString.match(/\)/g).length) {
+            if (polynomString.split('(').length + polynomString.split(')').length > 0) {
                 return false;
             }
             // Try to build the polynom
