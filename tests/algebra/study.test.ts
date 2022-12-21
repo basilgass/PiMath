@@ -11,8 +11,6 @@ describe('Study tests', () => {
             new Rational('(3x-2)(x-3)(x+4)', 'x^2-5x+6')
         )
         let AO = study.asymptotes.filter(x => x.type === ASYMPTOTE.SLOPE)[0]
-
-        console.log(AO.tableOfSign.signs)
     });
 
     it('should create draw code block', function () {

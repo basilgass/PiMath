@@ -99,6 +99,18 @@ describe('Polynom tests', () => {
         P2.factorize()
         expect(P2.texFactors).to.be.equal('-2x\\left( x+3 \\right)\\left( x-3 \\right)')
     });
+
+    it('should detect if a polynom is factorized', function (){
+        let P = new Polynom('x-1')
+
+        expect(P.isFactorized('x-1')).to.be.true
+        expect(P.isFactorized('x-2')).to.be.false
+
+        let Q = new Polynom('(x-1)(x+2)')
+
+        expect(Q.isFactorized('(x+2)(x-1)')).to.be.true
+        expect(Q.isFactorized('x^2+x-2')).to.be.false
+    })
 })
 
 describe('Polynom parsing with rational power', () => {
@@ -108,6 +120,18 @@ describe('Polynom parsing with rational power', () => {
     })
 })
 
+
+describe("test simple", ()=>{
+    it('should parce this one correctly', ()=>{
+        const P = new Polynom('-(x+2)(x-1)(x-1)(5x+4)')
+        const Q = new Polynom('(2+x)^2(1-x)^3')
+
+        console.log(Q.tex)
+        console.log(Q.derivative().tex)
+        console.log(P.tex)
+        console.log(P.displayFactors)
+    })
+})
 
 // TODO: working with roots !
 // describe('WIP : working with roots', ()=>{

@@ -358,7 +358,7 @@ class Polynom {
         this.isFactorized = (polynomString) => {
             let P;
             // Check if polynom is complete...
-            if (polynomString.match(/\(/g).length !== polynomString.match(/\)/g).length) {
+            if (polynomString.split('(').length !== polynomString.split(')').length) {
                 return false;
             }
             // Try to build the polynom

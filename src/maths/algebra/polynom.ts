@@ -610,7 +610,7 @@ export class Polynom {
         let P;
 
         // Check if polynom is complete...
-        if (polynomString.match(/\(/g).length !== polynomString.match(/\)/g).length) {
+        if(polynomString.split('(').length!==polynomString.split(')').length){
             return false
         }
 

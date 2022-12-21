@@ -59,20 +59,20 @@ class Study {
     constructor(fx, config) {
         this.makeStudy = () => {
             this._zeroes = this.makeZeroes();
-            if (this.config.signs)
+            if (this._config.signs)
                 this._signs = this.makeSigns();
-            if (this.config.asymptotes)
+            if (this._config.asymptotes)
                 this._asymptotes = this.makeAsymptotes();
-            if (this.config.derivative)
+            if (this._config.derivative)
                 this._derivative = this.makeDerivative();
-            if (this.config.variations)
+            if (this._config.variations)
                 this._variations = this.makeVariation();
             // Table of signs / derivative / variation
-            if (this.config.signs)
+            if (this._config.signs)
                 this._signs.tex = this.texSigns;
-            if (this.config.derivative)
+            if (this._config.derivative)
                 this._derivative.tex = this.texGrows;
-            if (this.config.variations)
+            if (this._config.variations)
                 this._variations.tex = this.texVariations;
         };
         this.indexOfZero = (zeroes, zero) => {
@@ -238,13 +238,13 @@ class Study {
             return code;
         };
         this._makeTexFromTableOfSigns = (tos) => {
-            let factors = tos.factors.map(x => `\\(${x.tex}\\)/1`), factorsFx = `\\(${this.name}(x)\\)/1.2`, zeroes = tos.zeroes;
+            let factors = tos.factors.map(x => `\\(${x.tex}\\)/1`), factorsFx = `\\(${this._name}(x)\\)/1.2`, zeroes = tos.zeroes;
             // Add the last lines "label"
             if (tos.type === TABLE_OF_SIGNS.GROWS) {
-                factorsFx = `\\(${this.name}'(x)\\)/1.2,\\(f(x)\\)/2`;
+                factorsFx = `\\(${this._name}'(x)\\)/1.2,\\(f(x)\\)/2`;
             }
             else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
-                factorsFx = `\\(${this.name}''(x)\\)/1.2,\\(f(x)\\)/2`;
+                factorsFx = `\\(${this._name}''(x)\\)/1.2,\\(f(x)\\)/2`;
             }
             // Create the tikzPicture header
             let tex = `\\begin{tikzpicture}
@@ -267,7 +267,7 @@ class Study {
             return tex;
         };
         this.fx = fx;
-        this.config = {
+        this._config = {
             name: 'f',
             domain: true,
             asymptotes: true,
@@ -278,24 +278,36 @@ class Study {
         if (config) {
             if (typeof config === 'string') {
                 const d = config.split(',');
-                this.config = {};
+                this._config = {};
                 let n = d.filter(x => x.includes('(x)'));
                 if (n.length === 1) {
-                    this.config.name = n[0].split('(x)')[0];
+                    this._config.name = n[0].split('(x)')[0];
                 }
-                this.config.domain = d.includes('d');
-                this.config.asymptotes = d.includes('a');
-                this.config.signs = d.includes('signs');
-                this.config.derivative = d.includes('dx');
-                this.config.variations = d.includes('ddx');
+                this._config.domain = d.includes('d');
+                this._config.asymptotes = d.includes('a');
+                this._config.signs = d.includes('signs');
+                this._config.derivative = d.includes('dx');
+                this._config.variations = d.includes('ddx');
             }
             else {
-                this.config = config;
+                this._config = config;
             }
         }
-        this.name = this.config?.name ?? 'f';
+        this._name = this._config?.name ?? 'f';
         this.makeStudy();
         return this;
+    }
+    get name() {
+        return this._name;
+    }
+    set name(value) {
+        this._name = value;
+    }
+    get config() {
+        return this._config;
+    }
+    set config(value) {
+        this._config = value;
     }
     get zeroes() {
         return this._zeroes;

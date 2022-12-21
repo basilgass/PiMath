@@ -101,9 +101,13 @@ export declare class Study {
     private _signs;
     private _variations;
     private _zeroes;
-    private config;
-    private name;
+    private _config;
+    private _name;
     constructor(fx: StudyableFunction, config?: StudyConfig | string);
+    get name(): string;
+    set name(value: string);
+    get config(): StudyConfig;
+    set config(value: StudyConfig);
     get zeroes(): IZero[];
     get domain(): string;
     get signs(): ITableOfSigns;
