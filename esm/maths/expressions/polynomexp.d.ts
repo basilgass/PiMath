@@ -1,6 +1,6 @@
 import { Polynom, PolynomParsingType } from "../algebra/polynom";
 import { Fraction, FractionParsingType } from "../coefficients/fraction";
-declare type PolynomExpMathFunctionType = {
+type PolynomExpMathFunctionType = {
     name: string;
     fn: Function;
     tex: string;

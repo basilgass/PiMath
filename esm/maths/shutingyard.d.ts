@@ -1,4 +1,4 @@
-export declare type tokenType = {
+export type tokenType = {
     [key: string]: {
         precedence: number;
         associative: string;
@@ -22,7 +22,7 @@ export declare enum ShutingyardMode {
     SET = "set",
     NUMERIC = "numeric"
 }
-export declare type Token = {
+export type Token = {
     token: string;
     tokenType: string;
 };

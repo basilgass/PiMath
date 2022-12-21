@@ -1,4 +1,4 @@
-export declare type FractionParsingType = number | string | Fraction;
+export type FractionParsingType = number | string | Fraction;
 /**
  * The fraction class make possible to handle
  * TODO: Write the documentation correctly.

@@ -1,5 +1,5 @@
 import { ExpressionFactor, ExpressionMember } from "./internals";
-export declare type ExpressionMemberType = {
+export type ExpressionMemberType = {
     member: ExpressionMember;
     sign: number;
 };

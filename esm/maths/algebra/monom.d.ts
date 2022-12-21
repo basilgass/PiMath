@@ -1,6 +1,6 @@
 import { Token } from "../shutingyard";
 import { Fraction } from "../coefficients/fraction";
-export declare type literalType = {
+export type literalType = {
     [Key: string]: Fraction;
 };
 export declare class Monom {

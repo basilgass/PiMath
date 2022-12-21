@@ -5,7 +5,7 @@
 import { Rational } from "./rational";
 import { ISolution } from "./equation";
 import { Polynom } from "./polynom";
-export declare type StudyableFunction = Rational;
+export type StudyableFunction = Rational;
 export declare enum ZEROTYPE {
     ZERO = "z",
     DEFENCE = "d",
