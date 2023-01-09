@@ -9,7 +9,7 @@ import exp = require("constants");
 describe('Polynom tests', () => {
     it('Parse polynom', () => {
         const options = new Polynom('2x(x+3)^2(x-1)');
-        options.reorder().reduce();
+        options.reorder();
         expect(options.tex).to.be.equal('2x^{4}+10x^{3}+6x^{2}-18x');
     });
 
@@ -102,14 +102,20 @@ describe('Polynom tests', () => {
 
     it('should detect if a polynom is factorized', function (){
         let P = new Polynom('x-1')
-
         expect(P.isFactorized('x-1')).to.be.true
         expect(P.isFactorized('x-2')).to.be.false
 
-        let Q = new Polynom('(x-1)(x+2)')
+        let R = new Polynom('(x+2)^2')
+        expect(R.isFactorized('(x+2)^2')).to.be.true
 
+        let Q = new Polynom('(x-1)(x+2)')
         expect(Q.isFactorized('(x+2)(x-1)')).to.be.true
         expect(Q.isFactorized('x^2+x-2')).to.be.false
+
+        let T = new Polynom('(x-3)(1-x)')
+        expect(T.isFactorized('(x-1)(3-x)')).to.be.true
+        expect(T.isFactorized('(x-1)(x-3)')).to.be.false
+        expect(T.isFactorized('-1(x-1)(x-3)')).to.be.false
     })
 })
 

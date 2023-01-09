@@ -26,6 +26,12 @@ export declare class LinearSystem {
     reorder: () => LinearSystem;
     solve: () => LinearSystem;
     private _checkIfLinerCombination;
+    /**
+     * Linear reduction of the equations to have only one letter
+     * @param letter    letter to isolate
+     * @param V         list of variables in the linear system.
+     * @private
+     */
     private _solveOneLetter;
     log: () => string;
 }

@@ -13,7 +13,7 @@ export class LinearSystem {
 
     constructor(...equationStrings: string[]) {
         this._equations = [];
-        this._letters = 'xy'.split('');
+        this._letters = 'xyz'.split('');
 
         if (equationStrings !== undefined && equationStrings.length > 0) {
             this.parse(...equationStrings);
@@ -96,9 +96,7 @@ export class LinearSystem {
             equArray.push(equStr.join('&'));
         }
 
-
         return `\\left\\{\\begin{array}{${"r".repeat(letters.length)}cl}${equArray.join('\\\\\ ')}\\end{array}\\right.`;
-        //return `\\left\\{\\begin{array}{rrrcl}${this._equations.map(equ => `${equ.tex}`).join('\\\\\ \n')}\\end{array}\\right.`;
     }
 
     get solution(): string {
@@ -118,9 +116,9 @@ export class LinearSystem {
                 return;
             }
 
-            tex.push(this._solutions[letter].value.frac);
+            tex.push(this._solutions[letter].value.tex);
         }
-        return `(${tex.join(';')})`;
+        return `\\left(${tex.join(';')}\\right)`;
     }
 
     // ------------------------------------------
@@ -227,6 +225,7 @@ export class LinearSystem {
         let c1 = eq1.left.monomByDegree(1, letter).coefficient.clone(),
             c2 = eq2.left.monomByDegree(1, letter).coefficient.clone().opposed();
 
+        console.log('reduction: ', letter, eq1.tex, eq2.tex, c2.tex, c1.tex)
         return this.mergeEquations(eq1, eq2, c2, c1);
     }
 
@@ -236,10 +235,16 @@ export class LinearSystem {
         let eq1multiplied = eq1.clone().multiply(new Fraction(factor1)),
             eq2multiplied = eq2.clone().multiply(new Fraction(factor2));
 
+        // @ts-ignore
+        console.log(eq1.tex, eq1multiplied.tex, factor1.tex)
+        // @ts-ignore
+        console.log(eq2.tex, eq2multiplied.tex, factor2.tex)
+
         // Add both equations together.
         eq1multiplied.left.add(eq2multiplied.left);
         eq1multiplied.right.add(eq2multiplied.right);
 
+        console.log('resulting reduction', eq1multiplied.tex)
         return eq1multiplied;
     }
 
@@ -266,6 +271,7 @@ export class LinearSystem {
         let V = this.variables.sort();
 
         for (let letter of V) {
+            console.log('SOLVING FOR', letter)
             this._solutions[letter] = this._solveOneLetter(letter, V)
         }
 
@@ -278,6 +284,12 @@ export class LinearSystem {
         return true;
     };
 
+    /**
+     * Linear reduction of the equations to have only one letter
+     * @param letter    letter to isolate
+     * @param V         list of variables in the linear system.
+     * @private
+     */
     private _solveOneLetter(letter: string, V: string[]): { value: Fraction, isReal: boolean, isVarnothing: boolean } {
         // list of equations.
         let LE: Equation[] = this.clone().equations,
@@ -291,11 +303,14 @@ export class LinearSystem {
                 continue;
             }
 
+            console.log('Removing the variable:  ', L)
             // Linear reduction.
             // TODO: Search for better association
             for (let i = 0; i < LE.length - 1; i++) {
                 reducedEquations.push(this._linearReduction(LE[i], LE[i + 1], L));
             }
+
+            console.log(reducedEquations.map(x=>x.tex))
 
             // Keep track of each steps.
             this._resolutionSteps.push(new LinearSystem().parse(...reducedEquations));
@@ -309,8 +324,8 @@ export class LinearSystem {
 
         // Solve the equations
         let E = this._resolutionSteps[this._resolutionSteps.length - 1].equations[0];
-        E.solve();
-
+        E.solve()
+        console.log('Solutions for ', letter, ': ', E.solutions[0].tex)
         return {
             value: new Fraction(E.solutions[0].value),
             isReal: E.isReal,

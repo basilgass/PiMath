@@ -182,6 +182,7 @@ class Polynom {
         // Mathematical operations
         this.add = (...values) => {
             this.mark_as_dirty();
+            // @ts-ignore
             for (let value of values) {
                 if (value instanceof Polynom) {
                     this._monoms = this._monoms.concat(value.monoms);
@@ -377,7 +378,7 @@ class Polynom {
             let polynomStringNormalized = polynomString.replaceAll('*', ''), polynomStringReduced = '' + polynomStringNormalized, factors = [];
             for (let x of polynomStringNormalized.matchAll(/\(([a-z0-9+\-]+)\)(\^[0-9]*)?/g)) {
                 if (x[2] !== undefined) {
-                    for (let i = 0; i < +x[2].substr(1); i++) {
+                    for (let i = 0; i < +x[2].substring(1); i++) {
                         factors.push(x[1]);
                     }
                 }
@@ -392,9 +393,18 @@ class Polynom {
             let polyFactors = factors.map(x => new Polynom(x));
             // Factorize the current polynom.
             this.factorize();
+            // console.log('RESULT BEFORE COMPARE')
+            // console.log(polynomString, polynomStringNormalized)
+            // console.log(factors)
+            // console.log(this.factors.map(x=>x.display))
             // Compare the given factors with the generated factors
             let sign = 1;
             for (let f of this.factors) {
+                if (f.degree().isZero()) {
+                    if (f.monoms[0].coefficient.isNegativeOne()) {
+                        sign = -sign;
+                    }
+                }
                 for (let i = 0; i < polyFactors.length; i++) {
                     if (f.isEqual(polyFactors[i])) {
                         polyFactors.splice(i, 1);
@@ -458,13 +468,28 @@ class Polynom {
         };
         // -------------------------------------
         this.reduce = () => {
-            for (let i = 0; i < this._monoms.length; i++) {
-                for (let j = i + 1; j < this._monoms.length; j++) {
-                    if (this._monoms[i].isSameAs(this.monoms[j])) {
-                        this._monoms[i].add(this.monoms[j]);
-                        this._monoms.splice(j, 1);
+            // Reduce the polynom
+            let values = [...this._monoms], vars = [...this.variables];
+            this._monoms = [];
+            let coeffs = values.filter(x => x.variables.length === 0);
+            if (coeffs.length > 0) {
+                this._monoms.push(coeffs.reduce((a, b) => a.add(b)));
+            }
+            // Build the new monoms
+            for (let letter of vars) {
+                // Monom with same letters, but might be of different degrees
+                let M = values.filter(x => x.hasLetter(letter));
+                while (M.length > 0) {
+                    // Take the first element
+                    const m = M.shift(), degree = m.degree(letter);
+                    for (let a of M.filter(x => x.degree(letter).isEqual(degree))) {
+                        m.add(a);
                     }
+                    this._monoms.push(m);
+                    // Make the new array.
+                    M = M.filter(x => x.degree(letter).isNotEqual(degree));
                 }
+                // reduce the monom
             }
             // Remove all null monoms
             this._monoms = this._monoms.filter((m) => {
@@ -477,14 +502,14 @@ class Polynom {
             if (this.length === 0) {
                 return new Polynom().zero();
             }
-            return this;
+            return this.reorder();
         };
         this.reorder = (letter = 'x') => {
             // TODO: Must handle multiple setLetter reorder system
             this._monoms.sort(function (a, b) {
                 return b.degree(letter).clone().subtract(a.degree(letter)).value;
             });
-            return this.reduce();
+            return this;
         };
         this.degree = (letter) => {
             let d = new fraction_1.Fraction().zero();
@@ -583,7 +608,7 @@ class Polynom {
             // 2x^3+6x^2 => 2x^2
             let M = P.commonMonom();
             // If the polynom starts with a negative monom, factorize it.
-            if (P.monomByDegree().coefficient.isStrictlyNegative() && M.coefficient.isStrictlyPositive()) {
+            if (P.monomByDegree().coefficient.isStrictlyNegative() && M.coefficient.isStrictlyPositive() && !M.isOne()) {
                 M.opposed();
             }
             if (!M.isOne()) {
@@ -858,7 +883,7 @@ class Polynom {
             if (stack.length === 1) {
                 this.add(stack[0]);
             }
-            return this;
+            return this.reorder();
         };
         this.multiplyByPolynom = (P) => {
             const M = [];

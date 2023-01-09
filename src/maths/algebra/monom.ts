@@ -525,7 +525,7 @@ export class Monom {
                 }
                 this._coefficient.add(m.coefficient);
             } else {
-                console.log('Add: Is not similar: ', m.display);
+                console.log('Add monom: ' + this.display + ' is not similar with ', m.display);
             }
         }
         return this;
