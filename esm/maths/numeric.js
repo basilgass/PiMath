@@ -156,6 +156,15 @@ class Numeric {
         }
         // Find the periodic if it exists.
     }
+    static decompose(value) {
+        let dividers = Numeric.dividers(value), limit = Math.sqrt(value), arr = [], u, v;
+        while (dividers.length > 0) {
+            u = dividers.shift();
+            v = dividers.length > 0 ? dividers.pop() : +u;
+            arr.push([u, v]);
+        }
+        return arr;
+    }
 }
 exports.Numeric = Numeric;
 //# sourceMappingURL=numeric.js.map

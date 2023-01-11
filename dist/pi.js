@@ -214,7 +214,7 @@ class Equation {
             if (this._sign !== '=' && F.sign() === -1) {
                 this._reverseSign();
             }
-            return this;
+            return this.reorder();
         };
         /**
          * divide an equation by a given value (transformed as a fraction)
@@ -2717,8 +2717,23 @@ class Polynom {
         };
         this.reorder = (letter = 'x') => {
             // TODO: Must handle multiple setLetter reorder system
+            let otherLetters = this.variables.filter(x => x !== letter);
             this._monoms.sort(function (a, b) {
-                return b.degree(letter).clone().subtract(a.degree(letter)).value;
+                let da = a.degree(letter).value, db = b.degree(letter).value;
+                // Values are different
+                if (da !== db)
+                    return db - da;
+                // if values are equals, check other letters.
+                if (otherLetters.length > 0) {
+                    for (let L of otherLetters) {
+                        let da = a.degree(L).value, db = b.degree(L).value;
+                        // Values are different
+                        if (da !== db)
+                            return db - da;
+                    }
+                }
+                return 0;
+                // return b.degree(letter).clone().subtract(a.degree(letter)).value
             });
             return this;
         };
@@ -3365,6 +3380,7 @@ class Polynom {
         }
         // Remove duplicates.
         V = [...new Set(V)];
+        V.sort();
         return V;
     }
     get numberOfVars() {
@@ -6900,6 +6916,15 @@ class Numeric {
             return 0;
         }
         // Find the periodic if it exists.
+    }
+    static decompose(value) {
+        let dividers = Numeric.dividers(value), limit = Math.sqrt(value), arr = [], u, v;
+        while (dividers.length > 0) {
+            u = dividers.shift();
+            v = dividers.length > 0 ? dividers.pop() : +u;
+            arr.push([u, v]);
+        }
+        return arr;
     }
 }
 exports.Numeric = Numeric;

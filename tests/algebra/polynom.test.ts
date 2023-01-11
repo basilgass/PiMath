@@ -117,6 +117,13 @@ describe('Polynom tests', () => {
         expect(T.isFactorized('(x-1)(x-3)')).to.be.false
         expect(T.isFactorized('-1(x-1)(x-3)')).to.be.false
     })
+
+    it('should reorder polynom', function () {
+        let P = new Polynom("3x-4+2y")
+        P.reorder()
+        expect(P.tex).to.be.equal('3x+2y-4')
+
+    });
 })
 
 describe('Polynom parsing with rational power', () => {

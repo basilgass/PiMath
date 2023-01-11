@@ -214,7 +214,7 @@ export class Polynom {
 
         // Remove duplicates.
         V = [...new Set(V)];
-
+        V.sort()
         return V;
     }
 
@@ -786,9 +786,29 @@ export class Polynom {
 
     reorder = (letter: string = 'x'): Polynom => {
         // TODO: Must handle multiple setLetter reorder system
+        let otherLetters = this.variables.filter(x=>x!==letter)
         this._monoms.sort(function (a, b) {
-            return b.degree(letter).clone().subtract(a.degree(letter)).value
+            let da = a.degree(letter).value,
+                db = b.degree(letter).value
+
+            // Values are different
+            if(da!==db)return db-da
+
+            // if values are equals, check other letters.
+            if(otherLetters.length>0){
+                for(let L of otherLetters){
+                    let da = a.degree(L).value,
+                        db = b.degree(L).value
+
+                    // Values are different
+                    if(da!==db)return db-da
+                }
+            }
+
+            return 0
+            // return b.degree(letter).clone().subtract(a.degree(letter)).value
         });
+
         return this;
     };
 

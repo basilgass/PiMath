@@ -24,4 +24,5 @@ export declare class Numeric {
     static pythagoricianTripletsWithTarget(target: number, targetIsSquare?: boolean): number[][];
     static numberCorrection(value: number, epsilonDigit?: number, epsilonNumberOfDigits?: number, number_of_digits?: number): number;
     static periodic(value: number): number;
+    static decompose(value: number): number[][];
 }

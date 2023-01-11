@@ -1,5 +1,6 @@
 import {Numeric} from "../src/maths/numeric";
 import {expect} from "chai";
+import exp = require("constants");
 
 describe('Numeric', () => { // the tests container
     it('Correct number', () => {
@@ -18,4 +19,10 @@ describe('Numeric', () => { // the tests container
 
         expect([a, b, c, d]).to.have.all.members([4, 5, 11, 101])
     })
+
+    it('should decompose a number in two factors', function () {
+        console.log(Numeric.decompose(6))
+        expect(Numeric.decompose(25).map(x=>x.join(','))).to.have.all.members(['1,25', '5,5'])
+        expect(Numeric.decompose(6).map(x=>x.join(','))).to.have.all.members(['1,6', '2,3'])
+    });
 });
