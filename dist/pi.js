@@ -179,11 +179,12 @@ class Equation {
             // Start by moving everything to the left.
             this._left.subtract(this._right);
             this._right.zero();
-            for (let m of this._left.monoms) {
+            let values = [...this._left.monoms];
+            for (let m of values) {
                 if (!m.hasLetter(letter)) {
                     mMove = m.clone();
-                    this._left.add(mMove.clone().opposed());
-                    this._right.add(mMove.clone().opposed());
+                    this._left.subtract(mMove);
+                    this._right.subtract(mMove);
                 }
             }
             // In theory, we should have only one item on the left.
