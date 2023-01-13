@@ -283,9 +283,22 @@ class Polynom {
             else if (typeof value === 'number' && Number.isSafeInteger(value)) {
                 return this.divideByInteger(value);
             }
+            else if (value instanceof monom_1.Monom) {
+                return this.divide(new Polynom(value));
+            }
             else if (value instanceof Polynom) {
                 if (value.monoms.length === 1 && value.variables.length === 0) {
                     return this.divideByFraction(value.monoms[0].coefficient);
+                }
+                else {
+                    let { quotient, reminder } = this.euclidian(value);
+                    if (reminder.isZero()) {
+                        return quotient;
+                    }
+                    else {
+                        console.log(`${this.tex} is not divideable by ${value.tex}`);
+                        return new Polynom().zero();
+                    }
                 }
             }
         };
@@ -356,7 +369,7 @@ class Polynom {
         this.isOpposedAt = (P) => {
             return this.compare(P.clone().opposed(), '=');
         };
-        this.isFactorized = (polynomString) => {
+        this.isFactorized = (polynomString, soft) => {
             let P;
             // Check if polynom is complete...
             if (polynomString.split('(').length !== polynomString.split(')').length) {
@@ -378,43 +391,66 @@ class Polynom {
             let polynomStringNormalized = polynomString.replaceAll('*', ''), polynomStringReduced = '' + polynomStringNormalized, factors = [];
             for (let x of polynomStringNormalized.matchAll(/\(([a-z0-9+\-]+)\)(\^[0-9]*)?/g)) {
                 if (x[2] !== undefined) {
+                    // if there is an exponential value, add it multiple times
                     for (let i = 0; i < +x[2].substring(1); i++) {
                         factors.push(x[1]);
                     }
                 }
                 else {
+                    // no power - add it once.
                     factors.push(x[1]);
                 }
+                // Remove the current polynom
                 polynomStringReduced = polynomStringReduced.replaceAll(x[0], '');
             }
             if (polynomStringReduced !== '') {
                 factors.push(polynomStringReduced);
             }
             let polyFactors = factors.map(x => new Polynom(x));
+            // polyFactors contain all polynoms.
+            let checkPolyFactors = polyFactors.filter(x => x.degree().geq(1) && !x.commonMonom().isOne());
+            // Some polynoms are not completely factorized.
+            if (checkPolyFactors.length > 0 && !soft) {
+                return false;
+            }
+            if (checkPolyFactors.length > 0 && soft) {
+                polyFactors = polyFactors.filter(x => x.commonMonom().isOne());
+                let FactorizedConstant = new fraction_1.Fraction().one();
+                for (let p of checkPolyFactors) {
+                    let k = p.commonMonom(), pFactor = p.clone().divide(k);
+                    if (k.degree().isZero()) {
+                        FactorizedConstant.multiply(k.coefficient);
+                        polyFactors.push(pFactor.clone());
+                    }
+                }
+            }
             // Factorize the current polynom.
             this.factorize();
-            // console.log('RESULT BEFORE COMPARE')
-            // console.log(polynomString, polynomStringNormalized)
-            // console.log(factors)
-            // console.log(this.factors.map(x=>x.display))
             // Compare the given factors with the generated factors
-            let sign = 1;
+            let sign = 1, notFoundedFactors = [];
             for (let f of this.factors) {
+                // The factor is just a coefficient. Might be opposed
                 if (f.degree().isZero()) {
                     if (f.monoms[0].coefficient.isNegativeOne()) {
                         sign = -sign;
                     }
                 }
+                let factorFound = false;
                 for (let i = 0; i < polyFactors.length; i++) {
                     if (f.isEqual(polyFactors[i])) {
                         polyFactors.splice(i, 1);
+                        factorFound = true;
                         break;
                     }
                     else if (f.isOpposedAt(polyFactors[i])) {
                         polyFactors.splice(i, 1);
                         sign = -sign;
+                        factorFound = true;
                         break;
                     }
+                }
+                if (!factorFound) {
+                    notFoundedFactors.push(f.clone());
                 }
             }
             // The polyfactors must be empty and the cumulative opposite factors must be 1.

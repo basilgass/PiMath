@@ -99,7 +99,7 @@ export declare class Polynom {
     isEqual: (P: Polynom) => boolean;
     isSameAs: (P: Polynom) => boolean;
     isOpposedAt: (P: Polynom) => boolean;
-    isFactorized: (polynomString: string) => boolean;
+    isFactorized: (polynomString: string, soft?: boolean) => boolean;
     isReduced: (polynomString: string) => Boolean;
     isDeveloped: (polynomString: string) => Boolean;
     reduce: () => Polynom;

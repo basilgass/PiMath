@@ -8,7 +8,6 @@ import {Numeric} from '../numeric';
 import {Fraction} from "../coefficients/fraction";
 import {Equation, ISolution} from "./equation";
 import {Random} from "../randomization/random";
-import monom = Random.monom;
 
 export type PolynomParsingType = string | Polynom | number | Fraction | Monom
 
@@ -512,9 +511,19 @@ export class Polynom {
             return this.divideByFraction(value);
         } else if (typeof value === 'number' && Number.isSafeInteger(value)) {
             return this.divideByInteger(value);
+        } else if (value instanceof Monom) {
+            return this.divide(new Polynom(value))
         } else if (value instanceof Polynom) {
             if (value.monoms.length === 1 && value.variables.length === 0) {
                 return this.divideByFraction(value.monoms[0].coefficient)
+            }else {
+                let {quotient, reminder} = this.euclidian(value)
+                if(reminder.isZero()){
+                    return quotient
+                }else{
+                    console.log(`${this.tex} is not divideable by ${value.tex}`)
+                    return new Polynom().zero()
+                }
             }
         }
     }
@@ -606,11 +615,11 @@ export class Polynom {
         return this.compare(P.clone().opposed(), '=');
     };
 
-    isFactorized = (polynomString: string): boolean => {
+    isFactorized = (polynomString: string, soft?: boolean): boolean => {
         let P;
 
         // Check if polynom is complete...
-        if(polynomString.split('(').length!==polynomString.split(')').length){
+        if (polynomString.split('(').length !== polynomString.split(')').length) {
             return false
         }
 
@@ -633,13 +642,18 @@ export class Polynom {
             factors: string[] = [];
 
         for (let x of polynomStringNormalized.matchAll(/\(([a-z0-9+\-]+)\)(\^[0-9]*)?/g)) {
+
             if (x[2] !== undefined) {
+                // if there is an exponential value, add it multiple times
                 for (let i = 0; i < +x[2].substring(1); i++) {
                     factors.push(x[1])
                 }
             } else {
+                // no power - add it once.
                 factors.push(x[1]);
             }
+
+            // Remove the current polynom
             polynomStringReduced = polynomStringReduced.replaceAll(x[0], '');
         }
         if (polynomStringReduced !== '') {
@@ -647,31 +661,57 @@ export class Polynom {
         }
         let polyFactors = factors.map(x => new Polynom(x));
 
+        // polyFactors contain all polynoms.
+        let checkPolyFactors = polyFactors.filter(x=>x.degree().geq(1) && !x.commonMonom().isOne())
+
+        // Some polynoms are not completely factorized.
+        if(checkPolyFactors.length>0 && !soft){return false}
+        if(checkPolyFactors.length>0 && soft){
+            polyFactors = polyFactors.filter(x=>x.commonMonom().isOne())
+
+            let FactorizedConstant = new Fraction().one()
+            for(let p of checkPolyFactors){
+                let k = p.commonMonom(),
+                    pFactor = p.clone().divide(k)
+
+                if(k.degree().isZero()){
+                    FactorizedConstant.multiply(k.coefficient)
+                    polyFactors.push(pFactor.clone())
+                }
+            }
+        }
+
+
         // Factorize the current polynom.
         this.factorize();
 
-        // console.log('RESULT BEFORE COMPARE')
-        // console.log(polynomString, polynomStringNormalized)
-        // console.log(factors)
-        // console.log(this.factors.map(x=>x.display))
-
         // Compare the given factors with the generated factors
-        let sign = 1;
+        let sign = 1,
+            notFoundedFactors = []
         for (let f of this.factors) {
-            if(f.degree().isZero()){
-                if(f.monoms[0].coefficient.isNegativeOne()){
-                    sign=-sign
+            // The factor is just a coefficient. Might be opposed
+            if (f.degree().isZero()) {
+                if (f.monoms[0].coefficient.isNegativeOne()) {
+                    sign = -sign
                 }
             }
+
+            let factorFound = false
             for (let i = 0; i < polyFactors.length; i++) {
                 if (f.isEqual(polyFactors[i])) {
                     polyFactors.splice(i, 1);
+                    factorFound = true
                     break;
                 } else if (f.isOpposedAt(polyFactors[i])) {
                     polyFactors.splice(i, 1);
                     sign = -sign;
+                    factorFound = true
                     break;
                 }
+            }
+
+            if (!factorFound) {
+                notFoundedFactors.push(f.clone())
             }
         }
 
@@ -685,14 +725,20 @@ export class Polynom {
 
     isReduced = (polynomString: string): Boolean => {
         // The polynom must be developed to be reduced.
-        if(!this.isDeveloped(polynomString)){return false}
+        if (!this.isDeveloped(polynomString)) {
+            return false
+        }
 
         let P = new Polynom(polynomString)
-        if(P.monoms.length > this.monoms.length){return false}
+        if (P.monoms.length > this.monoms.length) {
+            return false
+        }
 
         // TODO: Not ur the reduced systme checking is working properly !
-        for(let m of P.monoms){
-            if(!m.coefficient.isReduced()){return false}
+        for (let m of P.monoms) {
+            if (!m.coefficient.isReduced()) {
+                return false
+            }
         }
 
         return false
@@ -702,7 +748,7 @@ export class Polynom {
         let P: Polynom;
 
         // There is at least one parenthese - it is not developed.
-        if(polynomString.split('(').length + polynomString.split(')').length > 0){
+        if (polynomString.split('(').length + polynomString.split(')').length > 0) {
             return false
         }
 
@@ -740,29 +786,29 @@ export class Polynom {
 
         this._monoms = []
 
-        let coeffs = values.filter(x=>x.variables.length===0)
+        let coeffs = values.filter(x => x.variables.length === 0)
 
-        if(coeffs.length>0){
-            this._monoms.push(coeffs.reduce((a, b)=>a.add(b)))
+        if (coeffs.length > 0) {
+            this._monoms.push(coeffs.reduce((a, b) => a.add(b)))
         }
 
         // Build the new monoms
-        for(let letter of vars){
+        for (let letter of vars) {
             // Monom with same letters, but might be of different degrees
-            let M = values.filter(x=>x.hasLetter(letter))
+            let M = values.filter(x => x.hasLetter(letter))
 
-            while(M.length>0){
+            while (M.length > 0) {
                 // Take the first element
-                const m = M.shift(), degree=m.degree(letter)
+                const m = M.shift(), degree = m.degree(letter)
 
-                for(let a of M.filter(x=>x.degree(letter).isEqual(degree))){
+                for (let a of M.filter(x => x.degree(letter).isEqual(degree))) {
                     m.add(a)
                 }
 
                 this._monoms.push(m)
 
                 // Make the new array.
-                M = M.filter(x=>x.degree(letter).isNotEqual(degree))
+                M = M.filter(x => x.degree(letter).isNotEqual(degree))
             }
             // reduce the monom
 
@@ -786,22 +832,22 @@ export class Polynom {
 
     reorder = (letter: string = 'x'): Polynom => {
         // TODO: Must handle multiple setLetter reorder system
-        let otherLetters = this.variables.filter(x=>x!==letter)
+        let otherLetters = this.variables.filter(x => x !== letter)
         this._monoms.sort(function (a, b) {
             let da = a.degree(letter).value,
                 db = b.degree(letter).value
 
             // Values are different
-            if(da!==db)return db-da
+            if (da !== db) return db - da
 
             // if values are equals, check other letters.
-            if(otherLetters.length>0){
-                for(let L of otherLetters){
+            if (otherLetters.length > 0) {
+                for (let L of otherLetters) {
                     let da = a.degree(L).value,
                         db = b.degree(L).value
 
                     // Values are different
-                    if(da!==db)return db-da
+                    if (da !== db) return db - da
                 }
             }
 
@@ -933,7 +979,7 @@ export class Polynom {
         // 2x^3+6x^2 => 2x^2
         let M = P.commonMonom()
         // If the polynom starts with a negative monom, factorize it.
-        if(P.monomByDegree().coefficient.isStrictlyNegative() && M.coefficient.isStrictlyPositive() && !M.isOne()){
+        if (P.monomByDegree().coefficient.isStrictlyNegative() && M.coefficient.isStrictlyPositive() && !M.isOne()) {
             M.opposed()
         }
 
@@ -1211,7 +1257,7 @@ export class Polynom {
     private _parseString(inputStr: string, ...values: unknown[]): Polynom {
         if (values === undefined || values.length === 0) {
             inputStr = '' + inputStr;
-            this._rawString = inputStr.trim().replaceAll(' ','');
+            this._rawString = inputStr.trim().replaceAll(' ', '');
 
             // Parse the polynom using the shutting yard algorithm
             if (inputStr !== '' && !isNaN(Number(inputStr))) {

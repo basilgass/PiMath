@@ -118,11 +118,35 @@ describe('Polynom tests', () => {
         expect(T.isFactorized('-1(x-1)(x-3)')).to.be.false
     })
 
+    it('should detect if a polynom with power is factorized', function () {
+        let P = new Polynom('(x-2)^3')
+
+        expect(P.isFactorized('(x-2)^3')).to.be.true
+        expect(P.isFactorized('(x-2)(x-2)(x-2)')).to.be.true
+        expect(P.isFactorized('(x-2)^2(x-2)')).to.be.true
+
+        let Q = new Polynom('(x-2)^4')
+        expect(Q.isFactorized('(x-2)^2(x-2)^2')).to.be.true
+    });
+
+    it('should check if isFactorize with some "soft"', function () {
+        let P = new Polynom('(2x-6)(x+5)')
+
+        expect(P.isFactorized('2(x-3)(x+5)')).to.be.true
+        expect(P.isFactorized('2x-6)(x+5)')).to.be.false
+        expect(P.isFactorized('(2x-6)(x+5)', true)).to.be.true
+
+        let Q = new Polynom('(4x+10)(2x-12)')
+        expect(Q.isFactorized('4(2x+5)(x-6)')).to.be.true
+        expect(Q.isFactorized('(8x+20)(x-6)')).to.be.false
+        expect(Q.isFactorized('(8x+20)(x-6)', true)).to.be.true
+
+    });
+
     it('should reorder polynom', function () {
         let P = new Polynom("3x-4+2y")
         P.reorder()
         expect(P.tex).to.be.equal('3x+2y-4')
-
     });
 })
 
@@ -138,11 +162,6 @@ describe("test simple", ()=>{
     it('should parce this one correctly', ()=>{
         const P = new Polynom('-(x+2)(x-1)(x-1)(5x+4)')
         const Q = new Polynom('(2+x)^2(1-x)^3')
-
-        console.log(Q.tex)
-        console.log(Q.derivative().tex)
-        console.log(P.tex)
-        console.log(P.displayFactors)
     })
 })
 
