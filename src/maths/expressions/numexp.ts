@@ -8,7 +8,12 @@ export class NumExp {
 
     constructor(value: string, uniformize?:boolean) {
         this._expression = value
-        this._rpn = new Shutingyard(ShutingyardMode.NUMERIC).parse(value, uniformize).rpn
+        try {
+            this._rpn = new Shutingyard(ShutingyardMode.NUMERIC).parse(value, uniformize || uniformize===undefined).rpn
+        }catch(e){
+            this._rpn = null
+            this._isValid = false
+        }
     }
 
     get rpn(): { token: string; tokenType: string }[] {
@@ -17,7 +22,11 @@ export class NumExp {
 
     get isValid(): boolean {
         if(this._isValid===undefined){
-            this.evaluate({x: 0})
+            try {
+                const v = this.evaluate({x: 0})
+            }catch{
+                this._isValid = false
+            }
         }
         return this._isValid
     }
@@ -90,6 +99,11 @@ export class NumExp {
 
     evaluate(values: { [Key: string]: number }): number {
         const stack: number[] = []
+
+        if(this._rpn===null){
+            this._isValid = false
+            return 0
+        }
 
         this.isValid = true
 

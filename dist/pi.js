@@ -4990,14 +4990,25 @@ const fraction_1 = __webpack_require__(506);
 class NumExp {
     constructor(value, uniformize) {
         this._expression = value;
-        this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value, uniformize).rpn;
+        try {
+            this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value, uniformize || uniformize === undefined).rpn;
+        }
+        catch (e) {
+            this._rpn = null;
+            this._isValid = false;
+        }
     }
     get rpn() {
         return this._rpn;
     }
     get isValid() {
         if (this._isValid === undefined) {
-            this.evaluate({ x: 0 });
+            try {
+                const v = this.evaluate({ x: 0 });
+            }
+            catch {
+                this._isValid = false;
+            }
         }
         return this._isValid;
     }
@@ -5052,6 +5063,10 @@ class NumExp {
     }
     evaluate(values) {
         const stack = [];
+        if (this._rpn === null) {
+            this._isValid = false;
+            return 0;
+        }
         this.isValid = true;
         for (const element of this._rpn) {
             if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {

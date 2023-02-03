@@ -32,6 +32,14 @@ describe('Numerical expression', () => { // the tests container
         expect(exprInvalid.isValid).to.be.false
     });
 
+    it('souldd detect invalid expression withouth crahsing', function() {
+        const exprPourrie = new NumExp('3xsi'),
+            exprOk = new NumExp('3xsin(x)')
+
+        expect(exprPourrie.isValid).to.be.false
+        expect(exprOk.isValid).to.be.true
+    })
+
     it('should parse without mult sign', function () {
 
         let a = 1 / 5
