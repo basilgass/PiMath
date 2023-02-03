@@ -1,3 +1,4 @@
+import { Fraction } from "../coefficients/fraction";
 export type randomCoefficientConfig = {
     negative?: boolean;
     max?: number;
@@ -17,4 +18,11 @@ export type randomPolynomConfig = randomMonomConfig & {
     allowNullMonom?: boolean;
     numberOfMonoms?: number;
     positive?: boolean;
+};
+export type randomGeometryLineConfig = {
+    A: {
+        x: number | Fraction;
+        y: number | Fraction;
+    };
+    slope?: Fraction | string | number;
 };

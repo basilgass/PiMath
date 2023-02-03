@@ -8,9 +8,9 @@ export declare class Vector {
     private _y;
     constructor(...values: unknown[]);
     get x(): Fraction;
-    set x(value: Fraction);
+    set x(value: Fraction | number | string);
     get y(): Fraction;
-    set y(value: Fraction);
+    set y(value: Fraction | number | string);
     get normSquare(): Fraction;
     get norm(): number;
     get tex(): string;
@@ -27,6 +27,7 @@ export declare class Vector {
     static scalarProduct: (v1: Vector, v2: Vector) => number;
     normal: () => Vector;
     isNormalTo: (v: Vector) => boolean;
+    get isNull(): boolean;
     multiplyByScalar: (k: any) => Vector;
     divideByScalar: (k: any) => Vector;
     simplify: () => Vector;

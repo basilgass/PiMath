@@ -26,16 +26,16 @@ export class Vector {
         return this._x;
     }
 
-    set x(value: Fraction) {
-        this._x = value;
+    set x(value: Fraction|number|string) {
+        this._x = new Fraction(value);
     }
 
     get y(): Fraction {
         return this._y;
     }
 
-    set y(value: Fraction) {
-        this._y = value;
+    set y(value: Fraction|number|string) {
+        this._y = new Fraction(value);
     }
 
     get normSquare(): Fraction {
@@ -180,6 +180,10 @@ export class Vector {
 
     isNormalTo = (v: Vector): boolean => {
         return this.scalarProductWithVector(v).isZero()
+    }
+
+    get isNull(): boolean {
+        return this.x.isZero() && this.y.isZero()
     }
 
     multiplyByScalar = (k: any): Vector => {

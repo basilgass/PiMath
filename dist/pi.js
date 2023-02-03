@@ -6781,13 +6781,13 @@ class Vector {
         return this._x;
     }
     set x(value) {
-        this._x = value;
+        this._x = new fraction_1.Fraction(value);
     }
     get y() {
         return this._y;
     }
     set y(value) {
-        this._y = value;
+        this._y = new fraction_1.Fraction(value);
     }
     get normSquare() {
         return this._x.clone().pow(2).add(this._y.clone().pow(2));
@@ -6797,6 +6797,9 @@ class Vector {
     }
     get tex() {
         return `\\begin{pmatrix}${this._x.tex} \\\\\ ${this._y.tex} \\end{pmatrix}`;
+    }
+    get isNull() {
+        return this.x.isZero() && this.y.isZero();
     }
 }
 exports.Vector = Vector;
@@ -7008,6 +7011,7 @@ const rndPolynom_1 = __webpack_require__(22);
 const rndMonom_1 = __webpack_require__(793);
 const rndHelpers_1 = __webpack_require__(140);
 const rndFraction_1 = __webpack_require__(754);
+const rndGeometryLine_1 = __webpack_require__(821);
 __exportStar(__webpack_require__(230), exports);
 var Random;
 (function (Random) {
@@ -7051,6 +7055,13 @@ var Random;
         return rndHelpers_1.rndHelpers.shuffleArray(arr);
     }
     Random.shuffle = shuffle;
+    let Geometry;
+    (function (Geometry) {
+        function line(config) {
+            return (new rndGeometryLine_1.rndGeometryLine(config).generate());
+        }
+        Geometry.line = line;
+    })(Geometry = Random.Geometry || (Random.Geometry = {}));
 })(Random = exports.Random || (exports.Random = {}));
 
 
@@ -7130,6 +7141,58 @@ class rndFraction extends randomCore_1.randomCore {
     }
 }
 exports.rndFraction = rndFraction;
+
+
+/***/ }),
+
+/***/ 821:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.rndGeometryLine = void 0;
+const randomCore_1 = __webpack_require__(373);
+const random_1 = __webpack_require__(330);
+const line_1 = __webpack_require__(9);
+const vector_1 = __webpack_require__(586);
+const point_1 = __webpack_require__(557);
+/**
+ * Create a random monom based on a based configuration
+ */
+class rndGeometryLine extends randomCore_1.randomCore {
+    constructor(userConfig) {
+        super();
+        this.generate = () => {
+            // The A point exists.
+            const d = new vector_1.Vector(random_1.Random.numberSym(10), random_1.Random.numberSym(10));
+            while (d.isNull) {
+                d.x = random_1.Random.numberSym(10);
+                d.y = random_1.Random.numberSym(10);
+            }
+            if (this._config.slope === 1) {
+                if (d.x.sign() !== d.y.sign()) {
+                    d.y.opposed();
+                }
+            }
+            else if (this._config.slope === -1) {
+                if (d.x.sign() !== d.y.sign()) {
+                    d.y.opposed();
+                }
+            }
+            return new line_1.Line(new point_1.Point(this._config.A.x, this._config.A.y), d);
+        };
+        this._defaultConfig = {
+            A: {
+                x: random_1.Random.numberSym(10),
+                y: random_1.Random.numberSym(10)
+            },
+        };
+        // TODO: Strange that it raise an error
+        // @ts-ignore
+        this._config = this.mergeConfig(userConfig, this._defaultConfig);
+    }
+}
+exports.rndGeometryLine = rndGeometryLine;
 
 
 /***/ }),

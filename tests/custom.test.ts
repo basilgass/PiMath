@@ -28,4 +28,10 @@ describe('Custom test', () => { // the tests container
         }
         console.log(`${a}sqrt${b}/sqrt${c}`, answer)
     })
+
+    it('should generate a line', function () {
+        let L = Random.Geometry.line({
+            A: {x: 3, y: 7}
+        })
+    });
 });

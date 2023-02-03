@@ -19,6 +19,7 @@ const rndPolynom_1 = require("./rndPolynom");
 const rndMonom_1 = require("./rndMonom");
 const rndHelpers_1 = require("./rndHelpers");
 const rndFraction_1 = require("./rndFraction");
+const rndGeometryLine_1 = require("./rndGeometryLine");
 __exportStar(require("./rndTypes"), exports);
 var Random;
 (function (Random) {
@@ -62,5 +63,12 @@ var Random;
         return rndHelpers_1.rndHelpers.shuffleArray(arr);
     }
     Random.shuffle = shuffle;
+    let Geometry;
+    (function (Geometry) {
+        function line(config) {
+            return (new rndGeometryLine_1.rndGeometryLine(config).generate());
+        }
+        Geometry.line = line;
+    })(Geometry = Random.Geometry || (Random.Geometry = {}));
 })(Random = exports.Random || (exports.Random = {}));
 //# sourceMappingURL=random.js.map

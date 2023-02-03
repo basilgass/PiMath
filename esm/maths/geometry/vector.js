@@ -152,13 +152,13 @@ class Vector {
         return this._x;
     }
     set x(value) {
-        this._x = value;
+        this._x = new fraction_1.Fraction(value);
     }
     get y() {
         return this._y;
     }
     set y(value) {
-        this._y = value;
+        this._y = new fraction_1.Fraction(value);
     }
     get normSquare() {
         return this._x.clone().pow(2).add(this._y.clone().pow(2));
@@ -168,6 +168,9 @@ class Vector {
     }
     get tex() {
         return `\\begin{pmatrix}${this._x.tex} \\\\\ ${this._y.tex} \\end{pmatrix}`;
+    }
+    get isNull() {
+        return this.x.isZero() && this.y.isZero();
     }
 }
 exports.Vector = Vector;

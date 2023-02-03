@@ -1,7 +1,8 @@
-import { randomCoefficientConfig, randomMonomConfig, randomPolynomConfig } from "./rndTypes";
+import { randomCoefficientConfig, randomGeometryLineConfig, randomMonomConfig, randomPolynomConfig } from "./rndTypes";
 import { Polynom } from "../algebra/polynom";
 import { Monom } from "../algebra/monom";
 import { Fraction } from "../coefficients/fraction";
+import { Line } from "../geometry/line";
 export * from "./rndTypes";
 export declare namespace Random {
     function polynom(config?: randomPolynomConfig): Polynom;
@@ -14,4 +15,7 @@ export declare namespace Random {
     function array(arr: any[], number?: number): any[];
     function item(arr: any[]): any;
     function shuffle(arr: any[]): any[];
+    namespace Geometry {
+        function line(config: randomGeometryLineConfig): Line;
+    }
 }
