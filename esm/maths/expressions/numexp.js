@@ -6,7 +6,7 @@ const fraction_1 = require("../coefficients/fraction");
 class NumExp {
     constructor(value, uniformize) {
         this._expression = value;
-        this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value).rpn;
+        this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value, uniformize).rpn;
     }
     get rpn() {
         return this._rpn;

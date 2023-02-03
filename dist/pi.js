@@ -4990,7 +4990,7 @@ const fraction_1 = __webpack_require__(506);
 class NumExp {
     constructor(value, uniformize) {
         this._expression = value;
-        this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value).rpn;
+        this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value, uniformize).rpn;
     }
     get rpn() {
         return this._rpn;
@@ -7608,78 +7608,92 @@ class Shutingyard {
         // add the last token
         return normalizedExpr + nextToken;
     }
-    /**
-     * Sanitize an expression by adding missing common operation (multiplication between parentheseses)
-     * @param expr
-     * @constructor
-     */
-    Uniformizer(expr) {
-        // TODO: Delete this old version
-        // Prefere "normalize", much more robust !
-        // Determiner if need to be uniformized
-        if (!this._uniformize) {
-            return expr;
-        }
-        // Generate the list of function token.
-        let fnToken = [];
-        for (let token in this._tokenConfig) {
-            if (this._tokenConfig[token].type === ShutingyardType.FUNCTION) {
-                fnToken.push(token);
-            }
-        }
-        // sort if from the lengthy to the smallest function
-        fnToken.sort((a, b) => b.length - a.length);
-        let tokenRegExp = new RegExp(`(${fnToken.join('|')})`, 'g');
-        let functionTokenOrder = Array.from(expr.matchAll(tokenRegExp));
-        let expr2;
-        // Replace all function by @
-        expr2 = expr.replace(tokenRegExp, '@');
-        // Add * before @ (functionn)
-        expr2 = expr2.replace(/([\da-zA-Z])(@)/g, "$1*$2");
-        // Replace missing multiplication between two parenthese
-        expr2 = expr2.replace(/\)\(/g, ')*(');
-        // Replace missing multiplication between number or setLetter and parenthese.
-        // 3x(x-4) => 3x*(x-4)
-        expr2 = expr2.replace(/([\da-zA-Z])(\()/g, "$1*$2");
-        // (x-4)3x => (x-4)*3x
-        expr2 = expr2.replace(/(\))([\da-zA-Z])/g, "$1*$2");
-        // Add multiplication between number and letters.
-        // 3x => 3*x
-        expr2 = expr2.replace(/([0-9])([a-zA-Z])/g, "$1*$2");
-        expr2 = expr2.replace(/([a-zA-Z])([0-9])/g, "$1*$2");
-        // Remove letter between function token and it's parenthese.
-        // for (let token of fnToken) {
-        //     // Remove
-        //     expr2 = expr2.replace(new RegExp(token + '\\*', 'g'), token);
-        // }
-        // Add multiplication between letters ?
-        expr2 = expr2.replace(/([a-zA-Z])([a-zA-Z])/g, "$1*$2");
-        expr2 = expr2.replace(/([a-zA-Z])([a-zA-Z])/g, "$1*$2");
-        // Restore operation auto formatting (prevent adding the multiplication star)
-        let exprAsArray = expr2.split('@');
-        if (exprAsArray.length > 0) {
-            expr2 = "";
-            for (let idx in exprAsArray) {
-            }
-            for (let token of fnToken) {
-                // Remove
-                // expr2 = expr2.replace(new RegExp(token + '\\*', 'g'), token);
-            }
-        }
-        return expr2;
-    }
+    // /**
+    //  * Sanitize an expression by adding missing common operation (multiplication between parentheseses)
+    //  * @param expr
+    //  * @constructor
+    //  */
+    // Uniformizer(expr: string): string {
+    //     // TODO: Delete this old version
+    //     // Prefere "normalize", much more robust !
+    //     // Determiner if need to be uniformized
+    //     if (!this._uniformize) {
+    //         return expr
+    //     }
+    //
+    //     // Generate the list of function token.
+    //     let fnToken: string[] = []
+    //     for (let token in this._tokenConfig) {
+    //         if (this._tokenConfig[token].type === ShutingyardType.FUNCTION) {
+    //             fnToken.push(token)
+    //         }
+    //     }
+    //     // sort if from the lengthy to the smallest function
+    //     fnToken.sort((a, b) => b.length - a.length)
+    //     let tokenRegExp = new RegExp(`(${fnToken.join('|')})`, 'g')
+    //     let functionTokenOrder = Array.from(expr.matchAll(tokenRegExp))
+    //
+    //
+    //     let expr2;
+    //
+    //     // Replace all function by @
+    //     expr2 = expr.replace(tokenRegExp, '@')
+    //     // Add * before @ (functionn)
+    //     expr2 = expr2.replace(/([\da-zA-Z])(@)/g, "$1*$2");
+    //
+    //     // Replace missing multiplication between two parenthese
+    //     expr2 = expr2.replace(/\)\(/g, ')*(');
+    //
+    //     // Replace missing multiplication between number or setLetter and parenthese.
+    //
+    //     // 3x(x-4) => 3x*(x-4)
+    //     expr2 = expr2.replace(/([\da-zA-Z])(\()/g, "$1*$2");
+    //
+    //     // (x-4)3x => (x-4)*3x
+    //     expr2 = expr2.replace(/(\))([\da-zA-Z])/g, "$1*$2");
+    //
+    //     // Add multiplication between number and letters.
+    //     // 3x => 3*x
+    //     expr2 = expr2.replace(/([0-9])([a-zA-Z])/g, "$1*$2");
+    //     expr2 = expr2.replace(/([a-zA-Z])([0-9])/g, "$1*$2");
+    //
+    //     // Remove letter between function token and it's parenthese.
+    //     // for (let token of fnToken) {
+    //     //     // Remove
+    //     //     expr2 = expr2.replace(new RegExp(token + '\\*', 'g'), token);
+    //     // }
+    //     // Add multiplication between letters ?
+    //     expr2 = expr2.replace(/([a-zA-Z])([a-zA-Z])/g, "$1*$2");
+    //     expr2 = expr2.replace(/([a-zA-Z])([a-zA-Z])/g, "$1*$2");
+    //
+    //     // Restore operation auto formatting (prevent adding the multiplication star)
+    //     let exprAsArray = expr2.split('@')
+    //
+    //     if (exprAsArray.length > 0) {
+    //         expr2 = ""
+    //         for (let idx in exprAsArray) {
+    //         }
+    //         for (let token of fnToken) {
+    //             // Remove
+    //
+    //             // expr2 = expr2.replace(new RegExp(token + '\\*', 'g'), token);
+    //         }
+    //     }
+    //
+    //     return expr2;
+    // }
     /**
      * Parse an expression using the shutting yard tree algorithms
      * @param expr (string) Expression to analyse
      * Returns a RPN list of items.
-     * @param operators
+     * @param uniformize
      */
-    parse(expr, operators) {
+    parse(expr, uniformize) {
         let outQueue = [], // Output queue
         opStack = [], // Operation queue
         token = '', tokenPos = 0, tokenType = '', previousOpStatckLength = 0;
         // Normalize the input if required.
-        if (this._uniformize)
+        if (uniformize || this._uniformize)
             expr = this.normalize(expr);
         let securityLoopLvl1 = 50, securityLoopLvl2_default = 50, securityLoopLvl2;
         while (tokenPos < expr.length) {

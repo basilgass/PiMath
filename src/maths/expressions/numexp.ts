@@ -8,7 +8,7 @@ export class NumExp {
 
     constructor(value: string, uniformize?:boolean) {
         this._expression = value
-        this._rpn = new Shutingyard(ShutingyardMode.NUMERIC).parse(value).rpn
+        this._rpn = new Shutingyard(ShutingyardMode.NUMERIC).parse(value, uniformize).rpn
     }
 
     get rpn(): { token: string; tokenType: string }[] {

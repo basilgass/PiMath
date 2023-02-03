@@ -50,16 +50,10 @@ export declare class Shutingyard {
     NextToken(expr: string, start: number): [string, number, string];
     normalize(expr: string): string;
     /**
-     * Sanitize an expression by adding missing common operation (multiplication between parentheseses)
-     * @param expr
-     * @constructor
-     */
-    Uniformizer(expr: string): string;
-    /**
      * Parse an expression using the shutting yard tree algorithms
      * @param expr (string) Expression to analyse
      * Returns a RPN list of items.
-     * @param operators
+     * @param uniformize
      */
-    parse(expr: string, operators?: string[]): Shutingyard;
+    parse(expr: string, uniformize?: boolean): Shutingyard;
 }

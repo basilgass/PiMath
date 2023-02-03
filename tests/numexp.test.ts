@@ -36,9 +36,13 @@ describe('Numerical expression', () => { // the tests container
 
         let a = 1 / 5
 
-        console.log(a, Numeric.numberCorrection(a))
+        const expr = new NumExp('3x-5', true)
+        expect(expr.isValid).to.be.true
+        expect(expr.evaluate({x: 2})).to.be.equal(1)
 
-        // console.log(expr.rpn)
+        const expr2 = new NumExp('3*x-5', true)
+        expect(expr2.isValid).to.be.true
+        expect(expr2.evaluate({x: 2})).to.be.equal(1)
     });
 
     it('should calculate sqrt from exp', function(){
