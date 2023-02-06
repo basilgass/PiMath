@@ -885,7 +885,7 @@ class LinearSystem {
                 // Add the right hand part of the equation (should be only a number, because it has been reordered)
                 equStr.push(equ.right.tex);
                 // Add the operations if existing
-                if (operators[i]) {
+                if (operators !== undefined && operators[i] !== undefined) {
                     // add extra space at the end of the equation
                     equStr[equStr.length - 1] = equStr[equStr.length - 1] + ' \\phantom{\\quad}';
                     for (let o of operators[i]) {
