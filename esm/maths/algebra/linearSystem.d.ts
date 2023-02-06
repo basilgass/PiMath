@@ -1,11 +1,11 @@
 import { Equation } from "./equation";
 import { Fraction } from "../coefficients/fraction";
 export declare class LinearSystem {
-    private _solutions;
-    private _resolutionSteps;
     private _equations;
     private _letters;
-    constructor(...equationStrings: string[]);
+    private _resolutionSteps;
+    private _solutions;
+    constructor(...equationStrings: (string | Equation)[]);
     get equations(): Equation[];
     set equations(value: Equation[]);
     get letters(): string;
@@ -14,24 +14,19 @@ export declare class LinearSystem {
     get variables(): string[];
     get tex(): string;
     get solution(): string;
-    parse: (...equations: unknown[]) => LinearSystem;
-    setCoefficient: (...coefficients: string[]) => LinearSystem;
+    buildTex: (equations: Equation[], operators?: (string[])[]) => string;
+    stepTex: (letter: string) => string;
+    parse: (...equations: (string | Equation)[]) => LinearSystem;
     clone: () => LinearSystem;
-    setLetters: (...letters: string[]) => LinearSystem;
-    private _findLetters;
-    generate: (...solutions: Fraction[] | number[]) => LinearSystem;
-    private _generateOneEquation;
-    private _linearReduction;
-    mergeEquations: (eq1: Equation, eq2: Equation, factor1: unknown, factor2: unknown) => Equation;
     reorder: () => LinearSystem;
-    solve: () => LinearSystem;
-    private _checkIfLinerCombination;
+    solve: (withResolution?: boolean) => LinearSystem;
+    mergeEquations: (eq1: Equation, eq2: Equation, factor1: Fraction, factor2: Fraction) => Equation;
+    private _findLetters;
+    private _linearReduction;
     /**
      * Linear reduction of the equations to have only one letter
      * @param letter    letter to isolate
-     * @param V         list of variables in the linear system.
      * @private
      */
     private _solveOneLetter;
-    log: () => string;
 }

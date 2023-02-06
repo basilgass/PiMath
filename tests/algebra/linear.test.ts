@@ -12,8 +12,10 @@ describe('Linear systems tests', () => {
             '4x+5y=11',
             '7y-24=3x'
         )
-        LS.solve()
-        expect(LS.solution).to.be.equal('(-1;3)')
+        LS.solve(true)
+
+        console.log(LS.stepTex('x'))
+        expect(LS.solution).to.be.equal('\\left(-1;3\\right)')
     })
     it('should solve a 3x3 equations', () => {
         let LS = new LinearSystem(

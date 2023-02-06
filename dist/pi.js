@@ -132,17 +132,18 @@ class Equation {
             // and all zero degree monoms to the right.
             this._left.subtract(this._right);
             this._right.zero();
-            if (allLeft) {
-                return this.moveLeft();
-            }
-            let mMove;
-            for (let m of this._left.monoms) {
-                if (m.degree().isZero()) {
-                    mMove = m.clone();
-                    this._left.subtract(mMove);
-                    this._right.subtract(mMove);
-                }
-            }
+            this._left.reorder();
+            // we eant all left (so equal zero) : it's done !
+            if (allLeft)
+                return this;
+            // Fetch all zero degree monoms.
+            this._left.monoms
+                .filter(m => m.degree().isZero())
+                .forEach(m => {
+                const move = m.clone();
+                this._left.subtract(move);
+                this._right.subtract(move);
+            });
             // Reorder the left and right polynoms
             this._left.reorder();
             this._right.reorder();
@@ -854,106 +855,77 @@ exports.Equation = Equation;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LinearSystem = void 0;
 const equation_1 = __webpack_require__(760);
-const polynom_1 = __webpack_require__(38);
-const random_1 = __webpack_require__(330);
 const fraction_1 = __webpack_require__(506);
+const polynom_1 = __webpack_require__(38);
 // TODO: Must check and rework
 class LinearSystem {
     constructor(...equationStrings) {
+        this.buildTex = (equations, operators) => {
+            let equStr, equArray = [], m, letters = [];
+            // Get the letters from the linear system
+            for (let equ of equations) {
+                letters = letters.concat(equ.letters());
+            }
+            letters = [...new Set(letters)];
+            letters.sort();
+            for (let i = 0; i < equations.length; i++) {
+                let equ = equations[i];
+                equStr = [];
+                for (let L of letters) {
+                    m = equ.left.monomByLetter(L);
+                    if (equStr.length === 0) {
+                        equStr.push(m.isZero() ? '' : m.tex);
+                    }
+                    else {
+                        equStr.push(m.isZero() ? '' : ((m.coefficient.sign() === 1) ? '+' : '') + m.tex);
+                    }
+                }
+                // Add the equal sign
+                equStr.push('=');
+                // Add the right hand part of the equation (should be only a number, because it has been reordered)
+                equStr.push(equ.right.tex);
+                // Add the operations if existing
+                if (operators[i]) {
+                    // add extra space at the end of the equation
+                    equStr[equStr.length - 1] = equStr[equStr.length - 1] + ' \\phantom{\\quad}';
+                    for (let o of operators[i]) {
+                        equStr.push(`\\ \\cdot\\ ${o.startsWith('-') ? "\\left(" + o + "\\right)" : o}`);
+                    }
+                }
+                // Add to the list.
+                equArray.push(equStr.join('&'));
+            }
+            let operatorsColumns = 0;
+            if (operators !== undefined && operators.length > 0) {
+                operatorsColumns = operators[0].length;
+            }
+            return `\\left\\{\\begin{array}{${"r".repeat(letters.length)}cl ${"|l".repeat(operatorsColumns)}}${equArray.join('\\\\\ ')}\\end{array}\\right.`;
+        };
+        this.stepTex = (letter) => {
+            const steps = this._resolutionSteps[letter];
+            if (steps === undefined) {
+                return '';
+            }
+            // steps = { equations[], operations: [[],[]]
+            let tex = [];
+            for (let i = 0; i < steps.length; i++) {
+                tex.push(this.buildTex(steps[i].equations, steps[i].operations));
+            }
+            return `\\begin{aligned}&${tex.join('\\\\&')}\\end{aligned}`;
+        };
         // ------------------------------------------
         // Creation / parsing functions
         // ------------------------------------------
         this.parse = (...equations) => {
+            // make the original equations
             this._equations = equations.map(value => new equation_1.Equation(value));
+            // get the letters.
             this._findLetters();
-            return this;
-        };
-        this.setCoefficient = (...coefficients) => {
-            // Reset the equations list
-            this._equations = [];
-            let i = 0;
-            while (i < coefficients.length - this._letters.length) {
-                let left = new polynom_1.Polynom().parse(this._letters.join(''), ...coefficients.slice(i, i + this._letters.length)), right = new polynom_1.Polynom(coefficients[i + this._letters.length].toString()), equ = new equation_1.Equation().create(left, right);
-                this._equations.push(equ.clone());
-                i = i + this._letters.length + 1;
-            }
             return this;
         };
         this.clone = () => {
             return new LinearSystem().parse(...this._equations.map(equ => equ.clone()));
         };
-        this.setLetters = (...letters) => {
-            this._letters = letters;
-            return this;
-        };
-        this._findLetters = () => {
-            // Find all letters used.
-            let variables = new Set();
-            for (let equ of this._equations) {
-                variables = new Set([...variables, ...equ.variables]);
-            }
-            // TODO: How to transform (Set of string) to string[]
-            // @ts-ignore
-            this._letters = [...variables];
-            return this;
-        };
-        // -----------------------------------------------
-        // Equations generators and randomizers
-        // -----------------------------------------------
-        this.generate = (...solutions) => {
-            let solutionsF = [];
-            // Convert the numbers to fractions if necessary
-            for (let s of solutions) {
-                if (typeof s === "number") {
-                    solutionsF.push(new fraction_1.Fraction(s.toString()));
-                }
-                else {
-                    solutionsF.push(s.clone());
-                }
-            }
-            // Create the equations and make sure they are not linear combined.
-            this._equations = [];
-            for (let i = 0; i < solutions.length; i++) {
-                this._equations.push(this._generateOneEquation(...solutionsF));
-            }
-            return this;
-        };
-        this._generateOneEquation = (...solutions) => {
-            let coeff = [], leftValue = new fraction_1.Fraction().zero(), letters = ['x', 'y', 'z', 't', 'u', 'v', 'w', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'], equString = '', equ;
-            for (let i = 0; i < solutions.length; i++) {
-                coeff.push(random_1.Random.numberSym(5));
-                leftValue.add(solutions[i].clone().multiply(coeff[i]));
-                equString += `${(coeff[i] < 0) ? coeff[i] : '+' + coeff[i]}${letters[i]}`;
-            }
-            // LeftValue contains the left part oof the equation - and is then the isSame as the right part.
-            // It might be a Fraction.
-            // Must check if it's not a linear combination
-            equ = new equation_1.Equation(`${equString}=${leftValue.display}`);
-            if (equ.right.monoms[0].coefficient.denominator != 1) {
-                equ.multiply(new fraction_1.Fraction(equ.right.monoms[0].coefficient.denominator, 1));
-            }
-            if (this._checkIfLinerCombination(equ)) {
-                return equ;
-            }
-            else {
-                return this._generateOneEquation(...solutions);
-            }
-        };
-        this.mergeEquations = (eq1, eq2, factor1, factor2) => {
-            // Set and clone the equations.
-            let eq1multiplied = eq1.clone().multiply(new fraction_1.Fraction(factor1)), eq2multiplied = eq2.clone().multiply(new fraction_1.Fraction(factor2));
-            // @ts-ignore
-            console.log(eq1.tex, eq1multiplied.tex, factor1.tex);
-            // @ts-ignore
-            console.log(eq2.tex, eq2multiplied.tex, factor2.tex);
-            // Add both equations together.
-            eq1multiplied.left.add(eq2multiplied.left);
-            eq1multiplied.right.add(eq2multiplied.right);
-            console.log('resulting reduction', eq1multiplied.tex);
-            return eq1multiplied;
-        };
-        // ------------------------------------------
-        // Solvers algorithm
         // ------------------------------------------
         this.reorder = () => {
             for (let E of this._equations) {
@@ -961,34 +933,42 @@ class LinearSystem {
             }
             return this;
         };
-        this.solve = () => {
+        // -----------------------------------------------
+        // Equations solving algorithms
+        this.solve = (withResolution) => {
             // Solve it by linear
             this._solutions = {};
-            this._resolutionSteps = [];
+            this._resolutionSteps = {};
             // Reorder all equations.
             this.reorder();
-            // Get all variables in the linear system
-            let V = this.variables.sort();
-            for (let letter of V) {
-                console.log('SOLVING FOR', letter);
-                this._solutions[letter] = this._solveOneLetter(letter, V);
+            if (withResolution === undefined) {
+                withResolution = false;
+            }
+            for (let letter of this.variables) {
+                this._solutions[letter] = this._solveOneLetter(letter, withResolution);
             }
             // TODO: LinearSystem - solve: optimization and handle undetermined and undefined systems.
             return this;
         };
-        this._checkIfLinerCombination = (equ) => {
-            return true;
+        this.mergeEquations = (eq1, eq2, factor1, factor2) => {
+            // Set and clone the equations.
+            let eq1multiplied = eq1.clone().multiply(new fraction_1.Fraction(factor1)), eq2multiplied = eq2.clone().multiply(new fraction_1.Fraction(factor2));
+            // Add both equations together.
+            eq1multiplied.left.add(eq2multiplied.left);
+            eq1multiplied.right.add(eq2multiplied.right);
+            return eq1multiplied;
         };
-        // ------------------------------------------
-        // Helpers
-        // ------------------------------------------
-        this.log = () => {
-            let str = '';
-            for (let E of this._equations) {
-                str += `${E.tex}\\n}`;
+        this._findLetters = () => {
+            // Find all letters used.
+            let variables = new Set();
+            for (let equ of this._equations) {
+                variables = new Set([...variables, ...equ.variables]);
             }
-            return str;
+            this._letters = [...variables];
+            this._letters.sort();
+            return this;
         };
+        // TODO: allow construction to accept an array of values (like a matrix) to build the equations
         this._equations = [];
         this._letters = 'xyz'.split('');
         if (equationStrings !== undefined && equationStrings.length > 0) {
@@ -1021,38 +1001,15 @@ class LinearSystem {
         return true;
     }
     get variables() {
-        let V = [];
-        for (let E of this._equations) {
-            V = V.concat(E.variables);
-        }
-        return [...new Set(V)].sort();
+        return this._letters;
     }
     get tex() {
         // Build the array of values.
         // Reorder
         // This clone the system :!!!
         //TODO: Avoid cloning this linear system
-        let LS = this.clone().reorder(), letters = LS.variables, equStr, equArray = [], m;
-        // TODO: Manage tex output of linear equations
-        for (let equ of LS.equations) {
-            equStr = [];
-            for (let L of letters) {
-                m = equ.left.monomByLetter(L);
-                if (equStr.length === 0) {
-                    equStr.push(m.isZero() ? '' : m.tex);
-                }
-                else {
-                    equStr.push(m.isZero() ? '' : ((m.coefficient.sign() === 1) ? '+' : '') + m.tex);
-                }
-            }
-            // Add the equal sign
-            equStr.push('=');
-            // Add the right hand part of the equation (should be only a number, because it has been reordered)
-            equStr.push(equ.right.tex);
-            // Add to the list.
-            equArray.push(equStr.join('&'));
-        }
-        return `\\left\\{\\begin{array}{${"r".repeat(letters.length)}cl}${equArray.join('\\\\\ ')}\\end{array}\\right.`;
+        let LS = this.clone().reorder(), letters = LS.variables;
+        return this.buildTex(LS.equations);
     }
     get solution() {
         let tex = [];
@@ -1060,67 +1017,91 @@ class LinearSystem {
             this.solve();
         }
         for (let letter in this._solutions) {
-            if (this._solutions[letter].isReal) {
-                console.log(`Undetermined (letter ${letter})`);
-                return;
+            if (this._solutions[letter].display === "RR") {
+                return `\\left\\{ \\left(${this._letters.join(';')}\\right) \\big\\vert ${this.equations[0].tex} \\right\\}`;
             }
-            if (this._solutions[letter].isVarnothing) {
-                console.log(`Undefined (letter ${letter})`);
-                return;
+            if (this._solutions[letter].display === "O/") {
+                return `\\varnothing`;
             }
-            tex.push(this._solutions[letter].value.tex);
+            tex.push(this._solutions[letter].tex);
         }
         return `\\left(${tex.join(';')}\\right)`;
     }
-    // ------------------------------------------
-    // Mathematical operations
-    // ------------------------------------------
     _linearReduction(eq1, eq2, letter) {
-        // TODO: handle other signs for equations ?
         // Get the monom for the particular letter.
         let c1 = eq1.left.monomByDegree(1, letter).coefficient.clone(), c2 = eq2.left.monomByDegree(1, letter).coefficient.clone().opposed();
-        console.log('reduction: ', letter, eq1.tex, eq2.tex, c2.tex, c1.tex);
-        return this.mergeEquations(eq1, eq2, c2, c1);
+        // if one value is -1, use 1 and make the other one opposed
+        if (c2.isNegativeOne()) {
+            c1.opposed();
+            c2.opposed();
+        }
+        else if (c1.isNegativeOne()) {
+            c1.opposed();
+            c2.opposed();
+        }
+        return {
+            merged: this.mergeEquations(eq1, eq2, c2, c1),
+            factors: [c2, c1]
+        };
     }
     /**
      * Linear reduction of the equations to have only one letter
      * @param letter    letter to isolate
-     * @param V         list of variables in the linear system.
      * @private
      */
-    _solveOneLetter(letter, V) {
+    _solveOneLetter(letter, withResolution) {
         // list of equations.
-        let LE = this.clone().equations, reducedEquations = [];
+        let LE = this.clone().equations, reducedEquations = [], lastIndex;
+        this._resolutionSteps[letter] = [];
         // Reduce the equations.
         // Do it as long as there is more than one step, but no more than the number of equations.
-        for (let L of V) {
-            // remove the setLetter from all equations using linear combinations
-            if (L === letter) {
-                continue;
-            }
-            console.log('Removing the variable:  ', L);
-            // Linear reduction.
-            // TODO: Search for better association
-            for (let i = 0; i < LE.length - 1; i++) {
-                reducedEquations.push(this._linearReduction(LE[i], LE[i + 1], L));
-            }
-            console.log(reducedEquations.map(x => x.tex));
-            // Keep track of each steps.
-            this._resolutionSteps.push(new LinearSystem().parse(...reducedEquations));
-            // Set the list of equations to the new version.
-            LE = this._resolutionSteps[this._resolutionSteps.length - 1].clone().equations;
+        for (let L of this.variables) {
             // Reset the stack
             reducedEquations = [];
+            // remove the setLetter from all equations using linear combinations
+            if (L === letter)
+                continue;
+            if (withResolution) {
+                this._resolutionSteps[letter].push({
+                    equations: LE.map(x => x.clone()),
+                    operations: [...new Array(LE.length)].map(x => [...new Array(LE.length - 1)].map(x => ""))
+                });
+                lastIndex = this._resolutionSteps[letter].length - 1;
+            }
+            // Linear reduction.
+            for (let i = 0; i < LE.length - 1; i++) {
+                const result = this._linearReduction(LE[i], LE[i + 1], L);
+                reducedEquations.push(result.merged);
+                if (withResolution) {
+                    this._resolutionSteps[letter][lastIndex].operations[i][i] = result.factors[0].tex;
+                    this._resolutionSteps[letter][lastIndex].operations[i + 1][i] = result.factors[1].tex;
+                }
+            }
+            LE = [...reducedEquations];
         }
         // Solve the equations
-        let E = this._resolutionSteps[this._resolutionSteps.length - 1].equations[0];
+        // let E = this._resolutionSteps[this._resolutionSteps.length - 1].equations[0];
+        let E = LE[0];
         E.solve();
-        console.log('Solutions for ', letter, ': ', E.solutions[0].tex);
-        return {
-            value: new fraction_1.Fraction(E.solutions[0].value),
-            isReal: E.isReal,
-            isVarnothing: E.isVarnothing
-        };
+        const solution = E.solutions[0];
+        if (withResolution) {
+            this._resolutionSteps[letter].push({
+                equations: [LE[0]],
+                operations: [[LE[0].left.monoms[0].coefficient.tex]]
+            });
+            let P;
+            if (solution.exact instanceof fraction_1.Fraction || typeof solution.exact === "string") {
+                P = new polynom_1.Polynom(solution.exact);
+            }
+            else {
+                P = new polynom_1.Polynom(solution.value);
+            }
+            this._resolutionSteps[letter].push({
+                equations: [new equation_1.Equation(new polynom_1.Polynom(letter), P)],
+                operations: []
+            });
+        }
+        return E.solutions[0];
     }
 }
 exports.LinearSystem = LinearSystem;

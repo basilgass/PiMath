@@ -237,18 +237,20 @@ export class Equation {
         // and all zero degree monoms to the right.
         this._left.subtract(this._right);
         this._right.zero();
+        this._left.reorder()
 
-        if (allLeft) {
-            return this.moveLeft()
-        }
-        let mMove: Monom;
-        for (let m of this._left.monoms) {
-            if (m.degree().isZero()) {
-                mMove = m.clone();
-                this._left.subtract(mMove);
-                this._right.subtract(mMove);
-            }
-        }
+        // we eant all left (so equal zero) : it's done !
+        if (allLeft) return this
+
+        // Fetch all zero degree monoms.
+        this._left.monoms
+            .filter(m=>m.degree().isZero())
+            .forEach(m=> {
+                const move = m.clone()
+                this._left.subtract(move)
+                this._right.subtract(move)
+            })
+
 
         // Reorder the left and right polynoms
         this._left.reorder();
