@@ -13,4 +13,13 @@ describe('Geometry Line', function () {
         console.log(y.tex)
     });
 
+    it('should output nice Tex', function () {
+        let L = new Line('3x-4y-5=0')
+
+        console.log(L.tex.canonical)
+        console.log(L.tex.equation)
+        console.log(L.tex.mxh)
+        console.log(L.tex.parametric)
+    });
+
 });

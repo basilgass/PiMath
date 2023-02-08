@@ -61,7 +61,7 @@ export class Line {
         // parametric   =>  (xy) = OA + k*d
         // equation     => ax + by = -c
 
-        let canonical = this.equation.clone().moveLeft();
+        let canonical = this.equation.clone().reorder(true);
         // Make sur the first item is positive.
         if (this._a.isNegative()) {
             canonical.multiply(-1);
@@ -71,9 +71,9 @@ export class Line {
 
         return {
             canonical: canonical.tex,
+            equation: canonical.clone().reorder().tex,
             mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new Polynom().parse('x', this.slope, this.height).tex,
-            parametric: `${Point.pmatrix('x', 'y')} = ${Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${Point.pmatrix(d.x, d.y)}`,
-            equation: canonical.clone().reorder().tex
+            parametric: `${Point.pmatrix('x', 'y')} = ${Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${Point.pmatrix(d.x, d.y)}`
         }
     }
 

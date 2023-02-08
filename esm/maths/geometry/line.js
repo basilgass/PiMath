@@ -268,7 +268,7 @@ class Line {
         // mxh          =>  y = -a/b x - c/b
         // parametric   =>  (xy) = OA + k*d
         // equation     => ax + by = -c
-        let canonical = this.equation.clone().moveLeft();
+        let canonical = this.equation.clone().reorder(true);
         // Make sur the first item is positive.
         if (this._a.isNegative()) {
             canonical.multiply(-1);
@@ -276,9 +276,9 @@ class Line {
         const d = this._d.clone().simplifyDirection();
         return {
             canonical: canonical.tex,
+            equation: canonical.clone().reorder().tex,
             mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new polynom_1.Polynom().parse('x', this.slope, this.height).tex,
-            parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(d.x, d.y)}`,
-            equation: canonical.clone().reorder().tex
+            parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(d.x, d.y)}`
         };
     }
     get display() {
