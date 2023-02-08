@@ -16,6 +16,6 @@ export declare namespace Random {
     function item(arr: any[]): any;
     function shuffle(arr: any[]): any[];
     namespace Geometry {
-        function line(config: randomGeometryLineConfig): Line;
+        function line(config?: randomGeometryLineConfig): Line;
     }
 }

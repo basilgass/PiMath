@@ -155,7 +155,7 @@ class Equation {
             if (this._sign !== '=' && F.sign() === -1) {
                 this._reverseSign();
             }
-            return this.reorder();
+            return this;
         };
         /**
          * divide an equation by a given value (transformed as a fraction)

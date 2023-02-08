@@ -338,7 +338,7 @@ export class Equation {
             this._reverseSign();
         }
 
-        return this.reorder();
+        return this;
     };
 
     /**

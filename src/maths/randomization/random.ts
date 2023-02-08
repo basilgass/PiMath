@@ -53,7 +53,7 @@ export namespace Random {
     }
 
     export namespace Geometry {
-        export function line(config: randomGeometryLineConfig): Line {
+        export function line(config?: randomGeometryLineConfig): Line {
             return (new rndGeometryLine(config).generate())
         }
     }

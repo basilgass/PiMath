@@ -61,11 +61,14 @@ export class Line {
         // parametric   =>  (xy) = OA + k*d
         // equation     => ax + by = -c
 
+        console.log('BEFORE', this.equation.tex)
         let canonical = this.equation.clone().reorder(true);
+        console.log('CANONCIAL', canonical.tex)
         // Make sur the first item is positive.
         if (this._a.isNegative()) {
             canonical.multiply(-1);
         }
+        console.log('CANONCIAL (multiply)', canonical.tex)
 
         const d = this._d.clone().simplifyDirection()
 

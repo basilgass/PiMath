@@ -1,9 +1,5 @@
 import {describe} from "mocha";
-import {expect} from "chai";
-import {Circle} from "../../src/maths/geometry/circle";
 import {Line} from "../../src/maths/geometry/line";
-import {Point} from "../../src/maths/geometry/point";
-import {Fraction} from "../../src/maths/coefficients/fraction";
 
 describe('Geometry Line', function () {
     it('should evaluate coordinates', function () {
@@ -14,12 +10,13 @@ describe('Geometry Line', function () {
     });
 
     it('should output nice Tex', function () {
-        let L = new Line('3x-4y-5=0')
+        let L = new Line('9x-8y-96=0'),
+            tex = L.tex
 
-        console.log(L.tex.canonical)
-        console.log(L.tex.equation)
-        console.log(L.tex.mxh)
-        console.log(L.tex.parametric)
+        console.log(tex.canonical)
+        console.log(tex.equation)
+        console.log(tex.mxh)
+        console.log(tex.parametric)
     });
 
 });
