@@ -4,6 +4,7 @@ exports.LinearSystem = void 0;
 const equation_1 = require("./equation");
 const fraction_1 = require("../coefficients/fraction");
 const polynom_1 = require("./polynom");
+const numeric_1 = require("../numeric");
 // TODO: Must check and rework
 class LinearSystem {
     constructor(...equationStrings) {
@@ -174,9 +175,16 @@ class LinearSystem {
         }
         return `\\left(${tex.join(';')}\\right)`;
     }
+    get resolutionSteps() {
+        return this._resolutionSteps;
+    }
     _linearReduction(eq1, eq2, letter) {
         // Get the monom for the particular letter.
         let c1 = eq1.left.monomByDegree(1, letter).coefficient.clone(), c2 = eq2.left.monomByDegree(1, letter).coefficient.clone().opposed();
+        // Reduce c1 and c2 by the gcd
+        const gcdN = numeric_1.Numeric.gcd(c1.numerator, c2.numerator), gcdD = numeric_1.Numeric.gcd(c1.denominator, c2.denominator);
+        c1.divide(gcdN).multiply(gcdD);
+        c2.divide(gcdN).multiply(gcdD);
         // if one value is -1, use 1 and make the other one opposed
         if (c2.isNegativeOne()) {
             c1.opposed();

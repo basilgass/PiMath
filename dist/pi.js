@@ -857,6 +857,7 @@ exports.LinearSystem = void 0;
 const equation_1 = __webpack_require__(760);
 const fraction_1 = __webpack_require__(506);
 const polynom_1 = __webpack_require__(38);
+const numeric_1 = __webpack_require__(956);
 // TODO: Must check and rework
 class LinearSystem {
     constructor(...equationStrings) {
@@ -1027,9 +1028,16 @@ class LinearSystem {
         }
         return `\\left(${tex.join(';')}\\right)`;
     }
+    get resolutionSteps() {
+        return this._resolutionSteps;
+    }
     _linearReduction(eq1, eq2, letter) {
         // Get the monom for the particular letter.
         let c1 = eq1.left.monomByDegree(1, letter).coefficient.clone(), c2 = eq2.left.monomByDegree(1, letter).coefficient.clone().opposed();
+        // Reduce c1 and c2 by the gcd
+        const gcdN = numeric_1.Numeric.gcd(c1.numerator, c2.numerator), gcdD = numeric_1.Numeric.gcd(c1.denominator, c2.denominator);
+        c1.divide(gcdN).multiply(gcdD);
+        c2.divide(gcdN).multiply(gcdD);
         // if one value is -1, use 1 and make the other one opposed
         if (c2.isNegativeOne()) {
             c1.opposed();
@@ -5928,9 +5936,7 @@ class Line {
             return this;
         };
         this.simplifyDirection = () => {
-            let lcm = numeric_1.Numeric.lcm(this._d.x.denominator, this._d.y.denominator), gcd = numeric_1.Numeric.gcd(this._d.x.numerator, this._d.y.numerator);
-            this._d.x.multiply(lcm).divide(gcd);
-            this._d.y.multiply(lcm).divide(gcd);
+            this._d.simplifyDirection();
             return this;
         };
         this.intersection = (line) => {
@@ -6008,15 +6014,18 @@ class Line {
         // canonical    =>  ax + by + c = 0
         // mxh          =>  y = -a/b x - c/b
         // parametric   =>  (xy) = OA + k*d
-        let canonical = this.equation;
+        // equation     => ax + by = -c
+        let canonical = this.equation.clone().moveLeft();
         // Make sur the first item is positive.
         if (this._a.isNegative()) {
             canonical.multiply(-1);
         }
+        const d = this._d.clone().simplifyDirection();
         return {
             canonical: canonical.tex,
             mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new polynom_1.Polynom().parse('x', this.slope, this.height).tex,
-            parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(this._d.x, this._d.y)}`
+            parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(d.x, d.y)}`,
+            equation: canonical.clone().reorder().tex
         };
     }
     get display() {
@@ -6740,6 +6749,12 @@ class Vector {
             // Multiply by the lcm of denominators.
             return this.multiplyByScalar(numeric_1.Numeric.lcm(this._x.denominator, this._y.denominator))
                 .divideByScalar(numeric_1.Numeric.gcd(this._x.numerator, this._y.numerator));
+        };
+        this.simplifyDirection = () => {
+            let lcm = numeric_1.Numeric.lcm(this.x.denominator, this.y.denominator), gcd = numeric_1.Numeric.gcd(this.x.numerator, this.y.numerator);
+            this.x.multiply(lcm).divide(gcd);
+            this.y.multiply(lcm).divide(gcd);
+            return this;
         };
         this.angleWith = (V, sharp, radian) => {
             let scalar = this.scalarProductWithVector(V).value, toDegree = radian ? 1 : 180 / Math.PI;

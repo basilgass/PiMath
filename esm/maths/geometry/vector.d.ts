@@ -31,5 +31,6 @@ export declare class Vector {
     multiplyByScalar: (k: any) => Vector;
     divideByScalar: (k: any) => Vector;
     simplify: () => Vector;
+    simplifyDirection: () => Vector;
     angleWith: (V: Vector, sharp?: Boolean, radian?: Boolean) => number;
 }

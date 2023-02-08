@@ -206,6 +206,15 @@ export class Vector {
             .divideByScalar(Numeric.gcd(this._x.numerator, this._y.numerator));
     }
 
+    simplifyDirection = (): Vector => {
+        let lcm = Numeric.lcm(this.x.denominator, this.y.denominator),
+            gcd = Numeric.gcd(this.x.numerator, this.y.numerator);
+
+        this.x.multiply(lcm).divide(gcd);
+        this.y.multiply(lcm).divide(gcd);
+        return this
+    }
+
     angleWith = (V: Vector, sharp?: Boolean, radian?: Boolean): number => {
         let scalar = this.scalarProductWithVector(V).value,
             toDegree = radian ? 1 : 180 / Math.PI;

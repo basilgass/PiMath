@@ -189,9 +189,7 @@ class Line {
             return this;
         };
         this.simplifyDirection = () => {
-            let lcm = numeric_1.Numeric.lcm(this._d.x.denominator, this._d.y.denominator), gcd = numeric_1.Numeric.gcd(this._d.x.numerator, this._d.y.numerator);
-            this._d.x.multiply(lcm).divide(gcd);
-            this._d.y.multiply(lcm).divide(gcd);
+            this._d.simplifyDirection();
             return this;
         };
         this.intersection = (line) => {
@@ -269,15 +267,18 @@ class Line {
         // canonical    =>  ax + by + c = 0
         // mxh          =>  y = -a/b x - c/b
         // parametric   =>  (xy) = OA + k*d
-        let canonical = this.equation;
+        // equation     => ax + by = -c
+        let canonical = this.equation.clone().moveLeft();
         // Make sur the first item is positive.
         if (this._a.isNegative()) {
             canonical.multiply(-1);
         }
+        const d = this._d.clone().simplifyDirection();
         return {
             canonical: canonical.tex,
             mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new polynom_1.Polynom().parse('x', this.slope, this.height).tex,
-            parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(this._d.x, this._d.y)}`
+            parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(d.x, d.y)}`,
+            equation: canonical.clone().reorder().tex
         };
     }
     get display() {

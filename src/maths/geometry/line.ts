@@ -55,21 +55,25 @@ export class Line {
         return new Equation(new Polynom().parse('xy', this._a, this._b, this._c), new Polynom('0')).simplify();
     }
 
-    get tex(): { canonical: string, mxh: string, parametric: string } {
+    get tex(): { canonical: string, mxh: string, parametric: string , equation: string} {
         // canonical    =>  ax + by + c = 0
         // mxh          =>  y = -a/b x - c/b
         // parametric   =>  (xy) = OA + k*d
+        // equation     => ax + by = -c
 
-        let canonical = this.equation;
+        let canonical = this.equation.clone().moveLeft();
         // Make sur the first item is positive.
         if (this._a.isNegative()) {
             canonical.multiply(-1);
         }
 
+        const d = this._d.clone().simplifyDirection()
+
         return {
             canonical: canonical.tex,
             mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new Polynom().parse('x', this.slope, this.height).tex,
-            parametric: `${Point.pmatrix('x', 'y')} = ${Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${Point.pmatrix(this._d.x, this._d.y)}`
+            parametric: `${Point.pmatrix('x', 'y')} = ${Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${Point.pmatrix(d.x, d.y)}`,
+            equation: canonical.clone().reorder().tex
         }
     }
 
@@ -355,11 +359,7 @@ export class Line {
     }
 
     simplifyDirection = (): Line => {
-        let lcm = Numeric.lcm(this._d.x.denominator, this._d.y.denominator),
-            gcd = Numeric.gcd(this._d.x.numerator, this._d.y.numerator);
-
-        this._d.x.multiply(lcm).divide(gcd);
-        this._d.y.multiply(lcm).divide(gcd);
+        this._d.simplifyDirection()
         return this;
     }
     intersection = (line: Line): { point: Point, hasIntersection: boolean, isParallel: boolean, isSame: boolean } => {

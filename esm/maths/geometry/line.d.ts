@@ -30,6 +30,7 @@ export declare class Line {
         canonical: string;
         mxh: string;
         parametric: string;
+        equation: string;
     };
     get display(): {
         canonical: string;

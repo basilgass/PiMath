@@ -131,6 +131,12 @@ class Vector {
             return this.multiplyByScalar(numeric_1.Numeric.lcm(this._x.denominator, this._y.denominator))
                 .divideByScalar(numeric_1.Numeric.gcd(this._x.numerator, this._y.numerator));
         };
+        this.simplifyDirection = () => {
+            let lcm = numeric_1.Numeric.lcm(this.x.denominator, this.y.denominator), gcd = numeric_1.Numeric.gcd(this.x.numerator, this.y.numerator);
+            this.x.multiply(lcm).divide(gcd);
+            this.y.multiply(lcm).divide(gcd);
+            return this;
+        };
         this.angleWith = (V, sharp, radian) => {
             let scalar = this.scalarProductWithVector(V).value, toDegree = radian ? 1 : 180 / Math.PI;
             if (sharp) {

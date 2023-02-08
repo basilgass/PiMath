@@ -2,6 +2,7 @@ import {Equation, ISolution} from "./equation";
 import {Monom} from "./monom";
 import {Fraction} from "../coefficients/fraction";
 import {Polynom} from "./polynom";
+import {Numeric} from "../numeric";
 
 // TODO: Must check and rework
 export class LinearSystem {
@@ -107,13 +108,13 @@ export class LinearSystem {
             letters: string[] = []
 
         // Get the letters from the linear system
-        for(let equ of equations){
+        for (let equ of equations) {
             letters = letters.concat(equ.letters())
         }
-        letters = [... new Set(letters)]
+        letters = [...new Set(letters)]
         letters.sort()
 
-        for (let i=0; i<equations.length; i++) {
+        for (let i = 0; i < equations.length; i++) {
             let equ = equations[i]
 
             equStr = [];
@@ -134,11 +135,11 @@ export class LinearSystem {
             equStr.push(equ.right.tex);
 
             // Add the operations if existing
-            if(operators!==undefined && operators[i]!==undefined){
+            if (operators !== undefined && operators[i] !== undefined) {
                 // add extra space at the end of the equation
-                equStr[equStr.length-1] = equStr[equStr.length-1] + ' \\phantom{\\quad}'
-                for(let o of operators[i]){
-                    equStr.push(`\\ \\cdot\\ ${o.startsWith('-')?"\\left("+o+"\\right)":o}`)
+                equStr[equStr.length - 1] = equStr[equStr.length - 1] + ' \\phantom{\\quad}'
+                for (let o of operators[i]) {
+                    equStr.push(`\\ \\cdot\\ ${o.startsWith('-') ? "\\left(" + o + "\\right)" : o}`)
                 }
             }
 
@@ -147,7 +148,7 @@ export class LinearSystem {
         }
 
         let operatorsColumns = 0
-        if(operators!==undefined && operators.length>0){
+        if (operators !== undefined && operators.length > 0) {
             operatorsColumns = operators[0].length
         }
         return `\\left\\{\\begin{array}{${"r".repeat(letters.length)}cl ${"|l".repeat(operatorsColumns)}}${equArray.join('\\\\\ ')}\\end{array}\\right.`;
@@ -162,7 +163,7 @@ export class LinearSystem {
 
         // steps = { equations[], operations: [[],[]]
         let tex: string[] = []
-        for(let i=0; i<steps.length; i++){
+        for (let i = 0; i < steps.length; i++) {
             tex.push(this.buildTex(steps[i].equations, steps[i].operations))
         }
 
@@ -170,7 +171,12 @@ export class LinearSystem {
 
     }
 
-    // ------------------------------------------
+
+    get resolutionSteps(): { [p: string]: { equations: Equation[]; operations: string[][] }[] } {
+        return this._resolutionSteps;
+    }
+
+// ------------------------------------------
     // Creation / parsing functions
 
     // ------------------------------------------
@@ -249,6 +255,12 @@ export class LinearSystem {
         let c1 = eq1.left.monomByDegree(1, letter).coefficient.clone(),
             c2 = eq2.left.monomByDegree(1, letter).coefficient.clone().opposed();
 
+        // Reduce c1 and c2 by the gcd
+        const gcdN = Numeric.gcd(c1.numerator, c2.numerator),
+            gcdD = Numeric.gcd(c1.denominator, c2.denominator)
+        c1.divide(gcdN).multiply(gcdD)
+        c2.divide(gcdN).multiply(gcdD)
+
         // if one value is -1, use 1 and make the other one opposed
         if (c2.isNegativeOne()) {
             c1.opposed()
@@ -314,20 +326,20 @@ export class LinearSystem {
         E.solve()
         const solution = E.solutions[0]
 
-        if(withResolution){
+        if (withResolution) {
             this._resolutionSteps[letter].push({
                 equations: [LE[0]],
                 operations: [[LE[0].left.monoms[0].coefficient.tex]]
             })
 
             let P: Polynom
-            if(solution.exact instanceof Fraction || typeof solution.exact==="string"){
+            if (solution.exact instanceof Fraction || typeof solution.exact === "string") {
                 P = new Polynom(solution.exact)
-            }else{
+            } else {
                 P = new Polynom(solution.value)
             }
             this._resolutionSteps[letter].push({
-                equations: [new Equation(new Polynom(letter),P)],
+                equations: [new Equation(new Polynom(letter), P)],
                 operations: []
             })
 

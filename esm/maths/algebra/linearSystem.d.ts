@@ -16,6 +16,12 @@ export declare class LinearSystem {
     get solution(): string;
     buildTex: (equations: Equation[], operators?: (string[])[]) => string;
     stepTex: (letter: string) => string;
+    get resolutionSteps(): {
+        [p: string]: {
+            equations: Equation[];
+            operations: string[][];
+        }[];
+    };
     parse: (...equations: (string | Equation)[]) => LinearSystem;
     clone: () => LinearSystem;
     reorder: () => LinearSystem;
