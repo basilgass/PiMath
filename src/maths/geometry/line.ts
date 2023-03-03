@@ -156,7 +156,7 @@ export class Line {
             x &= ${(new Polynom(this._OA.x)
                 .add(new Monom(this._d.x).multiply(new Monom('k'))))
                 .reorder('k', true)
-                .tex}\\
+                .tex}\\\\\ 
             y &= ${(new Polynom(this._OA.y)
                 .add(new Monom(this._d.y).multiply(new Monom('k'))))
                 .reorder('k', true)

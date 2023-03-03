@@ -6113,7 +6113,7 @@ class Line {
             x &= ${(new polynom_1.Polynom(this._OA.x)
                 .add(new monom_1.Monom(this._d.x).multiply(new monom_1.Monom('k'))))
                 .reorder('k', true)
-                .tex}\\
+                .tex}\\\\\ 
             y &= ${(new polynom_1.Polynom(this._OA.y)
                 .add(new monom_1.Monom(this._d.y).multiply(new monom_1.Monom('k'))))
                 .reorder('k', true)
