@@ -67,8 +67,9 @@ export declare class Line {
     parseByPointAndLine: (P: Point, L: Line, orientation?: LinePropriety) => Line;
     clone: () => Line;
     isOnLine: (pt: Point) => Boolean;
-    isParellelTo: (line: Line) => Boolean;
+    isParallelTo: (line: Line) => Boolean;
     isSameAs: (line: Line) => Boolean;
+    isPerpendicularTo: (line: Line) => Boolean;
     isVertical: () => Boolean;
     simplify: () => Line;
     simplifyDirection: () => Line;

@@ -5947,12 +5947,15 @@ class Line {
                 .add(this._c)
                 .isZero();
         };
-        this.isParellelTo = (line) => {
+        this.isParallelTo = (line) => {
             // Do they have the isSame direction ?
             return this.slope.isEqual(line.slope) && this.height.isNotEqual(line.height);
         };
         this.isSameAs = (line) => {
             return this.slope.isEqual(line.slope) && this.height.isEqual(line.height);
+        };
+        this.isPerpendicularTo = (line) => {
+            return this.d.isNormalTo(line.d);
         };
         this.isVertical = () => {
             return this.slope.isInfinity();
@@ -5985,7 +5988,7 @@ class Line {
             if (this._b.isZero() || line.b.isZero()) {
                 // TODO : handle no y in the line canonical form
             }
-            if (this.isParellelTo(line)) {
+            if (this.isParallelTo(line)) {
                 Pt.x = null;
                 Pt.y = null;
                 isParallel = true;

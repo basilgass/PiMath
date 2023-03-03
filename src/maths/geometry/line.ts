@@ -375,12 +375,15 @@ export class Line {
             .isZero()
     }
 
-    isParellelTo = (line: Line): Boolean => {
+    isParallelTo = (line: Line): Boolean => {
         // Do they have the isSame direction ?
         return this.slope.isEqual(line.slope) && this.height.isNotEqual(line.height);
     }
     isSameAs = (line: Line): Boolean => {
         return this.slope.isEqual(line.slope) && this.height.isEqual(line.height);
+    }
+    isPerpendicularTo = (line: Line): Boolean => {
+        return this.d.isNormalTo(line.d)
     }
     isVertical = (): Boolean => {
         return this.slope.isInfinity()
@@ -425,7 +428,7 @@ export class Line {
             // TODO : handle no y in the line canonical form
         }
 
-        if (this.isParellelTo(line)) {
+        if (this.isParallelTo(line)) {
             Pt.x = null;
             Pt.y = null;
             isParallel = true;
