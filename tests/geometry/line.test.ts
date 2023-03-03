@@ -1,6 +1,5 @@
 import {describe} from "mocha";
 import {Line} from "../../src/maths/geometry/line";
-import {Random} from "../../src/maths/randomization/random";
 import {Point} from "../../src/maths/geometry/point";
 import {expect} from "chai";
 
@@ -22,11 +21,11 @@ describe('Geometry Line', function () {
         console.log(tex.parametric)
     });
 
-    it('should parse line from canonical coefficient', function (){
+    it('should parse line from canonical coefficient', function () {
         let L = new Line(3, 2, 1)
 
-        let P1 = new Point(-2,3),
-            P2 = new Point(-3,4)
+        let P1 = new Point(-2, 3),
+            P2 = new Point(-3, 4)
         expect(L.isOnLine(P1)).to.be.false
         expect(L.isOnLine(P2)).to.be.true
 
