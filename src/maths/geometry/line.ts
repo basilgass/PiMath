@@ -9,6 +9,8 @@ import {Fraction} from "../coefficients/fraction";
 import {Equation} from "../algebra/equation";
 import {Polynom} from "../algebra/polynom";
 import {Random} from "../randomization/random";
+import {LinearSystem} from "../algebra/linearSystem";
+import {Monom} from "../algebra/monom";
 
 export enum LinePropriety {
     None,
@@ -23,10 +25,12 @@ export class Line {
     static PARALLEL = LinePropriety.Parallel
     private _referencePropriety: LinePropriety
     private _referenceLine: Line
+    private _reduceBeforeDisplay: boolean
 
     constructor(...values: unknown[]) {
 
         this._exists = false;
+        this._reduceBeforeDisplay = true
 
         if (values.length > 0) {
             this.parse(...values);
@@ -103,10 +107,30 @@ export class Line {
 
     // ------------------------------------------
     get equation(): Equation {
-        return new Equation(new Polynom().parse('xy', this._a, this._b, this._c), new Polynom('0')).simplify();
+        let equ = new Equation(new Polynom().parse('xy', this._a, this._b, this._c), new Polynom('0'))
+        if(this._reduceBeforeDisplay) {
+            return equ.simplify();
+        }else{
+            return equ
+        }
     }
 
-    get tex(): { canonical: string, mxh: string, parametric: string, equation: string } {
+    get system(): { x: Equation, y: Equation } {
+        let e1 = new Equation(
+            new Polynom('x'),
+            new Polynom(this._OA.x)
+                .add(new Monom('k').multiplyByNumber(this._d.x))
+        ),
+            e2 = new Equation(
+                new Polynom('y'),
+                new Polynom(this._OA.y)
+                    .add(new Monom('k').multiplyByNumber(this._d.y))
+            )
+
+        return {x: e1, y: e2}
+    }
+
+    get tex(): { canonical: string, mxh: string, parametric: string, equation: string, system: string } {
         // canonical    =>  ax + by + c = 0
         // mxh          =>  y = -a/b x - c/b
         // parametric   =>  (xy) = OA + k*d
@@ -118,14 +142,33 @@ export class Line {
             canonical.multiply(-1);
         }
 
-        const d = this._d.clone().simplifyDirection()
+        let d = this._d.clone()
+        if (this._reduceBeforeDisplay) {
+            d.simplifyDirection()
+        }
 
         return {
             canonical: canonical.tex,
             equation: canonical.clone().reorder().tex,
             mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new Polynom().parse('x', this.slope, this.height).tex,
-            parametric: `${Point.pmatrix('x', 'y')} = ${Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${Point.pmatrix(d.x, d.y)}`
+            parametric: `${Point.pmatrix('x', 'y')} = ${Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${Point.pmatrix(d.x, d.y)}`,
+            system: `\\left\\{\\begin{aligned}
+            x &= ${(new Polynom(this._OA.x)
+                .add(new Monom(this._d.x).multiply(new Monom('k'))))
+                .tex}\\
+            y &= ${(new Polynom(this._OA.y)
+                .add(new Monom(this._d.y).multiply(new Monom('k'))))
+                .tex}
+            \\end{aligned}\\right.`
         }
+    }
+
+    get reduceBeforeDisplay(): boolean {
+        return this._reduceBeforeDisplay;
+    }
+
+    set reduceBeforeDisplay(value: boolean) {
+        this._reduceBeforeDisplay = value;
     }
 
     get display(): { canonical: string, mxh: string, parametric: string } {
@@ -166,7 +209,7 @@ export class Line {
         // Return a random point on the line.
         return this._d
             .clone()
-            .multiplyByScalar(Random.numberSym((k===undefined || k<=1)?3:k, false))
+            .multiplyByScalar(Random.numberSym((k === undefined || k <= 1) ? 3 : k, false))
             .add(this._OA.asVector)
             .asPoint
     }
@@ -174,7 +217,7 @@ export class Line {
         let pt = this.randomPoint(k)
 
         let maxIterationTest = 10
-        while(this.isOnLine(pt) && maxIterationTest>0){
+        while (this.isOnLine(pt) && maxIterationTest > 0) {
             pt.x.add(Random.numberSym(1, false))
             pt.y.add(Random.numberSym(1, false))
             maxIterationTest--

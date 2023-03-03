@@ -16,6 +16,7 @@ export declare class Line {
     static PARALLEL: LinePropriety;
     private _referencePropriety;
     private _referenceLine;
+    private _reduceBeforeDisplay;
     constructor(...values: unknown[]);
     private _a;
     get a(): Fraction;
@@ -37,12 +38,19 @@ export declare class Line {
     private _exists;
     get exists(): boolean;
     get equation(): Equation;
+    get system(): {
+        x: Equation;
+        y: Equation;
+    };
     get tex(): {
         canonical: string;
         mxh: string;
         parametric: string;
         equation: string;
+        system: string;
     };
+    get reduceBeforeDisplay(): boolean;
+    set reduceBeforeDisplay(value: boolean);
     get display(): {
         canonical: string;
         mxh: string;

@@ -548,13 +548,13 @@ class Polynom {
                 // Values are different
                 if (da !== db)
                     return db - da;
-                // if values are equals, check other letters.
+                // if values are equals, check other letters - it must be revert in that case !
                 if (otherLetters.length > 0) {
                     for (let L of otherLetters) {
                         let da = a.degree(L).value, db = b.degree(L).value;
                         // Values are different
                         if (da !== db)
-                            return db - da;
+                            return da - db;
                     }
                 }
                 return 0;

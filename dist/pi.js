@@ -2749,13 +2749,13 @@ class Polynom {
                 // Values are different
                 if (da !== db)
                     return db - da;
-                // if values are equals, check other letters.
+                // if values are equals, check other letters - it must be revert in that case !
                 if (otherLetters.length > 0) {
                     for (let L of otherLetters) {
                         let da = a.degree(L).value, db = b.degree(L).value;
                         // Values are different
                         if (da !== db)
-                            return db - da;
+                            return da - db;
                     }
                 }
                 return 0;
@@ -5758,6 +5758,7 @@ const fraction_1 = __webpack_require__(506);
 const equation_1 = __webpack_require__(760);
 const polynom_1 = __webpack_require__(38);
 const random_1 = __webpack_require__(330);
+const monom_1 = __webpack_require__(937);
 var LinePropriety;
 (function (LinePropriety) {
     LinePropriety[LinePropriety["None"] = 0] = "None";
@@ -6026,6 +6027,7 @@ class Line {
             return;
         };
         this._exists = false;
+        this._reduceBeforeDisplay = true;
         if (values.length > 0) {
             this.parse(...values);
         }
@@ -6071,7 +6073,19 @@ class Line {
     }
     // ------------------------------------------
     get equation() {
-        return new equation_1.Equation(new polynom_1.Polynom().parse('xy', this._a, this._b, this._c), new polynom_1.Polynom('0')).simplify();
+        let equ = new equation_1.Equation(new polynom_1.Polynom().parse('xy', this._a, this._b, this._c), new polynom_1.Polynom('0'));
+        if (this._reduceBeforeDisplay) {
+            return equ.simplify();
+        }
+        else {
+            return equ;
+        }
+    }
+    get system() {
+        let e1 = new equation_1.Equation(new polynom_1.Polynom('x'), new polynom_1.Polynom(this._OA.x)
+            .add(new monom_1.Monom('k').multiplyByNumber(this._d.x))), e2 = new equation_1.Equation(new polynom_1.Polynom('y'), new polynom_1.Polynom(this._OA.y)
+            .add(new monom_1.Monom('k').multiplyByNumber(this._d.y)));
+        return { x: e1, y: e2 };
     }
     get tex() {
         // canonical    =>  ax + by + c = 0
@@ -6083,13 +6097,30 @@ class Line {
         if (this._a.isNegative()) {
             canonical.multiply(-1);
         }
-        const d = this._d.clone().simplifyDirection();
+        let d = this._d.clone();
+        if (this._reduceBeforeDisplay) {
+            d.simplifyDirection();
+        }
         return {
             canonical: canonical.tex,
             equation: canonical.clone().reorder().tex,
             mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new polynom_1.Polynom().parse('x', this.slope, this.height).tex,
-            parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(d.x, d.y)}`
+            parametric: `${point_1.Point.pmatrix('x', 'y')} = ${point_1.Point.pmatrix(this._OA.x, this._OA.y)} + k\\cdot ${point_1.Point.pmatrix(d.x, d.y)}`,
+            system: `\\left\\{\\begin{aligned}
+            x &= ${(new polynom_1.Polynom(this._OA.x)
+                .add(new monom_1.Monom(this._d.x).multiply(new monom_1.Monom('k'))))
+                .tex}\\
+            y &= ${(new polynom_1.Polynom(this._OA.y)
+                .add(new monom_1.Monom(this._d.y).multiply(new monom_1.Monom('k'))))
+                .tex}
+            \\end{aligned}\\right.`
         };
+    }
+    get reduceBeforeDisplay() {
+        return this._reduceBeforeDisplay;
+    }
+    set reduceBeforeDisplay(value) {
+        this._reduceBeforeDisplay = value;
     }
     get display() {
         // canonical    =>  ax + by + c = 0

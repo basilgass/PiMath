@@ -2,6 +2,9 @@ import {describe} from "mocha";
 import {Line} from "../../src/maths/geometry/line";
 import {Point} from "../../src/maths/geometry/point";
 import {expect} from "chai";
+import {Equation} from "../../src/maths/algebra/equation";
+import {Polynom} from "../../src/maths/algebra/polynom";
+import {Monom} from "../../src/maths/algebra/monom";
 
 describe('Geometry Line', function () {
     it('should evaluate coordinates', function () {
@@ -19,6 +22,8 @@ describe('Geometry Line', function () {
         console.log(tex.equation)
         console.log(tex.mxh)
         console.log(tex.parametric)
+
+        console.log(tex.system)
     });
 
     it('should parse line from canonical coefficient', function () {
@@ -29,7 +34,17 @@ describe('Geometry Line', function () {
         expect(L.isOnLine(P1)).to.be.false
         expect(L.isOnLine(P2)).to.be.true
 
+        console.log(L.tex.system)
         console.log(L.randomNearPoint(20).display)
+
+        console.log(
+
+        )
+        console.log(
+            (new Polynom(L.OA.y)
+                .add(new Monom(L.d.y).multiply(new Monom('k'))))
+                .tex
+        )
     })
 
 });
