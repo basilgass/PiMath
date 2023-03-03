@@ -105,11 +105,17 @@ class Vector {
             return Vector.scalarProduct(this, V);
             // return this._x.clone().multiply(V.x).add(this._y.clone().multiply(V.y));
         };
+        this.determinantWithVector = (V) => {
+            return Vector.determinant(this, V);
+        };
         this.normal = () => {
             let x = this.x.clone().opposed(), y = this.y.clone();
             this._x = y;
             this._y = x;
             return this;
+        };
+        this.isColinearTo = (v) => {
+            return this.determinantWithVector(v).isZero();
         };
         this.isNormalTo = (v) => {
             return this.scalarProductWithVector(v).isZero();
@@ -185,5 +191,8 @@ class Vector {
 exports.Vector = Vector;
 Vector.scalarProduct = (v1, v2) => {
     return v1.x.clone().multiply(v2.x).add(v1.y.clone().multiply(v2.y));
+};
+Vector.determinant = (v1, v2) => {
+    return v1.x.clone().multiply(v2.y).subtract(v1.y.clone().multiply(v2.x));
 };
 //# sourceMappingURL=vector.js.map

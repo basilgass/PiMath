@@ -170,15 +170,27 @@ export class Vector {
         // return this._x.clone().multiply(V.x).add(this._y.clone().multiply(V.y));
     }
 
+    determinantWithVector = (V: Vector): Fraction => {
+        return Vector.determinant(this, V)
+    }
+
     static scalarProduct = (v1: Vector, v2: Vector): Fraction => {
         return v1.x.clone().multiply(v2.x).add(v1.y.clone().multiply(v2.y));
     };
+
+    static determinant = (v1: Vector, v2: Vector): Fraction => {
+        return v1.x.clone().multiply(v2.y).subtract(v1.y.clone().multiply(v2.x))
+    }
 
     normal = (): Vector => {
         let x = this.x.clone().opposed(), y = this.y.clone();
         this._x = y;
         this._y = x;
         return this;
+    }
+
+    isColinearTo = (v: Vector): boolean => {
+        return this.determinantWithVector(v).isZero()
     }
 
     isNormalTo = (v: Vector): boolean => {

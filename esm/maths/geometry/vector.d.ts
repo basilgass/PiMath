@@ -26,8 +26,11 @@ export declare class Vector {
     add: (V: Vector) => Vector;
     subtract: (V: Vector) => Vector;
     scalarProductWithVector: (V: Vector) => Fraction;
+    determinantWithVector: (V: Vector) => Fraction;
     static scalarProduct: (v1: Vector, v2: Vector) => Fraction;
+    static determinant: (v1: Vector, v2: Vector) => Fraction;
     normal: () => Vector;
+    isColinearTo: (v: Vector) => boolean;
     isNormalTo: (v: Vector) => boolean;
     get isNull(): boolean;
     multiplyByScalar: (k: any) => Vector;
