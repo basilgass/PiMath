@@ -2741,21 +2741,24 @@ class Polynom {
             }
             return this.reorder();
         };
-        this.reorder = (letter = 'x') => {
+        this.reorder = (letter = 'x', revert) => {
+            if (revert === undefined) {
+                revert = false;
+            }
             // TODO: Must handle multiple setLetter reorder system
             let otherLetters = this.variables.filter(x => x !== letter);
             this._monoms.sort(function (a, b) {
                 let da = a.degree(letter).value, db = b.degree(letter).value;
                 // Values are different
                 if (da !== db)
-                    return db - da;
+                    return revert ? da - db : db - da;
                 // if values are equals, check other letters - it must be revert in that case !
                 if (otherLetters.length > 0) {
                     for (let L of otherLetters) {
                         let da = a.degree(L).value, db = b.degree(L).value;
                         // Values are different
                         if (da !== db)
-                            return da - db;
+                            return revert ? da - db : db - da;
                     }
                 }
                 return 0;
@@ -6109,9 +6112,11 @@ class Line {
             system: `\\left\\{\\begin{aligned}
             x &= ${(new polynom_1.Polynom(this._OA.x)
                 .add(new monom_1.Monom(this._d.x).multiply(new monom_1.Monom('k'))))
+                .reorder('k', true)
                 .tex}\\
             y &= ${(new polynom_1.Polynom(this._OA.y)
                 .add(new monom_1.Monom(this._d.y).multiply(new monom_1.Monom('k'))))
+                .reorder('k', true)
                 .tex}
             \\end{aligned}\\right.`
         };

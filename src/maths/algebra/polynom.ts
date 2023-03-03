@@ -830,7 +830,9 @@ export class Polynom {
         return this.reorder();
     };
 
-    reorder = (letter: string = 'x'): Polynom => {
+    reorder = (letter: string = 'x', revert?: boolean): Polynom => {
+        if(revert===undefined){revert = false}
+
         // TODO: Must handle multiple setLetter reorder system
         let otherLetters = this.variables.filter(x => x !== letter)
         this._monoms.sort(function (a, b) {
@@ -838,7 +840,7 @@ export class Polynom {
                 db = b.degree(letter).value
 
             // Values are different
-            if (da !== db) return db - da
+            if (da !== db) return revert?da-db : db - da
 
             // if values are equals, check other letters - it must be revert in that case !
             if (otherLetters.length > 0) {
@@ -847,7 +849,7 @@ export class Polynom {
                         db = b.degree(L).value
 
                     // Values are different
-                    if (da !== db) return da - db
+                    if (da !== db) return revert?da - db : db - da
                 }
             }
 

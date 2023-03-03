@@ -34,15 +34,10 @@ describe('Geometry Line', function () {
         expect(L.isOnLine(P1)).to.be.false
         expect(L.isOnLine(P2)).to.be.true
 
-        console.log(L.tex.system)
-        console.log(L.randomNearPoint(20).display)
-
-        console.log(
-
-        )
         console.log(
             (new Polynom(L.OA.y)
                 .add(new Monom(L.d.y).multiply(new Monom('k'))))
+                .reorder('k', true)
                 .tex
         )
     })

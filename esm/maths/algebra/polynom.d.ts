@@ -103,7 +103,7 @@ export declare class Polynom {
     isReduced: (polynomString: string) => Boolean;
     isDeveloped: (polynomString: string) => Boolean;
     reduce: () => Polynom;
-    reorder: (letter?: string) => Polynom;
+    reorder: (letter?: string, revert?: boolean) => Polynom;
     degree: (letter?: string) => Fraction;
     letters: () => string[];
     /**
