@@ -3,6 +3,7 @@
  * @module Vector
  */
 import { Line } from "./line";
+import { Vector } from "./vector";
 import { Fraction } from "../coefficients/fraction";
 export declare class Point {
     private _x;
@@ -15,6 +16,7 @@ export declare class Point {
     set y(value: Fraction);
     get tex(): string;
     get display(): string;
+    get asVector(): Vector;
     parse: (...values: unknown[]) => Point;
     clone: () => Point;
     zero: () => Point;

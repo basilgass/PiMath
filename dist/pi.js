@@ -5757,6 +5757,7 @@ const numeric_1 = __webpack_require__(956);
 const fraction_1 = __webpack_require__(506);
 const equation_1 = __webpack_require__(760);
 const polynom_1 = __webpack_require__(38);
+const random_1 = __webpack_require__(330);
 var LinePropriety;
 (function (LinePropriety) {
     LinePropriety[LinePropriety["None"] = 0] = "None";
@@ -5766,6 +5767,24 @@ var LinePropriety;
 })(LinePropriety = exports.LinePropriety || (exports.LinePropriety = {}));
 class Line {
     constructor(...values) {
+        this.randomPoint = (k) => {
+            // Return a random point on the line.
+            return this._d
+                .clone()
+                .multiplyByScalar(random_1.Random.numberSym((k === undefined || k <= 1) ? 3 : k, false))
+                .add(this._OA.asVector)
+                .asPoint;
+        };
+        this.randomNearPoint = (k) => {
+            let pt = this.randomPoint(k);
+            let maxIterationTest = 10;
+            while (this.isOnLine(pt) && maxIterationTest > 0) {
+                pt.x.add(random_1.Random.numberSym(1, false));
+                pt.y.add(random_1.Random.numberSym(1, false));
+                maxIterationTest--;
+            }
+            return pt;
+        };
         // ------------------------------------------
         // Creation / parsing functions
         // ------------------------------------------
@@ -5920,6 +5939,14 @@ class Line {
         // ------------------------------------------
         // Mathematical operations
         // ------------------------------------------
+        this.isOnLine = (pt) => {
+            return this._a.clone()
+                .multiply(pt.x)
+                .add(this._b.clone()
+                .multiply(pt.y))
+                .add(this._c)
+                .isZero();
+        };
         this.isParellelTo = (line) => {
             // Do they have the isSame direction ?
             return this.slope.isEqual(line.slope) && this.height.isNotEqual(line.height);
@@ -6001,11 +6028,44 @@ class Line {
         }
         return this;
     }
-    get exists() {
-        return this._exists;
+    get a() {
+        return this._a;
+    }
+    set a(value) {
+        this._a = value;
+    }
+    get b() {
+        return this._b;
+    }
+    set b(value) {
+        this._b = value;
+    }
+    get c() {
+        return this._c;
     }
     // ------------------------------------------
     // Getter and setter
+    set c(value) {
+        this._c = value;
+    }
+    get OA() {
+        return this._OA;
+    }
+    set OA(value) {
+        this._OA = value;
+    }
+    get d() {
+        return this._d;
+    }
+    set d(value) {
+        this._d = value;
+    }
+    get n() {
+        return this._n;
+    }
+    get exists() {
+        return this._exists;
+    }
     // ------------------------------------------
     get equation() {
         return new equation_1.Equation(new polynom_1.Polynom().parse('xy', this._a, this._b, this._c), new polynom_1.Polynom('0')).simplify();
@@ -6015,14 +6075,11 @@ class Line {
         // mxh          =>  y = -a/b x - c/b
         // parametric   =>  (xy) = OA + k*d
         // equation     => ax + by = -c
-        console.log('BEFORE', this.equation.tex);
         let canonical = this.equation.clone().reorder(true);
-        console.log('CANONCIAL', canonical.tex);
         // Make sur the first item is positive.
         if (this._a.isNegative()) {
             canonical.multiply(-1);
         }
-        console.log('CANONCIAL (multiply)', canonical.tex);
         const d = this._d.clone().simplifyDirection();
         return {
             canonical: canonical.tex,
@@ -6046,44 +6103,11 @@ class Line {
             parametric: ""
         };
     }
-    get a() {
-        return this._a;
-    }
-    set a(value) {
-        this._a = value;
-    }
-    get b() {
-        return this._b;
-    }
-    set b(value) {
-        this._b = value;
-    }
-    get c() {
-        return this._c;
-    }
-    set c(value) {
-        this._c = value;
-    }
-    get OA() {
-        return this._OA;
-    }
-    set OA(value) {
-        this._OA = value;
-    }
-    get d() {
-        return this._d;
-    }
-    get n() {
-        return this._n;
-    }
     get normal() {
         return new vector_1.Vector(this._a, this._b);
     }
     get director() {
         return this._d.clone();
-    }
-    set d(value) {
-        this._d = value;
     }
     get slope() {
         return this._a.clone().opposed().divide(this._b);
@@ -6166,6 +6190,7 @@ class Line {
     }
 }
 exports.Line = Line;
+// A line is defined as the canonical form
 Line.PERPENDICULAR = LinePropriety.Perpendicular;
 Line.PARALLEL = LinePropriety.Parallel;
 
@@ -6315,6 +6340,9 @@ class Point {
         pts.push(this._x.tex);
         pts.push(this._y.tex);
         return `(${pts.join(';')})`;
+    }
+    get asVector() {
+        return new vector_1.Vector(this.x, this.y);
     }
     get key() {
         return `${this.x.display};${this.y.display}`;
@@ -6724,8 +6752,8 @@ class Vector {
             return this.add(V.clone().opposed());
         };
         this.scalarProductWithVector = (V) => {
-            // TODO: Add the scalar factor !!!!
-            return this._x.clone().multiply(V.x).add(this._y.clone().multiply(V.y));
+            return Vector.scalarProduct(this, V);
+            // return this._x.clone().multiply(V.x).add(this._y.clone().multiply(V.y));
         };
         this.normal = () => {
             let x = this.x.clone().opposed(), y = this.y.clone();
@@ -6797,14 +6825,16 @@ class Vector {
     get tex() {
         return `\\begin{pmatrix}${this._x.tex} \\\\\ ${this._y.tex} \\end{pmatrix}`;
     }
+    get asPoint() {
+        return new point_1.Point(this.x, this.y);
+    }
     get isNull() {
         return this.x.isZero() && this.y.isZero();
     }
 }
 exports.Vector = Vector;
 Vector.scalarProduct = (v1, v2) => {
-    // TODO: Transform to fraction with nthroot.
-    return v1.x.value * v2.x.value + v1.y.value * v2.y.value;
+    return v1.x.clone().multiply(v2.x).add(v1.y.clone().multiply(v2.y));
 };
 
 
@@ -7011,6 +7041,7 @@ const rndMonom_1 = __webpack_require__(793);
 const rndHelpers_1 = __webpack_require__(140);
 const rndFraction_1 = __webpack_require__(754);
 const rndGeometryLine_1 = __webpack_require__(821);
+const rndGeometryPoint_1 = __webpack_require__(246);
 __exportStar(__webpack_require__(230), exports);
 var Random;
 (function (Random) {
@@ -7060,6 +7091,10 @@ var Random;
             return (new rndGeometryLine_1.rndGeometryLine(config).generate());
         }
         Geometry.line = line;
+        function point(config) {
+            return (new rndGeometryPoint_1.rndGeometryPoint(config).generate());
+        }
+        Geometry.point = point;
     })(Geometry = Random.Geometry || (Random.Geometry = {}));
 })(Random = exports.Random || (exports.Random = {}));
 
@@ -7192,6 +7227,73 @@ class rndGeometryLine extends randomCore_1.randomCore {
     }
 }
 exports.rndGeometryLine = rndGeometryLine;
+
+
+/***/ }),
+
+/***/ 246:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.rndGeometryPoint = void 0;
+const randomCore_1 = __webpack_require__(373);
+const random_1 = __webpack_require__(330);
+const point_1 = __webpack_require__(557);
+const fraction_1 = __webpack_require__(506);
+/**
+ * Create a random monom based on a based configuration
+ */
+class rndGeometryPoint extends randomCore_1.randomCore {
+    constructor(userConfig) {
+        super();
+        this.generate = () => {
+            let x, y, zeroX = this._config.axis === true || this._config.axis === 'x', zeroY = this._config.axis === true || this._config.axis === 'y';
+            x = this._config.fraction ?
+                random_1.Random.fraction({ max: this._config.max, zero: zeroX }) :
+                new fraction_1.Fraction(random_1.Random.numberSym(this._config.max, zeroX));
+            y = this._config.fraction ?
+                random_1.Random.fraction({ max: this._config.max, zero: zeroY }) :
+                new fraction_1.Fraction(random_1.Random.numberSym(this._config.max, zeroY));
+            if (+this._config.quadrant === 1) {
+                x.abs();
+                y.abs();
+            }
+            if (+this._config.quadrant === 2) {
+                if (x.isPositive()) {
+                    x.opposed();
+                }
+                if (y.isNegative()) {
+                    y.opposed();
+                }
+            }
+            if (+this._config.quadrant === 3) {
+                if (x.isPositive()) {
+                    x.opposed();
+                }
+                if (y.isPositive()) {
+                    y.opposed();
+                }
+            }
+            if (+this._config.quadrant === 4) {
+                if (x.isNegative()) {
+                    x.opposed();
+                }
+                if (y.isPositive()) {
+                    y.opposed();
+                }
+            }
+            return new point_1.Point(x, y);
+        };
+        this._defaultConfig = {
+            axis: true,
+            fraction: false,
+            max: 10
+        };
+        this._config = this.mergeConfig(userConfig, this._defaultConfig);
+    }
+}
+exports.rndGeometryPoint = rndGeometryPoint;
 
 
 /***/ }),

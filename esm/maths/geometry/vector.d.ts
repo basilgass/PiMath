@@ -3,6 +3,7 @@
  * @module Vector
  */
 import { Fraction } from "../coefficients/fraction";
+import { Point } from "./point";
 export declare class Vector {
     private _x;
     private _y;
@@ -14,6 +15,7 @@ export declare class Vector {
     get normSquare(): Fraction;
     get norm(): number;
     get tex(): string;
+    get asPoint(): Point;
     parse: (...values: any) => Vector;
     clone: () => Vector;
     reset: () => Vector;
@@ -24,7 +26,7 @@ export declare class Vector {
     add: (V: Vector) => Vector;
     subtract: (V: Vector) => Vector;
     scalarProductWithVector: (V: Vector) => Fraction;
-    static scalarProduct: (v1: Vector, v2: Vector) => number;
+    static scalarProduct: (v1: Vector, v2: Vector) => Fraction;
     normal: () => Vector;
     isNormalTo: (v: Vector) => boolean;
     get isNull(): boolean;

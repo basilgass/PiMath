@@ -139,6 +139,9 @@ class Point {
         pts.push(this._y.tex);
         return `(${pts.join(';')})`;
     }
+    get asVector() {
+        return new vector_1.Vector(this.x, this.y);
+    }
     get key() {
         return `${this.x.display};${this.y.display}`;
     }

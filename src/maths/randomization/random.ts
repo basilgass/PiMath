@@ -1,13 +1,21 @@
 import {rndPolynom} from "./rndPolynom";
 import {rndMonom} from "./rndMonom";
 import {rndHelpers} from "./rndHelpers";
-import {randomCoefficientConfig, randomGeometryLineConfig, randomMonomConfig, randomPolynomConfig} from "./rndTypes";
+import {
+    randomCoefficientConfig,
+    randomGeometryLineConfig,
+    randomGeometryPointConfig,
+    randomMonomConfig,
+    randomPolynomConfig
+} from "./rndTypes";
 import {rndFraction} from "./rndFraction";
 import {Polynom} from "../algebra/polynom";
 import {Monom} from "../algebra/monom";
 import {Fraction} from "../coefficients/fraction";
 import {Line} from "../geometry/line";
 import {rndGeometryLine} from "./rndGeometryLine";
+import {Point} from "../geometry/point";
+import {rndGeometryPoint} from "./rndGeometryPoint";
 
 export * from "./rndTypes"
 
@@ -56,5 +64,10 @@ export namespace Random {
         export function line(config?: randomGeometryLineConfig): Line {
             return (new rndGeometryLine(config).generate())
         }
+
+        export function point(config?: randomGeometryPointConfig): Point {
+            return (new rndGeometryPoint(config).generate())
+        }
+
     }
 }

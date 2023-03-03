@@ -67,6 +67,10 @@ export class Point {
         return `(${pts.join(';')})`
     }
 
+    get asVector(): Vector {
+        return new Vector(this.x, this.y)
+    }
+
     // ------------------------------------------
     // Creation / parsing functions
     // ------------------------------------------

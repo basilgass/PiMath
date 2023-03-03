@@ -8,30 +8,21 @@ import {Numeric} from "../numeric";
 import {Fraction} from "../coefficients/fraction";
 import {Equation} from "../algebra/equation";
 import {Polynom} from "../algebra/polynom";
+import {Random} from "../randomization/random";
 
 export enum LinePropriety {
     None,
-    Parallel='parallel',
+    Parallel = 'parallel',
     Perpendicular = 'perpendicular',
     Tangent = 'tangent'
 }
 
 export class Line {
     // A line is defined as the canonical form
-    // ax + by + c = 0
-    private _a: Fraction;
-    private _b: Fraction;
-    private _c: Fraction;
-    private _OA: Point;
-    private _d: Vector;
-    private _n: Vector;
-    private _exists: boolean
-
-    private _referencePropriety: LinePropriety
-    private _referenceLine: Line
-
     static PERPENDICULAR = LinePropriety.Perpendicular
     static PARALLEL = LinePropriety.Parallel
+    private _referencePropriety: LinePropriety
+    private _referenceLine: Line
 
     constructor(...values: unknown[]) {
 
@@ -44,31 +35,88 @@ export class Line {
         return this;
     }
 
+    // ax + by + c = 0
+    private _a: Fraction;
+
+    get a(): Fraction {
+        return this._a;
+    }
+
+    set a(value: Fraction) {
+        this._a = value;
+    }
+
+    private _b: Fraction;
+
+    get b(): Fraction {
+        return this._b;
+    }
+
+    set b(value: Fraction) {
+        this._b = value;
+    }
+
+    private _c: Fraction;
+
+    get c(): Fraction {
+        return this._c;
+    }
+
+    // ------------------------------------------
+    // Getter and setter
+
+    set c(value: Fraction) {
+        this._c = value;
+    }
+
+    private _OA: Point;
+
+    get OA(): Point {
+        return this._OA;
+    }
+
+    set OA(value: Point) {
+        this._OA = value;
+    }
+
+    private _d: Vector;
+
+    get d(): Vector {
+        return this._d;
+    }
+
+    set d(value: Vector) {
+        this._d = value;
+    }
+
+    private _n: Vector;
+
+    get n(): Vector {
+        return this._n;
+    }
+
+    private _exists: boolean
+
     get exists(): boolean {
         return this._exists;
     }
 
     // ------------------------------------------
-    // Getter and setter
-    // ------------------------------------------
     get equation(): Equation {
         return new Equation(new Polynom().parse('xy', this._a, this._b, this._c), new Polynom('0')).simplify();
     }
 
-    get tex(): { canonical: string, mxh: string, parametric: string , equation: string} {
+    get tex(): { canonical: string, mxh: string, parametric: string, equation: string } {
         // canonical    =>  ax + by + c = 0
         // mxh          =>  y = -a/b x - c/b
         // parametric   =>  (xy) = OA + k*d
         // equation     => ax + by = -c
 
-        console.log('BEFORE', this.equation.tex)
         let canonical = this.equation.clone().reorder(true);
-        console.log('CANONCIAL', canonical.tex)
         // Make sur the first item is positive.
         if (this._a.isNegative()) {
             canonical.multiply(-1);
         }
-        console.log('CANONCIAL (multiply)', canonical.tex)
 
         const d = this._d.clone().simplifyDirection()
 
@@ -98,56 +146,12 @@ export class Line {
         }
     }
 
-    get a(): Fraction {
-        return this._a;
-    }
-
-    set a(value: Fraction) {
-        this._a = value;
-    }
-
-    get b(): Fraction {
-        return this._b;
-    }
-
-    set b(value: Fraction) {
-        this._b = value;
-    }
-
-    get c(): Fraction {
-        return this._c;
-    }
-
-    set c(value: Fraction) {
-        this._c = value;
-    }
-
-    get OA(): Point {
-        return this._OA;
-    }
-
-    set OA(value: Point) {
-        this._OA = value;
-    }
-
-    get d(): Vector {
-        return this._d;
-    }
-
-    get n(): Vector {
-        return this._n;
-    }
-
     get normal(): Vector {
         return new Vector(this._a, this._b);
     }
 
     get director(): Vector {
         return this._d.clone()
-    }
-
-    set d(value: Vector) {
-        this._d = value;
     }
 
     get slope(): Fraction {
@@ -158,8 +162,30 @@ export class Line {
         return this._c.clone().opposed().divide(this._b);
     }
 
+    randomPoint = (k?: number): Point => {
+        // Return a random point on the line.
+        return this._d
+            .clone()
+            .multiplyByScalar(Random.numberSym((k===undefined || k<=1)?3:k, false))
+            .add(this._OA.asVector)
+            .asPoint
+    }
+    randomNearPoint = (k?: number): Point => {
+        let pt = this.randomPoint(k)
+
+        let maxIterationTest = 10
+        while(this.isOnLine(pt) && maxIterationTest>0){
+            pt.x.add(Random.numberSym(1, false))
+            pt.y.add(Random.numberSym(1, false))
+            maxIterationTest--
+
+        }
+        return pt
+    }
+
 // ------------------------------------------
     // Creation / parsing functions
+
     // ------------------------------------------
     /**
      * Parse data to a line
@@ -212,18 +238,18 @@ export class Line {
                 (values[2] instanceof Fraction || typeof values[2] === 'number')
             ) {
                 return this.parseByCoefficient(values[0], values[1], values[2]);
-            }else if (
+            } else if (
                 values[0] instanceof Point && values[1] instanceof Vector
-            ){
-                if(values[2] === LinePropriety.Perpendicular){
+            ) {
+                if (values[2] === LinePropriety.Perpendicular) {
                     return this.parseByPointAndNormal(values[0], values[1])
-                }else if (values[2] === LinePropriety.Parallel){
+                } else if (values[2] === LinePropriety.Parallel) {
                     return this.parseByPointAndVector(values[0], values[1])
                 }
-            }else if (values[0] instanceof Point && values[1] instanceof Line ) {
-                if(values[2]===LinePropriety.Parallel || values[2]===null) {
+            } else if (values[0] instanceof Point && values[1] instanceof Line) {
+                if (values[2] === LinePropriety.Parallel || values[2] === null) {
                     return this.parseByPointAndLine(values[0], values[1], LinePropriety.Parallel)
-                }else{
+                } else {
                     return this.parseByPointAndLine(values[0], values[1], LinePropriety.Perpendicular)
                 }
             }
@@ -338,6 +364,17 @@ export class Line {
     // ------------------------------------------
     // Mathematical operations
     // ------------------------------------------
+    isOnLine = (pt: Point): Boolean => {
+        return this._a.clone()
+            .multiply(pt.x)
+            .add(
+                this._b.clone()
+                    .multiply(pt.y)
+            )
+            .add(this._c)
+            .isZero()
+    }
+
     isParellelTo = (line: Line): Boolean => {
         // Do they have the isSame direction ?
         return this.slope.isEqual(line.slope) && this.height.isNotEqual(line.height);
@@ -460,20 +497,20 @@ export class Line {
         return false;
     }
 
-    getValueAtX = (value: Fraction|number): Fraction => {
+    getValueAtX = (value: Fraction | number): Fraction => {
         const equ = this.equation.clone().isolate('y'),
             F = new Fraction(value)
 
-        if(equ instanceof Equation){
+        if (equ instanceof Equation) {
             return equ.right.evaluate({x: F})
         }
         return
     }
-    getValueAtY = (value: Fraction|number): Fraction => {
+    getValueAtY = (value: Fraction | number): Fraction => {
         const equ = this.equation.clone().isolate('x'),
             F = new Fraction(value)
 
-        if(equ instanceof Equation){
+        if (equ instanceof Equation) {
             return equ.right.evaluate({y: F})
         }
         return

@@ -50,6 +50,10 @@ export class Vector {
         return `\\begin{pmatrix}${this._x.tex} \\\\\ ${this._y.tex} \\end{pmatrix}`
     }
 
+    get asPoint(): Point {
+        return new Point(this.x, this.y)
+    }
+
     // ------------------------------------------
     // Creation / parsing functions
     // ------------------------------------------
@@ -162,13 +166,12 @@ export class Vector {
     }
 
     scalarProductWithVector = (V: Vector): Fraction => {
-        // TODO: Add the scalar factor !!!!
-        return this._x.clone().multiply(V.x).add(this._y.clone().multiply(V.y));
+        return Vector.scalarProduct(this, V)
+        // return this._x.clone().multiply(V.x).add(this._y.clone().multiply(V.y));
     }
 
-    static scalarProduct = (v1: Vector, v2: Vector): number => {
-        // TODO: Transform to fraction with nthroot.
-        return v1.x.value * v2.x.value + v1.y.value * v2.y.value;
+    static scalarProduct = (v1: Vector, v2: Vector): Fraction => {
+        return v1.x.clone().multiply(v2.x).add(v1.y.clone().multiply(v2.y));
     };
 
     normal = (): Vector => {

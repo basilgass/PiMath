@@ -102,8 +102,8 @@ class Vector {
             return this.add(V.clone().opposed());
         };
         this.scalarProductWithVector = (V) => {
-            // TODO: Add the scalar factor !!!!
-            return this._x.clone().multiply(V.x).add(this._y.clone().multiply(V.y));
+            return Vector.scalarProduct(this, V);
+            // return this._x.clone().multiply(V.x).add(this._y.clone().multiply(V.y));
         };
         this.normal = () => {
             let x = this.x.clone().opposed(), y = this.y.clone();
@@ -175,13 +175,15 @@ class Vector {
     get tex() {
         return `\\begin{pmatrix}${this._x.tex} \\\\\ ${this._y.tex} \\end{pmatrix}`;
     }
+    get asPoint() {
+        return new point_1.Point(this.x, this.y);
+    }
     get isNull() {
         return this.x.isZero() && this.y.isZero();
     }
 }
 exports.Vector = Vector;
 Vector.scalarProduct = (v1, v2) => {
-    // TODO: Transform to fraction with nthroot.
-    return v1.x.value * v2.x.value + v1.y.value * v2.y.value;
+    return v1.x.clone().multiply(v2.x).add(v1.y.clone().multiply(v2.y));
 };
 //# sourceMappingURL=vector.js.map

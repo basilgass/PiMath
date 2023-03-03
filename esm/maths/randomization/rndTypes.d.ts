@@ -26,3 +26,9 @@ export type randomGeometryLineConfig = {
     };
     slope?: Fraction | string | number;
 };
+export type randomGeometryPointConfig = {
+    quadrant?: number;
+    axis?: string | boolean;
+    fraction?: boolean;
+    max?: number;
+};

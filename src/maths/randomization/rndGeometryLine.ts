@@ -2,7 +2,6 @@ import {randomCore} from "./randomCore";
 import {Random, randomGeometryLineConfig} from "./random";
 import {Line} from "../geometry/line";
 import {Vector} from "../geometry/vector";
-import {PiMath} from "../../index";
 import {Point} from "../geometry/point";
 
 /**
@@ -34,17 +33,17 @@ export class rndGeometryLine extends randomCore {
             Random.numberSym(10)
         )
 
-        while(d.isNull){
+        while (d.isNull) {
             d.x = Random.numberSym(10)
             d.y = Random.numberSym(10)
         }
 
-        if(this._config.slope===1){
-            if(d.x.sign()!==d.y.sign()){
+        if (this._config.slope === 1) {
+            if (d.x.sign() !== d.y.sign()) {
                 d.y.opposed()
             }
-        }else if(this._config.slope===-1){
-            if(d.x.sign()!==d.y.sign()){
+        } else if (this._config.slope === -1) {
+            if (d.x.sign() !== d.y.sign()) {
                 d.y.opposed()
             }
         }

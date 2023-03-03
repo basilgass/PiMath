@@ -27,3 +27,11 @@ export type randomGeometryLineConfig = {
     A: { x: number | Fraction, y: number | Fraction },
     slope?: Fraction | string | number,
 }
+
+
+export type randomGeometryPointConfig  = {
+    quadrant?: number,
+    axis?: string | boolean,
+    fraction?: boolean,
+    max?: number
+}

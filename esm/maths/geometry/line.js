@@ -10,6 +10,7 @@ const numeric_1 = require("../numeric");
 const fraction_1 = require("../coefficients/fraction");
 const equation_1 = require("../algebra/equation");
 const polynom_1 = require("../algebra/polynom");
+const random_1 = require("../randomization/random");
 var LinePropriety;
 (function (LinePropriety) {
     LinePropriety[LinePropriety["None"] = 0] = "None";
@@ -19,6 +20,24 @@ var LinePropriety;
 })(LinePropriety = exports.LinePropriety || (exports.LinePropriety = {}));
 class Line {
     constructor(...values) {
+        this.randomPoint = (k) => {
+            // Return a random point on the line.
+            return this._d
+                .clone()
+                .multiplyByScalar(random_1.Random.numberSym((k === undefined || k <= 1) ? 3 : k, false))
+                .add(this._OA.asVector)
+                .asPoint;
+        };
+        this.randomNearPoint = (k) => {
+            let pt = this.randomPoint(k);
+            let maxIterationTest = 10;
+            while (this.isOnLine(pt) && maxIterationTest > 0) {
+                pt.x.add(random_1.Random.numberSym(1, false));
+                pt.y.add(random_1.Random.numberSym(1, false));
+                maxIterationTest--;
+            }
+            return pt;
+        };
         // ------------------------------------------
         // Creation / parsing functions
         // ------------------------------------------
@@ -173,6 +192,14 @@ class Line {
         // ------------------------------------------
         // Mathematical operations
         // ------------------------------------------
+        this.isOnLine = (pt) => {
+            return this._a.clone()
+                .multiply(pt.x)
+                .add(this._b.clone()
+                .multiply(pt.y))
+                .add(this._c)
+                .isZero();
+        };
         this.isParellelTo = (line) => {
             // Do they have the isSame direction ?
             return this.slope.isEqual(line.slope) && this.height.isNotEqual(line.height);
@@ -254,11 +281,44 @@ class Line {
         }
         return this;
     }
-    get exists() {
-        return this._exists;
+    get a() {
+        return this._a;
+    }
+    set a(value) {
+        this._a = value;
+    }
+    get b() {
+        return this._b;
+    }
+    set b(value) {
+        this._b = value;
+    }
+    get c() {
+        return this._c;
     }
     // ------------------------------------------
     // Getter and setter
+    set c(value) {
+        this._c = value;
+    }
+    get OA() {
+        return this._OA;
+    }
+    set OA(value) {
+        this._OA = value;
+    }
+    get d() {
+        return this._d;
+    }
+    set d(value) {
+        this._d = value;
+    }
+    get n() {
+        return this._n;
+    }
+    get exists() {
+        return this._exists;
+    }
     // ------------------------------------------
     get equation() {
         return new equation_1.Equation(new polynom_1.Polynom().parse('xy', this._a, this._b, this._c), new polynom_1.Polynom('0')).simplify();
@@ -268,14 +328,11 @@ class Line {
         // mxh          =>  y = -a/b x - c/b
         // parametric   =>  (xy) = OA + k*d
         // equation     => ax + by = -c
-        console.log('BEFORE', this.equation.tex);
         let canonical = this.equation.clone().reorder(true);
-        console.log('CANONCIAL', canonical.tex);
         // Make sur the first item is positive.
         if (this._a.isNegative()) {
             canonical.multiply(-1);
         }
-        console.log('CANONCIAL (multiply)', canonical.tex);
         const d = this._d.clone().simplifyDirection();
         return {
             canonical: canonical.tex,
@@ -299,44 +356,11 @@ class Line {
             parametric: ""
         };
     }
-    get a() {
-        return this._a;
-    }
-    set a(value) {
-        this._a = value;
-    }
-    get b() {
-        return this._b;
-    }
-    set b(value) {
-        this._b = value;
-    }
-    get c() {
-        return this._c;
-    }
-    set c(value) {
-        this._c = value;
-    }
-    get OA() {
-        return this._OA;
-    }
-    set OA(value) {
-        this._OA = value;
-    }
-    get d() {
-        return this._d;
-    }
-    get n() {
-        return this._n;
-    }
     get normal() {
         return new vector_1.Vector(this._a, this._b);
     }
     get director() {
         return this._d.clone();
-    }
-    set d(value) {
-        this._d = value;
     }
     get slope() {
         return this._a.clone().opposed().divide(this._b);
@@ -419,6 +443,7 @@ class Line {
     }
 }
 exports.Line = Line;
+// A line is defined as the canonical form
 Line.PERPENDICULAR = LinePropriety.Perpendicular;
 Line.PARALLEL = LinePropriety.Parallel;
 //# sourceMappingURL=line.js.map

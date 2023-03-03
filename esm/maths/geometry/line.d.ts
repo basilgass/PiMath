@@ -12,18 +12,29 @@ export declare enum LinePropriety {
     Tangent = "tangent"
 }
 export declare class Line {
-    private _a;
-    private _b;
-    private _c;
-    private _OA;
-    private _d;
-    private _n;
-    private _exists;
-    private _referencePropriety;
-    private _referenceLine;
     static PERPENDICULAR: LinePropriety;
     static PARALLEL: LinePropriety;
+    private _referencePropriety;
+    private _referenceLine;
     constructor(...values: unknown[]);
+    private _a;
+    get a(): Fraction;
+    set a(value: Fraction);
+    private _b;
+    get b(): Fraction;
+    set b(value: Fraction);
+    private _c;
+    get c(): Fraction;
+    set c(value: Fraction);
+    private _OA;
+    get OA(): Point;
+    set OA(value: Point);
+    private _d;
+    get d(): Vector;
+    set d(value: Vector);
+    private _n;
+    get n(): Vector;
+    private _exists;
     get exists(): boolean;
     get equation(): Equation;
     get tex(): {
@@ -37,21 +48,12 @@ export declare class Line {
         mxh: string;
         parametric: string;
     };
-    get a(): Fraction;
-    set a(value: Fraction);
-    get b(): Fraction;
-    set b(value: Fraction);
-    get c(): Fraction;
-    set c(value: Fraction);
-    get OA(): Point;
-    set OA(value: Point);
-    get d(): Vector;
-    get n(): Vector;
     get normal(): Vector;
     get director(): Vector;
-    set d(value: Vector);
     get slope(): Fraction;
     get height(): Fraction;
+    randomPoint: (k?: number) => Point;
+    randomNearPoint: (k?: number) => Point;
     /**
      * Parse data to a line
      * @param {any} values
@@ -64,6 +66,7 @@ export declare class Line {
     parseByPointAndNormal: (P: Point, n: Vector) => Line;
     parseByPointAndLine: (P: Point, L: Line, orientation?: LinePropriety) => Line;
     clone: () => Line;
+    isOnLine: (pt: Point) => Boolean;
     isParellelTo: (line: Line) => Boolean;
     isSameAs: (line: Line) => Boolean;
     isVertical: () => Boolean;

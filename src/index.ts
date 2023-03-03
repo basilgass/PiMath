@@ -41,4 +41,5 @@ export const PiMath = {
         Circle: Circle
     }
 };
+
 (<any>window).Pi = PiMath
