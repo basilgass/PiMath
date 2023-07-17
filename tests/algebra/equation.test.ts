@@ -1,8 +1,6 @@
 import {describe} from "mocha";
 import {expect} from "chai";
 import {Equation} from "../../src/maths/algebra/equation";
-import {PiMath} from "../../src";
-import exp = require("constants");
 
 describe('Equations tests', () => {
     it('should get the solutions', () => {
@@ -47,4 +45,16 @@ describe('Equations tests', () => {
         P.solve()
         console.log(P.solutions.map(x=>x.tex))
     });
+
+    it('should detect if two equations are equal or linear', function () {
+        let P = new Equation('3x+2y=5'),
+            Q = new Equation('5-3x=2y'),
+            R = new Equation('6x+4y-10=0')
+
+        expect(P.isSameAs(P)).to.be.true
+        expect(P.isSameAs(Q)).to.be.true
+        expect(P.isSameAs(R)).to.be.false
+        expect(P.isLinearTo(Q)).to.be.true
+        expect(P.isLinearTo(R)).to.be.true
+    })
 })
