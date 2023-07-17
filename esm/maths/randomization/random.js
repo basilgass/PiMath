@@ -75,5 +75,5 @@ var Random;
         }
         Geometry.point = point;
     })(Geometry = Random.Geometry || (Random.Geometry = {}));
-})(Random = exports.Random || (exports.Random = {}));
+})(Random || (exports.Random = Random = {}));
 //# sourceMappingURL=random.js.map

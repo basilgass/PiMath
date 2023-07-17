@@ -105,6 +105,8 @@ export declare class Equation {
     solve: () => Equation;
     static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean): ISolution[];
     test: (values: literalType) => Boolean;
+    isSameAs: (equ: Equation) => Boolean;
+    isLinearTo: (equ: Equation) => Boolean;
     private _findSign;
     private _formatSign;
     private _reverseSign;

@@ -8,7 +8,7 @@ import {ISolution} from "./equation";
 import {Polynom} from "./polynom";
 import {Fraction} from "../coefficients/fraction";
 import {Point} from "../geometry/point";
-import {NumExp} from "../expressions/numexp";
+import {NumExp} from "../numexp";
 
 export type StudyableFunction = Rational
 

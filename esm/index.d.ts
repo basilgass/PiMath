@@ -1,5 +1,5 @@
 import { Numeric } from "./maths/numeric";
-import { NumExp } from "./maths/expressions/numexp";
+import { NumExp } from "./maths/numexp";
 import { Shutingyard } from "./maths/shutingyard";
 import { Random } from "./maths/randomization/random";
 import { Fraction } from "./maths/coefficients/fraction";
@@ -10,7 +10,6 @@ import { Equation } from "./maths/algebra/equation";
 import { LinearSystem } from "./maths/algebra/linearSystem";
 import { Rational } from "./maths/algebra/rational";
 import { Logicalset } from "./maths/algebra/logicalset";
-import { PolynomExpFactor, PolynomExpProduct } from "./maths/expressions/polynomexp";
 import { Vector } from "./maths/geometry/vector";
 import { Line } from "./maths/geometry/line";
 import { Triangle } from "./maths/geometry/triangle";
@@ -29,8 +28,6 @@ export declare const PiMath: {
     Rational: typeof Rational;
     Logicalset: typeof Logicalset;
     Random: typeof Random;
-    PolynomExpFactor: typeof PolynomExpFactor;
-    PolynomExpProduct: typeof PolynomExpProduct;
     Geometry: {
         Vector: typeof Vector;
         Point: typeof Point;

@@ -2,33 +2,34 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 607:
+/***/ "./src/index.ts":
+/*!**********************!*\
+  !*** ./src/index.ts ***!
+  \**********************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-var __webpack_unused_export__;
 
-__webpack_unused_export__ = ({ value: true });
-exports.l = void 0;
-const numeric_1 = __webpack_require__(956);
-const numexp_1 = __webpack_require__(735);
-const shutingyard_1 = __webpack_require__(505);
-const random_1 = __webpack_require__(330);
-const fraction_1 = __webpack_require__(506);
-const nthRoot_1 = __webpack_require__(872);
-const monom_1 = __webpack_require__(937);
-const polynom_1 = __webpack_require__(38);
-const equation_1 = __webpack_require__(760);
-const linearSystem_1 = __webpack_require__(554);
-const rational_1 = __webpack_require__(107);
-const logicalset_1 = __webpack_require__(236);
-const polynomexp_1 = __webpack_require__(75);
-const vector_1 = __webpack_require__(586);
-const line_1 = __webpack_require__(9);
-const triangle_1 = __webpack_require__(164);
-const circle_1 = __webpack_require__(699);
-const point_1 = __webpack_require__(557);
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PiMath = void 0;
+const numeric_1 = __webpack_require__(/*! ./maths/numeric */ "./src/maths/numeric.ts");
+const numexp_1 = __webpack_require__(/*! ./maths/numexp */ "./src/maths/numexp.ts");
+const shutingyard_1 = __webpack_require__(/*! ./maths/shutingyard */ "./src/maths/shutingyard.ts");
+const random_1 = __webpack_require__(/*! ./maths/randomization/random */ "./src/maths/randomization/random.ts");
+const fraction_1 = __webpack_require__(/*! ./maths/coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const nthRoot_1 = __webpack_require__(/*! ./maths/coefficients/nthRoot */ "./src/maths/coefficients/nthRoot.ts");
+const monom_1 = __webpack_require__(/*! ./maths/algebra/monom */ "./src/maths/algebra/monom.ts");
+const polynom_1 = __webpack_require__(/*! ./maths/algebra/polynom */ "./src/maths/algebra/polynom.ts");
+const equation_1 = __webpack_require__(/*! ./maths/algebra/equation */ "./src/maths/algebra/equation.ts");
+const linearSystem_1 = __webpack_require__(/*! ./maths/algebra/linearSystem */ "./src/maths/algebra/linearSystem.ts");
+const rational_1 = __webpack_require__(/*! ./maths/algebra/rational */ "./src/maths/algebra/rational.ts");
+const logicalset_1 = __webpack_require__(/*! ./maths/algebra/logicalset */ "./src/maths/algebra/logicalset.ts");
+const vector_1 = __webpack_require__(/*! ./maths/geometry/vector */ "./src/maths/geometry/vector.ts");
+const line_1 = __webpack_require__(/*! ./maths/geometry/line */ "./src/maths/geometry/line.ts");
+const triangle_1 = __webpack_require__(/*! ./maths/geometry/triangle */ "./src/maths/geometry/triangle.ts");
+const circle_1 = __webpack_require__(/*! ./maths/geometry/circle */ "./src/maths/geometry/circle.ts");
+const point_1 = __webpack_require__(/*! ./maths/geometry/point */ "./src/maths/geometry/point.ts");
 // Expose as global
-exports.l = {
+exports.PiMath = {
     ShutingYard: shutingyard_1.Shutingyard,
     Numeric: numeric_1.Numeric,
     NumExp: numexp_1.NumExp,
@@ -41,8 +42,6 @@ exports.l = {
     Rational: rational_1.Rational,
     Logicalset: logicalset_1.Logicalset,
     Random: random_1.Random,
-    PolynomExpFactor: polynomexp_1.PolynomExpFactor,
-    PolynomExpProduct: polynomexp_1.PolynomExpProduct,
     Geometry: {
         Vector: vector_1.Vector,
         Point: point_1.Point,
@@ -51,26 +50,29 @@ exports.l = {
         Circle: circle_1.Circle
     }
 };
-window.Pi = exports.l;
+window.PiMath = exports.PiMath;
 
 
 /***/ }),
 
-/***/ 760:
+/***/ "./src/maths/algebra/equation.ts":
+/*!***************************************!*\
+  !*** ./src/maths/algebra/equation.ts ***!
+  \***************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Equation = exports.PARTICULAR_SOLUTION = void 0;
-const polynom_1 = __webpack_require__(38);
-const numeric_1 = __webpack_require__(956);
-const fraction_1 = __webpack_require__(506);
-const nthRoot_1 = __webpack_require__(872);
+const polynom_1 = __webpack_require__(/*! ./polynom */ "./src/maths/algebra/polynom.ts");
+const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const nthRoot_1 = __webpack_require__(/*! ../coefficients/nthRoot */ "./src/maths/coefficients/nthRoot.ts");
 var PARTICULAR_SOLUTION;
 (function (PARTICULAR_SOLUTION) {
     PARTICULAR_SOLUTION["real"] = "\\mathbb{R}";
     PARTICULAR_SOLUTION["varnothing"] = "\\varnothing";
-})(PARTICULAR_SOLUTION = exports.PARTICULAR_SOLUTION || (exports.PARTICULAR_SOLUTION = {}));
+})(PARTICULAR_SOLUTION || (exports.PARTICULAR_SOLUTION = PARTICULAR_SOLUTION = {}));
 class Equation {
     /**
      * Create an Equation using two polynoms.
@@ -286,6 +288,17 @@ class Equation {
         };
         this.test = (values) => {
             return this.left.evaluate(values).isEqual(this.right.evaluate(values));
+        };
+        this.isSameAs = (equ) => {
+            let p1 = equ.clone().moveLeft().left, p2 = this.clone().moveLeft().left;
+            // They are the same.
+            return p1.isEqual(p2) || p1.isOpposedAt(p2);
+        };
+        this.isLinearTo = (equ) => {
+            // Move all left.
+            let p1 = equ.clone().moveLeft().simplify().left, p2 = this.clone().moveLeft().simplify().left;
+            // They are the same.
+            return p1.isEqual(p2) || p1.isOpposedAt(p2);
         };
         this._findSign = (equationString) => {
             let strSign = '';
@@ -848,16 +861,19 @@ exports.Equation = Equation;
 
 /***/ }),
 
-/***/ 554:
+/***/ "./src/maths/algebra/linearSystem.ts":
+/*!*******************************************!*\
+  !*** ./src/maths/algebra/linearSystem.ts ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LinearSystem = void 0;
-const equation_1 = __webpack_require__(760);
-const fraction_1 = __webpack_require__(506);
-const polynom_1 = __webpack_require__(38);
-const numeric_1 = __webpack_require__(956);
+const equation_1 = __webpack_require__(/*! ./equation */ "./src/maths/algebra/equation.ts");
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const polynom_1 = __webpack_require__(/*! ./polynom */ "./src/maths/algebra/polynom.ts");
+const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
 // TODO: Must check and rework
 class LinearSystem {
     constructor(...equationStrings) {
@@ -1117,7 +1133,10 @@ exports.LinearSystem = LinearSystem;
 
 /***/ }),
 
-/***/ 236:
+/***/ "./src/maths/algebra/logicalset.ts":
+/*!*****************************************!*\
+  !*** ./src/maths/algebra/logicalset.ts ***!
+  \*****************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -1127,7 +1146,7 @@ exports.LinearSystem = LinearSystem;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Logicalset = void 0;
-const shutingyard_1 = __webpack_require__(505);
+const shutingyard_1 = __webpack_require__(/*! ../shutingyard */ "./src/maths/shutingyard.ts");
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  */
@@ -1281,7 +1300,10 @@ exports.Logicalset = Logicalset;
 
 /***/ }),
 
-/***/ 937:
+/***/ "./src/maths/algebra/monom.ts":
+/*!************************************!*\
+  !*** ./src/maths/algebra/monom.ts ***!
+  \************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -1290,9 +1312,9 @@ exports.Monom = void 0;
 /***
  * Monom class
  */
-const numeric_1 = __webpack_require__(956);
-const shutingyard_1 = __webpack_require__(505);
-const fraction_1 = __webpack_require__(506);
+const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
+const shutingyard_1 = __webpack_require__(/*! ../shutingyard */ "./src/maths/shutingyard.ts");
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
 class Monom {
     /**
      * Create a Monom
@@ -2196,7 +2218,10 @@ Monom.xmultiply = (...monoms) => {
 
 /***/ }),
 
-/***/ 38:
+/***/ "./src/maths/algebra/polynom.ts":
+/*!**************************************!*\
+  !*** ./src/maths/algebra/polynom.ts ***!
+  \**************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -2205,11 +2230,11 @@ Monom.xmultiply = (...monoms) => {
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Polynom = void 0;
-const monom_1 = __webpack_require__(937);
-const shutingyard_1 = __webpack_require__(505);
-const numeric_1 = __webpack_require__(956);
-const fraction_1 = __webpack_require__(506);
-const equation_1 = __webpack_require__(760);
+const monom_1 = __webpack_require__(/*! ./monom */ "./src/maths/algebra/monom.ts");
+const shutingyard_1 = __webpack_require__(/*! ../shutingyard */ "./src/maths/shutingyard.ts");
+const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const equation_1 = __webpack_require__(/*! ./equation */ "./src/maths/algebra/equation.ts");
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -3480,7 +3505,10 @@ exports.Polynom = Polynom;
 
 /***/ }),
 
-/***/ 107:
+/***/ "./src/maths/algebra/rational.ts":
+/*!***************************************!*\
+  !*** ./src/maths/algebra/rational.ts ***!
+  \***************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -3490,10 +3518,10 @@ exports.Polynom = Polynom;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Rational = void 0;
-const polynom_1 = __webpack_require__(38);
-const fraction_1 = __webpack_require__(506);
-const equation_1 = __webpack_require__(760);
-const rationalStudy_1 = __webpack_require__(572);
+const polynom_1 = __webpack_require__(/*! ./polynom */ "./src/maths/algebra/polynom.ts");
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const equation_1 = __webpack_require__(/*! ./equation */ "./src/maths/algebra/equation.ts");
+const rationalStudy_1 = __webpack_require__(/*! ./study/rationalStudy */ "./src/maths/algebra/study/rationalStudy.ts");
 /**
  * Rational class can handle rational polynoms
  */
@@ -3670,7 +3698,10 @@ exports.Rational = Rational;
 
 /***/ }),
 
-/***/ 996:
+/***/ "./src/maths/algebra/study.ts":
+/*!************************************!*\
+  !*** ./src/maths/algebra/study.ts ***!
+  \************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -3680,41 +3711,41 @@ exports.Rational = Rational;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE_POSITION = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
-const fraction_1 = __webpack_require__(506);
-const numexp_1 = __webpack_require__(735);
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const numexp_1 = __webpack_require__(/*! ../numexp */ "./src/maths/numexp.ts");
 var ZEROTYPE;
 (function (ZEROTYPE) {
     ZEROTYPE["ZERO"] = "z";
     ZEROTYPE["DEFENCE"] = "d";
     ZEROTYPE["NOTHING"] = "t";
-})(ZEROTYPE = exports.ZEROTYPE || (exports.ZEROTYPE = {}));
+})(ZEROTYPE || (exports.ZEROTYPE = ZEROTYPE = {}));
 var ASYMPTOTE;
 (function (ASYMPTOTE) {
     ASYMPTOTE["VERTICAL"] = "av";
     ASYMPTOTE["HORIZONTAL"] = "ah";
     ASYMPTOTE["SLOPE"] = "ao";
     ASYMPTOTE["HOLE"] = "hole";
-})(ASYMPTOTE = exports.ASYMPTOTE || (exports.ASYMPTOTE = {}));
+})(ASYMPTOTE || (exports.ASYMPTOTE = ASYMPTOTE = {}));
 var ASYMPTOTE_POSITION;
 (function (ASYMPTOTE_POSITION) {
     ASYMPTOTE_POSITION["LT"] = "LT";
     ASYMPTOTE_POSITION["RT"] = "RT";
     ASYMPTOTE_POSITION["LB"] = "LB";
     ASYMPTOTE_POSITION["RB"] = "RB";
-})(ASYMPTOTE_POSITION = exports.ASYMPTOTE_POSITION || (exports.ASYMPTOTE_POSITION = {}));
+})(ASYMPTOTE_POSITION || (exports.ASYMPTOTE_POSITION = ASYMPTOTE_POSITION = {}));
 var FUNCTION_EXTREMA;
 (function (FUNCTION_EXTREMA) {
     FUNCTION_EXTREMA["MIN"] = "min";
     FUNCTION_EXTREMA["MAX"] = "max";
     FUNCTION_EXTREMA["FLAT"] = "flat";
     FUNCTION_EXTREMA["NOTHING"] = "";
-})(FUNCTION_EXTREMA = exports.FUNCTION_EXTREMA || (exports.FUNCTION_EXTREMA = {}));
+})(FUNCTION_EXTREMA || (exports.FUNCTION_EXTREMA = FUNCTION_EXTREMA = {}));
 var TABLE_OF_SIGNS;
 (function (TABLE_OF_SIGNS) {
     TABLE_OF_SIGNS["SIGNS"] = "signs";
     TABLE_OF_SIGNS["GROWS"] = "grows";
     TABLE_OF_SIGNS["VARIATIONS"] = "variatins";
-})(TABLE_OF_SIGNS = exports.TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = {}));
+})(TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = TABLE_OF_SIGNS = {}));
 /**
  * The study class is a "function study" class that will get:
  * fx               : get the function
@@ -4055,7 +4086,10 @@ exports.Study = Study;
 
 /***/ }),
 
-/***/ 572:
+/***/ "./src/maths/algebra/study/rationalStudy.ts":
+/*!**************************************************!*\
+  !*** ./src/maths/algebra/study/rationalStudy.ts ***!
+  \**************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -4076,10 +4110,10 @@ exports.RationalStudy = void 0;
  * ddx              : dérivée seconde
  * variations       : variation table + tex output  using tkz-tab
  */
-const study_1 = __webpack_require__(996);
-const rational_1 = __webpack_require__(107);
-const fraction_1 = __webpack_require__(506);
-const polynom_1 = __webpack_require__(38);
+const study_1 = __webpack_require__(/*! ../study */ "./src/maths/algebra/study.ts");
+const rational_1 = __webpack_require__(/*! ../rational */ "./src/maths/algebra/rational.ts");
+const fraction_1 = __webpack_require__(/*! ../../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const polynom_1 = __webpack_require__(/*! ../polynom */ "./src/maths/algebra/polynom.ts");
 class RationalStudy extends study_1.Study {
     constructor(fx, config) {
         super(fx, config);
@@ -4305,13 +4339,16 @@ exports.RationalStudy = RationalStudy;
 
 /***/ }),
 
-/***/ 506:
+/***/ "./src/maths/coefficients/fraction.ts":
+/*!********************************************!*\
+  !*** ./src/maths/coefficients/fraction.ts ***!
+  \********************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Fraction = void 0;
-const numeric_1 = __webpack_require__(956);
+const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
 /**
  * The fraction class make possible to handle
  * TODO: Write the documentation correctly.
@@ -4828,7 +4865,10 @@ Fraction.sort = (fractions, reverse) => {
 
 /***/ }),
 
-/***/ 872:
+/***/ "./src/maths/coefficients/nthRoot.ts":
+/*!*******************************************!*\
+  !*** ./src/maths/coefficients/nthRoot.ts ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -4971,464 +5011,23 @@ exports.NthRoot = NthRoot;
 
 /***/ }),
 
-/***/ 735:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NumExp = void 0;
-const shutingyard_1 = __webpack_require__(505);
-const fraction_1 = __webpack_require__(506);
-class NumExp {
-    constructor(value, uniformize) {
-        this._expression = value;
-        try {
-            this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value, uniformize || uniformize === undefined).rpn;
-        }
-        catch (e) {
-            this._rpn = null;
-            this._isValid = false;
-        }
-    }
-    get rpn() {
-        return this._rpn;
-    }
-    get isValid() {
-        if (this._isValid === undefined) {
-            try {
-                const v = this.evaluate({ x: 0 });
-            }
-            catch {
-                this._isValid = false;
-            }
-        }
-        return this._isValid;
-    }
-    set isValid(value) {
-        this._isValid = value;
-    }
-    get expression() {
-        return this._expression;
-    }
-    _extractDecimalPart(value) {
-        let decimal = value.toString();
-        if (!decimal.includes('.')) {
-            return '';
-        }
-        decimal = decimal.split('.')[1];
-        return decimal.substring(0, decimal.length - 2);
-    }
-    _numberCorrection(value) {
-        // Must modify the number if it's like:
-        // a: 3.0000000000000003
-        // b: 3.9999999999999994
-        // remove the last character
-        // check if around n last characters are either 0 or 9
-        // if it is, 'round' the number.
-        const epsilon = 0.00000000000001, number_of_digits = 6;
-        const decimal = this._extractDecimalPart(value);
-        if (decimal === '') {
-            return value;
-        }
-        const n9 = decimal.match(/9+$/g);
-        const n0 = decimal.match(/0+$/g);
-        if (n9 && n9[0].length >= number_of_digits) {
-            // New tested values.
-            const mod = this._extractDecimalPart(value + epsilon), mod0 = mod.match(/0+$/g);
-            if (mod0 && mod0[0].length >= number_of_digits) {
-                // The value can be changed. Remove all zeros!
-                return +((value + epsilon).toString().split(mod0[0])[0]);
-            }
-        }
-        if (n0 && n0[0].length >= number_of_digits) {
-            // New tested values.
-            const mod = this._extractDecimalPart(value - epsilon), mod9 = mod.match(/9+$/g);
-            if (mod9 && mod9[0].length >= number_of_digits) {
-                // The value can be changed. Remove all nines!
-                return +(value.toString().split(n0[0])[0]);
-            }
-        }
-        return value;
-    }
-    _addToStack(stack, value) {
-        stack.push(this._numberCorrection(value));
-    }
-    evaluate(values) {
-        const stack = [];
-        if (this._rpn === null) {
-            this._isValid = false;
-            return 0;
-        }
-        this.isValid = true;
-        for (const element of this._rpn) {
-            if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
-                // May be a numeric value or a Fraction.
-                if (!isNaN(+element.token)) {
-                    this._addToStack(stack, +element.token);
-                }
-                else {
-                    this._addToStack(stack, new fraction_1.Fraction(element.token).value);
-                }
-            }
-            else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
-                if (values[element.token] !== undefined) {
-                    this._addToStack(stack, +values[element.token]);
-                }
-            }
-            else if (element.tokenType === shutingyard_1.ShutingyardType.CONSTANT) {
-                this._addToStack(stack, shutingyard_1.tokenConstant[element.token]);
-            }
-            else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
-                if (element.token === '*') {
-                    const b = stack.pop(), a = stack.pop();
-                    if (a === undefined || b === undefined) {
-                        this.isValid = false;
-                    }
-                    this._addToStack(stack, a * b);
-                }
-                else if (element.token === '/') {
-                    const b = stack.pop(), a = stack.pop();
-                    if (a === undefined || b === undefined) {
-                        this.isValid = false;
-                    }
-                    this._addToStack(stack, a / b);
-                }
-                else if (element.token === '+') {
-                    const b = stack.pop(), a = stack.pop();
-                    if (a === undefined || b === undefined) {
-                        this.isValid = false;
-                    }
-                    this._addToStack(stack, (+a) + (+b));
-                }
-                else if (element.token === '-') {
-                    const b = stack.pop(), a = stack.pop() || 0;
-                    if (b === undefined) {
-                        this.isValid = false;
-                    }
-                    this._addToStack(stack, a - b);
-                }
-                else if (element.token === '^') {
-                    const b = stack.pop(), a = stack.pop();
-                    if (a === undefined || b === undefined) {
-                        this.isValid = false;
-                    }
-                    this._addToStack(stack, Math.pow(a, b));
-                }
-            }
-            else if (element.tokenType === shutingyard_1.ShutingyardType.FUNCTION) {
-                const a = stack.pop();
-                if (a === undefined) {
-                    this.isValid = false;
-                }
-                if (element.token === 'sin') {
-                    this._addToStack(stack, Math.sin(a));
-                }
-                else if (element.token === 'cos') {
-                    this._addToStack(stack, Math.cos(a));
-                }
-                else if (element.token === 'tan') {
-                    this._addToStack(stack, Math.tan(a));
-                }
-                else if (element.token === 'sqrt') {
-                    this._addToStack(stack, Math.sqrt(a));
-                }
-                else if (element.token === 'nthrt') {
-                    // TODO: support nthrt in num. exp.
-                    let b = stack.pop();
-                    if (a % 2 === 0 && b < 0) {
-                        this._addToStack(stack, NaN);
-                    }
-                    else {
-                        this._addToStack(stack, (b < 0 ? -1 : 1) * Math.pow(Math.abs(b), 1 / a));
-                    }
-                }
-                else if (element.token === 'ln') {
-                    this._addToStack(stack, Math.log(a));
-                }
-                else if (element.token === 'log') {
-                    this._addToStack(stack, Math.log10(a));
-                }
-            }
-        }
-        if (stack.length === 1) {
-            return stack[0];
-        }
-        else {
-            throw `There was a problem parsing: ${this._expression}`;
-        }
-    }
-}
-exports.NumExp = NumExp;
-
-
-/***/ }),
-
-/***/ 75:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PolynomExpProduct = exports.PolynomExpFactor = void 0;
-const polynom_1 = __webpack_require__(38);
-const fraction_1 = __webpack_require__(506);
-class PolynomExpFactor {
-    constructor(polynom, degree, mathFunction) {
-        this._polynom = new polynom_1.Polynom(polynom);
-        this._degree = new fraction_1.Fraction(degree === undefined ? 1 : degree);
-        this._fn = mathFunction;
-        this._powerAsInteger = true;
-        this._forceParenthesis = true;
-    }
-    get forceParenthesis() {
-        return this._forceParenthesis;
-    }
-    set forceParenthesis(value) {
-        this._forceParenthesis = value;
-    }
-    get fn() {
-        return this._fn;
-    }
-    set fn(value) {
-        this._fn = value;
-    }
-    get powerAsInteger() {
-        return this._powerAsInteger;
-    }
-    set powerAsInteger(value) {
-        this._powerAsInteger = value;
-    }
-    get polynom() {
-        return this._polynom;
-    }
-    set polynom(value) {
-        this._polynom = value;
-    }
-    get degree() {
-        return this._degree;
-    }
-    set degree(value) {
-        this._degree = value;
-    }
-    get tex() {
-        let tex;
-        if (this._degree.isOne() && (this._fn !== undefined || !this._forceParenthesis)) {
-            // If degree is one, no need to add the parenthesis.
-            tex = this._polynom.tex;
-        }
-        else {
-            // the degree is not one, add the parenthesis.
-            if (this._powerAsInteger && !this._degree.isRelative()) {
-                // the degree is a fraction and we want natural powers => use sqrt.
-                tex = `\\sqrt${this._degree.denominator !== 2 ? `[ ${this._degree.denominator} ]` : ''}{ ${this._polynom.tex} }^{ ${this._degree.numerator} }`;
-            }
-            else if (this.isCoefficient && this.firstCoefficient.isNatural()) {
-                // the value is a natural number (eg 3, 7, ...)
-                tex = this._polynom.tex + this._texDegree;
-            }
-            else {
-                // In any other case, add the parenthesis by default
-                tex = `\\left( ${this._polynom.tex} \\right)${this._texDegree}`;
-            }
-        }
-        if (this._fn !== undefined && this._fn.tex !== undefined) {
-            tex = `${this._fn.tex}\\left( ${tex} \\right)`;
-        }
-        return tex;
-    }
-    get isCoefficient() {
-        // TODO: Maybe reduce the coefficient if it isn't of degree one.
-        return this._polynom.degree().isZero();
-    }
-    get firstCoefficient() {
-        return this._polynom.monomByDegree().coefficient;
-    }
-    get _texDegree() {
-        if (this._degree.isOne()) {
-            return '';
-        }
-        else {
-            return `^{ ${this._degree.tfrac} }`;
-        }
-    }
-    setForceParenthesis(value) {
-        this._forceParenthesis = value === undefined || value;
-        return this;
-    }
-    derivative(letter) {
-        if (this._degree.isOne()) {
-            return new PolynomExpProduct(new PolynomExpFactor(this._polynom.clone().derivative(letter)));
-        }
-        else {
-            return new PolynomExpProduct(new PolynomExpFactor(this._degree.clone()), new PolynomExpFactor(this._polynom.clone().derivative(letter)), new PolynomExpFactor(this._polynom.clone(), this._degree.clone().subtract(1)));
-        }
-    }
-}
-exports.PolynomExpFactor = PolynomExpFactor;
-class PolynomExpProduct {
-    constructor(...values) {
-        this._factors = values || [];
-        this._positive = true;
-        this._asPositiveDegree = true;
-    }
-    get fn() {
-        return this._fn;
-    }
-    set fn(value) {
-        this._fn = value;
-    }
-    get factors() {
-        return this._factors;
-    }
-    set factors(value) {
-        this._factors = value;
-    }
-    get positive() {
-        return this._positive;
-    }
-    set positive(value) {
-        this._positive = value;
-    }
-    get asPositiveDegree() {
-        return this._asPositiveDegree;
-    }
-    set asPositiveDegree(value) {
-        this._asPositiveDegree = value;
-    }
-    get tex() {
-        let parenthesis = this._factors.length > 1;
-        // Default value
-        let tex = this._factors.map(factor => factor.setForceParenthesis(parenthesis).tex).join(' \\cdot ');
-        // Change the value in some cases...
-        if (this._asPositiveDegree) {
-            const numerators = this._factors.filter(x => x.degree.isPositive()), denominators = this._factors.filter(x => x.degree.isNegative());
-            let numeratorsAsTex, denominatorsAsTex;
-            if (denominators.length > 0) {
-                if (numerators.length === 0) {
-                    numeratorsAsTex = [1];
-                }
-                else if (numerators.length === 1) {
-                    numeratorsAsTex = [numerators[0].setForceParenthesis(false).tex];
-                }
-                else {
-                    parenthesis = numerators.length > 1;
-                    numeratorsAsTex = numerators.map(factor => factor.setForceParenthesis(parenthesis).tex);
-                }
-                // Change all denominators degrees to positive.
-                denominators.map(x => x.degree.opposed());
-                if (denominators.length === 1) {
-                    denominatorsAsTex = [denominators[0].setForceParenthesis(false).tex];
-                }
-                else {
-                    parenthesis = denominators.length > 1;
-                    denominatorsAsTex = denominators.map(factor => factor.setForceParenthesis(parenthesis).tex);
-                }
-                // restore all degrees to negative again.
-                denominators.map(x => x.degree.opposed());
-                tex = `\\frac{ ${numeratorsAsTex.join(' \\cdot ')} }{ ${denominatorsAsTex.join(' \\cdot ')} }`;
-            }
-        }
-        // Apply the modification
-        if (this._fn !== undefined && this._fn.name !== undefined && this._fn.name !== '') {
-            tex = `${this._fn.tex}\\left( ${tex} \\right)`;
-        }
-        return tex;
-    }
-    reduce() {
-        let coefficients = this._factors.filter(factor => factor.isCoefficient), polynoms = this._factors.filter(factor => !factor.isCoefficient);
-        let result = new fraction_1.Fraction().one();
-        if (coefficients.length > 1) {
-            for (const factor of coefficients) {
-                if (factor.degree.isPositive()) {
-                    result.multiply(factor.polynom.monoms[0].coefficient.pow(factor.degree));
-                }
-                else {
-                    result.divide(factor.polynom.monoms[0].coefficient.pow(factor.degree.clone().abs()));
-                }
-            }
-        }
-        else if (coefficients.length === 1) {
-            result = coefficients[0].polynom.monoms[0].coefficient;
-        }
-        if (result.isOne()) {
-            this._factors = [...polynoms];
-        }
-        else if (!result.isRelative()) {
-            this._factors = [
-                new PolynomExpFactor(result.numerator),
-                new PolynomExpFactor(result.denominator, -1),
-                ...polynoms
-            ];
-        }
-        else {
-            this._factors = [
-                new PolynomExpFactor(result),
-                ...polynoms
-            ];
-        }
-        return this;
-    }
-    integrate(letter) {
-        // Handle this kind of case:
-        // A * f' * F^n
-        // A * f' / F^n, n != 1
-        // A * f_1 * f_2 * f_3, where (f_1 * f_2)' = f_3
-        if (this._factors.length === 2) {
-            // Check polynoms degree: one must of one degree less than the other.
-            let d1 = this._factors[0].polynom.degree(letter).value, d2 = this._factors[1].polynom.degree(letter).value;
-            if (d1 === d2 + 1) {
-                return this._integrateWithInternalDerivative(this._factors[0], this._factors[1], letter);
-            }
-            else if (d1 + 1 === d2) {
-                return this._integrateWithInternalDerivative(this._factors[1], this._factors[0], letter);
-            }
-        }
-        return;
-    }
-    applyMathFunction(mathFn) {
-        this._fn = mathFn;
-        return this;
-    }
-    _integrateWithInternalDerivative(P, Pinternal, letter) {
-        // Get the internal derivative
-        let internalDerivative = P.polynom.clone().derivative(letter);
-        // Get the factor.
-        let { quotient, reminder } = Pinternal.polynom.clone().euclidian(internalDerivative);
-        if (reminder.isZero() && quotient.degree(letter).isZero()) {
-            // All the conditions are done. Actual situation is
-            // (4x-10)(x^2-5x+7)^9
-            // P1 = (x^2-5x+7), P2 = (2x-5)
-            // => 1/10 * quotient * (x^2-5x+7)^10
-            if (P.degree.isEqual(-1)) {
-                return (new PolynomExpProduct(new PolynomExpFactor(quotient, 1), new PolynomExpFactor(P.polynom.clone(), 1, {
-                    name: 'ln', tex: '\\ln', fn: (x) => Math.log(x)
-                })));
-            }
-            else {
-                return new PolynomExpProduct(new PolynomExpFactor(P.degree.clone().add(1).invert(), 1), new PolynomExpFactor(quotient, 1), new PolynomExpFactor(P.polynom.clone(), P.degree.clone().add(1)));
-            }
-        }
-        return;
-    }
-}
-exports.PolynomExpProduct = PolynomExpProduct;
-
-
-/***/ }),
-
-/***/ 699:
+/***/ "./src/maths/geometry/circle.ts":
+/*!**************************************!*\
+  !*** ./src/maths/geometry/circle.ts ***!
+  \**************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Circle = void 0;
-const point_1 = __webpack_require__(557);
-const line_1 = __webpack_require__(9);
-const vector_1 = __webpack_require__(586);
-const triangle_1 = __webpack_require__(164);
-const numeric_1 = __webpack_require__(956);
-const fraction_1 = __webpack_require__(506);
-const equation_1 = __webpack_require__(760);
-const polynom_1 = __webpack_require__(38);
+const point_1 = __webpack_require__(/*! ./point */ "./src/maths/geometry/point.ts");
+const line_1 = __webpack_require__(/*! ./line */ "./src/maths/geometry/line.ts");
+const vector_1 = __webpack_require__(/*! ./vector */ "./src/maths/geometry/vector.ts");
+const triangle_1 = __webpack_require__(/*! ./triangle */ "./src/maths/geometry/triangle.ts");
+const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const equation_1 = __webpack_require__(/*! ../algebra/equation */ "./src/maths/algebra/equation.ts");
+const polynom_1 = __webpack_require__(/*! ../algebra/polynom */ "./src/maths/algebra/polynom.ts");
 class Circle {
     constructor(...values) {
         /**
@@ -5745,7 +5344,10 @@ exports.Circle = Circle;
 
 /***/ }),
 
-/***/ 9:
+/***/ "./src/maths/geometry/line.ts":
+/*!************************************!*\
+  !*** ./src/maths/geometry/line.ts ***!
+  \************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -5754,21 +5356,21 @@ exports.Circle = Circle;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Line = exports.LinePropriety = void 0;
-const vector_1 = __webpack_require__(586);
-const point_1 = __webpack_require__(557);
-const numeric_1 = __webpack_require__(956);
-const fraction_1 = __webpack_require__(506);
-const equation_1 = __webpack_require__(760);
-const polynom_1 = __webpack_require__(38);
-const random_1 = __webpack_require__(330);
-const monom_1 = __webpack_require__(937);
+const vector_1 = __webpack_require__(/*! ./vector */ "./src/maths/geometry/vector.ts");
+const point_1 = __webpack_require__(/*! ./point */ "./src/maths/geometry/point.ts");
+const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const equation_1 = __webpack_require__(/*! ../algebra/equation */ "./src/maths/algebra/equation.ts");
+const polynom_1 = __webpack_require__(/*! ../algebra/polynom */ "./src/maths/algebra/polynom.ts");
+const random_1 = __webpack_require__(/*! ../randomization/random */ "./src/maths/randomization/random.ts");
+const monom_1 = __webpack_require__(/*! ../algebra/monom */ "./src/maths/algebra/monom.ts");
 var LinePropriety;
 (function (LinePropriety) {
     LinePropriety[LinePropriety["None"] = 0] = "None";
     LinePropriety["Parallel"] = "parallel";
     LinePropriety["Perpendicular"] = "perpendicular";
     LinePropriety["Tangent"] = "tangent";
-})(LinePropriety = exports.LinePropriety || (exports.LinePropriety = {}));
+})(LinePropriety || (exports.LinePropriety = LinePropriety = {}));
 class Line {
     constructor(...values) {
         this.randomPoint = (k) => {
@@ -6236,7 +5838,10 @@ Line.PARALLEL = LinePropriety.Parallel;
 
 /***/ }),
 
-/***/ 557:
+/***/ "./src/maths/geometry/point.ts":
+/*!*************************************!*\
+  !*** ./src/maths/geometry/point.ts ***!
+  \*************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -6246,9 +5851,9 @@ exports.Point = void 0;
  * Vector module contains everything necessary to handle 2d or 3d vectors.
  * @module Vector
  */
-const line_1 = __webpack_require__(9);
-const vector_1 = __webpack_require__(586);
-const fraction_1 = __webpack_require__(506);
+const line_1 = __webpack_require__(/*! ./line */ "./src/maths/geometry/line.ts");
+const vector_1 = __webpack_require__(/*! ./vector */ "./src/maths/geometry/vector.ts");
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
 /**
  * Helper class - a way to identify an object {x: number, y: number}
  */
@@ -6409,17 +6014,20 @@ Point.pmatrix = (a, b, c) => {
 
 /***/ }),
 
-/***/ 164:
+/***/ "./src/maths/geometry/triangle.ts":
+/*!****************************************!*\
+  !*** ./src/maths/geometry/triangle.ts ***!
+  \****************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Triangle = void 0;
-const point_1 = __webpack_require__(557);
-const fraction_1 = __webpack_require__(506);
-const vector_1 = __webpack_require__(586);
-const line_1 = __webpack_require__(9);
-const equation_1 = __webpack_require__(760);
+const point_1 = __webpack_require__(/*! ./point */ "./src/maths/geometry/point.ts");
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const vector_1 = __webpack_require__(/*! ./vector */ "./src/maths/geometry/vector.ts");
+const line_1 = __webpack_require__(/*! ./line */ "./src/maths/geometry/line.ts");
+const equation_1 = __webpack_require__(/*! ../algebra/equation */ "./src/maths/algebra/equation.ts");
 class Triangle {
     constructor(...values) {
         // ------------------------------------------
@@ -6684,7 +6292,10 @@ exports.Triangle = Triangle;
 
 /***/ }),
 
-/***/ 586:
+/***/ "./src/maths/geometry/vector.ts":
+/*!**************************************!*\
+  !*** ./src/maths/geometry/vector.ts ***!
+  \**************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -6694,9 +6305,9 @@ exports.Vector = void 0;
  * Vector module contains everything necessary to handle 2d or 3d vectors.
  * @module Vector
  */
-const fraction_1 = __webpack_require__(506);
-const numeric_1 = __webpack_require__(956);
-const point_1 = __webpack_require__(557);
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
+const point_1 = __webpack_require__(/*! ./point */ "./src/maths/geometry/point.ts");
 class Vector {
     constructor(...values) {
         // ------------------------------------------
@@ -6888,7 +6499,10 @@ Vector.determinant = (v1, v2) => {
 
 /***/ }),
 
-/***/ 956:
+/***/ "./src/maths/numeric.ts":
+/*!******************************!*\
+  !*** ./src/maths/numeric.ts ***!
+  \******************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -7075,7 +6689,205 @@ exports.Numeric = Numeric;
 
 /***/ }),
 
-/***/ 330:
+/***/ "./src/maths/numexp.ts":
+/*!*****************************!*\
+  !*** ./src/maths/numexp.ts ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NumExp = void 0;
+const shutingyard_1 = __webpack_require__(/*! ./shutingyard */ "./src/maths/shutingyard.ts");
+const fraction_1 = __webpack_require__(/*! ./coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+class NumExp {
+    constructor(value, uniformize) {
+        this._expression = value;
+        try {
+            this._rpn = new shutingyard_1.Shutingyard(shutingyard_1.ShutingyardMode.NUMERIC).parse(value, uniformize || uniformize === undefined).rpn;
+        }
+        catch (e) {
+            this._rpn = null;
+            this._isValid = false;
+        }
+    }
+    get rpn() {
+        return this._rpn;
+    }
+    get isValid() {
+        if (this._isValid === undefined) {
+            try {
+                const v = this.evaluate({ x: 0 });
+            }
+            catch {
+                this._isValid = false;
+            }
+        }
+        return this._isValid;
+    }
+    set isValid(value) {
+        this._isValid = value;
+    }
+    get expression() {
+        return this._expression;
+    }
+    _extractDecimalPart(value) {
+        let decimal = value.toString();
+        if (!decimal.includes('.')) {
+            return '';
+        }
+        decimal = decimal.split('.')[1];
+        return decimal.substring(0, decimal.length - 2);
+    }
+    _numberCorrection(value) {
+        // Must modify the number if it's like:
+        // a: 3.0000000000000003
+        // b: 3.9999999999999994
+        // remove the last character
+        // check if around n last characters are either 0 or 9
+        // if it is, 'round' the number.
+        const epsilon = 0.00000000000001, number_of_digits = 6;
+        const decimal = this._extractDecimalPart(value);
+        if (decimal === '') {
+            return value;
+        }
+        const n9 = decimal.match(/9+$/g);
+        const n0 = decimal.match(/0+$/g);
+        if (n9 && n9[0].length >= number_of_digits) {
+            // New tested values.
+            const mod = this._extractDecimalPart(value + epsilon), mod0 = mod.match(/0+$/g);
+            if (mod0 && mod0[0].length >= number_of_digits) {
+                // The value can be changed. Remove all zeros!
+                return +((value + epsilon).toString().split(mod0[0])[0]);
+            }
+        }
+        if (n0 && n0[0].length >= number_of_digits) {
+            // New tested values.
+            const mod = this._extractDecimalPart(value - epsilon), mod9 = mod.match(/9+$/g);
+            if (mod9 && mod9[0].length >= number_of_digits) {
+                // The value can be changed. Remove all nines!
+                return +(value.toString().split(n0[0])[0]);
+            }
+        }
+        return value;
+    }
+    _addToStack(stack, value) {
+        stack.push(this._numberCorrection(value));
+    }
+    evaluate(values) {
+        const stack = [];
+        if (this._rpn === null) {
+            this._isValid = false;
+            return 0;
+        }
+        this.isValid = true;
+        for (const element of this._rpn) {
+            if (element.tokenType === shutingyard_1.ShutingyardType.COEFFICIENT) {
+                // May be a numeric value or a Fraction.
+                if (!isNaN(+element.token)) {
+                    this._addToStack(stack, +element.token);
+                }
+                else {
+                    this._addToStack(stack, new fraction_1.Fraction(element.token).value);
+                }
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.VARIABLE) {
+                if (values[element.token] !== undefined) {
+                    this._addToStack(stack, +values[element.token]);
+                }
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.CONSTANT) {
+                this._addToStack(stack, shutingyard_1.tokenConstant[element.token]);
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.OPERATION) {
+                if (element.token === '*') {
+                    const b = stack.pop(), a = stack.pop();
+                    if (a === undefined || b === undefined) {
+                        this.isValid = false;
+                    }
+                    this._addToStack(stack, a * b);
+                }
+                else if (element.token === '/') {
+                    const b = stack.pop(), a = stack.pop();
+                    if (a === undefined || b === undefined) {
+                        this.isValid = false;
+                    }
+                    this._addToStack(stack, a / b);
+                }
+                else if (element.token === '+') {
+                    const b = stack.pop(), a = stack.pop();
+                    if (a === undefined || b === undefined) {
+                        this.isValid = false;
+                    }
+                    this._addToStack(stack, (+a) + (+b));
+                }
+                else if (element.token === '-') {
+                    const b = stack.pop(), a = stack.pop() || 0;
+                    if (b === undefined) {
+                        this.isValid = false;
+                    }
+                    this._addToStack(stack, a - b);
+                }
+                else if (element.token === '^') {
+                    const b = stack.pop(), a = stack.pop();
+                    if (a === undefined || b === undefined) {
+                        this.isValid = false;
+                    }
+                    this._addToStack(stack, Math.pow(a, b));
+                }
+            }
+            else if (element.tokenType === shutingyard_1.ShutingyardType.FUNCTION) {
+                const a = stack.pop();
+                if (a === undefined) {
+                    this.isValid = false;
+                }
+                if (element.token === 'sin') {
+                    this._addToStack(stack, Math.sin(a));
+                }
+                else if (element.token === 'cos') {
+                    this._addToStack(stack, Math.cos(a));
+                }
+                else if (element.token === 'tan') {
+                    this._addToStack(stack, Math.tan(a));
+                }
+                else if (element.token === 'sqrt') {
+                    this._addToStack(stack, Math.sqrt(a));
+                }
+                else if (element.token === 'nthrt') {
+                    // TODO: support nthrt in num. exp.
+                    let b = stack.pop();
+                    if (a % 2 === 0 && b < 0) {
+                        this._addToStack(stack, NaN);
+                    }
+                    else {
+                        this._addToStack(stack, (b < 0 ? -1 : 1) * Math.pow(Math.abs(b), 1 / a));
+                    }
+                }
+                else if (element.token === 'ln') {
+                    this._addToStack(stack, Math.log(a));
+                }
+                else if (element.token === 'log') {
+                    this._addToStack(stack, Math.log10(a));
+                }
+            }
+        }
+        if (stack.length === 1) {
+            return stack[0];
+        }
+        else {
+            throw `There was a problem parsing: ${this._expression}`;
+        }
+    }
+}
+exports.NumExp = NumExp;
+
+
+/***/ }),
+
+/***/ "./src/maths/randomization/random.ts":
+/*!*******************************************!*\
+  !*** ./src/maths/randomization/random.ts ***!
+  \*******************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -7095,13 +6907,13 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Random = void 0;
-const rndPolynom_1 = __webpack_require__(22);
-const rndMonom_1 = __webpack_require__(793);
-const rndHelpers_1 = __webpack_require__(140);
-const rndFraction_1 = __webpack_require__(754);
-const rndGeometryLine_1 = __webpack_require__(821);
-const rndGeometryPoint_1 = __webpack_require__(246);
-__exportStar(__webpack_require__(230), exports);
+const rndPolynom_1 = __webpack_require__(/*! ./rndPolynom */ "./src/maths/randomization/rndPolynom.ts");
+const rndMonom_1 = __webpack_require__(/*! ./rndMonom */ "./src/maths/randomization/rndMonom.ts");
+const rndHelpers_1 = __webpack_require__(/*! ./rndHelpers */ "./src/maths/randomization/rndHelpers.ts");
+const rndFraction_1 = __webpack_require__(/*! ./rndFraction */ "./src/maths/randomization/rndFraction.ts");
+const rndGeometryLine_1 = __webpack_require__(/*! ./rndGeometryLine */ "./src/maths/randomization/rndGeometryLine.ts");
+const rndGeometryPoint_1 = __webpack_require__(/*! ./rndGeometryPoint */ "./src/maths/randomization/rndGeometryPoint.ts");
+__exportStar(__webpack_require__(/*! ./rndTypes */ "./src/maths/randomization/rndTypes.ts"), exports);
 var Random;
 (function (Random) {
     function polynom(config) {
@@ -7155,12 +6967,15 @@ var Random;
         }
         Geometry.point = point;
     })(Geometry = Random.Geometry || (Random.Geometry = {}));
-})(Random = exports.Random || (exports.Random = {}));
+})(Random || (exports.Random = Random = {}));
 
 
 /***/ }),
 
-/***/ 373:
+/***/ "./src/maths/randomization/randomCore.ts":
+/*!***********************************************!*\
+  !*** ./src/maths/randomization/randomCore.ts ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -7188,15 +7003,18 @@ exports.randomCore = randomCore;
 
 /***/ }),
 
-/***/ 754:
+/***/ "./src/maths/randomization/rndFraction.ts":
+/*!************************************************!*\
+  !*** ./src/maths/randomization/rndFraction.ts ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndFraction = void 0;
-const randomCore_1 = __webpack_require__(373);
-const random_1 = __webpack_require__(330);
-const fraction_1 = __webpack_require__(506);
+const randomCore_1 = __webpack_require__(/*! ./randomCore */ "./src/maths/randomization/randomCore.ts");
+const random_1 = __webpack_require__(/*! ./random */ "./src/maths/randomization/random.ts");
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
 /**
  * Create a random monom based on a based configuration
  */
@@ -7238,17 +7056,20 @@ exports.rndFraction = rndFraction;
 
 /***/ }),
 
-/***/ 821:
+/***/ "./src/maths/randomization/rndGeometryLine.ts":
+/*!****************************************************!*\
+  !*** ./src/maths/randomization/rndGeometryLine.ts ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndGeometryLine = void 0;
-const randomCore_1 = __webpack_require__(373);
-const random_1 = __webpack_require__(330);
-const line_1 = __webpack_require__(9);
-const vector_1 = __webpack_require__(586);
-const point_1 = __webpack_require__(557);
+const randomCore_1 = __webpack_require__(/*! ./randomCore */ "./src/maths/randomization/randomCore.ts");
+const random_1 = __webpack_require__(/*! ./random */ "./src/maths/randomization/random.ts");
+const line_1 = __webpack_require__(/*! ../geometry/line */ "./src/maths/geometry/line.ts");
+const vector_1 = __webpack_require__(/*! ../geometry/vector */ "./src/maths/geometry/vector.ts");
+const point_1 = __webpack_require__(/*! ../geometry/point */ "./src/maths/geometry/point.ts");
 /**
  * Create a random monom based on a based configuration
  */
@@ -7290,16 +7111,19 @@ exports.rndGeometryLine = rndGeometryLine;
 
 /***/ }),
 
-/***/ 246:
+/***/ "./src/maths/randomization/rndGeometryPoint.ts":
+/*!*****************************************************!*\
+  !*** ./src/maths/randomization/rndGeometryPoint.ts ***!
+  \*****************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndGeometryPoint = void 0;
-const randomCore_1 = __webpack_require__(373);
-const random_1 = __webpack_require__(330);
-const point_1 = __webpack_require__(557);
-const fraction_1 = __webpack_require__(506);
+const randomCore_1 = __webpack_require__(/*! ./randomCore */ "./src/maths/randomization/randomCore.ts");
+const random_1 = __webpack_require__(/*! ./random */ "./src/maths/randomization/random.ts");
+const point_1 = __webpack_require__(/*! ../geometry/point */ "./src/maths/geometry/point.ts");
+const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
 /**
  * Create a random monom based on a based configuration
  */
@@ -7357,7 +7181,10 @@ exports.rndGeometryPoint = rndGeometryPoint;
 
 /***/ }),
 
-/***/ 140:
+/***/ "./src/maths/randomization/rndHelpers.ts":
+/*!***********************************************!*\
+  !*** ./src/maths/randomization/rndHelpers.ts ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -7366,7 +7193,7 @@ exports.rndHelpers = void 0;
 /**
  * Random helpers
  */
-const numeric_1 = __webpack_require__(956);
+const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
 class rndHelpers {
     /**
      * Random boolean with a percent ratio
@@ -7440,15 +7267,18 @@ exports.rndHelpers = rndHelpers;
 
 /***/ }),
 
-/***/ 793:
+/***/ "./src/maths/randomization/rndMonom.ts":
+/*!*********************************************!*\
+  !*** ./src/maths/randomization/rndMonom.ts ***!
+  \*********************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndMonom = void 0;
-const randomCore_1 = __webpack_require__(373);
-const random_1 = __webpack_require__(330);
-const monom_1 = __webpack_require__(937);
+const randomCore_1 = __webpack_require__(/*! ./randomCore */ "./src/maths/randomization/randomCore.ts");
+const random_1 = __webpack_require__(/*! ./random */ "./src/maths/randomization/random.ts");
+const monom_1 = __webpack_require__(/*! ../algebra/monom */ "./src/maths/algebra/monom.ts");
 /**
  * Create a random monom based on a based configuration
  */
@@ -7499,16 +7329,19 @@ exports.rndMonom = rndMonom;
 
 /***/ }),
 
-/***/ 22:
+/***/ "./src/maths/randomization/rndPolynom.ts":
+/*!***********************************************!*\
+  !*** ./src/maths/randomization/rndPolynom.ts ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndPolynom = void 0;
-const randomCore_1 = __webpack_require__(373);
-const rndMonom_1 = __webpack_require__(793);
-const random_1 = __webpack_require__(330);
-const polynom_1 = __webpack_require__(38);
+const randomCore_1 = __webpack_require__(/*! ./randomCore */ "./src/maths/randomization/randomCore.ts");
+const rndMonom_1 = __webpack_require__(/*! ./rndMonom */ "./src/maths/randomization/rndMonom.ts");
+const random_1 = __webpack_require__(/*! ./random */ "./src/maths/randomization/random.ts");
+const polynom_1 = __webpack_require__(/*! ../algebra/polynom */ "./src/maths/algebra/polynom.ts");
 /**
  * Random polynoms
  */
@@ -7580,7 +7413,10 @@ exports.rndPolynom = rndPolynom;
 
 /***/ }),
 
-/***/ 230:
+/***/ "./src/maths/randomization/rndTypes.ts":
+/*!*********************************************!*\
+  !*** ./src/maths/randomization/rndTypes.ts ***!
+  \*********************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -7589,7 +7425,10 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 505:
+/***/ "./src/maths/shutingyard.ts":
+/*!**********************************!*\
+  !*** ./src/maths/shutingyard.ts ***!
+  \**********************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -7607,14 +7446,14 @@ var ShutingyardType;
     ShutingyardType["CONSTANT"] = "constant";
     ShutingyardType["FUNCTION"] = "function";
     ShutingyardType["MONOM"] = "monom";
-})(ShutingyardType = exports.ShutingyardType || (exports.ShutingyardType = {}));
+})(ShutingyardType || (exports.ShutingyardType = ShutingyardType = {}));
 var ShutingyardMode;
 (function (ShutingyardMode) {
     ShutingyardMode["EXPRESSION"] = "expression";
     ShutingyardMode["POLYNOM"] = "polynom";
     ShutingyardMode["SET"] = "set";
     ShutingyardMode["NUMERIC"] = "numeric";
-})(ShutingyardMode = exports.ShutingyardMode || (exports.ShutingyardMode = {}));
+})(ShutingyardMode || (exports.ShutingyardMode = ShutingyardMode = {}));
 class Shutingyard {
     constructor(mode) {
         this._rpn = [];
@@ -8067,8 +7906,8 @@ exports.Shutingyard = Shutingyard;
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__(607);
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/index.ts");
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=pi.js.map
+//# sourceMappingURL=pimath.js.map

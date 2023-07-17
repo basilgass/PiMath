@@ -18,7 +18,7 @@ var LinePropriety;
     LinePropriety["Parallel"] = "parallel";
     LinePropriety["Perpendicular"] = "perpendicular";
     LinePropriety["Tangent"] = "tangent";
-})(LinePropriety = exports.LinePropriety || (exports.LinePropriety = {}));
+})(LinePropriety || (exports.LinePropriety = LinePropriety = {}));
 class Line {
     constructor(...values) {
         this.randomPoint = (k) => {

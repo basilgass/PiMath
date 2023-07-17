@@ -1,6 +1,5 @@
 import {expect} from 'chai';
-import {NumExp} from "../src/maths/expressions/numexp";
-import {Numeric} from "../src/maths/numeric";
+import {NumExp} from "../src/maths/numexp";
 
 describe('Numerical expression', () => { // the tests container
     it('RPN for numerical expression', () => {

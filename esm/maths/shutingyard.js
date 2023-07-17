@@ -13,14 +13,14 @@ var ShutingyardType;
     ShutingyardType["CONSTANT"] = "constant";
     ShutingyardType["FUNCTION"] = "function";
     ShutingyardType["MONOM"] = "monom";
-})(ShutingyardType = exports.ShutingyardType || (exports.ShutingyardType = {}));
+})(ShutingyardType || (exports.ShutingyardType = ShutingyardType = {}));
 var ShutingyardMode;
 (function (ShutingyardMode) {
     ShutingyardMode["EXPRESSION"] = "expression";
     ShutingyardMode["POLYNOM"] = "polynom";
     ShutingyardMode["SET"] = "set";
     ShutingyardMode["NUMERIC"] = "numeric";
-})(ShutingyardMode = exports.ShutingyardMode || (exports.ShutingyardMode = {}));
+})(ShutingyardMode || (exports.ShutingyardMode = ShutingyardMode = {}));
 class Shutingyard {
     constructor(mode) {
         this._rpn = [];
