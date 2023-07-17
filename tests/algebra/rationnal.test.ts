@@ -54,6 +54,6 @@ describe('Rational tests', () => {
     it('should test', function () {
         let P = new Rational('245(x-2)', '(3x-5)(2x-3)')
 
-        console.log(P.plotFunction)
+        expect(P.plotFunction).to.be.equal("(245*x-490)/(6*x^(2)-19*x+15)")
     });
 })

@@ -51,8 +51,8 @@ describe('Shuting yard', () => { // the tests container
         //     '-'
         // ])
 
-        console.log(new Shutingyard(ShutingyardMode.EXPRESSION).normalize('3x(x-5)^(2(x+7))'))
-        console.log(new Shutingyard(ShutingyardMode.EXPRESSION).normalize('sin(cos(3pi-5))+sqrt(e-sin(3pi/2))'))
-        console.log(new Shutingyard(ShutingyardMode.EXPRESSION).normalize('sin(cos(3picos(3pi)-5))+sqrt(e-sin(3pi/2))'))
+        expect(new Shutingyard(ShutingyardMode.EXPRESSION).normalize('3x(x-5)^(2(x+7))')).to.be.equal("3*x*(x-5)^(2*(x+7))")
+        expect(new Shutingyard(ShutingyardMode.EXPRESSION).normalize('sin(cos(3pi-5))+sqrt(e-sin(3pi/2))')).to.be.equal("sin(cos(3*pi-5))+sqrt(e-sin(3*pi/2))")
+        expect(new Shutingyard(ShutingyardMode.EXPRESSION).normalize('sin(cos(3picos(3pi)-5))+sqrt(e-sin(3pi/2))')).to.be.equal("sin(cos(3*pi*cos(3*pi)-5))+sqrt(e-sin(3*pi/2))")
     })
 });

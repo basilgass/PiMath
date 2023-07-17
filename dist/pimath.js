@@ -2,34 +2,32 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/index.ts":
-/*!**********************!*\
-  !*** ./src/index.ts ***!
-  \**********************/
+/***/ 607:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+var __webpack_unused_export__;
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PiMath = void 0;
-const numeric_1 = __webpack_require__(/*! ./maths/numeric */ "./src/maths/numeric.ts");
-const numexp_1 = __webpack_require__(/*! ./maths/numexp */ "./src/maths/numexp.ts");
-const shutingyard_1 = __webpack_require__(/*! ./maths/shutingyard */ "./src/maths/shutingyard.ts");
-const random_1 = __webpack_require__(/*! ./maths/randomization/random */ "./src/maths/randomization/random.ts");
-const fraction_1 = __webpack_require__(/*! ./maths/coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
-const nthRoot_1 = __webpack_require__(/*! ./maths/coefficients/nthRoot */ "./src/maths/coefficients/nthRoot.ts");
-const monom_1 = __webpack_require__(/*! ./maths/algebra/monom */ "./src/maths/algebra/monom.ts");
-const polynom_1 = __webpack_require__(/*! ./maths/algebra/polynom */ "./src/maths/algebra/polynom.ts");
-const equation_1 = __webpack_require__(/*! ./maths/algebra/equation */ "./src/maths/algebra/equation.ts");
-const linearSystem_1 = __webpack_require__(/*! ./maths/algebra/linearSystem */ "./src/maths/algebra/linearSystem.ts");
-const rational_1 = __webpack_require__(/*! ./maths/algebra/rational */ "./src/maths/algebra/rational.ts");
-const logicalset_1 = __webpack_require__(/*! ./maths/algebra/logicalset */ "./src/maths/algebra/logicalset.ts");
-const vector_1 = __webpack_require__(/*! ./maths/geometry/vector */ "./src/maths/geometry/vector.ts");
-const line_1 = __webpack_require__(/*! ./maths/geometry/line */ "./src/maths/geometry/line.ts");
-const triangle_1 = __webpack_require__(/*! ./maths/geometry/triangle */ "./src/maths/geometry/triangle.ts");
-const circle_1 = __webpack_require__(/*! ./maths/geometry/circle */ "./src/maths/geometry/circle.ts");
-const point_1 = __webpack_require__(/*! ./maths/geometry/point */ "./src/maths/geometry/point.ts");
+__webpack_unused_export__ = ({ value: true });
+exports.l = void 0;
+const numeric_1 = __webpack_require__(956);
+const numexp_1 = __webpack_require__(394);
+const shutingyard_1 = __webpack_require__(505);
+const random_1 = __webpack_require__(330);
+const fraction_1 = __webpack_require__(506);
+const nthRoot_1 = __webpack_require__(872);
+const monom_1 = __webpack_require__(937);
+const polynom_1 = __webpack_require__(38);
+const equation_1 = __webpack_require__(760);
+const linearSystem_1 = __webpack_require__(554);
+const rational_1 = __webpack_require__(107);
+const logicalset_1 = __webpack_require__(236);
+const vector_1 = __webpack_require__(586);
+const line_1 = __webpack_require__(9);
+const triangle_1 = __webpack_require__(164);
+const circle_1 = __webpack_require__(699);
+const point_1 = __webpack_require__(557);
 // Expose as global
-exports.PiMath = {
+exports.l = {
     ShutingYard: shutingyard_1.Shutingyard,
     Numeric: numeric_1.Numeric,
     NumExp: numexp_1.NumExp,
@@ -50,24 +48,21 @@ exports.PiMath = {
         Circle: circle_1.Circle
     }
 };
-window.PiMath = exports.PiMath;
+window.PiMath = exports.l;
 
 
 /***/ }),
 
-/***/ "./src/maths/algebra/equation.ts":
-/*!***************************************!*\
-  !*** ./src/maths/algebra/equation.ts ***!
-  \***************************************/
+/***/ 760:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Equation = exports.PARTICULAR_SOLUTION = void 0;
-const polynom_1 = __webpack_require__(/*! ./polynom */ "./src/maths/algebra/polynom.ts");
-const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
-const nthRoot_1 = __webpack_require__(/*! ../coefficients/nthRoot */ "./src/maths/coefficients/nthRoot.ts");
+const polynom_1 = __webpack_require__(38);
+const numeric_1 = __webpack_require__(956);
+const fraction_1 = __webpack_require__(506);
+const nthRoot_1 = __webpack_require__(872);
 var PARTICULAR_SOLUTION;
 (function (PARTICULAR_SOLUTION) {
     PARTICULAR_SOLUTION["real"] = "\\mathbb{R}";
@@ -861,19 +856,16 @@ exports.Equation = Equation;
 
 /***/ }),
 
-/***/ "./src/maths/algebra/linearSystem.ts":
-/*!*******************************************!*\
-  !*** ./src/maths/algebra/linearSystem.ts ***!
-  \*******************************************/
+/***/ 554:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LinearSystem = void 0;
-const equation_1 = __webpack_require__(/*! ./equation */ "./src/maths/algebra/equation.ts");
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
-const polynom_1 = __webpack_require__(/*! ./polynom */ "./src/maths/algebra/polynom.ts");
-const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
+const equation_1 = __webpack_require__(760);
+const fraction_1 = __webpack_require__(506);
+const polynom_1 = __webpack_require__(38);
+const numeric_1 = __webpack_require__(956);
 // TODO: Must check and rework
 class LinearSystem {
     constructor(...equationStrings) {
@@ -1149,10 +1141,7 @@ exports.LinearSystem = LinearSystem;
 
 /***/ }),
 
-/***/ "./src/maths/algebra/logicalset.ts":
-/*!*****************************************!*\
-  !*** ./src/maths/algebra/logicalset.ts ***!
-  \*****************************************/
+/***/ 236:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -1162,7 +1151,7 @@ exports.LinearSystem = LinearSystem;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Logicalset = void 0;
-const shutingyard_1 = __webpack_require__(/*! ../shutingyard */ "./src/maths/shutingyard.ts");
+const shutingyard_1 = __webpack_require__(505);
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  */
@@ -1316,10 +1305,7 @@ exports.Logicalset = Logicalset;
 
 /***/ }),
 
-/***/ "./src/maths/algebra/monom.ts":
-/*!************************************!*\
-  !*** ./src/maths/algebra/monom.ts ***!
-  \************************************/
+/***/ 937:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -1328,9 +1314,9 @@ exports.Monom = void 0;
 /***
  * Monom class
  */
-const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
-const shutingyard_1 = __webpack_require__(/*! ../shutingyard */ "./src/maths/shutingyard.ts");
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const numeric_1 = __webpack_require__(956);
+const shutingyard_1 = __webpack_require__(505);
+const fraction_1 = __webpack_require__(506);
 class Monom {
     /**
      * Create a Monom
@@ -2234,10 +2220,7 @@ Monom.xmultiply = (...monoms) => {
 
 /***/ }),
 
-/***/ "./src/maths/algebra/polynom.ts":
-/*!**************************************!*\
-  !*** ./src/maths/algebra/polynom.ts ***!
-  \**************************************/
+/***/ 38:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -2246,11 +2229,11 @@ Monom.xmultiply = (...monoms) => {
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Polynom = void 0;
-const monom_1 = __webpack_require__(/*! ./monom */ "./src/maths/algebra/monom.ts");
-const shutingyard_1 = __webpack_require__(/*! ../shutingyard */ "./src/maths/shutingyard.ts");
-const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
-const equation_1 = __webpack_require__(/*! ./equation */ "./src/maths/algebra/equation.ts");
+const monom_1 = __webpack_require__(937);
+const shutingyard_1 = __webpack_require__(505);
+const numeric_1 = __webpack_require__(956);
+const fraction_1 = __webpack_require__(506);
+const equation_1 = __webpack_require__(760);
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  * ```
@@ -3521,10 +3504,7 @@ exports.Polynom = Polynom;
 
 /***/ }),
 
-/***/ "./src/maths/algebra/rational.ts":
-/*!***************************************!*\
-  !*** ./src/maths/algebra/rational.ts ***!
-  \***************************************/
+/***/ 107:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -3534,10 +3514,10 @@ exports.Polynom = Polynom;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Rational = void 0;
-const polynom_1 = __webpack_require__(/*! ./polynom */ "./src/maths/algebra/polynom.ts");
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
-const equation_1 = __webpack_require__(/*! ./equation */ "./src/maths/algebra/equation.ts");
-const rationalStudy_1 = __webpack_require__(/*! ./study/rationalStudy */ "./src/maths/algebra/study/rationalStudy.ts");
+const polynom_1 = __webpack_require__(38);
+const fraction_1 = __webpack_require__(506);
+const equation_1 = __webpack_require__(760);
+const rationalStudy_1 = __webpack_require__(572);
 /**
  * Rational class can handle rational polynoms
  */
@@ -3714,10 +3694,7 @@ exports.Rational = Rational;
 
 /***/ }),
 
-/***/ "./src/maths/algebra/study.ts":
-/*!************************************!*\
-  !*** ./src/maths/algebra/study.ts ***!
-  \************************************/
+/***/ 996:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -3727,8 +3704,8 @@ exports.Rational = Rational;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE_POSITION = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
-const numexp_1 = __webpack_require__(/*! ../numexp */ "./src/maths/numexp.ts");
+const fraction_1 = __webpack_require__(506);
+const numexp_1 = __webpack_require__(394);
 var ZEROTYPE;
 (function (ZEROTYPE) {
     ZEROTYPE["ZERO"] = "z";
@@ -4102,10 +4079,7 @@ exports.Study = Study;
 
 /***/ }),
 
-/***/ "./src/maths/algebra/study/rationalStudy.ts":
-/*!**************************************************!*\
-  !*** ./src/maths/algebra/study/rationalStudy.ts ***!
-  \**************************************************/
+/***/ 572:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -4126,10 +4100,10 @@ exports.RationalStudy = void 0;
  * ddx              : dérivée seconde
  * variations       : variation table + tex output  using tkz-tab
  */
-const study_1 = __webpack_require__(/*! ../study */ "./src/maths/algebra/study.ts");
-const rational_1 = __webpack_require__(/*! ../rational */ "./src/maths/algebra/rational.ts");
-const fraction_1 = __webpack_require__(/*! ../../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
-const polynom_1 = __webpack_require__(/*! ../polynom */ "./src/maths/algebra/polynom.ts");
+const study_1 = __webpack_require__(996);
+const rational_1 = __webpack_require__(107);
+const fraction_1 = __webpack_require__(506);
+const polynom_1 = __webpack_require__(38);
 class RationalStudy extends study_1.Study {
     constructor(fx, config) {
         super(fx, config);
@@ -4355,16 +4329,13 @@ exports.RationalStudy = RationalStudy;
 
 /***/ }),
 
-/***/ "./src/maths/coefficients/fraction.ts":
-/*!********************************************!*\
-  !*** ./src/maths/coefficients/fraction.ts ***!
-  \********************************************/
+/***/ 506:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Fraction = void 0;
-const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
+const numeric_1 = __webpack_require__(956);
 /**
  * The fraction class make possible to handle
  * TODO: Write the documentation correctly.
@@ -4881,10 +4852,7 @@ Fraction.sort = (fractions, reverse) => {
 
 /***/ }),
 
-/***/ "./src/maths/coefficients/nthRoot.ts":
-/*!*******************************************!*\
-  !*** ./src/maths/coefficients/nthRoot.ts ***!
-  \*******************************************/
+/***/ 872:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -5027,23 +4995,20 @@ exports.NthRoot = NthRoot;
 
 /***/ }),
 
-/***/ "./src/maths/geometry/circle.ts":
-/*!**************************************!*\
-  !*** ./src/maths/geometry/circle.ts ***!
-  \**************************************/
+/***/ 699:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Circle = void 0;
-const point_1 = __webpack_require__(/*! ./point */ "./src/maths/geometry/point.ts");
-const line_1 = __webpack_require__(/*! ./line */ "./src/maths/geometry/line.ts");
-const vector_1 = __webpack_require__(/*! ./vector */ "./src/maths/geometry/vector.ts");
-const triangle_1 = __webpack_require__(/*! ./triangle */ "./src/maths/geometry/triangle.ts");
-const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
-const equation_1 = __webpack_require__(/*! ../algebra/equation */ "./src/maths/algebra/equation.ts");
-const polynom_1 = __webpack_require__(/*! ../algebra/polynom */ "./src/maths/algebra/polynom.ts");
+const point_1 = __webpack_require__(557);
+const line_1 = __webpack_require__(9);
+const vector_1 = __webpack_require__(586);
+const triangle_1 = __webpack_require__(164);
+const numeric_1 = __webpack_require__(956);
+const fraction_1 = __webpack_require__(506);
+const equation_1 = __webpack_require__(760);
+const polynom_1 = __webpack_require__(38);
 class Circle {
     constructor(...values) {
         /**
@@ -5360,10 +5325,7 @@ exports.Circle = Circle;
 
 /***/ }),
 
-/***/ "./src/maths/geometry/line.ts":
-/*!************************************!*\
-  !*** ./src/maths/geometry/line.ts ***!
-  \************************************/
+/***/ 9:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -5372,14 +5334,14 @@ exports.Circle = Circle;
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Line = exports.LinePropriety = void 0;
-const vector_1 = __webpack_require__(/*! ./vector */ "./src/maths/geometry/vector.ts");
-const point_1 = __webpack_require__(/*! ./point */ "./src/maths/geometry/point.ts");
-const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
-const equation_1 = __webpack_require__(/*! ../algebra/equation */ "./src/maths/algebra/equation.ts");
-const polynom_1 = __webpack_require__(/*! ../algebra/polynom */ "./src/maths/algebra/polynom.ts");
-const random_1 = __webpack_require__(/*! ../randomization/random */ "./src/maths/randomization/random.ts");
-const monom_1 = __webpack_require__(/*! ../algebra/monom */ "./src/maths/algebra/monom.ts");
+const vector_1 = __webpack_require__(586);
+const point_1 = __webpack_require__(557);
+const numeric_1 = __webpack_require__(956);
+const fraction_1 = __webpack_require__(506);
+const equation_1 = __webpack_require__(760);
+const polynom_1 = __webpack_require__(38);
+const random_1 = __webpack_require__(330);
+const monom_1 = __webpack_require__(937);
 var LinePropriety;
 (function (LinePropriety) {
     LinePropriety[LinePropriety["None"] = 0] = "None";
@@ -5854,10 +5816,7 @@ Line.PARALLEL = LinePropriety.Parallel;
 
 /***/ }),
 
-/***/ "./src/maths/geometry/point.ts":
-/*!*************************************!*\
-  !*** ./src/maths/geometry/point.ts ***!
-  \*************************************/
+/***/ 557:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -5867,9 +5826,9 @@ exports.Point = void 0;
  * Vector module contains everything necessary to handle 2d or 3d vectors.
  * @module Vector
  */
-const line_1 = __webpack_require__(/*! ./line */ "./src/maths/geometry/line.ts");
-const vector_1 = __webpack_require__(/*! ./vector */ "./src/maths/geometry/vector.ts");
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const line_1 = __webpack_require__(9);
+const vector_1 = __webpack_require__(586);
+const fraction_1 = __webpack_require__(506);
 /**
  * Helper class - a way to identify an object {x: number, y: number}
  */
@@ -6030,20 +5989,17 @@ Point.pmatrix = (a, b, c) => {
 
 /***/ }),
 
-/***/ "./src/maths/geometry/triangle.ts":
-/*!****************************************!*\
-  !*** ./src/maths/geometry/triangle.ts ***!
-  \****************************************/
+/***/ 164:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Triangle = void 0;
-const point_1 = __webpack_require__(/*! ./point */ "./src/maths/geometry/point.ts");
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
-const vector_1 = __webpack_require__(/*! ./vector */ "./src/maths/geometry/vector.ts");
-const line_1 = __webpack_require__(/*! ./line */ "./src/maths/geometry/line.ts");
-const equation_1 = __webpack_require__(/*! ../algebra/equation */ "./src/maths/algebra/equation.ts");
+const point_1 = __webpack_require__(557);
+const fraction_1 = __webpack_require__(506);
+const vector_1 = __webpack_require__(586);
+const line_1 = __webpack_require__(9);
+const equation_1 = __webpack_require__(760);
 class Triangle {
     constructor(...values) {
         // ------------------------------------------
@@ -6308,10 +6264,7 @@ exports.Triangle = Triangle;
 
 /***/ }),
 
-/***/ "./src/maths/geometry/vector.ts":
-/*!**************************************!*\
-  !*** ./src/maths/geometry/vector.ts ***!
-  \**************************************/
+/***/ 586:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -6321,9 +6274,9 @@ exports.Vector = void 0;
  * Vector module contains everything necessary to handle 2d or 3d vectors.
  * @module Vector
  */
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
-const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
-const point_1 = __webpack_require__(/*! ./point */ "./src/maths/geometry/point.ts");
+const fraction_1 = __webpack_require__(506);
+const numeric_1 = __webpack_require__(956);
+const point_1 = __webpack_require__(557);
 class Vector {
     constructor(...values) {
         // ------------------------------------------
@@ -6515,10 +6468,7 @@ Vector.determinant = (v1, v2) => {
 
 /***/ }),
 
-/***/ "./src/maths/numeric.ts":
-/*!******************************!*\
-  !*** ./src/maths/numeric.ts ***!
-  \******************************/
+/***/ 956:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -6705,17 +6655,14 @@ exports.Numeric = Numeric;
 
 /***/ }),
 
-/***/ "./src/maths/numexp.ts":
-/*!*****************************!*\
-  !*** ./src/maths/numexp.ts ***!
-  \*****************************/
+/***/ 394:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NumExp = void 0;
-const shutingyard_1 = __webpack_require__(/*! ./shutingyard */ "./src/maths/shutingyard.ts");
-const fraction_1 = __webpack_require__(/*! ./coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const shutingyard_1 = __webpack_require__(505);
+const fraction_1 = __webpack_require__(506);
 class NumExp {
     constructor(value, uniformize) {
         this._expression = value;
@@ -6900,10 +6847,7 @@ exports.NumExp = NumExp;
 
 /***/ }),
 
-/***/ "./src/maths/randomization/random.ts":
-/*!*******************************************!*\
-  !*** ./src/maths/randomization/random.ts ***!
-  \*******************************************/
+/***/ 330:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -6923,13 +6867,13 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Random = void 0;
-const rndPolynom_1 = __webpack_require__(/*! ./rndPolynom */ "./src/maths/randomization/rndPolynom.ts");
-const rndMonom_1 = __webpack_require__(/*! ./rndMonom */ "./src/maths/randomization/rndMonom.ts");
-const rndHelpers_1 = __webpack_require__(/*! ./rndHelpers */ "./src/maths/randomization/rndHelpers.ts");
-const rndFraction_1 = __webpack_require__(/*! ./rndFraction */ "./src/maths/randomization/rndFraction.ts");
-const rndGeometryLine_1 = __webpack_require__(/*! ./rndGeometryLine */ "./src/maths/randomization/rndGeometryLine.ts");
-const rndGeometryPoint_1 = __webpack_require__(/*! ./rndGeometryPoint */ "./src/maths/randomization/rndGeometryPoint.ts");
-__exportStar(__webpack_require__(/*! ./rndTypes */ "./src/maths/randomization/rndTypes.ts"), exports);
+const rndPolynom_1 = __webpack_require__(22);
+const rndMonom_1 = __webpack_require__(793);
+const rndHelpers_1 = __webpack_require__(140);
+const rndFraction_1 = __webpack_require__(754);
+const rndGeometryLine_1 = __webpack_require__(821);
+const rndGeometryPoint_1 = __webpack_require__(246);
+__exportStar(__webpack_require__(230), exports);
 var Random;
 (function (Random) {
     function polynom(config) {
@@ -6988,10 +6932,7 @@ var Random;
 
 /***/ }),
 
-/***/ "./src/maths/randomization/randomCore.ts":
-/*!***********************************************!*\
-  !*** ./src/maths/randomization/randomCore.ts ***!
-  \***********************************************/
+/***/ 373:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -7019,18 +6960,15 @@ exports.randomCore = randomCore;
 
 /***/ }),
 
-/***/ "./src/maths/randomization/rndFraction.ts":
-/*!************************************************!*\
-  !*** ./src/maths/randomization/rndFraction.ts ***!
-  \************************************************/
+/***/ 754:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndFraction = void 0;
-const randomCore_1 = __webpack_require__(/*! ./randomCore */ "./src/maths/randomization/randomCore.ts");
-const random_1 = __webpack_require__(/*! ./random */ "./src/maths/randomization/random.ts");
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const randomCore_1 = __webpack_require__(373);
+const random_1 = __webpack_require__(330);
+const fraction_1 = __webpack_require__(506);
 /**
  * Create a random monom based on a based configuration
  */
@@ -7072,20 +7010,17 @@ exports.rndFraction = rndFraction;
 
 /***/ }),
 
-/***/ "./src/maths/randomization/rndGeometryLine.ts":
-/*!****************************************************!*\
-  !*** ./src/maths/randomization/rndGeometryLine.ts ***!
-  \****************************************************/
+/***/ 821:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndGeometryLine = void 0;
-const randomCore_1 = __webpack_require__(/*! ./randomCore */ "./src/maths/randomization/randomCore.ts");
-const random_1 = __webpack_require__(/*! ./random */ "./src/maths/randomization/random.ts");
-const line_1 = __webpack_require__(/*! ../geometry/line */ "./src/maths/geometry/line.ts");
-const vector_1 = __webpack_require__(/*! ../geometry/vector */ "./src/maths/geometry/vector.ts");
-const point_1 = __webpack_require__(/*! ../geometry/point */ "./src/maths/geometry/point.ts");
+const randomCore_1 = __webpack_require__(373);
+const random_1 = __webpack_require__(330);
+const line_1 = __webpack_require__(9);
+const vector_1 = __webpack_require__(586);
+const point_1 = __webpack_require__(557);
 /**
  * Create a random monom based on a based configuration
  */
@@ -7127,19 +7062,16 @@ exports.rndGeometryLine = rndGeometryLine;
 
 /***/ }),
 
-/***/ "./src/maths/randomization/rndGeometryPoint.ts":
-/*!*****************************************************!*\
-  !*** ./src/maths/randomization/rndGeometryPoint.ts ***!
-  \*****************************************************/
+/***/ 246:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndGeometryPoint = void 0;
-const randomCore_1 = __webpack_require__(/*! ./randomCore */ "./src/maths/randomization/randomCore.ts");
-const random_1 = __webpack_require__(/*! ./random */ "./src/maths/randomization/random.ts");
-const point_1 = __webpack_require__(/*! ../geometry/point */ "./src/maths/geometry/point.ts");
-const fraction_1 = __webpack_require__(/*! ../coefficients/fraction */ "./src/maths/coefficients/fraction.ts");
+const randomCore_1 = __webpack_require__(373);
+const random_1 = __webpack_require__(330);
+const point_1 = __webpack_require__(557);
+const fraction_1 = __webpack_require__(506);
 /**
  * Create a random monom based on a based configuration
  */
@@ -7197,10 +7129,7 @@ exports.rndGeometryPoint = rndGeometryPoint;
 
 /***/ }),
 
-/***/ "./src/maths/randomization/rndHelpers.ts":
-/*!***********************************************!*\
-  !*** ./src/maths/randomization/rndHelpers.ts ***!
-  \***********************************************/
+/***/ 140:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -7209,7 +7138,7 @@ exports.rndHelpers = void 0;
 /**
  * Random helpers
  */
-const numeric_1 = __webpack_require__(/*! ../numeric */ "./src/maths/numeric.ts");
+const numeric_1 = __webpack_require__(956);
 class rndHelpers {
     /**
      * Random boolean with a percent ratio
@@ -7283,18 +7212,15 @@ exports.rndHelpers = rndHelpers;
 
 /***/ }),
 
-/***/ "./src/maths/randomization/rndMonom.ts":
-/*!*********************************************!*\
-  !*** ./src/maths/randomization/rndMonom.ts ***!
-  \*********************************************/
+/***/ 793:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndMonom = void 0;
-const randomCore_1 = __webpack_require__(/*! ./randomCore */ "./src/maths/randomization/randomCore.ts");
-const random_1 = __webpack_require__(/*! ./random */ "./src/maths/randomization/random.ts");
-const monom_1 = __webpack_require__(/*! ../algebra/monom */ "./src/maths/algebra/monom.ts");
+const randomCore_1 = __webpack_require__(373);
+const random_1 = __webpack_require__(330);
+const monom_1 = __webpack_require__(937);
 /**
  * Create a random monom based on a based configuration
  */
@@ -7345,19 +7271,16 @@ exports.rndMonom = rndMonom;
 
 /***/ }),
 
-/***/ "./src/maths/randomization/rndPolynom.ts":
-/*!***********************************************!*\
-  !*** ./src/maths/randomization/rndPolynom.ts ***!
-  \***********************************************/
+/***/ 22:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rndPolynom = void 0;
-const randomCore_1 = __webpack_require__(/*! ./randomCore */ "./src/maths/randomization/randomCore.ts");
-const rndMonom_1 = __webpack_require__(/*! ./rndMonom */ "./src/maths/randomization/rndMonom.ts");
-const random_1 = __webpack_require__(/*! ./random */ "./src/maths/randomization/random.ts");
-const polynom_1 = __webpack_require__(/*! ../algebra/polynom */ "./src/maths/algebra/polynom.ts");
+const randomCore_1 = __webpack_require__(373);
+const rndMonom_1 = __webpack_require__(793);
+const random_1 = __webpack_require__(330);
+const polynom_1 = __webpack_require__(38);
 /**
  * Random polynoms
  */
@@ -7429,10 +7352,7 @@ exports.rndPolynom = rndPolynom;
 
 /***/ }),
 
-/***/ "./src/maths/randomization/rndTypes.ts":
-/*!*********************************************!*\
-  !*** ./src/maths/randomization/rndTypes.ts ***!
-  \*********************************************/
+/***/ 230:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -7441,10 +7361,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ "./src/maths/shutingyard.ts":
-/*!**********************************!*\
-  !*** ./src/maths/shutingyard.ts ***!
-  \**********************************/
+/***/ 505:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -7922,7 +7839,7 @@ exports.Shutingyard = Shutingyard;
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/index.ts");
+/******/ 	var __webpack_exports__ = __webpack_require__(607);
 /******/ 	
 /******/ })()
 ;

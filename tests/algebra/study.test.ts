@@ -41,14 +41,7 @@ describe('Study tests', () => {
         const R = new Rational('x-3', 'x^2-4')
         const study = R.study('\\delta(x),d,signs')
 
-        console.log('CONFIG')
-        console.log(study.config)
-        console.log('DOMAIN')
-        console.log(study.domain)
-        console.log('SIGNS')
-        console.log(Object.keys(study.signs))
-
-        console.log(study.signs.tex)
-        console.log(study.signs.signs)
+        expect(study.domain).to.be.equal('\\mathbb{R}\\setminus\\left\\{-2;2\\right\\}')
+        expect(study.signs.signs[0]).to.have.all.members(['', '-', 't', '-', 't', '-', 'z', '+', ''])
     });
 })

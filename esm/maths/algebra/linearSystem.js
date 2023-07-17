@@ -175,6 +175,22 @@ class LinearSystem {
         }
         return `\\left(${tex.join(';')}\\right)`;
     }
+    get solutionAsDisplay() {
+        let display = [];
+        if (this._solutions === undefined) {
+            this.solve();
+        }
+        for (let letter in this._solutions) {
+            if (this._solutions[letter].display === "RR") {
+                return `{(${this._letters.join(';')}) | ${this.equations[0].display} }`;
+            }
+            if (this._solutions[letter].display === "O/") {
+                return "O/";
+            }
+            display.push(this._solutions[letter].display);
+        }
+        return `(${display.join(';')})`;
+    }
     get resolutionSteps() {
         return this._resolutionSteps;
     }

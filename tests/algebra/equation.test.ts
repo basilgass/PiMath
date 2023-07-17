@@ -2,6 +2,7 @@ import {describe} from "mocha";
 import {expect} from "chai";
 import {Equation} from "../../src/maths/algebra/equation";
 
+
 describe('Equations tests', () => {
     it('should get the solutions', () => {
 
@@ -29,8 +30,8 @@ describe('Equations tests', () => {
         let E6 = new Equation('5x^2+7x-31', 0)
         E6.solve()
         expect(E6.solutions.map(x=>x.tex)).to.have.all.members([
-            '\\frac{-7 - \\sqrt{669} }{ 10 }',
-            '\\frac{-7 + \\sqrt{669} }{ 10 }'
+            '\\frac{ -7 - \\sqrt{669} }{ 10 }',
+            '\\frac{ -7 + \\sqrt{669} }{ 10 }'
         ] )
     })
 
@@ -43,7 +44,10 @@ describe('Equations tests', () => {
     it('should solve this equation please', function () {
         let P = new Equation("2/7(3x+5)=9-(3-x)/7")
         P.solve()
-        console.log(P.solutions.map(x=>x.tex))
+
+        const sols = P.solutions.map(x => x.display)
+        expect(sols).to.be.length(1)
+        expect(sols[0]).to.be.equal('10')
     });
 
     it('should detect if two equations are equal or linear', function () {

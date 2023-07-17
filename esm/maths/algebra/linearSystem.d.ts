@@ -14,6 +14,7 @@ export declare class LinearSystem {
     get variables(): string[];
     get tex(): string;
     get solution(): string;
+    get solutionAsDisplay(): string;
     buildTex: (equations: Equation[], operators?: (string[])[]) => string;
     stepTex: (letter: string) => string;
     get resolutionSteps(): {
