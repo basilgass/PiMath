@@ -61,4 +61,16 @@ describe('Numerical expression', () => { // the tests container
         expect(p.evaluate({x: 16})).to.be.equal(2)
         expect(p.evaluate({x: -16})).to.be.NaN
     })
+
+    it('should work with constant', function () {
+
+        let k = new NumExp('2pi*x')
+        expect(k.evaluate({x: 1})).to.be.equal(6.283186)
+    });
+
+    it('should work with constant but without variables', function () {
+
+        let k = new NumExp('2pi')
+        expect(k.evaluate()).to.be.equal(6.283186)
+    });
 });

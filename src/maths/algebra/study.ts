@@ -91,6 +91,7 @@ export interface StudyConfig {
     derivative?: boolean,
     domain?: boolean,
     name?: string,
+    variable?: string,
     signs?: boolean,
     variations?: boolean
 }
@@ -125,6 +126,7 @@ export class Study {
 
         this._config = {
             name :'f',
+            variable: 'x',
             domain :true,
             asymptotes :true,
             signs :true,
@@ -136,9 +138,11 @@ export class Study {
             if (typeof config === 'string') {
                 const d = config.split(',')
                 this._config = {}
-                let n = d.filter(x=>x.includes('(x)'))
+                let n = d.filter(x=>x.includes('(') && x.includes(')'))
+
                 if(n.length===1){
-                    this._config.name = n[0].split('(x)')[0]
+                    this._config.name = n[0].split('(')[0]
+                    this._config.variable = n[0].split('(')[1].split(')')[0]
                 }
                 this._config.domain = d.includes('d')
                 this._config.asymptotes = d.includes('a')
@@ -150,18 +154,16 @@ export class Study {
             }
         }
 
-        this._name = this._config?.name ?? 'f'
-
         this.makeStudy()
         return this
     }
 
     get name(): string {
-        return this._name;
+        return this._config.name;
     }
 
     set name(value: string) {
-        this._name = value;
+        this._config.name = value;
     }
 
     get config(): StudyConfig {
@@ -468,14 +470,14 @@ export class Study {
 
     private _makeTexFromTableOfSigns = (tos: ITableOfSigns): string => {
         let factors = tos.factors.map(x => `\\(${x.tex}\\)/1`),
-            factorsFx = `\\(${this._name}(x)\\)/1.2`,
+            factorsFx = `\\(${this._config.name}(${this._config.variable})\\)/1.2`,
             zeroes = tos.zeroes
 
         // Add the last lines "label"
         if (tos.type === TABLE_OF_SIGNS.GROWS) {
-            factorsFx = `\\(${this._name}'(x)\\)/1.2,\\(f(x)\\)/2`
+            factorsFx = `\\(${this._config.name}'(${this._config.variable})\\)/1.2,\\(f(x${this._config.variable})\\)/2`
         } else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
-            factorsFx = `\\(${this._name}''(x)\\)/1.2,\\(f(x)\\)/2`
+            factorsFx = `\\(${this._config.name}''(${this._config.variable})\\)/1.2,\\(f(${this._config.variable})\\)/2`
         }
 
         // Create the tikzPicture header

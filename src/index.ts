@@ -39,4 +39,4 @@ export const PiMath = {
     }
 };
 
-(<any>window).PiMath = PiMath
+(<any>window).Pi = PiMath

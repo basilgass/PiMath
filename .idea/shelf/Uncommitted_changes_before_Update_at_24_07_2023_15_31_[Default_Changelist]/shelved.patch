@@ -1,0 +1,90 @@
+Index: src/maths/expressions/numexp.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {Shutingyard, ShutingyardMode, ShutingyardType, tokenConstant} from \"../shutingyard\";\r\nimport {Fraction} from \"../coefficients/fraction\";\r\n\r\nexport class NumExp {\r\n    private _rpn: { token: string, tokenType: string }[]\r\n    private _expression: string\r\n    private _isValid: boolean\r\n\r\n    constructor(value: string, uniformize?:boolean) {\r\n        this._expression = value\r\n        try {\r\n            this._rpn = new Shutingyard(ShutingyardMode.NUMERIC).parse(value, uniformize || uniformize===undefined).rpn\r\n        }catch(e){\r\n            this._rpn = null\r\n            this._isValid = false\r\n        }\r\n    }\r\n\r\n    get rpn(): { token: string; tokenType: string }[] {\r\n        return this._rpn;\r\n    }\r\n\r\n    get isValid(): boolean {\r\n        if(this._isValid===undefined){\r\n            try {\r\n                const v = this.evaluate({x: 0})\r\n            }catch{\r\n                this._isValid = false\r\n            }\r\n        }\r\n        return this._isValid\r\n    }\r\n\r\n    set isValid(value: boolean){\r\n        this._isValid = value\r\n    }\r\n\r\n    get expression(): string {\r\n        return this._expression;\r\n    }\r\n\r\n    private _extractDecimalPart(value: number): string {\r\n        let decimal = value.toString()\r\n\r\n        if (!decimal.includes('.')) {\r\n            return ''\r\n        }\r\n\r\n        decimal = decimal.split('.')[1]\r\n\r\n        return decimal.substring(0, decimal.length - 2)\r\n    }\r\n\r\n    private _numberCorrection(value: number): number {\r\n        // Must modify the number if it's like:\r\n        // a: 3.0000000000000003\r\n        // b: 3.9999999999999994\r\n        // remove the last character\r\n        // check if around n last characters are either 0 or 9\r\n        // if it is, 'round' the number.\r\n\r\n        const epsilon = 0.00000000000001,\r\n            number_of_digits = 6\r\n\r\n        const decimal = this._extractDecimalPart(value)\r\n        if(decimal===''){return value}\r\n\r\n        const n9 = decimal.match(/9+$/g)\r\n        const n0 = decimal.match(/0+$/g)\r\n\r\n        if (n9 && n9[0].length >= number_of_digits) {\r\n            // New tested values.\r\n            const mod = this._extractDecimalPart(value + epsilon),\r\n                mod0 = mod.match(/0+$/g)\r\n\r\n            if(mod0 && mod0[0].length>= number_of_digits){\r\n                // The value can be changed. Remove all zeros!\r\n                return +((value+epsilon).toString().split(mod0[0])[0])\r\n            }\r\n        }\r\n\r\n        if (n0 && n0[0].length >= number_of_digits) {\r\n            // New tested values.\r\n            const mod = this._extractDecimalPart(value - epsilon),\r\n                mod9 = mod.match(/9+$/g)\r\n\r\n            if(mod9 && mod9[0].length>= number_of_digits){\r\n                // The value can be changed. Remove all nines!\r\n                return +(value.toString().split(n0[0])[0])\r\n            }\r\n        }\r\n\r\n        return value\r\n    }\r\n\r\n    private _addToStack(stack:number[], value: number): void {\r\n        stack.push(this._numberCorrection(value))\r\n    }\r\n\r\n    evaluate(values: { [Key: string]: number }): number {\r\n        const stack: number[] = []\r\n\r\n        if(this._rpn===null){\r\n            this._isValid = false\r\n            return 0\r\n        }\r\n\r\n        this.isValid = true\r\n\r\n        for (const element of this._rpn) {\r\n            if (element.tokenType === ShutingyardType.COEFFICIENT) {\r\n                // May be a numeric value or a Fraction.\r\n                if (!isNaN(+element.token)) {\r\n                    this._addToStack(stack, +element.token)\r\n                } else {\r\n                    this._addToStack(stack, new Fraction(element.token).value)\r\n                }\r\n            } else if (element.tokenType === ShutingyardType.VARIABLE) {\r\n                if (values[element.token] !== undefined) {\r\n                    this._addToStack(stack, +values[element.token])\r\n                }\r\n            } else if (element.tokenType === ShutingyardType.CONSTANT) {\r\n                this._addToStack(stack, tokenConstant[element.token])\r\n            } else if (element.tokenType === ShutingyardType.OPERATION) {\r\n                if (element.token === '*') {\r\n                    const b = stack.pop(),\r\n                        a = stack.pop()\r\n                    if(a === undefined || b === undefined){this.isValid = false}\r\n                    this._addToStack(stack, a * b)\r\n                } else if (element.token === '/') {\r\n                    const b = stack.pop(),\r\n                        a = stack.pop()\r\n                    if(a === undefined || b === undefined){this.isValid = false}\r\n                    this._addToStack(stack, a / b)\r\n                } else if (element.token === '+') {\r\n                    const b = stack.pop(),\r\n                        a = stack.pop()\r\n                    if(a === undefined || b === undefined){this.isValid = false}\r\n                    this._addToStack(stack, (+a) + (+b))\r\n                } else if (element.token === '-') {\r\n                    const b = stack.pop(),\r\n                        a = stack.pop() || 0\r\n                    if(b === undefined){this.isValid = false}\r\n                    this._addToStack(stack, a - b)\r\n                } else if (element.token === '^') {\r\n                    const b = stack.pop(),\r\n                        a = stack.pop()\r\n                    if(a === undefined || b === undefined){this.isValid = false}\r\n                    this._addToStack(stack, Math.pow(a, b))\r\n                }\r\n            } else if (element.tokenType === ShutingyardType.FUNCTION) {\r\n                const a = stack.pop()\r\n                if(a === undefined){this.isValid = false}\r\n                if (element.token === 'sin') {\r\n                    this._addToStack(stack, Math.sin(a))\r\n                } else if (element.token === 'cos') {\r\n                    this._addToStack(stack, Math.cos(a))\r\n                } else if (element.token === 'tan') {\r\n                    this._addToStack(stack, Math.tan(a))\r\n                } else if(element.token === 'sqrt') {\r\n                    this._addToStack(stack, Math.sqrt(a))\r\n                }else if(element.token ==='nthrt') {\r\n                    // TODO: support nthrt in num. exp.\r\n                    let b = stack.pop()\r\n                    if(a%2===0 && b<0){\r\n                        this._addToStack(stack, NaN)\r\n                    }else {\r\n                        this._addToStack(stack, (b < 0 ? -1 : 1) * Math.pow(Math.abs(b), 1 / a))\r\n                    }\r\n                } else if(element.token === 'ln'){\r\n                    this._addToStack(stack, Math.log(a))\r\n                } else if(element.token === 'log') {\r\n                    this._addToStack(stack, Math.log10(a))\r\n                }\r\n            }\r\n        }\r\n\r\n        if (stack.length === 1) {\r\n            return stack[0]\r\n        } else {\r\n            throw `There was a problem parsing: ${this._expression}`\r\n        }\r\n    }\r\n}\r\n
+===================================================================
+diff --git a/src/maths/expressions/numexp.ts b/src/maths/expressions/numexp.ts
+--- a/src/maths/expressions/numexp.ts	
++++ b/src/maths/expressions/numexp.ts	
+@@ -51,46 +51,47 @@
+         return decimal.substring(0, decimal.length - 2)
+     }
+ 
+-    private _numberCorrection(value: number): number {
++    private _numberCorrection(value: number, number_of_digits=6): number {
++        return +value.toFixed(number_of_digits);
+         // Must modify the number if it's like:
+         // a: 3.0000000000000003
+         // b: 3.9999999999999994
+         // remove the last character
+         // check if around n last characters are either 0 or 9
+         // if it is, 'round' the number.
+-
+-        const epsilon = 0.00000000000001,
+-            number_of_digits = 6
+-
+-        const decimal = this._extractDecimalPart(value)
+-        if(decimal===''){return value}
+-
+-        const n9 = decimal.match(/9+$/g)
+-        const n0 = decimal.match(/0+$/g)
+-
+-        if (n9 && n9[0].length >= number_of_digits) {
+-            // New tested values.
+-            const mod = this._extractDecimalPart(value + epsilon),
+-                mod0 = mod.match(/0+$/g)
+-
+-            if(mod0 && mod0[0].length>= number_of_digits){
+-                // The value can be changed. Remove all zeros!
+-                return +((value+epsilon).toString().split(mod0[0])[0])
+-            }
+-        }
+-
+-        if (n0 && n0[0].length >= number_of_digits) {
+-            // New tested values.
+-            const mod = this._extractDecimalPart(value - epsilon),
+-                mod9 = mod.match(/9+$/g)
+-
+-            if(mod9 && mod9[0].length>= number_of_digits){
+-                // The value can be changed. Remove all nines!
+-                return +(value.toString().split(n0[0])[0])
+-            }
+-        }
+-
+-        return value
++        //
++        // const epsilon = 0.00000000000001,
++        //     number_of_digits = 6
++        //
++        // const decimal = this._extractDecimalPart(value)
++        // if(decimal===''){return value}
++        //
++        // const n9 = decimal.match(/9+$/g)
++        // const n0 = decimal.match(/0+$/g)
++        //
++        // if (n9 && n9[0].length >= number_of_digits) {
++        //     // New tested values.
++        //     const mod = this._extractDecimalPart(value + epsilon),
++        //         mod0 = mod.match(/0+$/g)
++        //
++        //     if(mod0 && mod0[0].length>= number_of_digits){
++        //         // The value can be changed. Remove all zeros!
++        //         return +((value+epsilon).toString().split(mod0[0])[0])
++        //     }
++        // }
++        //
++        // if (n0 && n0[0].length >= number_of_digits) {
++        //     // New tested values.
++        //     const mod = this._extractDecimalPart(value - epsilon),
++        //         mod9 = mod.match(/9+$/g)
++        //
++        //     if(mod9 && mod9[0].length>= number_of_digits){
++        //         // The value can be changed. Remove all nines!
++        //         return +(value.toString().split(n0[0])[0])
++        //     }
++        // }
++        //
++        // return value
+     }
+ 
+     private _addToStack(stack:number[], value: number): void {

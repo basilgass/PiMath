@@ -76,6 +76,7 @@ export interface StudyConfig {
     derivative?: boolean;
     domain?: boolean;
     name?: string;
+    variable?: string;
     signs?: boolean;
     variations?: boolean;
 }

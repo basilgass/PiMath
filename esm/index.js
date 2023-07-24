@@ -40,5 +40,5 @@ exports.PiMath = {
         Circle: circle_1.Circle
     }
 };
-window.PiMath = exports.PiMath;
+window.Pi = exports.PiMath;
 //# sourceMappingURL=index.js.map
