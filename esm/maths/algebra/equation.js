@@ -9,7 +9,7 @@ var PARTICULAR_SOLUTION;
 (function (PARTICULAR_SOLUTION) {
     PARTICULAR_SOLUTION["real"] = "\\mathbb{R}";
     PARTICULAR_SOLUTION["varnothing"] = "\\varnothing";
-})(PARTICULAR_SOLUTION = exports.PARTICULAR_SOLUTION || (exports.PARTICULAR_SOLUTION = {}));
+})(PARTICULAR_SOLUTION || (exports.PARTICULAR_SOLUTION = PARTICULAR_SOLUTION = {}));
 class Equation {
     /**
      * Create an Equation using two polynoms.
@@ -225,6 +225,17 @@ class Equation {
         };
         this.test = (values) => {
             return this.left.evaluate(values).isEqual(this.right.evaluate(values));
+        };
+        this.isSameAs = (equ) => {
+            let p1 = equ.clone().moveLeft().left, p2 = this.clone().moveLeft().left;
+            // They are the same.
+            return p1.isEqual(p2) || p1.isOpposedAt(p2);
+        };
+        this.isLinearTo = (equ) => {
+            // Move all left.
+            let p1 = equ.clone().moveLeft().simplify().left, p2 = this.clone().moveLeft().simplify().left;
+            // They are the same.
+            return p1.isEqual(p2) || p1.isOpposedAt(p2);
         };
         this._findSign = (equationString) => {
             let strSign = '';

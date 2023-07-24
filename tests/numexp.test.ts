@@ -1,6 +1,5 @@
 import {expect} from 'chai';
-import {NumExp} from "../src/maths/expressions/numexp";
-import {Numeric} from "../src/maths/numeric";
+import {NumExp} from "../src/maths/numexp";
 
 describe('Numerical expression', () => { // the tests container
     it('RPN for numerical expression', () => {
@@ -54,9 +53,6 @@ describe('Numerical expression', () => { // the tests container
     });
 
     it('should calculate sqrt from exp', function(){
-        // let a = new NumExp('x^(1/3)')
-        // console.log(a.evaluate({x: 8}))
-
         let k = new NumExp('nthrt(x,3)')
         expect(k.evaluate({x: -8})).to.be.equal(-2)
         expect(k.evaluate({x: 27})).to.be.equal(3)

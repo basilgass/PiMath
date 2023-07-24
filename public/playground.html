@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Getting Started</title>
-    <script src="../dev/pi.js"></script>
+    <script src="../dev/pimath.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 
@@ -15,13 +15,13 @@
 <div id="output"></div>
 
 <script>
-    let A = new Pi.Geometry.Point(0,2),
-            B = new Pi.Geometry.Point(2,3),
-            C = new Pi.Geometry.Point(1/2, 4),
-            D = new Pi.Geometry.Point(2, -1/2);
+    let A = new PiMath.Geometry.Point(0,2),
+            B = new PiMath.Geometry.Point(2,3),
+            C = new PiMath.Geometry.Point(1/2, 4),
+            D = new PiMath.Geometry.Point(2, -1/2);
 
-    let L1 = new Pi.Geometry.Line(A, B).simplifyDirection(),
-            L2 = new Pi.Geometry.Line(C, D).simplifyDirection();
+    let L1 = new PiMath.Geometry.Line(A, B).simplifyDirection(),
+            L2 = new PiMath.Geometry.Line(C, D).simplifyDirection();
 
     document.getElementById('output').innerHTML = `<p>\\( ${L1.tex.parametric} \\)</p>`;
     document.getElementById('output').innerHTML += `<p>\\( ${L2.tex.parametric} \\)</p>`;
@@ -35,7 +35,6 @@
         document.getElementById('output').innerHTML += `<p>Elles sont confondues</p>`
     }
 
-    console.log('RENDERING MATH')
     renderMathInElement(document.getElementById('output'), {fleqn: true});
     /*let p;
     p = new Pi.Polynom('3x(6x+9)+6(6x+9)');

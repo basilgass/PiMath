@@ -2,7 +2,7 @@ import {expect} from "chai";
 import {Fraction} from "../../src/maths/coefficients/fraction";
 import {describe} from "mocha";
 import {Random} from "../../src/maths/randomization/random";
-import exp = require("constants");
+
 
 describe('Fraction tests', () => { // the tests container
 
@@ -39,14 +39,16 @@ describe('Fraction tests', () => { // the tests container
 
     it('Should parse a number with lots of decimals', ()=>{
         let A = 3.45,
-            B = 3.333333333333322,
+            B = 3.3333333333333,
             C = 5.314171717171717
 
         let FA = new Fraction(A),
-            FB = new Fraction(B),
-            FC = new Fraction(C)
+            FB = new Fraction(B, 1),
+            FC = new Fraction(C, 2)
 
-        console.log(FA.tex, FB.tex, FC.tex)
+        expect(FA.display).to.be.equal('69/20')
+        expect(FB.display).to.be.equal('10/3')
+        expect(FC.display).to.be.equal('526103/99000')
     })
 })
 
@@ -96,7 +98,7 @@ describe("Fraction static functions", ()=>{
             3
         ]
 
-        console.log(new Fraction().xMultiply(...list))
+        expect(new Fraction().xMultiply(...list).display).to.be.equal("60/12")
     });
 })
 
@@ -106,8 +108,6 @@ describe("Evaluate fraction", () => {
 
         expect(F.isApproximative()).to.be.true
         expect(F.isExact()).to.be.false
-
-        console.log(F.tex, F.value)
 
         let G = new Fraction('1/7')
         expect(G.isApproximative()).to.be.false

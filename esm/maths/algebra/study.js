@@ -6,40 +6,40 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Study = exports.TABLE_OF_SIGNS = exports.FUNCTION_EXTREMA = exports.ASYMPTOTE_POSITION = exports.ASYMPTOTE = exports.ZEROTYPE = void 0;
 const fraction_1 = require("../coefficients/fraction");
-const numexp_1 = require("../expressions/numexp");
+const numexp_1 = require("../numexp");
 var ZEROTYPE;
 (function (ZEROTYPE) {
     ZEROTYPE["ZERO"] = "z";
     ZEROTYPE["DEFENCE"] = "d";
     ZEROTYPE["NOTHING"] = "t";
-})(ZEROTYPE = exports.ZEROTYPE || (exports.ZEROTYPE = {}));
+})(ZEROTYPE || (exports.ZEROTYPE = ZEROTYPE = {}));
 var ASYMPTOTE;
 (function (ASYMPTOTE) {
     ASYMPTOTE["VERTICAL"] = "av";
     ASYMPTOTE["HORIZONTAL"] = "ah";
     ASYMPTOTE["SLOPE"] = "ao";
     ASYMPTOTE["HOLE"] = "hole";
-})(ASYMPTOTE = exports.ASYMPTOTE || (exports.ASYMPTOTE = {}));
+})(ASYMPTOTE || (exports.ASYMPTOTE = ASYMPTOTE = {}));
 var ASYMPTOTE_POSITION;
 (function (ASYMPTOTE_POSITION) {
     ASYMPTOTE_POSITION["LT"] = "LT";
     ASYMPTOTE_POSITION["RT"] = "RT";
     ASYMPTOTE_POSITION["LB"] = "LB";
     ASYMPTOTE_POSITION["RB"] = "RB";
-})(ASYMPTOTE_POSITION = exports.ASYMPTOTE_POSITION || (exports.ASYMPTOTE_POSITION = {}));
+})(ASYMPTOTE_POSITION || (exports.ASYMPTOTE_POSITION = ASYMPTOTE_POSITION = {}));
 var FUNCTION_EXTREMA;
 (function (FUNCTION_EXTREMA) {
     FUNCTION_EXTREMA["MIN"] = "min";
     FUNCTION_EXTREMA["MAX"] = "max";
     FUNCTION_EXTREMA["FLAT"] = "flat";
     FUNCTION_EXTREMA["NOTHING"] = "";
-})(FUNCTION_EXTREMA = exports.FUNCTION_EXTREMA || (exports.FUNCTION_EXTREMA = {}));
+})(FUNCTION_EXTREMA || (exports.FUNCTION_EXTREMA = FUNCTION_EXTREMA = {}));
 var TABLE_OF_SIGNS;
 (function (TABLE_OF_SIGNS) {
     TABLE_OF_SIGNS["SIGNS"] = "signs";
     TABLE_OF_SIGNS["GROWS"] = "grows";
     TABLE_OF_SIGNS["VARIATIONS"] = "variatins";
-})(TABLE_OF_SIGNS = exports.TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = {}));
+})(TABLE_OF_SIGNS || (exports.TABLE_OF_SIGNS = TABLE_OF_SIGNS = {}));
 /**
  * The study class is a "function study" class that will get:
  * fx               : get the function

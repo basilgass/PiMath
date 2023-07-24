@@ -2,7 +2,7 @@ import {describe} from "mocha";
 import {expect} from "chai";
 import {LinearSystem} from "../../src/maths/algebra/linearSystem";
 import {Polynom} from "../../src/maths/algebra/polynom";
-import exp = require("constants");
+
 
 describe('Linear systems tests', () => {
     it('should solve a 2x2 equations', () => {
@@ -22,7 +22,7 @@ describe('Linear systems tests', () => {
         )
 
         LS.solve()
-        console.log(LS.solution)
+        expect(LS.solutionAsDisplay).to.be.equal("(1;0;5)")
     })
 
     it('should solve a 3x3 equations II ', () => {
@@ -33,22 +33,14 @@ describe('Linear systems tests', () => {
         )
 
         LS.solve()
-        console.log(LS.solution)
     })
 
     it('should calculate the reduction', function () {
         let E1 = new Polynom('6x+21y-3z'),
             E2 = new Polynom('-6x+21y-3z')
 
-        // Start from hre
-        console.log('------------')
-        console.log(E1.tex, E2.tex)
-
-        console.log(E1.monoms.map(x => x.tex))
-        console.log(E2.monoms.map(x => x.tex))
         E1.add(E2);
-
-        console.log(E1.tex)
+        expect(E1.display).to.be.equal('42y-6z')
     });
 
     it('should use a reduced linear reducation', function () {

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Getting Started</title>
 
-    <script src="../dist/pi.js"></script>
+    <script src="../dev/pimath.js"></script>
 
     <!-- Alpine -->
     <script src="//unpkg.com/alpinejs" defer></script>
@@ -31,12 +31,10 @@
 
 <body>
 
-<div x-data="examplePolynomExpSimple()">
-    <!--    <template x-for="(item, index) of output" :key="index">-->
-    <!--        <div class="katex-left" x-html="`\\[${item}\\]`"></div>-->
-    <!--    </template>-->
-    <div x-html="d"></div>
-    <div x-html="i"></div>
+<div x-data="dev()">
+        <template x-for="(item, index) of output" :key="index">
+            <div class="katex-left" x-html="`\\[${item}\\]`"></div>
+        </template>
 </div>
 
 <div x-data="triplets">
@@ -52,7 +50,7 @@
         for (let u = 2; u <= n; u++) {
             v = (u % 2 === 0) ? 1 : 2
             while (v < u) {
-                if (Pi.Numeric.gcd(u, v) === 1) {
+                if (PiMath.Numeric.gcd(u, v) === 1) {
                     triplets.push([
                         u, v,
                         u ** 2 - v ** 2,
@@ -85,24 +83,8 @@
     }
 
 
-    // Should be
-    function examplePolynomExpSimple() {
-        const F1 = new Pi.PolynomExpFactor('x^2-4x+7', -1),
-            F2 = new Pi.PolynomExpFactor('8x-16', 1),
-            PP = new Pi.PolynomExpProduct(F2, F1)
-
-        const D = F1.derivative()
-        D.reduce()
-
-        console.log(PP.integrate())
-        return {
-            d: katex.renderToString('\\left(' + F1.tex + '\\right)\'=' + D.tex),
-            i: katex.renderToString('\\displaystyle\\int\\ ' + PP.tex + '\\ \\text{d}x = ' + PP.integrate().tex)
-        }
-    }
-
     function example() {
-        let P = new Pi.Polynom('3x^(2/3)-5x+5/3')
+        let P = new PiMath.Polynom('3x^(2/3)-5x+5/3')
 
         console.log(P.tex)
 
@@ -111,23 +93,11 @@
         }
     }
 
-    // let ne = new Pi.NumExp('5/x*sin(x*x)')
-    // const expr2 = new Pi.NumExp('-3*x^2-5')
-    //
-    // console.log(expr2.evaluate({x: -2}))
-    //
-    //
-    // let ne = new Pi.NumExp('5/x*sqrt(x^2)')
-    //
-    // console.log(ne.rpn)
-    // console.log(ne.evaluate({x: 0}))
-
     function dev() {
         let output = []
 
         ex1()
         // ex1()
-        // console.log(ex1())
         output = [
             '\\text{exercice 1}',
             ...ex1(),
@@ -141,7 +111,6 @@
             '\\text{exercice 4}',
             ...ex4()]
 
-        // console.log(ex1())
         return {
             output
         }
@@ -167,7 +136,7 @@
                 texData.push(`\\text{série ${equ}}`)
                 continue
             }
-            C = new Pi.Geometry.Circle(equ)
+            C = new PiMath.Geometry.Circle(equ)
             if (C.exists) {
                 texData.push(equ + '\\implies ' + C.tex + '\\implies C' + C.center.tex + ',\\ r=' + C.radius.tex)
             } else {
@@ -179,16 +148,16 @@
     }
 
     function ex2() {
-        let Center1 = new Pi.Geometry.Point(4, -2),
-            C1 = new Pi.Geometry.Circle(Center1, 10, true),
+        let Center1 = new PiMath.Geometry.Point(4, -2),
+            C1 = new PiMath.Geometry.Circle(Center1, 10, true),
             droites1 = [
                 'x+3y-8=0',
                 'x-6y+6=0',
                 '2x+y-1=0',
                 '3x-4y-36=0'
             ],
-            Center2 = new Pi.Geometry.Point(8, 6),
-            C2 = new Pi.Geometry.Circle(
+            Center2 = new PiMath.Geometry.Point(8, 6),
+            C2 = new PiMath.Geometry.Circle(
                 Center2,
                 40,
                 true),
@@ -203,7 +172,7 @@
         out.push('\\text{série A}')
         out.push('(\\Gamma_1):' + C1.tex)
         for (let equ of droites1) {
-            d = new Pi.Geometry.Line(equ)
+            d = new PiMath.Geometry.Line(equ)
             pr = C1.relativePosition(d)
 
             if (pr === 0) {
@@ -218,7 +187,7 @@
         out.push('\\text{série B}')
         out.push('(\\Gamma_2):' + C2.tex)
         for (let equ of droites2) {
-            d = new Pi.Geometry.Line(equ)
+            d = new PiMath.Geometry.Line(equ)
             pr = C2.relativePosition(d)
             if (pr === 0) {
                 out.push(d.tex.canonical + '\\implies \\delta = ' + d.distanceTo(C2.center).tex + '\\implies \\text{externe}')
@@ -233,35 +202,35 @@
     }
 
     function ex3() {
-        let C = new Pi.Geometry.Circle(
-            new Pi.Geometry.Point(-14, 18),
-            new Pi.Geometry.Point(-2, 14),
-            new Pi.Geometry.Point(-10, 22)
-        ), T1 = new Pi.Geometry.Triangle(new Pi.Geometry.Point(-14, 18),
-            new Pi.Geometry.Point(-2, 14),
-            new Pi.Geometry.Point(-10, 22))
+        let C = new PiMath.Geometry.Circle(
+            new PiMath.Geometry.Point(-14, 18),
+            new PiMath.Geometry.Point(-2, 14),
+            new PiMath.Geometry.Point(-10, 22)
+        ), T1 = new PiMath.Geometry.Triangle(new PiMath.Geometry.Point(-14, 18),
+            new PiMath.Geometry.Point(-2, 14),
+            new PiMath.Geometry.Point(-10, 22))
 
-        let E = new Pi.Geometry.Circle(
-            new Pi.Geometry.Point(4, 10),
-            new Pi.Geometry.Point(5, 5),
-            new Pi.Geometry.Point(9, 11)
-        ), T2 = new Pi.Geometry.Triangle(
-            new Pi.Geometry.Point(4, 10),
-            new Pi.Geometry.Point(5, 5),
-            new Pi.Geometry.Point(9, 11)
+        let E = new PiMath.Geometry.Circle(
+            new PiMath.Geometry.Point(4, 10),
+            new PiMath.Geometry.Point(5, 5),
+            new PiMath.Geometry.Point(9, 11)
+        ), T2 = new PiMath.Geometry.Triangle(
+            new PiMath.Geometry.Point(4, 10),
+            new PiMath.Geometry.Point(5, 5),
+            new PiMath.Geometry.Point(9, 11)
         )
 
         return [
             '\\text{2 milieux, 2 normales, 2 médiatrices, 2 intersection, 1 rayon, 1 équation}',
             '\\text{série A}',
-            (new Pi.Geometry.Point().middleOf(T2.A, T2.B)).tex + '\\quad (m_{AB}):\\ ' + T2.remarquables.mediators.AB.tex.canonical,
-            (new Pi.Geometry.Point().middleOf(T2.A, T2.C)).tex + '\\quad (m_{AC}):\\ ' + T2.remarquables.mediators.AC.tex.canonical,
-            (new Pi.Geometry.Point().middleOf(T2.C, T2.B)).tex + '\\quad (m_{BC}):\\ ' + T2.remarquables.mediators.BC.tex.canonical,
+            (new PiMath.Geometry.Point().middleOf(T2.A, T2.B)).tex + '\\quad (m_{AB}):\\ ' + T2.remarquables.mediators.AB.tex.canonical,
+            (new PiMath.Geometry.Point().middleOf(T2.A, T2.C)).tex + '\\quad (m_{AC}):\\ ' + T2.remarquables.mediators.AC.tex.canonical,
+            (new PiMath.Geometry.Point().middleOf(T2.C, T2.B)).tex + '\\quad (m_{BC}):\\ ' + T2.remarquables.mediators.BC.tex.canonical,
             E.tex,
             '\\text{série B}',
-            (new Pi.Geometry.Point().middleOf(T1.A, T1.B)).tex + '\\quad (m_{AB}):\\ ' + T1.remarquables.mediators.AB.tex.canonical,
-            (new Pi.Geometry.Point().middleOf(T1.A, T1.C)).tex + '\\quad (m_{AC}):\\ ' + T1.remarquables.mediators.AC.tex.canonical,
-            (new Pi.Geometry.Point().middleOf(T1.C, T1.B)).tex + '\\quad (m_{BC}):\\ ' + T1.remarquables.mediators.BC.tex.canonical,
+            (new PiMath.Geometry.Point().middleOf(T1.A, T1.B)).tex + '\\quad (m_{AB}):\\ ' + T1.remarquables.mediators.AB.tex.canonical,
+            (new PiMath.Geometry.Point().middleOf(T1.A, T1.C)).tex + '\\quad (m_{AC}):\\ ' + T1.remarquables.mediators.AC.tex.canonical,
+            (new PiMath.Geometry.Point().middleOf(T1.C, T1.B)).tex + '\\quad (m_{BC}):\\ ' + T1.remarquables.mediators.BC.tex.canonical,
             C.tex,
 
         ]
@@ -269,28 +238,28 @@
 
     function ex4() {
         // A
-        let A = new Pi.Geometry.Point(-6, -9),
-            C = new Pi.Geometry.Circle('(x+3)^2+(y+5)^2=25'),
-            Oy = C.cartesian.clone().replaceBy('x', new Pi.Polynom().zero()),
-            Ox = C.cartesian.clone().replaceBy('y', new Pi.Polynom().zero()),
-            t = new Pi.Geometry.Line(
+        let A = new PiMath.Geometry.Point(-6, -9),
+            C = new PiMath.Geometry.Circle('(x+3)^2+(y+5)^2=25'),
+            Oy = C.cartesian.clone().replaceBy('x', new PiMath.Polynom().zero()),
+            Ox = C.cartesian.clone().replaceBy('y', new PiMath.Polynom().zero()),
+            t = new PiMath.Geometry.Line(
                 A,
-                new Pi.Geometry.Vector(A, C.center),
-                Pi.Geometry.Line.PERPENDICULAR
+                new PiMath.Geometry.Vector(A, C.center),
+                PiMath.Geometry.Line.PERPENDICULAR
             )
 
         Oy.solve()
         Ox.solve()
 
         // B
-        let A1 = new Pi.Geometry.Point(-4, -14),
-            C1 = new Pi.Geometry.Circle('(x-10)^2+(y+6)^2=100'),
-            Oy1 = C1.cartesian.clone().replaceBy('x', new Pi.Polynom().zero()),
-            Ox1 = C1.cartesian.clone().replaceBy('y', new Pi.Polynom().zero()),
-            t1 = new Pi.Geometry.Line(
+        let A1 = new PiMath.Geometry.Point(-4, -14),
+            C1 = new PiMath.Geometry.Circle('(x-10)^2+(y+6)^2=100'),
+            Oy1 = C1.cartesian.clone().replaceBy('x', new PiMath.Polynom().zero()),
+            Ox1 = C1.cartesian.clone().replaceBy('y', new PiMath.Polynom().zero()),
+            t1 = new PiMath.Geometry.Line(
                 A1,
-                new Pi.Geometry.Vector(A1, C1.center),
-                Pi.Geometry.Line.PERPENDICULAR
+                new PiMath.Geometry.Vector(A1, C1.center),
+                PiMath.Geometry.Line.PERPENDICULAR
             )
 
         Oy1.solve()

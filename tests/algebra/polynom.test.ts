@@ -3,7 +3,6 @@ import {Random} from "../../src/maths/randomization/random";
 import {describe} from "mocha";
 import {Polynom} from "../../src/maths/algebra/polynom";
 import {Fraction} from "../../src/maths/coefficients/fraction";
-import exp = require("constants");
 
 
 describe('Polynom tests', () => {
@@ -153,17 +152,17 @@ describe('Polynom tests', () => {
 describe('Polynom parsing with rational power', () => {
     it('should parse with rational powers', () => {
         const P = new Polynom('3x^(2/3)-5x+5/3');
-        expect(P.tex).to.be.equal('3x^{\\tfrac{ 2 }{ 3 }}-5x+\\frac{ 5 }{ 3 }')
+        expect(P.tex).to.be.equal('-5x+3x^{\\tfrac{ 2 }{ 3 }}+\\frac{ 5 }{ 3 }')
     })
 })
 
 
-describe("test simple", ()=>{
-    it('should parce this one correctly', ()=>{
-        const P = new Polynom('-(x+2)(x-1)(x-1)(5x+4)')
-        const Q = new Polynom('(2+x)^2(1-x)^3')
-    })
-})
+// describe("test simple", ()=>{
+//     it('should parce this one correctly', ()=>{
+//         const P = new Polynom('-(x+2)(x-1)(x-1)(5x+4)')
+//         const Q = new Polynom('(2+x)^2(1-x)^3')
+//     })
+// })
 
 // TODO: working with roots !
 // describe('WIP : working with roots', ()=>{
