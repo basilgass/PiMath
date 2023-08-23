@@ -97,7 +97,7 @@ export class NumExp {
         stack.push(this._numberCorrection(value))
     }
 
-    evaluate(values: { [Key: string]: number }): number {
+    evaluate(values?: { [Key: string]: number }): number {
         const stack: number[] = []
 
         if(this._rpn===null){

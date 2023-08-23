@@ -230,21 +230,21 @@ class Shutingyard {
             if (crtToken.match(/[a-zA-Z]/g)) {
                 // Current element is a letter.
                 // if the next element is a letter, a number or an opening parentheses, add the multiplication sign.
-                if (nextToken.match(/[a-zA-Z\d(]/)) {
+                if (nextToken?.match(/[a-zA-Z\d(]/)) {
                     normalizedExpr += '*';
                 }
             }
             else if (crtToken.match(/\d/)) {
                 // Current element is a number.
                 // if the next element is a letter or a parentheses, add the multiplication sign.
-                if (nextToken.match(/[a-zA-Z(]/)) {
+                if (nextToken?.match(/[a-zA-Z(]/)) {
                     normalizedExpr += '*';
                 }
             }
             else if (crtToken === ')') {
                 // Current element is a closing parentheses.
                 // if the next element is a letter, a number or an opening parentheses, add the multiplication sign
-                if (nextToken.match(/[a-zA-Z\d(]/)) {
+                if (nextToken?.match(/[a-zA-Z\d(]/)) {
                     normalizedExpr += '*';
                 }
             }
@@ -252,7 +252,7 @@ class Shutingyard {
             i++;
         }
         // add the last token
-        return normalizedExpr + nextToken;
+        return normalizedExpr + (nextToken === undefined ? '' : nextToken);
     }
     // /**
     //  * Sanitize an expression by adding missing common operation (multiplication between parentheseses)

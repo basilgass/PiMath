@@ -13,7 +13,7 @@ export declare class NumExp {
     private _extractDecimalPart;
     private _numberCorrection;
     private _addToStack;
-    evaluate(values: {
+    evaluate(values?: {
         [Key: string]: number;
     }): number;
 }

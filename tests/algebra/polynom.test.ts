@@ -139,6 +139,14 @@ describe('Polynom tests', () => {
         expect(Q.isFactorized('4(2x+5)(x-6)')).to.be.true
         expect(Q.isFactorized('(8x+20)(x-6)')).to.be.false
         expect(Q.isFactorized('(8x+20)(x-6)', true)).to.be.true
+    });
+
+    it('should check if a polynom is developed', function () {
+        let P = new Polynom('x(x+1)')
+
+        expect(P.isDeveloped('x^(2)+x')).true
+        expect(P.isDeveloped('x^2+x')).true
+        expect(P.isDeveloped('x(x+1)')).false
 
     });
 

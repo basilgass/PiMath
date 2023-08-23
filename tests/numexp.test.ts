@@ -65,12 +65,12 @@ describe('Numerical expression', () => { // the tests container
     it('should work with constant', function () {
 
         let k = new NumExp('2pi*x')
-        expect(k.evaluate({x: 1})).to.be.equal(6.283186)
+        expect(+k.evaluate({x: 1}).toFixed(6)).to.be.equal(6.283185)
     });
 
     it('should work with constant but without variables', function () {
 
         let k = new NumExp('2pi')
-        expect(k.evaluate()).to.be.equal(6.283186)
+        expect(+k.evaluate().toFixed(6)).to.be.equal(6.283185)
     });
 });

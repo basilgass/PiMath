@@ -2702,8 +2702,10 @@ class Polynom {
         };
         this.isDeveloped = (polynomString) => {
             let P;
+            // Start by removing the parenthis after a "power"
+            let pString = polynomString.replaceAll(/\^\(([-0-9/]+)\)/g, '$1');
             // There is at least one parenthese - it is not developed.
-            if (polynomString.split('(').length + polynomString.split(')').length > 0) {
+            if (pString.includes('(') || pString.includes(')')) {
                 return false;
             }
             // Try to build the polynom
@@ -2719,13 +2721,16 @@ class Polynom {
                 return false;
             }
             // Check that everything is completely developed. Actually, there are no parentheses... so it is fully developed
-            // maybe it wasn't reduced and not ordered...
-            // compare polynom string.
-            // normalize the string
-            let polynomStringNormalized = polynomString.replaceAll('[*\s]', '');
-            // Determine if it's the exact same string.
-            // TODO: Maybe it's enough to just make this test !
-            return polynomStringNormalized === P.reduce().reorder().display;
+            return true;
+            // // maybe it wasn't reduced and not ordered...
+            // // compare polynom string.
+            //
+            // // normalize the string
+            // let polynomStringNormalized = polynomString.replaceAll('[*\s]', '')
+            //
+            // // Determine if it's the exact same string.
+            // // TODO: Maybe it's enough to just make this test !a
+            // return polynomStringNormalized === P.reduce().reorder().display
         };
         // -------------------------------------
         this.reduce = () => {
@@ -7595,21 +7600,21 @@ class Shutingyard {
             if (crtToken.match(/[a-zA-Z]/g)) {
                 // Current element is a letter.
                 // if the next element is a letter, a number or an opening parentheses, add the multiplication sign.
-                if (nextToken.match(/[a-zA-Z\d(]/)) {
+                if (nextToken?.match(/[a-zA-Z\d(]/)) {
                     normalizedExpr += '*';
                 }
             }
             else if (crtToken.match(/\d/)) {
                 // Current element is a number.
                 // if the next element is a letter or a parentheses, add the multiplication sign.
-                if (nextToken.match(/[a-zA-Z(]/)) {
+                if (nextToken?.match(/[a-zA-Z(]/)) {
                     normalizedExpr += '*';
                 }
             }
             else if (crtToken === ')') {
                 // Current element is a closing parentheses.
                 // if the next element is a letter, a number or an opening parentheses, add the multiplication sign
-                if (nextToken.match(/[a-zA-Z\d(]/)) {
+                if (nextToken?.match(/[a-zA-Z\d(]/)) {
                     normalizedExpr += '*';
                 }
             }
@@ -7617,7 +7622,7 @@ class Shutingyard {
             i++;
         }
         // add the last token
-        return normalizedExpr + nextToken;
+        return normalizedExpr + (nextToken === undefined ? '' : nextToken);
     }
     // /**
     //  * Sanitize an expression by adding missing common operation (multiplication between parentheseses)

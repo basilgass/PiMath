@@ -50,7 +50,7 @@ exports.PiMath = {
         Circle: circle_1.Circle
     }
 };
-window.PiMath = exports.PiMath;
+window.Pi = exports.PiMath;
 
 
 /***/ }),
@@ -2719,8 +2719,10 @@ class Polynom {
         };
         this.isDeveloped = (polynomString) => {
             let P;
+            // Start by removing the parenthis after a "power"
+            let pString = polynomString.replaceAll(/\^\(([-0-9/]+)\)/g, '$1');
             // There is at least one parenthese - it is not developed.
-            if (polynomString.split('(').length + polynomString.split(')').length > 0) {
+            if (pString.includes('(') || pString.includes(')')) {
                 return false;
             }
             // Try to build the polynom
@@ -2736,13 +2738,16 @@ class Polynom {
                 return false;
             }
             // Check that everything is completely developed. Actually, there are no parentheses... so it is fully developed
-            // maybe it wasn't reduced and not ordered...
-            // compare polynom string.
-            // normalize the string
-            let polynomStringNormalized = polynomString.replaceAll('[*\s]', '');
-            // Determine if it's the exact same string.
-            // TODO: Maybe it's enough to just make this test !
-            return polynomStringNormalized === P.reduce().reorder().display;
+            return true;
+            // // maybe it wasn't reduced and not ordered...
+            // // compare polynom string.
+            //
+            // // normalize the string
+            // let polynomStringNormalized = polynomString.replaceAll('[*\s]', '')
+            //
+            // // Determine if it's the exact same string.
+            // // TODO: Maybe it's enough to just make this test !a
+            // return polynomStringNormalized === P.reduce().reorder().display
         };
         // -------------------------------------
         this.reduce = () => {
@@ -3960,13 +3965,13 @@ class Study {
             return code;
         };
         this._makeTexFromTableOfSigns = (tos) => {
-            let factors = tos.factors.map(x => `\\(${x.tex}\\)/1`), factorsFx = `\\(${this._name}(x)\\)/1.2`, zeroes = tos.zeroes;
+            let factors = tos.factors.map(x => `\\(${x.tex}\\)/1`), factorsFx = `\\(${this._config.name}(${this._config.variable})\\)/1.2`, zeroes = tos.zeroes;
             // Add the last lines "label"
             if (tos.type === TABLE_OF_SIGNS.GROWS) {
-                factorsFx = `\\(${this._name}'(x)\\)/1.2,\\(f(x)\\)/2`;
+                factorsFx = `\\(${this._config.name}'(${this._config.variable})\\)/1.2,\\(f(x${this._config.variable})\\)/2`;
             }
             else if (tos.type === TABLE_OF_SIGNS.VARIATIONS) {
-                factorsFx = `\\(${this._name}''(x)\\)/1.2,\\(f(x)\\)/2`;
+                factorsFx = `\\(${this._config.name}''(${this._config.variable})\\)/1.2,\\(f(${this._config.variable})\\)/2`;
             }
             // Create the tikzPicture header
             let tex = `\\begin{tikzpicture}
@@ -3991,6 +3996,7 @@ class Study {
         this.fx = fx;
         this._config = {
             name: 'f',
+            variable: 'x',
             domain: true,
             asymptotes: true,
             signs: true,
@@ -4001,9 +4007,10 @@ class Study {
             if (typeof config === 'string') {
                 const d = config.split(',');
                 this._config = {};
-                let n = d.filter(x => x.includes('(x)'));
+                let n = d.filter(x => x.includes('(') && x.includes(')'));
                 if (n.length === 1) {
-                    this._config.name = n[0].split('(x)')[0];
+                    this._config.name = n[0].split('(')[0];
+                    this._config.variable = n[0].split('(')[1].split(')')[0];
                 }
                 this._config.domain = d.includes('d');
                 this._config.asymptotes = d.includes('a');
@@ -4015,15 +4022,14 @@ class Study {
                 this._config = config;
             }
         }
-        this._name = this._config?.name ?? 'f';
         this.makeStudy();
         return this;
     }
     get name() {
-        return this._name;
+        return this._config.name;
     }
     set name(value) {
-        this._name = value;
+        this._config.name = value;
     }
     get config() {
         return this._config;
@@ -7677,21 +7683,21 @@ class Shutingyard {
             if (crtToken.match(/[a-zA-Z]/g)) {
                 // Current element is a letter.
                 // if the next element is a letter, a number or an opening parentheses, add the multiplication sign.
-                if (nextToken.match(/[a-zA-Z\d(]/)) {
+                if (nextToken?.match(/[a-zA-Z\d(]/)) {
                     normalizedExpr += '*';
                 }
             }
             else if (crtToken.match(/\d/)) {
                 // Current element is a number.
                 // if the next element is a letter or a parentheses, add the multiplication sign.
-                if (nextToken.match(/[a-zA-Z(]/)) {
+                if (nextToken?.match(/[a-zA-Z(]/)) {
                     normalizedExpr += '*';
                 }
             }
             else if (crtToken === ')') {
                 // Current element is a closing parentheses.
                 // if the next element is a letter, a number or an opening parentheses, add the multiplication sign
-                if (nextToken.match(/[a-zA-Z\d(]/)) {
+                if (nextToken?.match(/[a-zA-Z\d(]/)) {
                     normalizedExpr += '*';
                 }
             }
@@ -7699,7 +7705,7 @@ class Shutingyard {
             i++;
         }
         // add the last token
-        return normalizedExpr + nextToken;
+        return normalizedExpr + (nextToken === undefined ? '' : nextToken);
     }
     // /**
     //  * Sanitize an expression by adding missing common operation (multiplication between parentheseses)

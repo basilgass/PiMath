@@ -8,6 +8,7 @@ import {Numeric} from '../numeric';
 import {Fraction} from "../coefficients/fraction";
 import {Equation, ISolution} from "./equation";
 import {Random} from "../randomization/random";
+import {loadHighlighter} from "typedoc/dist/lib/utils/highlighter";
 
 export type PolynomParsingType = string | Polynom | number | Fraction | Monom
 
@@ -747,8 +748,11 @@ export class Polynom {
     isDeveloped = (polynomString: string): Boolean => {
         let P: Polynom;
 
+        // Start by removing the parenthis after a "power"
+        let pString = polynomString.replaceAll(/\^\(([-0-9/]+)\)/g, '$1')
+
         // There is at least one parenthese - it is not developed.
-        if (polynomString.split('(').length + polynomString.split(')').length > 0) {
+        if (pString.includes('(') || pString.includes(')')) {
             return false
         }
 
@@ -766,16 +770,17 @@ export class Polynom {
         }
 
         // Check that everything is completely developed. Actually, there are no parentheses... so it is fully developed
+        return true
 
-        // maybe it wasn't reduced and not ordered...
-        // compare polynom string.
-
-        // normalize the string
-        let polynomStringNormalized = polynomString.replaceAll('[*\s]', '')
-
-        // Determine if it's the exact same string.
-        // TODO: Maybe it's enough to just make this test !
-        return polynomStringNormalized === P.reduce().reorder().display
+        // // maybe it wasn't reduced and not ordered...
+        // // compare polynom string.
+        //
+        // // normalize the string
+        // let polynomStringNormalized = polynomString.replaceAll('[*\s]', '')
+        //
+        // // Determine if it's the exact same string.
+        // // TODO: Maybe it's enough to just make this test !a
+        // return polynomStringNormalized === P.reduce().reorder().display
     }
 
     // -------------------------------------

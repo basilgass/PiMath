@@ -477,8 +477,10 @@ class Polynom {
         };
         this.isDeveloped = (polynomString) => {
             let P;
+            // Start by removing the parenthis after a "power"
+            let pString = polynomString.replaceAll(/\^\(([-0-9/]+)\)/g, '$1');
             // There is at least one parenthese - it is not developed.
-            if (polynomString.split('(').length + polynomString.split(')').length > 0) {
+            if (pString.includes('(') || pString.includes(')')) {
                 return false;
             }
             // Try to build the polynom
@@ -494,13 +496,16 @@ class Polynom {
                 return false;
             }
             // Check that everything is completely developed. Actually, there are no parentheses... so it is fully developed
-            // maybe it wasn't reduced and not ordered...
-            // compare polynom string.
-            // normalize the string
-            let polynomStringNormalized = polynomString.replaceAll('[*\s]', '');
-            // Determine if it's the exact same string.
-            // TODO: Maybe it's enough to just make this test !
-            return polynomStringNormalized === P.reduce().reorder().display;
+            return true;
+            // // maybe it wasn't reduced and not ordered...
+            // // compare polynom string.
+            //
+            // // normalize the string
+            // let polynomStringNormalized = polynomString.replaceAll('[*\s]', '')
+            //
+            // // Determine if it's the exact same string.
+            // // TODO: Maybe it's enough to just make this test !a
+            // return polynomStringNormalized === P.reduce().reorder().display
         };
         // -------------------------------------
         this.reduce = () => {
