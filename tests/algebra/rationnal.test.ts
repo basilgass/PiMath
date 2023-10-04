@@ -56,4 +56,9 @@ describe('Rational tests', () => {
 
         expect(P.plotFunction).to.be.equal("(245*x-490)/(6*x^(2)-19*x+15)")
     });
+
+    it('should reduce withouth creating fraction', function () {
+        let P = new Rational('4(x+1)', '(x+1)(x-3)')
+        expect(P.reduce().display).to.be.equal('(4)/(x-3)')
+    });
 })

@@ -23,6 +23,7 @@ export declare class Rational {
     get numerator(): Polynom;
     get denominator(): Polynom;
     get tex(): string;
+    get display(): string;
     get texFactors(): string;
     get plotFunction(): string;
     clone: () => Rational;

@@ -17,18 +17,18 @@
   "devDependencies": {
     "@types/chai": "*",
     "@types/mocha": "*",
-    "@types/node": "^20.4.4",
-    "@typescript-eslint/eslint-plugin": "^6.1.0",
-    "@typescript-eslint/parser": "^6.1.0",
+    "@types/node": "^20.8.2",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
     "chai": "*",
     "mocha": "*",
-    "eslint": "^8.45.0",
+    "eslint": "^8.50.0",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
-    "typedoc": "^0.24.8",
-    "typescript": "^5.1.6",
+    "typedoc": "^0.25.1",
+    "typescript": "^5.2.2",
     "webpack": "^5.88.2",
-    "webpack-bundle-analyzer": "^4.9.0",
+    "webpack-bundle-analyzer": "^4.9.1",
     "webpack-cli": "^5.1.4"
   }
 }

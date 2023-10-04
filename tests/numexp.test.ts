@@ -73,4 +73,9 @@ describe('Numerical expression', () => { // the tests container
         let k = new NumExp('2pi')
         expect(+k.evaluate().toFixed(6)).to.be.equal(6.283185)
     });
+
+    it('should parse with ln or log', function () {
+        let k = new NumExp('ln(3)')
+        expect(+k.evaluate().toFixed(6)).to.be.equal(1.098612)
+    });
 });

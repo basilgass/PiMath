@@ -26,6 +26,12 @@ export interface remarquableLines {
         'C': Line;
         'intersection': Point;
     };
+    externalBisectors: {
+        'A': Line;
+        'B': Line;
+        'C': Line;
+        'intersection': Point;
+    };
 }
 export declare class Triangle {
     private _A;

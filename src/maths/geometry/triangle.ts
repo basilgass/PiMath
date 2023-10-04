@@ -28,6 +28,12 @@ export interface remarquableLines {
         'B': Line,
         'C': Line,
         'intersection': Point
+    },
+    externalBisectors: {
+        'A': Line,
+        'B': Line,
+        'C': Line,
+        'intersection': Point
     }
 }
 
@@ -281,6 +287,10 @@ export class Triangle {
     }
 
     private _calculateRemarquableLines = (): remarquableLines => {
+        const  bA= this._calculateBisectors('A'),
+            bB= this._calculateBisectors('B'),
+            bC= this._calculateBisectors('C')
+
         let remarquables: remarquableLines = {
             'medians': {
                 'A': new Line(this._A, this._middles.BC),
@@ -301,9 +311,15 @@ export class Triangle {
                 'intersection': null
             },
             'bisectors': {
-                'A': this._calculateBisectors('A'),
-                'B': this._calculateBisectors('B'),
-                'C': this._calculateBisectors('C'),
+                'A': bA.internal,
+                'B': bB.internal,
+                'C': bB.internal,
+                'intersection': null
+            },
+            externalBisectors: {
+                'A': bA.external,
+                'B': bB.external,
+                'C': bC.external,
                 'intersection': null
             }
         }
@@ -318,7 +334,7 @@ export class Triangle {
         return remarquables;
     }
 
-    private _calculateBisectors = (pt: string): Line => {
+    private _calculateBisectors = (pt: string): { internal: Line, external: Line } => {
         let tlines = this.lines, d1, d2;
 
         if(pt==='A'){
@@ -337,16 +353,16 @@ export class Triangle {
 
         // Must determine which bisectors is in the triangle
         if(pt==='A'){
-            return b1.hitSegment(this.B, this.C)?b1:b2;
+            return b1.hitSegment(this.B, this.C)?{internal:b1, external: b2}:{internal:b2, external: b1};
         }
         if(pt==='B'){
-            return b1.hitSegment(this.A, this.C)?b1:b2;
+            return b1.hitSegment(this.A, this.C)?{internal:b1, external: b2}:{internal:b2, external: b1};
         }
         if(pt==='C'){
-            return b1.hitSegment(this.B, this.A)?b1:b2;
+            return b1.hitSegment(this.B, this.A)?{internal:b1, external: b2}:{internal:b2, external: b1};
         }
 
         // Default returns the first bisector
-        return b1;
+        return {internal:b1, external: b2}
     }
 }

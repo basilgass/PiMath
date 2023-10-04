@@ -3581,7 +3581,15 @@ class Rational {
         this.reduce = () => {
             this._numerator.factorize();
             for (let f of this._numerator.factors) {
-                this.simplify(f);
+                if (f.degree().isZero()) {
+                    // Do the simplify only if the factor can divide the denominator
+                    if (this._denominator.commonMonom().coefficient.clone().divide(f.monomByDegree().coefficient).isNatural()) {
+                        this.simplify(f);
+                    }
+                }
+                else {
+                    this.simplify(f);
+                }
             }
             return this;
         };
@@ -3686,6 +3694,9 @@ class Rational {
     }
     get tex() {
         return `\\frac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
+    }
+    get display() {
+        return `(${this._numerator.display})/(${this._denominator.display})`;
     }
     get texFactors() {
         return `\\frac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
@@ -6140,6 +6151,7 @@ class Triangle {
             return new vector_1.Vector(this.getPointByName(ptName1), this.getPointByName(ptName2));
         };
         this._calculateRemarquableLines = () => {
+            const bA = this._calculateBisectors('A'), bB = this._calculateBisectors('B'), bC = this._calculateBisectors('C');
             let remarquables = {
                 'medians': {
                     'A': new line_1.Line(this._A, this._middles.BC),
@@ -6160,9 +6172,15 @@ class Triangle {
                     'intersection': null
                 },
                 'bisectors': {
-                    'A': this._calculateBisectors('A'),
-                    'B': this._calculateBisectors('B'),
-                    'C': this._calculateBisectors('C'),
+                    'A': bA.internal,
+                    'B': bB.internal,
+                    'C': bB.internal,
+                    'intersection': null
+                },
+                externalBisectors: {
+                    'A': bA.external,
+                    'B': bB.external,
+                    'C': bC.external,
                     'intersection': null
                 }
             };
@@ -6191,16 +6209,16 @@ class Triangle {
             let b1 = new line_1.Line(new equation_1.Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm)).reorder(true).simplify()), b2 = new line_1.Line(new equation_1.Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm).opposed()).reorder(true).simplify());
             // Must determine which bisectors is in the triangle
             if (pt === 'A') {
-                return b1.hitSegment(this.B, this.C) ? b1 : b2;
+                return b1.hitSegment(this.B, this.C) ? { internal: b1, external: b2 } : { internal: b2, external: b1 };
             }
             if (pt === 'B') {
-                return b1.hitSegment(this.A, this.C) ? b1 : b2;
+                return b1.hitSegment(this.A, this.C) ? { internal: b1, external: b2 } : { internal: b2, external: b1 };
             }
             if (pt === 'C') {
-                return b1.hitSegment(this.B, this.A) ? b1 : b2;
+                return b1.hitSegment(this.B, this.A) ? { internal: b1, external: b2 } : { internal: b2, external: b1 };
             }
             // Default returns the first bisector
-            return b1;
+            return { internal: b1, external: b2 };
         };
         if (values.length > 0) {
             this.parse(...values);

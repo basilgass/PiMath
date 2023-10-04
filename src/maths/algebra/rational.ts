@@ -54,6 +54,10 @@ export class Rational {
         return `\\frac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
     }
 
+    get display(): string {
+        return `(${this._numerator.display})/(${this._denominator.display})`;
+    }
+
     get texFactors(): string {
         return `\\frac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`
     }
@@ -126,7 +130,15 @@ export class Rational {
     reduce = (): Rational => {
         this._numerator.factorize();
         for (let f of this._numerator.factors) {
-            this.simplify(f);
+
+            if(f.degree().isZero()){
+                // Do the simplify only if the factor can divide the denominator
+                if(this._denominator.commonMonom().coefficient.clone().divide(f.monomByDegree().coefficient).isNatural()){
+                    this.simplify(f);
+                }
+            }else {
+                this.simplify(f);
+            }
         }
 
         return this;
