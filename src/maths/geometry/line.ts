@@ -9,7 +9,6 @@ import {Fraction} from "../coefficients/fraction";
 import {Equation} from "../algebra/equation";
 import {Polynom} from "../algebra/polynom";
 import {Random} from "../randomization/random";
-import {LinearSystem} from "../algebra/linearSystem";
 import {Monom} from "../algebra/monom";
 
 export enum LinePropriety {
@@ -25,7 +24,6 @@ export class Line {
     static PARALLEL = LinePropriety.Parallel
     private _referencePropriety: LinePropriety
     private _referenceLine: Line
-    private _reduceBeforeDisplay: boolean
 
     constructor(...values: unknown[]) {
 
@@ -37,6 +35,16 @@ export class Line {
         }
 
         return this;
+    }
+
+    private _reduceBeforeDisplay: boolean
+
+    get reduceBeforeDisplay(): boolean {
+        return this._reduceBeforeDisplay;
+    }
+
+    set reduceBeforeDisplay(value: boolean) {
+        this._reduceBeforeDisplay = value;
     }
 
     // ax + by + c = 0
@@ -60,14 +68,14 @@ export class Line {
         this._b = value;
     }
 
+    // ------------------------------------------
+    // Getter and setter
+
     private _c: Fraction;
 
     get c(): Fraction {
         return this._c;
     }
-
-    // ------------------------------------------
-    // Getter and setter
 
     set c(value: Fraction) {
         this._c = value;
@@ -108,19 +116,19 @@ export class Line {
     // ------------------------------------------
     get equation(): Equation {
         let equ = new Equation(new Polynom().parse('xy', this._a, this._b, this._c), new Polynom('0'))
-        if(this._reduceBeforeDisplay) {
+        if (this._reduceBeforeDisplay) {
             return equ.simplify();
-        }else{
+        } else {
             return equ
         }
     }
 
     get system(): { x: Equation, y: Equation } {
         let e1 = new Equation(
-            new Polynom('x'),
-            new Polynom(this._OA.x)
-                .add(new Monom('k').multiplyByNumber(this._d.x))
-        ),
+                new Polynom('x'),
+                new Polynom(this._OA.x)
+                    .add(new Monom('k').multiplyByNumber(this._d.x))
+            ),
             e2 = new Equation(
                 new Polynom('y'),
                 new Polynom(this._OA.y)
@@ -165,14 +173,6 @@ export class Line {
         }
     }
 
-    get reduceBeforeDisplay(): boolean {
-        return this._reduceBeforeDisplay;
-    }
-
-    set reduceBeforeDisplay(value: boolean) {
-        this._reduceBeforeDisplay = value;
-    }
-
     get display(): { canonical: string, mxh: string, parametric: string } {
         // canonical    =>  ax + by + c = 0
         // mxh          =>  y = -a/b x - c/b
@@ -200,11 +200,11 @@ export class Line {
     }
 
     get slope(): Fraction {
-        return this._a.clone().opposed().divide(this._b);
+        return this._a.clone().opposite().divide(this._b);
     }
 
     get height(): Fraction {
-        return this._c.clone().opposed().divide(this._b);
+        return this._c.clone().opposite().divide(this._b);
     }
 
     randomPoint = (k?: number): Point => {
@@ -336,7 +336,7 @@ export class Line {
         this._b = new Fraction(b);
         this._c = new Fraction(c);
 
-        this._d = new Vector(this._b.clone(), this._a.clone().opposed());
+        this._d = new Vector(this._b.clone(), this._a.clone().opposite());
         this._OA = new Point(new Fraction().zero(), this._c.clone());
         this._n = this._d.clone().normal();
 
@@ -356,8 +356,8 @@ export class Line {
         // dy * x - dx * y - (px * dy - py * dx) = 0
         this.parseByCoefficient(
             d.y,
-            d.x.clone().opposed(),
-            P.x.clone().multiply(d.y).subtract(P.y.clone().multiply(d.x)).opposed()
+            d.x.clone().opposite(),
+            P.x.clone().multiply(d.y).subtract(P.y.clone().multiply(d.x)).opposite()
         )
 
         // Choose the current values as point and direction vector instead of the automatic version.
@@ -374,7 +374,7 @@ export class Line {
             n.x,
             n.y,
             P.x.clone().multiply(n.x)
-                .add(P.y.clone().multiply(n.y)).opposed()
+                .add(P.y.clone().multiply(n.y)).opposite()
         )
     }
 
@@ -409,7 +409,7 @@ export class Line {
     // ------------------------------------------
     // Mathematical operations
     // ------------------------------------------
-    isOnLine = (pt: Point): Boolean => {
+    isOnLine = (pt: Point): boolean => {
         return this._a.clone()
             .multiply(pt.x)
             .add(
@@ -420,17 +420,17 @@ export class Line {
             .isZero()
     }
 
-    isParallelTo = (line: Line): Boolean => {
+    isParallelTo = (line: Line): boolean => {
         // Do they have the isSame direction ?
-        return this.slope.isEqual(line.slope) && this.height.isNotEqual(line.height);
+        return this.slope.isEqualTo(line.slope) && !this.height.isEqualTo(line.height);
     }
-    isSameAs = (line: Line): Boolean => {
-        return this.slope.isEqual(line.slope) && this.height.isEqual(line.height);
+    isSameAs = (line: Line): boolean => {
+        return this.slope.isEqualTo(line.slope) && this.height.isEqualTo(line.height);
     }
-    isPerpendicularTo = (line: Line): Boolean => {
+    isPerpendicularTo = (line: Line): boolean => {
         return this.d.isNormalTo(line.d)
     }
-    isVertical = (): Boolean => {
+    isVertical = (): boolean => {
         return this.slope.isInfinity()
     }
     simplify = (): Line => {
@@ -580,7 +580,7 @@ export class Line {
         if (!this._a.isZero()) {
             if (this._a.isOne()) {
                 canonical = 'x'
-            } else if (this._a.clone().opposed().isOne()) {
+            } else if (this._a.clone().opposite().isOne()) {
                 canonical = '-x'
             } else {
                 canonical = this._a.value.toFixed(decimals) + 'x'

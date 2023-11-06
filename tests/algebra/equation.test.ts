@@ -30,15 +30,17 @@ describe('Equations tests', () => {
         let E6 = new Equation('5x^2+7x-31', 0)
         E6.solve()
         expect(E6.solutions.map(x=>x.tex)).to.have.all.members([
-            '\\frac{ -7 - \\sqrt{669} }{ 10 }',
-            '\\frac{ -7 + \\sqrt{669} }{ 10 }'
+            '\\frac{ -7 - \\sqrt{ 669 } }{ 10 }',
+            '\\frac{ -7 + \\sqrt{ 669 } }{ 10 }'
         ] )
     })
 
     it('should resolve an equation of second degree', ()=>{
         let P = new Equation('-10x^2-8x+8=0')
         P.solve()
-        expect(P.solutions[0].tex).to.have.oneOf(['\\frac{ -2 - 2\\sqrt{6} }{ 5 }', '\\frac{ -2 + 2\\sqrt{6} }{ 5 }'])
+        // Delta = 64 + 320 = 384 = 6*64
+        // x1 = (-8 - 8*sqrt(6))/(-20) = (-2 - 2*sqrt(6))/5
+        expect([P.solutions[0].tex, P.solutions[1].tex]).to.have.all.members(['\\frac{ -2 - 2 \\sqrt{ 6 } }{ 5 }', '\\frac{ -2 + 2 \\sqrt{ 6 } }{ 5 }'])
     })
 
     it('should solve this equation please', function () {

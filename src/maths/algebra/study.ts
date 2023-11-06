@@ -113,34 +113,28 @@ export interface StudyConfig {
  */
 export class Study {
     fx: StudyableFunction
-    private _asymptotes: IAsymptote[]
-    private _derivative: ITableOfSigns
-    private _signs: ITableOfSigns
     private _variations: ITableOfSigns
-    private _zeroes: IZero[]
-    private _config: StudyConfig
-    private _name: string
 
     constructor(fx: StudyableFunction, config?: StudyConfig | string) {
         this.fx = fx
 
         this._config = {
-            name :'f',
+            name: 'f',
             variable: 'x',
-            domain :true,
-            asymptotes :true,
-            signs :true,
-            derivative :true,
-            variations :true,
+            domain: true,
+            asymptotes: true,
+            signs: true,
+            derivative: true,
+            variations: true,
         }
 
         if (config) {
             if (typeof config === 'string') {
                 const d = config.split(',')
                 this._config = {}
-                let n = d.filter(x=>x.includes('(') && x.includes(')'))
+                let n = d.filter(x => x.includes('(') && x.includes(')'))
 
-                if(n.length===1){
+                if (n.length === 1) {
                     this._config.name = n[0].split('(')[0]
                     this._config.variable = n[0].split('(')[1].split(')')[0]
                 }
@@ -158,13 +152,31 @@ export class Study {
         return this
     }
 
-    get name(): string {
-        return this._config.name;
+    private _asymptotes: IAsymptote[]
+
+    get asymptotes(): IAsymptote[] {
+        return this._asymptotes;
     }
 
-    set name(value: string) {
-        this._config.name = value;
+    private _derivative: ITableOfSigns
+
+    get derivative(): ITableOfSigns {
+        return this._derivative;
     }
+
+    private _signs: ITableOfSigns
+
+    get signs(): ITableOfSigns {
+        return this._signs;
+    }
+
+    private _zeroes: IZero[]
+
+    get zeroes(): IZero[] {
+        return this._zeroes;
+    }
+
+    private _config: StudyConfig
 
     get config(): StudyConfig {
         return this._config;
@@ -174,24 +186,18 @@ export class Study {
         this._config = value;
     }
 
-    get zeroes(): IZero[] {
-        return this._zeroes;
+    private _name: string
+
+    get name(): string {
+        return this._config.name;
+    }
+
+    set name(value: string) {
+        this._config.name = value;
     }
 
     get domain(): string {
         return this.fx.domain()
-    }
-
-    get signs(): ITableOfSigns {
-        return this._signs;
-    }
-
-    get asymptotes(): IAsymptote[] {
-        return this._asymptotes;
-    }
-
-    get derivative(): ITableOfSigns {
-        return this._derivative;
     }
 
     get texSigns(): string {
@@ -241,9 +247,9 @@ export class Study {
         // First +/- sign, before the first zero
         oneLine.push('')
         if (factor.degree().isZero()) {
-            oneLine.push(factor.monoms[0].coefficient.sign() === 1 ? '+' : '-')
+            oneLine.push(factor.monoms[0].coefficient.sign === 1 ? '+' : '-')
         } else {
-            oneLine.push(factor.evaluate(zeroes[0].value - 1).sign() === 1 ? '+' : '-')
+            oneLine.push(factor.evaluate(zeroes[0].value - 1).sign === 1 ? '+' : '-')
         }
 
         for (let i = 0; i < zeroes.length; i++) {
@@ -252,9 +258,9 @@ export class Study {
 
             // + / - sign after the current zero
             if (i < zeroes.length - 1) {
-                oneLine.push(factor.evaluate((zeroes[i].value + zeroes[i + 1].value) / 2).sign() === 1 ? '+' : '-')
+                oneLine.push(factor.evaluate((zeroes[i].value + zeroes[i + 1].value) / 2).sign === 1 ? '+' : '-')
             } else if (i === zeroes.length - 1) {
-                oneLine.push(factor.evaluate(zeroes[i].value + 1).sign() === 1 ? '+' : '-')
+                oneLine.push(factor.evaluate(zeroes[i].value + 1).sign === 1 ? '+' : '-')
             }
 
         }

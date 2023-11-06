@@ -1,8 +1,9 @@
 import {Polynom} from "./polynom";
-import {literalType, Monom} from "./monom";
+import {Monom} from "./monom";
 import {Numeric} from "../numeric";
 import {Fraction} from "../coefficients/fraction";
 import {NthRoot} from "../coefficients/nthRoot";
+import {COMPARESIGNS, evaluateType, literalType, numericType} from "../types";
 
 /**
  * Equation is a class to manage equations...
@@ -15,8 +16,8 @@ export interface ISolution {
 }
 
 export enum PARTICULAR_SOLUTION {
-    real="\\mathbb{R}",
-    varnothing="\\varnothing"
+    real = "\\mathbb{R}",
+    varnothing = "\\varnothing"
 }
 
 export class Equation {
@@ -138,7 +139,7 @@ export class Equation {
 
     get signAsTex(): string {
         if (this._sign === '>=' || this._sign === '=>' || this._sign === 'geq') {
-            return '\\geq';
+            return '\\isGreaterOrEqualTo';
         }
         if (this._sign === '<=' || this._sign === '=<' || this._sign === 'leq') {
             return '\\leq';
@@ -166,17 +167,13 @@ export class Equation {
         return this.variables.length;
     }
 
-    hasVariable = (letter: string): boolean => {
-        return this.variables.includes(letter)
-    }
-
-    // ------------------------------------------
-    // Creation / parsing functions
-
     // -----------------------------------------------
     private _randomizeDefaults: { [key: string]: number | string | boolean } = {
         degree: 2
     };
+
+    // ------------------------------------------
+    // Creation / parsing functions
 
     get randomizeDefaults(): { [key: string]: number | string | boolean } {
         return this._randomizeDefaults;
@@ -184,6 +181,27 @@ export class Equation {
 
     set randomizeDefaults(value) {
         this._randomizeDefaults = value;
+    }
+
+    static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean): ISolution[] {
+        let solutionAsTex: string[] = [],
+            uniqueSolutions = solutions.filter(sol => {
+                if (!solutionAsTex.includes(sol.tex)) {
+                    solutionAsTex.push(sol.tex)
+                    return true
+                } else {
+                    return false
+                }
+            })
+
+        if (sorted === true) {
+            uniqueSolutions.sort((a, b) => a.value - b.value)
+        }
+        return uniqueSolutions
+    }
+
+    hasVariable = (letter: string): boolean => {
+        return this.variables.includes(letter)
     }
 
     // ------------------------------------------
@@ -210,12 +228,12 @@ export class Equation {
         return this;
     };
 
+    // -----------------------------------------------
+    // Equations generators and randomizers
+
     clone = (): Equation => {
         return new Equation().create(this._left.clone(), this._right.clone(), this._sign + '');
     };
-
-    // -----------------------------------------------
-    // Equations generators and randomizers
 
     randomize = (opts?: {}, sign?: string): Equation => {
         // TODO: Generate equations randomly, using config.
@@ -233,7 +251,7 @@ export class Equation {
     }
 
     reorder = (allLeft?: boolean): Equation => {
-        // Move all monoms of degree greater than 0 to the left.
+        // Move all monoms of degree isGreaterThan than 0 to the left.
         // and all zero degree monoms to the right.
         this._left.subtract(this._right);
         this._right.zero();
@@ -244,8 +262,8 @@ export class Equation {
 
         // Fetch all zero degree monoms.
         this._left.monoms
-            .filter(m=>m.degree().isZero())
-            .forEach(m=> {
+            .filter(m => m.degree().isZero())
+            .forEach(m => {
                 const move = m.clone()
                 this._left.subtract(move)
                 this._right.subtract(move)
@@ -258,6 +276,10 @@ export class Equation {
         return this;
     };
 
+
+    // -----------------------------------------------
+    // Equations operations
+
     /**
      * Multiply by the lcm denominator and divide by the gcm numerators.
      */
@@ -266,10 +288,6 @@ export class Equation {
         this.divide(Numeric.gcd(...this._left.getNumerators(), ...this._right.getNumerators()));
         return this;
     }
-
-
-    // -----------------------------------------------
-    // Equations operations
 
     /**
      * Reorder the polynom to have only one letter on the left, the rest on the right.
@@ -324,7 +342,7 @@ export class Equation {
      * Multiple an equation by a fraction value.
      * @param value
      */
-    multiply = (value: unknown): Equation => {
+    multiply = (value: numericType): Equation => {
 
         // Make sure we have a fraction.
         let F: Fraction = new Fraction(value);
@@ -334,7 +352,7 @@ export class Equation {
         this._right.multiply(F);
 
         // The sign of the inequation must be changed.
-        if (this._sign !== '=' && F.sign() === -1) {
+        if (this._sign !== '=' && F.sign === -1) {
             this._reverseSign();
         }
 
@@ -355,7 +373,7 @@ export class Equation {
      * @param value
      * @returns {Equation}
      */
-    divide = (value: unknown): Equation => {
+    divide = (value: numericType): Equation => {
         // Make sure we have a fraction.
         let F: Fraction = new Fraction(value);
 
@@ -381,14 +399,14 @@ export class Equation {
         return this._left.isMultiVariable || this._right.isMultiVariable;
     };
 
+    // -----------------------------------------------
+    // Equations helpers
+    // -----------------------------------------------
+
     letters = (): string[] => {
         // @ts-ignore
         return [...new Set([...this._left.letters(), ...this._right.letters()])];
     }
-
-    // -----------------------------------------------
-    // Equations helpers
-    // -----------------------------------------------
 
     // -----------------------------------------------
     solve = (): Equation => {
@@ -416,35 +434,18 @@ export class Equation {
         return this;
     };
 
-    static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean):ISolution[] {
-        let solutionAsTex:string[] = [],
-            uniqueSolutions = solutions.filter(sol=>{
-                if(!solutionAsTex.includes(sol.tex)){
-                    solutionAsTex.push(sol.tex)
-                    return true
-                }else{
-                    return false
-                }
-            })
-
-        if(sorted===true){
-            uniqueSolutions.sort((a, b)=>a.value-b.value)
-        }
-        return uniqueSolutions
+    test = (values: literalType): boolean => {
+        return this.left.evaluate(values).isEqualTo(this.right.evaluate(values))
     }
 
-    test = (values: literalType): Boolean => {
-        return this.left.evaluate(values).isEqual(this.right.evaluate(values))
-    }
-
-    isSameAs = (equ: Equation): Boolean => {
+    isSameAs = (equ: Equation): boolean => {
         let p1 = equ.clone().moveLeft().left,
             p2 = this.clone().moveLeft().left
 
         // They are the same.
         return p1.isEqual(p2) || p1.isOpposedAt(p2)
     }
-    isLinearTo = (equ: Equation): Boolean => {
+    isLinearTo = (equ: Equation): boolean => {
         // Move all left.
         let p1 = equ.clone().moveLeft().simplify().left,
             p2 = this.clone().moveLeft().simplify().left
@@ -453,11 +454,61 @@ export class Equation {
         return p1.isEqual(p2) || p1.isOpposedAt(p2)
     }
 
+    add(P: Polynom): Equation {
+        this.left.add(P)
+        this.right.add(P)
+        return this
+    }
+
+    // -----------------------------------------------
+    // Equations solving algorithms
+
+    compare(exp: unknown, sign: COMPARESIGNS): boolean {
+        return false;
+    }
+
+    evaluate(value: evaluateType | undefined): numericType {
+        return undefined;
+    }
+
+    hasLetter(letter: string | undefined): boolean {
+        return this.left.hasLetter(letter) || this.right.hasLetter(letter);
+    }
+
+    isDivisible(P: Polynom): boolean {
+        return this.left.isDivisible(P) && this.right.isDivisible(P);
+    }
+
+    isEqual(E: Equation): boolean {
+        return this.clone().moveLeft().left.isEqual(E.clone().moveLeft().left);
+    }
+
+    isNotEqual(E: Equation): boolean {
+        return !this.isEqual(E);
+    }
+
+    isReduced(value: unknown | undefined): boolean {
+        return false;
+    }
+
+    reset(): unknown {
+        this.left.reset()
+        this.right.reset()
+        this._sign = "="
+        return this;
+    }
+
+    subtract(P: Polynom): Equation {
+        this.left.subtract(P)
+        this.right.subtract(P)
+        return this
+    }
+
     private _findSign = (equationString: string): string | false => {
         let strSign: string = '';
 
         if (equationString.includes('geq')) {
-            return (equationString.includes('\\geq')) ? '\\geq' : 'geq';
+            return (equationString.includes('\\isGreaterOrEqualTo')) ? '\\isGreaterOrEqualTo' : 'geq';
         } else if (equationString.includes('leq')) {
             return (equationString.includes('\\leq')) ? '\\leq' : 'leq';
         } else if (equationString.includes('>=')) {
@@ -480,9 +531,6 @@ export class Equation {
             return false;
         }
     };
-
-    // -----------------------------------------------
-    // Equations solving algorithms
 
     private _formatSign = (signStr: string): string => {
         if (signStr === undefined) {
@@ -554,7 +602,7 @@ export class Equation {
     private _solveDegree1 = (letter?: string): ISolution[] => {
         const m1 = this._polynom.monomByDegree(1, letter).coefficient,
             m0 = this._polynom.monomByDegree(0, letter).coefficient,
-            v = m0.clone().opposed().divide(m1);
+            v = m0.clone().opposite().divide(m1);
         let s: string, d: string;
 
         if (this.isStrictEqual()) {
@@ -583,8 +631,7 @@ export class Equation {
                     exact: v
                 }]
             }
-        }
-        else {
+        } else {
             if (m1.value === 0) {
                 // In this case, the coefficient of the x variable is zero.
                 if (m0.value === 0 && this.isAlsoEqual()) {
@@ -601,7 +648,7 @@ export class Equation {
                 }
             } else {
                 // Must handle the case if the m1 monom is negative.
-                if ((this.isGreater() && m1.sign() === 1) || (!this.isGreater() && m1.sign() === -1)) {
+                if ((this.isGreater() && m1.sign === 1) || (!this.isGreater() && m1.sign === -1)) {
                     s = `\\left${this.isAlsoEqual() ? '[' : ']'}${v.tex};+\\infty\\right[`;
                     d = `${this.isAlsoEqual() ? '[' : ']'}${v.tex};+oo[`;
                 } else {
@@ -663,10 +710,9 @@ export class Equation {
                     // -b +- coeff\sqrt{radical}
                     // -------------------------
                     //           2a
-                    let gcd = Numeric.gcd(b, 2 * a, nthDelta.coefficient),
-                        am = a/gcd, bm = b/gcd
-                    nthDelta.coefficient = nthDelta.coefficient / gcd;
-
+                    let gcd = Numeric.gcd(b, 2 * a, nthDelta.coefficient.value),
+                        am = 2 * a / gcd, bm = b / gcd
+                    nthDelta.coefficient = nthDelta.coefficient.value / gcd;
                     if (a < 0) {
                         am = -am
                         bm = -bm
@@ -680,8 +726,8 @@ export class Equation {
                     display2 = `${bm !== 0 ? ((-bm) + ' + ') : ''}${nthDelta.display}`
 
                     if (am !== 1) {
-                        tex1 = `\\frac{ ${tex1} }{ ${2 * am} }`
-                        tex2 = `\\frac{ ${tex2} }{ ${2 * am} }`
+                        tex1 = `\\frac{ ${tex1} }{ ${am} }`
+                        tex2 = `\\frac{ ${tex2} }{ ${am} }`
                     }
 
                     this._solutions = [
@@ -760,17 +806,17 @@ export class Equation {
                     // }
                 } else {
                     // -b +- d / 2a
-                    const S1 = new Fraction(-b - nthDelta.coefficient, 2 * a).reduce(),
-                        S2 = new Fraction(-b + nthDelta.coefficient, 2 * a).reduce()
+                    const S1 = new Fraction(-b - nthDelta.coefficient.value, 2 * a).reduce(),
+                        S2 = new Fraction(-b + nthDelta.coefficient.value, 2 * a).reduce()
                     this._solutions = [
                         {
-                            tex: S1.frac,
+                            tex: S1.tex,
                             display: S1.display,
                             value: realX1,
                             exact: S1
                         },
                         {
-                            tex: S2.frac,
+                            tex: S2.tex,
                             display: S2.display,
                             value: realX2,
                             exact: S2
@@ -782,7 +828,7 @@ export class Equation {
         } else if (delta === 0) {
             const sol = new Fraction(-b, 2 * a).reduce()
             this._solutions = [{
-                tex: sol.frac,
+                tex: sol.tex,
                 display: sol.display,
                 value: sol.value,
                 exact: sol
@@ -802,7 +848,7 @@ export class Equation {
                 sX1 = (realX1 < realX2) ? this._solutions[0].tex : this._solutions[1].tex;
                 sX2 = (realX1 < realX2) ? this._solutions[1].tex : this._solutions[0].tex;
 
-                if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
+                if ((this.isGreater() && aF.sign === 1) || (!this.isGreater() && aF.sign === -1)) {
                     this._solutions = [{
                         tex: `\\left]-\\infty ; ${sX1}\\right${this.isAlsoEqual() ? ']' : '['} \\cup \\left${this.isAlsoEqual() ? '[' : ']'}${sX2};+\\infty\\right[`,
                         display: `]-oo;${sX1}${this.isAlsoEqual() ? ']' : '['}uu${this.isAlsoEqual() ? '[' : ']'}${sX2};+oo[`,
@@ -820,7 +866,7 @@ export class Equation {
                 }
             } else if (this._solutions.length === 1 && this._solutions[0].tex !== this._varnothing) {
                 if (!this.isAlsoEqual()) {
-                    if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
+                    if ((this.isGreater() && aF.sign === 1) || (!this.isGreater() && aF.sign === -1)) {
                         this._solutions = [{
                             tex: `\\left]-\\infty ; ${this._solutions[0].tex}\\right[ \\cup \\left]${this._solutions[0].tex};+\\infty\\right[`,
                             display: `]-oo;${this._solutions[0].tex}[uu]${this._solutions[0].tex};+oo[`,
@@ -837,7 +883,7 @@ export class Equation {
                         }];
                     }
                 } else {
-                    if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
+                    if ((this.isGreater() && aF.sign === 1) || (!this.isGreater() && aF.sign === -1)) {
                         this._solutions = [{
                             tex: this._real,
                             display: "RR",
@@ -851,15 +897,15 @@ export class Equation {
             } else {
                 if (this.isGreater()) {
                     this._solutions = [{
-                        tex: aF.sign() === 1 ? this._real : this._varnothing,
-                        display: aF.sign() === 1 ? "RR" : "O/",
+                        tex: aF.sign === 1 ? this._real : this._varnothing,
+                        display: aF.sign === 1 ? "RR" : "O/",
                         value: NaN,
                         exact: false
                     }];
                 } else {
                     this._solutions = [{
-                        tex: aF.sign() === -1 ? this._real : this._varnothing,
-                        display: aF.sign() === -1 ? "RR" : "O/",
+                        tex: aF.sign === -1 ? this._real : this._varnothing,
+                        display: aF.sign === -1 ? "RR" : "O/",
                         value: NaN,
                         exact: false
                     }];
@@ -878,14 +924,14 @@ export class Equation {
 
         this._solutions = []
 
-        equ.left.factors.forEach(factor=>{
-            if(factor.degree(letter).leq(2)) {
+        equ.left.factors.forEach(factor => {
+            if (factor.degree(letter).isLesserOrEqualTo(2)) {
                 let factorAsEquation = new Equation(factor, 0)
                 factorAsEquation.solve()
                 factorAsEquation.solutions.forEach(solution => {
                     this._solutions.push(solution)
                 })
-            }else{
+            } else {
                 console.log(factor.tex, ': cannot actually get the solution of this equation')
             }
         })
@@ -894,4 +940,5 @@ export class Equation {
         // this._solutions = [{tex: 'solve x - not yet handled', value: NaN, exact: false}];  // ESLint remove system :(
         return this._solutions;
     };
+
 }

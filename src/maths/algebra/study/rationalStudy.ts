@@ -21,7 +21,8 @@ import {
     ITableOfSigns,
     IZero,
     Study,
-    StudyableFunction, StudyConfig,
+    StudyableFunction,
+    StudyConfig,
     TABLE_OF_SIGNS,
     ZEROTYPE
 } from "../study";
@@ -30,7 +31,7 @@ import {Fraction} from "../../coefficients/fraction";
 import {Polynom} from "../polynom";
 
 export class RationalStudy extends Study {
-    constructor(fx: StudyableFunction, config?: StudyConfig|string) {
+    constructor(fx: StudyableFunction, config?: StudyConfig | string) {
         super(fx, config)
 
         return this
@@ -57,13 +58,13 @@ export class RationalStudy extends Study {
 
             // Check if it's a hole: the reduced polynom should not be null
             if (zero.exact instanceof Fraction) {
-                if (reduced.denominator.evaluate(zero.exact).isNotZero()) {
+                if (!reduced.denominator.evaluate(zero.exact).isZero()) {
                     Ztype = ASYMPTOTE.HOLE
                     tex = `(${zero.tex};${reduced.evaluate(zero.exact).tex})`
                     display = `(${zero.display};${reduced.evaluate(zero.exact).display})`
                 }
             } else {
-                if (reduced.denominator.evaluate(zero.value).isNotZero()) {
+                if (!reduced.denominator.evaluate(zero.value).isZero()) {
                     Ztype = ASYMPTOTE.HOLE
                     tex = `(${zero.tex};${reduced.evaluate(zero.value).tex})`
                     display = `(${zero.display};${reduced.evaluate(zero.value).display})`
@@ -119,7 +120,7 @@ export class RationalStudy extends Study {
         // Sloped asymptote
         let NDegree = this.fx.numerator.degree(),
             DDegree = this.fx.denominator.degree()
-        if (NDegree.isEqual(DDegree)) {
+        if (NDegree.isEqualTo(DDegree)) {
             let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient),
                 Htex = H.tex
 
@@ -138,7 +139,7 @@ export class RationalStudy extends Study {
                 tableOfSign: this._getSigns(deltaX),
                 position: this._getHorizontalAsymptoteRelativePositon(deltaX)
             })
-        } else if (DDegree.greater(NDegree)) {
+        } else if (DDegree.isGreaterThan(NDegree)) {
             asymptotes.push({
                 fx: new Polynom('0'),
                 type: ASYMPTOTE.HORIZONTAL,
@@ -171,27 +172,6 @@ export class RationalStudy extends Study {
         return asymptotes
     };
 
-    _getHorizontalAsymptoteRelativePositon(deltaX: Rational, delta: number = 1000000): ASYMPTOTE_POSITION[] {
-
-        let position: ASYMPTOTE_POSITION[] = [],
-            before = deltaX.evaluateAsNumeric(-delta),
-            after = deltaX.evaluateAsNumeric(delta)
-
-        if (before >= 0) {
-            position.push(ASYMPTOTE_POSITION.LT)
-        } else {
-            position.push(ASYMPTOTE_POSITION.LB)
-        }
-
-        if (after >= 0) {
-            position.push(ASYMPTOTE_POSITION.RT)
-        } else {
-            position.push(ASYMPTOTE_POSITION.RB)
-        }
-
-        return position
-    }
-
     makeDerivative(): ITableOfSigns {
         let dx = this.fx.clone().derivative(),
             tos = this._getSigns(dx, this._getZeroes(dx), TABLE_OF_SIGNS.GROWS)
@@ -212,6 +192,27 @@ export class RationalStudy extends Study {
         tos.extremes = result.extremes
         return tos
     };
+
+    _getHorizontalAsymptoteRelativePositon(deltaX: Rational, delta: number = 1000000): ASYMPTOTE_POSITION[] {
+
+        let position: ASYMPTOTE_POSITION[] = [],
+            before = deltaX.evaluateAsNumeric(-delta),
+            after = deltaX.evaluateAsNumeric(delta)
+
+        if (before >= 0) {
+            position.push(ASYMPTOTE_POSITION.LT)
+        } else {
+            position.push(ASYMPTOTE_POSITION.LB)
+        }
+
+        if (after >= 0) {
+            position.push(ASYMPTOTE_POSITION.RT)
+        } else {
+            position.push(ASYMPTOTE_POSITION.RB)
+        }
+
+        return position
+    }
 
     private _getZeroes(fx: StudyableFunction) {
         // All zeroes.

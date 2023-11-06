@@ -135,7 +135,7 @@ export class Circle {
                     continue
                 }
 
-                solX = new Fraction(x.exact === false ? x.value : x.exact)
+                solX = new Fraction((x.exact === false ? x.value : x.exact) as number)
                 intersectionPoints.push(new Point(solX.clone(), lineY.right.evaluate(solX)))
             }
         }
@@ -157,7 +157,7 @@ export class Circle {
         return []
     }
 
-    isPointOnCircle = (P: Point): Boolean => {
+    isPointOnCircle = (P: Point): boolean => {
         return this._cartesian.test({x: P.x, y: P.y})
     }
 
@@ -224,10 +224,10 @@ export class Circle {
             let h, equ = new Equation('y', 'x')
 
             if (sol.exact instanceof Fraction) {
-                h = P.x.clone().opposed().multiply(sol.exact).add(P.y)
+                h = P.x.clone().opposite().multiply(sol.exact).add(P.y)
                 equ.right.multiply(sol.exact).add(h)
             } else {
-                h = P.x.clone().opposed().multiply(sol.value).add(P.y)
+                h = P.x.clone().opposite().multiply(sol.value).add(P.y)
                 equ.right.multiply(sol.value).add(h)
             }
 
@@ -245,8 +245,8 @@ export class Circle {
             r = this._squareRadius
 
         let sq = this._squareRadius.clone().multiply(slope.numerator ** 2 + slope.denominator ** 2),
-            x1 = c1.clone().multiply(a).opposed().subtract(c2.clone().multiply(b)).add(sq.clone().sqrt()),
-            x2 = c1.clone().multiply(a).opposed().subtract(c2.clone().multiply(b)).subtract(sq.clone().sqrt())
+            x1 = c1.clone().multiply(a).opposite().subtract(c2.clone().multiply(b)).add(sq.clone().sqrt()),
+            x2 = c1.clone().multiply(a).opposite().subtract(c2.clone().multiply(b)).subtract(sq.clone().sqrt())
 
         return [new Line(a, b, x1), new Line(a, b, x2)]
     }
@@ -267,7 +267,7 @@ export class Circle {
         // one value, a circle -> clone it
         // two values: two points (center and pointThrough)
         // two values: point and Fraction (center and radius)
-        // three values: Point, Fraction, Boolean (center, square radius, true)
+        // three values: Point, Fraction, boolean (center, square radius, true)
 
         this._reset()
 
@@ -345,7 +345,7 @@ export class Circle {
             let x2 = equ.left.monomByDegree(2, 'x'), y2 = equ.left.monomByDegree(2, 'y'), x1: Monom, y1: Monom, c: Monom
 
             // Both square monoms must have the same coefficient.
-            if (x2.coefficient.isEqual(y2.coefficient)) {
+            if (x2.coefficient.isEqualTo(y2.coefficient)) {
                 equ.divide(x2.coefficient)
 
                 x1 = equ.left.monomByDegree(1, 'x')
@@ -353,9 +353,9 @@ export class Circle {
 
                 c = equ.left.monomByDegree(0)
 
-                this._center = new Point(x1.coefficient.clone().divide(2).opposed(), y1.coefficient.clone().divide(2).opposed())
+                this._center = new Point(x1.coefficient.clone().divide(2).opposite(), y1.coefficient.clone().divide(2).opposite())
 
-                this._squareRadius = c.coefficient.clone().opposed()
+                this._squareRadius = c.coefficient.clone().opposite()
                     .add(this._center.x.clone().pow(2))
                     .add(this._center.y.clone().pow(2))
 

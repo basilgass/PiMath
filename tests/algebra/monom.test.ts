@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {Random} from "../../src/maths/randomization/random";
 import {describe} from "mocha";
-import {Monom} from "../../src/maths/algebra/monom";
+import {Monom, MonomE} from "../../src/maths/algebra/monom";
 
 describe('Monom with integer power', () => {
     it('parsing', () => {
@@ -75,4 +75,11 @@ describe('Monom with fraction power', () => {
 
         expect(M.tex).to.be.equal('-\\frac{ 7 }{ 5 }x^{\\tfrac{ 22 }{ 15 }}')
     })
+
+    it('should show a monom with sqrt', function () {
+        let m = new MonomE('3x^(1/2)')
+        m.letters('x', '\\sqrt{2}')
+
+        console.log(m.tex)
+    });
 })

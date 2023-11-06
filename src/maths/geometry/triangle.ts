@@ -117,14 +117,14 @@ export class Triangle {
     }
 
     get isEquilateral(): boolean {
-        return this.AB.normSquare.isEqual(this.BC.normSquare) &&
-            this.AB.normSquare.isEqual(this.AC.normSquare);
+        return this.AB.normSquare.isEqualTo(this.BC.normSquare) &&
+            this.AB.normSquare.isEqualTo(this.AC.normSquare);
     }
 
     get isIsocele(): boolean {
-        return this.AB.normSquare.isEqual(this.BC.normSquare) ||
-            this.AB.normSquare.isEqual(this.AC.normSquare) ||
-            this.BC.normSquare.isEqual(this.AC.normSquare)
+        return this.AB.normSquare.isEqualTo(this.BC.normSquare) ||
+            this.AB.normSquare.isEqualTo(this.AC.normSquare) ||
+            this.BC.normSquare.isEqualTo(this.AC.normSquare)
     }
 
     get lines(): { 'AB': Line, 'BC': Line, 'AC': Line } {

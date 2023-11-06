@@ -4,7 +4,7 @@ export class Numeric{
     }
 
     /**
-     * Get the list of the nth first prime numbers.
+     * Get the list of the index first prime numbers.
      * @param nb : number of primes to choose from
      */
     static primes(nb?:number):number[]{

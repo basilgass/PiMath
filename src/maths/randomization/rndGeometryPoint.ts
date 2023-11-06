@@ -41,26 +41,26 @@ export class rndGeometryPoint extends randomCore {
         }
         if (+this._config.quadrant === 2) {
             if (x.isPositive()) {
-                x.opposed()
+                x.opposite()
             }
             if (y.isNegative()) {
-                y.opposed()
+                y.opposite()
             }
         }
         if (+this._config.quadrant === 3) {
             if (x.isPositive()) {
-                x.opposed()
+                x.opposite()
             }
             if (y.isPositive()) {
-                y.opposed()
+                y.opposite()
             }
         }
         if (+this._config.quadrant === 4) {
             if (x.isNegative()) {
-                x.opposed()
+                x.opposite()
             }
             if (y.isPositive()) {
-                y.opposed()
+                y.opposite()
             }
         }
 

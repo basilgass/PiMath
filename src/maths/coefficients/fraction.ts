@@ -1,127 +1,157 @@
-import {Numeric} from "../numeric";
-
-export type FractionParsingType = number | string | Fraction
+import {CoefficientCore, FRACTION_FRAC} from "./coefficientCore";
 
 /**
- * The fraction class make possible to handle
- * TODO: Write the documentation correctly.
- * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
+ * The fraction class
  */
-export class Fraction {
-    private _denominator: number;
-    private _numerator: number;
 
-    constructor(value?: unknown, denominatorOrPeriodic?: number) {
-        this._numerator = 1;
-        this._denominator = 1;
+export class Fraction extends CoefficientCore<Fraction> {
+    constructor(value?: number | string | Fraction, denominator?: number | string) {
+        super()
+        // Default values.
+        this.numerator = 1;
+        this.denominator = 1;
+
+        this.fracType = FRACTION_FRAC.frac
 
         if (value !== undefined) {
-            this.parse(value, denominatorOrPeriodic);
+            if (value instanceof Fraction) return this.parse(value)
+            return this.parse(value, denominator)
         }
 
         return this;
     }
 
-    // ------------------------------------------
-    // Getter and setter
-    // ------------------------------------------
-
-    get numerator(): number {
-        return this._numerator;
-    }
-
-    set numerator(value: number) {
-        this._numerator = value;
-    }
-
-    get denominator(): number {
-        return this._denominator;
-    }
-
-    set denominator(value: number) {
-        this._denominator = value;
-    }
-
-    get value(): number {
-        return this._numerator / this._denominator;
-    }
-
-    // Display getter
     get tex(): string {
+        const frac = this.fracTeX
+        // restore the frac type to default
+        this.fracType = FRACTION_FRAC.frac
+
         if (this.isInfinity()) {
-            return `${this.sign() === 1 ? '+' : '-'}\\infty`
+            return `${this.signTeX}\\infty`
         }
 
         if (this.isExact()) {
-            if (this._denominator === 1) {
-                return `${this._numerator}`;
-            } else if (this._numerator < 0) {
-                return `-\\frac{ ${-this._numerator} }{ ${this._denominator} }`;
+            if (this.denominator === 1) {
+                return `${this.numerator}`;
+            } else if (this.numerator < 0) {
+                return `-${frac}{ ${-this.numerator} }{ ${this.denominator} }`;
             } else {
-                return `\\frac{ ${this._numerator} }{ ${this._denominator} }`;
+                return `${frac}{ ${this.numerator} }{ ${this.denominator} }`;
             }
         } else {
             return this.value.toFixed(3)
         }
-    }
-
-    get texWithSign():string {
-        return this.isPositive() ? `+${this.tex}` : this.tex;
     }
 
     get display(): string {
+        if (this.isInfinity()) {
+            return `${this.signTeX}\\infty`
+        }
+
         if (this.isExact()) {
-            if (this._denominator === 1) {
-                return `${this._numerator}`;
+            if (this.denominator === 1) {
+                return `${this.numerator}`;
+            } else if (this.numerator < 0) {
+                return `-${-this.numerator}/${this.denominator}`;
             } else {
-                return `${this._numerator}/${this._denominator}`;
+                return `${this.numerator}/${this.denominator}`;
             }
         } else {
             return this.value.toFixed(3)
         }
     }
 
-    // Helper function to display fractions
-    get frac(): string {
-        return this.tex;
+    createInstance(value?: string | number | Fraction): Fraction {
+        return new Fraction(value)
     }
 
-    get dfrac(): string {
-        return this.tex.replace('\\frac', '\\dfrac');
-    }
+    clone = (): Fraction => {
+        return new Fraction(this.numerator, this.denominator)
+    };
 
-    get tfrac(): string {
-        return this.tex.replace('\\frac', '\\tfrac')
-    }
+    reduce = (): Fraction => {
+        const {N, D} = this.getReducedCoefficient()
+        this.numerator = N
+        this.denominator = D
+        return this;
+    };
 
-    static max = (...fractions: (Fraction | number)[]): Fraction => {
-        let M = new Fraction(fractions[0])
+    add = (...values: (Fraction | number | string)[]): Fraction => {
+        for (let F of values) {
+            if (!(F instanceof Fraction)) F = new Fraction(F)
 
-        for (let m of fractions) {
-            let compare = new Fraction(m)
-            if (compare.greater(M)) {
-                M = compare.clone()
-            }
+            let N: number = this.numerator,
+                D: number = this.denominator;
+
+            this.numerator = N * F.denominator + F.numerator * D;
+            this.denominator = D * F.denominator;
         }
 
-        return M
-    }
+        return this.reduce();
+    };
 
-    static min = (...fractions: (Fraction | number)[]): Fraction => {
-        let M = new Fraction(fractions[0])
-
-        for (let m of fractions) {
-            let compare = new Fraction(m)
-            if (compare.lesser(M)) {
-                M = compare.clone()
+    multiply = (...values: (Fraction | number)[]): Fraction => {
+        // Parse the value.
+        // If it's a fraction, return a clone of it
+        // If it's an integer, return the fraction F/1
+        for (let F of values) {
+            if (!(F instanceof Fraction)) {
+                F = new Fraction(F)
             }
+
+            this.numerator = this.numerator * F.numerator;
+            this.denominator = this.denominator * F.denominator;
         }
 
-        return M
+        return this
+    };
+
+    invert = (): Fraction => {
+        let n = +this.numerator, d = +this.denominator;
+        this.numerator = d;
+        this.denominator = n;
+
+        return this;
     }
 
-    // ------------------------------------------
-    // Creation / parsing functions
+    root = (p: number): Fraction => {
+        // TODO: index - root of a fraction => this will return another type of coefficient.
+
+        // Check if they are perfect roots..
+        if (p === 0) {
+            return this;
+        }
+
+        // If negative, invert the fraction
+        if (p < 0) {
+            this.invert()
+        }
+
+        let n = Math.pow(this.numerator, Math.abs(1 / p)),
+            d = Math.pow(this.denominator, Math.abs(1 / p));
+
+        this.numerator = Math.pow(this.numerator, Math.abs(1 / p));
+        this.denominator = Math.pow(this.denominator, Math.abs(1 / p));
+        return this;
+    }
+
+    static decimalToFraction = (value: string | number | Fraction): [number, number] => {
+        // Return the neutral element
+        if (value === undefined) return [1, 1]
+
+        // Return the numerator and denominator if it's already a fraction
+        if (value instanceof Fraction) return [value.numerator, value.denominator]
+
+        // Split the value into unit and decimal part
+        let [unit, decimal] = (+value).toString().split('.')
+
+        // Return the unit if there is no decimal part
+        if (decimal === undefined) return [+unit, 1]
+
+        let decimalLength = decimal.length
+
+        return [+(unit + decimal), 10 ** decimalLength]
+    }
 
     static average = (...fractions: (Fraction | number)[]): Fraction => {
         let M = new Fraction().zero()
@@ -135,459 +165,97 @@ export class Fraction {
         return M
     }
 
-    static unique = (fractions: Fraction[], sorted?: boolean): Fraction[] => {
-        // TODO: make sure it's wokring -> test !
-        let unique: { [Key: string]: boolean } = {},
-            distinct: Fraction[] = []
-        fractions.forEach(x => {
-            if (!unique[x.clone().reduce().tex]) {
-                distinct.push(x.clone())
-                unique[x.tex] = true
-            }
-        })
-
-        if (sorted) {
-            return Fraction.sort(distinct)
-        } else {
-            return distinct
-        }
-    }
-
-    static sort = (fractions: Fraction[], reverse?: boolean): Fraction[] => {
-        // Todo make sure it's the correct order, not reverse -> make a test
-        let sorted = fractions.sort((a, b) => a.value - b.value)
-
-        if (reverse) {
-            sorted.reverse()
-        }
-
-        return sorted
-    }
-
-    isApproximative = (): boolean => {
-        return this._numerator.toString().length >= 15 && this._denominator.toString().length >= 15
-    }
-
-    isExact = (): boolean => {
-        return !this.isApproximative()
-    }
-
-    // ------------------------------------------
     /**
      * Parse the value to get the numerator and denominator
      * @param value : number or string to parse to get the fraction
      * @param denominatorOrPeriodic (optional|number) : length of the periodic part: 2.333333 => 1 or denominator value
      */
-    parse = (value: unknown, denominatorOrPeriodic?: number): Fraction => {
-        let S: string[];
+    parse(value: Fraction): Fraction
+
+    parse(value: string | number): Fraction
+
+
+    // pow = (p: number | Fraction): Fraction => {
+    //     // TODO: Fraction.pow with a value different than a safe integer !
+    //     if (p instanceof Fraction) {
+    //         return this.pow(p.value)
+    //     }
+    //
+    //     this.reduce();
+    //     if (p < 0) {
+    //         this.invert()
+    //     }
+    //
+    //     // Check if numerator and denominator are roots of...
+    //     // othervise, convert to numeric.
+    //     let controlNumerator = Math.floor(Math.pow(this.numerator, Math.abs(p))),
+    //         controlDenominator = Math.floor(Math.pow(this.denominator, Math.abs(p)))
+    //
+    //     if (controlNumerator ** Math.abs(p) === this.numerator
+    //         &&
+    //         controlDenominator ** Math.abs(p) === this.denominator) {
+    //
+    //         this.numerator = this.numerator ** Math.abs(p);
+    //         this.denominator = this.denominator ** Math.abs(p);
+    //     } else {
+    //         this.numerator = this.numerator ** Math.abs(p);
+    //         this.denominator = this.denominator ** Math.abs(p);
+    //     }
+    //
+    //     return this;
+    // };
+
+    parse(value: string | number, denominator: string | number): Fraction
+
+    parse(value: string | number | Fraction, denominator ?: string | number): Fraction {
+        // Default values
+        this.numerator = 0;
+        this.denominator = 1;
 
         // A null value means a zero fraction.
-        if (value === null || value === "") {
-            this._numerator = 0;
-            this._denominator = 1;
-            return this;
+        if (value === null || value === "") return this;
+
+        // No denominator given
+        if (denominator === undefined) {
+            if (value instanceof Fraction) return value.clone()
+
+            if (typeof value === "number") {
+                return new Fraction(value, 1)
+            }
+
+            // a value of type string can be:
+            // - an integer number  4
+            // - a decimal number   4.12
+            // - a fraction         4/5
+            // - a decimal fraction 4.12/5.12
+            if (typeof value === "string") {
+                const [N, D] = value.split('/')
+                return new Fraction(N, D === undefined ? 1 : D)
+            }
         }
 
-        switch (typeof value) {
-            case "string":
-                // Split the string value in two parts: Numerator/Denominator
-                S = value.split('/');
-
-                // Security checks
-                if (S.length > 2) throw value + " has too many divide signs";
-                if (S.map(x => x === '' || isNaN(Number(x))).includes(true)) throw value + " is not a valid number"
-
-                if (S.length === 1) {
-                    // No divide sign - it's a number
-                    return this.parse(+S[0]);
-                } else if (S.length === 2) {
-                    // One divide signe
-                    // We check if the denominator is zero
-                    if (S[1] === '0') {
-                        this._numerator = NaN;
-                        this._denominator = 1;
-                    } else {
-                        this._numerator = +S[0];
-                        this._denominator = +S[1];
-                    }
-                } else {
-                    // More than one divide sign ?
-                    // This is impossible
-                    this._numerator = NaN;
-                    this._denominator = 1;
-                }
-                break;
-            case "number":
-                if (Number.isSafeInteger(value)) {
-                    // The given value is an integer
-                    this._numerator = +value;
-
-                    if (denominatorOrPeriodic === undefined || !Number.isSafeInteger(denominatorOrPeriodic)) {
-                        this._denominator = 1;
-                    } else {
-                        this._denominator = +denominatorOrPeriodic;
-                    }
-                } else {
-                    // The given value is a float number
-                    // Get the number of decimals after the float sign
-                    let [unit, decimal] = (value.toString()).split('.')
-                    let p: number = decimal?decimal.length:0;
-
-                    // Detect if the decimal part is periodic or not...
-
-
-                    // Transform the float number in two integer
-                    if (denominatorOrPeriodic === undefined) {
-                        this._numerator = value * Math.pow(10, p);
-                        this._denominator = Math.pow(10, p);
-                    } else if (Number.isSafeInteger(denominatorOrPeriodic)) {
-                        this._numerator = value * Math.pow(10, p) - Math.floor(value * Math.pow(10, p - denominatorOrPeriodic));
-                        this.denominator = Math.pow(10, p) - Math.pow(10, p - denominatorOrPeriodic)
-                    }
-
-                    this.reduce()
-                }
-                break;
-            case "object":
-                if (value instanceof Fraction) {
-                    this._numerator = +value.numerator;
-                    this._denominator = +value.denominator;
-                }
-                break;
-        }
-        return this;
-    };
-
-    // ------------------------------------------
-    // Mathematical operations
-
-    clone = (): Fraction => {
-        let F = new Fraction();
-        F.numerator = +this._numerator;
-        F.denominator = +this._denominator;
-        return F;
-    };
-
-    zero = (): Fraction => {
-        this._numerator = 0;
-        this._denominator = 1;
-        return this;
-    };
-
-    one = (): Fraction => {
-        this._numerator = 1;
-        this._denominator = 1;
-        return this;
-    };
-
-    infinite = (): Fraction => {
-        this._numerator = Infinity;
-        this._denominator = 1;
-        return this;
-    };
-
-    invalid = (): Fraction => {
-        this._numerator = NaN;
-        this._denominator = 1;
-        return this;
-    };
-
-    // ------------------------------------------
-    opposed = (): Fraction => {
-        this._numerator = -this._numerator;
-        return this;
-    };
-
-    add = (F: Fraction | number): Fraction => {
-        if (F instanceof Fraction) {
-            let N: number = this._numerator,
-                D: number = this._denominator;
-
-            this._numerator = N * F.denominator + F.numerator * D;
-            this._denominator = D * F.denominator;
-        } else {
-            return this.add(new Fraction(F))
+        // Denominator given
+        if (+denominator === 0) {
+            this.numerator = Infinity
+            return this
         }
 
-        return this.reduce();
-    };
+        const [N1, D1] = Fraction.decimalToFraction(value)
+        const [N2, D2] = Fraction.decimalToFraction(denominator)
 
-    subtract = (F: Fraction | number): Fraction => {
-        if (F instanceof Fraction) {
-            return this.add(F.clone().opposed());
-        } else {
-            return this.add(-F)
-        }
-    };
+        this.numerator = N1 * D2
+        this.denominator = D1 * N2
 
-    multiply = (F: Fraction | number): Fraction => {
-        // Parse the value.
-        // If it's a fraction, return a clone of it
-        // If it's an integer, return the fraction F/1
-        let Q = new Fraction(F);
-
-        this._numerator = this._numerator * Q.numerator;
-        this._denominator = this._denominator * Q.denominator;
-
-        return this.reduce();
-    };
-
-    xMultiply = (...values: (Fraction | number)[]): Fraction => {
-        // Parse the value.
-        // If it's a fraction, return a clone of it
-        // If it's an integer, return the fraction F/1
-        for(let value of values){
-            let F = new Fraction(value)
-            this._numerator = this._numerator * F.numerator;
-            this._denominator = this._denominator * F.denominator;
-        }
-
-        return this;
-    };
-
-    divide = (F: Fraction | number): Fraction => {
-        let Q = new Fraction(F);
-
-        if (Q.numerator === 0) {
-            return new Fraction().infinite();
-        }
-
-        let N: number = +this._numerator,
-            D: number = +this._denominator;
-
-        this._numerator = N * Q.denominator;
-        this._denominator = D * Q.numerator;
-        return this.reduce();
-    };
-
-    invert = (): Fraction => {
-        let n = +this._numerator, d = +this._denominator;
-        this._numerator = d;
-        this._denominator = n;
-
-        return this;
+        if (D1 > 1 || D2 > 1) this.reduce()
+        return this
     }
-
-    pow = (p: number | Fraction): Fraction => {
-        // TODO: Fraction.pow with a value different than a safe integer !
-        if (p instanceof Fraction) {
-            return this.pow(p.value)
-        }
-
-        this.reduce();
-        if (p < 0) {
-            this.invert()
-        }
-
-        // Check if numerator and denominator are roots of...
-        // othervise, convert to numeric.
-        let controlNumerator = Math.floor(Math.pow(this._numerator, Math.abs(p))),
-            controlDenominator = Math.floor(Math.pow(this._denominator, Math.abs(p)))
-
-        if (controlNumerator ** Math.abs(p) === this._numerator
-            &&
-            controlDenominator ** Math.abs(p) === this._denominator) {
-
-            this._numerator = this._numerator ** Math.abs(p);
-            this._denominator = this._denominator ** Math.abs(p);
-        } else {
-            this._numerator = this._numerator ** Math.abs(p);
-            this._denominator = this._denominator ** Math.abs(p);
-        }
-
-        return this;
-    };
-
-    root = (p: number): Fraction => {
-        // TODO: nth - root of a fraction => this will return another type of coefficient.
-
-        // Check if they are perfect roots..
-        if (p === 0) {
-            return this;
-        }
-
-        // If negative, invert the fraction
-        if (p < 0) {
-            this.invert()
-        }
-
-        let n = Math.pow(this._numerator, Math.abs(1 / p)),
-            d = Math.pow(this._denominator, Math.abs(1 / p));
-
-        this._numerator = Math.pow(this._numerator, Math.abs(1 / p));
-        this._denominator = Math.pow(this._denominator, Math.abs(1 / p));
-        return this;
-    }
-
-    sqrt = (): Fraction => {
-        return this.root(2);
-    }
-
-    abs = (): Fraction => {
-        this._numerator = Math.abs(this._numerator);
-        this._denominator = Math.abs(this._denominator);
-        return this;
-    };
-
-    // ------------------------------------------
-    // Mathematical operations specific to fractions
-
-    // ------------------------------------------
-    reduce = (): Fraction => {
-        let g = Numeric.gcd(this._numerator, this._denominator);
-        this._numerator = this._numerator / g;
-        this._denominator = this._denominator / g;
-
-        if (this._denominator < 0) {
-            this._denominator = -this._denominator;
-            this._numerator = -this._numerator;
-        }
-        return this;
-    };
 
     amplify = (k: number): Fraction => {
         if (Number.isSafeInteger(k)) {
-            this._numerator *= k;
-            this._denominator *= k;
+            this.numerator *= k;
+            this.denominator *= k;
         }
         return this;
     };
 
-
-    // ------------------------------------------
-    // Compare functions
-    // ------------------------------------------
-    /**
-     * Compare the current coefficient with another coefficient
-     * @param F (Coefficient) The coefficient to compare
-     * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
-     */
-    compare = (F: unknown, sign?: string): boolean => {
-        if (sign === undefined) {
-            sign = '=';
-        }
-
-        let compareFraction: Fraction
-        if (F instanceof Fraction) {
-            compareFraction = F.clone()
-        } else {
-            compareFraction = new Fraction(F)
-        }
-
-        switch (sign) {
-            case '>':
-                return this.value > compareFraction.value;
-            case ">=" || "=>" || "geq":
-                return this.value >= compareFraction.value;
-            case "<":
-                return this.value < compareFraction.value;
-            case "<=" || "=>" || "leq":
-                return this.value <= compareFraction.value;
-            case "=":
-                // let F2: Fraction = compareFraction.clone().reduce(),
-                //     F1: Fraction = this.clone().reduce();
-                // return (F1.numerator === F2.numerator && F1.denominator === F2.denominator);
-                return this.value === compareFraction.value;
-            case "<>":
-                return this.value !== compareFraction.value;
-            default:
-                return false;
-        }
-    };
-    /* Compare shortcuts */
-    lesser = (than: Fraction | number): Boolean => {
-        return this.compare(than, '<');
-    };
-    leq = (than: Fraction | number): Boolean => {
-        return this.compare(than, '<=');
-    };
-    greater = (than: Fraction | number): Boolean => {
-        return this.compare(than, '>');
-    };
-    geq = (than: Fraction | number): Boolean => {
-        return this.compare(than, '>=');
-    };
-    isEqual = (than: Fraction | number): boolean => {
-        return this.compare(than, '=');
-    }
-    isNotEqual = (than: Fraction | number): boolean => {
-        return this.compare(than, '<>');
-    }
-    isOpposed = (p: Fraction): boolean => {
-        return this.isEqual(p.clone().opposed());
-    }
-    isInverted = (p: Fraction): boolean => {
-        return this.isEqual(new Fraction().one().divide(p.clone()));
-    }
-    isZero = (): boolean => {
-        return this._numerator === 0;
-    }
-    isNotZero = (): boolean => {
-        return this._numerator !== 0;
-    }
-    isOne = (): boolean => {
-        return this._numerator === 1 && this._denominator === 1;
-    }
-    isNegativeOne = (): boolean => {
-        return this._numerator === -1 && this._denominator === 1;
-    }
-    isPositive = (): boolean => {
-        return this.sign() === 1;
-    }
-    isNegative = (): boolean => {
-        return this.sign() === -1;
-    }
-    isStrictlyPositive = (): boolean => {
-        return this.value > 0
-    }
-    isStrictlyNegative = (): Boolean => {
-        return this.value < 0
-    }
-    isNaN = (): boolean => {
-        return isNaN(this._numerator);
-    }
-    isInfinity = (): boolean => {
-        return Math.abs(this._numerator) === Infinity;
-    }
-    isFinite = (): boolean => {
-        return !this.isInfinity() && !this.isNaN();
-    }
-    isSquare = (): boolean => {
-        return Math.sqrt(this._numerator) % 1 === 0 && Math.sqrt(this._denominator) % 1 === 0
-    }
-    isReduced = (): boolean => {
-        return Math.abs(Numeric.gcd(this._numerator, this._denominator)) === 1
-    }
-    isNatural = (): boolean => {
-        return this.isRelative() && this.isPositive()
-    }
-    isRelative = (): boolean => {
-        return this.clone().reduce().denominator === 1
-    }
-    isRational = (): boolean => {
-        return !this.isRelative()
-    }
-    isEven = (): boolean => {
-        return this.isRelative() && this.value % 2 === 0
-    }
-    isOdd = (): boolean => {
-        return this.isRelative() && this.value % 2 === 1
-    }
-    sign = (): number => {
-        return (this._numerator * this._denominator >= 0) ? 1 : -1;
-    };
-
-
-    // TODO: The rest of the functions are not used or unnecessary ?
-    /**
-     * Simple function to determine if it's a fraction
-     */
-    areEquals = (...F: Fraction[]): boolean => {
-        for (let i = 0; i < F.length; i++) {
-            if (!this.isEqual(F[i])) {
-                return false;
-            }
-        }
-        return true;
-    };
 }

@@ -149,8 +149,8 @@ export class Vector {
     // Mathematical operations
     // ------------------------------------------
     opposed = (): Vector => {
-        this._x.opposed();
-        this._y.opposed();
+        this._x.opposite();
+        this._y.opposite();
         return this;
     }
 
@@ -183,7 +183,7 @@ export class Vector {
     }
 
     normal = (): Vector => {
-        let x = this.x.clone().opposed(), y = this.y.clone();
+        let x = this.x.clone().opposite(), y = this.y.clone();
         this._x = y;
         this._y = x;
         return this;
@@ -230,7 +230,7 @@ export class Vector {
         return this
     }
 
-    angleWith = (V: Vector, sharp?: Boolean, radian?: Boolean): number => {
+    angleWith = (V: Vector, sharp?: boolean, radian?: boolean): number => {
         let scalar = this.scalarProductWithVector(V).value,
             toDegree = radian ? 1 : 180 / Math.PI;
         if (sharp) {

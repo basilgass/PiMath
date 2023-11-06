@@ -5,17 +5,15 @@
 
 import {IEuclidian, Polynom} from "./polynom";
 import {Fraction} from "../coefficients/fraction";
-import {literalType} from "./monom";
 import {PARTICULAR_SOLUTION} from "./equation";
 import {RationalStudy} from "./study/rationalStudy";
 import {StudyConfig} from "./study";
+import {literalType} from "../types";
 
 /**
  * Rational class can handle rational polynoms
  */
 export class Rational {
-    private _denominator: Polynom;
-    private _numerator: Polynom;
     private _rawString: string;
 
     /**
@@ -42,12 +40,16 @@ export class Rational {
 
     }
 
-    get numerator(): Polynom {
-        return this._numerator
-    }
+    private _denominator: Polynom;
 
     get denominator(): Polynom {
         return this._denominator
+    }
+
+    private _numerator: Polynom;
+
+    get numerator(): Polynom {
+        return this._numerator
     }
 
     get tex(): string {
@@ -131,12 +133,12 @@ export class Rational {
         this._numerator.factorize();
         for (let f of this._numerator.factors) {
 
-            if(f.degree().isZero()){
+            if (f.degree().isZero()) {
                 // Do the simplify only if the factor can divide the denominator
-                if(this._denominator.commonMonom().coefficient.clone().divide(f.monomByDegree().coefficient).isNatural()){
+                if (this._denominator.commonMonom().coefficient.clone().divide(f.monomByDegree().coefficient).isNatural()) {
                     this.simplify(f);
                 }
-            }else {
+            } else {
                 this.simplify(f);
             }
         }
@@ -182,7 +184,7 @@ export class Rational {
             // quotient is positive => it will be infinite.
             if (quotient.degree(letter).isStrictlyPositive()) {
                 return value === Infinity ? quotient.limitToInfinity(letter) : quotient.limitToNegativeInfinity(letter)
-                // return quotient.monomByDegree(undefined, letter).coefficient.sign()===1?(new Fraction()).infinite():(new Fraction()).infinite().opposed()
+                // return quotient.monomByDegree(undefined, letter).coefficient.sign===1?(new Fraction()).infinite():(new Fraction()).infinite().opposite()
             } else {
                 return quotient.monomByDegree(undefined, letter).coefficient
             }
@@ -210,10 +212,10 @@ export class Rational {
                 theLimit = FR._numerator.evaluate(evalValues)
                     .divide(FR._denominator.evaluate(evalValues))
                 theSign = FR._numerator.evaluate(evalValuesOffset)
-                    .divide(FR._denominator.evaluate(evalValuesOffset)).sign()
+                    .divide(FR._denominator.evaluate(evalValuesOffset)).sign
 
                 if (theLimit.isInfinity()) {
-                    return theSign === 1 ? theLimit.abs() : theLimit.abs().opposed()
+                    return theSign === 1 ? theLimit.abs() : theLimit.abs().opposite()
                 } else {
                     return theLimit
                 }
@@ -234,7 +236,7 @@ export class Rational {
         return this._numerator.evaluateAsNumeric(values) / this._denominator.evaluateAsNumeric(values)
     }
 
-    study = (config?:StudyConfig|string): RationalStudy => {
+    study = (config?: StudyConfig | string): RationalStudy => {
         return new RationalStudy(this, config)
     }
 }

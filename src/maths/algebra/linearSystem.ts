@@ -6,19 +6,6 @@ import {Numeric} from "../numeric";
 
 // TODO: Must check and rework
 export class LinearSystem {
-    // Stores the original equations
-    private _equations: Equation[];
-    // Determine the letters in the linear system, usually ['x', 'y']
-    private _letters: string[];
-    // Resolution steps contains each steps
-    // letter : target letter
-    // steps: {system: current LinearSystem, operations: [*3,/5] or [[*3,*2], [,*5], [*2,]]}
-    private _resolutionSteps: {
-        [key: string]: {
-            equations: Equation[],
-            operations: (string[])[]
-        }[]
-    };
     // Get the solution of the equation
     private _solutions: { [letter: string]: ISolution };
 
@@ -33,9 +20,12 @@ export class LinearSystem {
 
         return this;
     }
+    // Resolution steps contains each steps
+    // letter : target letter
 
-    // ------------------------------------------
-    // Getter and setter
+    // Stores the original equations
+    private _equations: Equation[];
+
     // ------------------------------------------
     get equations(): Equation[] {
         return this._equations;
@@ -45,12 +35,30 @@ export class LinearSystem {
         this._equations = value;
     }
 
+    // ------------------------------------------
+    // Getter and setter
+
+    // Determine the letters in the linear system, usually ['x', 'y']
+    private _letters: string[];
+
     get letters(): string {
         return this._letters.join('')
     }
 
     set letters(value: string) {
         this._letters = value.split('');
+    }
+
+    // steps: {system: current LinearSystem, operations: [*3,/5] or [[*3,*2], [,*5], [*2,]]}
+    private _resolutionSteps: {
+        [key: string]: {
+            equations: Equation[],
+            operations: (string[])[]
+        }[]
+    };
+
+    get resolutionSteps(): { [p: string]: { equations: Equation[]; operations: string[][] }[] } {
+        return this._resolutionSteps;
     }
 
     get isSolvable(): boolean {
@@ -144,7 +152,7 @@ export class LinearSystem {
                 if (equStr.length === 0) {
                     equStr.push(m.isZero() ? '' : m.tex);
                 } else {
-                    equStr.push(m.isZero() ? '' : ((m.coefficient.sign() === 1) ? '+' : '') + m.tex);
+                    equStr.push(m.isZero() ? '' : ((m.coefficient.sign === 1) ? '+' : '') + m.tex);
                 }
             }
 
@@ -189,11 +197,6 @@ export class LinearSystem {
 
         return `\\begin{aligned}&${tex.join('\\\\&')}\\end{aligned}`
 
-    }
-
-
-    get resolutionSteps(): { [p: string]: { equations: Equation[]; operations: string[][] }[] } {
-        return this._resolutionSteps;
     }
 
 // ------------------------------------------
@@ -273,7 +276,7 @@ export class LinearSystem {
     private _linearReduction(eq1: Equation, eq2: Equation, letter: string): { merged: Equation, factors: Fraction[] } {
         // Get the monom for the particular letter.
         let c1 = eq1.left.monomByDegree(1, letter).coefficient.clone(),
-            c2 = eq2.left.monomByDegree(1, letter).coefficient.clone().opposed();
+            c2 = eq2.left.monomByDegree(1, letter).coefficient.clone().opposite();
 
         // Reduce c1 and c2 by the gcd
         const gcdN = Numeric.gcd(c1.numerator, c2.numerator),
@@ -281,13 +284,13 @@ export class LinearSystem {
         c1.divide(gcdN).multiply(gcdD)
         c2.divide(gcdN).multiply(gcdD)
 
-        // if one value is -1, use 1 and make the other one opposed
-        if (c2.isNegativeOne()) {
-            c1.opposed()
-            c2.opposed()
-        } else if (c1.isNegativeOne()) {
-            c1.opposed()
-            c2.opposed()
+        // if one value is -1, use 1 and make the other one opposite
+        if (c2.isMinusOne()) {
+            c1.opposite()
+            c2.opposite()
+        } else if (c1.isMinusOne()) {
+            c1.opposite()
+            c2.opposite()
         }
 
         return {
