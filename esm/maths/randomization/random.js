@@ -36,8 +36,8 @@ var Random;
         return (new rndFraction_1.rndFraction(config)).generate();
     }
     Random.fraction = fraction;
-    function number(from, to) {
-        return rndHelpers_1.rndHelpers.randomInt(from, to);
+    function number(from, to, exclude) {
+        return rndHelpers_1.rndHelpers.randomInt(from, to, exclude);
     }
     Random.number = number;
     function numberSym(max, allowZero) {

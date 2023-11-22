@@ -18,11 +18,32 @@ class rndHelpers {
      * @param a (number) : From this value to the second value. If the second is ommited, this value is the max value.
      * @param b (number) : To this value. If this is ommited.
      */
-    static randomInt(a, b) {
+    static randomInt(a, b, exclude) {
         if (b === undefined) {
-            return this.randomInt(0, a);
+            if (a >= 0) {
+                return this.randomInt(0, a);
+            }
+            else {
+                return this.randomInt(a, 0);
+            }
         }
-        return Math.floor(Math.random() * (b - a + 1) + a);
+        // Same start and end values
+        if (a === b) {
+            return a;
+        }
+        // No exclusion
+        if (exclude === undefined) {
+            return Math.floor(Math.random() * (b - a + 1) + a);
+        }
+        // With exclusion
+        if (Math.abs(b - a) <= exclude.length) {
+            throw new Error('The number of excluded values is too high.');
+        }
+        let r = this.randomInt(a, b);
+        while (exclude.includes(r)) {
+            r = this.randomInt(a, b);
+        }
+        return r;
     }
     /**
      * Random integer between -max and max value.
@@ -59,7 +80,7 @@ class rndHelpers {
         if (arr.length === 0) {
             return '';
         }
-        return this.randomArray(arr, 1)[0];
+        return arr[this.randomInt(0, arr.length - 1)];
     }
     static shuffleArray(arr) {
         // The Fisher-Yates algorithm

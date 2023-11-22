@@ -31,7 +31,7 @@ describe('Numerical expression', () => { // the tests container
         expect(exprInvalid.isValid).to.be.false
     });
 
-    it('souldd detect invalid expression withouth crahsing', function() {
+    it('souldd detect invalid expression withouth crahsing', function () {
         const exprPourrie = new NumExp('3xsi'),
             exprOk = new NumExp('3xsin(x)')
 
@@ -52,7 +52,7 @@ describe('Numerical expression', () => { // the tests container
         expect(expr2.evaluate({x: 2})).to.be.equal(1)
     });
 
-    it('should calculate sqrt from exp', function(){
+    it('should calculate sqrt from exp', function () {
         let k = new NumExp('nthrt(x,3)')
         expect(k.evaluate({x: -8})).to.be.equal(-2)
         expect(k.evaluate({x: 27})).to.be.equal(3)
@@ -78,4 +78,12 @@ describe('Numerical expression', () => { // the tests container
         let k = new NumExp('ln(3)')
         expect(+k.evaluate().toFixed(6)).to.be.equal(1.098612)
     });
+
+    it('should parse with sqrt and root', () => {
+        const expr1 = new NumExp('sqrt(9)');
+        expect(expr1.evaluate()).to.be.equal(3);
+        
+        const expr2 = new NumExp('nthrt(8,3)');
+        expect(expr2.evaluate()).to.be.equal(2);
+    })
 });

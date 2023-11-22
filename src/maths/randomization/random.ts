@@ -32,8 +32,8 @@ export namespace Random {
         return (new rndFraction(config)).generate()
     }
 
-    export function number(from: number, to: number): number {
-        return rndHelpers.randomInt(from, to)
+    export function number(from: number, to: number, exclude?: number[]): number {
+        return rndHelpers.randomInt(from, to, exclude)
     }
 
     export function numberSym(max: number, allowZero?: boolean): number {

@@ -9,7 +9,7 @@ export declare namespace Random {
     function polynom(config?: randomPolynomConfig): Polynom;
     function monom(config?: randomMonomConfig): Monom;
     function fraction(config?: randomCoefficientConfig): Fraction;
-    function number(from: number, to: number): number;
+    function number(from: number, to: number, exclude?: number[]): number;
     function numberSym(max: number, allowZero?: boolean): number;
     function prime(max: number): number;
     function bool(percent?: number): boolean;
