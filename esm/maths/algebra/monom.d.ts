@@ -4,8 +4,6 @@ export type literalType = {
     [Key: string]: Fraction;
 };
 export declare class Monom {
-    private _coefficient;
-    private _literal;
     /**
      * Create a Monom
      * Defined as \\(k \\cdot x^{n}\\), where \\( k,n \in \\mathbb{Q}\\).
@@ -13,6 +11,7 @@ export declare class Monom {
      * @param value (optional) string The value that should be parse. Can be a Monom, a Fraction, a string or a number. If nothing is provided, it will return the trivial monom (0).
      */
     constructor(value?: unknown);
+    private _coefficient;
     /**
      * Get the coefficient \\(k\\) of the Monom \\(k\\cdot x^{n}\\)
      * @returns {Fraction}
@@ -23,22 +22,23 @@ export declare class Monom {
      * @param {Fraction | number | string} F
      */
     set coefficient(F: Fraction | number | string);
+    private _literal;
     /**
      * Get the literal part of \\(x^{n_1}y^{n_2}\\) as dictionary \\[\\begin{array}{ll}x&=n_1\\\\y&=n_2\\end{array}\\]
      * @returns {literalType}
      */
     get literal(): literalType;
     /**
+     * Set the literal part of the monom. Must be a dictionary {x: Fraction, y: Fraction, ...}
+     * @param {literalType} L
+     */
+    set literal(L: literalType);
+    /**
      * Get the literal square roots of the Monom.
      * TODO: remove this getter ? Is it used and is it correct ?
      * @returns {literalType}
      */
     get literalSqrt(): literalType;
-    /**
-     * Set the literal part of the monom. Must be a dictionary {x: Fraction, y: Fraction, ...}
-     * @param {literalType} L
-     */
-    set literal(L: literalType);
     /**
      * Set the literal part of the monom from a string
      * @param inputStr  String like x^2y^3
@@ -53,7 +53,6 @@ export declare class Monom {
      */
     get display(): string;
     get dividers(): Monom[];
-    private _getLiteralDividers;
     /**
      * Display the monom, forcing the '+' sign to appear
      */
@@ -65,12 +64,21 @@ export declare class Monom {
      */
     get tex(): string;
     /**
+     * Get the least common multiple of monoms
+     * @param monoms    Array of monoms
+     */
+    static lcm: (...monoms: Monom[]) => Monom;
+    /**
+     * Multiply two monoms and return a NEW monom.
+     * @param monoms
+     */
+    static xmultiply: (...monoms: Monom[]) => Monom;
+    /**
      * Parse a string to a monom. The string may include fraction.
      * @param inputStr
      */
     parse: (inputStr: unknown) => Monom;
     addToken: (stack: Monom[], element: Token) => void;
-    private _shutingYardToReducedMonom;
     /**
      * Clone the current Monom.
      */
@@ -183,16 +191,6 @@ export declare class Monom {
     derivative: (letter?: string) => Monom;
     primitive: (letter?: string) => Monom;
     /**
-     * Get the least common multiple of monoms
-     * @param monoms    Array of monoms
-     */
-    static lcm: (...monoms: Monom[]) => Monom;
-    /**
-     * Multiply two monoms and return a NEW monom.
-     * @param monoms
-     */
-    static xmultiply: (...monoms: Monom[]) => Monom;
-    /**
      * Determine if multiple monoms are similar
      * @param M
      */
@@ -203,4 +201,6 @@ export declare class Monom {
      */
     areEquals: (...M: Monom[]) => boolean;
     isDivisible: (div: Monom) => boolean;
+    private _getLiteralDividers;
+    private _shutingYardToReducedMonom;
 }

@@ -7,8 +7,6 @@ import {Shutingyard, ShutingyardType, Token} from '../shutingyard';
 import {Numeric} from '../numeric';
 import {Fraction} from "../coefficients/fraction";
 import {Equation, ISolution} from "./equation";
-import {Random} from "../randomization/random";
-import {loadHighlighter} from "typedoc/dist/lib/utils/highlighter";
 
 export type PolynomParsingType = string | Polynom | number | Fraction | Monom
 
@@ -24,14 +22,7 @@ export interface IEuclidian {
  * ```
  */
 export class Polynom {
-    private _dirty_factors: boolean
-    private _dirty_zeroes: boolean
-    private _euclidianCache: { [Key: string]: IEuclidian }
-    private _factors: Polynom[];
-    private _monoms: Monom[];
     private _rawString: string;
-    private _texString: string;
-    private _zeroes: ISolution[]
 
     /**
      *
@@ -49,21 +40,7 @@ export class Polynom {
         return this;
     }
 
-    get euclidianCache(): { [p: string]: IEuclidian } {
-        return this._euclidianCache;
-    }
-
-    set euclidianCache(value: { [p: string]: IEuclidian }) {
-        this._euclidianCache = value;
-    }
-
-    get dirty_zeroes(): boolean {
-        return this._dirty_zeroes;
-    }
-
-    set dirty_zeroes(value: boolean) {
-        this._dirty_zeroes = value;
-    }
+    private _dirty_factors: boolean
 
     // ------------------------------------------
     get dirty_factors(): boolean {
@@ -74,18 +51,27 @@ export class Polynom {
         this._dirty_factors = value;
     }
 
-    // ------------------------------------------
-    get monoms() {
-        return this._monoms;
+    private _dirty_zeroes: boolean
+
+    get dirty_zeroes(): boolean {
+        return this._dirty_zeroes;
     }
 
-    set monoms(M: Monom[]) {
-        this._monoms = M;
+    set dirty_zeroes(value: boolean) {
+        this._dirty_zeroes = value;
     }
 
-    get zeroes(): ISolution[] {
-        return this.getZeroes()
+    private _euclidianCache: { [Key: string]: IEuclidian }
+
+    get euclidianCache(): { [p: string]: IEuclidian } {
+        return this._euclidianCache;
     }
+
+    set euclidianCache(value: { [p: string]: IEuclidian }) {
+        this._euclidianCache = value;
+    }
+
+    private _factors: Polynom[];
 
     get factors(): Polynom[] {
         return this.factorize()
@@ -96,8 +82,27 @@ export class Polynom {
         this._factors = value;
     }
 
+    private _monoms: Monom[];
+
+    // ------------------------------------------
+    get monoms() {
+        return this._monoms;
+    }
+
+    set monoms(M: Monom[]) {
+        this._monoms = M;
+    }
+
+    private _texString: string;
+
     get texString(): string {
         return this._texString;
+    }
+
+    private _zeroes: ISolution[]
+
+    get zeroes(): ISolution[] {
+        return this.getZeroes()
     }
 
     get texFactors(): string {
@@ -439,7 +444,7 @@ export class Polynom {
         this.mark_as_dirty()
 
         if (value instanceof Polynom) {
-            return this.multiplyByPolynom(value);
+            return this.multiplyByPolynom(value)
         } else if (value instanceof Fraction) {
             return this.multiplyByFraction(value);
         } else if (value instanceof Monom) {
@@ -477,27 +482,27 @@ export class Polynom {
         }
 
         // Get at least a letter
-
         const maxMP: Monom = P.monomByDegree(undefined, letter);
         const degreeP: Fraction = P.degree(letter);
 
         let newM: Monom;
 
         // Make the euclidian division of the two polynoms.
-        let MaxIteration = this.degree(letter).clone().multiply(2);
-        while (reminder.degree(letter).geq(degreeP) && MaxIteration.isPositive()) {
-            MaxIteration.subtract(1)
+        let MaxIteration = this.degree(letter).value * 2;
+        while (reminder.degree(letter).geq(degreeP) && MaxIteration > 0) {
+            MaxIteration--
 
             // Get the greatest monom divided by the max monom of the divider
             newM = reminder.monomByDegree(undefined, letter).clone().divide(maxMP);
 
-            if (newM.isZero()) {
-                break;
-            }
+            if (newM.isZero()) break;
 
             // Get the new quotient and reminder.
             quotient.add(newM);
             reminder.subtract(P.clone().multiply(newM));
+
+            // Check if the reminder is zero.
+            if (newM.degree(letter).isZero()) break
         }
 
         quotient.reduce()
@@ -517,11 +522,11 @@ export class Polynom {
         } else if (value instanceof Polynom) {
             if (value.monoms.length === 1 && value.variables.length === 0) {
                 return this.divideByFraction(value.monoms[0].coefficient)
-            }else {
+            } else {
                 let {quotient, reminder} = this.euclidian(value)
-                if(reminder.isZero()){
+                if (reminder.isZero()) {
                     return quotient
-                }else{
+                } else {
                     console.log(`${this.tex} is not divideable by ${value.tex}`)
                     return new Polynom().zero()
                 }
@@ -663,19 +668,21 @@ export class Polynom {
         let polyFactors = factors.map(x => new Polynom(x));
 
         // polyFactors contain all polynoms.
-        let checkPolyFactors = polyFactors.filter(x=>x.degree().geq(1) && !x.commonMonom().isOne())
+        let checkPolyFactors = polyFactors.filter(x => x.degree().geq(1) && !x.commonMonom().isOne())
 
         // Some polynoms are not completely factorized.
-        if(checkPolyFactors.length>0 && !soft){return false}
-        if(checkPolyFactors.length>0 && soft){
-            polyFactors = polyFactors.filter(x=>x.commonMonom().isOne())
+        if (checkPolyFactors.length > 0 && !soft) {
+            return false
+        }
+        if (checkPolyFactors.length > 0 && soft) {
+            polyFactors = polyFactors.filter(x => x.commonMonom().isOne())
 
             let FactorizedConstant = new Fraction().one()
-            for(let p of checkPolyFactors){
+            for (let p of checkPolyFactors) {
                 let k = p.commonMonom(),
                     pFactor = p.clone().divide(k)
 
-                if(k.degree().isZero()){
+                if (k.degree().isZero()) {
                     FactorizedConstant.multiply(k.coefficient)
                     polyFactors.push(pFactor.clone())
                 }
@@ -786,38 +793,56 @@ export class Polynom {
     // -------------------------------------
     reduce = (): Polynom => {
         // Reduce the polynom
-        let values = [...this._monoms],
+        let values = this._monoms.map(x => x.clone()),
             vars = [...this.variables]
 
-        this._monoms = []
-
-        let coeffs = values.filter(x => x.variables.length === 0)
-
-        if (coeffs.length > 0) {
-            this._monoms.push(coeffs.reduce((a, b) => a.add(b)))
-        }
-
-        // Build the new monoms
-        for (let letter of vars) {
-            // Monom with same letters, but might be of different degrees
-            let M = values.filter(x => x.hasLetter(letter))
-
-            while (M.length > 0) {
-                // Take the first element
-                const m = M.shift(), degree = m.degree(letter)
-
-                for (let a of M.filter(x => x.degree(letter).isEqual(degree))) {
-                    m.add(a)
+        // Group the monoms by similarity
+        let i = 0
+        while (i < this._monoms.length) {
+            for (let j = i + 1; j < this._monoms.length; j++) {
+                if (this._monoms[i].isSameAs(this._monoms[j])) {
+                    this._monoms[i].add(this._monoms[j])
+                    this._monoms.splice(j, 1)
+                    if (this._monoms[i].isZero()) {
+                        this._monoms[i] = new Monom().zero()
+                    }
+                    j--
                 }
-
-                this._monoms.push(m)
-
-                // Make the new array.
-                M = M.filter(x => x.degree(letter).isNotEqual(degree))
             }
-            // reduce the monom
-
+            i++
         }
+
+        //
+        //
+        //
+        // let coeffs = values.filter(x => x.variables.length === 0)
+        //
+        // if (coeffs.length > 0) {
+        //     this._monoms.push(coeffs.reduce((a, b) => a.add(b)))
+        // }
+        //
+        // // Build the new monoms
+        // for (let letter of vars) {
+        //     // Monom with same letters, but might be of different degrees
+        //     let M = values.filter(x => x.hasLetter(letter))
+        //
+        //     while (M.length > 0) {
+        //         // Take the first element
+        //         const m = M.shift(), degree = m.degree(letter)
+        //
+        //         for (let a of M.filter(x => x.degree(letter).isEqual(degree))) {
+        //             m.add(a)
+        //         }
+        //
+        //         this._monoms.push(m)
+        //
+        //         // Make the new array.
+        //         M = M.filter(x => x.degree(letter).isNotEqual(degree))
+        //     }
+        //     // reduce the monom
+        //
+        // }
+
 
         // Remove all null monoms
         this._monoms = this._monoms.filter((m) => {
@@ -832,11 +857,14 @@ export class Polynom {
         if (this.length === 0) {
             return new Polynom().zero();
         }
+
         return this.reorder();
     };
 
     reorder = (letter: string = 'x', revert?: boolean): Polynom => {
-        if(revert===undefined){revert = false}
+        if (revert === undefined) {
+            revert = false
+        }
 
         // TODO: Must handle multiple setLetter reorder system
         let otherLetters = this.variables.filter(x => x !== letter)
@@ -845,7 +873,7 @@ export class Polynom {
                 db = b.degree(letter).value
 
             // Values are different
-            if (da !== db) return revert?da-db : db - da
+            if (da !== db) return revert ? da - db : db - da
 
             // if values are equals, check other letters - it must be revert in that case !
             if (otherLetters.length > 0) {
@@ -854,7 +882,7 @@ export class Polynom {
                         db = b.degree(L).value
 
                     // Values are different
-                    if (da !== db) return revert?da - db : db - da
+                    if (da !== db) return revert ? da - db : db - da
                 }
             }
 
@@ -1045,16 +1073,12 @@ export class Polynom {
                                 dC = x.monoms[x.monoms.length - 1]
 
                             // Check last item (degree zero)
-                            if (!pC.isDivisible(dC)) {
-                                return false
-                            }
+                            if (!pC.isDivisible(dC)) return false
 
                             // Check the first item (degree max)
-                            if (!pX.isDivisible(dX)) {
-                                return false
-                            }
+                            return pX.isDivisible(dX);
 
-                            return true
+
                         })
                     }
                 }

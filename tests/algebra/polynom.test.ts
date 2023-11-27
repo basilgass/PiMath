@@ -67,6 +67,13 @@ describe('Polynom tests', () => {
         expect(euclidian.reminder.tex).to.be.equal('12')
     });
 
+    it('should reduce', () => {
+        let P = new Polynom('15x-19x+24+4x-12')
+        P.reduce()
+        expect(P.tex).to.be.equal('12')
+
+    })
+
     it('should factorize the polynom', () => {
         let P = new Polynom('x^2-5x+6')
 
@@ -99,7 +106,7 @@ describe('Polynom tests', () => {
         expect(P2.texFactors).to.be.equal('-2x\\left( x+3 \\right)\\left( x-3 \\right)')
     });
 
-    it('should detect if a polynom is factorized', function (){
+    it('should detect if a polynom is factorized', function () {
         let P = new Polynom('x-1')
         expect(P.isFactorized('x-1')).to.be.true
         expect(P.isFactorized('x-2')).to.be.false
@@ -164,6 +171,12 @@ describe('Polynom parsing with rational power', () => {
     })
 })
 
+describe("Polynom with multiple variables", () => {
+    it('should parse with multiple variables', () => {
+        const P = new Polynom('ax')
+        expect(P.display).to.be.equal('ax')
+    })
+})
 
 // describe("test simple", ()=>{
 //     it('should parce this one correctly', ()=>{
@@ -179,4 +192,142 @@ describe('Polynom parsing with rational power', () => {
 //
 //         expect(P.degree().value).to.be.equal(0.5)
 //     })
+// })
+//
+// describe('Polynom used as complex number', () => {
+//     let P = new Polynom('4+3i')
+//
+//     P.pow(2)
+//
+//     P.monoms.forEach(m => {
+//         const d = m.degree('i').value
+//         if (d >= 2) {
+//             if (d % 2 === 0) {
+//                 m.coefficient = m.coefficient.multiply((-1) ** (d / 2))
+//                 m.setLetter('i', 0)
+//             } else {
+//                 m.coefficient = m.coefficient.multiply((-1) ** ((d - 1) / 2))
+//                 m.setLetter('i', 1)
+//             }
+//         }
+//     })
+//     // console.log(P.reduce().tex)
+//
+// })
+//
+// describe("making my test", () => {
+//     let models = [
+//         {
+//             question: 'B \\cdot A^{K}=C',
+//             answer: {
+//                 log: (a: number, b: number, c: number, d: number, e: number) => new Fraction(c, b),
+//                 poly: (k: Polynom, p: Polynom) => k.clone()
+//             }
+//         },
+//         {
+//             question: 'B \\cdot A^{K}=C',
+//             answer: {
+//                 log: (a: number, b: number, c: number, d: number, e: number) => new Fraction(c, b),
+//                 poly: (k: Polynom, p: Polynom) => k.clone()
+//             }
+//         },
+//         {
+//             question: 'A^{K}=B \\cdot A^{P}',
+//             answer: {
+//                 log: (a: number, b: number, c: number, d: number, e: number) => new Fraction(b),
+//                 poly: (k: Polynom, p: Polynom) => k.clone().subtract(p)
+//             }
+//         },
+//         {
+//             question: 'A^{K}=B \\cdot A^{P}',
+//             answer: {
+//                 log: (a: number, b: number, c: number, d: number, e: number) => new Fraction(b),
+//                 poly: (k: Polynom, p: Polynom) => k.clone().subtract(p)
+//             }
+//         },
+//         {
+//             question: 'B \\cdot A^{K} = C \\cdot A^{P}',
+//             answer: {
+//                 log: (a: number, b: number, c: number, d: number, e: number) => new Fraction(c, b),
+//                 poly: (k: Polynom, p: Polynom) => k.clone().subtract(p)
+//             }
+//         },
+//         {
+//             question: 'B \\cdot A^{K} = \\frac{ C }{ A^{P} }',
+//             answer: {
+//                 log: (a: number, b: number, c: number, d: number, e: number) => new Fraction(c, b),
+//                 poly: (k: Polynom, p: Polynom) => k.clone().add(p)
+//             }
+//         },
+//         {
+//             question: 'C \\cdot A^{K} - B = D',
+//             answer: {
+//                 log: (a: number, b: number, c: number, d: number, e: number) => new Fraction(d + b, c),
+//                 poly: (k: Polynom, p: Polynom) => k.clone()
+//             }
+//         },
+//         {
+//             question: 'C \\cdot A^{K} - B = D \\cdot A^{P} ',
+//             answer: {
+//                 log: (a: number, b: number, c: number, d: number, e: number) => new Fraction(b, c - e),
+//                 poly: (k: Polynom, p: Polynom) => k.clone()
+//             }
+//         },
+//     ]
+//
+//
+//     for (let i = 0; i < 15; i++) {
+//         console.log(`{\\centering \\huge équations logarithmiques \\\\ }\n\nRésoudre les équations suivantes. Donner la réponse sous forme exacte et avec 4 décimales.`)
+//
+//         console.log(`\\begin{enumerate}[(i),itemsep=4em]\n`)
+//
+//         for (let m of models) {
+//             let a = PiMath.Random.number(2, 9),
+//                 b = PiMath.Random.number(2, 9),
+//                 c = PiMath.Random.number(2, 9),
+//                 d = PiMath.Random.number(1, 9),
+//                 e = PiMath.Random.number(1, c - 1),
+//                 k = PiMath.Random.polynom({degree: 1}),
+//                 p = PiMath.Random.polynom({degree: 1})
+//
+//             if (k.monomByDegree(1).coefficient.isNegative()) {
+//                 k.opposed()
+//             }
+//             if (p.monomByDegree(1).coefficient.isNegative()) {
+//                 p.opposed()
+//             }
+//
+//             let poly = m.answer.poly(k, p),
+//                 pa = poly.monomByDegree(1).coefficient,
+//                 pb = poly.monomByDegree(0).coefficient
+//
+//             if (pa.isZero()) {
+//                 k = k.add('x')
+//                 poly = m.answer.poly(k, p),
+//                     pa = poly.monomByDegree(1).coefficient,
+//                     pb = poly.monomByDegree(0).coefficient
+//             }
+//
+//             const question = m.question
+//                 .replaceAll('A', a.toString())
+//                 .replaceAll('B', b.toString())
+//                 .replaceAll('C', c.toString())
+//                 .replaceAll('D', d.toString())
+//                 .replaceAll('K', k.tex)
+//                 .replaceAll('P', p.tex)
+//
+//
+//             const log = m.answer.log(a, b, c, d, e).reduce()
+//             let answer = `\\log_{ ${a} }\\left( ${log.tex} \\right)`
+//             if (!pb.isZero()) answer = `${answer}${pb.clone().opposed().texWithSign}`
+//             if (!pa.isOne()) answer = `\\frac{ ${answer} }{ ${pa.tex} }`
+//
+//             let value = ((Math.log10(log.value) / Math.log10(a) - pb.value) / pa.value).toFixed(4)
+//
+//             console.log(`\\item \\(\\displaystyle ${question}\\) \\hfill \\( \\trou{ ${answer}=${value} } \\)`)
+//         }
+//
+//         console.log(`\\end{enumerate}\n\\newpage`)
+//     }
+//
 // })

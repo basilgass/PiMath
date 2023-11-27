@@ -17,36 +17,36 @@ export interface IEuclidian {
  * ```
  */
 export declare class Polynom {
-    private _dirty_factors;
-    private _dirty_zeroes;
-    private _euclidianCache;
-    private _factors;
-    private _monoms;
     private _rawString;
-    private _texString;
-    private _zeroes;
     /**
      *
      * @param {string} polynomString (optional) Default polynom to parse on class creation
      * @param values
      */
     constructor(polynomString?: PolynomParsingType, ...values: unknown[]);
+    private _dirty_factors;
+    get dirty_factors(): boolean;
+    set dirty_factors(value: boolean);
+    private _dirty_zeroes;
+    get dirty_zeroes(): boolean;
+    set dirty_zeroes(value: boolean);
+    private _euclidianCache;
     get euclidianCache(): {
         [p: string]: IEuclidian;
     };
     set euclidianCache(value: {
         [p: string]: IEuclidian;
     });
-    get dirty_zeroes(): boolean;
-    set dirty_zeroes(value: boolean);
-    get dirty_factors(): boolean;
-    set dirty_factors(value: boolean);
-    get monoms(): Monom[];
-    set monoms(M: Monom[]);
-    get zeroes(): ISolution[];
+    private _factors;
     get factors(): Polynom[];
     set factors(value: Polynom[]);
+    private _monoms;
+    get monoms(): Monom[];
+    set monoms(M: Monom[]);
+    private _texString;
     get texString(): string;
+    private _zeroes;
+    get zeroes(): ISolution[];
     get texFactors(): string;
     get displayFactors(): string;
     get length(): number;

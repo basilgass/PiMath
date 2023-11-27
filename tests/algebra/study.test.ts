@@ -5,6 +5,7 @@ import {expect} from "chai";
 import {ASYMPTOTE} from "../../src/maths/algebra/study";
 
 describe('Study tests', () => {
+
     it('should get the zeroes', function () {
         const study = new RationalStudy(
             // new Rational('x^2-4x-4', 'x+7')
