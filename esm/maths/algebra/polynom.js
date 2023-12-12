@@ -250,7 +250,7 @@ class Polynom {
             if (P.variables.length === 0) {
                 let q = this.clone().divide(P);
                 return {
-                    quotient: this.clone().divide(P),
+                    quotient: this.clone().divide(P).reduce(),
                     reminder: new Polynom().zero()
                 };
             }
@@ -259,17 +259,19 @@ class Polynom {
             const degreeP = P.degree(letter);
             let newM;
             // Make the euclidian division of the two polynoms.
-            let MaxIteration = this.degree(letter).clone().multiply(2);
-            while (reminder.degree(letter).geq(degreeP) && MaxIteration.isPositive()) {
-                MaxIteration.subtract(1);
+            let MaxIteration = this.degree(letter).value * 2;
+            while (reminder.degree(letter).geq(degreeP) && MaxIteration > 0) {
+                MaxIteration--;
                 // Get the greatest monom divided by the max monom of the divider
                 newM = reminder.monomByDegree(undefined, letter).clone().divide(maxMP);
-                if (newM.isZero()) {
+                if (newM.isZero())
                     break;
-                }
                 // Get the new quotient and reminder.
                 quotient.add(newM);
                 reminder.subtract(P.clone().multiply(newM));
+                // Check if the reminder is zero.
+                if (newM.degree(letter).isZero())
+                    break;
             }
             quotient.reduce();
             reminder.reduce();
@@ -510,28 +512,52 @@ class Polynom {
         // -------------------------------------
         this.reduce = () => {
             // Reduce the polynom
-            let values = [...this._monoms], vars = [...this.variables];
-            this._monoms = [];
-            let coeffs = values.filter(x => x.variables.length === 0);
-            if (coeffs.length > 0) {
-                this._monoms.push(coeffs.reduce((a, b) => a.add(b)));
-            }
-            // Build the new monoms
-            for (let letter of vars) {
-                // Monom with same letters, but might be of different degrees
-                let M = values.filter(x => x.hasLetter(letter));
-                while (M.length > 0) {
-                    // Take the first element
-                    const m = M.shift(), degree = m.degree(letter);
-                    for (let a of M.filter(x => x.degree(letter).isEqual(degree))) {
-                        m.add(a);
+            let values = this._monoms.map(x => x.clone()), vars = [...this.variables];
+            // Group the monoms by similarity
+            let i = 0;
+            while (i < this._monoms.length) {
+                for (let j = i + 1; j < this._monoms.length; j++) {
+                    if (this._monoms[i].isSameAs(this._monoms[j])) {
+                        this._monoms[i].add(this._monoms[j]);
+                        this._monoms.splice(j, 1);
+                        if (this._monoms[i].isZero()) {
+                            this._monoms[i] = new monom_1.Monom().zero();
+                        }
+                        j--;
                     }
-                    this._monoms.push(m);
-                    // Make the new array.
-                    M = M.filter(x => x.degree(letter).isNotEqual(degree));
                 }
-                // reduce the monom
+                i++;
             }
+            //
+            //
+            //
+            // let coeffs = values.filter(x => x.variables.length === 0)
+            //
+            // if (coeffs.length > 0) {
+            //     this._monoms.push(coeffs.reduce((a, b) => a.add(b)))
+            // }
+            //
+            // // Build the new monoms
+            // for (let letter of vars) {
+            //     // Monom with same letters, but might be of different degrees
+            //     let M = values.filter(x => x.hasLetter(letter))
+            //
+            //     while (M.length > 0) {
+            //         // Take the first element
+            //         const m = M.shift(), degree = m.degree(letter)
+            //
+            //         for (let a of M.filter(x => x.degree(letter).isEqual(degree))) {
+            //             m.add(a)
+            //         }
+            //
+            //         this._monoms.push(m)
+            //
+            //         // Make the new array.
+            //         M = M.filter(x => x.degree(letter).isNotEqual(degree))
+            //     }
+            //     // reduce the monom
+            //
+            // }
             // Remove all null monoms
             this._monoms = this._monoms.filter((m) => {
                 return m.coefficient.value !== 0;
@@ -717,14 +743,10 @@ class Polynom {
                             allDividers = allDividers.filter(x => {
                                 let pX = P.monoms[0], pC = P.monoms[P.monoms.length - 1], dX = x.monoms[0], dC = x.monoms[x.monoms.length - 1];
                                 // Check last item (degree zero)
-                                if (!pC.isDivisible(dC)) {
+                                if (!pC.isDivisible(dC))
                                     return false;
-                                }
                                 // Check the first item (degree max)
-                                if (!pX.isDivisible(dX)) {
-                                    return false;
-                                }
-                                return true;
+                                return pX.isDivisible(dX);
                             });
                         }
                     }
@@ -1081,18 +1103,6 @@ class Polynom {
         }
         return this;
     }
-    get euclidianCache() {
-        return this._euclidianCache;
-    }
-    set euclidianCache(value) {
-        this._euclidianCache = value;
-    }
-    get dirty_zeroes() {
-        return this._dirty_zeroes;
-    }
-    set dirty_zeroes(value) {
-        this._dirty_zeroes = value;
-    }
     // ------------------------------------------
     get dirty_factors() {
         return this._dirty_factors;
@@ -1100,15 +1110,17 @@ class Polynom {
     set dirty_factors(value) {
         this._dirty_factors = value;
     }
-    // ------------------------------------------
-    get monoms() {
-        return this._monoms;
+    get dirty_zeroes() {
+        return this._dirty_zeroes;
     }
-    set monoms(M) {
-        this._monoms = M;
+    set dirty_zeroes(value) {
+        this._dirty_zeroes = value;
     }
-    get zeroes() {
-        return this.getZeroes();
+    get euclidianCache() {
+        return this._euclidianCache;
+    }
+    set euclidianCache(value) {
+        this._euclidianCache = value;
     }
     get factors() {
         return this.factorize();
@@ -1117,8 +1129,18 @@ class Polynom {
         this.mark_as_dirty();
         this._factors = value;
     }
+    // ------------------------------------------
+    get monoms() {
+        return this._monoms;
+    }
+    set monoms(M) {
+        this._monoms = M;
+    }
     get texString() {
         return this._texString;
+    }
+    get zeroes() {
+        return this.getZeroes();
     }
     get texFactors() {
         this.factorize();

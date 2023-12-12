@@ -15,8 +15,6 @@ class Monom {
      * @param value (optional) string The value that should be parse. Can be a Monom, a Fraction, a string or a number. If nothing is provided, it will return the trivial monom (0).
      */
     constructor(value) {
-        // ------------------------------------------
-        // Creation / parsing functions
         // -----------------------------------------
         /**
          * Parse a string to a monom. The string may include fraction.
@@ -83,36 +81,6 @@ class Monom {
                         break;
                 }
             }
-        };
-        this._shutingYardToReducedMonom = (inputStr) => {
-            // Get the RPN array of the current expression
-            const SY = new shutingyard_1.Shutingyard().parse(inputStr);
-            const rpn = SY.rpn;
-            let stack = [], m, pow, letter, q1, q2;
-            if (rpn.length === 0) {
-                this.zero();
-                return this;
-            }
-            else if (rpn.length === 1) {
-                const element = rpn[0];
-                this.one();
-                if (element.tokenType === 'coefficient') {
-                    this.coefficient = new fraction_1.Fraction(element.token);
-                }
-                else if (element.tokenType === 'variable') {
-                    this.setLetter(element.token, 1);
-                }
-                return this;
-            }
-            else {
-                // Reset the monom
-                for (const element of rpn) {
-                    this.addToken(stack, element);
-                }
-            }
-            this.one();
-            this.multiply(stack[0]);
-            return this;
         };
         /**
          * Clone the current Monom.
@@ -513,6 +481,9 @@ class Monom {
             }
             return M;
         };
+        // ----------------------------------------
+        // Static functions
+        // ----------------------------------------
         // TODO: The rest of the functions are not used or unnecessary ?
         /**
          * Determine if multiple monoms are similar
@@ -562,6 +533,36 @@ class Monom {
             }
             return this.coefficient.clone().divide(div.coefficient).isRelative();
         };
+        this._shutingYardToReducedMonom = (inputStr) => {
+            // Get the RPN array of the current expression
+            const SY = new shutingyard_1.Shutingyard().parse(inputStr);
+            const rpn = SY.rpn;
+            let stack = [], m, pow, letter, q1, q2;
+            if (rpn.length === 0) {
+                this.zero();
+                return this;
+            }
+            else if (rpn.length === 1) {
+                const element = rpn[0];
+                this.one();
+                if (element.tokenType === 'coefficient') {
+                    this.coefficient = new fraction_1.Fraction(element.token);
+                }
+                else if (element.tokenType === 'variable') {
+                    this.setLetter(element.token, 1);
+                }
+                return this;
+            }
+            else {
+                // Reset the monom
+                for (const element of rpn) {
+                    this.addToken(stack, element);
+                }
+            }
+            this.one();
+            this.multiply(stack[0]);
+            return this;
+        };
         this.zero();
         if (value !== undefined) {
             // A string is given - try to parse the value.
@@ -570,8 +571,6 @@ class Monom {
         return this;
     }
     // ------------------------------------------
-    // Getter and setter
-    // ------------------------------------------
     /**
      * Get the coefficient \\(k\\) of the Monom \\(k\\cdot x^{n}\\)
      * @returns {Fraction}
@@ -579,6 +578,8 @@ class Monom {
     get coefficient() {
         return this._coefficient;
     }
+    // ------------------------------------------
+    // Getter and setter
     /**
      * Set the coefficient \\(k\\) value of the monom
      * @param {Fraction | number | string} F
@@ -592,6 +593,13 @@ class Monom {
      */
     get literal() {
         return this._literal;
+    }
+    /**
+     * Set the literal part of the monom. Must be a dictionary {x: Fraction, y: Fraction, ...}
+     * @param {literalType} L
+     */
+    set literal(L) {
+        this._literal = L;
     }
     /**
      * Get the literal square roots of the Monom.
@@ -609,13 +617,6 @@ class Monom {
         else {
             return this._literal;
         }
-    }
-    /**
-     * Set the literal part of the monom. Must be a dictionary {x: Fraction, y: Fraction, ...}
-     * @param {literalType} L
-     */
-    set literal(L) {
-        this._literal = L;
     }
     /**
      * Set the literal part of the monom from a string
@@ -737,28 +738,6 @@ class Monom {
         }
         return monomDividers.length === 0 ? [new Monom().one()] : monomDividers;
     }
-    _getLiteralDividers(arr, letter) {
-        let tmpList = [];
-        // Be default, this.literal[letter] should be a rational number.
-        for (let d = 0; d <= this.literal[letter].value; d++) {
-            if (arr.length === 0) {
-                let litt = {};
-                litt[letter] = new fraction_1.Fraction(d);
-                tmpList.push(litt);
-            }
-            else {
-                for (let item of arr) {
-                    let litt = {};
-                    for (let currentLetter in item) {
-                        litt[currentLetter] = item[currentLetter];
-                    }
-                    litt[letter] = new fraction_1.Fraction(d);
-                    tmpList.push(litt);
-                }
-            }
-        }
-        return tmpList;
-    }
     /**
      * Display the monom, forcing the '+' sign to appear
      */
@@ -857,11 +836,30 @@ class Monom {
     isOne() {
         return this._coefficient.value === 1 && this.variables.length === 0;
     }
+    _getLiteralDividers(arr, letter) {
+        let tmpList = [];
+        // Be default, this.literal[letter] should be a rational number.
+        for (let d = 0; d <= this.literal[letter].value; d++) {
+            if (arr.length === 0) {
+                let litt = {};
+                litt[letter] = new fraction_1.Fraction(d);
+                tmpList.push(litt);
+            }
+            else {
+                for (let item of arr) {
+                    let litt = {};
+                    for (let currentLetter in item) {
+                        litt[currentLetter] = item[currentLetter];
+                    }
+                    litt[letter] = new fraction_1.Fraction(d);
+                    tmpList.push(litt);
+                }
+            }
+        }
+        return tmpList;
+    }
 }
 exports.Monom = Monom;
-// ----------------------------------------
-// Static functions
-// ----------------------------------------
 /**
  * Get the least common multiple of monoms
  * @param monoms    Array of monoms
@@ -895,6 +893,8 @@ Monom.lcm = (...monoms) => {
     }
     return M;
 };
+// ------------------------------------------
+// Creation / parsing functions
 /**
  * Multiply two monoms and return a NEW monom.
  * @param monoms

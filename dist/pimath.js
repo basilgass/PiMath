@@ -2,57 +2,6 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 607:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-var __webpack_unused_export__;
-
-__webpack_unused_export__ = ({ value: true });
-exports.l = void 0;
-const numeric_1 = __webpack_require__(956);
-const numexp_1 = __webpack_require__(394);
-const shutingyard_1 = __webpack_require__(505);
-const random_1 = __webpack_require__(330);
-const fraction_1 = __webpack_require__(506);
-const nthRoot_1 = __webpack_require__(872);
-const monom_1 = __webpack_require__(937);
-const polynom_1 = __webpack_require__(38);
-const equation_1 = __webpack_require__(760);
-const linearSystem_1 = __webpack_require__(554);
-const rational_1 = __webpack_require__(107);
-const logicalset_1 = __webpack_require__(236);
-const vector_1 = __webpack_require__(586);
-const line_1 = __webpack_require__(9);
-const triangle_1 = __webpack_require__(164);
-const circle_1 = __webpack_require__(699);
-const point_1 = __webpack_require__(557);
-// Expose as global
-exports.l = {
-    ShutingYard: shutingyard_1.Shutingyard,
-    Numeric: numeric_1.Numeric,
-    NumExp: numexp_1.NumExp,
-    Fraction: fraction_1.Fraction,
-    Root: nthRoot_1.NthRoot,
-    Monom: monom_1.Monom,
-    Polynom: polynom_1.Polynom,
-    Equation: equation_1.Equation,
-    LinearSystem: linearSystem_1.LinearSystem,
-    Rational: rational_1.Rational,
-    Logicalset: logicalset_1.Logicalset,
-    Random: random_1.Random,
-    Geometry: {
-        Vector: vector_1.Vector,
-        Point: point_1.Point,
-        Line: line_1.Line,
-        Triangle: triangle_1.Triangle,
-        Circle: circle_1.Circle
-    }
-};
-window.Pi = exports.l;
-
-
-/***/ }),
-
 /***/ 760:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -1325,8 +1274,6 @@ class Monom {
      * @param value (optional) string The value that should be parse. Can be a Monom, a Fraction, a string or a number. If nothing is provided, it will return the trivial monom (0).
      */
     constructor(value) {
-        // ------------------------------------------
-        // Creation / parsing functions
         // -----------------------------------------
         /**
          * Parse a string to a monom. The string may include fraction.
@@ -1393,36 +1340,6 @@ class Monom {
                         break;
                 }
             }
-        };
-        this._shutingYardToReducedMonom = (inputStr) => {
-            // Get the RPN array of the current expression
-            const SY = new shutingyard_1.Shutingyard().parse(inputStr);
-            const rpn = SY.rpn;
-            let stack = [], m, pow, letter, q1, q2;
-            if (rpn.length === 0) {
-                this.zero();
-                return this;
-            }
-            else if (rpn.length === 1) {
-                const element = rpn[0];
-                this.one();
-                if (element.tokenType === 'coefficient') {
-                    this.coefficient = new fraction_1.Fraction(element.token);
-                }
-                else if (element.tokenType === 'variable') {
-                    this.setLetter(element.token, 1);
-                }
-                return this;
-            }
-            else {
-                // Reset the monom
-                for (const element of rpn) {
-                    this.addToken(stack, element);
-                }
-            }
-            this.one();
-            this.multiply(stack[0]);
-            return this;
         };
         /**
          * Clone the current Monom.
@@ -1823,6 +1740,9 @@ class Monom {
             }
             return M;
         };
+        // ----------------------------------------
+        // Static functions
+        // ----------------------------------------
         // TODO: The rest of the functions are not used or unnecessary ?
         /**
          * Determine if multiple monoms are similar
@@ -1872,6 +1792,36 @@ class Monom {
             }
             return this.coefficient.clone().divide(div.coefficient).isRelative();
         };
+        this._shutingYardToReducedMonom = (inputStr) => {
+            // Get the RPN array of the current expression
+            const SY = new shutingyard_1.Shutingyard().parse(inputStr);
+            const rpn = SY.rpn;
+            let stack = [], m, pow, letter, q1, q2;
+            if (rpn.length === 0) {
+                this.zero();
+                return this;
+            }
+            else if (rpn.length === 1) {
+                const element = rpn[0];
+                this.one();
+                if (element.tokenType === 'coefficient') {
+                    this.coefficient = new fraction_1.Fraction(element.token);
+                }
+                else if (element.tokenType === 'variable') {
+                    this.setLetter(element.token, 1);
+                }
+                return this;
+            }
+            else {
+                // Reset the monom
+                for (const element of rpn) {
+                    this.addToken(stack, element);
+                }
+            }
+            this.one();
+            this.multiply(stack[0]);
+            return this;
+        };
         this.zero();
         if (value !== undefined) {
             // A string is given - try to parse the value.
@@ -1880,8 +1830,6 @@ class Monom {
         return this;
     }
     // ------------------------------------------
-    // Getter and setter
-    // ------------------------------------------
     /**
      * Get the coefficient \\(k\\) of the Monom \\(k\\cdot x^{n}\\)
      * @returns {Fraction}
@@ -1889,6 +1837,8 @@ class Monom {
     get coefficient() {
         return this._coefficient;
     }
+    // ------------------------------------------
+    // Getter and setter
     /**
      * Set the coefficient \\(k\\) value of the monom
      * @param {Fraction | number | string} F
@@ -1902,6 +1852,13 @@ class Monom {
      */
     get literal() {
         return this._literal;
+    }
+    /**
+     * Set the literal part of the monom. Must be a dictionary {x: Fraction, y: Fraction, ...}
+     * @param {literalType} L
+     */
+    set literal(L) {
+        this._literal = L;
     }
     /**
      * Get the literal square roots of the Monom.
@@ -1919,13 +1876,6 @@ class Monom {
         else {
             return this._literal;
         }
-    }
-    /**
-     * Set the literal part of the monom. Must be a dictionary {x: Fraction, y: Fraction, ...}
-     * @param {literalType} L
-     */
-    set literal(L) {
-        this._literal = L;
     }
     /**
      * Set the literal part of the monom from a string
@@ -2047,28 +1997,6 @@ class Monom {
         }
         return monomDividers.length === 0 ? [new Monom().one()] : monomDividers;
     }
-    _getLiteralDividers(arr, letter) {
-        let tmpList = [];
-        // Be default, this.literal[letter] should be a rational number.
-        for (let d = 0; d <= this.literal[letter].value; d++) {
-            if (arr.length === 0) {
-                let litt = {};
-                litt[letter] = new fraction_1.Fraction(d);
-                tmpList.push(litt);
-            }
-            else {
-                for (let item of arr) {
-                    let litt = {};
-                    for (let currentLetter in item) {
-                        litt[currentLetter] = item[currentLetter];
-                    }
-                    litt[letter] = new fraction_1.Fraction(d);
-                    tmpList.push(litt);
-                }
-            }
-        }
-        return tmpList;
-    }
     /**
      * Display the monom, forcing the '+' sign to appear
      */
@@ -2167,11 +2095,30 @@ class Monom {
     isOne() {
         return this._coefficient.value === 1 && this.variables.length === 0;
     }
+    _getLiteralDividers(arr, letter) {
+        let tmpList = [];
+        // Be default, this.literal[letter] should be a rational number.
+        for (let d = 0; d <= this.literal[letter].value; d++) {
+            if (arr.length === 0) {
+                let litt = {};
+                litt[letter] = new fraction_1.Fraction(d);
+                tmpList.push(litt);
+            }
+            else {
+                for (let item of arr) {
+                    let litt = {};
+                    for (let currentLetter in item) {
+                        litt[currentLetter] = item[currentLetter];
+                    }
+                    litt[letter] = new fraction_1.Fraction(d);
+                    tmpList.push(litt);
+                }
+            }
+        }
+        return tmpList;
+    }
 }
 exports.Monom = Monom;
-// ----------------------------------------
-// Static functions
-// ----------------------------------------
 /**
  * Get the least common multiple of monoms
  * @param monoms    Array of monoms
@@ -2205,6 +2152,8 @@ Monom.lcm = (...monoms) => {
     }
     return M;
 };
+// ------------------------------------------
+// Creation / parsing functions
 /**
  * Multiply two monoms and return a NEW monom.
  * @param monoms
@@ -2475,7 +2424,7 @@ class Polynom {
             if (P.variables.length === 0) {
                 let q = this.clone().divide(P);
                 return {
-                    quotient: this.clone().divide(P),
+                    quotient: this.clone().divide(P).reduce(),
                     reminder: new Polynom().zero()
                 };
             }
@@ -2484,17 +2433,19 @@ class Polynom {
             const degreeP = P.degree(letter);
             let newM;
             // Make the euclidian division of the two polynoms.
-            let MaxIteration = this.degree(letter).clone().multiply(2);
-            while (reminder.degree(letter).geq(degreeP) && MaxIteration.isPositive()) {
-                MaxIteration.subtract(1);
+            let MaxIteration = this.degree(letter).value * 2;
+            while (reminder.degree(letter).geq(degreeP) && MaxIteration > 0) {
+                MaxIteration--;
                 // Get the greatest monom divided by the max monom of the divider
                 newM = reminder.monomByDegree(undefined, letter).clone().divide(maxMP);
-                if (newM.isZero()) {
+                if (newM.isZero())
                     break;
-                }
                 // Get the new quotient and reminder.
                 quotient.add(newM);
                 reminder.subtract(P.clone().multiply(newM));
+                // Check if the reminder is zero.
+                if (newM.degree(letter).isZero())
+                    break;
             }
             quotient.reduce();
             reminder.reduce();
@@ -2735,28 +2686,52 @@ class Polynom {
         // -------------------------------------
         this.reduce = () => {
             // Reduce the polynom
-            let values = [...this._monoms], vars = [...this.variables];
-            this._monoms = [];
-            let coeffs = values.filter(x => x.variables.length === 0);
-            if (coeffs.length > 0) {
-                this._monoms.push(coeffs.reduce((a, b) => a.add(b)));
-            }
-            // Build the new monoms
-            for (let letter of vars) {
-                // Monom with same letters, but might be of different degrees
-                let M = values.filter(x => x.hasLetter(letter));
-                while (M.length > 0) {
-                    // Take the first element
-                    const m = M.shift(), degree = m.degree(letter);
-                    for (let a of M.filter(x => x.degree(letter).isEqual(degree))) {
-                        m.add(a);
+            let values = this._monoms.map(x => x.clone()), vars = [...this.variables];
+            // Group the monoms by similarity
+            let i = 0;
+            while (i < this._monoms.length) {
+                for (let j = i + 1; j < this._monoms.length; j++) {
+                    if (this._monoms[i].isSameAs(this._monoms[j])) {
+                        this._monoms[i].add(this._monoms[j]);
+                        this._monoms.splice(j, 1);
+                        if (this._monoms[i].isZero()) {
+                            this._monoms[i] = new monom_1.Monom().zero();
+                        }
+                        j--;
                     }
-                    this._monoms.push(m);
-                    // Make the new array.
-                    M = M.filter(x => x.degree(letter).isNotEqual(degree));
                 }
-                // reduce the monom
+                i++;
             }
+            //
+            //
+            //
+            // let coeffs = values.filter(x => x.variables.length === 0)
+            //
+            // if (coeffs.length > 0) {
+            //     this._monoms.push(coeffs.reduce((a, b) => a.add(b)))
+            // }
+            //
+            // // Build the new monoms
+            // for (let letter of vars) {
+            //     // Monom with same letters, but might be of different degrees
+            //     let M = values.filter(x => x.hasLetter(letter))
+            //
+            //     while (M.length > 0) {
+            //         // Take the first element
+            //         const m = M.shift(), degree = m.degree(letter)
+            //
+            //         for (let a of M.filter(x => x.degree(letter).isEqual(degree))) {
+            //             m.add(a)
+            //         }
+            //
+            //         this._monoms.push(m)
+            //
+            //         // Make the new array.
+            //         M = M.filter(x => x.degree(letter).isNotEqual(degree))
+            //     }
+            //     // reduce the monom
+            //
+            // }
             // Remove all null monoms
             this._monoms = this._monoms.filter((m) => {
                 return m.coefficient.value !== 0;
@@ -2942,14 +2917,10 @@ class Polynom {
                             allDividers = allDividers.filter(x => {
                                 let pX = P.monoms[0], pC = P.monoms[P.monoms.length - 1], dX = x.monoms[0], dC = x.monoms[x.monoms.length - 1];
                                 // Check last item (degree zero)
-                                if (!pC.isDivisible(dC)) {
+                                if (!pC.isDivisible(dC))
                                     return false;
-                                }
                                 // Check the first item (degree max)
-                                if (!pX.isDivisible(dX)) {
-                                    return false;
-                                }
-                                return true;
+                                return pX.isDivisible(dX);
                             });
                         }
                     }
@@ -3306,18 +3277,6 @@ class Polynom {
         }
         return this;
     }
-    get euclidianCache() {
-        return this._euclidianCache;
-    }
-    set euclidianCache(value) {
-        this._euclidianCache = value;
-    }
-    get dirty_zeroes() {
-        return this._dirty_zeroes;
-    }
-    set dirty_zeroes(value) {
-        this._dirty_zeroes = value;
-    }
     // ------------------------------------------
     get dirty_factors() {
         return this._dirty_factors;
@@ -3325,15 +3284,17 @@ class Polynom {
     set dirty_factors(value) {
         this._dirty_factors = value;
     }
-    // ------------------------------------------
-    get monoms() {
-        return this._monoms;
+    get dirty_zeroes() {
+        return this._dirty_zeroes;
     }
-    set monoms(M) {
-        this._monoms = M;
+    set dirty_zeroes(value) {
+        this._dirty_zeroes = value;
     }
-    get zeroes() {
-        return this.getZeroes();
+    get euclidianCache() {
+        return this._euclidianCache;
+    }
+    set euclidianCache(value) {
+        this._euclidianCache = value;
     }
     get factors() {
         return this.factorize();
@@ -3342,8 +3303,18 @@ class Polynom {
         this.mark_as_dirty();
         this._factors = value;
     }
+    // ------------------------------------------
+    get monoms() {
+        return this._monoms;
+    }
+    set monoms(M) {
+        this._monoms = M;
+    }
     get texString() {
         return this._texString;
+    }
+    get zeroes() {
+        return this.getZeroes();
     }
     get texFactors() {
         this.factorize();
@@ -6531,7 +6502,9 @@ class Numeric {
             }
         }
         // Order numbers.
-        D.sort(function (a, b) { return a - b; });
+        D.sort(function (a, b) {
+            return a - b;
+        });
         // Make sure the array of value is unique.
         return [...new Set(D)];
     }
@@ -6604,53 +6577,6 @@ class Numeric {
     }
     static numberCorrection(value, epsilonDigit = 1, epsilonNumberOfDigits = 10, number_of_digits = 8) {
         return +value.toFixed(number_of_digits);
-        //
-        // // Must modify the number if it's like:
-        // // a: 3.0000000000000003
-        // // b: 3.9999999999999994
-        // // remove the last character
-        // // check if around n last characters are either 0 or 9
-        // // if it is, 'round' the number.
-        // function extractDecimalPart(valueToExtract: number, decimalLength: number){
-        //     let decimal = valueToExtract.toString()
-        //
-        //     if (!decimal.includes('.')) {
-        //         return ''
-        //     }
-        //
-        //     decimal = decimal.split('.')[1]
-        //     return decimal.substring(0, decimalLength)
-        // }
-        //
-        // const epsilon = Number(`0.${"0".repeat(epsilonNumberOfDigits-1)}${epsilonDigit}`)
-        // const decimal = extractDecimalPart(value, epsilonNumberOfDigits)
-        // if(decimal===''){return value}
-        //
-        // const n9 = decimal.match(/9+$/g)
-        // const n0 = decimal.match(/0+$/g)
-        //
-        // if (n9 && n9[0].length >= number_of_digits) {
-        //     // New tested values.
-        //     const mod = extractDecimalPart(value + epsilon, epsilonNumberOfDigits),
-        //         mod0 = mod.match(/0+$/g)
-        //
-        //     if(mod0 && mod0[0].length>= number_of_digits){
-        //         return +((value+epsilon).toString().split(mod0[0])[0])
-        //     }
-        // }
-        //
-        // if (n0 && n0[0].length >= number_of_digits) {
-        //     // New tested values.
-        //     const mod = extractDecimalPart(value - epsilon, epsilonNumberOfDigits),
-        //         mod9 = mod.match(/9+$/g)
-        //
-        //     if(mod9 && mod9[0].length>= number_of_digits){
-        //         // The value can be changed. Remove all nines!
-        //         return +(value.toString().split(n0[0])[0])
-        //     }
-        // }
-        //
-        // return value
     }
     static periodic(value) {
         if (Number.isSafeInteger(value)) {
@@ -7880,12 +7806,57 @@ exports.Shutingyard = Shutingyard;
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__(607);
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+var exports = __webpack_exports__;
+var __webpack_unused_export__;
+
+__webpack_unused_export__ = ({ value: true });
+__webpack_unused_export__ = void 0;
+const numeric_1 = __webpack_require__(956);
+const numexp_1 = __webpack_require__(394);
+const shutingyard_1 = __webpack_require__(505);
+const random_1 = __webpack_require__(330);
+const fraction_1 = __webpack_require__(506);
+const nthRoot_1 = __webpack_require__(872);
+const monom_1 = __webpack_require__(937);
+const polynom_1 = __webpack_require__(38);
+const equation_1 = __webpack_require__(760);
+const linearSystem_1 = __webpack_require__(554);
+const rational_1 = __webpack_require__(107);
+const logicalset_1 = __webpack_require__(236);
+const vector_1 = __webpack_require__(586);
+const line_1 = __webpack_require__(9);
+const triangle_1 = __webpack_require__(164);
+const circle_1 = __webpack_require__(699);
+const point_1 = __webpack_require__(557);
+// Expose as global
+__webpack_unused_export__ = {
+    ShutingYard: shutingyard_1.Shutingyard,
+    Numeric: numeric_1.Numeric,
+    NumExp: numexp_1.NumExp,
+    Fraction: fraction_1.Fraction,
+    Root: nthRoot_1.NthRoot,
+    Monom: monom_1.Monom,
+    Polynom: polynom_1.Polynom,
+    Equation: equation_1.Equation,
+    LinearSystem: linearSystem_1.LinearSystem,
+    Rational: rational_1.Rational,
+    Logicalset: logicalset_1.Logicalset,
+    Random: random_1.Random,
+    Geometry: {
+        Vector: vector_1.Vector,
+        Point: point_1.Point,
+        Line: line_1.Line,
+        Triangle: triangle_1.Triangle,
+        Circle: circle_1.Circle
+    }
+};
+// (<any>window).Pi = PiMath
+
+})();
+
 /******/ })()
 ;
 //# sourceMappingURL=pimath.js.map

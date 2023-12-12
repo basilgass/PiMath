@@ -64,24 +64,10 @@ describe('Circle', function () {
     it('should calculate the circle from center and radius', function () {
         let circle = new Circle("x^2+6x+y^2-8y+12=0")
 
-        console.log(circle.tex)
+        // console.log(circle.tex)
     })
 
-    it('should parse a line', function () {
-        let a1 = 133.33333333333331,
-            b1 = 700,
-            a2 = 134.33333333333331,
-            b2 = 700.75
-
-        let A = new Point(a1, a2),
-            B = new Point(b1, b2)
-
-        console.log(A.tex, B.tex)
-
-        let L = new Line(A, B)
-        console.log(L.tex.canonical)
-    });
-
+    
 //     it('temp tests', () => {
 //         for (let i = 0; i < 30; i++) {
 //             let A = Random.Geometry.point({axis: false}),

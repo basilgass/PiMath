@@ -476,7 +476,7 @@ export class Polynom {
         if (P.variables.length === 0) {
             let q = this.clone().divide(P)
             return {
-                quotient: this.clone().divide(P),
+                quotient: this.clone().divide(P).reduce(),
                 reminder: new Polynom().zero()
             }
         }
@@ -1077,8 +1077,6 @@ export class Polynom {
 
                             // Check the first item (degree max)
                             return pX.isDivisible(dX);
-
-
                         })
                     }
                 }

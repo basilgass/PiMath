@@ -40,7 +40,7 @@ describe('Linear systems tests', () => {
             E2 = new Polynom('-6x+21y-3z')
 
         E1.add(E2);
-        expect(E1.display).to.be.equal('42y-6z')
+        expect(E1.reduce().display).to.be.equal('42y-6z')
     });
 
     it('should use a reduced linear reducation', function () {
