@@ -73,6 +73,20 @@ export class Point {
 
     // ------------------------------------------
     // Creation / parsing functions
+
+    get key(): string {
+        return `${this.x.display};${this.y.display}`
+    }
+
+    // ------------------------------------------
+    static pmatrix = (a: any, b: any, c?: any): string => {
+        if (c === undefined) {
+            return `\\begin{pmatrix} ${a.tex ? a.tex : a} \\\\ ${b.tex ? b.tex : b} \\end{pmatrix}`;
+        } else {
+            return `\\begin{pmatrix} ${a.tex ? a.tex : a} \\\\ ${b.tex ? b.tex : b} \\\\ ${c.tex ? c.tex : c} \\end{pmatrix}`;
+        }
+    };
+
     // ------------------------------------------
     parse = (...values: unknown[]): Point => {
         // Initialize the value.
@@ -103,9 +117,9 @@ export class Point {
             }
 
             // Value given as an object with {x: value, y: value}
-            if(values[0] instanceof PointXY){
-                    this._x = new Fraction(values[0].x).reduce()
-                    this._y = new Fraction(values[0].y).reduce()
+            if (values[0] instanceof PointXY) {
+                this._x = new Fraction(values[0].x).reduce()
+                this._y = new Fraction(values[0].y).reduce()
                 return this
             } else {
                 return this.zero()
@@ -138,23 +152,14 @@ export class Point {
         this.zero();
         return this;
     }
+    // ------------------------------------------
+    // Display functions
 
     middleOf = (P1: Point, P2: Point): Point => {
         this._x = P1.x.clone().add(P2.x).divide(2);
         this._y = P1.y.clone().add(P2.y).divide(2);
 
         return this;
-    }
-    // ------------------------------------------
-    // Display functions
-    // ------------------------------------------
-    texValues = (numberOfDigits: number): string => {
-        let pts = [];
-
-        pts.push(this._x.value.toFixed(numberOfDigits === undefined ? 2 : numberOfDigits));
-        pts.push(this._y.value.toFixed(numberOfDigits === undefined ? 2 : numberOfDigits));
-
-        return `\\left(${pts.join(';')}\\right)`
     }
     // ------------------------------------------
     // Mathematical operations
@@ -166,36 +171,45 @@ export class Point {
 
     // ------------------------------------------
     // Static functions
-    // ------------------------------------------
-    static pmatrix = (a: any, b: any, c?: any): string => {
-        if (c === undefined) {
-            return `\\begin{pmatrix} ${a.tex ? a.tex : a} \\\\ ${b.tex ? b.tex : b} \\end{pmatrix}`;
-        } else {
-            return `\\begin{pmatrix} ${a.tex ? a.tex : a} \\\\ ${b.tex ? b.tex : b} \\\\ ${c.tex ? c.tex : c} \\end{pmatrix}`;
-        }
-    };
 
-    distanceTo = (item:Point|Line): { value: number, fraction: Fraction, tex: string } => {
+    translate = (value: { x: number | Fraction, y: number | Fraction }): Point => {
+        this._x = this._x.add(value.x)
+        this._y = this._y.add(value.y)
+        return this
+    }
+
+    // ------------------------------------------
+    texValues = (numberOfDigits: number): string => {
+        let pts = [];
+
+        pts.push(this._x.value.toFixed(numberOfDigits === undefined ? 2 : numberOfDigits));
+        pts.push(this._y.value.toFixed(numberOfDigits === undefined ? 2 : numberOfDigits));
+
+        return `\\left(${pts.join(';')}\\right)`
+    }
+
+    distanceTo = (item: Point | Line): { value: number, fraction: Fraction, tex: string } => {
         let value = 0, fraction = new Fraction(), tex = ''
 
-        if(item instanceof Line){
+        if (item instanceof Line) {
             return item.distanceTo(this)
-        }else if(item instanceof Point){
+        } else if (item instanceof Point) {
             let V = new Vector(this, item)
 
             value = V.norm
             fraction = V.normSquare.sqrt()
             tex = V.normSquare.isSquare() ? fraction.tex : `\\sqrt{\\frac{ ${V.normSquare.numerator} }{ ${V.normSquare.denominator} }}`
         }
-        return { value, fraction, tex }
+        return {value, fraction, tex}
     }
 
-    get key(): string {
-      return `${this.x.display};${this.y.display}`
-}
     isInListOfPoints = (list: Point[]): boolean => {
-        const keyList = list.map(x=>x.key)
+        const keyList = list.map(x => x.key)
 
         return keyList.includes(this.key)
+    }
+
+    isEqual = (pt: Point): boolean => {
+        return this.x.isEqual(pt.x) && this.y.isEqual(pt.y)
     }
 }

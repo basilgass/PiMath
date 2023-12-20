@@ -1,9 +1,11 @@
 import {describe} from "mocha";
 import {expect} from "chai";
 import {Circle} from "../../src/maths/geometry/circle";
-import {Line} from "../../src/maths/geometry/line";
+import {Line, LinePropriety} from "../../src/maths/geometry/line";
 import {Point} from "../../src/maths/geometry/point";
 import {Fraction} from "../../src/maths/coefficients/fraction";
+import {Random} from "../../src/maths/randomization/random";
+import {Vector} from "../../src/maths/geometry/vector";
 
 describe('Circle', function () {
     it('should calculate the intersection of a circle and a line', function () {
@@ -67,7 +69,81 @@ describe('Circle', function () {
         // console.log(circle.tex)
     })
 
-    
+    it('intersection temp tests', () => {
+        for (let i = 0; i < 30; i++) {
+            let A = Random.Geometry.point({axis: false}),
+                rv = Random.number(1, 3),
+                r = rv ** 2 + (rv + 1) ** 2
+
+            let c = new Circle(A, r, true)
+            let pts = c.getPointsOnCircle(true)
+            // console.log(r, pts.length)
+
+            // console.log(c.tex)
+            // console.log(pts.map(pt => pt.display))
+            pts = Random.shuffle(pts)
+            let ptt = pts.shift(),
+                pt1 = pts.shift(),
+                pt2
+
+            for (let pt of pts) {
+                if (!pt1.x.isEqual(pt.x) && !pt1.y.isEqual(pt.y) && !A.isEqual(new Point().middleOf(pt1, pt))) {
+                    pt2 = pt.clone()
+                    break
+                }
+            }
+
+            // console.log('Pt de tangence')
+            // console.log(ptt.display)
+            let t = c.tangents(ptt)[0]
+            // console.log(t.tex.canonical)
+
+            // console.log('intersection en deux points')
+            // console.log(pt1.display, pt2.display)
+            let d = new Line(pt1, pt2)
+            // console.log(d.tex.canonical)
+
+            let P = Random.Geometry.point()
+            while (P.x.isEqual(c.center.x) || P.y.isEqual(c.center.y)) {
+                P = Random.Geometry.point()
+            }
+            // Le point P n'est pas sur le centre.
+            let v = new Vector(c.center, P)
+            while (P.distanceTo(A).value <= Math.sqrt(r)) {
+                P.x.add(v.x)
+                P.y.add(v.y)
+            }
+            let p = new Line(P, v, LinePropriety.Perpendicular)
+            // console.log(P.display)
+            // console.log(p.display.canonical)
+
+            let lignes = Random.shuffle([t, d, p])
+
+//             console.log(`A${A.display}
+// c=circ A,${Math.sqrt(r)}
+// T${ptt.display}
+// P${pt1.display}
+// Q${pt2.display}
+// t=line ${t.display.canonical}
+// d=line ${d.display.canonical}
+// p=line ${p.display.canonical}`)
+            console.log(`(exercice ${i + 1}): Soit \\(\\Gamma\\) un cercle et \\(d_1\\), \\(d_2\\) et \\(d_3\\) trois droites.
+            \\mathleft
+            \\[(\\Gamma): ${c.tex}\\]
+            \\[(d_1): ${lignes[0].tex.canonical} \\qquad (d_2): ${lignes[1].tex.canonical}  \\qquad (d_3): ${lignes[2].tex.canonical}\\]
+
+            \\begin{enumerate}[label=\\Alph*]
+            \\item déterminer les positions relatives de \\(d_1\\), \\(d_2\\) et \\(d_3\\) par rapport à \\(\\Gamma\\)
+            \\item calculer les coordonnées du ou des points d'intersection entre le cercle et une des droites qui le coupe (au choix).
+            \\end{enumerate}
+            \\iftoggle{master}{\\(${t.tex.canonical}\\implies ${ptt.tex}\\) \\\\ \\(${d.tex.canonical}\\implies ${pt1.tex},\\ ${pt2.tex}\\) \\\\}{}
+            \\vfill
+            ${i % 2 === 1 ? '\\newpage' : ''}
+            `)
+
+        }
+
+    })
 //     it('temp tests', () => {
 //         for (let i = 0; i < 30; i++) {
 //             let A = Random.Geometry.point({axis: false}),
