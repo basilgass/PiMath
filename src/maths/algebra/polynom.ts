@@ -23,6 +23,13 @@ export interface IEuclidian {
  */
 export class Polynom {
     private _rawString: string;
+    private _dirty_factors: boolean
+    private _dirty_zeroes: boolean
+    private _euclidianCache: { [Key: string]: IEuclidian }
+    private _factors: Polynom[];
+    private _monoms: Monom[];
+    private _texString: string;
+    private _zeroes: ISolution[]
 
     /**
      *
@@ -40,8 +47,6 @@ export class Polynom {
         return this;
     }
 
-    private _dirty_factors: boolean
-
     // ------------------------------------------
     get dirty_factors(): boolean {
         return this._dirty_factors;
@@ -51,8 +56,6 @@ export class Polynom {
         this._dirty_factors = value;
     }
 
-    private _dirty_zeroes: boolean
-
     get dirty_zeroes(): boolean {
         return this._dirty_zeroes;
     }
@@ -61,8 +64,6 @@ export class Polynom {
         this._dirty_zeroes = value;
     }
 
-    private _euclidianCache: { [Key: string]: IEuclidian }
-
     get euclidianCache(): { [p: string]: IEuclidian } {
         return this._euclidianCache;
     }
@@ -70,8 +71,6 @@ export class Polynom {
     set euclidianCache(value: { [p: string]: IEuclidian }) {
         this._euclidianCache = value;
     }
-
-    private _factors: Polynom[];
 
     get factors(): Polynom[] {
         return this.factorize()
@@ -82,8 +81,6 @@ export class Polynom {
         this._factors = value;
     }
 
-    private _monoms: Monom[];
-
     // ------------------------------------------
     get monoms() {
         return this._monoms;
@@ -93,13 +90,9 @@ export class Polynom {
         this._monoms = M;
     }
 
-    private _texString: string;
-
     get texString(): string {
         return this._texString;
     }
-
-    private _zeroes: ISolution[]
 
     get zeroes(): ISolution[] {
         return this.getZeroes()
@@ -495,11 +488,11 @@ export class Polynom {
             // Get the greatest monom divided by the max monom of the divider
             newM = reminder.monomByDegree(undefined, letter).clone().divide(maxMP);
 
-            if (newM.isZero()) break;
+            if (newM.isZero()) continue;
 
             // Get the new quotient and reminder.
             quotient.add(newM);
-            reminder.subtract(P.clone().multiply(newM));
+            reminder.subtract(P.clone().multiply(newM)).reduce();
 
             // Check if the reminder is zero.
             if (newM.degree(letter).isZero()) break

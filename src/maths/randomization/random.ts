@@ -3,6 +3,7 @@ import {rndMonom} from "./rndMonom";
 import {rndHelpers} from "./rndHelpers";
 import {
     randomCoefficientConfig,
+    randomGeometryCircleConfig,
     randomGeometryLineConfig,
     randomGeometryPointConfig,
     randomMonomConfig,
@@ -16,6 +17,8 @@ import {Line} from "../geometry/line";
 import {rndGeometryLine} from "./rndGeometryLine";
 import {Point} from "../geometry/point";
 import {rndGeometryPoint} from "./rndGeometryPoint";
+import {Circle} from "../geometry/circle";
+import {rndGeometryCircle} from "./rndGeometryCircle";
 
 export * from "./rndTypes"
 
@@ -67,6 +70,10 @@ export namespace Random {
 
         export function point(config?: randomGeometryPointConfig): Point {
             return (new rndGeometryPoint(config).generate())
+        }
+
+        export function circle(config?: randomGeometryCircleConfig): Circle {
+            return (new rndGeometryCircle(config).generate())
         }
 
     }

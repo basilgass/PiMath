@@ -67,6 +67,16 @@ describe('Polynom tests', () => {
         expect(euclidian.reminder.tex).to.be.equal('12')
     });
 
+    it('should calculate the quotient and reminder with similar polynom', () => {
+        let P = new Polynom('6x^5+12x^4+3x^3+x^2-7x+6'),
+            D = new Polynom('x^3+2x^2-2x-4')
+
+        let euclidian = P.euclidian(D);
+
+        expect(euclidian.quotient.display).to.be.equal('6x^(2)+15')
+        expect(euclidian.reminder.display).to.be.equal('-5x^(2)+23x+66')
+    })
+
     it('should reduce', () => {
         let P = new Polynom('15x-19x+24+4x-12')
         P.reduce()

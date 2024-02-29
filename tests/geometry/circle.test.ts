@@ -1,7 +1,7 @@
 import {describe} from "mocha";
 import {expect} from "chai";
 import {Circle} from "../../src/maths/geometry/circle";
-import {Line, LinePropriety} from "../../src/maths/geometry/line";
+import {Line} from "../../src/maths/geometry/line";
 import {Point} from "../../src/maths/geometry/point";
 import {Fraction} from "../../src/maths/coefficients/fraction";
 import {Random} from "../../src/maths/randomization/random";
@@ -69,81 +69,226 @@ describe('Circle', function () {
         // console.log(circle.tex)
     })
 
-    it('intersection temp tests', () => {
-        for (let i = 0; i < 30; i++) {
+    it('tangentes pt ext', () => {
+        function makeCircle(): { circle: Circle, point: Point, tangents: Line[] } {
             let A = Random.Geometry.point({axis: false}),
                 rv = Random.number(1, 3),
                 r = rv ** 2 + (rv + 1) ** 2
-
             let c = new Circle(A, r, true)
             let pts = c.getPointsOnCircle(true)
-            // console.log(r, pts.length)
 
-            // console.log(c.tex)
-            // console.log(pts.map(pt => pt.display))
             pts = Random.shuffle(pts)
-            let ptt = pts.shift(),
-                pt1 = pts.shift(),
-                pt2
+            let pt1: Point, pt2: Point, t1: Line, t2: Line, I: Point, n: Vector
 
+            pt1 = pts.shift()
             for (let pt of pts) {
-                if (!pt1.x.isEqual(pt.x) && !pt1.y.isEqual(pt.y) && !A.isEqual(new Point().middleOf(pt1, pt))) {
+                // Pas vertical / horizontal
+                n = new Vector(A, pt)
+
+                if (!n.x.isZero() && !n.y.isZero() &&   // pas vertical / horizontal
+                    !pt1.x.isEqual(pt.x) && !pt1.y.isEqual(pt.y) &&  // pas le même point
+                    !A.isEqual(new Point().middleOf(pt1, pt)) // pas l'un en face de l'autre
+                ) {
                     pt2 = pt.clone()
-                    break
+
+                    t1 = c.tangents(pt1)[0]
+                    t2 = c.tangents(pt2)[0]
+                    const intersection = t1.intersection(t2)
+
+                    if (intersection.hasIntersection && intersection.point.x.isRelative()) {
+                        I = intersection.point
+                        break
+                    }
                 }
             }
 
-            // console.log('Pt de tangence')
-            // console.log(ptt.display)
-            let t = c.tangents(ptt)[0]
-            // console.log(t.tex.canonical)
 
-            // console.log('intersection en deux points')
-            // console.log(pt1.display, pt2.display)
-            let d = new Line(pt1, pt2)
-            // console.log(d.tex.canonical)
-
-            let P = Random.Geometry.point()
-            while (P.x.isEqual(c.center.x) || P.y.isEqual(c.center.y)) {
-                P = Random.Geometry.point()
+            return {
+                circle: c,
+                tangents: [t1, t2],
+                point: I
             }
-            // Le point P n'est pas sur le centre.
-            let v = new Vector(c.center, P)
-            while (P.distanceTo(A).value <= Math.sqrt(r)) {
-                P.x.add(v.x)
-                P.y.add(v.y)
-            }
-            let p = new Line(P, v, LinePropriety.Perpendicular)
-            // console.log(P.display)
-            // console.log(p.display.canonical)
+        }
 
-            let lignes = Random.shuffle([t, d, p])
-
-//             console.log(`A${A.display}
-// c=circ A,${Math.sqrt(r)}
-// T${ptt.display}
-// P${pt1.display}
-// Q${pt2.display}
-// t=line ${t.display.canonical}
-// d=line ${d.display.canonical}
-// p=line ${p.display.canonical}`)
-            console.log(`(exercice ${i + 1}): Soit \\(\\Gamma\\) un cercle et \\(d_1\\), \\(d_2\\) et \\(d_3\\) trois droites.
-            \\mathleft
-            \\[(\\Gamma): ${c.tex}\\]
-            \\[(d_1): ${lignes[0].tex.canonical} \\qquad (d_2): ${lignes[1].tex.canonical}  \\qquad (d_3): ${lignes[2].tex.canonical}\\]
-
-            \\begin{enumerate}[label=\\Alph*]
-            \\item déterminer les positions relatives de \\(d_1\\), \\(d_2\\) et \\(d_3\\) par rapport à \\(\\Gamma\\)
-            \\item calculer les coordonnées du ou des points d'intersection entre le cercle et une des droites qui le coupe (au choix).
-            \\end{enumerate}
-            \\iftoggle{master}{\\(${t.tex.canonical}\\implies ${ptt.tex}\\) \\\\ \\(${d.tex.canonical}\\implies ${pt1.tex},\\ ${pt2.tex}\\) \\\\}{}
+        for (let i = 0; i < 30; i++) {
+            let {circle, tangents, point} = makeCircle()
+            console.log(`\\textbf{(exercice ${i + 1})}
+        
+        Calculer l'équation cartésiennes des tangentes au cercle \\( (\\Gamma): ${circle.tex} \\) passant par le point \\(P=${point.tex} \\)
+            \\iftoggle{master}{
+            (I) \\( ${tangents[0].tex.canonical} \\quad ${tangents[1].tex.canonical} \\)
+            }{}
             \\vfill
             ${i % 2 === 1 ? '\\newpage' : ''}
             `)
 
         }
+        /**
+         const C = new PiMath.Geometry.Circle(circle.value),
+         pts = C.getPointsOnCircle()
 
+         code.value = `C(${C.center.x.value},${C.center.y.value})
+         c=circ C,${C.radius.value}`
+
+         let tangents = []
+         pts.forEach((pt, index) => {
+         let tg = C.tangents(pt)[0]
+         tangents.push(tg)
+         code.value += `\nT${index + 1}(${pt.x.value},${pt.y.value})->tex:T_${index + 1}=@`
+         code.value += `\nt${index + 1}=line ${tg.tex.canonical}`
+
+         tangentPerPoints.value.push(`T_${index+1}(${pt.x.tex};${pt.y.tex})\\implies ${tg.tex.canonical}`)
+         })
+
+         for (let i = 0; i < tangents.length; i++) {
+         for (let j = i + 1; j < tangents.length; j++) {
+         let intersection = tangents[i].intersection(tangents[j])
+
+         if (intersection.hasIntersection) {
+         if (!intersection.point.isInListOfPoints(pts)) {
+         intersection.point.name=`I_{${i + 1}-${j + 1}}`
+         intersectionPoints.value.push({
+         point: `I_{${i+1}-${j+1}}${intersection.point.tex}`,
+         tangent1: tangents[i].tex.canonical,
+         tangent2: tangents[j].tex.canonical
+         })
+         code.value += `\nI_${i + 1}_${j + 1}(${intersection.point.x.value},${intersection.point.y.value})->tex:I_{${i+1}-${i+2}}=@`
+         }
+         }
+         }
+         }
+         */
     })
+    it('tangentes temp tests', () => {
+        function makeCircle(): { circle: Circle, point: Point, tangent: Line, symetric: Line } {
+            let A = Random.Geometry.point({axis: false}),
+                rv = Random.number(1, 3),
+                r = rv ** 2 + (rv + 1) ** 2
+            let c = new Circle(A, r, true)
+            let pts = c.getPointsOnCircle(true)
+
+            pts = Random.shuffle(pts)
+            let pt: Point, n: Vector
+            for (let p of pts) {
+                n = new Vector(A, p)
+                if (!n.x.isZero() && !n.y.isZero()) {
+                    pt = p
+                    break
+                }
+            }
+
+            const p2 = new Point(A.x.clone(), A.y.clone()).translate({x: n.x.opposed(), y: n.y.opposed()})
+            const t = new Line(n, pt)
+            const s = new Line(n, p2)
+            return {
+                circle: c,
+                point: pt,
+                tangent: t,
+                symetric: s
+            }
+        }
+
+        for (let i = 0; i < 30; i++) {
+
+            const data1 = makeCircle()
+            const item1 = `Calculer l'équation de la tangente au cercle d'équation \\( (\\Gamma_1): ${data1.circle.tex} \\) un cercle passant par le point \\( T=${data1.point.tex} \\).`
+
+            const data2 = makeCircle()
+            const item2 = `Calculer l'équation des tangentes au cercle d'équation \\( (\\Gamma_2): ${data2.circle.cartesian.tex} \\) de pente \\( \\displaystyle ${data2.tangent.slope.tex} \\).`
+
+            console.log(`\\textbf{(exercice ${i + 1})}
+        
+        \\begin{enumerate}[(I),itemsep=10em] 
+        \\item ${item1}
+        \\item ${item2}
+            \\end{enumerate}
+            \\iftoggle{master}{
+            (I) \\( ${data1.tangent.tex.canonical} \\)
+            
+            (II) \\( (\\Gamma_2): ${data2.circle.tex} \\) \\\\ \\( (t_1): ${data2.tangent.tex.canonical} \\) et \\( (t_2): ${data2.symetric.tex.canonical} \\)
+            
+            }{}
+            \\vfill
+            ${i % 2 === 1 ? '\\newpage' : ''}
+            `)
+
+        }
+    })
+//     it('intersection temp tests', () => {
+//         for (let i = 0; i < 30; i++) {
+//             let A = Random.Geometry.point({axis: false}),
+//                 rv = Random.number(1, 3),
+//                 r = rv ** 2 + (rv + 1) ** 2
+//
+//             let c = new Circle(A, r, true)
+//             let pts = c.getPointsOnCircle(true)
+//             // console.log(r, pts.length)
+//
+//             // console.log(c.tex)
+//             // console.log(pts.map(pt => pt.display))
+//             pts = Random.shuffle(pts)
+//             let ptt = pts.shift(),
+//                 pt1 = pts.shift(),
+//                 pt2
+//
+//             for (let pt of pts) {
+//                 if (!pt1.x.isEqual(pt.x) && !pt1.y.isEqual(pt.y) && !A.isEqual(new Point().middleOf(pt1, pt))) {
+//                     pt2 = pt.clone()
+//                     break
+//                 }
+//             }
+//
+//             // console.log('Pt de tangence')
+//             // console.log(ptt.display)
+//             let t = c.tangents(ptt)[0]
+//             // console.log(t.tex.canonical)
+//
+//             // console.log('intersection en deux points')
+//             // console.log(pt1.display, pt2.display)
+//             let d = new Line(pt1, pt2)
+//             // console.log(d.tex.canonical)
+//
+//             let P = Random.Geometry.point()
+//             while (P.x.isEqual(c.center.x) || P.y.isEqual(c.center.y)) {
+//                 P = Random.Geometry.point()
+//             }
+//             // Le point P n'est pas sur le centre.
+//             let v = new Vector(c.center, P)
+//             while (P.distanceTo(A).value <= Math.sqrt(r)) {
+//                 P.x.add(v.x)
+//                 P.y.add(v.y)
+//             }
+//             let p = new Line(P, v, LinePropriety.Perpendicular)
+//             // console.log(P.display)
+//             // console.log(p.display.canonical)
+//
+//             let lignes = Random.shuffle([t, d, p])
+//
+// //             console.log(`A${A.display}
+// // c=circ A,${Math.sqrt(r)}
+// // T${ptt.display}
+// // P${pt1.display}
+// // Q${pt2.display}
+// // t=line ${t.display.canonical}
+// // d=line ${d.display.canonical}
+// // p=line ${p.display.canonical}`)
+//             console.log(`(exercice ${i + 1}): Soit \\(\\Gamma\\) un cercle et \\(d_1\\), \\(d_2\\) et \\(d_3\\) trois droites.
+//             \\mathleft
+//             \\[(\\Gamma): ${c.tex}\\]
+//             \\[(d_1): ${lignes[0].tex.canonical} \\qquad (d_2): ${lignes[1].tex.canonical}  \\qquad (d_3): ${lignes[2].tex.canonical}\\]
+//
+//             \\begin{enumerate}[label=\\Alph*]
+//             \\item déterminer les positions relatives de \\(d_1\\), \\(d_2\\) et \\(d_3\\) par rapport à \\(\\Gamma\\)
+//             \\item calculer les coordonnées du ou des points d'intersection entre le cercle et une des droites qui le coupe (au choix).
+//             \\end{enumerate}
+//             \\iftoggle{master}{\\(${t.tex.canonical}\\implies ${ptt.tex}\\) \\\\ \\(${d.tex.canonical}\\implies ${pt1.tex},\\ ${pt2.tex}\\) \\\\}{}
+//             \\vfill
+//             ${i % 2 === 1 ? '\\newpage' : ''}
+//             `)
+//
+//         }
+//
+//     })
 //     it('temp tests', () => {
 //         for (let i = 0; i < 30; i++) {
 //             let A = Random.Geometry.point({axis: false}),

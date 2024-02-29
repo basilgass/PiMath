@@ -9,7 +9,6 @@ import {Fraction} from "../coefficients/fraction";
 import {Equation} from "../algebra/equation";
 import {Polynom} from "../algebra/polynom";
 import {Random} from "../randomization/random";
-import {LinearSystem} from "../algebra/linearSystem";
 import {Monom} from "../algebra/monom";
 
 export enum LinePropriety {
@@ -26,7 +25,20 @@ export class Line {
     private _referencePropriety: LinePropriety
     private _referenceLine: Line
     private _reduceBeforeDisplay: boolean
+    // ax + by + c = 0
+    private _a: Fraction;
+    private _b: Fraction;
+    private _c: Fraction;
+    private _OA: Point;
+    private _d: Vector;
+    private _n: Vector;
+    private _exists: boolean
 
+    /**
+     * Value can be a mix of:
+     *
+     * @param values
+     */
     constructor(...values: unknown[]) {
 
         this._exists = false;
@@ -39,18 +51,16 @@ export class Line {
         return this;
     }
 
-    // ax + by + c = 0
-    private _a: Fraction;
-
     get a(): Fraction {
         return this._a;
     }
 
+    // ------------------------------------------
+    // Getter and setter
+
     set a(value: Fraction) {
         this._a = value;
     }
-
-    private _b: Fraction;
 
     get b(): Fraction {
         return this._b;
@@ -60,20 +70,13 @@ export class Line {
         this._b = value;
     }
 
-    private _c: Fraction;
-
     get c(): Fraction {
         return this._c;
     }
 
-    // ------------------------------------------
-    // Getter and setter
-
     set c(value: Fraction) {
         this._c = value;
     }
-
-    private _OA: Point;
 
     get OA(): Point {
         return this._OA;
@@ -83,8 +86,6 @@ export class Line {
         this._OA = value;
     }
 
-    private _d: Vector;
-
     get d(): Vector {
         return this._d;
     }
@@ -93,13 +94,9 @@ export class Line {
         this._d = value;
     }
 
-    private _n: Vector;
-
     get n(): Vector {
         return this._n;
     }
-
-    private _exists: boolean
 
     get exists(): boolean {
         return this._exists;
@@ -108,19 +105,19 @@ export class Line {
     // ------------------------------------------
     get equation(): Equation {
         let equ = new Equation(new Polynom().parse('xy', this._a, this._b, this._c), new Polynom('0'))
-        if(this._reduceBeforeDisplay) {
+        if (this._reduceBeforeDisplay) {
             return equ.simplify();
-        }else{
+        } else {
             return equ
         }
     }
 
     get system(): { x: Equation, y: Equation } {
         let e1 = new Equation(
-            new Polynom('x'),
-            new Polynom(this._OA.x)
-                .add(new Monom('k').multiplyByNumber(this._d.x))
-        ),
+                new Polynom('x'),
+                new Polynom(this._OA.x)
+                    .add(new Monom('k').multiplyByNumber(this._d.x))
+            ),
             e2 = new Equation(
                 new Polynom('y'),
                 new Polynom(this._OA.y)

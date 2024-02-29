@@ -4,14 +4,14 @@ export type randomCoefficientConfig = {
     negative?: boolean,
     max?: number,
     reduced?: boolean,
-    zero?:boolean,
-    natural?:boolean
+    zero?: boolean,
+    natural?: boolean
 }
 
 export type randomMonomConfig = {
     letters?: string,
     degree?: number,
-    fraction?: boolean|randomCoefficientConfig,
+    fraction?: boolean | randomCoefficientConfig,
     zero?: boolean
 }
 
@@ -29,9 +29,15 @@ export type randomGeometryLineConfig = {
 }
 
 
-export type randomGeometryPointConfig  = {
+export type randomGeometryPointConfig = {
     quadrant?: number,
     axis?: string | boolean,
     fraction?: boolean,
     max?: number
+}
+
+export type randomGeometryCircleConfig = {
+    center?: randomGeometryPointConfig,
+    radius?: number,
+    pointsOnCircle?: number
 }
