@@ -17,7 +17,7 @@
       "src/maths/geometry/triangle.ts",
       "src/maths/geometry/vector.ts",
       "src/maths/numeric.ts",
-      "src/maths/shutingyard.ts",
+      "src/maths/shutingyard.ts"
     ],
     "plugin": [
       "./typedoc.katex.js"
@@ -25,13 +25,24 @@
     "out": "docs"
   },
   "compilerOptions": {
+    "target": "es2021",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": [
+      "ES2021",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
     "outDir": "./esm/",
     "noImplicitAny": true,
-    "module": "commonjs",
-    "target": "es2021",
     "allowJs": true,
     "sourceMap": true,
-    "moduleResolution": "node",
     "declaration": true,
     "removeComments": false
   },

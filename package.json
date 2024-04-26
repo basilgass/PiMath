@@ -2,10 +2,12 @@
   "name": "pimath",
   "version": "0.0.127",
   "description": "A math library for teacher :)",
+  "type": "module",
   "scripts": {
     "test": "mocha -r ts-node/register 'tests/**/*.test.ts'",
-    "dev": "webpack --watch --config webpack.config.js",
-    "production": "webpack --config webpack-production.config.js && webpack --config webpack-production-min.config.js && tsc --build",
+    "dev": "vite serve",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "docs": "typedoc"
   },
   "keywords": [
@@ -21,14 +23,20 @@
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
     "chai": "*",
-    "mocha": "*",
     "eslint": "^8.50.0",
+    "mocha": "*",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
     "typedoc": "^0.25.1",
-    "typescript": "^5.2.2",
-    "webpack": "^5.88.2",
-    "webpack-bundle-analyzer": "^4.9.1",
-    "webpack-cli": "^5.1.4"
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "vite": "^5.2.10"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/pimath.js",
+      "require": "./dist/pimath.umd.cjs"
+    }
   }
 }
