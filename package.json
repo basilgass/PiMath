@@ -6,8 +6,7 @@
   "main": "dist/pimath.js",
   "types": "dist/pimath.d.ts",
   "files": [
-    "dist",
-    "lib"
+    "dist"
   ],
   "scripts": {
     "test": "mocha -r ts-node/register 'tests/**/*.test.ts'",
