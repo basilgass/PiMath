@@ -1,1 +1,1 @@
-export { PiMath } from './maths/pimath.ts';
+export { PiMath } from './pimath.ts';
