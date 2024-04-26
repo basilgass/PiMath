@@ -1,84 +1,6 @@
 var te = Object.defineProperty;
 var ie = (c, e, t) => e in c ? te(c, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : c[e] = t;
 var r = (c, e, t) => (ie(c, typeof e != "symbol" ? e + "" : e, t), t);
-class x {
-  static round(e, t = 2) {
-    return +(Math.round(+(e + "e" + t)) + "e-" + t);
-  }
-  /**
-   * Get the list of the nth first prime numbers.
-   * @param nb : number of primes to choose from
-   */
-  static primes(e) {
-    let t = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249, 1259, 1277, 1279, 1283, 1289, 1291, 1297, 1301, 1303, 1307, 1319, 1321, 1327, 1361, 1367, 1373, 1381, 1399, 1409, 1423, 1427, 1429, 1433, 1439, 1447, 1451, 1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499, 1511, 1523, 1531, 1543, 1549, 1553, 1559, 1567, 1571, 1579, 1583, 1597, 1601, 1607, 1609, 1613, 1619, 1621, 1627, 1637, 1657, 1663, 1667, 1669, 1693, 1697, 1699, 1709, 1721, 1723, 1733, 1741, 1747, 1753, 1759, 1777, 1783, 1787, 1789, 1801, 1811, 1823, 1831, 1847, 1861, 1867, 1871, 1873, 1877, 1879, 1889, 1901, 1907, 1913, 1931, 1933, 1949, 1951, 1973, 1979, 1987, 1993, 1997, 1999, 2003, 2011, 2017, 2027, 2029, 2039, 2053, 2063, 2069, 2081, 2083, 2087, 2089, 2099, 2111, 2113, 2129, 2131, 2137, 2141, 2143, 2153, 2161, 2179, 2203, 2207, 2213, 2221, 2237, 2239, 2243, 2251, 2267, 2269, 2273, 2281, 2287, 2293, 2297, 2309, 2311, 2333, 2339, 2341, 2347, 2351, 2357, 2371, 2377, 2381, 2383, 2389, 2393, 2399, 2411, 2417, 2423, 2437, 2441, 2447, 2459, 2467, 2473, 2477, 2503, 2521, 2531, 2539, 2543, 2549, 2551, 2557, 2579, 2591, 2593, 2609, 2617, 2621, 2633, 2647, 2657, 2659, 2663, 2671, 2677, 2683, 2687, 2689, 2693, 2699, 2707, 2711, 2713, 2719, 2729, 2731, 2741, 2749, 2753, 2767, 2777, 2789, 2791, 2797, 2801, 2803, 2819, 2833, 2837, 2843, 2851, 2857, 2861, 2879, 2887, 2897, 2903, 2909, 2917, 2927, 2939, 2953, 2957, 2963, 2969, 2971, 2999, 3001, 3011, 3019, 3023, 3037, 3041, 3049, 3061, 3067, 3079, 3083, 3089, 3109, 3119, 3121, 3137, 3163, 3167, 3169, 3181, 3187, 3191, 3203, 3209, 3217, 3221, 3229, 3251, 3253, 3257, 3259, 3271, 3299, 3301, 3307, 3313, 3319, 3323, 3329, 3331, 3343, 3347, 3359, 3361, 3371, 3373, 3389, 3391, 3407, 3413, 3433, 3449, 3457, 3461, 3463, 3467, 3469, 3491, 3499, 3511, 3517, 3527, 3529, 3533, 3539, 3541, 3547, 3557, 3559, 3571, 3581, 3583, 3593, 3607, 3613, 3617, 3623, 3631, 3637, 3643, 3659, 3671, 3673, 3677, 3691, 3697, 3701, 3709, 3719, 3727, 3733, 3739, 3761, 3767, 3769, 3779, 3793, 3797, 3803, 3821, 3823, 3833, 3847, 3851, 3853, 3863, 3877, 3881, 3889, 3907, 3911, 3917, 3919, 3923, 3929, 3931, 3943, 3947, 3967, 3989, 4001, 4003, 4007, 4013, 4019, 4021, 4027, 4049, 4051, 4057, 4073, 4079, 4091, 4093, 4099, 4111, 4127, 4129, 4133, 4139, 4153, 4157, 4159, 4177, 4201, 4211, 4217, 4219, 4229, 4231, 4241, 4243, 4253, 4259, 4261, 4271, 4273, 4283, 4289, 4297, 4327, 4337, 4339, 4349, 4357, 4363, 4373, 4391, 4397, 4409, 4421, 4423, 4441, 4447, 4451, 4457, 4463, 4481, 4483, 4493, 4507, 4513, 4517, 4519, 4523, 4547, 4549, 4561, 4567, 4583, 4591, 4597, 4603, 4621, 4637, 4639, 4643, 4649, 4651, 4657, 4663, 4673, 4679, 4691, 4703, 4721, 4723, 4729, 4733, 4751, 4759, 4783, 4787, 4789, 4793, 4799, 4801, 4813, 4817, 4831, 4861, 4871, 4877, 4889, 4903, 4909, 4919, 4931, 4933, 4937, 4943, 4951, 4957, 4967, 4969, 4973, 4987, 4993, 4999, 5003, 5009, 5011, 5021, 5023, 5039, 5051, 5059, 5077, 5081, 5087, 5099, 5101, 5107, 5113, 5119, 5147, 5153, 5167, 5171, 5179, 5189, 5197, 5209, 5227, 5231, 5233, 5237, 5261, 5273, 5279, 5281, 5297, 5303, 5309, 5323, 5333, 5347, 5351, 5381, 5387, 5393, 5399, 5407, 5413, 5417, 5419, 5431, 5437, 5441, 5443, 5449, 5471, 5477, 5479, 5483, 5501, 5503, 5507, 5519, 5521, 5527, 5531, 5557, 5563, 5569, 5573, 5581, 5591, 5623, 5639, 5641, 5647, 5651, 5653, 5657, 5659, 5669, 5683, 5689, 5693, 5701, 5711, 5717, 5737, 5741, 5743, 5749, 5779, 5783, 5791, 5801, 5807, 5813, 5821, 5827, 5839, 5843, 5849, 5851, 5857, 5861, 5867, 5869, 5879, 5881, 5897, 5903, 5923, 5927, 5939, 5953, 5981, 5987, 6007, 6011, 6029, 6037, 6043, 6047, 6053, 6067, 6073, 6079, 6089, 6091, 6101, 6113, 6121, 6131, 6133, 6143, 6151, 6163, 6173, 6197, 6199, 6203, 6211, 6217, 6221, 6229, 6247, 6257, 6263, 6269, 6271, 6277, 6287, 6299, 6301, 6311, 6317, 6323, 6329, 6337, 6343, 6353, 6359, 6361, 6367, 6373, 6379, 6389, 6397, 6421, 6427, 6449, 6451, 6469, 6473, 6481, 6491, 6521, 6529, 6547, 6551, 6553, 6563, 6569, 6571, 6577, 6581, 6599, 6607, 6619, 6637, 6653, 6659, 6661, 6673, 6679, 6689, 6691, 6701, 6703, 6709, 6719, 6733, 6737, 6761, 6763, 6779, 6781, 6791, 6793, 6803, 6823, 6827, 6829, 6833, 6841, 6857, 6863, 6869, 6871, 6883, 6899, 6907, 6911, 6917, 6947, 6949, 6959, 6961, 6967, 6971, 6977, 6983, 6991, 6997, 7001, 7013, 7019, 7027, 7039, 7043, 7057, 7069, 7079, 7103, 7109, 7121, 7127, 7129, 7151, 7159, 7177, 7187, 7193, 7207, 7211, 7213, 7219, 7229, 7237, 7243, 7247, 7253, 7283, 7297, 7307, 7309, 7321, 7331, 7333, 7349, 7351, 7369, 7393, 7411, 7417, 7433, 7451, 7457, 7459, 7477, 7481, 7487, 7489, 7499, 7507, 7517, 7523, 7529, 7537, 7541, 7547, 7549, 7559, 7561, 7573, 7577, 7583, 7589, 7591, 7603, 7607, 7621, 7639, 7643, 7649, 7669, 7673, 7681, 7687, 7691, 7699, 7703, 7717, 7723, 7727, 7741, 7753, 7757, 7759, 7789, 7793, 7817, 7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919, 7927, 7933, 7937, 7949, 7951, 7963, 7993, 8009, 8011, 8017, 8039, 8053, 8059, 8069, 8081, 8087, 8089, 8093, 8101, 8111, 8117, 8123, 8147, 8161, 8167, 8171, 8179, 8191, 8209, 8219, 8221, 8231, 8233, 8237, 8243, 8263, 8269, 8273, 8287, 8291, 8293, 8297, 8311, 8317, 8329, 8353, 8363, 8369, 8377, 8387, 8389, 8419, 8423, 8429, 8431, 8443, 8447, 8461, 8467, 8501, 8513, 8521, 8527, 8537, 8539, 8543, 8563, 8573, 8581, 8597, 8599, 8609, 8623, 8627, 8629, 8641, 8647, 8663, 8669, 8677, 8681, 8689, 8693, 8699, 8707, 8713, 8719, 8731, 8737, 8741, 8747, 8753, 8761, 8779, 8783, 8803, 8807, 8819, 8821, 8831, 8837, 8839, 8849, 8861, 8863, 8867, 8887, 8893, 8923, 8929, 8933, 8941, 8951, 8963, 8969, 8971, 8999, 9001, 9007, 9011, 9013, 9029, 9041, 9043, 9049, 9059, 9067, 9091, 9103, 9109, 9127, 9133, 9137, 9151, 9157, 9161, 9173, 9181, 9187, 9199, 9203, 9209, 9221, 9227, 9239, 9241, 9257, 9277, 9281, 9283, 9293, 9311, 9319, 9323, 9337, 9341, 9343, 9349, 9371, 9377, 9391, 9397, 9403, 9413, 9419, 9421, 9431, 9433, 9437, 9439, 9461, 9463, 9467, 9473, 9479, 9491, 9497, 9511, 9521, 9533, 9539, 9547, 9551, 9587, 9601, 9613, 9619, 9623, 9629, 9631, 9643, 9649, 9661, 9677, 9679, 9689, 9697, 9719, 9721, 9733, 9739, 9743, 9749, 9767, 9769, 9781, 9787, 9791, 9803, 9811, 9817, 9829, 9833, 9839, 9851, 9857, 9859, 9871, 9883, 9887, 9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973];
-    return e === void 0 ? t : t.slice(0, Math.min(t.length, e));
-  }
-  /**
-   * Get the list of all dividers of a number.
-   * @param value
-   */
-  static dividers(e) {
-    let t;
-    const i = Math.sqrt(Math.abs(e));
-    t = [];
-    for (let s = 1; s <= i; s++)
-      e % s === 0 && (t.push(s), t.push(e / s));
-    return t.sort(function(s, n) {
-      return s - n;
-    }), [...new Set(t)];
-  }
-  /**
-   * Great Common Divisor
-   * @param values : number values
-   */
-  static gcd(...e) {
-    let t = function(n, o) {
-      return o === 0 ? n : t(o, n % o);
-    }, i = 1, s = 2;
-    if (e.length === 0)
-      return 1;
-    if (e.length === 1)
-      return e[0] === 0 ? 1 : e[0];
-    if (i = t(e[0], e[1]), i === 1)
-      return 1;
-    for (s = 2; s < e.length && (i = t(i, e[s]), i !== 1); s++)
-      ;
-    return Math.abs(i);
-  }
-  static divideNumbersByGCD(...e) {
-    let t = x.gcd(...e);
-    return e.map((i) => i / t);
-  }
-  /**
-   * Least Common Multiple
-   * @param values: list of numbers
-   */
-  static lcm(...e) {
-    return e.reduce(function(t, i) {
-      return Math.abs(t * i / x.gcd(t, i));
-    });
-  }
-  static pythagoricianTripletsWithTarget(e, t) {
-    const i = [], s = t === !0 ? +e : e ** 2;
-    for (let n = 0; n <= e; n++)
-      for (let o = 0; o <= e; o++)
-        n ** 2 + o ** 2 === s && i.push([n, o, e]);
-    return i;
-  }
-  static numberCorrection(e, t = 1, i = 10, s = 8) {
-    return +e.toFixed(s);
-  }
-  static periodic(e) {
-    if (Number.isSafeInteger(e) || e.toString().split(".")[0].length < 10)
-      return 0;
-  }
-  static decompose(e) {
-    let t = x.dividers(e), i = [], s, n;
-    for (; t.length > 0; )
-      s = t.shift(), n = t.length > 0 ? t.pop() : +s, i.push([s, n]);
-    return i;
-  }
-}
 const X = {
   pi: Math.PI,
   e: Math.exp(1)
@@ -527,6 +449,84 @@ class P {
     return this._rpn = i.concat(s.reverse()), this;
   }
 }
+class x {
+  static round(e, t = 2) {
+    return +(Math.round(+(e + "e" + t)) + "e-" + t);
+  }
+  /**
+   * Get the list of the nth first prime numbers.
+   * @param nb : number of primes to choose from
+   */
+  static primes(e) {
+    let t = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249, 1259, 1277, 1279, 1283, 1289, 1291, 1297, 1301, 1303, 1307, 1319, 1321, 1327, 1361, 1367, 1373, 1381, 1399, 1409, 1423, 1427, 1429, 1433, 1439, 1447, 1451, 1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499, 1511, 1523, 1531, 1543, 1549, 1553, 1559, 1567, 1571, 1579, 1583, 1597, 1601, 1607, 1609, 1613, 1619, 1621, 1627, 1637, 1657, 1663, 1667, 1669, 1693, 1697, 1699, 1709, 1721, 1723, 1733, 1741, 1747, 1753, 1759, 1777, 1783, 1787, 1789, 1801, 1811, 1823, 1831, 1847, 1861, 1867, 1871, 1873, 1877, 1879, 1889, 1901, 1907, 1913, 1931, 1933, 1949, 1951, 1973, 1979, 1987, 1993, 1997, 1999, 2003, 2011, 2017, 2027, 2029, 2039, 2053, 2063, 2069, 2081, 2083, 2087, 2089, 2099, 2111, 2113, 2129, 2131, 2137, 2141, 2143, 2153, 2161, 2179, 2203, 2207, 2213, 2221, 2237, 2239, 2243, 2251, 2267, 2269, 2273, 2281, 2287, 2293, 2297, 2309, 2311, 2333, 2339, 2341, 2347, 2351, 2357, 2371, 2377, 2381, 2383, 2389, 2393, 2399, 2411, 2417, 2423, 2437, 2441, 2447, 2459, 2467, 2473, 2477, 2503, 2521, 2531, 2539, 2543, 2549, 2551, 2557, 2579, 2591, 2593, 2609, 2617, 2621, 2633, 2647, 2657, 2659, 2663, 2671, 2677, 2683, 2687, 2689, 2693, 2699, 2707, 2711, 2713, 2719, 2729, 2731, 2741, 2749, 2753, 2767, 2777, 2789, 2791, 2797, 2801, 2803, 2819, 2833, 2837, 2843, 2851, 2857, 2861, 2879, 2887, 2897, 2903, 2909, 2917, 2927, 2939, 2953, 2957, 2963, 2969, 2971, 2999, 3001, 3011, 3019, 3023, 3037, 3041, 3049, 3061, 3067, 3079, 3083, 3089, 3109, 3119, 3121, 3137, 3163, 3167, 3169, 3181, 3187, 3191, 3203, 3209, 3217, 3221, 3229, 3251, 3253, 3257, 3259, 3271, 3299, 3301, 3307, 3313, 3319, 3323, 3329, 3331, 3343, 3347, 3359, 3361, 3371, 3373, 3389, 3391, 3407, 3413, 3433, 3449, 3457, 3461, 3463, 3467, 3469, 3491, 3499, 3511, 3517, 3527, 3529, 3533, 3539, 3541, 3547, 3557, 3559, 3571, 3581, 3583, 3593, 3607, 3613, 3617, 3623, 3631, 3637, 3643, 3659, 3671, 3673, 3677, 3691, 3697, 3701, 3709, 3719, 3727, 3733, 3739, 3761, 3767, 3769, 3779, 3793, 3797, 3803, 3821, 3823, 3833, 3847, 3851, 3853, 3863, 3877, 3881, 3889, 3907, 3911, 3917, 3919, 3923, 3929, 3931, 3943, 3947, 3967, 3989, 4001, 4003, 4007, 4013, 4019, 4021, 4027, 4049, 4051, 4057, 4073, 4079, 4091, 4093, 4099, 4111, 4127, 4129, 4133, 4139, 4153, 4157, 4159, 4177, 4201, 4211, 4217, 4219, 4229, 4231, 4241, 4243, 4253, 4259, 4261, 4271, 4273, 4283, 4289, 4297, 4327, 4337, 4339, 4349, 4357, 4363, 4373, 4391, 4397, 4409, 4421, 4423, 4441, 4447, 4451, 4457, 4463, 4481, 4483, 4493, 4507, 4513, 4517, 4519, 4523, 4547, 4549, 4561, 4567, 4583, 4591, 4597, 4603, 4621, 4637, 4639, 4643, 4649, 4651, 4657, 4663, 4673, 4679, 4691, 4703, 4721, 4723, 4729, 4733, 4751, 4759, 4783, 4787, 4789, 4793, 4799, 4801, 4813, 4817, 4831, 4861, 4871, 4877, 4889, 4903, 4909, 4919, 4931, 4933, 4937, 4943, 4951, 4957, 4967, 4969, 4973, 4987, 4993, 4999, 5003, 5009, 5011, 5021, 5023, 5039, 5051, 5059, 5077, 5081, 5087, 5099, 5101, 5107, 5113, 5119, 5147, 5153, 5167, 5171, 5179, 5189, 5197, 5209, 5227, 5231, 5233, 5237, 5261, 5273, 5279, 5281, 5297, 5303, 5309, 5323, 5333, 5347, 5351, 5381, 5387, 5393, 5399, 5407, 5413, 5417, 5419, 5431, 5437, 5441, 5443, 5449, 5471, 5477, 5479, 5483, 5501, 5503, 5507, 5519, 5521, 5527, 5531, 5557, 5563, 5569, 5573, 5581, 5591, 5623, 5639, 5641, 5647, 5651, 5653, 5657, 5659, 5669, 5683, 5689, 5693, 5701, 5711, 5717, 5737, 5741, 5743, 5749, 5779, 5783, 5791, 5801, 5807, 5813, 5821, 5827, 5839, 5843, 5849, 5851, 5857, 5861, 5867, 5869, 5879, 5881, 5897, 5903, 5923, 5927, 5939, 5953, 5981, 5987, 6007, 6011, 6029, 6037, 6043, 6047, 6053, 6067, 6073, 6079, 6089, 6091, 6101, 6113, 6121, 6131, 6133, 6143, 6151, 6163, 6173, 6197, 6199, 6203, 6211, 6217, 6221, 6229, 6247, 6257, 6263, 6269, 6271, 6277, 6287, 6299, 6301, 6311, 6317, 6323, 6329, 6337, 6343, 6353, 6359, 6361, 6367, 6373, 6379, 6389, 6397, 6421, 6427, 6449, 6451, 6469, 6473, 6481, 6491, 6521, 6529, 6547, 6551, 6553, 6563, 6569, 6571, 6577, 6581, 6599, 6607, 6619, 6637, 6653, 6659, 6661, 6673, 6679, 6689, 6691, 6701, 6703, 6709, 6719, 6733, 6737, 6761, 6763, 6779, 6781, 6791, 6793, 6803, 6823, 6827, 6829, 6833, 6841, 6857, 6863, 6869, 6871, 6883, 6899, 6907, 6911, 6917, 6947, 6949, 6959, 6961, 6967, 6971, 6977, 6983, 6991, 6997, 7001, 7013, 7019, 7027, 7039, 7043, 7057, 7069, 7079, 7103, 7109, 7121, 7127, 7129, 7151, 7159, 7177, 7187, 7193, 7207, 7211, 7213, 7219, 7229, 7237, 7243, 7247, 7253, 7283, 7297, 7307, 7309, 7321, 7331, 7333, 7349, 7351, 7369, 7393, 7411, 7417, 7433, 7451, 7457, 7459, 7477, 7481, 7487, 7489, 7499, 7507, 7517, 7523, 7529, 7537, 7541, 7547, 7549, 7559, 7561, 7573, 7577, 7583, 7589, 7591, 7603, 7607, 7621, 7639, 7643, 7649, 7669, 7673, 7681, 7687, 7691, 7699, 7703, 7717, 7723, 7727, 7741, 7753, 7757, 7759, 7789, 7793, 7817, 7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919, 7927, 7933, 7937, 7949, 7951, 7963, 7993, 8009, 8011, 8017, 8039, 8053, 8059, 8069, 8081, 8087, 8089, 8093, 8101, 8111, 8117, 8123, 8147, 8161, 8167, 8171, 8179, 8191, 8209, 8219, 8221, 8231, 8233, 8237, 8243, 8263, 8269, 8273, 8287, 8291, 8293, 8297, 8311, 8317, 8329, 8353, 8363, 8369, 8377, 8387, 8389, 8419, 8423, 8429, 8431, 8443, 8447, 8461, 8467, 8501, 8513, 8521, 8527, 8537, 8539, 8543, 8563, 8573, 8581, 8597, 8599, 8609, 8623, 8627, 8629, 8641, 8647, 8663, 8669, 8677, 8681, 8689, 8693, 8699, 8707, 8713, 8719, 8731, 8737, 8741, 8747, 8753, 8761, 8779, 8783, 8803, 8807, 8819, 8821, 8831, 8837, 8839, 8849, 8861, 8863, 8867, 8887, 8893, 8923, 8929, 8933, 8941, 8951, 8963, 8969, 8971, 8999, 9001, 9007, 9011, 9013, 9029, 9041, 9043, 9049, 9059, 9067, 9091, 9103, 9109, 9127, 9133, 9137, 9151, 9157, 9161, 9173, 9181, 9187, 9199, 9203, 9209, 9221, 9227, 9239, 9241, 9257, 9277, 9281, 9283, 9293, 9311, 9319, 9323, 9337, 9341, 9343, 9349, 9371, 9377, 9391, 9397, 9403, 9413, 9419, 9421, 9431, 9433, 9437, 9439, 9461, 9463, 9467, 9473, 9479, 9491, 9497, 9511, 9521, 9533, 9539, 9547, 9551, 9587, 9601, 9613, 9619, 9623, 9629, 9631, 9643, 9649, 9661, 9677, 9679, 9689, 9697, 9719, 9721, 9733, 9739, 9743, 9749, 9767, 9769, 9781, 9787, 9791, 9803, 9811, 9817, 9829, 9833, 9839, 9851, 9857, 9859, 9871, 9883, 9887, 9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973];
+    return e === void 0 ? t : t.slice(0, Math.min(t.length, e));
+  }
+  /**
+   * Get the list of all dividers of a number.
+   * @param value
+   */
+  static dividers(e) {
+    let t;
+    const i = Math.sqrt(Math.abs(e));
+    t = [];
+    for (let s = 1; s <= i; s++)
+      e % s === 0 && (t.push(s), t.push(e / s));
+    return t.sort(function(s, n) {
+      return s - n;
+    }), [...new Set(t)];
+  }
+  /**
+   * Great Common Divisor
+   * @param values : number values
+   */
+  static gcd(...e) {
+    let t = function(n, o) {
+      return o === 0 ? n : t(o, n % o);
+    }, i = 1, s = 2;
+    if (e.length === 0)
+      return 1;
+    if (e.length === 1)
+      return e[0] === 0 ? 1 : e[0];
+    if (i = t(e[0], e[1]), i === 1)
+      return 1;
+    for (s = 2; s < e.length && (i = t(i, e[s]), i !== 1); s++)
+      ;
+    return Math.abs(i);
+  }
+  static divideNumbersByGCD(...e) {
+    let t = x.gcd(...e);
+    return e.map((i) => i / t);
+  }
+  /**
+   * Least Common Multiple
+   * @param values: list of numbers
+   */
+  static lcm(...e) {
+    return e.reduce(function(t, i) {
+      return Math.abs(t * i / x.gcd(t, i));
+    });
+  }
+  static pythagoricianTripletsWithTarget(e, t) {
+    const i = [], s = t === !0 ? +e : e ** 2;
+    for (let n = 0; n <= e; n++)
+      for (let o = 0; o <= e; o++)
+        n ** 2 + o ** 2 === s && i.push([n, o, e]);
+    return i;
+  }
+  static numberCorrection(e, t = 1, i = 10, s = 8) {
+    return +e.toFixed(s);
+  }
+  static periodic(e) {
+    if (Number.isSafeInteger(e) || e.toString().split(".")[0].length < 10)
+      return 0;
+  }
+  static decompose(e) {
+    let t = x.dividers(e), i = [], s, n;
+    for (; t.length > 0; )
+      s = t.shift(), n = t.length > 0 ? t.pop() : +s, i.push([s, n]);
+    return i;
+  }
+}
 const b = class b {
   constructor(e, t) {
     r(this, "_denominator");
@@ -870,14 +870,68 @@ class K {
     e.push(this._numberCorrection(t));
   }
 }
-class D {
-  constructor() {
-    r(this, "_config");
-    r(this, "_defaultConfig");
-    r(this, "mergeConfig", (e, t) => e !== void 0 ? { ...t, ...e } : t);
-    r(this, "generate", () => {
+class Q {
+  constructor(...e) {
+    r(this, "_radical");
+    r(this, "_nth");
+    r(this, "_coefficient");
+    r(this, "_isValid");
+    // ------------------------------------------
+    // Creation / parsing functions
+    // ------------------------------------------
+    r(this, "parse", (e, t, i) => (this._coefficient = i === void 0 ? 1 : i, this._nth = t === void 0 ? 2 : t, this._radical = e === void 0 ? 1 : e, this._nth % 2 === 0 && this._radical < 0 && (this._isValid = !1), this));
+    // ------------------------------------------
+    // Mathematical operations
+    // ------------------------------------------
+    r(this, "reduce", () => {
+      let e = Math.floor(Math.pow(this._radical, 1 / this._nth));
+      for (; e > 1; ) {
+        if (this._radical % Math.pow(e, this._nth) === 0) {
+          this._coefficient *= e, this._radical = this._radical / Math.pow(e, this._nth), e = Math.floor(Math.pow(this._radical, 1 / this._nth));
+          continue;
+        }
+        e--;
+      }
+      return this;
     });
-    r(this, "config", (e) => (this._config = this.mergeConfig(e, this._defaultConfig), this));
+    r(this, "multiply", (e) => (this._radical *= e.radical, this.reduce()));
+    // ------------------------------------------
+    // Help functions
+    // ------------------------------------------
+    r(this, "hasRadical", () => !(this._radical === 1 || this._radical === 0 || this._isValid === !1));
+    this._radical = 1, this._coefficient = 1, this._nth = 2, this._isValid = !0, e !== void 0 && this.parse(e[0], e[1], e[2]);
+  }
+  // ------------------------------------------
+  // Getter and setter
+  // ------------------------------------------
+  get radical() {
+    return this._radical;
+  }
+  set radical(e) {
+    this._radical = e;
+  }
+  get nth() {
+    return this._nth;
+  }
+  set nth(e) {
+    Number.isSafeInteger(e) && e >= 2 ? this._nth = e : (console.log("Error setting the nth root"), this._nth = 2);
+  }
+  get coefficient() {
+    return this._coefficient;
+  }
+  set coefficient(e) {
+    this._coefficient = e;
+  }
+  get tex() {
+    let e;
+    return this._coefficient === 1 ? e = "" : this._coefficient === -1 ? e = "-" : e = this._coefficient.toString(), this._radical === 1 ? `${this._coefficient}` : this._nth === 2 ? `${e}\\sqrt{${this._radical}}` : `${e}\\sqrt[${this._nth}]{${this._radical}}`;
+  }
+  get display() {
+    let e;
+    return this._coefficient === 1 ? e = "" : this._coefficient === -1 ? e = "-" : e = this._coefficient.toString(), this._radical === 1 ? `${this._coefficient}` : this._nth === 2 ? `${e}sqrt{${this._radical}}` : `${e}root(${this._nth}){${this._radical}}`;
+  }
+  get value() {
+    return this._coefficient * Math.pow(this._radical, 1 / this._nth);
   }
 }
 const $ = class $ {
@@ -1390,98 +1444,6 @@ r($, "xmultiply", (...e) => {
   return t;
 });
 let g = $;
-class Q extends D {
-  constructor(t) {
-    super();
-    r(this, "generate", () => {
-      let t = new g();
-      if (typeof this._config.fraction == "boolean" ? t.coefficient = w.fraction({
-        zero: this._config.zero,
-        reduced: !0,
-        natural: !this._config.fraction
-      }) : t.coefficient = w.fraction(this._config.fraction), this._config.letters.length > 1) {
-        for (let i of this._config.letters.split(""))
-          t.setLetter(i, 0);
-        for (let i = 0; i < this._config.degree; i++) {
-          const s = w.item(this._config.letters.split(""));
-          t.setLetter(s, t.degree(s).clone().add(1));
-        }
-      } else
-        t.setLetter(this._config.letters, this._config.degree);
-      return t;
-    });
-    this._defaultConfig = {
-      letters: "x",
-      degree: 2,
-      fraction: !0,
-      zero: !1
-    }, this._config = this.mergeConfig(t, this._defaultConfig);
-  }
-}
-class J {
-  constructor(...e) {
-    r(this, "_radical");
-    r(this, "_nth");
-    r(this, "_coefficient");
-    r(this, "_isValid");
-    // ------------------------------------------
-    // Creation / parsing functions
-    // ------------------------------------------
-    r(this, "parse", (e, t, i) => (this._coefficient = i === void 0 ? 1 : i, this._nth = t === void 0 ? 2 : t, this._radical = e === void 0 ? 1 : e, this._nth % 2 === 0 && this._radical < 0 && (this._isValid = !1), this));
-    // ------------------------------------------
-    // Mathematical operations
-    // ------------------------------------------
-    r(this, "reduce", () => {
-      let e = Math.floor(Math.pow(this._radical, 1 / this._nth));
-      for (; e > 1; ) {
-        if (this._radical % Math.pow(e, this._nth) === 0) {
-          this._coefficient *= e, this._radical = this._radical / Math.pow(e, this._nth), e = Math.floor(Math.pow(this._radical, 1 / this._nth));
-          continue;
-        }
-        e--;
-      }
-      return this;
-    });
-    r(this, "multiply", (e) => (this._radical *= e.radical, this.reduce()));
-    // ------------------------------------------
-    // Help functions
-    // ------------------------------------------
-    r(this, "hasRadical", () => !(this._radical === 1 || this._radical === 0 || this._isValid === !1));
-    this._radical = 1, this._coefficient = 1, this._nth = 2, this._isValid = !0, e !== void 0 && this.parse(e[0], e[1], e[2]);
-  }
-  // ------------------------------------------
-  // Getter and setter
-  // ------------------------------------------
-  get radical() {
-    return this._radical;
-  }
-  set radical(e) {
-    this._radical = e;
-  }
-  get nth() {
-    return this._nth;
-  }
-  set nth(e) {
-    Number.isSafeInteger(e) && e >= 2 ? this._nth = e : (console.log("Error setting the nth root"), this._nth = 2);
-  }
-  get coefficient() {
-    return this._coefficient;
-  }
-  set coefficient(e) {
-    this._coefficient = e;
-  }
-  get tex() {
-    let e;
-    return this._coefficient === 1 ? e = "" : this._coefficient === -1 ? e = "-" : e = this._coefficient.toString(), this._radical === 1 ? `${this._coefficient}` : this._nth === 2 ? `${e}\\sqrt{${this._radical}}` : `${e}\\sqrt[${this._nth}]{${this._radical}}`;
-  }
-  get display() {
-    let e;
-    return this._coefficient === 1 ? e = "" : this._coefficient === -1 ? e = "-" : e = this._coefficient.toString(), this._radical === 1 ? `${this._coefficient}` : this._nth === 2 ? `${e}sqrt{${this._radical}}` : `${e}root(${this._nth}){${this._radical}}`;
-  }
-  get value() {
-    return this._coefficient * Math.pow(this._radical, 1 / this._nth);
-  }
-}
 var F = /* @__PURE__ */ ((c) => (c.real = "\\mathbb{R}", c.varnothing = "\\varnothing", c))(F || {});
 class k {
   /**
@@ -1669,7 +1631,7 @@ class k {
               exact: !1
             }
           ];
-        } else if (o = new J(n).reduce(), o.hasRadical()) {
+        } else if (o = new Q(n).reduce(), o.hasRadical()) {
           let v = x.gcd(f, 2 * a, o.coefficient), B = a / v, S = f / v;
           o.coefficient = o.coefficient / v, a < 0 && (B = -B, S = -S);
           let I = "", Z = "";
@@ -2550,7 +2512,730 @@ class u {
       return this.zero();
   }
 }
-class se extends D {
+class Y {
+  constructor(...e) {
+    // Stores the original equations
+    r(this, "_equations");
+    // Determine the letters in the linear system, usually ['x', 'y']
+    r(this, "_letters");
+    // Resolution steps contains each steps
+    // letter : target letter
+    // steps: {system: current LinearSystem, operations: [*3,/5] or [[*3,*2], [,*5], [*2,]]}
+    r(this, "_resolutionSteps");
+    // Get the solution of the equation
+    r(this, "_solutions");
+    r(this, "buildTex", (e, t) => {
+      let i, s = [], n, o = [];
+      for (let a of e)
+        o = o.concat(a.letters());
+      o = [...new Set(o)], o.sort();
+      for (let a = 0; a < e.length; a++) {
+        let f = e[a];
+        i = [];
+        for (let m of o)
+          n = f.left.monomByLetter(m), i.length === 0 ? i.push(n.isZero() ? "" : n.tex) : i.push(n.isZero() ? "" : (n.coefficient.sign() === 1 ? "+" : "") + n.tex);
+        if (i.push("="), i.push(f.right.tex), t !== void 0 && t[a] !== void 0) {
+          i[i.length - 1] = i[i.length - 1] + " \\phantom{\\quad}";
+          for (let m of t[a])
+            i.push(`\\ \\cdot\\ ${m.startsWith("-") ? "\\left(" + m + "\\right)" : m}`);
+        }
+        s.push(i.join("&"));
+      }
+      let l = 0;
+      return t !== void 0 && t.length > 0 && (l = t[0].length), `\\left\\{\\begin{array}{${"r".repeat(o.length)}cl ${"|l".repeat(l)}}${s.join("\\\\ ")}\\end{array}\\right.`;
+    });
+    r(this, "stepTex", (e) => {
+      const t = this._resolutionSteps[e];
+      if (t === void 0)
+        return "";
+      let i = [];
+      for (let s = 0; s < t.length; s++)
+        i.push(this.buildTex(t[s].equations, t[s].operations));
+      return `\\begin{aligned}&${i.join("\\\\&")}\\end{aligned}`;
+    });
+    // ------------------------------------------
+    // Creation / parsing functions
+    // ------------------------------------------
+    r(this, "parse", (...e) => (this._equations = e.map((t) => new k(t)), this._findLetters(), this));
+    r(this, "clone", () => new Y().parse(...this._equations.map((e) => e.clone())));
+    // ------------------------------------------
+    r(this, "reorder", () => {
+      for (let e of this._equations)
+        e.reorder();
+      return this;
+    });
+    // -----------------------------------------------
+    // Equations solving algorithms
+    r(this, "solve", (e) => {
+      this._solutions = {}, this._resolutionSteps = {}, this.reorder(), e === void 0 && (e = !1);
+      for (let t of this.variables)
+        this._solutions[t] = this._solveOneLetter(t, e);
+      return this;
+    });
+    r(this, "mergeEquations", (e, t, i, s) => {
+      let n = e.clone().multiply(new h(i)), o = t.clone().multiply(new h(s));
+      return n.left.add(o.left), n.right.add(o.right), n;
+    });
+    r(this, "_findLetters", () => {
+      let e = /* @__PURE__ */ new Set();
+      for (let t of this._equations)
+        e = /* @__PURE__ */ new Set([...e, ...t.variables]);
+      return this._letters = [...e], this._letters.sort(), this;
+    });
+    return this._equations = [], this._letters = "xyz".split(""), e !== void 0 && e.length > 0 && this.parse(...e), this;
+  }
+  // ------------------------------------------
+  // Getter and setter
+  // ------------------------------------------
+  get equations() {
+    return this._equations;
+  }
+  set equations(e) {
+    this._equations = e;
+  }
+  get letters() {
+    return this._letters.join("");
+  }
+  set letters(e) {
+    this._letters = e.split("");
+  }
+  get isSolvable() {
+    return this.variables.length === this._equations.length;
+  }
+  get variables() {
+    return this._letters;
+  }
+  get tex() {
+    let e = this.clone().reorder();
+    return e.variables, this.buildTex(e.equations);
+  }
+  get solution() {
+    let e = [];
+    this._solutions === void 0 && this.solve();
+    for (let t in this._solutions) {
+      if (this._solutions[t].display === "RR")
+        return `\\left\\{ \\left(${this._letters.join(";")}\\right) \\big\\vert ${this.equations[0].tex} \\right\\}`;
+      if (this._solutions[t].display === "O/")
+        return "\\varnothing";
+      e.push(this._solutions[t].tex);
+    }
+    return `\\left(${e.join(";")}\\right)`;
+  }
+  get solutionAsDisplay() {
+    let e = [];
+    this._solutions === void 0 && this.solve();
+    for (let t in this._solutions) {
+      if (this._solutions[t].display === "RR")
+        return `{(${this._letters.join(";")}) | ${this.equations[0].display} }`;
+      if (this._solutions[t].display === "O/")
+        return "O/";
+      e.push(this._solutions[t].display);
+    }
+    return `(${e.join(";")})`;
+  }
+  get resolutionSteps() {
+    return this._resolutionSteps;
+  }
+  _linearReduction(e, t, i) {
+    let s = e.left.monomByDegree(1, i).coefficient.clone(), n = t.left.monomByDegree(1, i).coefficient.clone().opposed();
+    const o = x.gcd(s.numerator, n.numerator), l = x.gcd(s.denominator, n.denominator);
+    return s.divide(o).multiply(l), n.divide(o).multiply(l), (n.isNegativeOne() || s.isNegativeOne()) && (s.opposed(), n.opposed()), {
+      merged: this.mergeEquations(e, t, n, s),
+      factors: [n, s]
+    };
+  }
+  /**
+   * Linear reduction of the equations to have only one letter
+   * @param letter    letter to isolate
+   * @private
+   */
+  _solveOneLetter(e, t) {
+    let i = this.clone().equations, s = [], n;
+    this._resolutionSteps[e] = [];
+    for (let a of this.variables)
+      if (s = [], a !== e) {
+        t && (this._resolutionSteps[e].push({
+          equations: i.map((f) => f.clone()),
+          operations: [...new Array(i.length)].map((f) => [...new Array(i.length - 1)].map((m) => ""))
+        }), n = this._resolutionSteps[e].length - 1);
+        for (let f = 0; f < i.length - 1; f++) {
+          const m = this._linearReduction(i[f], i[f + 1], a);
+          s.push(m.merged), t && (this._resolutionSteps[e][n].operations[f][f] = m.factors[0].tex, this._resolutionSteps[e][n].operations[f + 1][f] = m.factors[1].tex);
+        }
+        i = [...s];
+      }
+    let o = i[0];
+    o.solve();
+    const l = o.solutions[0];
+    if (t) {
+      this._resolutionSteps[e].push({
+        equations: [i[0]],
+        operations: [[i[0].left.monoms[0].coefficient.tex]]
+      });
+      let a;
+      l.exact instanceof h || typeof l.exact == "string" ? a = new u(l.exact) : a = new u(l.value), this._resolutionSteps[e].push({
+        equations: [new k(new u(e), a)],
+        operations: []
+      });
+    }
+    return o.solutions[0];
+  }
+}
+var L = /* @__PURE__ */ ((c) => (c.ZERO = "z", c.DEFENCE = "d", c.NOTHING = "t", c))(L || {}), M = /* @__PURE__ */ ((c) => (c.VERTICAL = "av", c.HORIZONTAL = "ah", c.SLOPE = "ao", c.HOLE = "hole", c))(M || {}), E = /* @__PURE__ */ ((c) => (c.LT = "LT", c.RT = "RT", c.LB = "LB", c.RB = "RB", c))(E || {}), H = /* @__PURE__ */ ((c) => (c.MIN = "min", c.MAX = "max", c.FLAT = "flat", c.NOTHING = "", c))(H || {}), W = /* @__PURE__ */ ((c) => (c.SIGNS = "signs", c.GROWS = "grows", c.VARIATIONS = "variatins", c))(W || {});
+class se {
+  constructor(e, t) {
+    r(this, "fx");
+    r(this, "_asymptotes");
+    r(this, "_derivative");
+    r(this, "_signs");
+    r(this, "_variations");
+    r(this, "_zeroes");
+    r(this, "_config");
+    r(this, "_name");
+    r(this, "makeStudy", () => {
+      this._zeroes = this.makeZeroes(), this._config.signs && (this._signs = this.makeSigns()), this._config.asymptotes && (this._asymptotes = this.makeAsymptotes()), this._config.derivative && (this._derivative = this.makeDerivative()), this._config.variations && (this._variations = this.makeVariation()), this._config.signs && (this._signs.tex = this.texSigns), this._config.derivative && (this._derivative.tex = this.texGrows), this._config.variations && (this._variations.tex = this.texVariations);
+    });
+    r(this, "indexOfZero", (e, t) => {
+      for (let i = 0; i < e.length; i++)
+        if (e[i].tex === t.tex)
+          return i;
+      return -1;
+    });
+    r(this, "makeOneLineForSigns", (e, t, i) => {
+      let s = [], n = e.getZeroes().map((o) => o.tex);
+      s.push(""), e.degree().isZero() ? s.push(e.monoms[0].coefficient.sign() === 1 ? "+" : "-") : s.push(e.evaluate(t[0].value - 1).sign() === 1 ? "+" : "-");
+      for (let o = 0; o < t.length; o++)
+        s.push(
+          n.includes(t[o].tex) ? i : "t"
+          /* NOTHING */
+        ), o < t.length - 1 ? s.push(e.evaluate((t[o].value + t[o + 1].value) / 2).sign() === 1 ? "+" : "-") : o === t.length - 1 && s.push(e.evaluate(t[o].value + 1).sign() === 1 ? "+" : "-");
+      return s.push(""), s;
+    });
+    r(this, "makeSignsResult", (e) => {
+      let t = e[0].map((i, s) => s === 0 || s === e[0].length - 1 ? "" : s % 2 === 0 ? "t" : "+");
+      for (let i of e)
+        for (let s = 0; s < i.length; s++)
+          if (s % 2 === 0) {
+            if (t[s] === "d")
+              continue;
+            i[s] !== "t" && (t[s] = i[s]);
+          } else
+            i[s] === "-" && (t[s] = t[s] === "+" ? "-" : "+");
+      return t;
+    });
+    r(this, "makeGrowsResult", (e) => {
+      let t = Object.values(e.signs), i = t[t.length - 1], s = [], n = {}, o = e.zeroes;
+      for (let l = 0; l < o.length; l++) {
+        let a = 2 * l + 2;
+        if (i[a] === "z") {
+          let f, m, d = o[l].exact, p, _, q, v = new K(this.fx.plotFunction);
+          if (d instanceof h) {
+            let B = d, S = this.fx.evaluate(B);
+            f = d.value, m = S.value, p = d.tex, _ = S.tex;
+          } else
+            f = o[l].value, m = v.evaluate({ x: f }), p = f.toFixed(2), _ = m.toFixed(2);
+          i[a - 1] === i[a + 1] ? q = "flat" : i[a - 1] === "+" ? q = "max" : q = "min", n[o[l].tex] = {
+            type: q,
+            tex: { x: p, y: _ },
+            value: { x: f, y: m }
+          };
+        }
+      }
+      s.push(i[1] === "+" ? "-/" : "+/");
+      for (let l = 1; l < i.length - 1; l++)
+        if (i[l] === "z") {
+          let a = n[o[(l - 2) / 2].tex];
+          s.push(`${i[l - 1]}/\\(${a.type}(${a.tex.x};${a.tex.y})\\)`);
+        } else
+          i[l] === "d" && s.push(`${i[l - 1]}D${i[l + 1] === "+" ? "-" : "+"}/`);
+      return s.push(`${i[i.length - 2]}/`), { growsLine: s, extremes: n };
+    });
+    r(this, "makeVariationsResult", (e) => ({ varsLine: [], extremes: {} }));
+    r(this, "drawCode", () => {
+      let e = `f(x)=${this.fx.plotFunction}`, t = 1;
+      this.asymptotes.forEach((i) => {
+        i.type === "av" ? (e += `
+av_${t}=line x=${i.zero.value}->red,dash`, t++) : i.type === "ah" ? e += `
+ah=line y=${i.fx.monoms[0].coefficient.value}->orange,dash` : i.type === "ao" && (e += `
+ao=line y=${i.fx.plotFunction}->red,dash`), t++;
+      });
+      for (let i in this.derivative.extremes) {
+        let s = this.derivative.extremes[i];
+        e += `
+M_${t}(${s.value.x},${s.value.y})*`, t++;
+      }
+      return this.zeroes.forEach((i) => {
+        i.type === "z" && (e += `
+Z_${t}(${i.value},0)*`, t++);
+      }), e;
+    });
+    r(this, "_makeTexFromTableOfSigns", (e) => {
+      let t = e.factors.map((l) => `\\(${l.tex}\\)/1`), i = `\\(${this._config.name}(${this._config.variable})\\)/1.2`, s = e.zeroes;
+      e.type === "grows" ? i = `\\(${this._config.name}'(${this._config.variable})\\)/1.2,\\(f(x${this._config.variable})\\)/2` : e.type === "variatins" && (i = `\\(${this._config.name}''(${this._config.variable})\\)/1.2,\\(f(${this._config.variable})\\)/2`);
+      let n = `\\begin{tikzpicture}
+\\tkzTabInit[lgt=3,espcl=2,deltacl=0]{/1.2,${t.join(",")},/.1,${i} }{{\\scriptsize \\hspace{1cm} \\(-\\infty\\)},\\(${s.map((l) => l.tex).join("\\),\\(")}\\),{\\scriptsize \\hspace{-1cm} \\(+\\infty\\)}}`, o;
+      for (o = 0; o < e.factors.length; o++)
+        n += `
+\\tkzTabLine{${e.signs[o].join(",")}}`;
+      return n += `
+\\tkzTabLine{${e.signs[o].join(",")}}`, e.type === "grows" ? n += `
+\\tkzTabVar{${e.signs[o + 1].join(",")}}` : e.type === "variatins" && (n += `
+\\tkzTabVar{${e.signs[o + 1].join(",")}}`), n += `
+\\end{tikzpicture}`, n;
+    });
+    if (this.fx = e, this._config = {
+      name: "f",
+      variable: "x",
+      domain: !0,
+      asymptotes: !0,
+      signs: !0,
+      derivative: !0,
+      variations: !0
+    }, t)
+      if (typeof t == "string") {
+        const i = t.split(",");
+        this._config = {};
+        let s = i.filter((n) => n.includes("(") && n.includes(")"));
+        s.length === 1 && (this._config.name = s[0].split("(")[0], this._config.variable = s[0].split("(")[1].split(")")[0]), this._config.domain = i.includes("d"), this._config.asymptotes = i.includes("a"), this._config.signs = i.includes("signs"), this._config.derivative = i.includes("dx"), this._config.variations = i.includes("ddx");
+      } else
+        this._config = t;
+    return this.makeStudy(), this;
+  }
+  get name() {
+    return this._config.name;
+  }
+  set name(e) {
+    this._config.name = e;
+  }
+  get config() {
+    return this._config;
+  }
+  set config(e) {
+    this._config = e;
+  }
+  get zeroes() {
+    return this._zeroes;
+  }
+  get domain() {
+    return this.fx.domain();
+  }
+  get signs() {
+    return this._signs;
+  }
+  get asymptotes() {
+    return this._asymptotes;
+  }
+  get derivative() {
+    return this._derivative;
+  }
+  get texSigns() {
+    return this._makeTexFromTableOfSigns(this._signs);
+  }
+  get texGrows() {
+    return this._makeTexFromTableOfSigns(this._derivative);
+  }
+  get texVariations() {
+    return this._makeTexFromTableOfSigns(this._variations);
+  }
+  makeZeroes() {
+    return [];
+  }
+  makeSigns() {
+    return {
+      type: "signs",
+      fx: null,
+      factors: [],
+      zeroes: [],
+      signs: [],
+      extremes: {},
+      tex: ""
+    };
+  }
+  makeAsymptotes() {
+    return [];
+  }
+  makeDerivative() {
+    return {
+      type: "grows",
+      fx: null,
+      factors: [],
+      zeroes: [],
+      signs: [],
+      extremes: {},
+      tex: ""
+    };
+  }
+  makeVariation() {
+    return {
+      type: "variatins",
+      fx: null,
+      factors: [],
+      zeroes: [],
+      signs: [],
+      extremes: {},
+      tex: ""
+    };
+  }
+}
+class re extends se {
+  constructor(e, t) {
+    return super(e, t), this;
+  }
+  makeZeroes() {
+    return this._getZeroes(this.fx);
+  }
+  makeSigns() {
+    return this._getSigns(this.fx, this.zeroes);
+  }
+  makeAsymptotes() {
+    const e = this.fx.clone().reduce();
+    let t = [];
+    this.zeroes.filter((n) => n.type === L.DEFENCE).forEach((n) => {
+      let o = M.VERTICAL, l = `x=${n.tex}`, a = `x=${n.display}`;
+      n.exact instanceof h ? e.denominator.evaluate(n.exact).isNotZero() && (o = M.HOLE, l = `(${n.tex};${e.evaluate(n.exact).tex})`, a = `(${n.display};${e.evaluate(n.exact).display})`) : e.denominator.evaluate(n.value).isNotZero() && (o = M.HOLE, l = `(${n.tex};${e.evaluate(n.value).tex})`, a = `(${n.display};${e.evaluate(n.value).display})`);
+      const f = 1e-6;
+      let m = this.fx.evaluateAsNumeric(n.value - f), d = this.fx.evaluateAsNumeric(n.value + f), p = [], _ = "";
+      d < -1e4 ? (p.push(E.RB), _ += "m") : d > 1e4 && (p.push(E.RT), _ += "p"), m < -1e4 ? (p.push(E.LB), _ += "m") : m > 1e4 && (p.push(E.LT), _ += "p"), _ === "pp" ? _ = "+" : _ === "mm" ? _ = "-" : _ = `\\${_}`, t.push({
+        fx: null,
+        type: o,
+        tex: l,
+        display: a,
+        zero: n,
+        limits: `\\lim_{x\\to${n.tex} }\\ f(x) = ${_}\\infty`,
+        deltaX: null,
+        tableOfSign: null,
+        position: p
+      });
+    });
+    let i = this.fx.numerator.degree(), s = this.fx.denominator.degree();
+    if (i.isEqual(s)) {
+      let n = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient), o = n.tex, { reminder: l } = e.euclidian(), a = new R(l, e.denominator);
+      t.push({
+        fx: new u(n),
+        type: M.HORIZONTAL,
+        tex: `y=${o}`,
+        display: `y=${n.display}`,
+        zero: null,
+        limits: `\\lim_{x\\to\\infty}\\ f(x) = ${o}`,
+        deltaX: a,
+        tableOfSign: this._getSigns(a),
+        position: this._getHorizontalAsymptoteRelativePositon(a)
+      });
+    } else if (s.greater(i))
+      t.push({
+        fx: new u("0"),
+        type: M.HORIZONTAL,
+        tex: "y=0",
+        display: "y=0",
+        zero: null,
+        limits: "\\lim_{x\\to\\infty}\\ f(x) = 0",
+        deltaX: null,
+        tableOfSign: null,
+        position: this._getHorizontalAsymptoteRelativePositon(this.fx)
+      });
+    else if (i.value - 1 === s.value) {
+      let { quotient: n, reminder: o } = e.euclidian(), l = new R(o, e.denominator);
+      t.push({
+        fx: n.clone(),
+        type: M.SLOPE,
+        tex: `y=${n.tex}`,
+        display: `y=${n.display}`,
+        zero: null,
+        limits: "",
+        deltaX: new R(o, e.denominator),
+        tableOfSign: this._getSigns(l),
+        position: this._getHorizontalAsymptoteRelativePositon(l)
+      });
+    }
+    return t;
+  }
+  _getHorizontalAsymptoteRelativePositon(e, t = 1e6) {
+    let i = [], s = e.evaluateAsNumeric(-t), n = e.evaluateAsNumeric(t);
+    return s >= 0 ? i.push(E.LT) : i.push(E.LB), n >= 0 ? i.push(E.RT) : i.push(E.RB), i;
+  }
+  makeDerivative() {
+    let e = this.fx.clone().derivative(), t = this._getSigns(e, this._getZeroes(e), W.GROWS), i = this.makeGrowsResult(t);
+    return t.signs.push(i.growsLine), t.extremes = i.extremes, t;
+  }
+  makeVariation() {
+    let e = this.derivative.fx.clone().derivative(), t = this._getSigns(e, this._getZeroes(e), W.VARIATIONS), i = this.makeVariationsResult(t);
+    return t.signs.push(i.varsLine), t.extremes = i.extremes, t;
+  }
+  _getZeroes(e) {
+    let t = [];
+    return e.numerator.getZeroes().filter((i) => !isNaN(i.value)).forEach((i) => {
+      t.push({
+        tex: i.tex,
+        display: i.display,
+        value: i.value,
+        exact: i.exact,
+        extrema: H.NOTHING,
+        type: L.ZERO
+      });
+    }), e.denominator.getZeroes().filter((i) => !isNaN(i.value)).forEach((i) => {
+      let s = this.indexOfZero(t, i);
+      s !== -1 ? t[s].type = L.DEFENCE : t.push({
+        tex: i.tex,
+        display: i.display,
+        value: i.value,
+        exact: i.exact,
+        extrema: H.NOTHING,
+        type: L.DEFENCE
+      });
+    }), t.sort((i, s) => i.value - s.value), t;
+  }
+  _getSigns(e, t, i) {
+    let s = [], n = [];
+    return t === void 0 && (t = this._getZeroes(e)), e.numerator.factors.forEach((o) => {
+      s.push(this.makeOneLineForSigns(o, t, L.ZERO)), n.push(o.clone());
+    }), e.denominator.factors.forEach((o) => {
+      s.push(this.makeOneLineForSigns(o, t, L.DEFENCE)), n.push(o.clone());
+    }), s.push(this.makeSignsResult(s)), {
+      type: i,
+      fx: e,
+      factors: n,
+      zeroes: t,
+      signs: s,
+      extremes: {},
+      tex: ""
+    };
+  }
+}
+class R {
+  /**
+   *
+   * @param numerator
+   * @param denominator
+   */
+  constructor(e, t) {
+    r(this, "_denominator");
+    r(this, "_numerator");
+    r(this, "_rawString");
+    r(this, "clone", () => new R(
+      this._numerator.clone(),
+      this._denominator.clone()
+    ));
+    r(this, "domain", () => {
+      let e = this._denominator.getZeroes();
+      return e.length === 0 || e[0].tex === F.real ? F.varnothing : e[0].tex === F.varnothing ? F.real : "\\mathbb{R}\\setminus\\left\\{" + e.map((t) => t.tex).join(";") + "\\right\\}";
+    });
+    r(this, "amplify", (e) => (this._numerator.multiply(e), this._denominator.multiply(e), this));
+    r(this, "derivative", (e) => {
+      let t = this._numerator.clone(), i = this._denominator.clone(), s = t.clone().derivative(e), n = i.clone().derivative(e);
+      return this._numerator = s.clone().multiply(i).subtract(t.clone().multiply(n)), this._denominator = i.clone().pow(2), this;
+    });
+    r(this, "factorize", (e) => (this._numerator.factorize(e), this._denominator.factorize(e), this));
+    r(this, "simplify", (e) => {
+      let t = this._numerator.euclidian(e);
+      if (!t.reminder.isZero())
+        return this;
+      let i = this._denominator.euclidian(e);
+      return i.reminder.isZero() ? (this._numerator = t.quotient, this._denominator = i.quotient, this) : this;
+    });
+    r(this, "reduce", () => {
+      this._numerator.factorize();
+      for (let e of this._numerator.factors)
+        e.degree().isZero() ? this._denominator.commonMonom().coefficient.clone().divide(e.monomByDegree().coefficient).isNatural() && this.simplify(e) : this.simplify(e);
+      return this;
+    });
+    r(this, "opposed", () => (this._numerator.opposed(), this));
+    r(this, "add", (e) => {
+      let t = this._denominator.clone();
+      return this.amplify(e._denominator), this._numerator.add(e._numerator.clone().multiply(t)), this;
+    });
+    r(this, "subtract", (e) => this.add(e.clone().opposed()));
+    r(this, "euclidian", () => this._numerator.euclidian(this._denominator));
+    // TODO : where and how is used limits ?
+    r(this, "limits", (e, t, i) => {
+      if (e === 1 / 0 || e === -1 / 0) {
+        let { quotient: s, reminder: n } = this._numerator.clone().euclidian(this._denominator);
+        return s.degree(i).isStrictlyPositive() ? e === 1 / 0 ? s.limitToInfinity(i) : s.limitToNegativeInfinity(i) : s.monomByDegree(void 0, i).coefficient;
+      } else {
+        let s = {}, n = {}, o, l, a = this.clone().reduce();
+        return s[i === void 0 ? "x" : i] = new h(e), t !== "above" && t !== "below" ? (o = a._numerator.evaluate(s).divide(a._denominator.evaluate(s)), o.isInfinity() ? o.abs() : o) : (t === "above" ? n[i === void 0 ? "x" : i] = new h(e).add(1e-6) : t === "below" && (n[i === void 0 ? "x" : i] = new h(e).subtract(1e-6)), o = a._numerator.evaluate(s).divide(a._denominator.evaluate(s)), l = a._numerator.evaluate(n).divide(a._denominator.evaluate(n)).sign(), o.isInfinity() ? l === 1 ? o.abs() : o.abs().opposed() : o);
+      }
+    });
+    r(this, "evaluate", (e) => {
+      new h().zero();
+      let t = this._numerator.evaluate(e), i = this._denominator.evaluate(e);
+      return t.divide(i);
+    });
+    r(this, "evaluateAsNumeric", (e) => this._numerator.evaluateAsNumeric(e) / this._denominator.evaluateAsNumeric(e));
+    r(this, "study", (e) => new re(this, e));
+    e instanceof u ? this._numerator = e.clone() : typeof e == "string" ? this._numerator = new u(e) : this._numerator = new u(), t instanceof u ? this._denominator = t.clone() : typeof t == "string" ? this._denominator = new u(t) : this._denominator = new u();
+  }
+  get numerator() {
+    return this._numerator;
+  }
+  get denominator() {
+    return this._denominator;
+  }
+  get tex() {
+    return `\\frac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
+  }
+  get display() {
+    return `(${this._numerator.display})/(${this._denominator.display})`;
+  }
+  get texFactors() {
+    return `\\frac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
+  }
+  get displayFactors() {
+    return `(${this._numerator.displayFactors})/(${this._denominator.displayFactors})`;
+  }
+  get plotFunction() {
+    return `(${this._numerator.plotFunction})/(${this._denominator.plotFunction})`;
+  }
+}
+class ne {
+  /**
+   *
+   * @param {string} value (optional) Default polynom to parse on class creation
+   */
+  constructor(e) {
+    r(this, "_rawString");
+    r(this, "_rpn");
+    r(this, "parse", (e) => (this._rpn = new P(U.SET).parse(e).rpn, this));
+    return this._rawString = e, this.parse(e), this;
+  }
+  get isLogicalset() {
+    return !0;
+  }
+  get rpn() {
+    return this._rpn;
+  }
+  get tex() {
+    let e = [];
+    for (let t of this._rpn)
+      if (t.tokenType === "variable")
+        e.push(t);
+      else
+        switch (t.token) {
+          case "&":
+            if (e.length >= 2) {
+              let i = e.pop(), s = e.pop();
+              s.tokenType === "mix" && (s.token = `( ${s.token} )`), i.tokenType === "mix" && (i.token = `( ${i.token} )`), e.push({ token: `${s.token} \\cap ${i.token}`, tokenType: "mix" });
+            }
+            break;
+          case "|":
+            if (e.length >= 2) {
+              let i = e.pop(), s = e.pop();
+              s.tokenType === "mix" && (s.token = `( ${s.token} )`), i.tokenType === "mix" && (i.token = `( ${i.token} )`), e.push({ token: `${s.token} \\cup ${i.token}`, tokenType: "mix" });
+            }
+            break;
+          case "-":
+            if (e.length >= 2) {
+              let i = e.pop(), s = e.pop();
+              s.tokenType === "mix" && (s.token = `( ${s.token} )`), i.tokenType === "mix" && (i.token = `( ${i.token} )`), e.push({ token: `${s.token} \\setminus ${i.token}`, tokenType: "mix" });
+            }
+            break;
+          case "!":
+            if (e.length >= 1) {
+              let i = e.pop();
+              e.push({ token: `\\overline{ ${i.token} }`, tokenType: "variable" });
+            }
+            break;
+        }
+    return e[0].token;
+  }
+  evaluate(e, t) {
+    let i = [], s;
+    if (t === void 0) {
+      s = /* @__PURE__ */ new Set();
+      for (let n in e)
+        s = /* @__PURE__ */ new Set([...s, ...e[n]]);
+    } else
+      s = new Set(t);
+    for (let n of this._rpn)
+      if (n.tokenType === "variable")
+        e[n.token] === void 0 ? i.push(/* @__PURE__ */ new Set()) : i.push(new Set(e[n.token]));
+      else
+        switch (n.token) {
+          case "&":
+            if (i.length >= 2) {
+              let o = i.pop(), l = i.pop();
+              i.push(new Set([...l].filter((a) => o.has(a))));
+            }
+            break;
+          case "|":
+            if (i.length >= 2) {
+              let o = i.pop(), l = i.pop();
+              i.push(/* @__PURE__ */ new Set([...l, ...o]));
+            }
+            break;
+          case "-":
+            if (i.length >= 2) {
+              let o = i.pop(), l = i.pop();
+              i.push(new Set([...l].filter((a) => !o.has(a))));
+            }
+            break;
+          case "!":
+            if (i.length >= 1) {
+              let o = i.pop();
+              i.push(new Set([...s].filter((l) => !o.has(l))));
+            }
+            break;
+        }
+    return [...i[0]].sort();
+  }
+  vennAB() {
+    return this.evaluate(
+      {
+        A: ["A", "AB"],
+        B: ["B", "AB"]
+      },
+      ["A", "B", "AB", "E"]
+    );
+  }
+  vennABC() {
+    return this.evaluate(
+      {
+        A: ["A", "AB", "AC", "ABC"],
+        B: ["B", "AB", "BC", "ABC"],
+        C: ["C", "AC", "BC", "ABC"]
+      },
+      ["A", "B", "C", "AB", "AC", "BC", "E"]
+    );
+  }
+}
+class D {
+  constructor() {
+    r(this, "_config");
+    r(this, "_defaultConfig");
+    r(this, "mergeConfig", (e, t) => e !== void 0 ? { ...t, ...e } : t);
+    r(this, "generate", () => {
+    });
+    r(this, "config", (e) => (this._config = this.mergeConfig(e, this._defaultConfig), this));
+  }
+}
+class J extends D {
+  constructor(t) {
+    super();
+    r(this, "generate", () => {
+      let t = new g();
+      if (typeof this._config.fraction == "boolean" ? t.coefficient = w.fraction({
+        zero: this._config.zero,
+        reduced: !0,
+        natural: !this._config.fraction
+      }) : t.coefficient = w.fraction(this._config.fraction), this._config.letters.length > 1) {
+        for (let i of this._config.letters.split(""))
+          t.setLetter(i, 0);
+        for (let i = 0; i < this._config.degree; i++) {
+          const s = w.item(this._config.letters.split(""));
+          t.setLetter(s, t.degree(s).clone().add(1));
+        }
+      } else
+        t.setLetter(this._config.letters, this._config.degree);
+      return t;
+    });
+    this._defaultConfig = {
+      letters: "x",
+      degree: 2,
+      fraction: !0,
+      zero: !1
+    }, this._config = this.mergeConfig(t, this._defaultConfig);
+  }
+}
+class oe extends D {
   constructor(t) {
     super();
     r(this, "generate", () => {
@@ -2558,7 +3243,7 @@ class se extends D {
         return this.factorable();
       let t = new u().empty(), i;
       for (let s = this._config.degree; s >= 0; s--)
-        i = new Q({
+        i = new J({
           letters: this._config.letters,
           degree: s,
           fraction: this._config.fraction,
@@ -2644,7 +3329,7 @@ class T {
     return t;
   }
 }
-class re extends D {
+class le extends D {
   constructor(t) {
     super();
     r(this, "generate", () => {
@@ -2667,7 +3352,7 @@ class re extends D {
     }, this._config = this.mergeConfig(t, this._defaultConfig);
   }
 }
-class ne {
+class ae {
   constructor() {
     r(this, "x");
     r(this, "y");
@@ -2692,7 +3377,7 @@ const V = class V {
           if (t.length === 2)
             return this._x = new h(t[0]).reduce(), this._y = new h(t[1]).reduce(), this;
         }
-        return e[0] instanceof ne ? (this._x = new h(e[0].x).reduce(), this._y = new h(e[0].y).reduce(), this) : this.zero();
+        return e[0] instanceof ae ? (this._x = new h(e[0].x).reduce(), this._y = new h(e[0].y).reduce(), this) : this.zero();
       }
       return e.length === 2 ? (this._x = new h(e[0]).reduce(), this._y = new h(e[1]).reduce(), this) : this;
     });
@@ -3137,7 +3822,7 @@ const z = class z {
 // A line is defined as the canonical form
 r(z, "PERPENDICULAR", "perpendicular"), r(z, "PARALLEL", "parallel");
 let A = z;
-class oe extends D {
+class he extends D {
   constructor(t) {
     super();
     r(this, "generate", () => {
@@ -3157,7 +3842,7 @@ class oe extends D {
     }, this._config = this.mergeConfig(t, this._defaultConfig);
   }
 }
-class le extends D {
+class ce extends D {
   constructor(t) {
     super();
     r(this, "generate", () => {
@@ -3504,7 +4189,7 @@ class G {
     return this.parse(n.intersection(o).point, e), this;
   }
 }
-class ae extends D {
+class fe extends D {
   constructor(t) {
     super();
     r(this, "generate", () => {
@@ -3518,15 +4203,15 @@ class ae extends D {
 var w;
 ((c) => {
   function e(d) {
-    return new se(d).generate();
+    return new oe(d).generate();
   }
   c.polynom = e;
   function t(d) {
-    return new Q(d).generate();
+    return new J(d).generate();
   }
   c.monom = t;
   function i(d) {
-    return new re(d).generate();
+    return new le(d).generate();
   }
   c.fraction = i;
   function s(d, p, _) {
@@ -3558,716 +4243,31 @@ var w;
   }
   c.shuffle = m, ((d) => {
     function p(v) {
-      return new oe(v).generate();
+      return new he(v).generate();
     }
     d.line = p;
     function _(v) {
-      return new le(v).generate();
+      return new ce(v).generate();
     }
     d.point = _;
     function q(v) {
-      return new ae(v).generate();
+      return new fe(v).generate();
     }
     d.circle = q;
   })(c.Geometry || (c.Geometry = {}));
 })(w || (w = {}));
-class Y {
-  constructor(...e) {
-    // Stores the original equations
-    r(this, "_equations");
-    // Determine the letters in the linear system, usually ['x', 'y']
-    r(this, "_letters");
-    // Resolution steps contains each steps
-    // letter : target letter
-    // steps: {system: current LinearSystem, operations: [*3,/5] or [[*3,*2], [,*5], [*2,]]}
-    r(this, "_resolutionSteps");
-    // Get the solution of the equation
-    r(this, "_solutions");
-    r(this, "buildTex", (e, t) => {
-      let i, s = [], n, o = [];
-      for (let a of e)
-        o = o.concat(a.letters());
-      o = [...new Set(o)], o.sort();
-      for (let a = 0; a < e.length; a++) {
-        let f = e[a];
-        i = [];
-        for (let m of o)
-          n = f.left.monomByLetter(m), i.length === 0 ? i.push(n.isZero() ? "" : n.tex) : i.push(n.isZero() ? "" : (n.coefficient.sign() === 1 ? "+" : "") + n.tex);
-        if (i.push("="), i.push(f.right.tex), t !== void 0 && t[a] !== void 0) {
-          i[i.length - 1] = i[i.length - 1] + " \\phantom{\\quad}";
-          for (let m of t[a])
-            i.push(`\\ \\cdot\\ ${m.startsWith("-") ? "\\left(" + m + "\\right)" : m}`);
-        }
-        s.push(i.join("&"));
-      }
-      let l = 0;
-      return t !== void 0 && t.length > 0 && (l = t[0].length), `\\left\\{\\begin{array}{${"r".repeat(o.length)}cl ${"|l".repeat(l)}}${s.join("\\\\ ")}\\end{array}\\right.`;
-    });
-    r(this, "stepTex", (e) => {
-      const t = this._resolutionSteps[e];
-      if (t === void 0)
-        return "";
-      let i = [];
-      for (let s = 0; s < t.length; s++)
-        i.push(this.buildTex(t[s].equations, t[s].operations));
-      return `\\begin{aligned}&${i.join("\\\\&")}\\end{aligned}`;
-    });
-    // ------------------------------------------
-    // Creation / parsing functions
-    // ------------------------------------------
-    r(this, "parse", (...e) => (this._equations = e.map((t) => new k(t)), this._findLetters(), this));
-    r(this, "clone", () => new Y().parse(...this._equations.map((e) => e.clone())));
-    // ------------------------------------------
-    r(this, "reorder", () => {
-      for (let e of this._equations)
-        e.reorder();
-      return this;
-    });
-    // -----------------------------------------------
-    // Equations solving algorithms
-    r(this, "solve", (e) => {
-      this._solutions = {}, this._resolutionSteps = {}, this.reorder(), e === void 0 && (e = !1);
-      for (let t of this.variables)
-        this._solutions[t] = this._solveOneLetter(t, e);
-      return this;
-    });
-    r(this, "mergeEquations", (e, t, i, s) => {
-      let n = e.clone().multiply(new h(i)), o = t.clone().multiply(new h(s));
-      return n.left.add(o.left), n.right.add(o.right), n;
-    });
-    r(this, "_findLetters", () => {
-      let e = /* @__PURE__ */ new Set();
-      for (let t of this._equations)
-        e = /* @__PURE__ */ new Set([...e, ...t.variables]);
-      return this._letters = [...e], this._letters.sort(), this;
-    });
-    return this._equations = [], this._letters = "xyz".split(""), e !== void 0 && e.length > 0 && this.parse(...e), this;
-  }
-  // ------------------------------------------
-  // Getter and setter
-  // ------------------------------------------
-  get equations() {
-    return this._equations;
-  }
-  set equations(e) {
-    this._equations = e;
-  }
-  get letters() {
-    return this._letters.join("");
-  }
-  set letters(e) {
-    this._letters = e.split("");
-  }
-  get isSolvable() {
-    return this.variables.length === this._equations.length;
-  }
-  get variables() {
-    return this._letters;
-  }
-  get tex() {
-    let e = this.clone().reorder();
-    return e.variables, this.buildTex(e.equations);
-  }
-  get solution() {
-    let e = [];
-    this._solutions === void 0 && this.solve();
-    for (let t in this._solutions) {
-      if (this._solutions[t].display === "RR")
-        return `\\left\\{ \\left(${this._letters.join(";")}\\right) \\big\\vert ${this.equations[0].tex} \\right\\}`;
-      if (this._solutions[t].display === "O/")
-        return "\\varnothing";
-      e.push(this._solutions[t].tex);
-    }
-    return `\\left(${e.join(";")}\\right)`;
-  }
-  get solutionAsDisplay() {
-    let e = [];
-    this._solutions === void 0 && this.solve();
-    for (let t in this._solutions) {
-      if (this._solutions[t].display === "RR")
-        return `{(${this._letters.join(";")}) | ${this.equations[0].display} }`;
-      if (this._solutions[t].display === "O/")
-        return "O/";
-      e.push(this._solutions[t].display);
-    }
-    return `(${e.join(";")})`;
-  }
-  get resolutionSteps() {
-    return this._resolutionSteps;
-  }
-  _linearReduction(e, t, i) {
-    let s = e.left.monomByDegree(1, i).coefficient.clone(), n = t.left.monomByDegree(1, i).coefficient.clone().opposed();
-    const o = x.gcd(s.numerator, n.numerator), l = x.gcd(s.denominator, n.denominator);
-    return s.divide(o).multiply(l), n.divide(o).multiply(l), (n.isNegativeOne() || s.isNegativeOne()) && (s.opposed(), n.opposed()), {
-      merged: this.mergeEquations(e, t, n, s),
-      factors: [n, s]
-    };
-  }
-  /**
-   * Linear reduction of the equations to have only one letter
-   * @param letter    letter to isolate
-   * @private
-   */
-  _solveOneLetter(e, t) {
-    let i = this.clone().equations, s = [], n;
-    this._resolutionSteps[e] = [];
-    for (let a of this.variables)
-      if (s = [], a !== e) {
-        t && (this._resolutionSteps[e].push({
-          equations: i.map((f) => f.clone()),
-          operations: [...new Array(i.length)].map((f) => [...new Array(i.length - 1)].map((m) => ""))
-        }), n = this._resolutionSteps[e].length - 1);
-        for (let f = 0; f < i.length - 1; f++) {
-          const m = this._linearReduction(i[f], i[f + 1], a);
-          s.push(m.merged), t && (this._resolutionSteps[e][n].operations[f][f] = m.factors[0].tex, this._resolutionSteps[e][n].operations[f + 1][f] = m.factors[1].tex);
-        }
-        i = [...s];
-      }
-    let o = i[0];
-    o.solve();
-    const l = o.solutions[0];
-    if (t) {
-      this._resolutionSteps[e].push({
-        equations: [i[0]],
-        operations: [[i[0].left.monoms[0].coefficient.tex]]
-      });
-      let a;
-      l.exact instanceof h || typeof l.exact == "string" ? a = new u(l.exact) : a = new u(l.value), this._resolutionSteps[e].push({
-        equations: [new k(new u(e), a)],
-        operations: []
-      });
-    }
-    return o.solutions[0];
-  }
-}
-var L = /* @__PURE__ */ ((c) => (c.ZERO = "z", c.DEFENCE = "d", c.NOTHING = "t", c))(L || {}), M = /* @__PURE__ */ ((c) => (c.VERTICAL = "av", c.HORIZONTAL = "ah", c.SLOPE = "ao", c.HOLE = "hole", c))(M || {}), E = /* @__PURE__ */ ((c) => (c.LT = "LT", c.RT = "RT", c.LB = "LB", c.RB = "RB", c))(E || {}), H = /* @__PURE__ */ ((c) => (c.MIN = "min", c.MAX = "max", c.FLAT = "flat", c.NOTHING = "", c))(H || {}), W = /* @__PURE__ */ ((c) => (c.SIGNS = "signs", c.GROWS = "grows", c.VARIATIONS = "variatins", c))(W || {});
-class he {
-  constructor(e, t) {
-    r(this, "fx");
-    r(this, "_asymptotes");
-    r(this, "_derivative");
-    r(this, "_signs");
-    r(this, "_variations");
-    r(this, "_zeroes");
-    r(this, "_config");
-    r(this, "_name");
-    r(this, "makeStudy", () => {
-      this._zeroes = this.makeZeroes(), this._config.signs && (this._signs = this.makeSigns()), this._config.asymptotes && (this._asymptotes = this.makeAsymptotes()), this._config.derivative && (this._derivative = this.makeDerivative()), this._config.variations && (this._variations = this.makeVariation()), this._config.signs && (this._signs.tex = this.texSigns), this._config.derivative && (this._derivative.tex = this.texGrows), this._config.variations && (this._variations.tex = this.texVariations);
-    });
-    r(this, "indexOfZero", (e, t) => {
-      for (let i = 0; i < e.length; i++)
-        if (e[i].tex === t.tex)
-          return i;
-      return -1;
-    });
-    r(this, "makeOneLineForSigns", (e, t, i) => {
-      let s = [], n = e.getZeroes().map((o) => o.tex);
-      s.push(""), e.degree().isZero() ? s.push(e.monoms[0].coefficient.sign() === 1 ? "+" : "-") : s.push(e.evaluate(t[0].value - 1).sign() === 1 ? "+" : "-");
-      for (let o = 0; o < t.length; o++)
-        s.push(
-          n.includes(t[o].tex) ? i : "t"
-          /* NOTHING */
-        ), o < t.length - 1 ? s.push(e.evaluate((t[o].value + t[o + 1].value) / 2).sign() === 1 ? "+" : "-") : o === t.length - 1 && s.push(e.evaluate(t[o].value + 1).sign() === 1 ? "+" : "-");
-      return s.push(""), s;
-    });
-    r(this, "makeSignsResult", (e) => {
-      let t = e[0].map((i, s) => s === 0 || s === e[0].length - 1 ? "" : s % 2 === 0 ? "t" : "+");
-      for (let i of e)
-        for (let s = 0; s < i.length; s++)
-          if (s % 2 === 0) {
-            if (t[s] === "d")
-              continue;
-            i[s] !== "t" && (t[s] = i[s]);
-          } else
-            i[s] === "-" && (t[s] = t[s] === "+" ? "-" : "+");
-      return t;
-    });
-    r(this, "makeGrowsResult", (e) => {
-      let t = Object.values(e.signs), i = t[t.length - 1], s = [], n = {}, o = e.zeroes;
-      for (let l = 0; l < o.length; l++) {
-        let a = 2 * l + 2;
-        if (i[a] === "z") {
-          let f, m, d = o[l].exact, p, _, q, v = new K(this.fx.plotFunction);
-          if (d instanceof h) {
-            let B = d, S = this.fx.evaluate(B);
-            f = d.value, m = S.value, p = d.tex, _ = S.tex;
-          } else
-            f = o[l].value, m = v.evaluate({ x: f }), p = f.toFixed(2), _ = m.toFixed(2);
-          i[a - 1] === i[a + 1] ? q = "flat" : i[a - 1] === "+" ? q = "max" : q = "min", n[o[l].tex] = {
-            type: q,
-            tex: { x: p, y: _ },
-            value: { x: f, y: m }
-          };
-        }
-      }
-      s.push(i[1] === "+" ? "-/" : "+/");
-      for (let l = 1; l < i.length - 1; l++)
-        if (i[l] === "z") {
-          let a = n[o[(l - 2) / 2].tex];
-          s.push(`${i[l - 1]}/\\(${a.type}(${a.tex.x};${a.tex.y})\\)`);
-        } else
-          i[l] === "d" && s.push(`${i[l - 1]}D${i[l + 1] === "+" ? "-" : "+"}/`);
-      return s.push(`${i[i.length - 2]}/`), { growsLine: s, extremes: n };
-    });
-    r(this, "makeVariationsResult", (e) => ({ varsLine: [], extremes: {} }));
-    r(this, "drawCode", () => {
-      let e = `f(x)=${this.fx.plotFunction}`, t = 1;
-      this.asymptotes.forEach((i) => {
-        i.type === "av" ? (e += `
-av_${t}=line x=${i.zero.value}->red,dash`, t++) : i.type === "ah" ? e += `
-ah=line y=${i.fx.monoms[0].coefficient.value}->orange,dash` : i.type === "ao" && (e += `
-ao=line y=${i.fx.plotFunction}->red,dash`), t++;
-      });
-      for (let i in this.derivative.extremes) {
-        let s = this.derivative.extremes[i];
-        e += `
-M_${t}(${s.value.x},${s.value.y})*`, t++;
-      }
-      return this.zeroes.forEach((i) => {
-        i.type === "z" && (e += `
-Z_${t}(${i.value},0)*`, t++);
-      }), e;
-    });
-    r(this, "_makeTexFromTableOfSigns", (e) => {
-      let t = e.factors.map((l) => `\\(${l.tex}\\)/1`), i = `\\(${this._config.name}(${this._config.variable})\\)/1.2`, s = e.zeroes;
-      e.type === "grows" ? i = `\\(${this._config.name}'(${this._config.variable})\\)/1.2,\\(f(x${this._config.variable})\\)/2` : e.type === "variatins" && (i = `\\(${this._config.name}''(${this._config.variable})\\)/1.2,\\(f(${this._config.variable})\\)/2`);
-      let n = `\\begin{tikzpicture}
-\\tkzTabInit[lgt=3,espcl=2,deltacl=0]{/1.2,${t.join(",")},/.1,${i} }{{\\scriptsize \\hspace{1cm} \\(-\\infty\\)},\\(${s.map((l) => l.tex).join("\\),\\(")}\\),{\\scriptsize \\hspace{-1cm} \\(+\\infty\\)}}`, o;
-      for (o = 0; o < e.factors.length; o++)
-        n += `
-\\tkzTabLine{${e.signs[o].join(",")}}`;
-      return n += `
-\\tkzTabLine{${e.signs[o].join(",")}}`, e.type === "grows" ? n += `
-\\tkzTabVar{${e.signs[o + 1].join(",")}}` : e.type === "variatins" && (n += `
-\\tkzTabVar{${e.signs[o + 1].join(",")}}`), n += `
-\\end{tikzpicture}`, n;
-    });
-    if (this.fx = e, this._config = {
-      name: "f",
-      variable: "x",
-      domain: !0,
-      asymptotes: !0,
-      signs: !0,
-      derivative: !0,
-      variations: !0
-    }, t)
-      if (typeof t == "string") {
-        const i = t.split(",");
-        this._config = {};
-        let s = i.filter((n) => n.includes("(") && n.includes(")"));
-        s.length === 1 && (this._config.name = s[0].split("(")[0], this._config.variable = s[0].split("(")[1].split(")")[0]), this._config.domain = i.includes("d"), this._config.asymptotes = i.includes("a"), this._config.signs = i.includes("signs"), this._config.derivative = i.includes("dx"), this._config.variations = i.includes("ddx");
-      } else
-        this._config = t;
-    return this.makeStudy(), this;
-  }
-  get name() {
-    return this._config.name;
-  }
-  set name(e) {
-    this._config.name = e;
-  }
-  get config() {
-    return this._config;
-  }
-  set config(e) {
-    this._config = e;
-  }
-  get zeroes() {
-    return this._zeroes;
-  }
-  get domain() {
-    return this.fx.domain();
-  }
-  get signs() {
-    return this._signs;
-  }
-  get asymptotes() {
-    return this._asymptotes;
-  }
-  get derivative() {
-    return this._derivative;
-  }
-  get texSigns() {
-    return this._makeTexFromTableOfSigns(this._signs);
-  }
-  get texGrows() {
-    return this._makeTexFromTableOfSigns(this._derivative);
-  }
-  get texVariations() {
-    return this._makeTexFromTableOfSigns(this._variations);
-  }
-  makeZeroes() {
-    return [];
-  }
-  makeSigns() {
-    return {
-      type: "signs",
-      fx: null,
-      factors: [],
-      zeroes: [],
-      signs: [],
-      extremes: {},
-      tex: ""
-    };
-  }
-  makeAsymptotes() {
-    return [];
-  }
-  makeDerivative() {
-    return {
-      type: "grows",
-      fx: null,
-      factors: [],
-      zeroes: [],
-      signs: [],
-      extremes: {},
-      tex: ""
-    };
-  }
-  makeVariation() {
-    return {
-      type: "variatins",
-      fx: null,
-      factors: [],
-      zeroes: [],
-      signs: [],
-      extremes: {},
-      tex: ""
-    };
-  }
-}
-class ce extends he {
-  constructor(e, t) {
-    return super(e, t), this;
-  }
-  makeZeroes() {
-    return this._getZeroes(this.fx);
-  }
-  makeSigns() {
-    return this._getSigns(this.fx, this.zeroes);
-  }
-  makeAsymptotes() {
-    const e = this.fx.clone().reduce();
-    let t = [];
-    this.zeroes.filter((n) => n.type === L.DEFENCE).forEach((n) => {
-      let o = M.VERTICAL, l = `x=${n.tex}`, a = `x=${n.display}`;
-      n.exact instanceof h ? e.denominator.evaluate(n.exact).isNotZero() && (o = M.HOLE, l = `(${n.tex};${e.evaluate(n.exact).tex})`, a = `(${n.display};${e.evaluate(n.exact).display})`) : e.denominator.evaluate(n.value).isNotZero() && (o = M.HOLE, l = `(${n.tex};${e.evaluate(n.value).tex})`, a = `(${n.display};${e.evaluate(n.value).display})`);
-      const f = 1e-6;
-      let m = this.fx.evaluateAsNumeric(n.value - f), d = this.fx.evaluateAsNumeric(n.value + f), p = [], _ = "";
-      d < -1e4 ? (p.push(E.RB), _ += "m") : d > 1e4 && (p.push(E.RT), _ += "p"), m < -1e4 ? (p.push(E.LB), _ += "m") : m > 1e4 && (p.push(E.LT), _ += "p"), _ === "pp" ? _ = "+" : _ === "mm" ? _ = "-" : _ = `\\${_}`, t.push({
-        fx: null,
-        type: o,
-        tex: l,
-        display: a,
-        zero: n,
-        limits: `\\lim_{x\\to${n.tex} }\\ f(x) = ${_}\\infty`,
-        deltaX: null,
-        tableOfSign: null,
-        position: p
-      });
-    });
-    let i = this.fx.numerator.degree(), s = this.fx.denominator.degree();
-    if (i.isEqual(s)) {
-      let n = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient), o = n.tex, { reminder: l } = e.euclidian(), a = new R(l, e.denominator);
-      t.push({
-        fx: new u(n),
-        type: M.HORIZONTAL,
-        tex: `y=${o}`,
-        display: `y=${n.display}`,
-        zero: null,
-        limits: `\\lim_{x\\to\\infty}\\ f(x) = ${o}`,
-        deltaX: a,
-        tableOfSign: this._getSigns(a),
-        position: this._getHorizontalAsymptoteRelativePositon(a)
-      });
-    } else if (s.greater(i))
-      t.push({
-        fx: new u("0"),
-        type: M.HORIZONTAL,
-        tex: "y=0",
-        display: "y=0",
-        zero: null,
-        limits: "\\lim_{x\\to\\infty}\\ f(x) = 0",
-        deltaX: null,
-        tableOfSign: null,
-        position: this._getHorizontalAsymptoteRelativePositon(this.fx)
-      });
-    else if (i.value - 1 === s.value) {
-      let { quotient: n, reminder: o } = e.euclidian(), l = new R(o, e.denominator);
-      t.push({
-        fx: n.clone(),
-        type: M.SLOPE,
-        tex: `y=${n.tex}`,
-        display: `y=${n.display}`,
-        zero: null,
-        limits: "",
-        deltaX: new R(o, e.denominator),
-        tableOfSign: this._getSigns(l),
-        position: this._getHorizontalAsymptoteRelativePositon(l)
-      });
-    }
-    return t;
-  }
-  _getHorizontalAsymptoteRelativePositon(e, t = 1e6) {
-    let i = [], s = e.evaluateAsNumeric(-t), n = e.evaluateAsNumeric(t);
-    return s >= 0 ? i.push(E.LT) : i.push(E.LB), n >= 0 ? i.push(E.RT) : i.push(E.RB), i;
-  }
-  makeDerivative() {
-    let e = this.fx.clone().derivative(), t = this._getSigns(e, this._getZeroes(e), W.GROWS), i = this.makeGrowsResult(t);
-    return t.signs.push(i.growsLine), t.extremes = i.extremes, t;
-  }
-  makeVariation() {
-    let e = this.derivative.fx.clone().derivative(), t = this._getSigns(e, this._getZeroes(e), W.VARIATIONS), i = this.makeVariationsResult(t);
-    return t.signs.push(i.varsLine), t.extremes = i.extremes, t;
-  }
-  _getZeroes(e) {
-    let t = [];
-    return e.numerator.getZeroes().filter((i) => !isNaN(i.value)).forEach((i) => {
-      t.push({
-        tex: i.tex,
-        display: i.display,
-        value: i.value,
-        exact: i.exact,
-        extrema: H.NOTHING,
-        type: L.ZERO
-      });
-    }), e.denominator.getZeroes().filter((i) => !isNaN(i.value)).forEach((i) => {
-      let s = this.indexOfZero(t, i);
-      s !== -1 ? t[s].type = L.DEFENCE : t.push({
-        tex: i.tex,
-        display: i.display,
-        value: i.value,
-        exact: i.exact,
-        extrema: H.NOTHING,
-        type: L.DEFENCE
-      });
-    }), t.sort((i, s) => i.value - s.value), t;
-  }
-  _getSigns(e, t, i) {
-    let s = [], n = [];
-    return t === void 0 && (t = this._getZeroes(e)), e.numerator.factors.forEach((o) => {
-      s.push(this.makeOneLineForSigns(o, t, L.ZERO)), n.push(o.clone());
-    }), e.denominator.factors.forEach((o) => {
-      s.push(this.makeOneLineForSigns(o, t, L.DEFENCE)), n.push(o.clone());
-    }), s.push(this.makeSignsResult(s)), {
-      type: i,
-      fx: e,
-      factors: n,
-      zeroes: t,
-      signs: s,
-      extremes: {},
-      tex: ""
-    };
-  }
-}
-class R {
-  /**
-   *
-   * @param numerator
-   * @param denominator
-   */
-  constructor(e, t) {
-    r(this, "_denominator");
-    r(this, "_numerator");
-    r(this, "_rawString");
-    r(this, "clone", () => new R(
-      this._numerator.clone(),
-      this._denominator.clone()
-    ));
-    r(this, "domain", () => {
-      let e = this._denominator.getZeroes();
-      return e.length === 0 || e[0].tex === F.real ? F.varnothing : e[0].tex === F.varnothing ? F.real : "\\mathbb{R}\\setminus\\left\\{" + e.map((t) => t.tex).join(";") + "\\right\\}";
-    });
-    r(this, "amplify", (e) => (this._numerator.multiply(e), this._denominator.multiply(e), this));
-    r(this, "derivative", (e) => {
-      let t = this._numerator.clone(), i = this._denominator.clone(), s = t.clone().derivative(e), n = i.clone().derivative(e);
-      return this._numerator = s.clone().multiply(i).subtract(t.clone().multiply(n)), this._denominator = i.clone().pow(2), this;
-    });
-    r(this, "factorize", (e) => (this._numerator.factorize(e), this._denominator.factorize(e), this));
-    r(this, "simplify", (e) => {
-      let t = this._numerator.euclidian(e);
-      if (!t.reminder.isZero())
-        return this;
-      let i = this._denominator.euclidian(e);
-      return i.reminder.isZero() ? (this._numerator = t.quotient, this._denominator = i.quotient, this) : this;
-    });
-    r(this, "reduce", () => {
-      this._numerator.factorize();
-      for (let e of this._numerator.factors)
-        e.degree().isZero() ? this._denominator.commonMonom().coefficient.clone().divide(e.monomByDegree().coefficient).isNatural() && this.simplify(e) : this.simplify(e);
-      return this;
-    });
-    r(this, "opposed", () => (this._numerator.opposed(), this));
-    r(this, "add", (e) => {
-      let t = this._denominator.clone();
-      return this.amplify(e._denominator), this._numerator.add(e._numerator.clone().multiply(t)), this;
-    });
-    r(this, "subtract", (e) => this.add(e.clone().opposed()));
-    r(this, "euclidian", () => this._numerator.euclidian(this._denominator));
-    // TODO : where and how is used limits ?
-    r(this, "limits", (e, t, i) => {
-      if (e === 1 / 0 || e === -1 / 0) {
-        let { quotient: s, reminder: n } = this._numerator.clone().euclidian(this._denominator);
-        return s.degree(i).isStrictlyPositive() ? e === 1 / 0 ? s.limitToInfinity(i) : s.limitToNegativeInfinity(i) : s.monomByDegree(void 0, i).coefficient;
-      } else {
-        let s = {}, n = {}, o, l, a = this.clone().reduce();
-        return s[i === void 0 ? "x" : i] = new h(e), t !== "above" && t !== "below" ? (o = a._numerator.evaluate(s).divide(a._denominator.evaluate(s)), o.isInfinity() ? o.abs() : o) : (t === "above" ? n[i === void 0 ? "x" : i] = new h(e).add(1e-6) : t === "below" && (n[i === void 0 ? "x" : i] = new h(e).subtract(1e-6)), o = a._numerator.evaluate(s).divide(a._denominator.evaluate(s)), l = a._numerator.evaluate(n).divide(a._denominator.evaluate(n)).sign(), o.isInfinity() ? l === 1 ? o.abs() : o.abs().opposed() : o);
-      }
-    });
-    r(this, "evaluate", (e) => {
-      new h().zero();
-      let t = this._numerator.evaluate(e), i = this._denominator.evaluate(e);
-      return t.divide(i);
-    });
-    r(this, "evaluateAsNumeric", (e) => this._numerator.evaluateAsNumeric(e) / this._denominator.evaluateAsNumeric(e));
-    r(this, "study", (e) => new ce(this, e));
-    e instanceof u ? this._numerator = e.clone() : typeof e == "string" ? this._numerator = new u(e) : this._numerator = new u(), t instanceof u ? this._denominator = t.clone() : typeof t == "string" ? this._denominator = new u(t) : this._denominator = new u();
-  }
-  get numerator() {
-    return this._numerator;
-  }
-  get denominator() {
-    return this._denominator;
-  }
-  get tex() {
-    return `\\frac{ ${this._numerator.tex} }{ ${this._denominator.tex} }`;
-  }
-  get display() {
-    return `(${this._numerator.display})/(${this._denominator.display})`;
-  }
-  get texFactors() {
-    return `\\frac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`;
-  }
-  get displayFactors() {
-    return `(${this._numerator.displayFactors})/(${this._denominator.displayFactors})`;
-  }
-  get plotFunction() {
-    return `(${this._numerator.plotFunction})/(${this._denominator.plotFunction})`;
-  }
-}
-class fe {
-  /**
-   *
-   * @param {string} value (optional) Default polynom to parse on class creation
-   */
-  constructor(e) {
-    r(this, "_rawString");
-    r(this, "_rpn");
-    r(this, "parse", (e) => (this._rpn = new P(U.SET).parse(e).rpn, this));
-    return this._rawString = e, this.parse(e), this;
-  }
-  get isLogicalset() {
-    return !0;
-  }
-  get rpn() {
-    return this._rpn;
-  }
-  get tex() {
-    let e = [];
-    for (let t of this._rpn)
-      if (t.tokenType === "variable")
-        e.push(t);
-      else
-        switch (t.token) {
-          case "&":
-            if (e.length >= 2) {
-              let i = e.pop(), s = e.pop();
-              s.tokenType === "mix" && (s.token = `( ${s.token} )`), i.tokenType === "mix" && (i.token = `( ${i.token} )`), e.push({ token: `${s.token} \\cap ${i.token}`, tokenType: "mix" });
-            }
-            break;
-          case "|":
-            if (e.length >= 2) {
-              let i = e.pop(), s = e.pop();
-              s.tokenType === "mix" && (s.token = `( ${s.token} )`), i.tokenType === "mix" && (i.token = `( ${i.token} )`), e.push({ token: `${s.token} \\cup ${i.token}`, tokenType: "mix" });
-            }
-            break;
-          case "-":
-            if (e.length >= 2) {
-              let i = e.pop(), s = e.pop();
-              s.tokenType === "mix" && (s.token = `( ${s.token} )`), i.tokenType === "mix" && (i.token = `( ${i.token} )`), e.push({ token: `${s.token} \\setminus ${i.token}`, tokenType: "mix" });
-            }
-            break;
-          case "!":
-            if (e.length >= 1) {
-              let i = e.pop();
-              e.push({ token: `\\overline{ ${i.token} }`, tokenType: "variable" });
-            }
-            break;
-        }
-    return e[0].token;
-  }
-  evaluate(e, t) {
-    let i = [], s;
-    if (t === void 0) {
-      s = /* @__PURE__ */ new Set();
-      for (let n in e)
-        s = /* @__PURE__ */ new Set([...s, ...e[n]]);
-    } else
-      s = new Set(t);
-    for (let n of this._rpn)
-      if (n.tokenType === "variable")
-        e[n.token] === void 0 ? i.push(/* @__PURE__ */ new Set()) : i.push(new Set(e[n.token]));
-      else
-        switch (n.token) {
-          case "&":
-            if (i.length >= 2) {
-              let o = i.pop(), l = i.pop();
-              i.push(new Set([...l].filter((a) => o.has(a))));
-            }
-            break;
-          case "|":
-            if (i.length >= 2) {
-              let o = i.pop(), l = i.pop();
-              i.push(/* @__PURE__ */ new Set([...l, ...o]));
-            }
-            break;
-          case "-":
-            if (i.length >= 2) {
-              let o = i.pop(), l = i.pop();
-              i.push(new Set([...l].filter((a) => !o.has(a))));
-            }
-            break;
-          case "!":
-            if (i.length >= 1) {
-              let o = i.pop();
-              i.push(new Set([...s].filter((l) => !o.has(l))));
-            }
-            break;
-        }
-    return [...i[0]].sort();
-  }
-  vennAB() {
-    return this.evaluate(
-      {
-        A: ["A", "AB"],
-        B: ["B", "AB"]
-      },
-      ["A", "B", "AB", "E"]
-    );
-  }
-  vennABC() {
-    return this.evaluate(
-      {
-        A: ["A", "AB", "AC", "ABC"],
-        B: ["B", "AB", "BC", "ABC"],
-        C: ["C", "AC", "BC", "ABC"]
-      },
-      ["A", "B", "C", "AB", "AC", "BC", "E"]
-    );
-  }
-}
 const de = {
   ShutingYard: P,
   Numeric: x,
   NumExp: K,
   Fraction: h,
-  Root: J,
+  Root: Q,
   Monom: g,
   Polynom: u,
   Equation: k,
   LinearSystem: Y,
   Rational: R,
-  Logicalset: fe,
+  Logicalset: ne,
   Random: w,
   Geometry: {
     Vector: N,
