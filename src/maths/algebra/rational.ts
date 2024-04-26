@@ -62,6 +62,10 @@ export class Rational {
         return `\\frac{ ${this._numerator.texFactors} }{ ${this._denominator.texFactors} }`
     }
 
+    get displayFactors(): string {
+        return `(${this._numerator.displayFactors})/(${this._denominator.displayFactors})`;
+    }
+
     get plotFunction(): string {
         return `(${this._numerator.plotFunction})/(${this._denominator.plotFunction})`
     }
@@ -131,12 +135,12 @@ export class Rational {
         this._numerator.factorize();
         for (let f of this._numerator.factors) {
 
-            if(f.degree().isZero()){
+            if (f.degree().isZero()) {
                 // Do the simplify only if the factor can divide the denominator
-                if(this._denominator.commonMonom().coefficient.clone().divide(f.monomByDegree().coefficient).isNatural()){
+                if (this._denominator.commonMonom().coefficient.clone().divide(f.monomByDegree().coefficient).isNatural()) {
                     this.simplify(f);
                 }
-            }else {
+            } else {
                 this.simplify(f);
             }
         }
@@ -234,7 +238,7 @@ export class Rational {
         return this._numerator.evaluateAsNumeric(values) / this._denominator.evaluateAsNumeric(values)
     }
 
-    study = (config?:StudyConfig|string): RationalStudy => {
+    study = (config?: StudyConfig | string): RationalStudy => {
         return new RationalStudy(this, config)
     }
 }
