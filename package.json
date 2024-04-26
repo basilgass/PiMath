@@ -1,6 +1,6 @@
 {
   "name": "pimath",
-  "version": "0.0.132",
+  "version": "0.0.133",
   "description": "A math library for teacher :)",
   "type": "module",
   "main": "dist/pimath.js",
