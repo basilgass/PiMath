@@ -1,7 +1,7 @@
 import {expect} from "chai";
-import {Fraction} from "../../src/maths/coefficients/fraction";
+import {Fraction} from "../../lib/maths/coefficients/fraction";
 import {describe} from "mocha";
-import {Random} from "../../src/maths/randomization/random";
+import {Random} from "../../lib/maths/randomization/random";
 
 
 describe('Fraction tests', () => { // the tests container
@@ -37,7 +37,7 @@ describe('Fraction tests', () => { // the tests container
         expect(Q.isReduced()).to.be.false
     })
 
-    it('Should parse a number with lots of decimals', ()=>{
+    it('Should parse a number with lots of decimals', () => {
         let A = 3.45,
             B = 3.3333333333333,
             C = 5.314171717171717
@@ -52,7 +52,7 @@ describe('Fraction tests', () => { // the tests container
     })
 })
 
-describe("Fraction static functions", ()=>{
+describe("Fraction static functions", () => {
     it('should sort fractions', function () {
         let list = [
             new Fraction('3.5'),
@@ -62,7 +62,7 @@ describe("Fraction static functions", ()=>{
             new Fraction('1.5')
         ]
 
-        expect(Fraction.sort(list).map(x=>x.value)).to.eql([ -2.5, 1.5, 3.1, 3.5, 3.54 ])
+        expect(Fraction.sort(list).map(x => x.value)).to.eql([-2.5, 1.5, 3.1, 3.5, 3.54])
     });
 
     it('should make a list of fractions unique', function () {
@@ -74,11 +74,11 @@ describe("Fraction static functions", ()=>{
             new Fraction('1.5')
         ]
 
-        expect(Fraction.unique(list, true).map(x=>x.value)).to.be.eql([ -2.5, 1.5, 3.5 ])
+        expect(Fraction.unique(list, true).map(x => x.value)).to.be.eql([-2.5, 1.5, 3.5])
 
     });
 
-    it('shoudl get the average of fractions', function() {
+    it('shoudl get the average of fractions', function () {
         let list = [
             new Fraction('3.5'),
             new Fraction('-2.5'),
@@ -115,13 +115,13 @@ describe("Evaluate fraction", () => {
     });
 })
 
-describe('Generate function', ()=>{
+describe('Generate function', () => {
     it('should generate a non natural fraction', function () {
         let F, result = true
 
-        for(let i=0; i<100; i++){
-            F  = Random.fraction()
-            if(!F.isRelative()){
+        for (let i = 0; i < 100; i++) {
+            F = Random.fraction()
+            if (!F.isRelative()) {
                 result = false
                 break
             }

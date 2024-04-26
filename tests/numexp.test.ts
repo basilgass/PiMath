@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {NumExp} from "../src/maths/numexp";
+import {NumExp} from "../lib/maths/numexp";
 
 describe('Numerical expression', () => { // the tests container
     it('RPN for numerical expression', () => {
@@ -82,7 +82,7 @@ describe('Numerical expression', () => { // the tests container
     it('should parse with sqrt and root', () => {
         const expr1 = new NumExp('sqrt(9)');
         expect(expr1.evaluate()).to.be.equal(3);
-        
+
         const expr2 = new NumExp('nthrt(8,3)');
         expect(expr2.evaluate()).to.be.equal(2);
     })

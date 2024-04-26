@@ -1,13 +1,18 @@
 import {defineConfig} from "vite";
+import {resolve} from "path";
+import dtsPlugin from "vite-plugin-dts";
 
 export default defineConfig({
 	build: {
+		copyPublicDir: false,
 		lib: {
-			entry: "src/main.ts",
-			name: "PiMath",
-			fileName: "pimath"
+			entry: resolve(__dirname, "lib/main.ts"),
+			formats: ["es"],
 		}
 	},
+	plugins: [
+		dtsPlugin({include: ['lib']}), // generate .d.ts files for the lib folder
+	],
 	rollupOptions: {
 		external: ["vue"],
 		output: {

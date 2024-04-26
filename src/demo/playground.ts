@@ -1,5 +1,5 @@
-import {Point} from "../maths/geometry/point.ts";
-import {Line} from "../maths/geometry/line.ts";
+import {Point} from "../../lib/maths/geometry/point.ts";
+import {Line} from "../../lib/maths/geometry/line.ts";
 
 let A = new Point(0, 2),
     B = new Point(2, 3),

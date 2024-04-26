@@ -1,11 +1,11 @@
 import {describe} from "mocha";
 import {expect} from "chai";
-import {Circle} from "../../src/maths/geometry/circle";
-import {Line} from "../../src/maths/geometry/line";
-import {Point} from "../../src/maths/geometry/point";
-import {Fraction} from "../../src/maths/coefficients/fraction";
-import {Random} from "../../src/maths/randomization/random";
-import {Vector} from "../../src/maths/geometry/vector";
+import {Circle} from "../../lib/maths/geometry/circle";
+import {Line} from "../../lib/maths/geometry/line";
+import {Point} from "../../lib/maths/geometry/point";
+import {Fraction} from "../../lib/maths/coefficients/fraction";
+import {Random} from "../../lib/maths/randomization/random";
+import {Vector} from "../../lib/maths/geometry/vector";
 
 describe('Circle', function () {
     it('should calculate the intersection of a circle and a line', function () {

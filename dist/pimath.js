@@ -796,30 +796,6 @@ class K {
   get expression() {
     return this._expression;
   }
-  _extractDecimalPart(e) {
-    let t = e.toString();
-    return t.includes(".") ? (t = t.split(".")[1], t.substring(0, t.length - 2)) : "";
-  }
-  _numberCorrection(e) {
-    const s = this._extractDecimalPart(e);
-    if (s === "")
-      return e;
-    const n = s.match(/9+$/g), o = s.match(/0+$/g);
-    if (n && n[0].length >= 6) {
-      const l = this._extractDecimalPart(e + 1e-14), a = l.match(/0+$/g);
-      if (a && a[0].length >= 6)
-        return +(e + 1e-14).toString().split(a[0])[0];
-    }
-    if (o && o[0].length >= 6) {
-      const l = this._extractDecimalPart(e - 1e-14), a = l.match(/9+$/g);
-      if (a && a[0].length >= 6)
-        return +e.toString().split(o[0])[0];
-    }
-    return e;
-  }
-  _addToStack(e, t) {
-    e.push(this._numberCorrection(t));
-  }
   evaluate(e) {
     const t = [];
     if (this._rpn === null)
@@ -868,6 +844,30 @@ class K {
     if (t.length === 1)
       return t[0];
     throw `There was a problem parsing: ${this._expression}`;
+  }
+  _extractDecimalPart(e) {
+    let t = e.toString();
+    return t.includes(".") ? (t = t.split(".")[1], t.substring(0, t.length - 2)) : "";
+  }
+  _numberCorrection(e) {
+    const s = this._extractDecimalPart(e);
+    if (s === "")
+      return e;
+    const n = s.match(/9+$/g), o = s.match(/0+$/g);
+    if (n && n[0].length >= 6) {
+      const l = this._extractDecimalPart(e + 1e-14), a = l.match(/0+$/g);
+      if (a && a[0].length >= 6)
+        return +(e + 1e-14).toString().split(a[0])[0];
+    }
+    if (o && o[0].length >= 6) {
+      const l = this._extractDecimalPart(e - 1e-14), a = l.match(/9+$/g);
+      if (a && a[0].length >= 6)
+        return +e.toString().split(o[0])[0];
+    }
+    return e;
+  }
+  _addToStack(e, t) {
+    e.push(this._numberCorrection(t));
   }
 }
 class D {
@@ -1205,6 +1205,8 @@ const $ = class $ {
     return this.zero(), e !== void 0 && this.parse(e), this;
   }
   // ------------------------------------------
+  // Getter and setter
+  // ------------------------------------------
   /**
    * Get the coefficient \\(k\\) of the Monom \\(k\\cdot x^{n}\\)
    * @returns {Fraction}
@@ -1212,8 +1214,6 @@ const $ = class $ {
   get coefficient() {
     return this._coefficient;
   }
-  // ------------------------------------------
-  // Getter and setter
   /**
    * Set the coefficient \\(k\\) value of the monom
    * @param {Fraction | number | string} F
@@ -1496,16 +1496,17 @@ class k {
     r(this, "_varnothing", "\\varnothing");
     r(this, "_real", "\\mathbb{R}");
     r(this, "_left");
+    // Left part of the equation
     r(this, "_right");
+    // Right part of the equation
     r(this, "_sign");
+    // Signe of the equation, by default =
     r(this, "_solutions");
-    r(this, "hasVariable", (e) => this.variables.includes(e));
-    // ------------------------------------------
-    // Creation / parsing functions
     // -----------------------------------------------
     r(this, "_randomizeDefaults", {
       degree: 2
     });
+    r(this, "hasVariable", (e) => this.variables.includes(e));
     // ------------------------------------------
     r(this, "parse", (e) => {
       let t, i;
@@ -1516,9 +1517,9 @@ class k {
       return t = e.split(i), this.create(new u(t[0]), new u(t[1]), this._formatSign(i));
     });
     r(this, "create", (e, t, i) => (this._left = e, this._right = t, this._sign = this._formatSign(i), this));
-    r(this, "clone", () => new k().create(this._left.clone(), this._right.clone(), this._sign + ""));
     // -----------------------------------------------
     // Equations generators and randomizers
+    r(this, "clone", () => new k().create(this._left.clone(), this._right.clone(), this._sign + ""));
     r(this, "randomize", (e, t) => new k().create(new u(), new u(), t));
     // -----------------------------------------------
     /**
@@ -1529,12 +1530,12 @@ class k {
       const i = t.clone();
       this._left.subtract(i), this._right.subtract(i);
     }), this._left.reorder(), this._right.reorder(), this)));
+    // -----------------------------------------------
+    // Equations operations
     /**
      * Multiply by the lcm denominator and divide by the gcm numerators.
      */
     r(this, "simplify", () => (this.multiply(x.lcm(...this._left.getDenominators(), ...this._right.getDenominators())), this.divide(x.gcd(...this._left.getNumerators(), ...this._right.getNumerators())), this));
-    // -----------------------------------------------
-    // Equations operations
     /**
      * Reorder the polynom to have only one letter on the left, the rest on the right.
      * @param letter
@@ -1585,10 +1586,10 @@ class k {
      * Determine if the equation contains more than one letter/variable.
      */
     r(this, "isMultiVariable", () => this._left.isMultiVariable || this._right.isMultiVariable);
-    r(this, "letters", () => [.../* @__PURE__ */ new Set([...this._left.letters(), ...this._right.letters()])]);
     // -----------------------------------------------
     // Equations helpers
     // -----------------------------------------------
+    r(this, "letters", () => [.../* @__PURE__ */ new Set([...this._left.letters(), ...this._right.letters()])]);
     // -----------------------------------------------
     r(this, "solve", () => {
       switch (this._solutions = [], this._polynom = this._left.clone().subtract(this._right), this._polynom.degree().value) {
@@ -1781,23 +1782,20 @@ class k {
       return this;
     return this;
   }
-  // Left part of the equation
+  // ------------------------------------------
+  // Getter and setter
   get left() {
     return this._left;
   }
   set left(e) {
     this._left = e;
   }
-  // Right part of the equation
   get right() {
     return this._right;
   }
-  // ------------------------------------------
-  // Getter and setter
   set right(e) {
     this._right = e;
   }
-  // Signe of the equation, by default =
   get sign() {
     return this._sign;
   }
@@ -1838,6 +1836,8 @@ class k {
   get numberOfVars() {
     return this.variables.length;
   }
+  // ------------------------------------------
+  // Creation / parsing functions
   get randomizeDefaults() {
     return this._randomizeDefaults;
   }
@@ -2771,9 +2771,6 @@ const O = class O {
     r(this, "_x");
     // 1st component
     r(this, "_y");
-    // ------------------------------------------
-    // Creation / parsing functions
-    // ------------------------------------------
     r(this, "parse", (...e) => {
       if (this.zero(), e.length === 0)
         return this;
@@ -2791,14 +2788,10 @@ const O = class O {
       return this._x !== null && (e.x = this._x.clone()), this._y !== null && (e.y = this._y.clone()), e;
     });
     r(this, "reset", () => (this._x = null, this._y = null, this));
-    r(this, "zero", () => (this.reset(), this._x = new h(null), this._y = new h(null), this));
-    r(this, "one", () => (this._x = new h(), this._y = new h(), this));
-    r(this, "_parseString", (e) => {
-      let t = e.split(/[,;\s]/g);
-      return this.x = new h(t[0] || null), this.y = new h(t[1] || null), this;
-    });
     // ------------------------------------------
     // Mathematical operations
+    r(this, "zero", () => (this.reset(), this._x = new h(null), this._y = new h(null), this));
+    r(this, "one", () => (this._x = new h(), this._y = new h(), this));
     // ------------------------------------------
     r(this, "opposed", () => (this._x.opposed(), this._y.opposed(), this));
     r(this, "add", (e) => (this._x.add(e.x), this._y.add(e.y), this));
@@ -2816,10 +2809,10 @@ const O = class O {
       return this._x.multiply(t), this._y.multiply(t), this;
     });
     r(this, "divideByScalar", (e) => this.multiplyByScalar(new h(e).invert()));
+    r(this, "simplify", () => this.multiplyByScalar(x.lcm(this._x.denominator, this._y.denominator)).divideByScalar(x.gcd(this._x.numerator, this._y.numerator)));
     // ------------------------------------------
     // Vector functions
     // ------------------------------------------
-    r(this, "simplify", () => this.multiplyByScalar(x.lcm(this._x.denominator, this._y.denominator)).divideByScalar(x.gcd(this._x.numerator, this._y.numerator)));
     r(this, "simplifyDirection", () => {
       let e = x.lcm(this.x.denominator, this.y.denominator), t = x.gcd(this.x.numerator, this.y.numerator);
       return this.x.multiply(e).divide(t), this.y.multiply(e).divide(t), this;
@@ -2827,6 +2820,10 @@ const O = class O {
     r(this, "angleWith", (e, t, i) => {
       let s = this.scalarProductWithVector(e).value, n = i ? 1 : 180 / Math.PI;
       return t && (s = Math.abs(s)), n * Math.acos(s / (this.norm * e.norm));
+    });
+    r(this, "_parseString", (e) => {
+      let t = e.split(/[,;\s]/g);
+      return this.x = new h(t[0] || null), this.y = new h(t[1] || null), this;
     });
     this._x = new h().zero(), this._y = new h().zero(), e !== void 0 && this.parse(...e);
   }
@@ -2857,6 +2854,9 @@ const O = class O {
   get asPoint() {
     return new y(this.x, this.y);
   }
+  // ------------------------------------------
+  // Creation / parsing functions
+  // ------------------------------------------
   get isNull() {
     return this.x.isZero() && this.y.isZero();
   }
@@ -4159,6 +4159,43 @@ class fe {
   get isLogicalset() {
     return !0;
   }
+  get rpn() {
+    return this._rpn;
+  }
+  get tex() {
+    let e = [];
+    for (let t of this._rpn)
+      if (t.tokenType === "variable")
+        e.push(t);
+      else
+        switch (t.token) {
+          case "&":
+            if (e.length >= 2) {
+              let i = e.pop(), s = e.pop();
+              s.tokenType === "mix" && (s.token = `( ${s.token} )`), i.tokenType === "mix" && (i.token = `( ${i.token} )`), e.push({ token: `${s.token} \\cap ${i.token}`, tokenType: "mix" });
+            }
+            break;
+          case "|":
+            if (e.length >= 2) {
+              let i = e.pop(), s = e.pop();
+              s.tokenType === "mix" && (s.token = `( ${s.token} )`), i.tokenType === "mix" && (i.token = `( ${i.token} )`), e.push({ token: `${s.token} \\cup ${i.token}`, tokenType: "mix" });
+            }
+            break;
+          case "-":
+            if (e.length >= 2) {
+              let i = e.pop(), s = e.pop();
+              s.tokenType === "mix" && (s.token = `( ${s.token} )`), i.tokenType === "mix" && (i.token = `( ${i.token} )`), e.push({ token: `${s.token} \\setminus ${i.token}`, tokenType: "mix" });
+            }
+            break;
+          case "!":
+            if (e.length >= 1) {
+              let i = e.pop();
+              e.push({ token: `\\overline{ ${i.token} }`, tokenType: "variable" });
+            }
+            break;
+        }
+    return e[0].token;
+  }
   evaluate(e, t) {
     let i = [], s;
     if (t === void 0) {
@@ -4217,43 +4254,6 @@ class fe {
       },
       ["A", "B", "C", "AB", "AC", "BC", "E"]
     );
-  }
-  get rpn() {
-    return this._rpn;
-  }
-  get tex() {
-    let e = [];
-    for (let t of this._rpn)
-      if (t.tokenType === "variable")
-        e.push(t);
-      else
-        switch (t.token) {
-          case "&":
-            if (e.length >= 2) {
-              let i = e.pop(), s = e.pop();
-              s.tokenType === "mix" && (s.token = `( ${s.token} )`), i.tokenType === "mix" && (i.token = `( ${i.token} )`), e.push({ token: `${s.token} \\cap ${i.token}`, tokenType: "mix" });
-            }
-            break;
-          case "|":
-            if (e.length >= 2) {
-              let i = e.pop(), s = e.pop();
-              s.tokenType === "mix" && (s.token = `( ${s.token} )`), i.tokenType === "mix" && (i.token = `( ${i.token} )`), e.push({ token: `${s.token} \\cup ${i.token}`, tokenType: "mix" });
-            }
-            break;
-          case "-":
-            if (e.length >= 2) {
-              let i = e.pop(), s = e.pop();
-              s.tokenType === "mix" && (s.token = `( ${s.token} )`), i.tokenType === "mix" && (i.token = `( ${i.token} )`), e.push({ token: `${s.token} \\setminus ${i.token}`, tokenType: "mix" });
-            }
-            break;
-          case "!":
-            if (e.length >= 1) {
-              let i = e.pop();
-              e.push({ token: `\\overline{ ${i.token} }`, tokenType: "variable" });
-            }
-            break;
-        }
-    return e[0].token;
   }
 }
 const de = {

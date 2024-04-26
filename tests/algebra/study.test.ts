@@ -1,8 +1,8 @@
 import {describe} from "mocha";
-import {Rational} from "../../src/maths/algebra/rational";
-import {RationalStudy} from "../../src/maths/algebra/study/rationalStudy";
+import {Rational} from "../../lib/maths/algebra/rational";
+import {RationalStudy} from "../../lib/maths/algebra/study/rationalStudy";
 import {expect} from "chai";
-import {ASYMPTOTE} from "../../src/maths/algebra/study";
+import {ASYMPTOTE} from "../../lib/maths/algebra/study";
 
 describe('Study tests', () => {
 

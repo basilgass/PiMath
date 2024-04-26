@@ -1,7 +1,7 @@
 import {describe} from "mocha";
 import {expect} from "chai";
-import {LinearSystem} from "../../src/maths/algebra/linearSystem";
-import {Polynom} from "../../src/maths/algebra/polynom";
+import {LinearSystem} from "../../lib/maths/algebra/linearSystem";
+import {Polynom} from "../../lib/maths/algebra/polynom";
 
 
 describe('Linear systems tests', () => {

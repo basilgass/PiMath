@@ -1,6 +1,6 @@
 import {describe} from "mocha";
-import {Rational} from "../../src/maths/algebra/rational";
-import {Polynom} from "../../src/maths/algebra/polynom";
+import {Rational} from "../../lib/maths/algebra/rational";
+import {Polynom} from "../../lib/maths/algebra/polynom";
 import {expect} from "chai";
 
 describe('Rational tests', () => {

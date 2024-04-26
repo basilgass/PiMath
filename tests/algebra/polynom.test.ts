@@ -1,8 +1,8 @@
 import {expect} from 'chai';
-import {Random} from "../../src/maths/randomization/random";
+import {Random} from "../../lib/maths/randomization/random";
 import {describe} from "mocha";
-import {Polynom} from "../../src/maths/algebra/polynom";
-import {Fraction} from "../../src/maths/coefficients/fraction";
+import {Polynom} from "../../lib/maths/algebra/polynom";
+import {Fraction} from "../../lib/maths/coefficients/fraction";
 
 
 describe('Polynom tests', () => {

@@ -47,6 +47,7 @@
     "removeComments": false
   },
   "include": [
-    "./src/**/*"
+    "src",
+    "lib"
   ]
 }

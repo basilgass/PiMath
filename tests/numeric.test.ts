@@ -1,4 +1,4 @@
-import {Numeric} from "../src/maths/numeric";
+import {Numeric} from "../lib/maths/numeric";
 import {expect} from "chai";
 
 

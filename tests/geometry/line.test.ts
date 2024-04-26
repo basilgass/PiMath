@@ -1,6 +1,6 @@
 import {describe} from "mocha";
-import {Line} from "../../src/maths/geometry/line";
-import {Point} from "../../src/maths/geometry/point";
+import {Line} from "../../lib/maths/geometry/line";
+import {Point} from "../../lib/maths/geometry/point";
 import {expect} from "chai";
 
 describe('Geometry Line', function () {
