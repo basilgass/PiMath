@@ -1,6 +1,5 @@
-import {expect} from 'chai';
+import {describe, expect, it} from "vitest";
 import {Random} from "../../lib/maths/randomization/random";
-import {describe} from "mocha";
 import {Polynom} from "../../lib/maths/algebra/polynom";
 import {Fraction} from "../../lib/maths/coefficients/fraction";
 

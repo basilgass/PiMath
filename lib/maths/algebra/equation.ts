@@ -1,6 +1,6 @@
 import {Polynom} from "./polynom";
 import {literalType, Monom} from "./monom";
-import {Numeric} from "../numeric.ts";
+import {Numeric} from "../numeric";
 import {Fraction} from "../coefficients/fraction";
 import {NthRoot} from "../coefficients/nthRoot";
 

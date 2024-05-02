@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import {describe, expect, it} from "vitest";
 import {Shutingyard, ShutingyardMode} from "../lib/maths/shutingyard";
 
 describe('Shuting yard', () => { // the tests container

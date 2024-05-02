@@ -1,5 +1,4 @@
-import {describe} from "mocha";
-import {expect} from "chai";
+import {describe, expect, it} from "vitest";
 import {Equation} from "../../lib/maths/algebra/equation";
 
 

@@ -1,8 +1,7 @@
-import {describe} from "mocha";
 import {Rational} from "../../lib/maths/algebra/rational";
 import {RationalStudy} from "../../lib/maths/algebra/study/rationalStudy";
-import {expect} from "chai";
 import {ASYMPTOTE} from "../../lib/maths/algebra/study";
+import {describe, expect, it} from "vitest";
 
 describe('Study tests', () => {
 

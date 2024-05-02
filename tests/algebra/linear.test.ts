@@ -1,5 +1,4 @@
-import {describe} from "mocha";
-import {expect} from "chai";
+import {describe, expect, it} from "vitest";
 import {LinearSystem} from "../../lib/maths/algebra/linearSystem";
 import {Polynom} from "../../lib/maths/algebra/polynom";
 

@@ -124,7 +124,7 @@ export class Numeric {
         return triplets
     }
 
-    static numberCorrection(value: number, epsilonDigit: number = 1, epsilonNumberOfDigits: number = 10, number_of_digits: number = 8) {
+    static numberCorrection(value: number, number_of_digits: number = 3) {
         return +value.toFixed(number_of_digits)
     }
 

@@ -39,7 +39,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "outDir": "./esm/",
     "noImplicitAny": true,
     "allowJs": true,
     "sourceMap": true,

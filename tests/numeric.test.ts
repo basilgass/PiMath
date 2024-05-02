@@ -1,6 +1,5 @@
 import {Numeric} from "../lib/maths/numeric";
-import {expect} from "chai";
-
+import {describe, expect, it} from "vitest";
 
 describe('Numeric', () => { // the tests container
     it('Correct number', () => {
@@ -8,9 +7,8 @@ describe('Numeric', () => { // the tests container
         expect(Numeric.numberCorrection(a)).to.be.equal(0.3)
         const b = Math.pow(10, -5)
 
-        expect(Numeric.numberCorrection(b, 1, 12)).to.be.equal(0.00001)
+        expect(Numeric.numberCorrection(b, 8)).to.be.equal(0.00001)
     })
-
 
     it('should simplify numbers by the gcd', () => {
         let a = 12, b = 15, c = 33, d = 303;

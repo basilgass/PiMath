@@ -1,7 +1,6 @@
-import {describe} from "mocha";
+import {describe, expect, it} from "vitest";
 import {Line} from "../../lib/maths/geometry/line";
 import {Point} from "../../lib/maths/geometry/point";
-import {expect} from "chai";
 
 describe('Geometry Line', function () {
     it('should evaluate coordinates', function () {

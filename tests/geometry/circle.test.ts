@@ -1,5 +1,4 @@
-import {describe} from "mocha";
-import {expect} from "chai";
+import {describe, expect, it} from "vitest";
 import {Circle} from "../../lib/maths/geometry/circle";
 import {Line} from "../../lib/maths/geometry/line";
 import {Point} from "../../lib/maths/geometry/point";

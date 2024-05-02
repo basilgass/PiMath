@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "mocha -r ts-node/register 'tests/**/*.test.ts'",
+    "test": "vitest",
     "dev": "vite serve",
     "build": "tsc --p ./tsconfig-build.json && vite build",
     "preview": "vite preview",
@@ -22,19 +22,16 @@
   "author": "Basil Gass",
   "license": "MIT",
   "devDependencies": {
-    "@types/chai": "*",
-    "@types/mocha": "*",
     "@types/node": "^20.8.2",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
-    "chai": "*",
     "eslint": "^8.50.0",
-    "mocha": "*",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
     "typedoc": "^0.25.1",
     "typescript": "^5.2.2",
     "vite": "^5.2.10",
-    "vite-plugin-dts": "^3.9.0"
+    "vite-plugin-dts": "^3.9.0",
+    "vitest": "^1.5.3"
   }
 }

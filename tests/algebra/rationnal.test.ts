@@ -1,7 +1,6 @@
-import {describe} from "mocha";
 import {Rational} from "../../lib/maths/algebra/rational";
 import {Polynom} from "../../lib/maths/algebra/polynom";
-import {expect} from "chai";
+import {describe, expect, it} from "vitest";
 
 describe('Rational tests', () => {
     it('should calculate correctly the limits to a value', () => {
