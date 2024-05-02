@@ -374,7 +374,7 @@ export class Equation {
         if (F.isZero()) {
             return this;
         } else {
-            return this.multiply(F.invert());
+            return this.multiply(F.inverse());
         }
     }
 

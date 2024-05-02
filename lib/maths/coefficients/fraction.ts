@@ -1,5 +1,5 @@
 import {Numeric} from "../numeric.ts";
-import {InputValue, IOperations} from "../../pimath.interface.ts";
+import {InputValue, IOperations, IPiMathObject} from "../../pimath.interface.ts";
 
 export type FractionParsingType = number | string | Fraction
 
@@ -8,11 +8,17 @@ export type FractionParsingType = number | string | Fraction
  * TODO: Write the documentation correctly.
  * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
  */
-export class Fraction implements IOperations<Fraction> {
+export class Fraction
+    implements IPiMathObject<Fraction>,
+        IOperations<Fraction> {
     private _denominator: number;
     private _numerator: number;
 
-    constructor(value?: unknown, denominatorOrPeriodic?: number) {
+    constructor()
+    constructor(value: InputValue<Fraction>)
+    constructor(numerator: number, denominator: number)
+    constructor(decimal: number, periodLength: number)
+    constructor(value?: InputValue<Fraction>, denominatorOrPeriodic?: number) {
         this._numerator = 1;
         this._denominator = 1;
 
@@ -66,10 +72,6 @@ export class Fraction implements IOperations<Fraction> {
         }
     }
 
-    get texWithSign(): string {
-        return this.isPositive() ? `+${this.tex}` : this.tex;
-    }
-
     get display(): string {
         if (this.isExact()) {
             if (this._denominator === 1) {
@@ -82,96 +84,12 @@ export class Fraction implements IOperations<Fraction> {
         }
     }
 
-    // Helper function to display fractions
-    get frac(): string {
-        return this.tex;
-    }
-
-    get dfrac(): string {
-        return this.tex.replace('\\frac', '\\dfrac');
-    }
-
-    get tfrac(): string {
-        return this.tex.replace('\\frac', '\\tfrac')
-    }
-
-    static max = (...fractions: (Fraction | number)[]): Fraction => {
-        let M = new Fraction(fractions[0])
-
-        for (let m of fractions) {
-            let compare = new Fraction(m)
-            if (compare.greater(M)) {
-                M = compare.clone()
-            }
-        }
-
-        return M
-    }
-
-    static min = (...fractions: (Fraction | number)[]): Fraction => {
-        let M = new Fraction(fractions[0])
-
-        for (let m of fractions) {
-            let compare = new Fraction(m)
-            if (compare.lesser(M)) {
-                M = compare.clone()
-            }
-        }
-
-        return M
-    }
-
-    // ------------------------------------------
-    // Creation / parsing functions
-
-    static average = (...fractions: (Fraction | number)[]): Fraction => {
-        let M = new Fraction().zero()
-
-        for (let f of fractions) {
-            M.add(f)
-        }
-
-        M.divide(fractions.length)
-
-        return M
-    }
-
-    static unique = (fractions: Fraction[], sorted?: boolean): Fraction[] => {
-        // TODO: make sure it's wokring -> test !
-        let unique: { [Key: string]: boolean } = {},
-            distinct: Fraction[] = []
-        fractions.forEach(x => {
-            if (!unique[x.clone().reduce().tex]) {
-                distinct.push(x.clone())
-                unique[x.tex] = true
-            }
-        })
-
-        if (sorted) {
-            return Fraction.sort(distinct)
-        } else {
-            return distinct
-        }
-    }
-
-    static sort = (fractions: Fraction[], reverse?: boolean): Fraction[] => {
-        // Todo make sure it's the correct order, not reverse -> make a test
-        let sorted = fractions.sort((a, b) => a.value - b.value)
-
-        if (reverse) {
-            sorted.reverse()
-        }
-
-        return sorted
-    }
-
-    isApproximative = (): boolean => {
-        return this._numerator.toString().length >= 15 && this._denominator.toString().length >= 15
-    }
-
-    isExact = (): boolean => {
-        return !this.isApproximative()
-    }
+    clone = (): Fraction => {
+        let F = new Fraction();
+        F.numerator = +this._numerator;
+        F.denominator = +this._denominator;
+        return F;
+    };
 
     // ------------------------------------------
     /**
@@ -179,7 +97,7 @@ export class Fraction implements IOperations<Fraction> {
      * @param value : number or string to parse to get the fraction
      * @param denominatorOrPeriodic (optional|number) : length of the periodic part: 2.333333 => 1 or denominator value
      */
-    parse = (value: unknown, denominatorOrPeriodic?: number): Fraction => {
+    parse = (value: InputValue<Fraction>, denominatorOrPeriodic?: number): Fraction => {
         let S: string[];
 
         // A null value means a zero fraction.
@@ -259,15 +177,103 @@ export class Fraction implements IOperations<Fraction> {
         return this;
     };
 
+    get texWithSign(): string {
+        return this.isPositive() ? `+${this.tex}` : this.tex;
+    }
+
+    // Helper function to display fractions
+    get frac(): string {
+        return this.tex;
+    }
+
+    get dfrac(): string {
+        return this.tex.replace('\\frac', '\\dfrac');
+    }
+
+    get tfrac(): string {
+        return this.tex.replace('\\frac', '\\tfrac')
+    }
+
+    // ------------------------------------------
+    // Creation / parsing functions
+
+    static max = (...fractions: InputValue<Fraction>[]): Fraction => {
+        let M = new Fraction(fractions[0])
+
+        for (let m of fractions) {
+            let compare = new Fraction(m)
+            if (compare.greater(M)) {
+                M = compare.clone()
+            }
+        }
+
+        return M
+    }
+
+    static min = (...fractions: (Fraction | number)[]): Fraction => {
+        let M = new Fraction(fractions[0])
+
+        for (let m of fractions) {
+            let compare = new Fraction(m)
+            if (compare.lesser(M)) {
+                M = compare.clone()
+            }
+        }
+
+        return M
+    }
+
+    static average = (...fractions: (Fraction | number)[]): Fraction => {
+        let M = new Fraction().zero()
+
+        for (let f of fractions) {
+            M.add(f)
+        }
+
+        M.divide(fractions.length)
+
+        return M
+    }
+
+    static unique = (fractions: Fraction[], sorted?: boolean): Fraction[] => {
+        // TODO: make sure it's wokring -> test !
+        let unique: { [Key: string]: boolean } = {},
+            distinct: Fraction[] = []
+        fractions.forEach(x => {
+            if (!unique[x.clone().reduce().tex]) {
+                distinct.push(x.clone())
+                unique[x.tex] = true
+            }
+        })
+
+        if (sorted) {
+            return Fraction.sort(distinct)
+        } else {
+            return distinct
+        }
+    }
+
+    static sort = (fractions: Fraction[], reverse?: boolean): Fraction[] => {
+        // Todo make sure it's the correct order, not reverse -> make a test
+        let sorted = fractions.sort((a, b) => a.value - b.value)
+
+        if (reverse) {
+            sorted.reverse()
+        }
+
+        return sorted
+    }
+
+    isApproximative = (): boolean => {
+        return this._numerator.toString().length >= 15 && this._denominator.toString().length >= 15
+    }
+
     // ------------------------------------------
     // Mathematical operations
 
-    clone = (): Fraction => {
-        let F = new Fraction();
-        F.numerator = +this._numerator;
-        F.denominator = +this._denominator;
-        return F;
-    };
+    isExact = (): boolean => {
+        return !this.isApproximative()
+    }
 
     zero = (): Fraction => {
         this._numerator = 0;
@@ -348,20 +354,7 @@ export class Fraction implements IOperations<Fraction> {
         return this;
     };
 
-    xMultiply = (...values: (Fraction | number)[]): Fraction => {
-        // Parse the value.
-        // If it's a fraction, return a clone of it
-        // If it's an integer, return the fraction F/1
-        for (let value of values) {
-            let F = new Fraction(value)
-            this._numerator = this._numerator * F.numerator;
-            this._denominator = this._denominator * F.denominator;
-        }
-
-        return this;
-    };
-
-    invert = (): Fraction => {
+    inverse = (): Fraction => {
         let n = +this._numerator, d = +this._denominator;
         this._numerator = d;
         this._denominator = n;
@@ -377,7 +370,7 @@ export class Fraction implements IOperations<Fraction> {
 
         this.reduce();
         if (p < 0) {
-            this.invert()
+            this.inverse()
         }
 
         // Check if numerator and denominator are roots of...
@@ -407,9 +400,9 @@ export class Fraction implements IOperations<Fraction> {
             return this;
         }
 
-        // If negative, invert the fraction
+        // If negative, inverse the fraction
         if (p < 0) {
-            this.invert()
+            this.inverse()
         }
 
         let n = Math.pow(this._numerator, Math.abs(1 / p)),
@@ -419,6 +412,19 @@ export class Fraction implements IOperations<Fraction> {
         this._denominator = Math.pow(this._denominator, Math.abs(1 / p));
         return this;
     }
+
+    xMultiply = (...values: (Fraction | number)[]): Fraction => {
+        // Parse the value.
+        // If it's a fraction, return a clone of it
+        // If it's an integer, return the fraction F/1
+        for (let value of values) {
+            let F = new Fraction(value)
+            this._numerator = this._numerator * F.numerator;
+            this._denominator = this._denominator * F.denominator;
+        }
+
+        return this;
+    };
 
     sqrt = (): Fraction => {
         return this.root(2);
@@ -463,7 +469,7 @@ export class Fraction implements IOperations<Fraction> {
      * @param F (Coefficient) The coefficient to compare
      * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
      */
-    compare = (F: unknown, sign?: string): boolean => {
+    compare = (F: InputValue<Fraction>, sign?: string): boolean => {
         if (sign === undefined) {
             sign = '=';
         }

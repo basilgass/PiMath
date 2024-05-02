@@ -200,7 +200,7 @@ export class Vector {
     }
 
     divideByScalar = (k: any): Vector => {
-        return this.multiplyByScalar(new Fraction(k).invert());
+        return this.multiplyByScalar(new Fraction(k).inverse());
     }
 
     simplify = (): Vector => {
