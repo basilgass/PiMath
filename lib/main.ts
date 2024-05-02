@@ -17,7 +17,16 @@ import {Line} from "./maths/geometry/line.ts";
 import {Triangle} from "./maths/geometry/triangle.ts";
 import {Circle} from "./maths/geometry/circle.ts";
 
-export const PiMath = {
+const Geometry = {
+    Vector: Vector,
+    Point: Point,
+    Line: Line,
+    Triangle: Triangle,
+    Circle: Circle
+}
+
+// Make a global object
+const PiMath = {
     ShutingYard: Shutingyard,
     Numeric: Numeric,
     NumExp: NumExp,
@@ -30,11 +39,28 @@ export const PiMath = {
     Rational: Rational,
     Logicalset: Logicalset,
     Random: Random,
-    Geometry: {
-        Vector: Vector,
-        Point: Point,
-        Line: Line,
-        Triangle: Triangle,
-        Circle: Circle
-    }
+    Geometry
+};
+
+// Export default value
+export default PiMath;
+
+// Export each class
+export {
+    Numeric,
+    NumExp,
+    Fraction,
+    NthRoot,
+    Monom,
+    Polynom,
+    Equation,
+    LinearSystem,
+    Rational,
+    Logicalset,
+    Random,
+    Vector,
+    Point,
+    Line,
+    Triangle,
+    Circle
 };
