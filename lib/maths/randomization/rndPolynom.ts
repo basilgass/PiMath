@@ -41,7 +41,7 @@ export class rndPolynom extends randomCore {
 
         // Make sure the first monom is positive.
         if (this._config.positive && P.monomByDegree().coefficient.isNegative()) {
-            P.monomByDegree().coefficient.opposed()
+            P.monomByDegree().coefficient.opposite()
         }
 
         // If the number of monoms is greater than the allowed value, remove some of them... except the first one !

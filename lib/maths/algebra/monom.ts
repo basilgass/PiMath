@@ -510,11 +510,11 @@ export class Monom {
     // ------------------------------------------
 
     /**
-     * Get the opposed
+     * Get the opposite
      * Returns a monom.
      */
-    opposed = (): Monom => {
-        this._coefficient.opposed();
+    opposite = (): Monom => {
+        this._coefficient.opposite();
         return this;
     };
 
@@ -546,7 +546,7 @@ export class Monom {
                 if (this.isZero()) {
                     this.makeSame(m)
                 }
-                this._coefficient.add(m.clone().coefficient.opposed());
+                this._coefficient.add(m.clone().coefficient.opposite());
             } else {
                 console.log('Subtract: Is not similar: ', m.display);
             }
@@ -593,7 +593,7 @@ export class Monom {
 
             // Subtract the power values
             for (let letter in v.literal) {
-                this._literal[letter] = (this._literal[letter] === undefined) ? v.literal[letter].clone().opposed() : this._literal[letter].subtract(v.literal[letter])
+                this._literal[letter] = (this._literal[letter] === undefined) ? v.literal[letter].clone().opposite() : this._literal[letter].subtract(v.literal[letter])
 
                 // If the power of a particular setLetter is zero, delete it from the literal part..
                 if (this._literal[letter].isZero()) {

@@ -176,7 +176,7 @@ describe('Circle', function () {
                 }
             }
 
-            const p2 = new Point(A.x.clone(), A.y.clone()).translate({x: n.x.opposed(), y: n.y.opposed()})
+            const p2 = new Point(A.x.clone(), A.y.clone()).translate({x: n.x.opposite(), y: n.y.opposite()})
             const t = new Line(n, pt)
             const s = new Line(n, p2)
             return {

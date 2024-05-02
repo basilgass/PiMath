@@ -285,7 +285,7 @@ export class Polynom {
                     }
                 } else {
                     if (element.token === '-') {
-                        stack.push(stack.pop().opposed())
+                        stack.push(stack.pop().opposite())
                     } else {
                         throw "Error parsing the polynom " + this._rawString
                     }
@@ -386,8 +386,8 @@ export class Polynom {
     };
 
     // ------------------------------------------
-    opposed = (): Polynom => {
-        this._monoms = this._monoms.map(m => m.opposed());
+    opposite = (): Polynom => {
+        this._monoms = this._monoms.map(m => m.opposite());
         this.mark_as_dirty()
         return this;
     };
@@ -420,13 +420,13 @@ export class Polynom {
 
         for (let value of values) {
             if (value instanceof Polynom) {
-                this._monoms = this._monoms.concat(value.clone().opposed().monoms);
+                this._monoms = this._monoms.concat(value.clone().opposite().monoms);
             } else if (value instanceof Monom) {
-                this._monoms.push(value.clone().opposed());
+                this._monoms.push(value.clone().opposite());
             } else if (Number.isSafeInteger(value)) {
-                this._monoms.push(new Monom(value.toString()).opposed());
+                this._monoms.push(new Monom(value.toString()).opposite());
             } else {
-                this._monoms.push(new Monom(value).opposed());
+                this._monoms.push(new Monom(value).opposite());
             }
         }
 
@@ -610,8 +610,8 @@ export class Polynom {
         return this.compare(P, 'same');
     };
 
-    isOpposedAt = (P: Polynom): boolean => {
-        return this.compare(P.clone().opposed(), '=');
+    isoppositeAt = (P: Polynom): boolean => {
+        return this.compare(P.clone().opposite(), '=');
     };
 
     isFactorized = (polynomString: string, soft?: boolean): boolean => {
@@ -690,7 +690,7 @@ export class Polynom {
         let sign = 1,
             notFoundedFactors = []
         for (let f of this.factors) {
-            // The factor is just a coefficient. Might be opposed
+            // The factor is just a coefficient. Might be opposite
             if (f.degree().isZero()) {
                 if (f.monoms[0].coefficient.isNegativeOne()) {
                     sign = -sign
@@ -703,7 +703,7 @@ export class Polynom {
                     polyFactors.splice(i, 1);
                     factorFound = true
                     break;
-                } else if (f.isOpposedAt(polyFactors[i])) {
+                } else if (f.isoppositeAt(polyFactors[i])) {
                     polyFactors.splice(i, 1);
                     sign = -sign;
                     factorFound = true
@@ -1008,7 +1008,7 @@ export class Polynom {
         let M = P.commonMonom()
         // If the polynom starts with a negative monom, factorize it.
         if (P.monomByDegree().coefficient.isStrictlyNegative() && M.coefficient.isStrictlyPositive() && !M.isOne()) {
-            M.opposed()
+            M.opposite()
         }
 
         if (!M.isOne()) {
@@ -1232,7 +1232,7 @@ export class Polynom {
             degree = M.degree(letter)
 
         if (degree.isStrictlyPositive()) {
-            return sign === 1 ? (new Fraction()).infinite() : (new Fraction()).infinite().opposed()
+            return sign === 1 ? (new Fraction()).infinite() : (new Fraction()).infinite().opposite()
         } else if (degree.isZero()) {
             return M.coefficient
         }
@@ -1246,7 +1246,7 @@ export class Polynom {
             degree = M.degree(letter)
 
         if (degree.isStrictlyPositive()) {
-            return sign === -1 ? (new Fraction()).infinite() : (new Fraction()).infinite().opposed()
+            return sign === -1 ? (new Fraction()).infinite() : (new Fraction()).infinite().opposite()
         } else if (degree.isZero()) {
             return M.coefficient
         }
@@ -1266,7 +1266,7 @@ export class Polynom {
                 m2.forEach(m2d => {
                     if (m1d.degree(letter).isNotEqual(m2d.degree(letter))) {
                         allDividers.push(new Polynom(m1d, m2d))
-                        allDividers.push(new Polynom(m1d, m2d.clone().opposed()))
+                        allDividers.push(new Polynom(m1d, m2d.clone().opposite()))
                     }
                 })
             }
@@ -1447,7 +1447,7 @@ export class Polynom {
             delta = b.clone().pow(2).subtract(a.clone().multiply(c).multiply(4));
 
             if (delta.isZero()) {
-                x1 = b.clone().opposed().divide(a.clone().multiply(2))
+                x1 = b.clone().opposite().divide(a.clone().multiply(2))
                 P1 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator)
                 P2 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator)
                 factor = a.divide(x1.denominator).divide(x1.denominator);
@@ -1459,10 +1459,10 @@ export class Polynom {
                     return [P1, P2]
                 }
             } else if (delta.isPositive() && delta.isSquare()) {
-                x1 = b.clone().opposed()
+                x1 = b.clone().opposite()
                     .add(delta.clone().sqrt())
                     .divide(a.clone().multiply(2))
-                x2 = b.clone().opposed()
+                x2 = b.clone().opposite()
                     .subtract(delta.clone().sqrt())
                     .divide(a.clone().multiply(2))
 

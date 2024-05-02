@@ -1,4 +1,5 @@
 import {Numeric} from "../numeric.ts";
+import {InputValue, IOperations} from "../../pimath.interface.ts";
 
 export type FractionParsingType = number | string | Fraction
 
@@ -7,7 +8,7 @@ export type FractionParsingType = number | string | Fraction
  * TODO: Write the documentation correctly.
  * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
  */
-export class Fraction {
+export class Fraction implements IOperations<Fraction> {
     private _denominator: number;
     private _numerator: number;
 
@@ -292,13 +293,7 @@ export class Fraction {
         return this;
     };
 
-    // ------------------------------------------
-    opposed = (): Fraction => {
-        this._numerator = -this._numerator;
-        return this;
-    };
-
-    add = (F: Fraction | number): Fraction => {
+    add = (F: InputValue<Fraction>): Fraction => {
         if (F instanceof Fraction) {
             let N: number = this._numerator,
                 D: number = this._denominator;
@@ -314,7 +309,7 @@ export class Fraction {
 
     subtract = (F: Fraction | number): Fraction => {
         if (F instanceof Fraction) {
-            return this.add(F.clone().opposed());
+            return this.add(F.clone().opposite());
         } else {
             return this.add(-F)
         }
@@ -332,19 +327,6 @@ export class Fraction {
         return this.reduce();
     };
 
-    xMultiply = (...values: (Fraction | number)[]): Fraction => {
-        // Parse the value.
-        // If it's a fraction, return a clone of it
-        // If it's an integer, return the fraction F/1
-        for (let value of values) {
-            let F = new Fraction(value)
-            this._numerator = this._numerator * F.numerator;
-            this._denominator = this._denominator * F.denominator;
-        }
-
-        return this;
-    };
-
     divide = (F: Fraction | number): Fraction => {
         let Q = new Fraction(F);
 
@@ -358,6 +340,25 @@ export class Fraction {
         this._numerator = N * Q.denominator;
         this._denominator = D * Q.numerator;
         return this.reduce();
+    };
+
+    // ------------------------------------------
+    opposite = (): Fraction => {
+        this._numerator = -this._numerator;
+        return this;
+    };
+
+    xMultiply = (...values: (Fraction | number)[]): Fraction => {
+        // Parse the value.
+        // If it's a fraction, return a clone of it
+        // If it's an integer, return the fraction F/1
+        for (let value of values) {
+            let F = new Fraction(value)
+            this._numerator = this._numerator * F.numerator;
+            this._denominator = this._denominator * F.denominator;
+        }
+
+        return this;
     };
 
     invert = (): Fraction => {
@@ -513,8 +514,8 @@ export class Fraction {
     isNotEqual = (than: Fraction | number): boolean => {
         return this.compare(than, '<>');
     }
-    isOpposed = (p: Fraction): boolean => {
-        return this.isEqual(p.clone().opposed());
+    isopposite = (p: Fraction): boolean => {
+        return this.isEqual(p.clone().opposite());
     }
     isInverted = (p: Fraction): boolean => {
         return this.isEqual(new Fraction().one().divide(p.clone()));

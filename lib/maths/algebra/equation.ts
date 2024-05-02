@@ -437,7 +437,7 @@ export class Equation {
             p2 = this.clone().moveLeft().left
 
         // They are the same.
-        return p1.isEqual(p2) || p1.isOpposedAt(p2)
+        return p1.isEqual(p2) || p1.isoppositeAt(p2)
     }
     isLinearTo = (equ: Equation): Boolean => {
         // Move all left.
@@ -445,7 +445,7 @@ export class Equation {
             p2 = this.clone().moveLeft().simplify().left
 
         // They are the same.
-        return p1.isEqual(p2) || p1.isOpposedAt(p2)
+        return p1.isEqual(p2) || p1.isoppositeAt(p2)
     }
 
     private _findSign = (equationString: string): string | false => {
@@ -549,7 +549,7 @@ export class Equation {
     private _solveDegree1 = (letter?: string): ISolution[] => {
         const m1 = this._polynom.monomByDegree(1, letter).coefficient,
             m0 = this._polynom.monomByDegree(0, letter).coefficient,
-            v = m0.clone().opposed().divide(m1);
+            v = m0.clone().opposite().divide(m1);
         let s: string, d: string;
 
         if (this.isStrictEqual()) {

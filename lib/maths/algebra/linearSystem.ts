@@ -272,7 +272,7 @@ export class LinearSystem {
     private _linearReduction(eq1: Equation, eq2: Equation, letter: string): { merged: Equation, factors: Fraction[] } {
         // Get the monom for the particular letter.
         let c1 = eq1.left.monomByDegree(1, letter).coefficient.clone(),
-            c2 = eq2.left.monomByDegree(1, letter).coefficient.clone().opposed();
+            c2 = eq2.left.monomByDegree(1, letter).coefficient.clone().opposite();
 
         // Reduce c1 and c2 by the gcd
         const gcdN = Numeric.gcd(c1.numerator, c2.numerator),
@@ -280,13 +280,13 @@ export class LinearSystem {
         c1.divide(gcdN).multiply(gcdD)
         c2.divide(gcdN).multiply(gcdD)
 
-        // if one value is -1, use 1 and make the other one opposed
+        // if one value is -1, use 1 and make the other one opposite
         if (c2.isNegativeOne()) {
-            c1.opposed()
-            c2.opposed()
+            c1.opposite()
+            c2.opposite()
         } else if (c1.isNegativeOne()) {
-            c1.opposed()
-            c2.opposed()
+            c1.opposite()
+            c2.opposite()
         }
 
         return {

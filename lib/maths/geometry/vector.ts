@@ -151,9 +151,9 @@ export class Vector {
     }
 
     // ------------------------------------------
-    opposed = (): Vector => {
-        this._x.opposed();
-        this._y.opposed();
+    opposite = (): Vector => {
+        this._x.opposite();
+        this._y.opposite();
         return this;
     }
 
@@ -165,7 +165,7 @@ export class Vector {
     }
 
     subtract = (V: Vector): Vector => {
-        return this.add(V.clone().opposed());
+        return this.add(V.clone().opposite());
     }
 
     scalarProductWithVector = (V: Vector): Fraction => {
@@ -178,7 +178,7 @@ export class Vector {
     }
 
     normal = (): Vector => {
-        let x = this.x.clone().opposed(), y = this.y.clone();
+        let x = this.x.clone().opposite(), y = this.y.clone();
         this._x = y;
         this._y = x;
         return this;

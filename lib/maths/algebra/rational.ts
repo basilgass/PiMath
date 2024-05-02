@@ -148,8 +148,8 @@ export class Rational {
         return this;
     }
 
-    opposed = (): Rational => {
-        this._numerator.opposed();
+    opposite = (): Rational => {
+        this._numerator.opposite();
         return this;
     }
 
@@ -171,7 +171,7 @@ export class Rational {
     }
 
     subtract = (R: Rational): Rational => {
-        return this.add(R.clone().opposed())
+        return this.add(R.clone().opposite())
     }
 
     euclidian = (): IEuclidian => {
@@ -186,7 +186,7 @@ export class Rational {
             // quotient is positive => it will be infinite.
             if (quotient.degree(letter).isStrictlyPositive()) {
                 return value === Infinity ? quotient.limitToInfinity(letter) : quotient.limitToNegativeInfinity(letter)
-                // return quotient.monomByDegree(undefined, letter).coefficient.sign()===1?(new Fraction()).infinite():(new Fraction()).infinite().opposed()
+                // return quotient.monomByDegree(undefined, letter).coefficient.sign()===1?(new Fraction()).infinite():(new Fraction()).infinite().opposite()
             } else {
                 return quotient.monomByDegree(undefined, letter).coefficient
             }
@@ -217,7 +217,7 @@ export class Rational {
                     .divide(FR._denominator.evaluate(evalValuesOffset)).sign()
 
                 if (theLimit.isInfinity()) {
-                    return theSign === 1 ? theLimit.abs() : theLimit.abs().opposed()
+                    return theSign === 1 ? theLimit.abs() : theLimit.abs().opposite()
                 } else {
                     return theLimit
                 }

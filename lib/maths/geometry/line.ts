@@ -197,11 +197,11 @@ export class Line {
     }
 
     get slope(): Fraction {
-        return this._a.clone().opposed().divide(this._b);
+        return this._a.clone().opposite().divide(this._b);
     }
 
     get height(): Fraction {
-        return this._c.clone().opposed().divide(this._b);
+        return this._c.clone().opposite().divide(this._b);
     }
 
     randomPoint = (k?: number): Point => {
@@ -333,7 +333,7 @@ export class Line {
         this._b = new Fraction(b);
         this._c = new Fraction(c);
 
-        this._d = new Vector(this._b.clone(), this._a.clone().opposed());
+        this._d = new Vector(this._b.clone(), this._a.clone().opposite());
         this._OA = new Point(new Fraction().zero(), this._c.clone());
         this._n = this._d.clone().normal();
 
@@ -353,8 +353,8 @@ export class Line {
         // dy * x - dx * y - (px * dy - py * dx) = 0
         this.parseByCoefficient(
             d.y,
-            d.x.clone().opposed(),
-            P.x.clone().multiply(d.y).subtract(P.y.clone().multiply(d.x)).opposed()
+            d.x.clone().opposite(),
+            P.x.clone().multiply(d.y).subtract(P.y.clone().multiply(d.x)).opposite()
         )
 
         // Choose the current values as point and direction vector instead of the automatic version.
@@ -371,7 +371,7 @@ export class Line {
             n.x,
             n.y,
             P.x.clone().multiply(n.x)
-                .add(P.y.clone().multiply(n.y)).opposed()
+                .add(P.y.clone().multiply(n.y)).opposite()
         )
     }
 
@@ -577,7 +577,7 @@ export class Line {
         if (!this._a.isZero()) {
             if (this._a.isOne()) {
                 canonical = 'x'
-            } else if (this._a.clone().opposed().isOne()) {
+            } else if (this._a.clone().opposite().isOne()) {
                 canonical = '-x'
             } else {
                 canonical = this._a.value.toFixed(decimals) + 'x'

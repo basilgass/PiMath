@@ -221,10 +221,10 @@ export class Circle {
             let h, equ = new Equation('y', 'x')
 
             if (sol.exact instanceof Fraction) {
-                h = P.x.clone().opposed().multiply(sol.exact).add(P.y)
+                h = P.x.clone().opposite().multiply(sol.exact).add(P.y)
                 equ.right.multiply(sol.exact).add(h)
             } else {
-                h = P.x.clone().opposed().multiply(sol.value).add(P.y)
+                h = P.x.clone().opposite().multiply(sol.value).add(P.y)
                 equ.right.multiply(sol.value).add(h)
             }
 
@@ -242,8 +242,8 @@ export class Circle {
             r = this._squareRadius
 
         let sq = this._squareRadius.clone().multiply(slope.numerator ** 2 + slope.denominator ** 2),
-            x1 = c1.clone().multiply(a).opposed().subtract(c2.clone().multiply(b)).add(sq.clone().sqrt()),
-            x2 = c1.clone().multiply(a).opposed().subtract(c2.clone().multiply(b)).subtract(sq.clone().sqrt())
+            x1 = c1.clone().multiply(a).opposite().subtract(c2.clone().multiply(b)).add(sq.clone().sqrt()),
+            x2 = c1.clone().multiply(a).opposite().subtract(c2.clone().multiply(b)).subtract(sq.clone().sqrt())
 
         return [new Line(a, b, x1), new Line(a, b, x2)]
     }
@@ -350,9 +350,9 @@ export class Circle {
 
                 c = equ.left.monomByDegree(0)
 
-                this._center = new Point(x1.coefficient.clone().divide(2).opposed(), y1.coefficient.clone().divide(2).opposed())
+                this._center = new Point(x1.coefficient.clone().divide(2).opposite(), y1.coefficient.clone().divide(2).opposite())
 
-                this._squareRadius = c.coefficient.clone().opposed()
+                this._squareRadius = c.coefficient.clone().opposite()
                     .add(this._center.x.clone().pow(2))
                     .add(this._center.y.clone().pow(2))
 

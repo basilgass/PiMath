@@ -300,10 +300,10 @@ describe("Polynom with multiple variables", () => {
 //                 p = PiMath.Random.polynom({degree: 1})
 //
 //             if (k.monomByDegree(1).coefficient.isNegative()) {
-//                 k.opposed()
+//                 k.opposite()
 //             }
 //             if (p.monomByDegree(1).coefficient.isNegative()) {
-//                 p.opposed()
+//                 p.opposite()
 //             }
 //
 //             let poly = m.answer.poly(k, p),
@@ -328,7 +328,7 @@ describe("Polynom with multiple variables", () => {
 //
 //             const log = m.answer.log(a, b, c, d, e).reduce()
 //             let answer = `\\log_{ ${a} }\\left( ${log.tex} \\right)`
-//             if (!pb.isZero()) answer = `${answer}${pb.clone().opposed().texWithSign}`
+//             if (!pb.isZero()) answer = `${answer}${pb.clone().opposite().texWithSign}`
 //             if (!pa.isOne()) answer = `\\frac{ ${answer} }{ ${pa.tex} }`
 //
 //             let value = ((Math.log10(log.value) / Math.log10(a) - pb.value) / pa.value).toFixed(4)

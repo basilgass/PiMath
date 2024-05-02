@@ -160,9 +160,9 @@ export class Triangle {
             // - Three points (or part of points, only dict for example, or array (TODO: Add the array syntax for point)
             // - Three lines
             // - Three lines as text.
-            if(values.filter((x:any) => typeof x === 'string').length===3) {
-                return this.parse( ...values.map((x:string) => new Line(x)) )
-            }else if(values.filter((x:any) => x instanceof Line).length===3) {
+            if (values.filter((x: any) => typeof x === 'string').length === 3) {
+                return this.parse(...values.map((x: string) => new Line(x)))
+            } else if (values.filter((x: any) => x instanceof Line).length === 3) {
                 // We have three lines
                 this._lines = {
                     'AB': values[0],
@@ -189,7 +189,7 @@ export class Triangle {
                 } else {
                     return this;
                 }
-            }else {
+            } else {
                 // At least, one of the value is not a point.
                 if (values.filter((x: any) => (x instanceof Point)).length < 3) {
                     return this.parse(
@@ -287,9 +287,9 @@ export class Triangle {
     }
 
     private _calculateRemarquableLines = (): remarquableLines => {
-        const  bA= this._calculateBisectors('A'),
-            bB= this._calculateBisectors('B'),
-            bC= this._calculateBisectors('C')
+        const bA = this._calculateBisectors('A'),
+            bB = this._calculateBisectors('B'),
+            bC = this._calculateBisectors('C')
 
         let remarquables: remarquableLines = {
             'medians': {
@@ -337,32 +337,32 @@ export class Triangle {
     private _calculateBisectors = (pt: string): { internal: Line, external: Line } => {
         let tlines = this.lines, d1, d2;
 
-        if(pt==='A'){
+        if (pt === 'A') {
             d1 = tlines.AB;
             d2 = tlines.AC;
-        }else if(pt==='B'){
+        } else if (pt === 'B') {
             d1 = tlines.AB;
             d2 = tlines.BC;
-        }else if(pt==='C'){
+        } else if (pt === 'C') {
             d1 = tlines.BC;
             d2 = tlines.AC;
         }
 
         let b1 = new Line(new Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm)).reorder(true).simplify()),
-            b2 = new Line(new Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm).opposed()).reorder(true).simplify());
+            b2 = new Line(new Equation(d1.equation.left.clone().multiply(d2.n.simplify().norm), d2.equation.left.clone().multiply(d1.n.simplify().norm).opposite()).reorder(true).simplify());
 
         // Must determine which bisectors is in the triangle
-        if(pt==='A'){
-            return b1.hitSegment(this.B, this.C)?{internal:b1, external: b2}:{internal:b2, external: b1};
+        if (pt === 'A') {
+            return b1.hitSegment(this.B, this.C) ? {internal: b1, external: b2} : {internal: b2, external: b1};
         }
-        if(pt==='B'){
-            return b1.hitSegment(this.A, this.C)?{internal:b1, external: b2}:{internal:b2, external: b1};
+        if (pt === 'B') {
+            return b1.hitSegment(this.A, this.C) ? {internal: b1, external: b2} : {internal: b2, external: b1};
         }
-        if(pt==='C'){
-            return b1.hitSegment(this.B, this.A)?{internal:b1, external: b2}:{internal:b2, external: b1};
+        if (pt === 'C') {
+            return b1.hitSegment(this.B, this.A) ? {internal: b1, external: b2} : {internal: b2, external: b1};
         }
 
         // Default returns the first bisector
-        return {internal:b1, external: b2}
+        return {internal: b1, external: b2}
     }
 }
