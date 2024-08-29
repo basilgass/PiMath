@@ -1,14 +1,12 @@
-import {describe, expect, it} from "vitest";
-import {Circle} from "../../lib/maths/geometry/circle";
-import {Line} from "../../lib/maths/geometry/line";
-import {Point} from "../../lib/maths/geometry/point";
-import {Fraction} from "../../lib/maths/coefficients/fraction";
-import {Random} from "../../lib/maths/randomization/random";
-import {Vector} from "../../lib/maths/geometry/vector";
+import {describe, expect, it} from "vitest"
+import {Circle} from "../../lib/maths/geometry/circle"
+import {Line} from "../../lib/maths/geometry/line"
+import {Fraction} from "../../lib/maths/coefficients/fraction"
+import {Point} from "../../lib/maths/geometry/vector.ts"
 
 describe('Circle', function () {
     it('should calculate the intersection of a circle and a line', function () {
-        let C = new Circle(
+        const C = new Circle(
                 new Point(8, 6),
                 20,
                 true
@@ -27,7 +25,7 @@ describe('Circle', function () {
         expect(IPS[0].y.value).to.be.equal(4)
         expect(IPS[1].x.value).to.be.equal(6)
         expect(IPS[1].y.value).to.be.equal(10)
-    });
+    })
 
     it('should calculate tangents', function () {
 
@@ -36,7 +34,7 @@ describe('Circle', function () {
             new Point(-2, 3),
             25,
             true
-        ), P = new Point(-5, 7);
+        ), P = new Point(-5, 7)
 
         expect(C.tangents(P).map(x => x.tex.canonical)).to.have.all.members(['3x-4y+43=0'])
 
@@ -51,7 +49,7 @@ describe('Circle', function () {
 
         expect(E.tangents(P2).map(x => x.tex.canonical)).to.have.all.members(['2x+y-10=0', '2x+11y+10=0'])
 
-        let P3 = new Point(2, 2)
+        const P3 = new Point(2, 2)
         expect(E.tangents(P3)).to.be.empty
     })
 
@@ -60,159 +58,159 @@ describe('Circle', function () {
             pts = C.getPointsOnCircle()
 
         expect(pts.map(x => x.x.display + ',' + x.y.display)).to.have.all.members(['3,0', '3,-8', '7,-4', '-1,-4'])
-    });
-
-    it('should calculate the circle from center and radius', function () {
-        let circle = new Circle("x^2+6x+y^2-8y+12=0")
-
-        // console.log(circle.tex)
     })
 
-    it('tangentes pt ext', () => {
-        function makeCircle(): { circle: Circle, point: Point, tangents: Line[] } {
-            let A = Random.Geometry.point({axis: false}),
-                rv = Random.number(1, 3),
-                r = rv ** 2 + (rv + 1) ** 2
-            let c = new Circle(A, r, true)
-            let pts = c.getPointsOnCircle(true)
+    // it('should calculate the circle from center and radius', function () {
+    //     const circle = new Circle("x^2+6x+y^2-8y+12=0")
+    //
+    //     // console.log(circle.tex)
+    // })
 
-            pts = Random.shuffle(pts)
-            let pt1: Point, pt2: Point, t1: Line, t2: Line, I: Point, n: Vector
+    // it('tangentes pt ext', () => {
+    //     function makeCircle(): { circle: Circle, point: Point, tangents: Line[] } {
+    //         const A = Random.Geometry.point({axis: false}),
+    //             rv = Random.number(1, 3),
+    //             r = rv ** 2 + (rv + 1) ** 2
+    //         const c = new Circle(A, r, true)
+    //         let pts = c.getPointsOnCircle(true)
+    //
+    //         pts = Random.shuffle(pts)
+    //         let pt1: Point, pt2: Point, t1: Line, t2: Line, I: Point, n: Vector
+    //
+    //         pt1 = pts.shift()
+    //         for (const pt of pts) {
+    //             // Pas vertical / horizontal
+    //             n = new Vector(A, pt)
+    //
+    //             if (!n.x.isZero() && !n.y.isZero() &&   // pas vertical / horizontal
+    //                 !pt1.x.isEqual(pt.x) && !pt1.y.isEqual(pt.y) &&  // pas le même point
+    //                 !A.isEqual(new Point().middleOf(pt1, pt)) // pas l'un en face de l'autre
+    //             ) {
+    //                 pt2 = pt.clone()
+    //
+    //                 t1 = c.tangents(pt1)[0]
+    //                 t2 = c.tangents(pt2)[0]
+    //                 const intersection = t1.intersection(t2)
+    //
+    //                 if (intersection.hasIntersection && intersection.point.x.isRelative()) {
+    //                     I = intersection.point
+    //                     break
+    //                 }
+    //             }
+    //         }
+    //
+    //
+    //         return {
+    //             circle: c,
+    //             tangents: [t1, t2],
+    //             point: I
+    //         }
+    //     }
+    //
+    //     for (let i = 0; i < 30; i++) {
+    //         const {circle, tangents, point} = makeCircle()
+    //         console.log(`\\textbf{(exercice ${i + 1})}
+    //
+    //     Calculer l'équation cartésiennes des tangentes au cercle \\( (\\Gamma): ${circle.tex} \\) passant par le point \\(P=${point.tex} \\)
+    //         \\iftoggle{master}{
+    //         (I) \\( ${tangents[0].tex.canonical} \\quad ${tangents[1].tex.canonical} \\)
+    //         }{}
+    //         \\vfill
+    //         ${i % 2 === 1 ? '\\newpage' : ''}
+    //         `)
+    //
+    //     }
+    /**
+     const C = new PiMath.Geometry.Circle(circle.value),
+     pts = C.getPointsOnCircle()
 
-            pt1 = pts.shift()
-            for (let pt of pts) {
-                // Pas vertical / horizontal
-                n = new Vector(A, pt)
+     code.value = `C(${C.center.x.value},${C.center.y.value})
+     c=circ C,${C.radius.value}`
 
-                if (!n.x.isZero() && !n.y.isZero() &&   // pas vertical / horizontal
-                    !pt1.x.isEqual(pt.x) && !pt1.y.isEqual(pt.y) &&  // pas le même point
-                    !A.isEqual(new Point().middleOf(pt1, pt)) // pas l'un en face de l'autre
-                ) {
-                    pt2 = pt.clone()
+     let tangents = []
+     pts.forEach((pt, index) => {
+     let tg = C.tangents(pt)[0]
+     tangents.push(tg)
+     code.value += `\nT${index + 1}(${pt.x.value},${pt.y.value})->tex:T_${index + 1}=@`
+     code.value += `\nt${index + 1}=line ${tg.tex.canonical}`
 
-                    t1 = c.tangents(pt1)[0]
-                    t2 = c.tangents(pt2)[0]
-                    const intersection = t1.intersection(t2)
+     tangentPerPoints.value.push(`T_${index+1}(${pt.x.tex};${pt.y.tex})\\implies ${tg.tex.canonical}`)
+     })
 
-                    if (intersection.hasIntersection && intersection.point.x.isRelative()) {
-                        I = intersection.point
-                        break
-                    }
-                }
-            }
+     for (let i = 0; i < tangents.length; i++) {
+     for (let j = i + 1; j < tangents.length; j++) {
+     let intersection = tangents[i].intersection(tangents[j])
 
-
-            return {
-                circle: c,
-                tangents: [t1, t2],
-                point: I
-            }
-        }
-
-        for (let i = 0; i < 30; i++) {
-            let {circle, tangents, point} = makeCircle()
-            console.log(`\\textbf{(exercice ${i + 1})}
-        
-        Calculer l'équation cartésiennes des tangentes au cercle \\( (\\Gamma): ${circle.tex} \\) passant par le point \\(P=${point.tex} \\)
-            \\iftoggle{master}{
-            (I) \\( ${tangents[0].tex.canonical} \\quad ${tangents[1].tex.canonical} \\)
-            }{}
-            \\vfill
-            ${i % 2 === 1 ? '\\newpage' : ''}
-            `)
-
-        }
-        /**
-         const C = new PiMath.Geometry.Circle(circle.value),
-         pts = C.getPointsOnCircle()
-
-         code.value = `C(${C.center.x.value},${C.center.y.value})
-         c=circ C,${C.radius.value}`
-
-         let tangents = []
-         pts.forEach((pt, index) => {
-         let tg = C.tangents(pt)[0]
-         tangents.push(tg)
-         code.value += `\nT${index + 1}(${pt.x.value},${pt.y.value})->tex:T_${index + 1}=@`
-         code.value += `\nt${index + 1}=line ${tg.tex.canonical}`
-
-         tangentPerPoints.value.push(`T_${index+1}(${pt.x.tex};${pt.y.tex})\\implies ${tg.tex.canonical}`)
-         })
-
-         for (let i = 0; i < tangents.length; i++) {
-         for (let j = i + 1; j < tangents.length; j++) {
-         let intersection = tangents[i].intersection(tangents[j])
-
-         if (intersection.hasIntersection) {
-         if (!intersection.point.isInListOfPoints(pts)) {
-         intersection.point.name=`I_{${i + 1}-${j + 1}}`
-         intersectionPoints.value.push({
-         point: `I_{${i+1}-${j+1}}${intersection.point.tex}`,
-         tangent1: tangents[i].tex.canonical,
-         tangent2: tangents[j].tex.canonical
-         })
-         code.value += `\nI_${i + 1}_${j + 1}(${intersection.point.x.value},${intersection.point.y.value})->tex:I_{${i+1}-${i+2}}=@`
-         }
-         }
-         }
-         }
-         */
-    })
-    it('tangentes temp tests', () => {
-        function makeCircle(): { circle: Circle, point: Point, tangent: Line, symetric: Line } {
-            let A = Random.Geometry.point({axis: false}),
-                rv = Random.number(1, 3),
-                r = rv ** 2 + (rv + 1) ** 2
-            let c = new Circle(A, r, true)
-            let pts = c.getPointsOnCircle(true)
-
-            pts = Random.shuffle(pts)
-            let pt: Point, n: Vector
-            for (let p of pts) {
-                n = new Vector(A, p)
-                if (!n.x.isZero() && !n.y.isZero()) {
-                    pt = p
-                    break
-                }
-            }
-
-            const p2 = new Point(A.x.clone(), A.y.clone()).translate({x: n.x.opposite(), y: n.y.opposite()})
-            const t = new Line(n, pt)
-            const s = new Line(n, p2)
-            return {
-                circle: c,
-                point: pt,
-                tangent: t,
-                symetric: s
-            }
-        }
-
-        for (let i = 0; i < 30; i++) {
-
-            const data1 = makeCircle()
-            const item1 = `Calculer l'équation de la tangente au cercle d'équation \\( (\\Gamma_1): ${data1.circle.tex} \\) un cercle passant par le point \\( T=${data1.point.tex} \\).`
-
-            const data2 = makeCircle()
-            const item2 = `Calculer l'équation des tangentes au cercle d'équation \\( (\\Gamma_2): ${data2.circle.cartesian.tex} \\) de pente \\( \\displaystyle ${data2.tangent.slope.tex} \\).`
-
-            console.log(`\\textbf{(exercice ${i + 1})}
-        
-        \\begin{enumerate}[(I),itemsep=10em] 
-        \\item ${item1}
-        \\item ${item2}
-            \\end{enumerate}
-            \\iftoggle{master}{
-            (I) \\( ${data1.tangent.tex.canonical} \\)
-            
-            (II) \\( (\\Gamma_2): ${data2.circle.tex} \\) \\\\ \\( (t_1): ${data2.tangent.tex.canonical} \\) et \\( (t_2): ${data2.symetric.tex.canonical} \\)
-            
-            }{}
-            \\vfill
-            ${i % 2 === 1 ? '\\newpage' : ''}
-            `)
-
-        }
-    })
+     if (intersection.hasIntersection) {
+     if (!intersection.point.isInListOfPoints(pts)) {
+     intersection.point.name=`I_{${i + 1}-${j + 1}}`
+     intersectionPoints.value.push({
+     point: `I_{${i+1}-${j+1}}${intersection.point.tex}`,
+     tangent1: tangents[i].tex.canonical,
+     tangent2: tangents[j].tex.canonical
+     })
+     code.value += `\nI_${i + 1}_${j + 1}(${intersection.point.x.value},${intersection.point.y.value})->tex:I_{${i+1}-${i+2}}=@`
+     }
+     }
+     }
+     }
+     */
+    // })
+    // it('tangentes temp tests', () => {
+    //     function makeCircle(): { circle: Circle, point: Point, tangent: Line, symetric: Line } {
+    //         let A = Random.Geometry.point({axis: false}),
+    //             rv = Random.number(1, 3),
+    //             r = rv ** 2 + (rv + 1) ** 2
+    //         let c = new Circle(A, r, true)
+    //         let pts = c.getPointsOnCircle(true)
+    //
+    //         pts = Random.shuffle(pts)
+    //         let pt: Point, n: Vector
+    //         for (let p of pts) {
+    //             n = new Vector(A, p)
+    //             if (!n.x.isZero() && !n.y.isZero()) {
+    //                 pt = p
+    //                 break
+    //             }
+    //         }
+    //
+    //         const p2 = new Point(A.x.clone(), A.y.clone()).translate({x: n.x.opposite(), y: n.y.opposite()})
+    //         const t = new Line(n, pt)
+    //         const s = new Line(n, p2)
+    //         return {
+    //             circle: c,
+    //             point: pt,
+    //             tangent: t,
+    //             symetric: s
+    //         }
+    //     }
+    //
+    //     for (let i = 0; i < 30; i++) {
+    //
+    //         const data1 = makeCircle()
+    //         const item1 = `Calculer l'équation de la tangente au cercle d'équation \\( (\\Gamma_1): ${data1.circle.tex} \\) un cercle passant par le point \\( T=${data1.point.tex} \\).`
+    //
+    //         const data2 = makeCircle()
+    //         const item2 = `Calculer l'équation des tangentes au cercle d'équation \\( (\\Gamma_2): ${data2.circle.cartesian.tex} \\) de pente \\( \\displaystyle ${data2.tangent.slope.tex} \\).`
+    //
+    //         console.log(`\\textbf{(exercice ${i + 1})}
+    //
+    //     \\begin{enumerate}[(I),itemsep=10em]
+    //     \\item ${item1}
+    //     \\item ${item2}
+    //         \\end{enumerate}
+    //         \\iftoggle{master}{
+    //         (I) \\( ${data1.tangent.tex.canonical} \\)
+    //
+    //         (II) \\( (\\Gamma_2): ${data2.circle.tex} \\) \\\\ \\( (t_1): ${data2.tangent.tex.canonical} \\) et \\( (t_2): ${data2.symetric.tex.canonical} \\)
+    //
+    //         }{}
+    //         \\vfill
+    //         ${i % 2 === 1 ? '\\newpage' : ''}
+    //         `)
+    //
+    //     }
+    // })
 //     it('intersection temp tests', () => {
 //         for (let i = 0; i < 30; i++) {
 //             let A = Random.Geometry.point({axis: false}),
@@ -400,4 +398,4 @@ describe('Circle', function () {
 //             )
 //         }
 //     })
-});
+})

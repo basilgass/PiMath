@@ -1,18 +1,18 @@
-import {Point} from "../../lib/maths/geometry/point.ts";
-import {Line} from "../../lib/maths/geometry/line.ts";
+import { Point } from "../../lib/maths/geometry/point.ts"
+import { Line } from "../../lib/maths/geometry/line.ts"
 
-let A = new Point(0, 2),
+const A = new Point(0, 2),
     B = new Point(2, 3),
     C = new Point(1 / 2, 4),
-    D = new Point(2, -1 / 2);
+    D = new Point(2, -1 / 2)
 
-let L1 = new Line(A, B).simplifyDirection(),
-    L2 = new Line(C, D).simplifyDirection();
+const L1 = new Line(A, B).simplifyDirection(),
+    L2 = new Line(C, D).simplifyDirection()
 
-document.getElementById('app').innerHTML = `<p>\\( ${L1.tex.parametric} \\)</p>`;
-document.getElementById('app').innerHTML += `<p>\\( ${L2.tex.parametric} \\)</p>`;
+document.getElementById('app').innerHTML = `<p>\\( ${L1.tex.parametric} \\)</p>`
+document.getElementById('app').innerHTML += `<p>\\( ${L2.tex.parametric} \\)</p>`
 
-let I = L1.intersection(L2);
+const I = L1.intersection(L2)
 if (I.hasIntersection) {
     document.getElementById('app').innerHTML += `<p>\\[ ${L1.intersection(L2).point.tex} \\]</p>`
 } else if (I.isParallel) {
@@ -23,14 +23,14 @@ if (I.hasIntersection) {
 
 
 // @ts-ignore
-renderMathInElement(document.getElementById('app'), {fleqn: true});
+renderMathInElement(document.getElementById('app'), { fleqn: true })
 /*let p;
 p = new Pi.Polynom('3x(6x+9)+6(6x+9)');
 document.getElementById('app').innerHTML = `<p>${p.raw}</p>`;
 document.getElementById('app').innerHTML += `<p>${p.display}</p>`;
 
 let v1 = new Pi.Vector('3 4'),
-	v2 = new Pi.Vector('-2 5');
+    v2 = new Pi.Vector('-2 5');
 
 console.log(v1);
 console.log(v2);
@@ -42,8 +42,8 @@ let Q = new Pi.Polynom('1');
 P.factorize(100)
 
 P.factors.forEach(n=> {
-	console.log(n.tex)
-	Q.multiply(n);
+    console.log(n.tex)
+    Q.multiply(n);
 })
 
 // Check that we have the same polynom.
@@ -55,7 +55,7 @@ console.log(Q.tex);
 
 
 /*let n = new Pi.Polynom(),
-		d = new Pi.Polynom();
+        d = new Pi.Polynom();
 n.parse('(x+3)(x+4)');
 d.parse('(x+3)(x-2)')
 
@@ -68,8 +68,8 @@ let M = new Pi.Monom().random('x', 2, false, false);
 console.log(M.displayWithSign);
 
 let S = new Pi.LinearSystem().parse(
-	'x-3y=-2',
-	'4x+7x=1'
+    'x-3y=-2',
+    '4x+7x=1'
 );
 S.solve();
 document.getElementById('app').innerHTML = `<p>${S.tex}</p>`;
@@ -121,7 +121,7 @@ console.log(Pi.Numeric.dividers(D));
 let X = new Pi.Polynom().rndFactorable(2, false);
 console.log(X.tex);
 X.factors.forEach(function(P, i){
-	console.log(P.tex);
+    console.log(P.tex);
 });
 
 let EQ = new Pi.Equation('2x+3>=5x-2');

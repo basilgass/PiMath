@@ -3,13 +3,12 @@
  * @module Logicalset
  */
 
-import {Shutingyard, ShutingyardMode} from '../shutingyard.ts';
 
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
  */
-export class Logicalset {
-    private _rawString: string;
+export class LogicalSet {
+    private _rawString: string
     private _rpn: { token: string, tokenType: string }[]
 
     /**
@@ -19,11 +18,11 @@ export class Logicalset {
     constructor(value: string) {
         this._rawString = value
         this.parse(value)
-        return this;
+        return this
     }
 
     get isLogicalset() {
-        return true;
+        return true
     };
 
     get rpn(): { token: string, tokenType: string }[] {
@@ -31,16 +30,16 @@ export class Logicalset {
     }
 
     get tex(): string {
-        let varStack: { token: string, tokenType: string } [] = []
+        const varStack: { token: string, tokenType: string }[] = []
 
-        for (let token of this._rpn) {
+        for (const token of this._rpn) {
             if (token.tokenType === 'variable') {
-                varStack.push(token);
+                varStack.push(token)
             } else {
                 switch (token.token) {
                     case '&':
                         if (varStack.length >= 2) {
-                            let second = varStack.pop(),
+                            const second = varStack.pop(),
                                 first = varStack.pop()
 
                             if (first.tokenType === 'mix') {
@@ -49,12 +48,12 @@ export class Logicalset {
                             if (second.tokenType === 'mix') {
                                 second.token = `( ${second.token} )`
                             }
-                            varStack.push({token: `${first.token} \\cap ${second.token}`, tokenType: 'mix'})
+                            varStack.push({ token: `${first.token} \\cap ${second.token}`, tokenType: 'mix' })
                         }
                         break
                     case '|':
                         if (varStack.length >= 2) {
-                            let second = varStack.pop(),
+                            const second = varStack.pop(),
                                 first = varStack.pop()
 
                             if (first.tokenType === 'mix') {
@@ -63,12 +62,12 @@ export class Logicalset {
                             if (second.tokenType === 'mix') {
                                 second.token = `( ${second.token} )`
                             }
-                            varStack.push({token: `${first.token} \\cup ${second.token}`, tokenType: 'mix'})
+                            varStack.push({ token: `${first.token} \\cup ${second.token}`, tokenType: 'mix' })
                         }
                         break
                     case '-':
                         if (varStack.length >= 2) {
-                            let second = varStack.pop(),
+                            const second = varStack.pop(),
                                 first = varStack.pop()
 
                             if (first.tokenType === 'mix') {
@@ -77,13 +76,13 @@ export class Logicalset {
                             if (second.tokenType === 'mix') {
                                 second.token = `( ${second.token} )`
                             }
-                            varStack.push({token: `${first.token} \\setminus ${second.token}`, tokenType: 'mix'})
+                            varStack.push({ token: `${first.token} \\setminus ${second.token}`, tokenType: 'mix' })
                         }
                         break
                     case '!':
                         if (varStack.length >= 1) {
-                            let first = varStack.pop()
-                            varStack.push({token: `\\overline{ ${first.token} }`, tokenType: 'variable'})
+                            const first = varStack.pop()
+                            varStack.push({ token: `\\overline{ ${first.token} }`, tokenType: 'variable' })
                         }
                         break
                 }
@@ -93,33 +92,33 @@ export class Logicalset {
         return varStack[0].token
     }
 
-    evaluate(tokenSets: { [key: string]: unknown[] }, reference?: unknown[]): unknown[] {
-        let varStack: (Set<unknown>)[] = []
+    evaluate(tokenSets: Record<string, unknown[]>, reference?: unknown[]): unknown[] {
+        const varStack: (Set<unknown>)[] = []
 
         let referenceSet: Set<unknown>
         if (reference === undefined) {
             referenceSet = new Set()
-            for (let key in tokenSets) {
+            for (const key in tokenSets) {
                 referenceSet = new Set([...referenceSet, ...tokenSets[key]])
             }
         } else {
             referenceSet = new Set(reference)
         }
 
-        for (let token of this._rpn) {
+        for (const token of this._rpn) {
             if (token.tokenType === 'variable') {
                 // The variable has no token - assume it's empty.
                 if (tokenSets[token.token] === undefined) {
                     varStack.push(new Set())
                 } else {
-                    varStack.push(new Set(tokenSets[token.token]));
+                    varStack.push(new Set(tokenSets[token.token]))
                 }
 
             } else {
                 switch (token.token) {
                     case '&':
                         if (varStack.length >= 2) {
-                            let second = varStack.pop(),
+                            const second = varStack.pop(),
                                 first = varStack.pop()
 
                             varStack.push(new Set([...first].filter(x => second.has(x))))
@@ -127,21 +126,21 @@ export class Logicalset {
                         break
                     case '|':
                         if (varStack.length >= 2) {
-                            let second = varStack.pop(),
+                            const second = varStack.pop(),
                                 first = varStack.pop()
                             varStack.push(new Set([...first, ...second]))
                         }
                         break
                     case '-':
                         if (varStack.length >= 2) {
-                            let second = varStack.pop(),
+                            const second = varStack.pop(),
                                 first = varStack.pop()
                             varStack.push(new Set([...first].filter(x => !second.has(x))))
                         }
                         break
                     case '!':
                         if (varStack.length >= 1) {
-                            let first = varStack.pop()
+                            const first = varStack.pop()
 
                             varStack.push(new Set([...referenceSet].filter(x => !first.has(x))))
                         }
@@ -150,34 +149,34 @@ export class Logicalset {
             }
         }
 
-        return [...varStack[0]].sort();
+        return [...varStack[0]].sort()
     }
 
     vennAB(): any[] {
         return this.evaluate({
-                A: ['A', 'AB'],
-                B: ['B', 'AB']
-            },
+            A: ['A', 'AB'],
+            B: ['B', 'AB']
+        },
             ['A', 'B', 'AB', 'E']
         )
     }
 
     vennABC(): any[] {
         return this.evaluate({
-                A: ['A', 'AB', 'AC', 'ABC'],
-                B: ['B', 'AB', 'BC', 'ABC'],
-                C: ['C', 'AC', 'BC', 'ABC']
-            },
+            A: ['A', 'AB', 'AC', 'ABC'],
+            B: ['B', 'AB', 'BC', 'ABC'],
+            C: ['C', 'AC', 'BC', 'ABC']
+        },
             ['A', 'B', 'C', 'AB', 'AC', 'BC', 'E']
         )
     }
 
-    private parse = (value: string): Logicalset => {
+    private parse = (value: string): this => {
         // TODO: Must format the value string to convert some items...
 
         // Parse the updated value to the shutingyard algorithm
-        this._rpn = new Shutingyard(ShutingyardMode.SET).parse(value).rpn;
+        this._rpn = new ShutingYard(ShutingyardMode.SET).parse(value).rpn
 
-        return this;
+        return this
     }
 }

@@ -1,19 +1,32 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8"/>
-	<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+	<meta charset="UTF-8" />
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
 	<title>PiMath</title>
 
+	<!-- adding vue -->
 	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-</head>
-<body>
-<div id="app">
-	<a href="public/playground.html">Playground</a>
-	<a href="public/matrices.html">Plot</a>
 
-	{{message}}
-</div>
-<script src="/src/app.js" type="module"></script>
+	<!-- adding pimath.css  -->
+	<link rel="stylesheet" href="/src/app.css" />
+</head>
+
+<body class="bg-gray-100">
+	<div id="app" class="max-w-xl bg-white mx-auto p-3">
+		<h2 class="text-3xl">PiMath</h2>
+		<ul class="list list-inside list-disc">
+			<li class="cursor-pointer"><a href="/demo/playground.html">Playground</a></li>
+			<li><a href="/demo/matrices.html">Plot</a></li>
+
+			{{ message }}
+		</ul>
+	</div>
+
+	</div>
+
+	<script src="/src/app.js" type="module"></script>
 </body>
+
 </html>

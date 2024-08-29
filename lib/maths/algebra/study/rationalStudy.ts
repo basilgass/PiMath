@@ -24,13 +24,13 @@ import {
     StudyableFunction, StudyConfig,
     TABLE_OF_SIGNS,
     ZEROTYPE
-} from "../study";
-import {Rational} from "../rational";
-import {Fraction} from "../../coefficients/fraction";
-import {Polynom} from "../polynom";
+} from "../study"
+import type { Rational } from "../rational"
+import { Fraction } from "../../coefficients/fraction"
+import { Polynom } from "../polynom"
 
 export class RationalStudy extends Study {
-    constructor(fx: StudyableFunction, config?: StudyConfig|string) {
+    constructor(fx: StudyableFunction, config?: StudyConfig | string) {
         super(fx, config)
 
         return this
@@ -48,7 +48,7 @@ export class RationalStudy extends Study {
         const reduced: Rational = this.fx.clone().reduce()
 
         // Vertical
-        let asymptotes: IAsymptote[] = []
+        const asymptotes: IAsymptote[] = []
         this.zeroes.filter(x => x.type === ZEROTYPE.DEFENCE).forEach(zero => {
             // Check if it's a hole or an asymptote
             let Ztype = ASYMPTOTE.VERTICAL,
@@ -117,13 +117,13 @@ export class RationalStudy extends Study {
         })
 
         // Sloped asymptote
-        let NDegree = this.fx.numerator.degree(),
+        const NDegree = this.fx.numerator.degree(),
             DDegree = this.fx.denominator.degree()
         if (NDegree.isEqual(DDegree)) {
-            let H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient),
+            const H = this.fx.numerator.monomByDegree().coefficient.clone().divide(this.fx.denominator.monomByDegree().coefficient),
                 Htex = H.tex
 
-            let {reminder} = reduced.euclidian(),
+            const { reminder } = reduced.euclidian(),
                 deltaX = new Rational(reminder, reduced.denominator)
 
             // Determine the position above or below on the left / right of the asymptote.
@@ -138,21 +138,21 @@ export class RationalStudy extends Study {
                 tableOfSign: this._getSigns(deltaX),
                 position: this._getHorizontalAsymptoteRelativePositon(deltaX)
             })
-        } else if (DDegree.greater(NDegree)) {
+        } else if (DDegree.isGreater(NDegree)) {
             asymptotes.push({
                 fx: new Polynom('0'),
                 type: ASYMPTOTE.HORIZONTAL,
                 tex: `y=0`,
                 display: `y=0`,
                 zero: null,
-                limits: `\\lim_{x\\to\\infty}\\ f(x) = ${0}`,
+                limits: `\\lim_{x\\to\\infty}\\ f(x) = 0`,
                 deltaX: null,
                 tableOfSign: null,
                 position: this._getHorizontalAsymptoteRelativePositon(this.fx)
             })
         } else if (NDegree.value - 1 === DDegree.value) {
             // Calculate the slope
-            let {quotient, reminder} = reduced.euclidian(),
+            const { quotient, reminder } = reduced.euclidian(),
                 deltaX = new Rational(reminder, reduced.denominator)
 
             asymptotes.push({
@@ -171,9 +171,9 @@ export class RationalStudy extends Study {
         return asymptotes
     };
 
-    _getHorizontalAsymptoteRelativePositon(deltaX: Rational, delta: number = 1000000): ASYMPTOTE_POSITION[] {
+    _getHorizontalAsymptoteRelativePositon(deltaX: Rational, delta = 1000000): ASYMPTOTE_POSITION[] {
 
-        let position: ASYMPTOTE_POSITION[] = [],
+        const position: ASYMPTOTE_POSITION[] = [],
             before = deltaX.evaluateAsNumeric(-delta),
             after = deltaX.evaluateAsNumeric(delta)
 
@@ -193,10 +193,10 @@ export class RationalStudy extends Study {
     }
 
     makeDerivative(): ITableOfSigns {
-        let dx = this.fx.clone().derivative(),
+        const dx = this.fx.clone().derivative(),
             tos = this._getSigns(dx, this._getZeroes(dx), TABLE_OF_SIGNS.GROWS)
 
-        let result = this.makeGrowsResult(tos)
+        const result = this.makeGrowsResult(tos)
         tos.signs.push(result.growsLine)
         tos.extremes = result.extremes
         return tos
@@ -204,10 +204,10 @@ export class RationalStudy extends Study {
 
     makeVariation(): ITableOfSigns {
         // Get the zeroes, make signs.
-        let dx = this.derivative.fx.clone().derivative(),
+        const dx = this.derivative.fx.clone().derivative(),
             tos = this._getSigns(dx, this._getZeroes(dx), TABLE_OF_SIGNS.VARIATIONS)
 
-        let result = this.makeVariationsResult(tos)
+        const result = this.makeVariationsResult(tos)
         tos.signs.push(result.varsLine)
         tos.extremes = result.extremes
         return tos
@@ -215,7 +215,7 @@ export class RationalStudy extends Study {
 
     private _getZeroes(fx: StudyableFunction) {
         // All zeroes.
-        let zeroes: IZero[] = []
+        const zeroes: IZero[] = []
 
         fx.numerator.getZeroes().filter(x => !isNaN(x.value)).forEach(z => {
             // add the item
@@ -230,7 +230,7 @@ export class RationalStudy extends Study {
         })
 
         fx.denominator.getZeroes().filter(x => !isNaN(x.value)).forEach(z => {
-            let idx = this.indexOfZero(zeroes, z)
+            const idx = this.indexOfZero(zeroes, z)
 
             if (idx !== -1) {
                 zeroes[idx].type = ZEROTYPE.DEFENCE
@@ -255,7 +255,7 @@ export class RationalStudy extends Study {
 
     private _getSigns(fx: Rational, zeroes?: IZero[], typeOfTable?: TABLE_OF_SIGNS): ITableOfSigns {
         // Factorize the rational
-        let signs: (string[])[] = [],
+        const signs: (string[])[] = [],
             factors: Polynom[] = []
 
         if (zeroes === undefined) {

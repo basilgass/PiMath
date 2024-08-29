@@ -1,33 +1,35 @@
-import { ISolution, InputValue } from "../../pimath.interface"
+import { InputValue, ISolution } from "../../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
 import { Numeric } from "../numeric"
 import { Equation } from "./equation"
 import { Polynom } from "./polynom"
 
 export class EquationSolver {
-    private readonly _equation: Equation
-    private readonly _variable: string
+    readonly #equation: Equation
+    readonly #variable: string
 
     constructor(equation: Equation, variable = "x") {
-        this._equation = equation
-        this._variable = variable
+        this.#equation = equation
+        this.#variable = variable
     }
 
     solve(): ISolution[] {
 
-        if (this._equation.degree().isOne()) {
+        if (this.#equation.degree().isOne()) {
             return this._solveLinear()
         }
 
-        if (this._equation.degree().value === 2) {
+        if (this.#equation.degree().value === 2) {
             return this._solveQuadratic()
         }
 
         const result = this._solveByFactorization()
-        if (result.length > 0) { return result }
+        if (result.length > 0) {
+            return result
+        }
 
         // Use Cardan formula for cubic equations
-        if (this._equation.degree().value === 3) {
+        if (this.#equation.degree().value === 3) {
             return this._solveCubic_CardanFormula()
         }
 
@@ -35,7 +37,7 @@ export class EquationSolver {
     }
 
     solveAsCardan(): ISolution[] {
-        if (this._equation.degree().value !== 3) {
+        if (this.#equation.degree().value !== 3) {
             throw new Error("The equation is not cubic.")
         }
         return this._solveCubic_CardanFormula()
@@ -49,7 +51,7 @@ export class EquationSolver {
         const fraction = new Fraction(value)
 
         return {
-            variable: this._variable,
+            variable: this.#variable,
             exact: fraction,
             value: fraction.value,
             tex: fraction.tex,
@@ -59,7 +61,7 @@ export class EquationSolver {
 
     private _makeApproximativeSolution(value: number, output?: { tex: string, display: string }): ISolution {
         return {
-            variable: this._variable,
+            variable: this.#variable,
             exact: false,
             value: +value.toFixed(10),
             tex: output?.tex ?? '',
@@ -70,7 +72,7 @@ export class EquationSolver {
     private _solveLinear(): ISolution[] {
         // The equation is linear.
         // We can solve it by isolating the variable.
-        const left = this._equation.moveLeft().left
+        const left = this.#equation.moveLeft().left
 
         // left is a polynom ax+b => the solution is x = -b/a
         const f = left.monomByDegree(0).coefficient.clone().opposite().divide(left.monomByDegree(1).coefficient)
@@ -81,9 +83,10 @@ export class EquationSolver {
     }
 
     private _solveQuadratic(): ISolution[] {
+
         // The equation is quadratic.
         // We can solve it by isolating the variable.
-        const left = this._equation.moveLeft().left
+        const left = this.#equation.moveLeft().left
 
         // left is a polynom ax^2+bx+c => the solution is x = (-b±√(b^2-4ac))/2a
 
@@ -94,7 +97,9 @@ export class EquationSolver {
         const delta2 = b.clone().pow(2).subtract(a.clone().multiply(c).multiply(4))
 
         // if delta2 is negative, there is no solution
-        if (delta2.isNegative()) { return [] }
+        if (delta2.isNegative()) {
+            return []
+        }
 
         // if delta2 is zero, there is one solution
         // if delta2 is positive, there are two solutions
@@ -152,6 +157,7 @@ export class EquationSolver {
         function texOutput(a: string, b: string, k: string, delta: string) {
             return `\\frac{ ${b} ${k}\\sqrt{ ${delta} } }{ ${a} }`
         }
+
         function displayOutput(a: string, b: string, k: string, delta: string) {
             return `(${b}${k}sqrt(${delta}))/${a}`
         }
@@ -175,9 +181,10 @@ export class EquationSolver {
             )
         ].sort((a, b) => a.value - b.value)
     }
+
     private _solveCubic_CardanFormula(): ISolution[] {
         // get the coefficients of the equation
-        const left = this._equation.moveLeft().left
+        const left = this.#equation.moveLeft().left
 
         // left is a polynom ax^3+bx^2+cx+d => the solution is x = (-b±√(b^2-4ac))/2a
         const a = left.monomByDegree(3).coefficient
@@ -267,7 +274,7 @@ export class EquationSolver {
 
     private _solveByFactorization(): ISolution[] {
         // Move everything to the left.
-        let left = this._equation.moveLeft().left.clone()
+        let left = this.#equation.moveLeft().left.clone()
 
         // The solutions of the equation
         let solutions: ISolution[] = []
@@ -275,7 +282,9 @@ export class EquationSolver {
         // multiply by the lcm of the denominators
         // to get rid of the fractions
         const lcm = left.lcmDenominator()
-        if (lcm !== 1) { left.multiply(lcm) }
+        if (lcm !== 1) {
+            left.multiply(lcm)
+        }
 
         // left is a polynom ax^n+...+b
         const a = left.monomByDegree().coefficient // Greatest coefficient
@@ -284,7 +293,9 @@ export class EquationSolver {
         // if the constant term is null, the polynom can be divided by x
         const xPolynom = new Polynom('x')
         while (b.isZero()) {
-            if (solutions.length === 0) { solutions.push(this._makeSolution(0)) }
+            if (solutions.length === 0) {
+                solutions.push(this._makeSolution(0))
+            }
 
             left = (left.divide(xPolynom))
             b = left.monomByDegree(0).coefficient
@@ -316,7 +327,9 @@ export class EquationSolver {
         // to get the reduced polynom
         for (const s of solutions) {
             // if the solution is exact and is zero, it's already divided: skip it !
-            if (s.exact !== false && (s.exact as Fraction).isZero()) { continue }
+            if (s.exact !== false && (s.exact as Fraction).isZero()) {
+                continue
+            }
 
             const p = new Polynom('x', (s.exact as Fraction).denominator, -(s.exact as Fraction).numerator)
 
@@ -331,7 +344,9 @@ export class EquationSolver {
         }
 
         // if the reduced polynom is of degree greater than 3, we can't solve it
-        if (left.degree().value > 3) { return [] }
+        if (left.degree().value > 3) {
+            return []
+        }
 
         const solver = new EquationSolver(new Equation(left, 0))
         solutions = solutions.concat(solver.solve())

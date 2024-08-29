@@ -3,12 +3,11 @@
  * @module Polynom
  */
 
-import {Rational} from "./rational";
-import {ISolution} from "./equation";
-import {Polynom} from "./polynom";
-import {Fraction} from "../coefficients/fraction";
-import {Point} from "../geometry/point";
-import {NumExp} from "../numexp.ts";
+import { ISolution } from "../../pimath.interface.ts"
+import { Fraction } from "../coefficients/fraction"
+import { Vector } from "../geometry/vector.ts"
+import { Polynom } from "./polynom"
+import type { Rational } from "./rational"
 
 export type StudyableFunction = Rational
 
@@ -71,7 +70,7 @@ export interface IExtrema {
 }
 
 export interface ITableOfSigns {
-    extremes: { [Key: string]: IExtrema },
+    extremes: Record<string, IExtrema>,
     factors: Polynom[],
     fx: StudyableFunction,
     signs: (string[])[],
@@ -138,7 +137,7 @@ export class Study {
             if (typeof config === 'string') {
                 const d = config.split(',')
                 this._config = {}
-                let n = d.filter(x => x.includes('(') && x.includes(')'))
+                const n = d.filter(x => x.includes('(') && x.includes(')'))
 
                 if (n.length === 1) {
                     this._config.name = n[0].split('(')[0]
@@ -159,23 +158,23 @@ export class Study {
     }
 
     get name(): string {
-        return this._config.name;
+        return this._config.name
     }
 
     set name(value: string) {
-        this._config.name = value;
+        this._config.name = value
     }
 
     get config(): StudyConfig {
-        return this._config;
+        return this._config
     }
 
     set config(value: StudyConfig) {
-        this._config = value;
+        this._config = value
     }
 
     get zeroes(): IZero[] {
-        return this._zeroes;
+        return this._zeroes
     }
 
     get domain(): string {
@@ -183,15 +182,15 @@ export class Study {
     }
 
     get signs(): ITableOfSigns {
-        return this._signs;
+        return this._signs
     }
 
     get asymptotes(): IAsymptote[] {
-        return this._asymptotes;
+        return this._asymptotes
     }
 
     get derivative(): ITableOfSigns {
-        return this._derivative;
+        return this._derivative
     }
 
     get texSigns(): string {
@@ -209,21 +208,21 @@ export class Study {
     makeStudy = (): void => {
         this._zeroes = this.makeZeroes()
 
-        if (this._config.signs) this._signs = this.makeSigns()
+        if (this._config.signs) { this._signs = this.makeSigns() }
 
-        if (this._config.asymptotes) this._asymptotes = this.makeAsymptotes()
+        if (this._config.asymptotes) { this._asymptotes = this.makeAsymptotes() }
 
-        if (this._config.derivative) this._derivative = this.makeDerivative()
+        if (this._config.derivative) { this._derivative = this.makeDerivative() }
 
-        if (this._config.variations) this._variations = this.makeVariation()
+        if (this._config.variations) { this._variations = this.makeVariation() }
 
         // Table of signs / derivative / variation
-        if (this._config.signs) this._signs.tex = this.texSigns
+        if (this._config.signs) { this._signs.tex = this.texSigns }
 
-        if (this._config.derivative) this._derivative.tex = this.texGrows
+        if (this._config.derivative) { this._derivative.tex = this.texGrows }
 
-        if (this._config.variations) this._variations.tex = this.texVariations
-    };
+        if (this._config.variations) { this._variations.tex = this.texVariations }
+    }
 
     indexOfZero = (zeroes: IZero[], zero: IZero | ISolution): number => {
         for (let i = 0; i < zeroes.length; i++) {
@@ -232,10 +231,10 @@ export class Study {
             }
         }
         return -1
-    };
+    }
 
     makeOneLineForSigns = (factor: Polynom, zeroes: IZero[], zeroSign: ZEROTYPE): string[] => {
-        let oneLine: string[] = [],
+        const oneLine: string[] = [],
             currentZero = factor.getZeroes().map(x => x.tex)
 
         // First +/- sign, before the first zero
@@ -266,7 +265,7 @@ export class Study {
     makeSignsResult = (signs: (string[])[]): string[] => {
 
         // Initialize the result line with the first line of the signs table
-        let resultLine: string[] = signs[0].map((x, index) => {
+        const resultLine: string[] = signs[0].map((x, index) => {
             if (index === 0 || index === signs[0].length - 1) {
                 return ''
             }
@@ -279,7 +278,7 @@ export class Study {
         })
 
         // Go through each lines (except the first)
-        for (let current of signs) {
+        for (const current of signs) {
 
             for (let i = 0; i < current.length; i++) {
                 if (i % 2 === 0) {
@@ -302,33 +301,33 @@ export class Study {
         return resultLine
     }
 
-    makeGrowsResult = (tos: ITableOfSigns): { growsLine: string[], extremes: { [Key: string]: IExtrema } } => {
+    makeGrowsResult = (tos: ITableOfSigns): { growsLine: string[], extremes: Record<string, IExtrema> } => {
 
         // Use the last line (=> resultLine) to grab the necessary information
-        let signsAsArray = Object.values(tos.signs),
+        const signsAsArray = Object.values(tos.signs),
             resultLine = signsAsArray[signsAsArray.length - 1],
             growsLine: string[] = [],
-            extremes: { [Key: string]: IExtrema } = {},
+            extremes: Record<string, IExtrema> = {},
             zeroes = tos.zeroes
 
         // Get the extremes
         for (let i = 0; i < zeroes.length; i++) {
 
             // Get the corresponding item in the resultLine.
-            let pos = 2 * i + 2
+            const pos = 2 * i + 2
             if (resultLine[pos] === 'z') {
 
                 // It's a zero. Get the coordinates
                 let x: number, y: number, zero = zeroes[i].exact,
-                    pt: Point,
+                    pt: Vector,
                     xTex: string, yTex: string,
                     pointType: FUNCTION_EXTREMA
 
                 // TODO: NumExp should parse something that isn't yet plotFunction
-                let exp = new NumExp(this.fx.plotFunction)
+                const exp = new NumExp(this.fx.plotFunction)
 
                 if (zero instanceof Fraction) {
-                    let value: Fraction = zero,
+                    const value: Fraction = zero,
                         evalY = this.fx.evaluate(value)
 
                     x = zero.value
@@ -337,7 +336,7 @@ export class Study {
                     yTex = evalY.tex
                 } else {
                     x = zeroes[i].value
-                    y = exp.evaluate({x})
+                    y = exp.evaluate({ x })
 
                     xTex = x.toFixed(2)
                     yTex = y.toFixed(2)
@@ -356,8 +355,8 @@ export class Study {
                 // Add the point to the list
                 extremes[zeroes[i].tex] = {
                     type: pointType,
-                    tex: {x: xTex, y: yTex},
-                    value: {x, y}
+                    tex: { x: xTex, y: yTex },
+                    value: { x, y }
                 }
             }
         }
@@ -368,7 +367,7 @@ export class Study {
         growsLine.push(resultLine[1] === '+' ? '-/' : '+/')
         for (let i = 1; i < resultLine.length - 1; i++) {
             if (resultLine[i] === "z") {
-                let extr = extremes[zeroes[(i - 2) / 2].tex]
+                const extr = extremes[zeroes[(i - 2) / 2].tex]
 
                 growsLine.push(`${resultLine[i - 1]}/\\(${extr.type}(${extr.tex.x};${extr.tex.y})\\)`)
             } else if (resultLine[i] === 'd') {
@@ -377,14 +376,14 @@ export class Study {
         }
         growsLine.push(`${resultLine[resultLine.length - 2]}/`)
 
-        return {growsLine, extremes}
+        return { growsLine, extremes }
     }
 
-    makeVariationsResult = (tos: ITableOfSigns): { varsLine: string[], extremes: { [Key: string]: IExtrema } } => {
+    makeVariationsResult = (tos: ITableOfSigns): { varsLine: string[], extremes: Record<string, IExtrema> } => {
         // TODO: make variations result is not yet implemented.
-        let extremes = {},
+        const extremes = {},
             varsLine: string[] = []
-        return {varsLine, extremes}
+        return { varsLine, extremes }
     }
 
     makeZeroes(): IZero[] {
@@ -436,7 +435,7 @@ export class Study {
         let code = `f(x)=${this.fx.plotFunction}`
 
         // Asymptotes
-        let i: number = 1
+        let i = 1
         this.asymptotes.forEach(asymptote => {
             if (asymptote.type === ASYMPTOTE.VERTICAL) {
                 code += `\nav_${i}=line x=${asymptote.zero.value}->red,dash`
@@ -450,8 +449,8 @@ export class Study {
         })
 
         // Extremes
-        for (let zero in this.derivative.extremes) {
-            let extreme = this.derivative.extremes[zero]
+        for (const zero in this.derivative.extremes) {
+            const extreme = this.derivative.extremes[zero]
 
             code += `\nM_${i}(${extreme.value.x},${extreme.value.y})*`
             i++

@@ -1,7 +1,21 @@
-import {Fraction} from "./maths/coefficients/fraction.ts";
-import {NthRoot} from "./maths/coefficients/nthRoot.ts";
+import type { Monom } from "./maths/algebra/monom.ts";
+import type { Fraction } from "./maths/coefficients/fraction.ts";
+import type { NthRoot } from "./maths/coefficients/nthRoot.ts";
 
 export type InputValue<T> = T | string | number | Fraction | NthRoot;
+export type InputAlgebra<T> = InputValue<T> | Monom
+export type literalType<T> = Record<string, T>;
+
+export type compareSign =
+    '>' | ">=" | "=>" | "geq" |
+    '<' | "<=" | "=<" | "leq" |
+    '=' | "<>" | "neq" | "same";
+
+
+export enum PARTICULAR_SOLUTION {
+    real = "\\mathbb{R}",
+    varnothing = "\\varnothing"
+}
 
 export interface IPiMathObject<T> {
     readonly tex: string
@@ -9,23 +23,70 @@ export interface IPiMathObject<T> {
 
     clone(): T;
 
-    parse(value: InputValue<T>): T;
+    parse(value: unknown): T;
 }
 
-export interface IOperations<T> {
+export interface IExpression<T> {
+    zero(): T;
+
+    one(): T;
+
     add(value: InputValue<T>): T;
 
     subtract(value: InputValue<T>): T;
 
-    multiply(value: InputValue<T>): T;
-
-    divide(value: InputValue<T>): T;
-
     opposite(): T;
 
-    inverse(): T;
+    multiply(value: InputValue<T>): T;
+
+    divide(value: InputValue<T>): T | null;
+
+    reduce(): T;
+
+    isEqual(value: InputValue<T>): boolean;
+
+    isZero(): boolean;
+
+    isOne(): boolean;
+
+    inverse(): T | undefined;
+
+    sqrt(): T | undefined;
 
     pow(value: number): T;
 
-    root(value: number): T;
+    root(value: number): T | undefined;
+}
+
+export interface IEquation<T> {
+
+    reduce(): T;
+
+    solve(): ISolution[]
+}
+
+export interface IAlgebra<T> {
+    readonly variables: string[];
+
+    hasVariable(letter: string): boolean;
+
+    degree(letter?: string): Fraction;
+
+    evaluate(values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number | boolean;
+}
+
+export interface IAnalyse<T> {
+    derivative(): T | T[];
+
+    primitive(): T;
+
+    integrate(a: InputValue<Fraction>, b: InputValue<T>, letter?: string): Fraction;
+}
+
+export interface ISolution {
+    variable: string,
+    display: string,
+    exact: Fraction | boolean
+    tex: string,
+    value: number,
 }

@@ -25,13 +25,13 @@
     "out": "docs"
   },
   "compilerOptions": {
-    "target": "es2021",
+    "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "ESNext",
+    "strict": true,
     "lib": [
-      "ES2021",
+      "ESNext",
       "DOM",
-      "DOM.Iterable"
     ],
     "skipLibCheck": true,
     "moduleResolution": "bundler",
@@ -43,10 +43,13 @@
     "allowJs": true,
     "sourceMap": true,
     "declaration": true,
-    "removeComments": false
+    "removeComments": true
   },
   "include": [
     "src",
-    "lib"
+    "lib",
+    "tests",
+    "*.config.js",
+    "*.json"
   ]
 }

@@ -1,5 +1,5 @@
-import {defineConfig} from "vite";
-import {resolve} from "path";
+import { defineConfig } from "vite";
+import { resolve } from "path";
 import dtsPlugin from "vite-plugin-dts";
 
 export default defineConfig({
@@ -11,7 +11,7 @@ export default defineConfig({
 		}
 	},
 	plugins: [
-		dtsPlugin({include: ['lib']}), // generate .d.ts files for the lib folder
+		dtsPlugin({ include: ['lib', "es2022"] }), // generate .d.ts files for the lib folder
 	],
 	rollupOptions: {
 		external: ["vue"],

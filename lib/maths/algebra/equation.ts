@@ -1,357 +1,147 @@
-import {Polynom} from "./polynom";
-import {literalType, Monom} from "./monom";
-import {Numeric} from "../numeric";
-import {Fraction} from "../coefficients/fraction";
-import {NthRoot} from "../coefficients/nthRoot";
+import {
+    IAlgebra,
+    IEquation,
+    InputAlgebra,
+    InputValue,
+    IPiMathObject,
+    ISolution,
+    literalType
+} from "../../pimath.interface"
+import { Fraction } from "../coefficients/fraction"
+import { Numeric } from "../numeric"
+import { EquationSolver } from "./equationSolver"
+import { Monom } from "./monom"
+import { Polynom } from "./polynom"
 
-/**
- * Equation is a class to manage equations...
- */
-export interface ISolution {
-    tex: string,
-    display: string,
-    value: number,
-    exact: unknown
-}
+// #region Type aliases (1)
 
-export enum PARTICULAR_SOLUTION {
-    real = "\\mathbb{R}",
-    varnothing = "\\varnothing"
-}
+export type EQUATION_SIGN = "=" | "<=" | ">=" | "<" | ">"
 
-export class Equation {
-    private _polynom: Polynom;  // Used to solve the equation // TODO: remove the private value ?
+// #endregion Type aliases (1)
 
-    // Undetermined texSolutions.
-    private _varnothing: string = PARTICULAR_SOLUTION.varnothing;
-    private _real: string = PARTICULAR_SOLUTION.real;
-    private _left: Polynom;  // Left part of the equation
-    private _right: Polynom; // Right part of the equation
-    private _sign: string;   // Signe of the equation, by default =
-    private _solutions: ISolution[]
-    // -----------------------------------------------
-    private _randomizeDefaults: { [key: string]: number | string | boolean } = {
+// #region Classes (1)
+
+export class Equation implements
+    IPiMathObject<Equation>,
+    IEquation<Equation>,
+    IAlgebra<Equation> {
+    // #region Class fields (6)
+
+
+    // TODO: Randomize defaults should be something else...
+    #randomizeDefaults: Record<string, number | string | boolean> = {
         degree: 2
-    };
+    }
 
-    /**
-     * Create an Equation using two polynoms.
-     * Markdown *support* is cool
-     * @param equations
-     */
-    constructor(...equations: unknown[]) {
+    // Left part of the equation
+    #left: Polynom
+    // Right part of the equation
+    #right: Polynom
+    // Signe of the equation
+    #sign: EQUATION_SIGN
+
+    // #endregion Class fields (6)
+
+    // #region Constructors (3)
+
+    constructor(equation: InputAlgebra<Polynom> | Equation)
+    constructor(left: InputAlgebra<Polynom>, right: InputAlgebra<Polynom>, sign?: EQUATION_SIGN)
+    constructor(left?: InputAlgebra<Polynom> | Equation, right?: InputAlgebra<Polynom>, sign?: EQUATION_SIGN) {
         // Default equation
-        this._left = new Polynom().zero();
-        this._right = new Polynom().zero();
-        this._sign = '=';
+        this.#left = new Polynom().zero()
+        this.#right = new Polynom().zero()
+        this.#sign = '='
 
-        if (equations.length === 1) {
-            if (equations[0] instanceof Equation) {
-                return equations[0].clone();
-            } else if (typeof equations[0] === 'string') {
-                this.parse(equations[0]);
-            }
-        } else if (equations.length === 2) {
-            if (equations[0] instanceof Polynom) {
-                this.left = equations[0].clone()
-            } else if (typeof equations[0] === 'string') {
-                this.left = new Polynom(equations[0])
+        // Only one value, it's an equation
+        if (left !== undefined && right === undefined) {
+            if (left instanceof Equation) {
+                return left.clone()
+            } else if (typeof left === 'string') {
+                // Parse the equation as a string.
+                this.parse(left)
             }
 
-            if (equations[1] instanceof Polynom) {
-                this.right = equations[1].clone()
-            } else if (typeof equations[1] === 'string') {
-                this.right = new Polynom(equations[1])
-            }
-        } else {
-            // Return default empty equation
-            return this;
+        } else if (left !== undefined && right !== undefined) {
+            // Two values, it's an equation with left and right polynoms.
+            this.left = new Polynom(left as InputAlgebra<Polynom>)
+            this.right = new Polynom(right)
         }
 
-        return this;
+        if (sign !== undefined) {
+            this.sign = sign
+        }
+
+        return this
     }
+
+    // #endregion Constructors (3)
+
+    // #region Properties and methods (26)
 
     // ------------------------------------------
-    // Getter and setter
-
-    get left(): Polynom {
-        return this._left;
-    }
-
-    set left(value: Polynom) {
-        this._left = value;
-    }
-
-    get right(): Polynom {
-        return this._right;
-    }
-
-    set right(value: Polynom) {
-        this._right = value;
-    }
-
-    get sign(): string {
-        return this._sign;
-    }
-
-    set sign(value: string) {
-        // Set the sign value as formatted.
-        this._sign = this._formatSign(value);
-    }
-
-    // ------------------------------------------
-    get solutions(): ISolution[] {
-        return this._solutions
-    }
-
-    get isEquation() {
-        return true;
-    }
-
-    get solution(): string {
-        if (this._solutions.length === 1
-            &&
-            (
-                this._solutions[0].tex === this._real
-                || this._solutions[0].tex === this._varnothing
-                || this._solutions[0].tex.includes('\\left')
-            )
-        ) {
-            return `S = ${this._solutions[0]}`;
-        }
-        return `S = \\left{ ${this._solutions.map(x => x.tex).join(';')} \\right}`;
-    }
-
-    get isReal(): boolean {
-        if (this._solutions === undefined) {
-            this.solve();
-        }
-        return this._solutions[0].tex === this._real;
-    }
-
-    get isVarnothing(): boolean {
-        if (this._solutions === undefined) {
-            this.solve();
-        }
-        return this._solutions[0].tex === this._varnothing;
-    }
-
-    get signAsTex(): string {
-        if (this._sign === '>=' || this._sign === '=>' || this._sign === 'geq') {
-            return '\\geq';
-        }
-        if (this._sign === '<=' || this._sign === '=<' || this._sign === 'leq') {
-            return '\\leq';
-        }
-        return this._sign;
-    }
-
-    get tex(): string {
-        return `${this._left.tex}${this.signAsTex}${this._right.tex}`;
-    }
-
-    get display(): string {
-        return `${this._left.display}${this.signAsTex}${this._right.display}`;
-    }
-
-    get raw(): string {
-        return `${this._left.raw}${this.signAsTex}${this._right.raw}`;
-    }
-
-    get variables(): string[] {
-        return [...new Set(this._right.variables.concat(this._left.variables))];
-    }
-
-    get numberOfVars(): number {
-        return this.variables.length;
-    }
-
-    // ------------------------------------------
-    // Creation / parsing functions
-
-    get randomizeDefaults(): { [key: string]: number | string | boolean } {
-        return this._randomizeDefaults;
-    }
-
-    set randomizeDefaults(value) {
-        this._randomizeDefaults = value;
-    }
-
-    static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean): ISolution[] {
-        let solutionAsTex: string[] = [],
-            uniqueSolutions = solutions.filter(sol => {
-                if (!solutionAsTex.includes(sol.tex)) {
-                    solutionAsTex.push(sol.tex)
-                    return true
-                } else {
-                    return false
-                }
-            })
-
-        if (sorted === true) {
-            uniqueSolutions.sort((a, b) => a.value - b.value)
-        }
-        return uniqueSolutions
-    }
-
-    hasVariable = (letter: string): boolean => {
-        return this.variables.includes(letter)
-    }
-
-    // ------------------------------------------
-    parse = (equationString: string): Equation => {
-        let pStr: string[], strSign: string | false;
+    public parse = (equationString: string): this => {
         // Find the string separator
-        strSign = this._findSign(equationString);
+        const strSign: string | false = this._findSign(equationString)
 
         if (strSign === false) {
-            console.error('The equation is not valid (no sign found)');
-            return;
+            throw new Error('The equation is not valid (no sign found)')
         }
 
         // The StrSign is found
-        pStr = equationString.split(strSign);
+        const pStr: string[] = equationString.split(strSign)
 
-        return this.create(new Polynom(pStr[0]), new Polynom(pStr[1]), this._formatSign(strSign));
-    };
-
-    create = (left: Polynom, right: Polynom, sign?: string): Equation => {
-        this._left = left;
-        this._right = right;
-        this._sign = this._formatSign(sign);
-        return this;
-    };
-
-    // -----------------------------------------------
-    // Equations generators and randomizers
-
-    clone = (): Equation => {
-        return new Equation().create(this._left.clone(), this._right.clone(), this._sign + '');
-    };
-
-    randomize = (opts?: {}, sign?: string): Equation => {
-        // TODO: Generate equations randomly, using config.
-        return new Equation().create(new Polynom(), new Polynom(), sign);
-    };
-
-    // -----------------------------------------------
-    /**
-     * Reorder will move all monoms containing a letter on the left, all the other on the right.
-     */
-    moveLeft = (): Equation => {
-        this._left = this._left.clone().subtract(this._right)
-        this._right.zero()
-        return this;
+        return this.create(new Polynom(pStr[0]), new Polynom(pStr[1]), this._formatSign(strSign))
     }
 
-    reorder = (allLeft?: boolean): Equation => {
-        // Move all monoms of degree greater than 0 to the left.
-        // and all zero degree monoms to the right.
-        this._left.subtract(this._right);
-        this._right.zero();
-        this._left.reorder()
+    public create = (left: Polynom, right: Polynom, sign?: string): this => {
+        this.#left = left
+        this.#right = right
+        this.#sign = this._formatSign(sign ?? "=")
+        return this
+    }
 
-        // we eant all left (so equal zero) : it's done !
-        if (allLeft) return this
-
-        // Fetch all zero degree monoms.
-        this._left.monoms
-            .filter(m => m.degree().isZero())
-            .forEach(m => {
-                const move = m.clone()
-                this._left.subtract(move)
-                this._right.subtract(move)
-            })
-
-
-        // Reorder the left and right polynoms
-        this._left.reorder();
-        this._right.reorder();
-        return this;
-    };
-
-
-    // -----------------------------------------------
-    // Equations operations
-
-    /**
-     * Multiply by the lcm denominator and divide by the gcm numerators.
-     */
-    simplify = (): Equation => {
-        this.multiply(Numeric.lcm(...this._left.getDenominators(), ...this._right.getDenominators()));
-        this.divide(Numeric.gcd(...this._left.getNumerators(), ...this._right.getNumerators()));
-        return this;
+    public clone = (): Equation => {
+        return new Equation(this.#left.clone(), this.#right.clone(), this.#sign)
     }
 
     /**
-     * Reorder the polynom to have only one letter on the left, the rest on the right.
+     * Add a value to the equation
+     * if value is an equation, add the left part to the left part of the equation
+     * and the right part to the right part of the equation
+     * if value is a string, try to create an equation
+     * if it fails, create a polynom and add it to the left and right part of the equation
+     * @param Equation | Polynom | Monom | Fraction | string | monom
+     */
+    public add(value: InputValue<Equation | Polynom>): this {
+        if (value instanceof Equation) {
+            // add the left part of the equation
+            this.#left.add(value.left)
+            // add the right part of the equation
+            this.#right.add(value.right)
+
+            return this
+        }
+
+        if (typeof value === 'string' &&
+            !Equation.isEquationString(value)) {
+
+            return this.add(new Equation(value))
+        }
+
+        const p = new Polynom(value)
+        this.#left.add(p)
+        this.#right.add(p)
+
+        return this
+    }
+
+    /**
+     * Get the degree of the equation
      * @param letter
      */
-    isolate = (letter?: string): Equation | false => {
-        // Determine if we can isolate the variables.
-
-        // Both part of the equations must be of the first degree.
-        //TODO: handle equations of degree two or more ?
-        if (!this.degree(letter).isOne()) {
-            return false;
-        }
-
-        // Modify the equation to isolate the asked variable.
-        // TODO: must handle equations like 3xy+5y=4 => y = 4/(3x-5)
-        if (this.isMultiVariable()) {
-            return false;
-        }
-
-        // Isolate the letter.
-        let mMove: Monom, cMove: Fraction;
-        // Start by moving everything to the left.
-        this._left.subtract(this._right);
-        this._right.zero();
-        let values = [...this._left.monoms]
-        for (let m of values) {
-            if (!m.hasLetter(letter)) {
-                mMove = m.clone();
-                this._left.subtract(mMove);
-                this._right.subtract(mMove);
-            }
-        }
-
-        // In theory, we should have only one item on the left.
-        if (this._left.length !== 1) {
-            return false;
-        }
-        cMove = this._left.monoms[0].coefficient.clone();
-        this._left.divide(cMove);
-        this._right.divide(cMove);
-        return this;
-    };
-
-    replaceBy = (letter: string, P: Polynom): Equation => {
-        this._left.replaceBy(letter, P)
-        this._right.replaceBy(letter, P)
-        return this;
+    public degree = (letter?: string): Fraction => {
+        return Fraction.max(this.#left.degree(letter), this.#right.degree(letter))
     }
-
-    /**
-     * Multiple an equation by a fraction value.
-     * @param value
-     */
-    multiply = (value: unknown): Equation => {
-
-        // Make sure we have a fraction.
-        let F: Fraction = new Fraction(value);
-
-        // Multiply each part of the equation by the fraction
-        this._left.multiply(F);
-        this._right.multiply(F);
-
-        // The sign of the inequation must be changed.
-        if (this._sign !== '=' && F.sign() === -1) {
-            this._reverseSign();
-        }
-
-        return this;
-    };
 
     /**
      * divide an equation by a given value (transformed as a fraction)
@@ -367,525 +157,471 @@ export class Equation {
      * @param value
      * @returns {Equation}
      */
-    divide = (value: unknown): Equation => {
+    public divide = (value: InputValue<Fraction>): this => {
         // Make sure we have a fraction.
-        let F: Fraction = new Fraction(value);
+        const F: Fraction = new Fraction(value)
 
         if (F.isZero()) {
-            return this;
+            return this
         } else {
-            return this.multiply(F.inverse());
+            return this.multiply(F.inverse())
         }
     }
 
     /**
-     * Get the degree of the equation
+     * Create an Equation using two polynoms.
+     * Markdown *support* is cool
+     * @param values
+     * @param asNumeric
+     */
+    public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean | undefined): boolean {
+        // Evaluate the left and right part of the equation.
+        // compare the results.
+
+        // Evaluate the left and right part of the equation.
+        const left = this.#left.evaluate(values, asNumeric),
+            right = this.#right.evaluate(values, asNumeric)
+
+        // compare the results.
+        if (asNumeric) {
+            return left === right
+        }
+
+        return (left as Fraction).isEqual(right as Fraction)
+    }
+
+    /**
+     * Determine if the equation contains a variable.
      * @param letter
      */
-    degree = (letter?: string): Fraction => {
-        return Fraction.max(this._left.degree(letter), this._right.degree(letter));
-    };
+    public hasVariable = (letter: string): boolean => {
+        return this.variables.includes(letter)
+    }
+
+    public isLinearTo = (equ: Equation): boolean => {
+        // Move all left.
+        const p1 = equ.clone().moveLeft().simplify().left,
+            p2 = this.clone().moveLeft().simplify().left
+
+        // They are the same.
+        return p1.isEqual(p2) || p1.isOppositeAt(p2)
+    }
 
     /**
      * Determine if the equation contains more than one letter/variable.
      */
-    isMultiVariable = (): boolean => {
-        return this._left.isMultiVariable || this._right.isMultiVariable;
-    };
+    public isMultiVariable = (): boolean => {
+        return this.#left.isMultiVariable || this.#right.isMultiVariable
+    }
 
     // -----------------------------------------------
     // Equations helpers
-    // -----------------------------------------------
-
-    letters = (): string[] => {
-        // @ts-ignore
-        return [...new Set([...this._left.letters(), ...this._right.letters()])];
-    }
-
-    // -----------------------------------------------
-    solve = (): Equation => {
-        // Initialise the variables:
-        this._solutions = [];
-
-        // TODO: consolidate solving equations (inequations vs equations)
-        // TODO: work with not natural degrees ?
-        this._polynom = this._left.clone().subtract(this._right);
-
-        switch (this._polynom.degree().value) {
-            case 0:
-            case 1:
-                this._solveDegree1();
-                break;
-            case 2:
-                this._solveDegree2();
-                break;
-            default:
-                this._solveDegree3plus();
-        }
-
-        // cleanup the solutions.
-        this._solutions = Equation.makeSolutionsUnique(this._solutions)
-        return this;
-    };
-
-    test = (values: literalType): Boolean => {
-        return this.left.evaluate(values).isEqual(this.right.evaluate(values))
-    }
-
-    isSameAs = (equ: Equation): Boolean => {
-        let p1 = equ.clone().moveLeft().left,
+    public isEqualTo = (equ: Equation): boolean => {
+        const p1 = equ.clone().moveLeft().left,
             p2 = this.clone().moveLeft().left
 
         // They are the same.
-        return p1.isEqual(p2) || p1.isoppositeAt(p2)
+        return p1.isEqual(p2) || p1.isOppositeAt(p2)
     }
-    isLinearTo = (equ: Equation): Boolean => {
-        // Move all left.
-        let p1 = equ.clone().moveLeft().simplify().left,
-            p2 = this.clone().moveLeft().simplify().left
 
-        // They are the same.
-        return p1.isEqual(p2) || p1.isoppositeAt(p2)
+    /**
+     * Reorder the polynom to have only one letter on the left, the rest on the right.
+     * @param letter
+     */
+    public isolate = (letter?: string): this | false => {
+        // Determine if we can isolate the variables.
+
+        // Both part of the equations must be of the first degree.
+        //TODO: handle equations of degree two or more ?
+        if (!this.degree(letter).isOne()) {
+            return false
+        }
+
+        // Modify the equation to isolate the asked variable.
+        // TODO: must handle equations like 3xy+5y=4 => y = 4/(3x-5)
+        if (this.isMultiVariable()) {
+            return false
+        }
+
+        // Isolate the letter.
+        let mMove: Monom
+        // Start by moving everything to the left.
+        this.#left.subtract(this.#right)
+        this.#right.zero()
+        const values = [...this.#left.monoms]
+        for (const m of values) {
+            if (!m.hasVariable(letter)) {
+                mMove = m.clone()
+                this.#left.subtract(mMove)
+                this.#right.subtract(mMove)
+            }
+        }
+
+        // In theory, we should have only one item on the left.
+        if (this.#left.length !== 1) {
+            return false
+        }
+
+        const cMove: Fraction = this.#left.monoms[0].coefficient.clone()
+        this.#left.divide(cMove)
+        this.#right.divide(cMove)
+        return this
     }
+
+    // -----------------------------------------------
+    // Equations operations
+
+    // -----------------------------------------------
+    public letters = (): string[] => {
+        return [...new Set([...this.#left.letters(), ...this.#right.letters()])]
+    }
+
+    // -----------------------------------------------
+    /**
+     * Reorder will move all monoms containing a letter on the left, all the other on the right.
+     */
+    public moveLeft = (): this => {
+        this.#left = this.#left.clone().subtract(this.#right)
+        this.#right.zero()
+        return this
+    }
+
+    /**
+     * Multiple an equation by a fraction value.
+     * @param value
+     */
+    public multiply = (value: InputValue<Fraction>): this => {
+        // Make sure we have a fraction.
+        const F: Fraction = new Fraction(value)
+
+        // Multiply each part of the equation by the fraction
+        this.#left.multiply(F)
+        this.#right.multiply(F)
+
+        // The sign of the inequality must be changed.
+        if (this.#sign !== '=' && F.sign() === -1) {
+            this._reverseSign()
+        }
+
+        return this
+    }
+
+    public pow(value: number): this {
+        this.#left.pow(value)
+        this.#right.pow(value)
+        return this
+    }
+    public opposite = (): this => {
+        this.#left = this.#left.opposite()
+        this.#right = this.#right.opposite()
+        return this
+    }
+
+    public reduce(): this {
+        // reduce means moving everything to the left
+        // remove the fractions
+        // simplify the equation
+        // reorder the equation
+        // start with a positive left part
+
+        // Move all left. The right part is now zero.
+        this.moveLeft()
+
+        // Reduce the equation: simplify and reorder.
+        this.#left.reduce()
+
+        // Simplify the equation.
+        this.simplify()
+
+        // Make sure the first part is positive.
+        if (this.#left.monoms[0].coefficient.isNegative()) {
+            this.multiply(-1)
+        }
+
+        return this
+    }
+
+    public reorder = (allLeft?: boolean): this => {
+        // Move all monoms of degree greater than 0 to the left.
+        // and all zero degree monoms to the right.
+        this.#left.subtract(this.#right)
+        this.#right.zero()
+        this.#left.reorder()
+
+        // we have all left (so equal zero) : it's done !
+        if (allLeft) {
+            return this
+        }
+
+        // Fetch all zero degree monoms.
+        this.#left.monoms
+            .filter(m => m.degree().isZero())
+            .forEach(m => {
+                const move = m.clone()
+                this.#left.subtract(move)
+                this.#right.subtract(move)
+            })
+
+        // Reorder the left and right polynoms
+        this.#left.reorder()
+        this.#right.reorder()
+        return this
+    }
+
+    // ------------------------------------------
+    public replaceBy = (letter: string, P: Polynom): this => {
+        this.#left.replaceBy(letter, P)
+        this.#right.replaceBy(letter, P)
+        return this
+    }
+
+    /**
+     * Multiply by the lcm denominator and divide by the gcm numerators.
+     */
+    public simplify = (): this => {
+        this.multiply(Numeric.lcm(...this.#left.getDenominators(), ...this.#right.getDenominators()))
+        this.divide(Numeric.gcd(...this.#left.getNumerators(), ...this.#right.getNumerators()))
+        return this
+    }
+
+    // -----------------------------------------------
+    public solve = (): ISolution[] => {
+        const solver = new EquationSolver(this.clone())
+        return solver.solve()
+    }
+
+    public split(): [Polynom, Polynom] {
+        return [this.#left.clone(), this.#right.clone()]
+    }
+
+    public subtract(value: InputValue<Equation | Polynom>): this {
+        if (value instanceof Equation) {
+            this.#left.subtract(value.left)
+            this.#right.subtract(value.right)
+
+            return this
+        }
+
+        if (typeof value === 'string' &&
+            !Equation.isEquationString(value)) {
+            return this.subtract(new Equation(value))
+        }
+
+        const p = new Polynom(value)
+        this.#left.subtract(p)
+        this.#right.subtract(p)
+
+        return this
+    }
+
+    public test = (values: literalType<Fraction>): boolean => {
+        return (this.left.evaluate(values) as Fraction).isEqual(this.right.evaluate(values))
+    }
+
+    public static isEquationString(equationString: string): boolean {
+        // The equation sign can be one of the following:
+        // =, <, >, <=, >=
+
+        return equationString.includes('=') ||
+            equationString.includes('<') ||
+            equationString.includes('>') ||
+            equationString.includes('<=') ||
+            equationString.includes('>=')
+    }
+
+    public static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean): ISolution[] {
+        const solutionAsTex: string[] = [],
+            uniqueSolutions = solutions.filter(sol => {
+                if (!solutionAsTex.includes(sol.tex)) {
+                    solutionAsTex.push(sol.tex)
+                    return true
+                } else {
+                    return false
+                }
+            })
+
+        if (sorted === true) {
+            uniqueSolutions.sort((a, b) => a.value - b.value)
+        }
+
+        return uniqueSolutions
+    }
+
+    // #endregion Properties and methods (26)
+
+    // #region Getters And Setters (13)
+
+    public get display(): string {
+        return `${this.#left.display}${this.signAsTex}${this.#right.display}`
+    }
+
+    // Getter and setter
+    public get left(): Polynom {
+        return this.#left
+    }
+
+    public set left(value: Polynom) {
+        this.#left = value
+    }
+
+    public get numberOfVars(): number {
+        return this.variables.length
+    }
+
+    // Creation / parsing functions
+    public get randomizeDefaults(): Record<string, number | string | boolean> {
+        return this.#randomizeDefaults
+    }
+
+    public set randomizeDefaults(value) {
+        this.#randomizeDefaults = value
+    }
+
+    public get right(): Polynom {
+        return this.#right
+    }
+
+    public set right(value: Polynom) {
+        this.#right = value
+    }
+
+    // ------------------------------------------
+    public get sign(): string {
+        return this.#sign
+    }
+
+    public set sign(value: string) {
+        // Set the sign value as formatted.
+        this.#sign = this._formatSign(value)
+    }
+
+    public get signAsTex(): string {
+        if (this.#sign === '>=') {
+            return '\\geq'
+        }
+
+        if (this.#sign === '<=') {
+            return '\\leq'
+        }
+
+        return this.#sign
+    }
+
+    public get tex(): string {
+        return `${this.#left.tex}${this.signAsTex}${this.#right.tex}`
+    }
+
+    public get variables(): string[] {
+        return [...new Set(this.#right.variables.concat(this.#left.variables))]
+    }
+
+    // #endregion Getters And Setters (13)
+
+    // #region Private methods (6)
 
     private _findSign = (equationString: string): string | false => {
-        let strSign: string = '';
-
         if (equationString.includes('geq')) {
-            return (equationString.includes('\\geq')) ? '\\geq' : 'geq';
+            return (equationString.includes('\\geq')) ? '\\geq' : 'geq'
         } else if (equationString.includes('leq')) {
-            return (equationString.includes('\\leq')) ? '\\leq' : 'leq';
+            return (equationString.includes('\\leq')) ? '\\leq' : 'leq'
         } else if (equationString.includes('>=')) {
-            return '>=';
+            return '>='
         } else if (equationString.includes('=>')) {
-            return '=>';
+            return '=>'
         } else if (equationString.includes('>')) {
-            return '>';
+            return '>'
         } else if (equationString.includes('<=')) {
-            return '<=';
+            return '<='
         } else if (equationString.includes('=<')) {
-            return '=<';
+            return '=<'
         } else if (equationString.includes('<')) {
-            return '<';
+            return '<'
         } else if (equationString.includes('=')) {
             return '='
         }
-        if (strSign === '') {
-            console.log('Equation: parse string : sign not found');
-            return false;
-        }
-    };
+
+        throw new Error('The equation is not valid (no sign found)')
+    }
 
     // -----------------------------------------------
     // Equations solving algorithms
-
-    private _formatSign = (signStr: string): string => {
+    private _formatSign = (signStr?: string): EQUATION_SIGN => {
         if (signStr === undefined) {
-            return '=';
+            return '='
         }
 
         if (signStr.includes('geq')) {
-            return '>=';
+            return '>='
         } else if (signStr.includes('>=')) {
-            return '>=';
+            return '>='
         } else if (signStr.includes('=>')) {
-            return '>=';
+            return '>='
         } else if (signStr.includes('>')) {
-            return '>';
+            return '>'
         } else if (signStr.includes('leq')) {
-            return '<=';
+            return '<='
         } else if (signStr.includes('<=')) {
-            return '<=';
+            return '<='
         } else if (signStr.includes('=<')) {
-            return '<=';
+            return '<='
         } else if (signStr.includes('<')) {
-            return '<';
+            return '<'
         } else {
             return '='
         }
-    };
+    }
 
-    private _reverseSign = (): Equation => {
-        if (this._sign === '=') {
-            return this;
+    private _reverseSign = (): this => {
+        if (this.#sign === '=') {
+            return this
         }
 
-        if (this._sign.includes('<')) {
-            this._sign.replace('<', '>');
-            return this;
+        if (this.#sign.includes('<')) {
+            this.#sign.replace('<', '>')
+            return this
         }
-        if (this._sign.includes('>')) {
-            this._sign.replace('>', '<');
-            return this;
+        if (this.#sign.includes('>')) {
+            this.#sign.replace('>', '<')
+            return this
         }
 
-        return this;
-    };
-
-    private isGreater = (): boolean => {
-        if (this._sign.indexOf('>') !== -1) {
-            return true;
-        }
-        return this._sign.indexOf('geq') !== -1;
-
-    };
-
-    private isStrictEqual = (): boolean => {
-        return this._sign === '=';
-    };
+        return this
+    }
 
     private isAlsoEqual = (): boolean => {
-        if (this._sign.indexOf('=') !== -1) {
-            return true;
-        }
-        if (this._sign.indexOf('geq') !== -1) {
-            return true;
-        }
-        if (this._sign.indexOf('leq') !== -1) {
-            return true;
-        }
-    };
-
-    private _solveDegree1 = (letter?: string): ISolution[] => {
-        const m1 = this._polynom.monomByDegree(1, letter).coefficient,
-            m0 = this._polynom.monomByDegree(0, letter).coefficient,
-            v = m0.clone().opposite().divide(m1);
-        let s: string, d: string;
-
-        if (this.isStrictEqual()) {
-            if (m1.value === 0) {
-                // In this case, the coefficient of the x variable is zero.
-                if (m0.value === 0) {
-                    this._solutions = [{
-                        tex: this._real,
-                        display: "RR",
-                        value: NaN,
-                        exact: false
-                    }];
-                } else {
-                    this._solutions = [{
-                        tex: this._varnothing,
-                        display: "O/",
-                        value: NaN,
-                        exact: false
-                    }];
-                }
-            } else {
-                this._solutions = [{
-                    tex: v.tex,
-                    display: v.display,
-                    value: v.value,
-                    exact: v
-                }]
-            }
-        } else {
-            if (m1.value === 0) {
-                // In this case, the coefficient of the x variable is zero.
-                if (m0.value === 0 && this.isAlsoEqual()) {
-                    s = '\\mathbb{R}';
-                    d = "RR"
-                } else {
-                    if (m0.value > 0) {
-                        s = this.isGreater() ? this._real : this._varnothing;
-                        s = this.isGreater() ? "RR" : "O/";
-                    } else {
-                        s = !this.isGreater() ? this._real : this._varnothing;
-                        s = !this.isGreater() ? "RR" : "O/";
-                    }
-                }
-            } else {
-                // Must handle the case if the m1 monom is negative.
-                if ((this.isGreater() && m1.sign() === 1) || (!this.isGreater() && m1.sign() === -1)) {
-                    s = `\\left${this.isAlsoEqual() ? '[' : ']'}${v.tex};+\\infty\\right[`;
-                    d = `${this.isAlsoEqual() ? '[' : ']'}${v.tex};+oo[`;
-                } else {
-                    s = `\\left]-\\infty;${v.tex} \\right${this.isAlsoEqual() ? ']' : '['}`;
-                    d = `]-oo;${v.tex}${this.isAlsoEqual() ? ']' : '['}`;
-                }
-            }
-            this._solutions = [{
-                tex: s,
-                display: d,
-                value: NaN,
-                exact: false
-            }];
+        if (this.#sign.includes('=')) {
+            return true
         }
 
-        return this._solutions;
-    };
-
-    private _solveDegree2 = (letter?: string): ISolution[] => {
-        let aF = this._polynom.monomByDegree(2, letter).coefficient,
-            bF = this._polynom.monomByDegree(1, letter).coefficient,
-            cF = this._polynom.monomByDegree(0, letter).coefficient,
-            delta: number, nthDelta: NthRoot,
-            lcm = Numeric.lcm(aF.denominator, bF.denominator, cF.denominator),
-            a = aF.multiply(lcm).value,
-            b = bF.multiply(lcm).value,
-            c = cF.multiply(lcm).value,
-            realX1: number, realX2: number,
-            sX1: string, sX2: string;
-
-        delta = b * b - 4 * a * c;
-
-        if (delta > 0) {
-            realX1 = (-b - Math.sqrt(delta)) / (2 * a);
-            realX2 = (-b + Math.sqrt(delta)) / (2 * a);
-
-            if (delta > 1.0e5) {
-                // The delta is too big to be parsed !
-                let v1 = ((-b - Math.sqrt(delta)) / (2 * a)).toFixed(5),
-                    v2 = ((-b + Math.sqrt(delta)) / (2 * a)).toFixed(5)
-
-                this._solutions = [
-                    {
-                        tex: v1,
-                        display: v1,
-                        value: realX1,
-                        exact: false
-                    },
-                    {
-                        tex: v2,
-                        display: v2,
-                        value: realX2,
-                        exact: false
-                    }
-                ]
-            } else {
-                nthDelta = new NthRoot(delta).reduce();
-                if (nthDelta.hasRadical()) {
-                    // -b +- coeff\sqrt{radical}
-                    // -------------------------
-                    //           2a
-                    let gcd = Numeric.gcd(b, 2 * a, nthDelta.coefficient),
-                        am = a / gcd, bm = b / gcd
-                    nthDelta.coefficient = nthDelta.coefficient / gcd;
-
-                    if (a < 0) {
-                        am = -am
-                        bm = -bm
-                    }
-
-                    let tex1 = "", tex2 = "", display1 = "", display2 = ""
-
-                    tex1 = `${bm !== 0 ? ((-bm) + ' - ') : ''}${nthDelta.tex}`
-                    tex2 = `${bm !== 0 ? ((-bm) + ' + ') : ''}${nthDelta.tex}`
-                    display1 = `${bm !== 0 ? ((-bm) + ' - ') : ''}${nthDelta.display}`
-                    display2 = `${bm !== 0 ? ((-bm) + ' + ') : ''}${nthDelta.display}`
-
-                    if (am !== 1) {
-                        tex1 = `\\frac{ ${tex1} }{ ${2 * am} }`
-                        tex2 = `\\frac{ ${tex2} }{ ${2 * am} }`
-                    }
-
-                    this._solutions = [
-                        {
-                            tex: tex1,
-                            display: tex1,
-                            value: realX1,
-                            exact: false
-                        },
-                        {
-                            tex: tex2,
-                            display: tex2,
-                            value: realX2,
-                            exact: false
-                        },
-                    ]
-
-
-                    // if (b !== 0) {
-                    //     if (2 * a / gcd === 1) {
-                    //         this._solutions = [
-                    //             {
-                    //                 tex: `${-b / gcd} - ${nthDelta.tex}`,
-                    //                 value: realX1,
-                    //                 exact: false // TODO: implement exact value with nthroot
-                    //             },
-                    //             {
-                    //                 tex: `${-b / gcd} + ${nthDelta.tex}`,
-                    //                 value: realX2,
-                    //                 exact: false
-                    //             },
-                    //
-                    //         ]
-                    //     } else {
-                    //         this._solutions = [
-                    //             {
-                    //                 tex: `\\frac{${-b / gcd} - ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                    //                 value: realX1,
-                    //                 exact: false
-                    //             },
-                    //             {
-                    //                 tex: `\\frac{${-b / gcd} + ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                    //                 value: realX2,
-                    //                 exact: false
-                    //             },
-                    //         ]
-                    //     }
-                    // } else {
-                    //     if (2 * a / gcd === 1) {
-                    //         this._solutions = [
-                    //             {
-                    //                 tex: `- ${nthDelta.tex}`,
-                    //                 value: realX1,
-                    //                 exact: false
-                    //             },
-                    //             {
-                    //                 tex: `${nthDelta.tex}`,
-                    //                 value: realX2,
-                    //                 exact: false
-                    //             },
-                    //         ]
-                    //     } else {
-                    //         this._solutions = [
-                    //             {
-                    //                 tex: `\\frac{- ${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                    //                 value: realX1,
-                    //                 exact: false
-                    //             },
-                    //             {
-                    //                 tex: `\\frac{${nthDelta.tex} }{ ${2 * a / gcd} }`,
-                    //                 value: realX2,
-                    //                 exact: false
-                    //             },
-                    //         ]
-                    //     }
-                    // }
-                } else {
-                    // -b +- d / 2a
-                    const S1 = new Fraction(-b - nthDelta.coefficient, 2 * a).reduce(),
-                        S2 = new Fraction(-b + nthDelta.coefficient, 2 * a).reduce()
-                    this._solutions = [
-                        {
-                            tex: S1.frac,
-                            display: S1.display,
-                            value: realX1,
-                            exact: S1
-                        },
-                        {
-                            tex: S2.frac,
-                            display: S2.display,
-                            value: realX2,
-                            exact: S2
-                        }
-                    ]
-                }
-            }
-
-        } else if (delta === 0) {
-            const sol = new Fraction(-b, 2 * a).reduce()
-            this._solutions = [{
-                tex: sol.frac,
-                display: sol.display,
-                value: sol.value,
-                exact: sol
-            }];
-        } else {
-            this._solutions = [{
-                tex: this._varnothing,
-                display: "O/",
-                value: NaN,
-                exact: false
-            }];
+        if (this.#sign.includes('geq')) {
+            return true
         }
 
-        // Handle now the inequations.
-        if (!this.isStrictEqual()) {
-            if (this._solutions.length === 2) {
-                sX1 = (realX1 < realX2) ? this._solutions[0].tex : this._solutions[1].tex;
-                sX2 = (realX1 < realX2) ? this._solutions[1].tex : this._solutions[0].tex;
-
-                if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
-                    this._solutions = [{
-                        tex: `\\left]-\\infty ; ${sX1}\\right${this.isAlsoEqual() ? ']' : '['} \\cup \\left${this.isAlsoEqual() ? '[' : ']'}${sX2};+\\infty\\right[`,
-                        display: `]-oo;${sX1}${this.isAlsoEqual() ? ']' : '['}uu${this.isAlsoEqual() ? '[' : ']'}${sX2};+oo[`,
-                        value: NaN,
-                        exact: false
-                    }
-                    ];
-                } else {
-                    this._solutions = [{
-                        tex: `\\left${this.isAlsoEqual() ? '[' : ']'}${sX1} ; ${sX2}\\right${this.isAlsoEqual() ? ']' : '['}`,
-                        display: `${this.isAlsoEqual() ? '[' : ']'}${sX1};${sX2}${this.isAlsoEqual() ? ']' : '['}`,
-                        value: NaN,
-                        exact: false
-                    }]
-                }
-            } else if (this._solutions.length === 1 && this._solutions[0].tex !== this._varnothing) {
-                if (!this.isAlsoEqual()) {
-                    if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
-                        this._solutions = [{
-                            tex: `\\left]-\\infty ; ${this._solutions[0].tex}\\right[ \\cup \\left]${this._solutions[0].tex};+\\infty\\right[`,
-                            display: `]-oo;${this._solutions[0].tex}[uu]${this._solutions[0].tex};+oo[`,
-                            value: NaN,
-                            exact: false
-                        }
-                        ];
-                    } else {
-                        this._solutions = [{
-                            tex: this._varnothing,
-                            display: "O/",
-                            value: NaN,
-                            exact: false
-                        }];
-                    }
-                } else {
-                    if ((this.isGreater() && aF.sign() === 1) || (!this.isGreater() && aF.sign() === -1)) {
-                        this._solutions = [{
-                            tex: this._real,
-                            display: "RR",
-                            value: NaN,
-                            exact: false
-                        }];
-                    } else {
-                        // this._texSolutions = [ this._texSolutions[0] ];
-                    }
-                }
-            } else {
-                if (this.isGreater()) {
-                    this._solutions = [{
-                        tex: aF.sign() === 1 ? this._real : this._varnothing,
-                        display: aF.sign() === 1 ? "RR" : "O/",
-                        value: NaN,
-                        exact: false
-                    }];
-                } else {
-                    this._solutions = [{
-                        tex: aF.sign() === -1 ? this._real : this._varnothing,
-                        display: aF.sign() === -1 ? "RR" : "O/",
-                        value: NaN,
-                        exact: false
-                    }];
-                }
-            }
+        if (this.#sign.includes('leq')) {
+            return true
         }
-        return this._solutions;
-    };
 
-    private _solveDegree3plus = (letter?: string): ISolution[] => {
-        // Push everything to the left
-        // factorize
-        // solve each factors.
-        let equ = this.clone().moveLeft()
-        equ.left.factorize()
+        return false
+    }
 
-        this._solutions = []
+    private isGreater = (): boolean => {
+        if (this.#sign.includes('>')) {
+            return true
+        }
 
-        equ.left.factors.forEach(factor => {
-            if (factor.degree(letter).leq(2)) {
-                let factorAsEquation = new Equation(factor, 0)
-                factorAsEquation.solve()
-                factorAsEquation.solutions.forEach(solution => {
-                    this._solutions.push(solution)
-                })
-            } else {
-                console.log(factor.tex, ': cannot actually get the solution of this equation')
-            }
-        })
+        return this.#sign.includes('geq')
+    }
 
-        // TODO: check equation resolution for more than degree 2
-        // this._solutions = [{tex: 'solve x - not yet handled', value: NaN, exact: false}];  // ESLint remove system :(
-        return this._solutions;
-    };
+    private isStrictEqual = (): boolean => {
+        return this.#sign === '='
+    }
+
+    // #endregion Private methods (6)
 }
+
+// #endregion Classes (1)
+
+// #region Enums (1)
+
+
+// #endregion Enums (1)

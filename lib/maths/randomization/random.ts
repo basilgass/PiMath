@@ -1,80 +1,83 @@
-import {rndPolynom} from "./rndPolynom";
-import {rndMonom} from "./rndMonom";
-import {rndHelpers} from "./rndHelpers";
-import {
+import type {
     randomCoefficientConfig,
+    randomEquationConfig,
     randomGeometryCircleConfig,
+    randomGeometryLine3Config,
     randomGeometryLineConfig,
     randomGeometryPointConfig,
     randomMonomConfig,
     randomPolynomConfig
-} from "./rndTypes";
-import {rndFraction} from "./rndFraction";
-import {Polynom} from "../algebra/polynom";
-import {Monom} from "../algebra/monom";
-import {Fraction} from "../coefficients/fraction";
-import {Line} from "../geometry/line";
-import {rndGeometryLine} from "./rndGeometryLine";
-import {Point} from "../geometry/point";
-import {rndGeometryPoint} from "./rndGeometryPoint";
-import {Circle} from "../geometry/circle";
-import {rndGeometryCircle} from "./rndGeometryCircle";
+} from "./rndTypes"
+import { randomArray, randomBool, randomInt, randomIntSym, randomItem, randomPrime, shuffleArray } from "./rndHelpers"
+import { rndFraction } from "./coefficient/rndFraction"
+import { rndMonom } from "./algebra/rndMonom"
+import { rndPolynom } from "./algebra/rndPolynom"
+import { rndEquation } from "./algebra/rndEquation"
+import { rndPoint } from "./geometry/rndPoint"
+import { rndCircle } from "./geometry/rndCircle"
+import { rndLine } from "./geometry/rndLine"
+import { rndLine3 } from "./geometry/rndLine3"
 
-export * from "./rndTypes"
+export type * from "./rndTypes"
 
-export namespace Random {
-    export function polynom(config?: randomPolynomConfig): Polynom {
-        return (new rndPolynom(config)).generate()
-    }
+export const Random = {
+    equation: (config?: randomEquationConfig) => {
+        return rndEquation(config)
+    },
 
-    export function monom(config?: randomMonomConfig): Monom {
-        return (new rndMonom(config)).generate()
-    }
+    polynom: (config?: randomPolynomConfig) => {
+        return rndPolynom(config)
+    },
 
-    export function fraction(config?: randomCoefficientConfig): Fraction {
-        return (new rndFraction(config)).generate()
-    }
+    monom: (config?: randomMonomConfig) => {
+        return rndMonom(config)
+    },
 
-    export function number(from: number, to: number, exclude?: number[]): number {
-        return rndHelpers.randomInt(from, to, exclude)
-    }
+    fraction: (config?: randomCoefficientConfig) => {
+        return rndFraction(config)
+    },
 
-    export function numberSym(max: number, allowZero?: boolean): number {
-        return rndHelpers.randomIntSym(max, allowZero)
-    }
+    number: (from: number, to: number, exclude?: number[]): number => {
+        return randomInt(from, to, exclude)
+    },
 
-    export function prime(max: number): number {
-        return rndHelpers.randomPrime(max)
-    }
+    numberSym: (max: number, allowZero?: boolean): number => {
+        return randomIntSym(max, allowZero)
+    },
 
-    export function bool(percent?: number): boolean {
-        return rndHelpers.randomBool(percent)
-    }
+    prime: (max: number): number => {
+        return randomPrime(max)
+    },
 
-    export function array(arr: any[], number?: number): any[] {
-        return rndHelpers.randomArray(arr, number)
-    }
+    bool: (percent?: number): boolean => {
+        return randomBool(percent)
+    },
 
-    export function item(arr: any[]): any {
-        return rndHelpers.randomItem(arr)
-    }
+    array: <T>(arr: T[], number?: number): T[] => {
+        return randomArray(arr, number)
+    },
 
-    export function shuffle(arr: any[]): any[] {
-        return rndHelpers.shuffleArray(arr)
-    }
+    item: <T>(arr: T[]): T => {
+        return randomItem(arr)
+    },
 
-    export namespace Geometry {
-        export function line(config?: randomGeometryLineConfig): Line {
-            return (new rndGeometryLine(config).generate())
-        }
+    shuffle: <T>(arr: T[]): T[] => {
+        return shuffleArray(arr)
+    },
 
-        export function point(config?: randomGeometryPointConfig): Point {
-            return (new rndGeometryPoint(config).generate())
-        }
+    line: (config?: randomGeometryLineConfig) => {
+        return rndLine(config)
+    },
 
-        export function circle(config?: randomGeometryCircleConfig): Circle {
-            return (new rndGeometryCircle(config).generate())
-        }
+    line3: (config?: randomGeometryLine3Config) => {
+        return rndLine3(config)
+    },
 
+    point: (config?: randomGeometryPointConfig) => {
+        return rndPoint(config)
+    },
+
+    circle: (config?: randomGeometryCircleConfig) => {
+        return rndCircle(config)
     }
 }
