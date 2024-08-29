@@ -1,17 +1,22 @@
 /***
  * Monom class
  */
-import {Numeric} from "../numeric.ts";
-import {Shutingyard, ShutingyardType, Token} from "../shutingyard.ts";
-import {Fraction} from "../coefficients/fraction";
+import {
+    IAlgebra,
+    IAnalyse,
+    IExpression,
+    InputAlgebra,
+    InputValue,
+    IPiMathObject,
+    literalType
+} from "../../pimath.interface.ts"
+import {Fraction} from "../coefficients/fraction"
+import {NthRoot} from "../coefficients/nthRoot.ts"
+import {Numeric} from "../numeric.ts"
+import {Shutingyard, ShutingyardType, Token} from "../shutingyard.ts"
 
-export type literalType = {
-    [Key: string]: Fraction
-}
-
-export class Monom {
-    private _coefficient: Fraction;
-    private _literal: literalType;
+export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra<Monom> {
+    // #region Class fields (2)
 
     /**
      * Create a Monom
@@ -19,155 +24,64 @@ export class Monom {
      * Examples: \\(3x^2\\) or \\(3/5x^2\\)
      * @param value (optional) string The value that should be parse. Can be a Monom, a Fraction, a string or a number. If nothing is provided, it will return the trivial monom (0).
      */
-    constructor(value?: unknown) {
-        this.zero();
+    constructor(value?: InputValue<Fraction>)
+    constructor(value?: Monom)
+    constructor(value?: InputAlgebra<Fraction>) {
+        this._coefficient = new Fraction().zero()
+        this._literal = {}
 
         if (value !== undefined) {
             // A string is given - try to parse the value.
-            this.parse(value);
+            this.parse(value)
         }
 
-        return this;
+        return this
     }
 
-    // ------------------------------------------
-    // Getter and setter
+    private _coefficient: Fraction
 
-    // ------------------------------------------
     /**
      * Get the coefficient \\(k\\) of the Monom \\(k\\cdot x^{n}\\)
      * @returns {Fraction}
      */
-    get coefficient(): Fraction {
-        return this._coefficient;
+    public get coefficient(): Fraction {
+        return this._coefficient
     }
 
     /**
      * Set the coefficient \\(k\\) value of the monom
      * @param {Fraction | number | string} F
      */
-    set coefficient(F: Fraction | number | string) {
-        this._coefficient = new Fraction(F);
+    public set coefficient(F: InputValue<Fraction>) {
+        this._coefficient = new Fraction(F)
     }
+
+    private _literal: literalType<Fraction>
 
     /**
      * Get the literal part of \\(x^{n_1}y^{n_2}\\) as dictionary \\[\\begin{array}{ll}x&=n_1\\\\y&=n_2\\end{array}\\]
      * @returns {literalType}
      */
-    get literal(): literalType {
-        return this._literal;
+    public get literal(): literalType<Fraction> {
+        return this._literal
     }
 
     /**
      * Set the literal part of the monom. Must be a dictionary {x: Fraction, y: Fraction, ...}
-     * @param {literalType} L
+     * @param {literalType<Fraction>} L
      */
-    set literal(L: literalType) {
-        this._literal = L;
+    public set literal(L: literalType<Fraction>) {
+        this._literal = L
     }
 
-    /**
-     * Get the literal square roots of the Monom.
-     * TODO: remove this getter ? Is it used and is it correct ?
-     * @returns {literalType}
-     */
-    get literalSqrt(): literalType {
-        if (this.isLiteralSquare()) {
-            let L: literalType = {}
-            for (let key in this._literal) {
-                L[key] = this._literal[key].clone().sqrt()
-            }
-            return L;
-        } else {
-            return this._literal;
-        }
-    }
-
-    /**
-     * Set the literal part of the monom from a string
-     * @param inputStr  String like x^2y^3
-     */
-    set literalStr(inputStr: string) {
-        // TODO : parse using shutingyard tree !
-
-        // Match all x^n
-        for (const v of [...inputStr.matchAll(/([a-z])\^([+-]?[0-9]+)/g)]) {
-            // Create the default letter entry if necessary.
-            if (!(v[1] in this._literal)) {
-                this._literal[v[1]] = new Fraction().zero();
-            }
-
-            // Add the new value.
-            // TODO: actually, it adds only numeric value
-            this._literal[v[1]].add(+v[2]);
-        }
-
-        // Match all x
-        for (const v of [...inputStr.matchAll(/([a-z](?!\^))/g)]) {
-            // Match all single letters
-            if (!(v[1] in this._literal)) {
-                this._literal[v[1]] = new Fraction().zero();
-            }
-
-            // Add one to the value.
-            this._literal[v[1]].add(1)
-        }
-    }
-
-    // Getter helpers.
-    /**
-     * Get the variables letters
-     */
-    get variables(): string[] {
-        let M = this.clone().clean();
-        return Object.keys(M.literal)
-    }
-
-    // Display getter
-    /**
-     * This display getter is to be used in the polynom display getter
-     */
-    get display(): string {
-        let L: string = '',
-            letters = Object.keys(this._literal).sort()
-        for (let letter of letters) {
-            if (this._literal[letter].isNotZero()) {
-                L += `${letter}`;
-                if (this._literal[letter].isNotEqual(1)) {
-                    L += `^(${this._literal[letter].display})`;
-                }
-            }
-        }
-
-        if (L === '') {
-            // No setLetter - means it's only a number !
-            if (this._coefficient.value != 0) {
-                return `${this._coefficient.display}`;
-            } else {
-                return '';
-            }
-        } else {
-            if (this._coefficient.value === 1) {
-                return L;
-            } else if (this._coefficient.value === -1) {
-                return `-${L}`;
-            } else if (this._coefficient.value === 0) {
-                return '0';
-            } else {
-                return `${this._coefficient.display}${L}`;
-            }
-        }
-    }
-
-    get dividers(): Monom[] {
+    public get dividers(): Monom[] {
         // Decompose only if the coefficient is a natural number
         if (!this.coefficient.isRelative()) {
             return [this.clone()]
         }
 
-
         // Decompose only if the power values are natural numbers.
-        if (this.hasFractionCoefficient()) {
+        if (this.containsRationalPower()) {
             return [this.clone()]
         }
 
@@ -179,66 +93,98 @@ export class Monom {
         const dividers = Numeric.dividers(Math.abs(this.coefficient.numerator))
 
         // Decompose the literals parts.
-        let literals: literalType[] = [];
-        for (let L in this.literal) {
+        let literals: literalType<Fraction>[] = []
+        for (const L in this.literal) {
             // L is the letter.
             literals = this._getLiteralDividers(literals, L)
         }
 
-        const monomDividers: Monom[] = [];
+        const monomDividers: Monom[] = []
         if (literals.length > 0 && dividers.length > 0) {
-            for (let N of dividers) {
-                for (let L of literals) {
-                    let M = new Monom();
+            for (const N of dividers) {
+                for (const L of literals) {
+                    const M = new Monom()
                     M.coefficient = new Fraction(N)
                     M.literal = L
                     monomDividers.push(M)
                 }
             }
         } else if (dividers.length === 0) {
-            for (let L of literals) {
-                let M = new Monom();
+            for (const L of literals) {
+                const M = new Monom()
                 M.coefficient = new Fraction().one()
                 M.literal = L
                 monomDividers.push(M)
             }
         } else {
-            for (let N of dividers) {
-                let M = new Monom();
+            for (const N of dividers) {
+                const M = new Monom()
                 M.coefficient = new Fraction(N)
                 monomDividers.push(M)
             }
         }
 
-        return monomDividers.length === 0 ? [new Monom().one()] : monomDividers;
+        return monomDividers.length === 0 ? [new Monom().one()] : monomDividers
     }
 
     /**
-     * Display the monom, forcing the '+' sign to appear
+     * Get the literal square roots of the Monom.
+     * TODO: remove this getter ? Is it used and is it correct ?
+     * @returns {literalType<Fraction>}
      */
-    get displayWithSign(): string {
-        let d: String = this.display;
-        return (d[0] !== '-' ? '+' : '') + d;
+    public get literalSqrt(): literalType<Fraction> {
+        // TODO: used in Polynom._factorize2ndDegree : remove it from here ?
+        if (this.isLiteralSquare()) {
+            const L: literalType<Fraction> = {}
+            for (const key in this._literal) {
+                L[key] = this._literal[key].clone().sqrt()
+            }
+            return L
+        } else {
+            return this._literal
+        }
     }
 
-    get texWithSign(): string {
-        if (this.coefficient.isStrictlyPositive()) {
-            return '+' + this.tex
+    /**
+     * Set the literal part of the monom from a string
+     * @param inputStr  String like x^2y^3
+     */
+    public set literalStr(inputStr: string) {
+        // TODO : parse using shutingyard tree !
+
+        // Match all x^n
+        for (const v of [...inputStr.matchAll(/([a-z])\^([+-]?[0-9]+)/g)]) {
+            // Create the default letter entry if necessary.
+            if (!(v[1] in this._literal)) {
+                this._literal[v[1]] = new Fraction().zero()
+            }
+
+            // Add the new value.
+            // TODO: actually, it adds only numeric value
+            this._literal[v[1]].add(+v[2])
         }
 
-        return this.tex
+        // Match all x
+        for (const v of [...inputStr.matchAll(/([a-z](?!\^))/g)]) {
+            // Match all single letters
+            if (!(v[1] in this._literal)) {
+                this._literal[v[1]] = new Fraction().zero()
+            }
+
+            // Add one to the value.
+            this._literal[v[1]].add(1)
+        }
     }
 
-    get plotFunction(): string {
+    public get plotFunction(): string {
+        let L = ''
+        const letters = Object.keys(this._literal).sort()
 
-        let L: string = '',
-            letters = Object.keys(this._literal).sort()
-
-        for (let letter of letters) {
+        for (const letter of letters) {
             if (this._literal[letter].isNotZero()) {
-                L += (L === '' ? "" : "*") + `${letter}`
+                L += (L === '' ? "" : "*") + letter
                 if (this._literal[letter].isNotEqual(1)) {
-                    L += `^(${this._literal[letter].display})`;
+                    L += `^(${this._literal[letter].display})`
                 }
             }
         }
@@ -247,19 +193,19 @@ export class Monom {
         if (L === '') {
             // No setLetter - means it's only a number !
             if (this._coefficient.value != 0) {
-                return `${this._coefficient.display}`;
+                return this._coefficient.display
             } else {
-                return '';
+                return ''
             }
         } else {
             if (this._coefficient.value === 1) {
-                return L;
+                return L
             } else if (this._coefficient.value === -1) {
-                return `-${L}`;
+                return `-${L}`
             } else if (this._coefficient.value === 0) {
-                return '0';
+                return '0'
             } else {
-                return `${this._coefficient.display}*${L}`;
+                return `${this._coefficient.display}*${L}`
             }
         }
     }
@@ -267,16 +213,16 @@ export class Monom {
     /**
      * Get the tex output of the monom
      */
-    get tex(): string {
+    public get tex(): string {
         // TODO: display with square root !
-        let L: string = '',
-            letters = Object.keys(this._literal).sort()
+        let L = ''
+        const letters = Object.keys(this._literal).sort()
 
-        for (let letter of letters) {
+        for (const letter of letters) {
             if (this._literal[letter].isNotZero()) {
-                L += `${letter}`;
+                L += letter
                 if (this._literal[letter].isNotEqual(1)) {
-                    L += `^{${this._literal[letter].tfrac}}`;
+                    L += `^{ ${this._literal[letter].tfrac} }`
                 }
             }
         }
@@ -284,155 +230,55 @@ export class Monom {
         if (L === '') {
             // No setLetter - means it's only a number !
             if (this._coefficient.value != 0) {
-                return `${this._coefficient.frac}`;
+                return this._coefficient.frac
             } else {
-                return '0';
+                return '0'
             }
         } else {
             if (this._coefficient.value === 1) {
-                return L;
+                return L
             } else if (this._coefficient.value === -1) {
-                return `-${L}`;
+                return `-${L}`
             } else if (this._coefficient.value === 0) {
-                return '0';
+                return '0'
             } else {
-                return `${this._coefficient.frac}${L}`;
+                return `${this._coefficient.frac}${L}`
             }
         }
     }
 
+    // Display getter
     /**
-     * Get the least common multiple of monoms
-     * @param monoms    Array of monoms
+     * This display getter is to be used in the polynom display getter
      */
-    static lcm = (...monoms: Monom[]): Monom => {
-        // All the monoms must be with natural powers...
-        for (let m of monoms) {
-            if (m.hasFractionCoefficient()) {
-                return new Monom().zero()
-            }
-        }
-
-
-        let M = new Monom(),
-            coeffN: number[] = monoms.map(value => value.coefficient.numerator),
-            coeffD: number[] = monoms.map(value => value.coefficient.denominator),
-            n = Numeric.gcd(...coeffN),
-            d = Numeric.lcm(...coeffD);
-
-        // Get the coefficient.
-        M.coefficient = new Fraction(n, d).reduce();
-
-        // Set the literal parts - go through each monoms literal parts and get only the lowest degree of each letters.
-        for (let m of monoms) {
-            // Remove the inexistant letters from the resulting monom
-            for (let letter in M.literal) {
-                if (!(letter in m.literal)) {
-                    M.literal[letter].zero();
-                }
-            }
-            for (let letter in m.literal) {
-                if (M.literal[letter] === undefined && m.literal[letter].isStrictlyPositive()) {
-                    M.literal[letter] = m.literal[letter].clone();
-                } else {
-                    M.literal[letter] = new Fraction(Math.min(m.literal[letter].value, M.literal[letter].value))
+    public get display(): string {
+        let L = ''
+        const letters = Object.keys(this._literal).sort()
+        for (const letter of letters) {
+            if (this._literal[letter].isNotZero()) {
+                L += letter
+                if (this._literal[letter].isNotEqual(1)) {
+                    L += `^(${this._literal[letter].display})`
                 }
             }
         }
 
-        return M;
-    };
-
-    // ------------------------------------------
-    // Creation / parsing functions
-
-    /**
-     * Multiply two monoms and return a NEW monom.
-     * @param monoms
-     */
-    static xmultiply = (...monoms: Monom[]): Monom => {
-        let M = new Monom().one();
-
-        for (let m of monoms) {
-            M.multiply(m);
-        }
-
-        return M;
-    };
-
-    // -----------------------------------------
-    /**
-     * Parse a string to a monom. The string may include fraction.
-     * @param inputStr
-     */
-    parse = (inputStr: unknown): Monom => {
-
-        if (typeof inputStr === 'string') {
-            this._shutingYardToReducedMonom(inputStr)
-        } else if (typeof inputStr === 'number') {
-            this._coefficient = new Fraction(inputStr)
-            this._literal = {}
-        } else if (inputStr instanceof Fraction) {
-            this._coefficient = inputStr.clone()
-            this._literal = {}
-        } else if (inputStr instanceof Monom) {
-            this._coefficient = inputStr._coefficient.clone()
-            this._literal = this.copyLiterals(inputStr.literal)
-        }
-
-        return this;
-    };
-
-    addToken = (stack: Monom[], element: Token): void => {
-
-        let q1: Monom, q2: Monom, m: Monom, letter: string, pow: Fraction
-
-        if (element.tokenType === ShutingyardType.COEFFICIENT) {
-            stack.push(new Monom(new Fraction(element.token)))
-
-        } else if (element.tokenType === ShutingyardType.VARIABLE) {
-            let M = new Monom().one()
-            M.setLetter(element.token, 1)
-            stack.push(M.clone())
-
-        } else if (element.tokenType === ShutingyardType.OPERATION) {
-            switch (element.token) {
-                case '-':
-                    // this should only happen for negative powers or for negative coefficient.
-                    q2 = (stack.pop()) || new Monom().zero()
-                    q1 = (stack.pop()) || new Monom().zero()
-
-                    stack.push(q1.subtract(q2))
-
-                    break;
-                case '*':
-                    // Get the last element in the stack
-                    q2 = (stack.pop()) || new Monom().one()
-                    q1 = (stack.pop()) || new Monom().one()
-
-                    stack.push(q1.multiply(q2))
-                    break
-                case '/':
-                    // Get the last element in the stack
-                    q2 = (stack.pop()) || new Monom().one()
-                    q1 = (stack.pop()) || new Monom().one()
-
-                    stack.push(q1.divide(q2))
-                    break
-                case '^':
-                    // get the two last elements in the stack
-                    pow = (stack.pop().coefficient) || new Fraction().one()
-                    m = (stack.pop()) || new Monom().one()
-
-                    letter = m.variables[0]
-
-                    if (letter !== undefined) {
-                        m.setLetter(letter, pow)
-                    }
-
-                    stack.push(m)
-                    // this.multiply(m.clone())
-                    break
+        if (L === '') {
+            // No setLetter - means it's only a number !
+            if (this._coefficient.value != 0) {
+                return this._coefficient.display
+            } else {
+                return ''
+            }
+        } else {
+            if (this._coefficient.value === 1) {
+                return L
+            } else if (this._coefficient.value === -1) {
+                return `-${L}`
+            } else if (this._coefficient.value === 0) {
+                return '0'
+            } else {
+                return `${this._coefficient.display}${L}`
             }
         }
     }
@@ -440,458 +286,243 @@ export class Monom {
     /**
      * Clone the current Monom.
      */
-    clone = (): Monom => {
-        let F: Monom = new Monom();
+    public clone = (): Monom => {
+        const F: Monom = new Monom()
 
-        F.coefficient = this._coefficient.clone();
+        F.coefficient = this._coefficient.clone()
 
         // Copy the literal parts.
-        for (let k in this._literal) {
-            F.setLetter(k, this._literal[k].clone());
+        for (const k in this._literal) {
+            F.setLetter(k, this._literal[k].clone())
         }
-        return F;
-    };
+        return F
+    }
 
-    copyLiterals = (literal: literalType): literalType => {
-        let L: literalType = {}
+    // -----------------------------------------
+    /**
+     * Parse a string to a monom. The string may include fraction.
+     * @param inputStr
+     */
+    public parse = (inputStr: InputAlgebra<Monom>): this => {
+        // Initialize the monom
+        this._coefficient = new Fraction()
+        this._literal = {}
 
-        for (let k in literal) {
-            L[k] = literal[k].clone()
+        if (typeof inputStr === 'string') {
+            this._shutingYardToReducedMonom(inputStr)
+        } else if (typeof inputStr === 'number') {
+            this._coefficient = new Fraction(inputStr)
+        } else if (inputStr instanceof Fraction) {
+            this._coefficient = inputStr.clone()
+        } else if (inputStr instanceof Monom) {
+            this._coefficient = inputStr._coefficient.clone()
+
+            // Copy the literal parts
+            this._cloneLiteral(inputStr)
         }
+
+        return this
+    }
+
+    // Getter helpers.
+    /**
+     * Get the variables letters
+     */
+    public get variables(): string[] {
+        // const M = this.clone().clean()
+
+        const L: string[] = []
+        Object.entries(this.literal).forEach(
+            ([key, value]) => {
+                if (!value.isZero()) {
+                    L.push(key)
+                }
+            })
+        L.sort()
         return L
+        // return Object.keys(M.literal)
     }
 
-    makeSame = (M: Monom): Monom => {
-        // Copy the literal parts.
-        for (let k in M._literal) {
-            this.setLetter(k, M._literal[k].clone());
-        }
-        return this
-    }
-
-    /**
-     * Create a zero value monom
-     */
-    zero = (): Monom => {
-        this._coefficient = new Fraction().zero();
-        this._literal = {};
-        return this;
-    };
-
-    /**
-     * Create a one value monom
-     */
-    one = (): Monom => {
-        this._coefficient = new Fraction().one();
-        this._literal = {};
-        return this;
-    };
-
-    /**
-     * Clean the monom by removing each letters with a power of zero.
-     */
-    clean = (): Monom => {
-        for (let letter in this._literal) {
-            if (this._literal[letter].isZero()) {
-                delete this._literal[letter];
-            }
-        }
-        return this;
-    };
-
-    reduce = (): Monom => {
-        this.clean()
-        this.coefficient.reduce()
-        return this
-    }
-
-    // ------------------------------------------
-    // Mathematical operations
-    // ------------------------------------------
-
-    /**
-     * Get the opposite
-     * Returns a monom.
-     */
-    opposite = (): Monom => {
-        this._coefficient.opposite();
-        return this;
-    };
-
-    /**
-     * Add all similar monoms. If they aren't similar, they are simply skipped.
-     * @param M (Monom[]) The monoms to add.
-     */
-    add = (...M: Monom[]): Monom => {
-        for (let m of M) {
-            if (this.isSameAs(m)) {
-                if (this.isZero()) {
-                    this.makeSame(m)
-                }
-                this._coefficient.add(m.coefficient);
-            } else {
-                console.log('Add monom: ' + this.display + ' is not similar with ', m.display);
-            }
-        }
-        return this;
-    };
-
-    /**
-     * Subtract multiple monoms
-     * @param M (Monom[]) The monoms to subtract
-     */
-    subtract = (...M: Monom[]): Monom => {
-        for (let m of M) {
-            if (this.isSameAs(m)) {
-                if (this.isZero()) {
-                    this.makeSame(m)
-                }
-                this._coefficient.add(m.clone().coefficient.opposite());
-            } else {
-                console.log('Subtract: Is not similar: ', m.display);
-            }
-        }
-        return this;
-    };
-
-    /**
-     * Multiple multiple monoms to the current monom
-     * @param M (Monom[]) The monoms to multiply to.
-     */
-    multiply = (...M: Monom[]): Monom => {
-        for (let m of M) {
-            // Multiply the coefficient.
-            this._coefficient.multiply(m.coefficient);
-
-            // Multiply the literal parts.
-            for (let letter in m.literal) {
-                if (this._literal[letter] === undefined) {
-                    this._literal[letter] = m.literal[letter].clone()
-                } else {
-                    this._literal[letter].add(m.literal[letter])
-                }
-
-            }
-        }
-        return this;
-    };
-
-    multiplyByNumber = (F: Fraction | number): Monom => {
-        this._coefficient.multiply(F);
-        return this;
-    }
-
-    /**
-     * Divide the current monoms by multiple monoms
-     * @param M (Monom[])
-     */
-    divide = (...M: Monom[]): Monom => {
-        // Depending on the given value, choose the current item
-        for (let v of M) {
-            // Divide the coefficient
-            this._coefficient.divide(v.coefficient);
-
-            // Subtract the power values
-            for (let letter in v.literal) {
-                this._literal[letter] = (this._literal[letter] === undefined) ? v.literal[letter].clone().opposite() : this._literal[letter].subtract(v.literal[letter])
-
-                // If the power of a particular setLetter is zero, delete it from the literal part..
-                if (this._literal[letter].isZero()) {
-                    delete this._literal[letter];
-                }
-            }
-        }
-        return this;
-    };
-
-    /**
-     * Get the pow of a monom.
-     * @param nb (number) : Mathematical pow
-     */
-    pow = (nb: number | Fraction): Monom => {
-        this._coefficient.pow(nb);
-        for (let letter in this._literal) {
-            this._literal[letter].multiply(nb)
-        }
-        return this;
-    };
-
-    /**
-     * Get the nth-root of the monom
-     * @param p
-     */
-    root = (p: number): Monom => {
-        // TODO: determiner the nth root of a monom
-        return this;
-    }
-
-    /**
-     * Return the square root of a monom
-     */
-    sqrt = (): Monom => {
-        if (this.isSquare()) {
-            this._coefficient.sqrt();
-            for (let letter in this._literal) {
-                this._literal[letter].clone().divide(2)
-            }
-        }
-        return this.root(2);
-    }
-
-    // ------------------------------------------
-    // Compare functions
-    // ------------------------------------------
-    compare = (M: Monom, sign?: string): boolean => {
-        // TODO: Build the compare systems.
-        if (sign === undefined) {
-            sign = '=';
-        }
-
-
-        switch (sign) {
-            case '=':
-                // To be equal, they must be the isSame
-                if (!this.compare(M, 'same')) {
-                    return false;
-                }
-
-                // The literal parts are the isSame. The coefficient must be equal
-                return this._coefficient.isEqual(M.coefficient);
-            case 'same':
-                // Get the list of all variables from both monoms.
-                let M1: string[] = this.variables,
-                    M2: string[] = M.variables,
-                    K: string[] = M1.concat(M2.filter((item) => M1.indexOf(item) < 0));
-
-                if (M1.length === 0 && M2.length === 0) {
-                    return true
-                }
-                // To compare, both must be different than zero.
-                if (!this.isZero() && !M.isZero()) {
-                    for (let key of K) {
-                        // The setLetter is not available in one of the monom
-                        if (this._literal[key] === undefined || M.literal[key] === undefined) {
-                            return false;
-                        }
-                        // The setLetter does not have the isSame power in each monoms.
-                        if (!this._literal[key].isEqual(M.literal[key])) {
-                            return false;
-                        }
-                    }
-                }
-
-                // All are positive check - the monoms are the sames.
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Determine if the monom is null
-     */
-    isZero(): boolean {
-        return this._coefficient.value === 0;
-    }
-
-    /**
-     * Determine if the monom is one
-     */
-    isOne(): boolean {
-        return this._coefficient.value === 1 && this.variables.length === 0;
-    }
-
-    /**
-     * Determine if two monoms are equals
-     * @param M
-     */
-    isEqual = (M: Monom): boolean => {
-        return this.compare(M, '=');
-    };
-
-    /**
-     * Determine if two monoms are similar
-     * @param M
-     */
-    isSameAs = (M: Monom): boolean => {
-        return this.compare(M, 'same');
-    };
-
-    isSquare = (): boolean => {
-        if (!this.coefficient.isSquare()) {
-            return false;
-        }
-        return this.isLiteralSquare();
-    }
-
-    isLiteralSquare = (): boolean => {
-        for (let letter in this.literal) {
-            // A literal square must have a natural power
-            if (this.literal[letter].isRational()) {
-                return false
-            }
-
-            // The natural power must be be even
-            if (this.literal[letter].isEven()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    hasFractionCoefficient = (): boolean => {
-        for (let letter in this._literal) {
-            if (this._literal[letter].isRational()) {
-                return true
-            }
-        }
-
-        return false
-    }
-    // ------------------------------------------
-    // Misc monoms functions
     // -------------------------------------
     /**
      * Determine if a monom contains a setLetter in it's literal part
      * @param letter
      */
-    hasLetter = (letter?: string): boolean => {
+    public hasVariable = (letter?: string): boolean => {
         // The letter was not found
-        if (this._literal[letter === undefined ? 'x' : letter] === undefined) {
-            return false
-        }
-
-        // The letter is found and is not zero !
-        return this._literal[letter === undefined ? 'x' : letter].isNotZero();
-    };
-
-    /**
-     * Set the power of a particular setLetter
-     * @param letter (string) Letter to change
-     * @param pow (number) Power of the setLetter (must be positive integer.
-     */
-    setLetter = (letter: string, pow: Fraction | number): void => {
-        if (pow instanceof Fraction) {
-            // Set the power of the letter to zero => remove it
-            if (this.hasLetter(letter) && pow.isZero()) {
-                delete this._literal[letter]
-            }
-
-            this._literal[letter] = pow.clone()
-        } else {
-            this.setLetter(letter, new Fraction(pow))
-        }
-    };
+        return Object.hasOwn(this._literal, letter ?? 'x')
+    }
 
     /**
      * Get the degree of a monom. If no setLetter is given, the result will be the global degree.
      * @param letter (string) Letter to get to degree (power)
      */
-    degree = (letter?: string): Fraction => {
+    public degree = (letter?: string): Fraction => {
         if (this.variables.length === 0) {
-            return new Fraction().zero();
+            return new Fraction().zero()
         }
         if (letter === undefined) {
             // Not setLetter given -> we get the global monom degree (sum of all the letters).
-            return Object.values(this._literal).reduce((t, n) => t.clone().add(n));
+            return Object.values(this._literal).reduce((t, n) => t.clone().add(n))
         } else {
             // A setLetter is given -> get the corresponding power.
-            return this._literal[letter] === undefined ? new Fraction().zero() : this._literal[letter].clone();
+            return !this.hasVariable(letter) ? new Fraction().zero() : this._literal[letter].clone()
         }
-    };
+    }
 
     /**
      * Evaluate a monom. Each setLetter must be assigned to a Fraction.
      * @param values    Dictionary of <setLetter: Fraction>
+     * @param asNumeric
      */
-    evaluate = (values: literalType | Fraction | number): Fraction => {
-        let r = this.coefficient.clone();
+    public evaluate = (values: literalType<number | Fraction> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number => {
+        // If as numeric return the numeric value
+        if (asNumeric === true) {
+            // Convert all values to numeric
+            // If the value is a Fraction, convert it to a number
+            if (values instanceof Fraction) {
+                return this._evaluateAsNumeric(values.value)
+            }
+
+            // If the value is a NthRoot, return undefined
+            if (values instanceof NthRoot) {
+                return new Fraction().invalid()
+            }
+
+            // If the value is a number, return the numeric value
+            if (typeof values === 'number') {
+                return this._evaluateAsNumeric(values)
+            }
+
+            // If the value is an object, return the numeric value
+            if (typeof values === 'object') {
+                // Convert {[key:string]:Fraction} to {[key:string]:number}
+                const tmpValues: literalType<number> = {}
+                for (const L in values) {
+                    tmpValues[L] = new Fraction(values[L]).value
+                }
+
+                return this._evaluateAsNumeric(tmpValues)
+            }
+        }
+
+        // The answer must be a Fraction
+        const r = this.coefficient.clone()
 
         if (typeof values === 'number' || values instanceof Fraction) {
-            let tmpValues: literalType = {}
+            const tmpValues: literalType<Fraction> = {}
             tmpValues[this.variables[0]] = new Fraction(values)
-            return this.evaluate(tmpValues);
+            return this.evaluate(tmpValues)
+        }
+
+        if (values instanceof NthRoot) {
+            return new Fraction().invalid()
         }
 
         if (typeof values === 'object') {
             if (this.variables.length === 0) {
                 return this.coefficient
             }
-            for (let L in this._literal) {
-                if (values[L] === undefined) {
-                    return new Fraction().zero();
-                }
 
-                let value = new Fraction(values[L])
+            for (const L in this._literal) {
+                const value = new Fraction(values[L])
 
                 r.multiply(value.pow(this._literal[L]))
-            }
-        }
-
-        return r;
-    };
-
-    evaluateAsNumeric = (values: { [Key: string]: number } | number): number => {
-        let r = this.coefficient.value
-
-        if (typeof values === 'number') {
-            let tmpValues: { [Key: string]: number } = {}
-            tmpValues[this.variables[0]] = values
-            return this.evaluateAsNumeric(tmpValues);
-        }
-
-        if (typeof values === 'object') {
-            if (this.variables.length === 0) {
-                return this.coefficient.value
-            }
-            for (let L in this._literal) {
-                if (values[L] === undefined) {
-                    return 0;
-                }
-
-                r *= values[L] ** (this._literal[L].value)
             }
         }
 
         return r
     }
 
+    public static gcd = (...monoms: Monom[]): Monom => {
+        // All the monoms must be with natural powers...
+        for (const m of monoms) {
+            if (m.containsRationalPower()) {
+                return new Monom().zero()
+            }
+        }
+
+        const M = new Monom(),
+            n: number = Numeric.gcd(...monoms.map(value => value.coefficient.numerator)),
+            d: number = Numeric.lcm(...monoms.map(value => value.coefficient.denominator))
+
+        // Get the coefficient.
+        M.coefficient = new Fraction(n, d).reduce()
+
+        // Set the literal parts - go through each monoms literal parts and get only the lowest degree of each letters.
+        for (const m of monoms) {
+            // Remove the inexistant letters from the resulting monom
+            for (const letter in M.literal) {
+                if (!(letter in m.literal)) {
+                    M.literal[letter].zero()
+                }
+            }
+            for (const letter in m.literal) {
+                if (!M.hasVariable(letter) && m.literal[letter].isStrictlyPositive()) {
+                    M.literal[letter] = m.literal[letter].clone()
+                } else {
+                    M.literal[letter] = new Fraction(Math.min(m.literal[letter].value, M.literal[letter].value))
+                }
+            }
+        }
+
+        return M
+    }
+
+    /**
+     * Multiply two monoms and return a NEW monom.
+     * @param monoms
+     */
+    public static xMultiply = (...monoms: Monom[]): Monom => {
+        const M = new Monom().one()
+
+        for (const m of monoms) {
+            M.multiply(m)
+        }
+
+        return M
+    }
+
+    public containsRationalPower = (): boolean => {
+        return Object.values(this._literal).some((value) => value.isRational())
+    }
+
     /**
      * Derivative the monom
      * @param letter
      */
-    derivative = (letter?: string): Monom => {
+    public derivative = (letter?: string): Monom => {
         // No setLetter given - assume it's the setLetter 'x'
         if (letter === undefined) {
-            letter = 'x';
+            letter = 'x'
         }
 
-        if (this.hasLetter(letter)) {
-            let d = this._literal[letter].clone(),
-                dM = this.clone();
+        if (this.hasVariable(letter)) {
+            const d = this._literal[letter].clone(),
+                dM = this.clone()
 
             // Subtract one to the degree.
             dM._literal[letter].subtract(1)
 
             // Multiply the coefficient by the previous degree
-            dM._coefficient.multiply(new Fraction(d.clone()));
-            return dM;
+            dM._coefficient.multiply(new Fraction(d.clone()))
+            return dM
         } else {
-            return new Monom().zero();
+            return new Monom().zero()
         }
-    };
+    }
 
-    primitive = (letter?: string): Monom => {
+    public primitive = (letter?: string): Monom => {
         // TODO: derivative including the ln value => implies creating different monom system ?
         if (letter === undefined) {
             letter = 'x'
         }
 
         // Zero monom
-        let M = this.clone(), degree
+        const M = this.clone()
+        let degree: Fraction
 
-        if (M.hasLetter(letter)) {
+        if (M.hasVariable(letter)) {
             degree = M.degree(letter).clone().add(1)
             M.coefficient = M.coefficient.clone().divide(degree)
             M.setLetter(letter, degree)
@@ -907,55 +538,19 @@ export class Monom {
 
         return M
     }
-    // ----------------------------------------
-    // Static functions
-    // ----------------------------------------
 
-    // TODO: The rest of the functions are not used or unnecessary ?
-    /**
-     * Determine if multiple monoms are similar
-     * @param M
-     */
-    areSameAs = (...M: Monom[]): boolean => {
-        let result: boolean = true;
+    public integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string | undefined): Fraction {
+        const primitive = this.primitive(letter)
 
-        // Check all monoms if they are the isSame as the "this" one.
-        for (let i = 0; i < M.length; i++) {
-            if (!this.isSameAs(M[i])) {
-                return false;
-            }
-        }
+        return (primitive.evaluate(b) as Fraction)
+            .subtract(primitive.evaluate(a) as Fraction)
+    }
 
-        // All check passed -> all the monoms are similar.
-        return result;
-    };
-
-    /**
-     * Determine if multiple monoms are equals
-     * @param M
-     */
-    areEquals = (...M: Monom[]): boolean => {
-        // They are not similar.
-        if (!this.areSameAs(...M)) {
-            return false;
-        }
-
-        // Check all coefficient. They must be equals.
-        for (let m of M) {
-            if (!this._coefficient.isEqual(m.coefficient)) {
-                return false;
-            }
-        }
-
-        // All checks passed.
-        return true;
-    };
-
-    isDivisible = (div: Monom): boolean => {
+    public isDivisible = (div: Monom): boolean => {
         // For all variables (letters), the current monom must have a degree higher than the divider
         if (div.degree().isStrictlyPositive()) {
-            for (let letter of div.variables) {
-                if (!this.degree(letter).geq(div.degree(letter))) {
+            for (const letter of div.variables) {
+                if (!this.degree(letter).isGeq(div.degree(letter))) {
                     return false
                 }
             }
@@ -969,19 +564,371 @@ export class Monom {
         return this.coefficient.clone().divide(div.coefficient).isRelative()
     }
 
-    private _getLiteralDividers(arr: literalType[], letter: string): literalType[] {
-        let tmpList: { [key: string]: Fraction }[] = [];
+    public isLiteralSquare = (): boolean => {
+        for (const letter in this.literal) {
+            // A literal square must have a natural power
+            if (this.literal[letter].isRational()) {
+                return false
+            }
+
+            // The natural power must be be even
+            if (this.literal[letter].isEven()) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    /**
+     * Determine if two monoms are similar
+     * @param M
+     */
+    public isSameAs = (M: Monom): boolean => {
+        // Get the list of all variables from both monoms.
+        const M1: string[] = this.variables
+        const M2: string[] = M.variables
+
+        // Get the list of all variables from both monoms.
+        const K: string[] = M1.concat(M2.filter((item) => !M1.includes(item)))
+
+        // If one of the monom is zero, it is the same than the other.
+        if (this.isZero() || M.isZero()) {
+            return true
+        }
+
+        // Both monoms has no literal part.
+        if (M1.length === 0 && M2.length === 0) {
+            return true
+        }
+
+        // Both monoms must have the same variables
+        if (M1.length !== M2.length) {
+            return false
+        }
+
+        // To _compare, both must be different than zero.
+        if (!this.isZero() && !M.isZero()) {
+            for (const key of K) {
+                // The variable is not available in one of the monom
+                if (!this.hasVariable(key) || !M.hasVariable(key)) {
+                    return false
+                }
+
+                // The variable does not have the same power in each monoms.
+                if (!this._literal[key].isEqual(M.literal[key])) {
+                    return false
+                }
+            }
+        }
+
+        // All are positive check - the monoms are the sames.
+        return true
+    }
+
+    public isSquare = (): boolean => {
+        if (!this.coefficient.isSquare()) {
+            return false
+        }
+        return this.isLiteralSquare()
+    }
+
+    /**
+     * Set the power of a particular setLetter
+     * @param letter (string) Letter to change
+     * @param pow (number) Power of the setLetter (must be positive integer.
+     */
+    public setLetter = (letter: string, pow: InputValue<Fraction>): this => {
+        if (!(pow instanceof Fraction)) {
+            return this.setLetter(letter, new Fraction(pow))
+        }
+
+        // Set the power of the letter to zero => remove it
+        if (this.hasVariable(letter) && pow.isZero()) {
+            this.removeVariable(letter)
+        }
+
+
+        this._literal[letter] = pow.clone()
+
+        return this
+    }
+
+    /**
+     * Create a zero value monom
+     */
+    public zero = (): this => {
+        this._coefficient = new Fraction().zero()
+        this._literal = {}
+        return this
+    }
+
+    /**
+     * Create a one value monom
+     */
+    public one = (): this => {
+        this._coefficient = new Fraction().one()
+        this._literal = {}
+        return this
+    }
+
+    /**
+     * Add all similar monoms. If they aren't similar, they are simply skipped.
+     * @param M (Monom[]) The monoms to add.
+     */
+    public add = (...M: InputAlgebra<Fraction>[]): this => {
+        for (const m of M) {
+            // If the value given is not a monom, create it.
+            const mAsMonom = (!(m instanceof Monom)) ? new Monom(m) : m
+
+            if (this.isSameAs(mAsMonom)) {
+                if (this.isZero()) {
+                    this._cloneLiteral(mAsMonom)
+                }
+
+                this._coefficient.add(mAsMonom.coefficient)
+            } else {
+                console.log('Add monom: ' + this.display + ' is not similar with ', mAsMonom.display)
+            }
+        }
+        return this
+    }
+
+    /**
+     * Subtract multiple monoms
+     * @param M (Monom[]) The monoms to subtract
+     */
+    public subtract = (...M: InputAlgebra<Fraction>[]): this => {
+        for (const m of M) {
+            // If the value given is not a monom, create it.
+            const mAsMonom = (!(m instanceof Monom)) ? new Monom(m) : m
+
+            if (this.isSameAs(mAsMonom)) {
+                if (this.isZero()) {
+                    this._cloneLiteral(mAsMonom)
+                }
+
+                this._coefficient.add(mAsMonom.clone().coefficient.opposite())
+            } else {
+                console.log('Subtract: Is not similar: ', mAsMonom.display)
+            }
+        }
+        return this
+    }
+
+    // #endregion Properties and methods (31)
+
+    // #region Getters And Setters (11)
+
+    /**
+     * Get the opposite
+     * Returns a monom.
+     */
+    public opposite = (): this => {
+        this._coefficient.opposite()
+        return this
+    }
+
+    /**
+     * Multiple multiple monoms to the current monom
+     * @param M (Monom[]) The monoms to multiply to.
+     */
+    public multiply = (...M: InputAlgebra<Fraction>[]): this => {
+        for (const m of M) {
+            // If the value given is not a monom, create it.
+            const mAsMonom = (!(m instanceof Monom)) ? new Monom(m) : m
+
+            // Multiply the coefficient.
+            this._coefficient.multiply(mAsMonom.coefficient)
+
+            // Multiply the literal parts.
+            for (const letter in mAsMonom.literal) {
+                if (!this.hasVariable(letter)) {
+                    this._literal[letter] = mAsMonom.literal[letter].clone()
+                } else {
+                    this._literal[letter].add(mAsMonom.literal[letter])
+                }
+            }
+        }
+        return this
+    }
+
+    /**
+     * Divide the current monoms by multiple monoms
+     * @param M (Monom[])
+     */
+    public divide = (...M: InputAlgebra<Fraction>[]): this => {
+        // Depending on the given value, choose the current item
+        for (const m of M) {
+            // If the value given is not a monom, create it.
+            const mAsMonom = (!(m instanceof Monom)) ? new Monom(m) : m
+
+            // Divide the coefficient
+            this._coefficient.divide(mAsMonom.coefficient)
+
+            // Subtract the power values
+            for (const letter in mAsMonom.literal) {
+
+                this._literal[letter] = this.hasVariable(letter) ?
+                    this._literal[letter].subtract(mAsMonom.literal[letter]) :
+                    mAsMonom.literal[letter].clone().opposite()
+
+
+                // If the power of a particular setLetter is zero, delete it from the literal part..
+                if (this._literal[letter].isZero()) {
+                    this.removeVariable(letter)
+                }
+            }
+        }
+        return this
+    }
+
+    public reduce = (): this => {
+        // Reduce the coefficient
+        this.coefficient.reduce()
+
+        // Reduce the literal parts (removing null powers)
+        for (const letter in this._literal) {
+            if (this._literal[letter].isZero()) {
+                this.removeVariable(letter)
+            }
+        }
+        return this
+    }
+
+    /**
+     * Determine if two monoms are equals
+     * @param M
+     */
+    public isEqual = (M: Monom): boolean => {
+        return this.isSameAs(M) && this._coefficient.isEqual(M.coefficient)
+    }
+
+    /**
+     * Determine if the monom is null
+     */
+    public isZero = (): boolean => {
+        return this._coefficient.value === 0
+    }
+
+    /**
+     * Determine if the monom is one
+     */
+    public isOne = (): boolean => {
+        return this._coefficient.value === 1 && this.variables.length === 0
+    }
+
+    public inverse = (): this => {
+        this._coefficient.opposite()
+        for (const letter in this._literal) {
+            this._literal[letter].opposite()
+        }
+        return this
+    }
+
+    /**
+     * Return the square root of a monom
+     */
+    public sqrt = (): this => {
+        if (this.isSquare()) {
+            this._coefficient.sqrt()
+            for (const letter in this._literal) {
+                this._literal[letter].clone().divide(2)
+            }
+        }
+        return this.root(2)
+    }
+
+    /**
+     * Get the pow of a monom.
+     * @param nb (number) : Mathematical pow
+     */
+    public pow = (nb: number | Fraction): this => {
+        this._coefficient.pow(nb)
+        for (const letter in this._literal) {
+            this._literal[letter].multiply(nb)
+        }
+        return this
+    }
+
+    /**
+     * Get the nth-root of the monom
+     * @param p
+     */
+    public root = (p: number): this => {
+        // TODO: determiner the nth root of a monom
+        return this
+    }
+
+    // #endregion Getters And Setters (11)
+
+    // #region Private methods (5)
+
+    public removeVariable(letter: string) {
+        /* eslint-disable */
+        delete this._literal[letter]
+        /* eslint-enable */
+    }
+
+    private _cloneLiteral(inputStr: Monom) {
+        for (const k in inputStr.literal) {
+            this._literal[k] = inputStr.literal[k].clone()
+        }
+    }
+
+    private _evaluateAsNumeric = (values: literalType<number | Fraction> | InputValue<Fraction>): number => {
+        let r = this.coefficient.value
+
+        if (typeof values === "number") {
+            const tmpValues: literalType<number> = {}
+            const key = this.variables[0]
+            tmpValues[key] = values
+
+            return this._evaluateAsNumeric(tmpValues)
+        }
+
+        if (values instanceof Fraction) {
+            const tmpValues: literalType<number> = {}
+            tmpValues[this.variables[0]] = new Fraction(values).value
+            return this._evaluateAsNumeric(tmpValues)
+        }
+
+        if (values instanceof NthRoot) {
+            return NaN
+        }
+
+        if (typeof values === 'object') {
+            if (this.variables.length === 0) {
+                return this.coefficient.value
+            }
+
+            for (const L in this._literal) {
+                const v = values[L]
+
+                if (v instanceof Fraction) {
+                    r *= v.value ** (this._literal[L].value)
+                } else {
+                    r *= v ** (this._literal[L].value)
+                }
+            }
+        }
+
+        return r
+    }
+
+    private _getLiteralDividers(arr: literalType<Fraction>[], letter: string): literalType<Fraction>[] {
+        const tmpList: Record<string, Fraction>[] = []
 
         // Be default, this.literal[letter] should be a rational number.
         for (let d = 0; d <= this.literal[letter].value; d++) {
             if (arr.length === 0) {
-                let litt: literalType = {}
+                const litt: literalType<Fraction> = {}
                 litt[letter] = new Fraction(d)
                 tmpList.push(litt)
             } else {
-                for (let item of arr) {
-                    let litt: literalType = {}
-                    for (let currentLetter in item) {
+                for (const item of arr) {
+                    const litt: literalType<Fraction> = {}
+                    for (const currentLetter in item) {
                         litt[currentLetter] = item[currentLetter]
                     }
                     litt[letter] = new Fraction(d)
@@ -989,15 +936,15 @@ export class Monom {
                 }
             }
         }
-        return tmpList;
+        return tmpList
     }
 
-    private _shutingYardToReducedMonom = (inputStr: string): Monom => {
+    private _shutingYardToReducedMonom = (inputStr: string): this => {
         // Get the RPN array of the current expression
-        const SY: Shutingyard = new Shutingyard().parse(inputStr);
-        const rpn: { token: string, tokenType: string }[] = SY.rpn;
+        const SY: Shutingyard = new Shutingyard().parse(inputStr)
+        const rpn: { token: string, tokenType: ShutingyardType }[] = SY.rpn
 
-        let stack: Monom[] = [], m, pow, letter, q1, q2
+        const stack: Monom[] = []
 
         if (rpn.length === 0) {
             this.zero()
@@ -1006,16 +953,16 @@ export class Monom {
             const element = rpn[0]
 
             this.one()
-            if (element.tokenType === 'coefficient') {
+            if (element.tokenType === ShutingyardType.COEFFICIENT) {
                 this.coefficient = new Fraction(element.token)
-            } else if (element.tokenType === 'variable') {
+            } else if (element.tokenType === ShutingyardType.VARIABLE) {
                 this.setLetter(element.token, 1)
             }
             return this
         } else {
             // Reset the monom
             for (const element of rpn) {
-                this.addToken(stack, element)
+                this._shutingYard_AddToken(stack, element)
             }
         }
 
@@ -1024,4 +971,60 @@ export class Monom {
         return this
     }
 
+    private _shutingYard_AddToken = (stack: Monom[], element: Token): void => {
+        let q1: Monom, q2: Monom, m: Monom, letter: string, pow: Fraction
+
+        if (element.tokenType === ShutingyardType.COEFFICIENT) {
+            stack.push(new Monom(new Fraction(element.token)))
+
+        } else if (element.tokenType === ShutingyardType.VARIABLE) {
+            const M = new Monom().one()
+            M.setLetter(element.token, 1)
+            stack.push(M.clone())
+
+        } else if (element.tokenType === ShutingyardType.OPERATION) {
+            switch (element.token) {
+                case '-':
+                    // this should only happen for negative powers or for negative coefficient.
+                    q2 = (stack.pop()) ?? new Monom().zero()
+                    q1 = (stack.pop()) ?? new Monom().zero()
+
+                    stack.push(q1.subtract(q2))
+
+                    break
+                case '*':
+                    // Get the last element in the stack
+                    q2 = (stack.pop()) ?? new Monom().one()
+                    q1 = (stack.pop()) ?? new Monom().one()
+
+                    stack.push(q1.multiply(q2))
+                    break
+                case '/':
+                    // Get the last element in the stack
+                    q2 = (stack.pop()) ?? new Monom().one()
+                    q1 = (stack.pop()) ?? new Monom().one()
+
+                    stack.push(q1.divide(q2))
+                    break
+                case '^': {
+                    // get the two last elements in the stack
+                    const poppedCoefficient = stack.pop()?.coefficient
+                    pow = poppedCoefficient ?? new Fraction().one()
+                    m = stack.pop() ?? new Monom().one()
+
+                    letter = m.variables[0]
+
+                    if (letter) {
+                        m.setLetter(letter, pow)
+                    }
+
+                    stack.push(m)
+                    // this.multiply(m.clone())
+                    break
+                }
+            }
+        }
+    }
+
+    // #endregion Private methods (5)
 }
