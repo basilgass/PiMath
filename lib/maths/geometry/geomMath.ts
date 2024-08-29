@@ -52,12 +52,25 @@ export function determinant(...values: V[]): Fraction {
         return new Fraction().invalid()
     }
 
-    // Calculate the determinant
+    // Calculate the determinant 2x2
     if (values[0].dimension === 2) {
-        return values[0].array[0].multiply(values[1].array[1]).subtract(values[0].array[1].multiply(values[1].array[0]))
+        return values[0].array[0].clone().multiply(values[1].array[1])
+            .subtract(values[0].array[1].clone().multiply(values[1].array[0]))
     }
 
-    return values[0].array[0].multiply(values[1].array[1].multiply(values[2].array[2]).subtract(values[1].array[2].multiply(values[2].array[1])))
-        .subtract(values[0].array[1].multiply(values[1].array[0].multiply(values[2].array[2]).subtract(values[1].array[2].multiply(values[2].array[0]))))
-        .add(values[0].array[2].multiply(values[1].array[0].multiply(values[2].array[1]).subtract(values[1].array[1].multiply(values[2].array[0]))))
+    // Calculate the determinant 3x3
+    return values[0].array[0].clone()
+        .multiply(
+            values[1].array[1].clone().multiply(values[2].array[2])
+                .subtract(values[1].array[2].clone().multiply(values[2].array[1]))
+        )
+        .subtract(values[0].array[1].clone()
+            .multiply(
+                values[1].array[0].clone().multiply(values[2].array[2])
+                    .subtract(values[1].array[2].clone().multiply(values[2].array[0]))
+            )
+        )
+        .add(values[0].array[2].clone()
+            .multiply(values[1].array[0].clone().multiply(values[2].array[1])
+                .subtract(values[1].array[1].clone().multiply(values[2].array[0]))))
 }

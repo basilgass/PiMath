@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest"
 import { Vector3D } from "../../lib/maths/geometry/vector3d"
-import { randomInt, randomIntSym } from "../../lib/maths/randomization/rndHelpers"
 import { determinant } from "../../lib/maths/geometry/geomMath"
 
 describe('Geometry Vector3D', function () {
@@ -59,10 +58,9 @@ describe('Geometry Vector3D', function () {
         const v1 = new Vector3D(2, 1, -1)
         const v2 = new Vector3D(3, -2, 5)
         const v3 = new Vector3D(-1, 2, 2)
-        console.log(v1.clone().cross(v2.clone()).display)
         const det = determinant(v1.clone(), v2.clone(), v3.clone())
         expect(det).toBeDefined()
 
-        console.log(det.value)
+        expect(det.value).to.be.equal(-43)
     })
 })
