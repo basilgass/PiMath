@@ -15,6 +15,7 @@
     "noImplicitAny": true,
     /* Transpile */
     "module": "ESNext",
+    "rootDir": "src",
     "outDir": "dist",
     "removeComments": true,
     /* Building for a library */

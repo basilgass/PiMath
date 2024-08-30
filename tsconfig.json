@@ -16,6 +16,7 @@
     /* Transpile */
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "rootDir": "src",
     "outDir": "dist",
     "removeComments": true,
     "lib": [

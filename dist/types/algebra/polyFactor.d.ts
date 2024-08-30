@@ -1,0 +1,41 @@
+import type { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType } from "../pimath.interface";
+import { Fraction } from "../coefficients/fraction";
+import { Factor } from "./factor";
+import { Polynom } from "./polynom";
+export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpression<PolyFactor>, IAlgebra<PolyFactor> {
+    #private;
+    constructor(...values: InputAlgebra<Polynom>[]);
+    constructor(...values: Factor[]);
+    parse(...values: (Factor | InputAlgebra<Polynom>)[]): this;
+    clone(): PolyFactor;
+    add(...values: PolyFactor[]): this;
+    degree(letter?: string): Fraction;
+    derivative(): this;
+    develop(): Polynom;
+    divide(value: PolyFactor): this;
+    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction;
+    hasVariable(letter: string): boolean;
+    inverse(): this;
+    isEqual(value: PolyFactor): boolean;
+    isOne(): boolean;
+    isZero(): boolean;
+    multiply(...values: PolyFactor[]): this;
+    one(): this;
+    opposite(): this;
+    pow(value: number | Fraction): this;
+    primitive(): PolyFactor;
+    reduce(): this;
+    root(value: number): this;
+    sort(): this;
+    sqrt(): this;
+    subtract(...values: PolyFactor[]): this;
+    zero(): this;
+    static gcd(...values: PolyFactor[]): PolyFactor;
+    get display(): string;
+    get factors(): Factor[];
+    set factors(value: Factor[]);
+    get tex(): string;
+    get variables(): string[];
+    private static _gcdWith;
+}
+//# sourceMappingURL=polyFactor.d.ts.map
