@@ -1,7 +1,7 @@
 /***
  * Monom class
  */
-import {
+import type {
     IAlgebra,
     IAnalyse,
     IExpression,
@@ -9,12 +9,12 @@ import {
     InputValue,
     IPiMathObject,
     literalType
-} from "../../pimath.interface.ts"
+} from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
-import { NthRoot } from "../coefficients/nthRoot.ts"
-import { Numeric } from "../numeric.ts"
+import { NthRoot } from "../coefficients/nthRoot"
+import { Numeric } from "../numeric"
 
-import { ShutingYard, ShutingyardType, Token } from "piexpression/lib"
+import { ShutingYard, ShutingyardType, type Token } from "piexpression/lib"
 
 export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra<Monom> {
     #coefficient: Fraction

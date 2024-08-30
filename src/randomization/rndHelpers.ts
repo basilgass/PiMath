@@ -1,7 +1,7 @@
 /**
  * Random helpers
  */
-import { Numeric } from "../numeric.ts"
+import { Numeric } from "../numeric"
 
 
 /**

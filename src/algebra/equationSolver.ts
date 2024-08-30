@@ -1,4 +1,4 @@
-import { InputValue, ISolution } from "../../pimath.interface"
+import type { InputValue, ISolution } from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
 import { Numeric } from "../numeric"
 import { Equation } from "./equation"

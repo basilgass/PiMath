@@ -1,5 +1,5 @@
-import { compareSign, IExpression, InputValue, IPiMathObject } from "../../pimath.interface.ts"
-import { Numeric } from "../numeric.ts"
+import type { compareSign, IExpression, InputValue, IPiMathObject } from "./../pimath.interface"
+import { Numeric } from "../numeric"
 
 // #region Type aliases (1)
 

@@ -3,9 +3,9 @@
  * @module Polynom
  */
 
-import type { ISolution } from "../pimath.interface.ts"
-import { Fraction } from "../coefficients/fraction.ts"
-import { Vector } from "../geometry/vector.ts"
+import type { ISolution } from "../pimath.interface"
+import { Fraction } from "../coefficients/fraction"
+import { Vector } from "../geometry/vector"
 import { Polynom } from "./polynom"
 import type { Rational } from "./rational"
 

@@ -1,6 +1,6 @@
-import { IAlgebra, IEquation, InputValue, IPiMathObject, ISolution, literalType } from "../../pimath.interface.ts"
+import type { IAlgebra, IEquation, InputValue, IPiMathObject, ISolution, literalType } from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
-import { Numeric } from "../numeric.ts"
+import { Numeric } from "../numeric"
 import { Equation } from "./equation"
 import { Monom } from "./monom"
 import { Polynom } from "./polynom"

@@ -1,12 +1,12 @@
 /**
  * Polynom module contains everything necessary to handle polynoms.*
  */
-import { ShutingYard, ShutingyardType, Token } from 'piexpression/lib'
-import { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType } from "../../pimath.interface.ts"
+import { ShutingYard, ShutingyardType, type Token } from 'piexpression/lib'
+import type { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType } from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
-import { Numeric } from '../numeric.ts'
+import { Numeric } from '../numeric'
 import { Equation } from "./equation"
-import { EquationSolver } from './equationSolver.ts'
+import { EquationSolver } from './equationSolver'
 import { Monom } from './monom'
 
 // #region Type aliases (1)
@@ -377,7 +377,7 @@ export class Polynom implements
     public getZeroes = (): ISolution[] => {
         return new EquationSolver(
             new Equation(this, 0)
-        ).solve()
+        ).solve() as ISolution[]
 
     }
 

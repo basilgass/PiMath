@@ -2,11 +2,11 @@
  * This class works for 2d line in a plane.
  */
 
-import { Fraction } from "../coefficients/fraction.ts"
-import { Polynom } from "../algebra/polynom.ts"
-import { Monom } from "../algebra/monom.ts"
-import { Point3D, Vector3D } from "./vector3d.ts"
-import { randomIntSym } from "../randomization/rndHelpers.ts"
+import { Fraction } from "../coefficients/fraction"
+import { Polynom } from "../algebra/polynom"
+import { Monom } from "../algebra/monom"
+import { Point3D, Vector3D } from "./vector3d"
+import { randomIntSym } from "../randomization/rndHelpers"
 
 export enum LinePropriety {
     None = 'none',

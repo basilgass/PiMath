@@ -1,7 +1,7 @@
 import { Line3 } from "../../geometry/line3"
 import { Point3D, Vector3D } from "../../geometry/vector3d"
 import { randomIntSym } from "../rndHelpers"
-import { randomGeometryLine3Config } from "../rndTypes"
+import type { randomGeometryLine3Config } from "../rndTypes"
 
 export function rndLine3(userConfig?: randomGeometryLine3Config): Line3 {
     const config = Object.assign(

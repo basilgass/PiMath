@@ -1,4 +1,4 @@
-import { InputValue } from "../../pimath.interface"
+import type { InputValue } from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
 import { Numeric } from "../numeric"
 import { dotProduct } from "./geomMath"
@@ -158,15 +158,15 @@ export class Point3D extends Vector3D {
         this.asPoint = true
     }
 
-    public clone(): Point3D {
+    public override clone(): Point3D {
         return new Point3D(this.x, this.y, this.z)
     }
 
-    get tex(): string {
+    override get tex(): string {
         return `\\left( ${this.x.tex} ; ${this.y.tex} ; ${this.z.tex} \\right)`
     }
 
-    get display(): string {
+    override get display(): string {
         return `(${this.x.display};${this.y.display};${this.z.display})`
     }
 }

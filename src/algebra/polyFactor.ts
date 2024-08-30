@@ -1,7 +1,7 @@
-import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType } from "../../pimath.interface.ts"
-import { Fraction } from "../coefficients/fraction.ts"
-import { Factor } from "./factor.ts"
-import { Polynom } from "./polynom.ts"
+import type { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType } from "../pimath.interface"
+import { Fraction } from "../coefficients/fraction"
+import { Factor } from "./factor"
+import { Polynom } from "./polynom"
 
 // #region Classes (1)
 

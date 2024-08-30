@@ -2,10 +2,10 @@
  * Vector2D module contains everything necessary to handle 2d or 3d vectors.
  * @module Vector
  */
-import { InputValue } from "../../pimath.interface.ts"
-import { Fraction } from "../coefficients/fraction.ts"
-import { Numeric } from "../numeric.ts"
-import { areVectorsColinears, areVectorsEquals, dotProduct } from "./geomMath.ts"
+import type { InputValue } from "../pimath.interface"
+import { Fraction } from "../coefficients/fraction"
+import { Numeric } from "../numeric"
+import { areVectorsColinears, areVectorsEquals, dotProduct } from "./geomMath"
 
 export class Vector {
     #x: Fraction = new Fraction().zero()   // 1st component
@@ -156,7 +156,7 @@ export class Vector {
         return this
     }
 
-    public clone (): Vector {
+    public clone(): Vector {
         const V = new Vector()
 
 
@@ -333,15 +333,15 @@ export class Point extends Vector {
         this.asPoint = true
     }
 
-    public clone(): Point {
+    public override clone(): Point {
         return new Point(this.x, this.y)
     }
 
-    get tex(): string {
+    override get tex(): string {
         return `\\left(${this.array.map(x => x.tex).join(';')}\\right)`
     }
 
-    get display(): string {
+    override get display(): string {
         return `(${this.array.map(x => x.display).join(';')})`
     }
 

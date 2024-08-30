@@ -3,7 +3,7 @@
  * @module Polynom
  */
 
-import { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType } from "../../pimath.interface"
+import type { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType } from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
 import { Polynom } from "./polynom"
 

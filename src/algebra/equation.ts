@@ -1,4 +1,4 @@
-import {
+import type {
     IAlgebra,
     IEquation,
     InputAlgebra,
@@ -6,7 +6,7 @@ import {
     IPiMathObject,
     ISolution,
     literalType
-} from "../../pimath.interface"
+} from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
 import { Numeric } from "../numeric"
 import { EquationSolver } from "./equationSolver"
@@ -387,7 +387,7 @@ export class Equation implements
     // -----------------------------------------------
     public solve = (): ISolution[] => {
         const solver = new EquationSolver(this.clone())
-        return solver.solve()
+        return solver.solve() as ISolution[]
     }
 
     public split(): [Polynom, Polynom] {

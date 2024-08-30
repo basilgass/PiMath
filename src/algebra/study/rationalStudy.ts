@@ -14,16 +14,16 @@
  * variations       : variation table + tex output  using tkz-tab
  */
 import {
-    ASYMPTOTE,
-    ASYMPTOTE_POSITION,
-    FUNCTION_EXTREMA,
-    IAsymptote,
-    ITableOfSigns,
-    IZero,
     Study,
-    StudyableFunction, StudyConfig,
-    TABLE_OF_SIGNS,
-    ZEROTYPE
+    type ASYMPTOTE,
+    type ASYMPTOTE_POSITION,
+    type FUNCTION_EXTREMA,
+    type IAsymptote,
+    type ITableOfSigns,
+    type IZero,
+    type StudyableFunction, type StudyConfig,
+    type TABLE_OF_SIGNS,
+    type ZEROTYPE
 } from "../study"
 import type { Rational } from "../rational"
 import { Fraction } from "../../coefficients/fraction"

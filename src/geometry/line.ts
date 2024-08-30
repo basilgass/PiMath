@@ -2,14 +2,14 @@
  * This class works for 2d line in a plane.
  */
 
-import { Numeric } from "../numeric.ts"
+import { Numeric } from "../numeric"
 import { Fraction } from "../coefficients/fraction"
 import { Equation } from "../algebra/equation"
 import { Polynom } from "../algebra/polynom"
 import { Monom } from "../algebra/monom"
-import { Vector } from "./vector.ts"
-import { InputValue } from "../../pimath.interface.ts"
-import { randomIntSym } from "../randomization/rndHelpers.ts"
+import { Vector } from "./vector"
+import type { InputValue } from "../pimath.interface"
+import { randomIntSym } from "../randomization/rndHelpers"
 
 export enum LinePropriety {
     None = 'none',

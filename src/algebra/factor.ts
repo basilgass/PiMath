@@ -1,6 +1,6 @@
-import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType } from "../../pimath.interface.ts"
-import { Fraction } from "../coefficients/fraction.ts"
-import { Polynom } from "./polynom.ts"
+import type { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType } from "../pimath.interface"
+import { Fraction } from "../coefficients/fraction"
+import { Polynom } from "./polynom"
 
 export class Factor implements
     IPiMathObject<Factor>,
@@ -26,7 +26,7 @@ export class Factor implements
         return this
     }
 
-    public parse(value: InputValue<Factor>): Factor {
+    public parse(/*value: InputValue<Factor>*/): Factor {
         throw new Error("Method not implemented.")
     }
 
