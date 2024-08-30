@@ -7,8 +7,6 @@
     "allowJs": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
-    // "allowImportingTsExtensions": true,
-    // "noEmit": true,
     /* strictness */
     "strict": true,
     "noImplicitOverride": true,
@@ -16,9 +14,6 @@
     /* Transpile */
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "rootDir": "src",
-    "outDir": "dist",
-    "removeComments": true,
     "lib": [
       "ESNext",
     ],
@@ -26,8 +21,6 @@
   "include": [
     "src",
     "tests",
-    "*.config.js",
-    "*.json",
-    "demo"
+    "demo",
   ]
 }

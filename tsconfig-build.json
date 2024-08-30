@@ -5,25 +5,24 @@
     "skipLibCheck": true,
     "target": "ES2022",
     "allowJs": true,
-    "moduleDetection": "force",
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     /* strictness */
     "strict": true,
-    "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noImplicitAny": true,
     /* Transpile */
     "module": "ESNext",
+    "moduleResolution": "bundler",
+    /* Build */
     "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "./dist",
     "removeComments": true,
-    /* Building for a library */
     "composite": true,
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "declarationDir": "dist/types",
+    "declarationDir": "./types",
     "lib": [
       "ESNext",
     ],

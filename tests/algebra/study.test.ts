@@ -1,6 +1,6 @@
 import { Rational } from "../../src/algebra/rational"
-import { RationalStudy } from "../../src/algebra/study/rationalStudy"
-import { ASYMPTOTE } from "../../src/algebra/study"
+import { RationalStudy } from "../../src/algebra/study/rationalStudy.bak"
+import { ASYMPTOTE } from "../../src/algebra/study.bak"
 import { describe, expect, it } from "vitest"
 
 describe.skip('Study tests', () => {

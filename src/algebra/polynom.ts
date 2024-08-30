@@ -1,7 +1,7 @@
 /**
  * Polynom module contains everything necessary to handle polynoms.*
  */
-import { ShutingYard, ShutingyardType, type Token } from 'piexpression/lib'
+import { ShutingYard, ShutingyardType, type Token } from "../../node_modules/piexpression/lib"
 import type { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType } from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
 import { Numeric } from '../numeric'
@@ -377,7 +377,7 @@ export class Polynom implements
     public getZeroes = (): ISolution[] => {
         return new EquationSolver(
             new Equation(this, 0)
-        ).solve() as ISolution[]
+        ).solve()
 
     }
 

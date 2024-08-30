@@ -387,7 +387,7 @@ export class Equation implements
     // -----------------------------------------------
     public solve = (): ISolution[] => {
         const solver = new EquationSolver(this.clone())
-        return solver.solve() as ISolution[]
+        return solver.solve()
     }
 
     public split(): [Polynom, Polynom] {

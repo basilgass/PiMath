@@ -1,7 +1,7 @@
 // Expose as global
 import { Equation } from "./algebra/equation"
-import { LinearSystem } from "./algebra/linearSystem"
-import { LogicalSet } from "./algebra/logicalset"
+// import { LinearSystem } from "./algebra/linearSystem"
+// import { LogicalSet } from "./algebra/logicalset.bak"
 import { Monom } from "./algebra/monom"
 import { Polynom } from "./algebra/polynom"
 import { Rational } from "./algebra/rational"
@@ -9,7 +9,7 @@ import { Fraction } from "./coefficients/fraction"
 import { NthRoot } from "./coefficients/nthRoot"
 import { Circle } from "./geometry/circle"
 import { Line } from "./geometry/line"
-import { Triangle } from "./geometry/triangle"
+// import { Triangle } from "./geometry/triangle.bak"
 import { Vector } from "./geometry/vector"
 import { Vector3D } from "./geometry/vector3d"
 import { Numeric } from "./numeric"
@@ -18,7 +18,7 @@ import { Random } from "./randomization/random"
 const Geometry = {
     Vector: Vector,
     Line: Line,
-    Triangle: Triangle,
+    // Triangle: Triangle,
     Circle: Circle
 }
 
@@ -34,9 +34,9 @@ const PiMath = {
     Monom,
     Polynom,
     Equation,
-    LinearSystem,
+    // LinearSystem,
     Rational,
-    LogicalSet,
+    // LogicalSet,
     Random,
     Geometry,
     Geometry3D

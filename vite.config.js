@@ -4,15 +4,18 @@ import dtsPlugin from "vite-plugin-dts"
 
 export default defineConfig({
 	build: {
-		copyPublicDir: false,
 		lib: {
+			name: "PiMath",
+			fileName: "pimath",
 			entry: resolve(__dirname, "src/index.ts"),
-			formats: ["es"],
-			output: resolve(__dirname, "dist"),
+			formats: ["es"]
 		}
 	},
 	plugins: [
-		dtsPlugin({ include: ['src', "es2022"] }), // generate .d.ts files for the src folder
+		dtsPlugin({
+			include: ['src', "es2022"],
+			outDir: "./types"
+		}), // generate .d.ts files for the src folder
 	],
 	rollupOptions: {
 		external: ["vue"],

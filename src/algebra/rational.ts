@@ -25,12 +25,12 @@ export class Rational implements
     constructor(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>)
     constructor(value?: InputAlgebra<Polynom> | Rational, denominator?: InputAlgebra<Polynom>) {
 
-        if (value === undefined) {
-            this.#numerator = new Polynom().zero()
-            this.#denominator = new Polynom().one()
-        } else if (value instanceof Rational) {
+        this.#numerator = new Polynom().zero()
+        this.#denominator = new Polynom().one()
+
+        if (value instanceof Rational) {
             return value.clone()
-        } else {
+        } else if (value !== undefined) {
             this.#numerator = new Polynom(value)
             this.#denominator = new Polynom(denominator ?? 1)
         }
