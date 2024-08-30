@@ -1,6 +1,6 @@
-import type { Monom } from "./maths/algebra/monom.ts";
-import type { Fraction } from "./maths/coefficients/fraction.ts";
-import type { NthRoot } from "./maths/coefficients/nthRoot.ts";
+import type { Fraction } from "./coefficients/fraction"
+import type { NthRoot } from "./coefficients/nthRoot"
+import type { Monom } from "./algebra/monom"
 
 export type InputValue<T> = T | string | number | Fraction | NthRoot;
 export type InputAlgebra<T> = InputValue<T> | Monom

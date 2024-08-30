@@ -3,8 +3,8 @@
  * @module Polynom
  */
 
-import { ISolution } from "../../pimath.interface.ts"
-import { Fraction } from "../coefficients/fraction"
+import type { ISolution } from "../pimath.interface.ts"
+import { Fraction } from "../coefficients/fraction.ts"
 import { Vector } from "../geometry/vector.ts"
 import { Polynom } from "./polynom"
 import type { Rational } from "./rational"

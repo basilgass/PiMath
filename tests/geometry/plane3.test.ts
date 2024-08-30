@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest"
-import { Point3D, Vector3D } from "../../lib/maths/geometry/vector3d"
-import { Plane3 } from "../../lib/maths/geometry/plane3"
-import { Line3 } from "../../lib/maths/geometry/line3"
-import { Point } from "../../lib/maths/geometry/vector"
+import { Point3D, Vector3D } from "../../src/geometry/vector3d"
+import { Plane3 } from "../../src/geometry/plane3"
+import { Line3 } from "../../src/geometry/line3"
+import { Point } from "../../src/geometry/vector"
 
 
 describe('Geometry Plane', function () {

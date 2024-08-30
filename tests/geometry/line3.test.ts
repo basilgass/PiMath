@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest"
-import { Point3D, Vector3D } from "../../lib/maths/geometry/vector3d"
-import { Line3 } from "../../lib/maths/geometry/line3"
-import { Random } from "../../lib/maths/randomization/random"
-import { Plane3 } from "../../lib/maths/geometry/plane3"
+import { Point3D, Vector3D } from "../../src/geometry/vector3d"
+import { Line3 } from "../../src/geometry/line3"
+import { Random } from "../../src/randomization/random"
+import { Plane3 } from "../../src/geometry/plane3"
 
 describe('Geometry Line3 tests', function () {
     it('should create a line from two points', function () {

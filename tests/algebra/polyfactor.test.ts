@@ -1,6 +1,6 @@
-import {describe, expect, test} from "vitest"
-import {PolyFactor} from "../../lib/maths/algebra/polyFactor"
-import {Factor} from "../../lib/maths/algebra/factor"
+import { describe, expect, test } from "vitest"
+import { PolyFactor } from "../../src/algebra/polyFactor"
+import { Factor } from "../../src/algebra/factor"
 
 
 describe("PolyFactor creation", () => {
@@ -319,7 +319,7 @@ describe("PolyFactor: algebra operations", () => {
             new Factor('4y-3', '2')
         )
 
-        expect(PF.evaluate({x: 3, y: 2}, true)).toEqual(366025)
+        expect(PF.evaluate({ x: 3, y: 2 }, true)).toEqual(366025)
     })
 
     test('should develop the PolyFactor', () => {
@@ -396,26 +396,26 @@ describe("PolyFactor: algebra operations", () => {
 })
 
 describe("PolyFactor: comparison operations", () => {
-        test('should check if two PolyFactors are equals', () => {
-            const PF = new PolyFactor(
-                new Factor('3x+2', '4'),
-                new Factor('4y-3', '2')
-            )
+    test('should check if two PolyFactors are equals', () => {
+        const PF = new PolyFactor(
+            new Factor('3x+2', '4'),
+            new Factor('4y-3', '2')
+        )
 
-            const PF2 = new PolyFactor(
-                new Factor('3x+2', '4'),
-                new Factor('4y-3', '2')
-            )
+        const PF2 = new PolyFactor(
+            new Factor('3x+2', '4'),
+            new Factor('4y-3', '2')
+        )
 
-            const PF3 = new PolyFactor(
-                new Factor('3x+2', '4'),
-                new Factor('4y-3', '3')
-            )
+        const PF3 = new PolyFactor(
+            new Factor('3x+2', '4'),
+            new Factor('4y-3', '3')
+        )
 
-            expect(PF.isEqual(PF)).toBeTruthy()
-            expect(PF.isEqual(PF2)).toBeTruthy()
-            expect(PF.isEqual(PF3)).toBeFalsy()
+        expect(PF.isEqual(PF)).toBeTruthy()
+        expect(PF.isEqual(PF2)).toBeTruthy()
+        expect(PF.isEqual(PF3)).toBeFalsy()
 
-        })
-    }
+    })
+}
 )

@@ -1,55 +1,32 @@
 {
-  "typedocOptions": {
-    "entryPoints": [
-      "src/maths/algebra/equation.ts",
-      "src/maths/algebra/linearSystem.ts",
-      "src/maths/algebra/logicalset.ts",
-      "src/maths/algebra/monom.ts",
-      "src/maths/algebra/polynom.ts",
-      "src/maths/algebra/rational.ts",
-      "src/maths/coefficients/fraction.ts",
-      "src/maths/coefficients/nthroot.ts",
-      "src/maths/expressions/numexp.ts",
-      "src/maths/expressions/polynomexp.ts",
-      "src/maths/geometry/circle.ts",
-      "src/maths/geometry/line.ts",
-      "src/maths/geometry/point.ts",
-      "src/maths/geometry/triangle.ts",
-      "src/maths/geometry/vector.ts",
-      "src/maths/numeric.ts",
-      "src/maths/shutingyard.ts"
-    ],
-    "plugin": [
-      "./typedoc.katex.js"
-    ],
-    "out": "docs"
-  },
   "compilerOptions": {
+    /* Base options */
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "target": "ES2022",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
+    "allowJs": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    // "allowImportingTsExtensions": true,
+    // "noEmit": true,
+    /* strictness */
     "strict": true,
+    "noImplicitOverride": true,
+    "noImplicitAny": true,
+    /* Transpile */
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "outDir": "dist",
+    "removeComments": true,
     "lib": [
       "ESNext",
-      "DOM",
     ],
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "noImplicitAny": true,
-    "allowJs": true,
-    "sourceMap": true,
-    "declaration": true,
-    "removeComments": true
   },
   "include": [
     "src",
-    "lib",
     "tests",
     "*.config.js",
-    "*.json"
+    "*.json",
+    "demo"
   ]
 }

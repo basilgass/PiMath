@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { Vector3D } from "../../lib/maths/geometry/vector3d"
-import { determinant } from "../../lib/maths/geometry/geomMath"
+import { Vector3D } from "../../src/geometry/vector3d"
+import { determinant } from "../../src/geometry/geomMath"
 
 describe('Geometry Vector3D', function () {
 

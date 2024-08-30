@@ -1,7 +1,7 @@
 import { describe, expect, it, test } from "vitest"
-import { Equation } from "../../lib/maths/algebra/equation"
-import { Polynom } from "../../lib/maths/algebra/polynom"
-import { Random } from "../../lib/maths/randomization/random"
+import { Equation } from "../../src/algebra/equation"
+import { Polynom } from "../../src/algebra/polynom"
+import { Random } from "../../src/randomization/random"
 
 describe('Equation creation', () => {
     test('create Equation', () => {

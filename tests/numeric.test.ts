@@ -1,4 +1,4 @@
-import { Numeric } from "../lib/maths/numeric"
+import { Numeric } from "../src/numeric"
 import { describe, expect, it } from "vitest"
 
 describe('Numeric', () => { // the tests container

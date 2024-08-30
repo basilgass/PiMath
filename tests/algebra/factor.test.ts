@@ -1,7 +1,7 @@
-import {describe, expect, it} from "vitest"
-import {Factor} from "../../lib/maths/algebra/factor"
-import {Polynom} from "../../lib/maths/algebra/polynom"
-import {Fraction} from "../../lib/maths/coefficients/fraction"
+import { describe, expect, it } from "vitest"
+import { Factor } from "../../src/algebra/factor"
+import { Polynom } from "../../src/algebra/polynom"
+import { Fraction } from "../../src/coefficients/fraction"
 
 
 describe("Factors creation", () => {
@@ -203,7 +203,7 @@ describe("Factors: algebra operations", () => {
     it('should evaluate the factor', () => {
         const F = new Factor('3x+2', '1/2')
 
-        expect((F.evaluate({x: 2}) as Fraction).value).toBe(2.8284271247461903)
+        expect((F.evaluate({ x: 2 }) as Fraction).value).toBe(2.8284271247461903)
     })
 
     it('should get the derivative of the factor', () => {

@@ -1,7 +1,7 @@
-import {Rational} from "../../lib/maths/algebra/rational"
-import {RationalStudy} from "../../lib/maths/algebra/study/rationalStudy"
-import {ASYMPTOTE} from "../../lib/maths/algebra/study"
-import {describe, expect, it} from "vitest"
+import { Rational } from "../../src/algebra/rational"
+import { RationalStudy } from "../../src/algebra/study/rationalStudy"
+import { ASYMPTOTE } from "../../src/algebra/study"
+import { describe, expect, it } from "vitest"
 
 describe.skip('Study tests', () => {
 

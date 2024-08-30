@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { Line } from "../../lib/maths/geometry/line"
-import { Point } from "../../lib/maths/geometry/vector"
+import { Line } from "../../src/geometry/line"
+import { Point } from "../../src/geometry/vector"
 
 describe('Geometry Line', function () {
     it('should evaluate coordinates', function () {

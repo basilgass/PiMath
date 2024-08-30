@@ -1,16 +1,17 @@
-import {describe, expect, it} from "vitest"
-import {Circle} from "../../lib/maths/geometry/circle"
-import {Line} from "../../lib/maths/geometry/line"
-import {Fraction} from "../../lib/maths/coefficients/fraction"
-import {Point} from "../../lib/maths/geometry/vector.ts"
+import { describe, expect, it } from "vitest"
+
+import { Circle } from "../../src/geometry/circle.ts"
+import { Line } from "../../src/geometry/line.ts"
+import { Fraction } from "../../src/coefficients/fraction.ts"
+import { Point } from "../../src/geometry/vector.ts"
 
 describe('Circle', function () {
     it('should calculate the intersection of a circle and a line', function () {
         const C = new Circle(
-                new Point(8, 6),
-                20,
-                true
-            ),
+            new Point(8, 6),
+            20,
+            true
+        ),
             LT = new Line('2x+y-32=0'),
             LS = new Line('3x-y-8=0'),
             IPT = C.lineIntersection(LT),
@@ -211,191 +212,191 @@ describe('Circle', function () {
     //
     //     }
     // })
-//     it('intersection temp tests', () => {
-//         for (let i = 0; i < 30; i++) {
-//             let A = Random.Geometry.point({axis: false}),
-//                 rv = Random.number(1, 3),
-//                 r = rv ** 2 + (rv + 1) ** 2
-//
-//             let c = new Circle(A, r, true)
-//             let pts = c.getPointsOnCircle(true)
-//             // console.log(r, pts.length)
-//
-//             // console.log(c.tex)
-//             // console.log(pts.map(pt => pt.display))
-//             pts = Random.shuffle(pts)
-//             let ptt = pts.shift(),
-//                 pt1 = pts.shift(),
-//                 pt2
-//
-//             for (let pt of pts) {
-//                 if (!pt1.x.isEqual(pt.x) && !pt1.y.isEqual(pt.y) && !A.isEqual(new Point().middleOf(pt1, pt))) {
-//                     pt2 = pt.clone()
-//                     break
-//                 }
-//             }
-//
-//             // console.log('Pt de tangence')
-//             // console.log(ptt.display)
-//             let t = c.tangents(ptt)[0]
-//             // console.log(t.tex.canonical)
-//
-//             // console.log('intersection en deux points')
-//             // console.log(pt1.display, pt2.display)
-//             let d = new Line(pt1, pt2)
-//             // console.log(d.tex.canonical)
-//
-//             let P = Random.Geometry.point()
-//             while (P.x.isEqual(c.center.x) || P.y.isEqual(c.center.y)) {
-//                 P = Random.Geometry.point()
-//             }
-//             // Le point P n'est pas sur le centre.
-//             let v = new Vector(c.center, P)
-//             while (P.distanceTo(A).value <= Math.sqrt(r)) {
-//                 P.x.add(v.x)
-//                 P.y.add(v.y)
-//             }
-//             let p = new Line(P, v, LinePropriety.Perpendicular)
-//             // console.log(P.display)
-//             // console.log(p.display.canonical)
-//
-//             let lignes = Random.shuffle([t, d, p])
-//
-// //             console.log(`A${A.display}
-// // c=circ A,${Math.sqrt(r)}
-// // T${ptt.display}
-// // P${pt1.display}
-// // Q${pt2.display}
-// // t=line ${t.display.canonical}
-// // d=line ${d.display.canonical}
-// // p=line ${p.display.canonical}`)
-//             console.log(`(exercice ${i + 1}): Soit \\(\\Gamma\\) un cercle et \\(d_1\\), \\(d_2\\) et \\(d_3\\) trois droites.
-//             \\mathleft
-//             \\[(\\Gamma): ${c.tex}\\]
-//             \\[(d_1): ${lignes[0].tex.canonical} \\qquad (d_2): ${lignes[1].tex.canonical}  \\qquad (d_3): ${lignes[2].tex.canonical}\\]
-//
-//             \\begin{enumerate}[label=\\Alph*]
-//             \\item déterminer les positions relatives de \\(d_1\\), \\(d_2\\) et \\(d_3\\) par rapport à \\(\\Gamma\\)
-//             \\item calculer les coordonnées du ou des points d'intersection entre le cercle et une des droites qui le coupe (au choix).
-//             \\end{enumerate}
-//             \\iftoggle{master}{\\(${t.tex.canonical}\\implies ${ptt.tex}\\) \\\\ \\(${d.tex.canonical}\\implies ${pt1.tex},\\ ${pt2.tex}\\) \\\\}{}
-//             \\vfill
-//             ${i % 2 === 1 ? '\\newpage' : ''}
-//             `)
-//
-//         }
-//
-//     })
-//     it('temp tests', () => {
-//         for (let i = 0; i < 30; i++) {
-//             let A = Random.Geometry.point({axis: false}),
-//                 B = Random.Geometry.point({axis: false})
-//
-//             if (Random.bool()) {
-//                 B.x = new Fraction().zero()
-//             } else {
-//                 B.y = new Fraction().zero()
-//             }
-//
-//             const c1 = new Circle(A, Random.number(1, 10)),
-//                 c2 = new Circle(B, Random.number(1, 10))
-//
-//             console.log(`(exercice ${i + 1}): déterminer la forme \\textbf{centre-rayon} des équations cartésiennes suivantes. En déduire le centre et le rayon du cercle.
-//     \\begin{enumerate}[label=\\Alph*]
-//     \\item \\( (\\Gamma_1): ${c1.developed}\\) \\iftoggle{master}{\\(${c1.tex}\\)}{}
-//     \\item \\( (\\Gamma_2): ${c2.developed}\\) \\iftoggle{master}{\\(${c2.tex}\\)}{}
-//     \\end{enumerate}
-//     \\vfill
-//     ${i % 2 === 1 ? '\\newpage' : ''}
-//     `)
-//         }
-//     })
-//
-//     it('temp tests 2', () => {
-//         const q = `(I): Soit \\(\\Gamma_1\\) et \\(\\Gamma_2\\) deux cercles. Déterminer leur position relative à l'aide des informations ci-dessous.
-//
-// \\[(\\Gamma_1): @G1 \\qquad (\\Gamma_2): @G2 \\]
-// \\[\\trou{@R1} \\]
-//
-// \\vspace{3cm}
-// (II): Soit \\((\\Gamma_3):  @G3\\) un cercle. Déterminer l'équation cartésienne, sous sa forme centre-sommet, des cercles \\(\\Gamma_4\\) de rayon \\(@RAYON\\) qui sont tangents à \\(\\Gamma_3\\) en sachant que les deux centres ont la même @AXE.\\\\
-// Préciser la position relative entre \\(\\Gamma_3\\) et \\(\\Gamma_4\\)
-// \\[ \\trou{@R2a} \\]
-// \\[ \\trou{@R2b} \\]
-// `
-//
-//         for (let i = 0; i < 30; i++) {
-//             let A = Random.Geometry.point({axis: false}),
-//                 triplet = Random.item(Numeric.pythagoricianTripletsWithTarget(
-//                     Random.item([5, 13, 17, 25, 29, 37, 41])
-//                 ).filter(tr => {
-//                     // remove all items with zero values.
-//                     return tr.every(x => x !== 0)
-//                 })),
-//                 B = new Point(
-//                     A.x.value + triplet[0],
-//                     A.y.value + triplet[1]
-//                 ),
-//                 delta = Random.number(2, triplet[2] - 1),
-//                 positionRelative = ['extérieure', 'intérieure', 'sécante', 'disjointe'][i % 4],
-//                 // positionRelative = Random.item(['extérieure', 'intérieure', 'sécante', 'disjointe']),
-//                 c1: Circle, c2: Circle
-//
-//             if (positionRelative === 'extérieure') {
-//                 c1 = new Circle(A, triplet[2] - delta)
-//                 c2 = new Circle(B, delta)
-//             } else if (positionRelative === 'intérieure') {
-//                 c1 = new Circle(A, triplet[2] + delta)
-//                 c2 = new Circle(B, delta)
-//             } else if (positionRelative === 'sécante') {
-//                 c1 = new Circle(A, triplet[2] + delta - Random.number(1, delta - 1))
-//                 c2 = new Circle(B, delta)
-//             } else if (positionRelative === 'disjointe') {
-//                 c1 = new Circle(A, triplet[2] + delta + 1)
-//                 c2 = new Circle(B, delta)
-//             }
-//
-//             const R1 = `\\delta(O_1;O_2)=${A.distanceTo(B).value}\\qquad r_1=${c1.radius.value} \\qquad ${c2.radius.value} \\qquad \\implies \\text{${positionRelative}} `
-//
-//
-//             let C = Random.Geometry.point({axis: false}),
-//                 r1 = Random.number(2, 10),
-//                 c3 = new Circle(C, r1),
-//                 // Get a random number from 2 to 10 that is not equal to r1
-//                 r2 = Random.number(2, 10, [r1]),
-//                 axis = Random.item(['abscisse', 'ordonnée']),
-//                 centers: Point[] = []
-//
-//             const c3x = c3.center.x.value,
-//                 c3y = c3.center.y.value
-//             if (axis === 'abscisse') {
-//
-//                 centers = [
-//                     new Point(c3x, c3y - (r1 + r2)),
-//                     new Point(c3x, c3y - (r2 - r1)),
-//                     new Point(c3x, c3y - (r1 - r2)),
-//                     new Point(c3x, c3y + (r1 + r2))
-//                 ]
-//             } else {
-//                 centers = [
-//                     new Point(c3x - (r1 + r2), c3y),
-//                     new Point(c3x - (r2 - r1), c3y),
-//                     new Point(c3x - (r1 - r2), c3y),
-//                     new Point(c3x + (r1 + r2), c3y)
-//                 ]
-//             }
-//
-//             console.log(`(exercice ${i + 1}): ` + q
-//                     .replaceAll('@G1', c1.tex)
-//                     .replaceAll('@R1', R1)
-//                     .replaceAll('@G2', c2.tex)
-//                     .replaceAll('@G3', c3.developed)
-//                     .replaceAll('@RAYON', r2.toString())
-//                     .replaceAll('@AXE', axis)
-//                     .replaceAll('@R2a', centers.slice(0, 2).map(x => new Circle(x, r2).tex).join(' \\qquad '))
-//                     .replaceAll('@R2b', centers.slice(2, 4).map(x => new Circle(x, r2).tex).join(' \\qquad '))
-//                 + '\\vfill' + (i % 2 === 1 ? '\\newpage' : '')
-//             )
-//         }
-//     })
+    //     it('intersection temp tests', () => {
+    //         for (let i = 0; i < 30; i++) {
+    //             let A = Random.Geometry.point({axis: false}),
+    //                 rv = Random.number(1, 3),
+    //                 r = rv ** 2 + (rv + 1) ** 2
+    //
+    //             let c = new Circle(A, r, true)
+    //             let pts = c.getPointsOnCircle(true)
+    //             // console.log(r, pts.length)
+    //
+    //             // console.log(c.tex)
+    //             // console.log(pts.map(pt => pt.display))
+    //             pts = Random.shuffle(pts)
+    //             let ptt = pts.shift(),
+    //                 pt1 = pts.shift(),
+    //                 pt2
+    //
+    //             for (let pt of pts) {
+    //                 if (!pt1.x.isEqual(pt.x) && !pt1.y.isEqual(pt.y) && !A.isEqual(new Point().middleOf(pt1, pt))) {
+    //                     pt2 = pt.clone()
+    //                     break
+    //                 }
+    //             }
+    //
+    //             // console.log('Pt de tangence')
+    //             // console.log(ptt.display)
+    //             let t = c.tangents(ptt)[0]
+    //             // console.log(t.tex.canonical)
+    //
+    //             // console.log('intersection en deux points')
+    //             // console.log(pt1.display, pt2.display)
+    //             let d = new Line(pt1, pt2)
+    //             // console.log(d.tex.canonical)
+    //
+    //             let P = Random.Geometry.point()
+    //             while (P.x.isEqual(c.center.x) || P.y.isEqual(c.center.y)) {
+    //                 P = Random.Geometry.point()
+    //             }
+    //             // Le point P n'est pas sur le centre.
+    //             let v = new Vector(c.center, P)
+    //             while (P.distanceTo(A).value <= Math.sqrt(r)) {
+    //                 P.x.add(v.x)
+    //                 P.y.add(v.y)
+    //             }
+    //             let p = new Line(P, v, LinePropriety.Perpendicular)
+    //             // console.log(P.display)
+    //             // console.log(p.display.canonical)
+    //
+    //             let lignes = Random.shuffle([t, d, p])
+    //
+    // //             console.log(`A${A.display}
+    // // c=circ A,${Math.sqrt(r)}
+    // // T${ptt.display}
+    // // P${pt1.display}
+    // // Q${pt2.display}
+    // // t=line ${t.display.canonical}
+    // // d=line ${d.display.canonical}
+    // // p=line ${p.display.canonical}`)
+    //             console.log(`(exercice ${i + 1}): Soit \\(\\Gamma\\) un cercle et \\(d_1\\), \\(d_2\\) et \\(d_3\\) trois droites.
+    //             \\mathleft
+    //             \\[(\\Gamma): ${c.tex}\\]
+    //             \\[(d_1): ${lignes[0].tex.canonical} \\qquad (d_2): ${lignes[1].tex.canonical}  \\qquad (d_3): ${lignes[2].tex.canonical}\\]
+    //
+    //             \\begin{enumerate}[label=\\Alph*]
+    //             \\item déterminer les positions relatives de \\(d_1\\), \\(d_2\\) et \\(d_3\\) par rapport à \\(\\Gamma\\)
+    //             \\item calculer les coordonnées du ou des points d'intersection entre le cercle et une des droites qui le coupe (au choix).
+    //             \\end{enumerate}
+    //             \\iftoggle{master}{\\(${t.tex.canonical}\\implies ${ptt.tex}\\) \\\\ \\(${d.tex.canonical}\\implies ${pt1.tex},\\ ${pt2.tex}\\) \\\\}{}
+    //             \\vfill
+    //             ${i % 2 === 1 ? '\\newpage' : ''}
+    //             `)
+    //
+    //         }
+    //
+    //     })
+    //     it('temp tests', () => {
+    //         for (let i = 0; i < 30; i++) {
+    //             let A = Random.Geometry.point({axis: false}),
+    //                 B = Random.Geometry.point({axis: false})
+    //
+    //             if (Random.bool()) {
+    //                 B.x = new Fraction().zero()
+    //             } else {
+    //                 B.y = new Fraction().zero()
+    //             }
+    //
+    //             const c1 = new Circle(A, Random.number(1, 10)),
+    //                 c2 = new Circle(B, Random.number(1, 10))
+    //
+    //             console.log(`(exercice ${i + 1}): déterminer la forme \\textbf{centre-rayon} des équations cartésiennes suivantes. En déduire le centre et le rayon du cercle.
+    //     \\begin{enumerate}[label=\\Alph*]
+    //     \\item \\( (\\Gamma_1): ${c1.developed}\\) \\iftoggle{master}{\\(${c1.tex}\\)}{}
+    //     \\item \\( (\\Gamma_2): ${c2.developed}\\) \\iftoggle{master}{\\(${c2.tex}\\)}{}
+    //     \\end{enumerate}
+    //     \\vfill
+    //     ${i % 2 === 1 ? '\\newpage' : ''}
+    //     `)
+    //         }
+    //     })
+    //
+    //     it('temp tests 2', () => {
+    //         const q = `(I): Soit \\(\\Gamma_1\\) et \\(\\Gamma_2\\) deux cercles. Déterminer leur position relative à l'aide des informations ci-dessous.
+    //
+    // \\[(\\Gamma_1): @G1 \\qquad (\\Gamma_2): @G2 \\]
+    // \\[\\trou{@R1} \\]
+    //
+    // \\vspace{3cm}
+    // (II): Soit \\((\\Gamma_3):  @G3\\) un cercle. Déterminer l'équation cartésienne, sous sa forme centre-sommet, des cercles \\(\\Gamma_4\\) de rayon \\(@RAYON\\) qui sont tangents à \\(\\Gamma_3\\) en sachant que les deux centres ont la même @AXE.\\\\
+    // Préciser la position relative entre \\(\\Gamma_3\\) et \\(\\Gamma_4\\)
+    // \\[ \\trou{@R2a} \\]
+    // \\[ \\trou{@R2b} \\]
+    // `
+    //
+    //         for (let i = 0; i < 30; i++) {
+    //             let A = Random.Geometry.point({axis: false}),
+    //                 triplet = Random.item(Numeric.pythagoricianTripletsWithTarget(
+    //                     Random.item([5, 13, 17, 25, 29, 37, 41])
+    //                 ).filter(tr => {
+    //                     // remove all items with zero values.
+    //                     return tr.every(x => x !== 0)
+    //                 })),
+    //                 B = new Point(
+    //                     A.x.value + triplet[0],
+    //                     A.y.value + triplet[1]
+    //                 ),
+    //                 delta = Random.number(2, triplet[2] - 1),
+    //                 positionRelative = ['extérieure', 'intérieure', 'sécante', 'disjointe'][i % 4],
+    //                 // positionRelative = Random.item(['extérieure', 'intérieure', 'sécante', 'disjointe']),
+    //                 c1: Circle, c2: Circle
+    //
+    //             if (positionRelative === 'extérieure') {
+    //                 c1 = new Circle(A, triplet[2] - delta)
+    //                 c2 = new Circle(B, delta)
+    //             } else if (positionRelative === 'intérieure') {
+    //                 c1 = new Circle(A, triplet[2] + delta)
+    //                 c2 = new Circle(B, delta)
+    //             } else if (positionRelative === 'sécante') {
+    //                 c1 = new Circle(A, triplet[2] + delta - Random.number(1, delta - 1))
+    //                 c2 = new Circle(B, delta)
+    //             } else if (positionRelative === 'disjointe') {
+    //                 c1 = new Circle(A, triplet[2] + delta + 1)
+    //                 c2 = new Circle(B, delta)
+    //             }
+    //
+    //             const R1 = `\\delta(O_1;O_2)=${A.distanceTo(B).value}\\qquad r_1=${c1.radius.value} \\qquad ${c2.radius.value} \\qquad \\implies \\text{${positionRelative}} `
+    //
+    //
+    //             let C = Random.Geometry.point({axis: false}),
+    //                 r1 = Random.number(2, 10),
+    //                 c3 = new Circle(C, r1),
+    //                 // Get a random number from 2 to 10 that is not equal to r1
+    //                 r2 = Random.number(2, 10, [r1]),
+    //                 axis = Random.item(['abscisse', 'ordonnée']),
+    //                 centers: Point[] = []
+    //
+    //             const c3x = c3.center.x.value,
+    //                 c3y = c3.center.y.value
+    //             if (axis === 'abscisse') {
+    //
+    //                 centers = [
+    //                     new Point(c3x, c3y - (r1 + r2)),
+    //                     new Point(c3x, c3y - (r2 - r1)),
+    //                     new Point(c3x, c3y - (r1 - r2)),
+    //                     new Point(c3x, c3y + (r1 + r2))
+    //                 ]
+    //             } else {
+    //                 centers = [
+    //                     new Point(c3x - (r1 + r2), c3y),
+    //                     new Point(c3x - (r2 - r1), c3y),
+    //                     new Point(c3x - (r1 - r2), c3y),
+    //                     new Point(c3x + (r1 + r2), c3y)
+    //                 ]
+    //             }
+    //
+    //             console.log(`(exercice ${i + 1}): ` + q
+    //                     .replaceAll('@G1', c1.tex)
+    //                     .replaceAll('@R1', R1)
+    //                     .replaceAll('@G2', c2.tex)
+    //                     .replaceAll('@G3', c3.developed)
+    //                     .replaceAll('@RAYON', r2.toString())
+    //                     .replaceAll('@AXE', axis)
+    //                     .replaceAll('@R2a', centers.slice(0, 2).map(x => new Circle(x, r2).tex).join(' \\qquad '))
+    //                     .replaceAll('@R2b', centers.slice(2, 4).map(x => new Circle(x, r2).tex).join(' \\qquad '))
+    //                 + '\\vfill' + (i % 2 === 1 ? '\\newpage' : '')
+    //             )
+    //         }
+    //     })
 })

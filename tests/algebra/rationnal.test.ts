@@ -1,6 +1,6 @@
-import {describe, expect, it} from "vitest"
-import {Polynom} from "../../lib/maths/algebra/polynom"
-import {Rational} from "../../lib/maths/algebra/rational"
+import { describe, expect, it } from "vitest"
+import { Polynom } from "../../src/algebra/polynom"
+import { Rational } from "../../src/algebra/rational"
 
 describe.skip('Rational tests', () => {
     it('should calculate correctly the limits to a value', () => {

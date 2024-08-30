@@ -1,0 +1,63 @@
+{
+  "typedocOptions": {
+    "entryPoints": [
+      "src/maths/algebra/equation.ts",
+      "src/maths/algebra/linearSystem.ts",
+      "src/maths/algebra/logicalset.ts",
+      "src/maths/algebra/monom.ts",
+      "src/maths/algebra/polynom.ts",
+      "src/maths/algebra/rational.ts",
+      "src/maths/coefficients/fraction.ts",
+      "src/maths/coefficients/nthroot.ts",
+      "src/maths/expressions/numexp.ts",
+      "src/maths/expressions/polynomexp.ts",
+      "src/maths/geometry/circle.ts",
+      "src/maths/geometry/line.ts",
+      "src/maths/geometry/point.ts",
+      "src/maths/geometry/triangle.ts",
+      "src/maths/geometry/vector.ts",
+      "src/maths/numeric.ts",
+      "src/maths/shutingyard.ts"
+    ],
+    "plugin": [
+      "./typedoc.katex.js"
+    ],
+    "out": "docs"
+  },
+  "compilerOptions": {
+    /* Base options */
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ES2022",
+    "allowJs": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    /* strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noImplicitAny": true,
+    /* Transpile */
+    "module": "ESNext",
+    "outDir": "dist",
+    "removeComments": true,
+    /* Building for a library */
+    "composite": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "dist/types",
+    /* Include only the src folder */
+    "lib": [
+      "ESNext",
+    ],
+  },
+  "include": [
+    "src",
+    "tests",
+    "*.config.js",
+    "*.json",
+    "demo"
+  ]
+}

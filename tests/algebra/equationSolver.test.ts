@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest"
-import { Equation } from "../../lib/maths/algebra/equation"
-import { EquationSolver } from "../../lib/maths/algebra/equationSolver"
-import type { Fraction } from "../../lib/maths/coefficients/fraction"
+import { Equation } from "../../src/algebra/equation"
+import { EquationSolver } from "../../src/algebra/equationSolver"
+import type { Fraction } from "../../src/coefficients/fraction"
 
 
 describe("Equation Solver", () => {

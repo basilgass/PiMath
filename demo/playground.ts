@@ -1,5 +1,4 @@
-import { Point } from "../../lib/maths/geometry/point.ts"
-import { Line } from "../../lib/maths/geometry/line.ts"
+import { Point } from "../src/geometry/vector"
 
 const A = new Point(0, 2),
     B = new Point(2, 3),

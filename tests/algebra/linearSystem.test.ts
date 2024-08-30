@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest"
-import { Equation } from "../../lib/maths/algebra/equation"
-import { LinearSystem } from "../../lib/maths/algebra/linearSystem"
+import { Equation } from "../../src/algebra/equation"
+import { LinearSystem } from "../../src/algebra/linearSystem"
 
 describe('Linear System creation', () => {
     test('create Linear System', () => {

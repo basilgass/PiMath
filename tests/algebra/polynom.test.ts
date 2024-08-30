@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
-import { Random } from "../../lib/maths/randomization/random"
-import { Polynom } from "../../lib/maths/algebra/polynom"
-import { Fraction } from "../../lib/maths/coefficients/fraction"
+import { Random } from "../../src/randomization/random"
+import { Polynom } from "../../src/algebra/polynom"
+import { Fraction } from "../../src/coefficients/fraction"
 
 
 describe('Polynom tests', () => {

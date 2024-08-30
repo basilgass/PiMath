@@ -1,7 +1,7 @@
 import { describe, expect, test, } from "vitest"
-import { Random } from "../../lib/maths/randomization/random"
-import { Monom } from "../../lib/maths/algebra/monom"
-import { Fraction } from "../../lib/maths/coefficients/fraction"
+import { Random } from "../../src/randomization/random"
+import { Monom } from "../../src/algebra/monom"
+import { Fraction } from "../../src/coefficients/fraction"
 
 describe('Monom creation', () => {
     test('create Monom', () => {

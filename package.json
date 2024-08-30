@@ -3,10 +3,10 @@
   "version": "0.0.133",
   "description": "A math library for teacher :)",
   "type": "module",
-  "main": "dist/pimath.js",
-  "types": "dist/pimath.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "/dist"
   ],
   "scripts": {
     "test": "vitest",
@@ -14,7 +14,7 @@
     "build": "tsc --p ./tsconfig-build.json && vite build",
     "preview": "vite preview",
     "docs": "typedoc",
-    "dependency-cruise": "dependency-cruise -T dot -x node_modules -v -- lib/main.ts  | dot -T svg > dependencies.svg"
+    "dependency-cruise": "dependency-cruise -T dot -x node_modules -v -- src/index.ts  | dot -T svg > dependencies.svg"
   },
   "keywords": [
     "math",
