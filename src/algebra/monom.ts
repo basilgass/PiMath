@@ -14,7 +14,7 @@ import { Fraction } from "../coefficients/fraction"
 import { NthRoot } from "../coefficients/nthRoot"
 import { Numeric } from "../numeric"
 
-import { ShutingYard, ShutingyardType, type Token } from "../../node_modules/piexpression/lib"
+import { ShutingYard, ShutingyardType, type Token } from "piexpression"
 
 export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra<Monom> {
     #coefficient: Fraction

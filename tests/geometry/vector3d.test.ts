@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { Vector3D } from "../../src/geometry/vector3d"
 import { determinant } from "../../src/geometry/geomMath"
+import { createLogger } from "vite"
 
 describe('Geometry Vector3D', function () {
 
@@ -35,14 +36,10 @@ describe('Geometry Vector3D', function () {
         // Check that the result is a vector
 
         const v1 = new Vector3D(
-            2,
-            1,
-            -1
+            -6, -2, -2
         )
         const v2 = new Vector3D(
-            3,
-            -2,
-            5
+            2, -3, 3
         )
         const cross = v1.cross(v2)
         console.log(`${v1.tex} \\times ${v2.tex} = $a`)
@@ -55,11 +52,12 @@ describe('Geometry Vector3D', function () {
         // Get the determinant of the 3 vectors
         // Check that the result is a fraction
 
-        const v1 = new Vector3D(2, 1, -1)
-        const v2 = new Vector3D(3, -2, 5)
-        const v3 = new Vector3D(-1, 2, 2)
+        const v1 = new Vector3D(2, 9, 6)
+        const v2 = new Vector3D(-4, 7, 4)
+        const v3 = new Vector3D(-2, 4, 7)
         const det = determinant(v1.clone(), v2.clone(), v3.clone())
         expect(det).toBeDefined()
+        console.log(det.value / 6)
 
         expect(det.value).to.be.equal(-43)
     })
