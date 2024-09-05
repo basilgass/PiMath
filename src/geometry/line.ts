@@ -8,8 +8,9 @@ import { Equation } from "../algebra/equation"
 import { Polynom } from "../algebra/polynom"
 import { Monom } from "../algebra/monom"
 import { Vector } from "./vector"
-import type { InputValue } from "../pimath.interface"
+import type { InputValue, IPiMathObject } from "../pimath.interface"
 import { randomIntSym } from "../randomization/rndHelpers"
+import { Point } from "./point"
 
 export enum LinePropriety {
     None = 'none',
@@ -18,7 +19,7 @@ export enum LinePropriety {
     Tangent = 'tangent'
 }
 
-export class Line {
+export class Line implements IPiMathObject<Line> {
     // A line is defined as the canonical form
     static PERPENDICULAR = LinePropriety.Perpendicular
     static PARALLEL = LinePropriety.Parallel
@@ -30,6 +31,8 @@ export class Line {
     #OA: Vector
     #d: Vector
     #n: Vector
+
+    #outputMode: 'canonical' | 'equation' | 'mxh' | 'parametric' | 'system' = "canonical"
 
     /**
      * Value can be a mix of:
@@ -102,7 +105,7 @@ export class Line {
     }
 
     // ------------------------------------------
-    get equation(): Equation {
+    getEquation(): Equation {
         const equ = new Equation(new Polynom().parse('xy', this.#a, this.#b, this.#c), new Polynom('0'))
         if (this.#reduceBeforeDisplay) {
             return equ.simplify()
@@ -111,54 +114,88 @@ export class Line {
         }
     }
 
-    get system(): { x: Equation, y: Equation } {
-        const e1 = new Equation(
-            new Polynom('x'),
-            new Polynom(this.#OA.x)
-                .add(new Monom('k').multiply(this.#d.x))
-        ),
-            e2 = new Equation(
-                new Polynom('y'),
-                new Polynom(this.#OA.y)
-                    .add(new Monom('k').multiply(this.#d.y))
-            )
+    // get system(): { x: Equation, y: Equation } {
+    //     const e1 = new Equation(
+    //         new Polynom('x'),
+    //         new Polynom(this.#OA.x)
+    //             .add(new Monom('k').multiply(this.#d.x))
+    //     ),
+    //         e2 = new Equation(
+    //             new Polynom('y'),
+    //             new Polynom(this.#OA.y)
+    //                 .add(new Monom('k').multiply(this.#d.y))
+    //         )
 
-        return { x: e1, y: e2 }
+    //     return { x: e1, y: e2 }
+    // }
+
+    get canonical(): this {
+        this.#outputMode = 'canonical'
+        return this
+    }
+    get equation(): this {
+        this.#outputMode = 'equation'
+        return this
+    }
+    get mxh(): this {
+        this.#outputMode = 'mxh'
+        return this
+    }
+    get parametric(): this {
+        this.#outputMode = 'parametric'
+        return this
+    }
+    get system(): this {
+        this.#outputMode = 'system'
+        return this
     }
 
-    get tex(): { canonical: string, mxh: string, parametric: string, equation: string, system: string } {
+    get tex(): string {
         // canonical    =>  ax + by + c = 0
         // mxh          =>  y = -a/b x - c/b
         // parametric   =>  (xy) = OA + k*d
         // equation     => ax + by = -c
+        const output = this.#outputMode
+        this.#outputMode = 'canonical'
+        switch (output) {
+            case 'equation':
+                return this.getEquation().reorder().tex
+            case 'mxh':
+                return this.slope.isInfinity() ?
+                    'x=' + this.OA.x.tex :
+                    'y=' + new Polynom().parse('x', this.slope, this.height).tex
+            case 'parametric':
+            case 'system': {
+                const d = this.#d.clone()
+                if (this.#reduceBeforeDisplay) {
+                    d.simplify()
+                }
 
-        const canonical = this.equation.clone().reorder(true)
-        // Make sur the first item is positive.
-        if (this.#a.isNegative()) {
-            canonical.multiply(-1)
-        }
-
-        const d = this.#d.clone()
-        if (this.#reduceBeforeDisplay) {
-            d.simplify()
-        }
-
-        return {
-            canonical: canonical.tex,
-            equation: canonical.clone().reorder().tex,
-            mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.tex : 'y=' + new Polynom().parse('x', this.slope, this.height).tex,
-            parametric: `${Vector.asTex('x', 'y')} = ${Vector.asTex(this.#OA.x.tex, this.#OA.y.tex)} + k\\cdot ${Vector.asTex(d.x.tex, d.y.tex)}`,
-            system: `\\left\\{\\begin{aligned}
+                if (output === 'parametric') {
+                    return `${Vector.asTex('x', 'y')} = ${Vector.asTex(this.#OA.x.tex, this.#OA.y.tex)} + k\\cdot ${Vector.asTex(d.x.tex, d.y.tex)}`
+                } else {
+                    return `\\left\\{\\begin{aligned}
             x &= ${(new Polynom(this.#OA.x)
-                    .add(new Monom(this.#d.x).multiply(new Monom('k'))))
-                    .reorder('k', true)
-                    .tex}\\\\ 
+                            .add(new Monom(this.#d.x).multiply(new Monom('k'))))
+                            .reorder('k', true)
+                            .tex}\\\\ 
             y &= ${(new Polynom(this.#OA.y)
-                    .add(new Monom(this.#d.y).multiply(new Monom('k'))))
-                    .reorder('k', true)
-                    .tex}
+                            .add(new Monom(this.#d.y).multiply(new Monom('k'))))
+                            .reorder('k', true)
+                            .tex}
             \\end{aligned}\\right.`
+                }
+            }
+            default:
+                {
+                    const canonical = this.getEquation()
+                    if (this.#a.isNegative()) {
+                        canonical.multiply(-1)
+                    }
+                    return canonical.tex
+                }
         }
+
     }
 
     get reduceBeforeDisplay(): boolean {
@@ -169,21 +206,37 @@ export class Line {
         this.#reduceBeforeDisplay = value
     }
 
-    get display(): { canonical: string, mxh: string, parametric: string } {
+    get display(): string {
         // canonical    =>  ax + by + c = 0
         // mxh          =>  y = -a/b x - c/b
         // parametric   =>  (xy) = OA + k*d // not relevant in display mode.
+        const output = this.#outputMode
+        this.#outputMode = 'canonical'
 
-        const canonical = this.equation
-        // Make sur the first item is positive.
-        if (this.#a.isNegative()) {
-            canonical.multiply(-1)
-        }
+        switch (output) {
+            case 'equation':
+                return this.getEquation().reorder().display
+            case 'mxh':
+                return this.slope.isInfinity() ?
+                    'x=' + this.OA.x.display :
+                    'y=' + new Polynom().parse('x', this.slope, this.height).display
+            case 'parametric': {
+                const d = this.#d.clone()
+                if (this.#reduceBeforeDisplay) {
+                    d.simplify()
+                }
 
-        return {
-            canonical: canonical.display,
-            mxh: this.slope.isInfinity() ? 'x=' + this.OA.x.display : 'y=' + new Polynom().parse('x', this.slope, this.height).display,
-            parametric: ""
+                return `((x,y))=((${this.#OA.x.display},${this.#OA.y.display}))+k((${d.x.display},${d.y.display}))`
+            }
+            default: {
+                const canonical = this.getEquation()
+                // Make sur the first item is positive.
+                if (this.#a.isNegative()) {
+                    canonical.multiply(-1)
+                }
+                return canonical.display
+            }
+
         }
     }
 
@@ -260,17 +313,26 @@ export class Line {
 
         // Two values are given: two vectors
         // TODO: it's not intuitive: vector + point or point + vector -> add a property !
-        if (values.length === 2 && values[0] instanceof Vector && values[1] instanceof Vector) {
-            if (values[0].asPoint && !values[1].asPoint) {
-                // One point and one vector
+        if (values.length === 2) {
+            if (values[0] instanceof Point && values[1] instanceof Vector) {
+                // One point and one vector director
                 return this.parseByPointAndVector(values[0], values[1])
-            } else if (values[0].asPoint && values[1].asPoint) {
+            }
+
+            if (values[0] instanceof Point && values[1] instanceof Point) {
                 // Two points
                 return this.parseByPointAndVector(values[0], new Vector(values[0], values[1]))
-            } else if (!values[0].asPoint && values[1].asPoint) {
-                // One vector and one point
-                return this.parseByPointAndNormal(values[1], values[0])
             }
+            // if (values[0].asPoint && !values[1].asPoint) {
+            //     // One point and one vector
+
+            // } else if (values[0].asPoint && values[1].asPoint) {
+            //     // Two points
+            //     return this.parseByPointAndVector(values[0], new Vector(values[0], values[1]))
+            // } else if (!values[0].asPoint && values[1].asPoint) {
+            //     // One vector and one point
+            //     return this.parseByPointAndNormal(values[1], values[0])
+            // }
         }
 
         if (values.length === 3) {
@@ -298,6 +360,7 @@ export class Line {
         }
 
         // TODO: Add the ability to create line from a normal vector
+
         console.log('Something wrong happened while creating the line')
         return this
     }
@@ -540,7 +603,7 @@ export class Line {
     }
 
     getValueAtX = (value: Fraction | number): Fraction => {
-        const equ = this.equation.clone().isolate('y'),
+        const equ = this.getEquation().isolate('y'),
             F = new Fraction(value)
 
         if (equ instanceof Equation) {
@@ -550,7 +613,7 @@ export class Line {
     }
 
     getValueAtY = (value: Fraction | number): Fraction => {
-        const equ = this.equation.clone().isolate('x'),
+        const equ = this.getEquation().isolate('x'),
             F = new Fraction(value)
 
         if (equ instanceof Equation) {

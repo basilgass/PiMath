@@ -1,7 +1,7 @@
 import { Circle } from "../../geometry/circle"
-import { rndPoint } from "./rndPoint"
 import { randomInt } from "../rndHelpers"
 import type { randomGeometryCircleConfig } from "../rndTypes"
+import { rndPoint } from "./rndPoint"
 
 export function rndCircle(userConfig?: randomGeometryCircleConfig): Circle {
     const config = Object.assign(

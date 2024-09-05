@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest"
-import { Point3D, Vector3D } from "../../src/geometry/vector3d"
 import { Line3 } from "../../src/geometry/line3"
 import { Random } from "../../src/randomization/random"
-import { Plane3 } from "../../src/geometry/plane3"
+import { Vector } from "../../src/geometry/vector"
+import { Point } from "../../src/geometry/point"
 
 describe('Geometry Line3 tests', function () {
     it('should create a line from two points', function () {
 
-        const A = new Point3D(1, 2, 3)
-        const d = new Vector3D(4, 5, 6)
+        const A = new Point(1, 2, 3)
+        const d = new Vector(4, 5, 6)
 
         const L = new Line3(A, d)
 
@@ -17,8 +17,8 @@ describe('Geometry Line3 tests', function () {
 
     it('should create a tex output', function () {
 
-        const A = new Point3D(1, 2, 3)
-        const d = new Vector3D(4, 5, 6)
+        const A = new Point(1, 2, 3)
+        const d = new Vector(4, 5, 6)
         const L = new Line3(A, d)
 
         expect(L.tex.parametric).to.be.equal('\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} 1 \\\\ 2 \\\\ 3 \\end{pmatrix} + k\\cdot \\begin{pmatrix} 4 \\\\ 5 \\\\ 6 \\end{pmatrix}')
@@ -34,7 +34,7 @@ describe('Geometry Line3 tests', function () {
 
     it('should create a random line with a specific direction', function () {
 
-        const d = new Vector3D(4, 5, 6)
+        const d = new Vector(4, 5, 6)
         const L = Random.line3({ direction: d })
 
         expect(L.OA.dimension).to.be.equal(3)
@@ -46,7 +46,7 @@ describe('Geometry Line3 tests', function () {
 
     it('should create a random line with a specific point', function () {
 
-        const A = new Point3D(1, 2, 3)
+        const A = new Point(1, 2, 3)
         const L = Random.line3({ A })
 
         expect(L.OA.dimension).to.be.equal(3)

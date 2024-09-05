@@ -13,10 +13,10 @@ import { rndFraction } from "./coefficient/rndFraction"
 import { rndMonom } from "./algebra/rndMonom"
 import { rndPolynom } from "./algebra/rndPolynom"
 import { rndEquation } from "./algebra/rndEquation"
-import { rndPoint } from "./geometry/rndPoint"
 import { rndCircle } from "./geometry/rndCircle"
 import { rndLine } from "./geometry/rndLine"
 import { rndLine3 } from "./geometry/rndLine3"
+import { rndPoint } from "./geometry/rndPoint"
 
 export type * from "./rndTypes"
 

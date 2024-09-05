@@ -1,5 +1,6 @@
 import { Line3 } from "../../geometry/line3"
-import { Point3D, Vector3D } from "../../geometry/vector3d"
+import { Point } from "../../geometry/point"
+import { Vector } from "../../geometry/vector"
 import { randomIntSym } from "../rndHelpers"
 import type { randomGeometryLine3Config } from "../rndTypes"
 
@@ -19,8 +20,8 @@ export function rndLine3(userConfig?: randomGeometryLine3Config): Line3 {
         }, userConfig)
 
     // The direction vector exists.
-    const A = new Point3D(config.A.x, config.A.y, config.A.z)
-    const d = new Vector3D(config.direction.x, config.direction.y, config.direction.z)
+    const A = new Point(config.A.x, config.A.y, config.A.z)
+    const d = new Vector(config.direction.x, config.direction.y, config.direction.z)
 
     return new Line3(A, d)
 }

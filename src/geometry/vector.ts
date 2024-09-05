@@ -1,5 +1,5 @@
 /**
- * Vector2D module contains everything necessary to handle 2d or 3d vectors.
+ * Vector2D module contains everything necessary to handle 2d vectors.
  * @module Vector
  */
 import type { InputValue } from "../pimath.interface"
@@ -8,37 +8,55 @@ import { Numeric } from "../numeric"
 import { areVectorsColinears, areVectorsEquals, dotProduct } from "./geomMath"
 
 export class Vector {
-    #x: Fraction = new Fraction().zero()   // 1st component
-    #y: Fraction = new Fraction().zero()  // 2nd component
+    #array: Fraction[] = []
     #asPoint = false
 
     constructor()
-    constructor(Vector2D: Vector)
+    constructor(value: Vector)
     constructor(start: Vector, end: Vector)
-    constructor(a: InputValue<Fraction>, b: InputValue<Fraction>)
-    constructor(start?: Vector | InputValue<Fraction>, end?: Vector | InputValue<Fraction>) {
-        if (start !== undefined) {
-            this.parse(start, end)
+    constructor(...values: InputValue<Fraction>[])
+    constructor(...values: Vector[] | InputValue<Fraction>[]) {
+        // Initialize the vector
+        if (values.length > 0) {
+            this.parse(...values)
         }
     };
 
     // ------------------------------------------
     // Getter and setter
     // ------------------------------------------
+    get array(): Fraction[] {
+        return this.#array
+    }
+
+    set array(value: Fraction[]) {
+        this.#array = value
+    }
+
     get x(): Fraction {
-        return this.#x
+        return this.#array[0]
     }
 
     set x(value: Fraction | number | string) {
-        this.#x = new Fraction(value)
+        this.#array[0] = new Fraction(value)
     }
 
     get y(): Fraction {
-        return this.#y
+        return this.#array[1]
     }
 
     set y(value: Fraction | number | string) {
-        this.#y = new Fraction(value)
+        this.#array[1] = new Fraction(value)
+    }
+
+    get z(): Fraction {
+        if (this.dimension < 3) { throw new Error('Vector is not 3D') }
+        return this.#array[2]
+    }
+
+    set z(value: Fraction | number | string) {
+        if (this.dimension < 3) { throw new Error('Vector is not 3D') }
+        this.#array[2] = new Fraction(value)
     }
 
     get asPoint(): boolean {
@@ -51,7 +69,8 @@ export class Vector {
 
 
     get normSquare(): Fraction {
-        return this.#x.clone().pow(2).add(this.#y.clone().pow(2))
+        // Get the norm square of the vector
+        return this.array.reduce((acc, x) => acc.add(x.clone().pow(2)), new Fraction(0))
     }
 
     get norm(): number {
@@ -74,9 +93,6 @@ export class Vector {
         return `((${this.array.map(x => x.display).join(',')}))`
     }
 
-    get array(): Fraction[] {
-        return [this.#x, this.#y]
-    }
 
     get dimension(): number {
         return this.array.length
@@ -89,105 +105,79 @@ export class Vector {
         return this.array.every(x => x.isZero())
     }
 
-    static asTex(x: string, y: string): string {
-        return `\\begin{pmatrix} ${x} \\\\ ${y} \\end{pmatrix}`
-
+    static asTex(...values: string[]): string {
+        return `\\begin{pmatrix} ${values.join(' \\\\ ')} \\end{pmatrix}`
+    }
+    static asDisplay(...values: string[]): string {
+        return `((${values.join(',')}))`
     }
 
-    static scalarProduct = (v1: Vector, v2: Vector): Fraction => {
-        if (v1.dimension !== v2.dimension) {
-            throw new Error('Vectors must have the same dimension')
+    public defineAsPoint(value?: boolean): this {
+        this.#asPoint = value !== false
+        return this
+    }
+    public parse(...values: Vector[] | InputValue<Fraction>[]): this {
+        if (values.length === 0) {
+            throw new Error(`Invalid value`)
         }
 
-        return v1.x.clone().multiply(v2.x).add(v1.y.clone().multiply(v2.y))
-    }
-
-    static determinant = (v1: Vector, v2: Vector): Fraction => {
-        return v1.x.clone().multiply(v2.y).subtract(v1.y.clone().multiply(v2.x))
-    }
-
-    parse = (
-        start: Vector | InputValue<Fraction> | { x: Fraction | number, y: Fraction | number },
-        end?: Vector | InputValue<Fraction> | { x: Fraction | number, y: Fraction }
-    ): Vector => {
-        // Maybe more than one value was given...
-        // Initialize the vector
-        this.zero()
-
-
-        if (end === undefined) {
-            if (start instanceof Vector) {
-                return start.clone()
+        if (values.length === 1) {
+            if (values[0] instanceof Vector) {
+                return values[0].clone() as this
+            } else if (typeof values[0] === 'string') {
+                return this.#parseString(values[0])
             } else {
-                // TODO: Check what is _parseString
-                return this._parseString(start as string)
+                throw new Error(`Invalid value`)
             }
         }
 
         // Two values are given
-        if (start instanceof Vector && end instanceof Vector) {
-            this.#x = end.x.clone().subtract(end.x)
-            this.#y = end.x.clone().subtract(end.y)
-            return this
+        if (values.length === 2) {
+            const [A, B] = values
+
+            // The two values are vectors
+            if (A instanceof Vector && B instanceof Vector) {
+                if (A.dimension !== B.dimension) { throw new Error('Vectors must have the same dimension') }
+
+                this.#array = B.array.map((x, index) => x.clone().subtract(A.array[index]))
+                return this
+            }
         }
 
-        // Two fractions are given
-        if ((start instanceof Fraction || typeof start === 'number' || typeof start === 'string')
-            &&
-            (end instanceof Fraction || typeof end === 'number' || typeof end === 'string')
-        ) {
-            this.#x = new Fraction(start)
-            this.#y = new Fraction(end)
-            return this
-        }
-
-        // Maybe, it's any object with x and y values (x, y as Fractions or numbers)
-        if (
-            typeof start === 'object' && Object.hasOwn(start, 'x') && Object.hasOwn(start, 'y') &&
-            typeof end === 'object' && Object.hasOwn(end, 'x') && Object.hasOwn(end, 'y')
-        ) {
-            const fa = start as { x: Fraction | number, y: Fraction | number },
-                fb = end as { x: Fraction | number, y: Fraction | number }
-            this.#x = new Fraction(fa.x).clone().subtract(fb.x)
-            this.#y = new Fraction(fa.y).clone().subtract(fb.y)
-            return this
-        }
+        // Two ore more values as number, string, fraction...
+        this.#array = values.map(x => new Fraction(x as InputValue<Fraction>))
 
         return this
     }
 
     public clone(): Vector {
         const V = new Vector()
-
-
-        V.x = this.x.clone()
-        V.y = this.y.clone()
-
+        V.array = this.copy()
+        V.asPoint = this.asPoint
         return V
     }
 
+    public copy(): Fraction[] {
+        return this.array.map(x => x.clone())
+    }
+
     zero = (): this => {
-        this.#x = new Fraction(0)
-        this.#y = new Fraction(0)
+        this.array.forEach(x => x.zero())
         return this
     }
 
     one = (): this => {
-        this.#x = new Fraction(1)
-        this.#y = new Fraction(0)
+        this.array.forEach((x, index) => index === 1 ? x.one() : x.zero())
         return this
     }
 
     opposite = (): this => {
-        this.#x.opposite()
-        this.#y.opposite()
+        this.array.forEach(x => x.opposite())
         return this
     }
 
     add = (V: Vector): this => {
-        this.#x.add(V.x)
-        this.#y.add(V.y)
-
+        this.array.forEach((x, index) => x.add(V.array[index]))
         return this
     }
 
@@ -204,46 +194,46 @@ export class Vector {
         return this.divideByScalar(norm)
     }
 
-    middleOf = (V1: Vector, V2: Vector): this => {
-        this.#x = V1.x.clone().add(V2.x).divide(2)
-        this.#y = V1.y.clone().add(V2.y).divide(2)
+    middleOf(V1: Vector, V2: Vector): this {
+        if (V1.dimension !== V2.dimension) { throw new Error('Vectors must be the same dimension') }
+
+        this.array = []
+        V1.array.forEach((x, index) => {
+            this.array.push(x.clone().add(V2.array[index]).divide(2))
+        })
 
         return this
     }
 
-    translate(value: Vector): this
-    translate(value: { x: number | Fraction, y: number | Fraction }): this
-    translate(value: Vector | { x: number | Fraction, y: number | Fraction }): this {
-        this.#x.add(value.x)
-        this.#y.add(value.y)
+    translate(...values: Fraction[]): this {
+        this.array.forEach((x, index) => x.add(values[index]))
         return this
     }
 
-    distanceTo(item: Vector): { value: number, fraction: Fraction, tex: string } {
-        const V = new Vector(this, item)
 
-        return {
-            value: V.norm,
-            fraction: V.normSquare,
-            tex: V.tex
-        }
-    }
-
-
-
-    dotProduct = (V: Vector): Fraction => {
+    dot = (V: Vector): Fraction => {
         return dotProduct(this, V)
     }
 
-    determinantWith = (V: Vector): Fraction => {
-        return Vector.determinant(this, V)
+    cross(value: Vector): Vector {
+        if (this.dimension !== 3 || value.dimension !== 3) {
+            throw new Error('Cross product can only be determined in 3D')
+        }
+
+        return new Vector(
+            this.y.clone().multiply(value.z).subtract(this.z.clone().multiply(value.y)),
+            this.z.clone().multiply(value.x).subtract(this.x.clone().multiply(value.z)),
+            this.x.clone().multiply(value.y).subtract(this.y.clone().multiply(value.x))
+        )
     }
 
     normal = (): this => {
+        if (this.dimension >= 3) { throw new Error('Normal vector can only be determined in 2D') }
+
         const x = this.x.clone().opposite(),
             y = this.y.clone()
-        this.#x = y
-        this.#y = x
+        this.#array[0] = y
+        this.#array[1] = x
         return this
     }
 
@@ -256,13 +246,12 @@ export class Vector {
     }
 
     isNormalTo = (v: Vector): boolean => {
-        return this.dotProduct(v).isZero()
+        return this.dot(v).isZero()
     }
 
     multiplyByScalar = (k: InputValue<Fraction>): this => {
         const scalar = new Fraction(k)
-        this.#x.multiply(scalar)
-        this.#y.multiply(scalar)
+        this.array.forEach(x => x.multiply(scalar))
         return this
     }
 
@@ -274,16 +263,19 @@ export class Vector {
         // Multiply by the lcm of denominators.
         return this
             .multiplyByScalar(
-                Numeric.lcm(this.#x.denominator, this.#y.denominator)
+                Numeric.lcm(...this.array.map(x => x.denominator))
             )
             .divideByScalar(
-                Numeric.gcd(this.#x.numerator, this.#y.numerator)
+                Numeric.gcd(...this.array.map(x => x.numerator))
+            ).
+            multiplyByScalar(
+                this.x.isNegative() ? -1 : 1
             )
     }
 
-    angleWith = (V: Vector, sharp?: boolean, radian?: boolean): number => {
+    angle = (V: Vector, sharp?: boolean, radian?: boolean): number => {
 
-        let scalar = this.dotProduct(V).value
+        let scalar = this.dot(V).value
         if (sharp) {
             scalar = Math.abs(scalar)
         }
@@ -293,7 +285,7 @@ export class Vector {
         return toDegree * Math.acos(scalar / (this.norm * V.norm))
     }
 
-    private _parseString = (value: string): this => {
+    #parseString = (value: string): this => {
         // Remove the first letter if it's a bracket.
         if (value.startsWith('(')) {
             value = value.substring(1)
@@ -313,36 +305,17 @@ export class Vector {
         }
 
         // Validate the fraction values.
-        this.x = new Fraction(components[0])
-        this.y = new Fraction(components[1])
+        this.#array = components.map(x => new Fraction(x))
         return this
     }
-}
 
-export class Point extends Vector {
-    constructor()
-    constructor(Point2D: Point)
-    constructor(x: InputValue<Fraction>, y: InputValue<Fraction>)
-    constructor(start?: Point | InputValue<Fraction>, end?: InputValue<Fraction>) {
-        super()
+    distanceTo(item: Vector): { value: number, fraction: Fraction, tex: string } {
+        const V = new Vector(this, item)
 
-        if (start !== undefined) {
-            this.parse(start, end)
+        return {
+            value: V.norm,
+            fraction: V.normSquare,
+            tex: V.tex
         }
-
-        this.asPoint = true
     }
-
-    public override clone(): Point {
-        return new Point(this.x, this.y)
-    }
-
-    override get tex(): string {
-        return `\\left(${this.array.map(x => x.tex).join(';')}\\right)`
-    }
-
-    override get display(): string {
-        return `(${this.array.map(x => x.display).join(';')})`
-    }
-
 }

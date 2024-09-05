@@ -453,6 +453,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         const sign = this.sign()
         this.abs()
 
+        // Reduce the fraction
+        this.reduce()
+
         // Check if numerator and denominator are roots of...
         // otherwise, convert to numeric.
         const controlNumerator = Math.floor(Math.pow(this.#numerator, Math.abs(1 / p))),
@@ -461,12 +464,13 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         this.#numerator = Math.pow(this.#numerator, Math.abs(1 / p))
         this.#denominator = Math.pow(this.#denominator, Math.abs(1 / p))
 
-        if (controlNumerator ** p !== this.#numerator
+        if (controlNumerator !== this.#numerator
             ||
-            controlDenominator ** p !== this.#denominator) {
+            controlDenominator !== this.#denominator) {
             // The fraction is not a perfect root - make it approximative
             this.#numerator = this.#numerator / this.#denominator
             this.#denominator = 1
+            this.#approximative = true
         }
 
         // Restore the sign

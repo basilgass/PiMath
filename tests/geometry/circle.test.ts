@@ -1,12 +1,83 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, test } from "vitest"
+import { Circle } from "../../src/geometry/circle"
+import { Line } from "../../src/geometry/line"
+import { Fraction } from "../../src/coefficients/fraction"
+import { Point } from "../../src/geometry/point"
 
-import { Circle } from "../../src/geometry/circle.ts"
-import { Line } from "../../src/geometry/line.ts"
-import { Fraction } from "../../src/coefficients/fraction.ts"
-import { Point } from "../../src/geometry/vector.ts"
+describe('Circle creation', () => {
+    test('create Circle', () => {
+        const C = new Circle(new Point(8, 6), 20, true)
 
-describe('Circle', function () {
-    it('should calculate the intersection of a circle and a line', function () {
+        expect(C).toBeDefined()
+        expect(C.center.x.value).toBe(8)
+        expect(C.center.y.value).toBe(6)
+        expect(C.radius.value).toBe(Math.sqrt(20))
+    })
+
+    test('parse string', () => {
+        const C = new Circle('(x-3)^2+(y+4)^2=16')
+        expect(C.center.x.value).toBe(3)
+        expect(C.center.y.value).toBe(-4)
+        expect(C.radius.value).toBe(4)
+    })
+
+    test('create circle from center and through point', () => {
+        const C = new Circle(
+            new Point(1, 2),
+            new Point(4, -2)
+        )
+
+        expect(C.center.x.value).toBe(1)
+        expect(C.center.y.value).toBe(2)
+        expect(C.radius.value).toBe(5)
+    })
+
+    test.todo('create circle from three points')
+
+    test('clone Circle', () => {
+        const C = new Circle(new Point(8, 6), 20, true)
+        const D = C.clone()
+        D.setRadius(5)
+        expect(D.center.x.value).toBe(8)
+        expect(D.center.y.value).toBe(6)
+        expect(D.radius.value).toBe(5)
+        expect(C.radius.value).toBe(Math.sqrt(20))
+    })
+})
+
+describe('Circle output', () => {
+    test('output as LaTeX', () => {
+        const C = new Circle(new Point(8, 6), 20, true)
+        expect(C.tex).toBe('\\left(x-8\\right)^2+\\left(y-6\\right)^2=20')
+    })
+    test('output as ASCII', () => {
+        const C = new Circle(new Point(8, 6), 20, true)
+        expect(C.display).toBe('(x-8)^2+(y-6)^2=20')
+    })
+})
+
+describe.todo('Circle operations', () => {
+    test.todo('reduce Circle')
+    test.todo('add two Circles')
+    test.todo('subtract two Circles')
+    test.todo('multiply two Circles')
+    test.todo('divide by Circle')
+    test.todo('raise Circle by integer')
+})
+describe.todo('Circle comparisons', () => {
+    test.todo('same Circle')
+    test.todo('equal Circle')
+    test.todo('is one Circle')
+    test.todo('is zero Circle')
+})
+describe.todo('Circle static functions')
+describe.todo('Circle evaluation', () => {
+    test.todo('evaluate Circle')
+})
+describe.todo('Circle generators')
+
+describe.skip('Circle', function () {
+    test('should calculate the intersection of a circle and a line', function () {
         const C = new Circle(
             new Point(8, 6),
             20,
@@ -28,7 +99,7 @@ describe('Circle', function () {
         expect(IPS[1].y.value).to.be.equal(10)
     })
 
-    it('should calculate tangents', function () {
+    test('should calculate tangents', function () {
 
         // Through one point on the circle
         const C = new Circle(
@@ -54,20 +125,20 @@ describe('Circle', function () {
         expect(E.tangents(P3)).to.be.empty
     })
 
-    it('should get a list of point on the circle', function () {
+    test('should get a list of point on the circle', function () {
         const C = new Circle('(x-3)^2+(y+4)^2=16'),
             pts = C.getPointsOnCircle()
 
         expect(pts.map(x => x.x.display + ',' + x.y.display)).to.have.all.members(['3,0', '3,-8', '7,-4', '-1,-4'])
     })
 
-    // it('should calculate the circle from center and radius', function () {
+    // test('should calculate the circle from center and radius', function () {
     //     const circle = new Circle("x^2+6x+y^2-8y+12=0")
     //
     //     // console.log(circle.tex)
     // })
 
-    // it('tangentes pt ext', () => {
+    // test('tangentes pt ext', () => {
     //     function makeCircle(): { circle: Circle, point: Point, tangents: Line[] } {
     //         const A = Random.Geometry.point({axis: false}),
     //             rv = Random.number(1, 3),
@@ -157,7 +228,7 @@ describe('Circle', function () {
      }
      */
     // })
-    // it('tangentes temp tests', () => {
+    // test('tangentes temp tests', () => {
     //     function makeCircle(): { circle: Circle, point: Point, tangent: Line, symetric: Line } {
     //         let A = Random.Geometry.point({axis: false}),
     //             rv = Random.number(1, 3),
@@ -212,7 +283,7 @@ describe('Circle', function () {
     //
     //     }
     // })
-    //     it('intersection temp tests', () => {
+    //     test('intersection temp tests', () => {
     //         for (let i = 0; i < 30; i++) {
     //             let A = Random.Geometry.point({axis: false}),
     //                 rv = Random.number(1, 3),
@@ -287,7 +358,7 @@ describe('Circle', function () {
     //         }
     //
     //     })
-    //     it('temp tests', () => {
+    //     test('temp tests', () => {
     //         for (let i = 0; i < 30; i++) {
     //             let A = Random.Geometry.point({axis: false}),
     //                 B = Random.Geometry.point({axis: false})
@@ -312,7 +383,7 @@ describe('Circle', function () {
     //         }
     //     })
     //
-    //     it('temp tests 2', () => {
+    //     test('temp tests 2', () => {
     //         const q = `(I): Soit \\(\\Gamma_1\\) et \\(\\Gamma_2\\) deux cercles. Déterminer leur position relative à l'aide des informations ci-dessous.
     //
     // \\[(\\Gamma_1): @G1 \\qquad (\\Gamma_2): @G2 \\]

@@ -1,5 +1,6 @@
 import { Fraction } from '../coefficients/fraction';
-import { Point3D, Vector3D } from './vector3d';
+import { Vector } from './vector';
+import { Point } from './point';
 
 export declare enum LinePropriety {
     None = "none",
@@ -16,35 +17,42 @@ export declare class Line3 {
      *
      * @param values
      */
-    constructor(A: Point3D, d: Vector3D);
-    get OA(): Vector3D;
-    set OA(value: Vector3D);
-    get point(): Point3D;
-    get d(): Vector3D;
-    set d(value: Vector3D);
+    constructor(A: Point, B: Point);
+    constructor(A: Point, d: Vector);
+    get OA(): Point;
+    set OA(value: Point);
+    get point(): Point;
+    get d(): Vector;
+    set d(value: Vector);
     get tex(): {
         parametric: string;
         system: string;
+        cartesian: string;
     };
-    get direction(): Vector3D;
+    get display(): {
+        parametric: string;
+        system: string;
+        cartesian: string;
+    };
+    get direction(): Vector;
     clone: () => this;
-    isOnLine: (pt: Vector3D) => boolean;
+    isOnLine: (pt: Vector) => boolean;
     isParallelTo: (line: Line3) => boolean;
     isSameAs: (line: Line3) => boolean;
     isPerpendicularTo: (line: Line3) => boolean;
     isVertical: () => boolean;
     simplify: () => this;
     intersection: (line: Line3) => {
-        point: Vector3D;
+        point: Vector;
         hasIntersection: boolean;
         isParallel: boolean;
         isSame: boolean;
     };
-    distanceTo(pt: Vector3D): {
+    distanceTo(pt: Point): {
         value: number;
         fraction: Fraction;
         tex: string;
     };
-    hitSegment(A: Vector3D, B: Vector3D): boolean;
-    randomPoint: (max?: number) => Point3D;
+    hitSegment(A: Point, B: Point): boolean;
+    randomPoint: (max?: number) => Point;
 }

@@ -5,20 +5,30 @@ import { Fraction } from "../coefficients/fraction"
 import { Equation } from "../algebra/equation"
 import { Polynom } from "../algebra/polynom"
 import { Monom } from "../algebra/monom"
+import type { IPiMathObject } from "../pimath.interface"
+import { Point } from "./point"
 
-export class Circle {
-    #center: Vector | undefined = undefined
+export class Circle
+    implements
+    IPiMathObject<Circle> {
+    #center: Point | undefined = undefined
     #squareRadius: Fraction | undefined = undefined
     #cartesian: Equation | undefined = undefined
 
+    constructor()
+    constructor(equation: string | Equation)
+    constructor(circle: Circle)
+    constructor(center: Point, radius: Fraction | number, square?: boolean)
+    constructor(center: Point, pointThrough: Point)
+    constructor(A: Point, B: Point, C: Point)
     constructor(...values: unknown[]) {
         if (values.length > 0) {
             this.parse(...values)
         }
     }
 
-    get center(): Vector {
-        return this.#center ?? new Vector()
+    get center(): Point {
+        return this.#center ?? new Point()
     }
 
     get squareRadius(): Fraction {
@@ -102,13 +112,13 @@ export class Circle {
         }
     }
 
-    lineIntersection = (L: Line): Vector[] => {
-        const intersectionPoints: Vector[] = []
+    lineIntersection = (L: Line): Point[] => {
+        const intersectionPoints: Point[] = []
         // let solX: Fraction
 
         if (this.#cartesian === undefined) { return [] }
-        const equX = this.#cartesian.clone(), lineX = L.equation.clone().isolate('x'),
-            lineY = L.equation.clone().isolate('y')
+        const equX = this.#cartesian.clone(), lineX = L.getEquation().clone().isolate('x'),
+            lineY = L.getEquation().clone().isolate('y')
 
         if (lineX instanceof Equation && lineY instanceof Equation) {
             equX.replaceBy('y', lineY.right).simplify()
@@ -121,32 +131,32 @@ export class Circle {
             //     }
 
             //     solX = new Fraction(x.exact === false ? x.value : x.exact)
-            //     intersectionPoints.push(new Vector(solX.clone(), lineY.right.evaluate(solX)))
+            //     intersectionPoints.push(new Point(solX.clone(), lineY.right.evaluate(solX)))
             // }
         }
 
         return intersectionPoints
     }
 
-    tangents = (P: Vector | Fraction): Line[] => {
+    tangents = (P: Point | Fraction): Line[] => {
         if (P instanceof Fraction) {
-            return this._tangentsWithSlope(P)
+            return this.#tangentsWithSlope(P)
         } else if (this.isPointOnCircle(P)) {
-            return this._tangentsThroughOnePointOnTheCircle(P)
+            return this.#tangentsThroughOnePointOnTheCircle(P)
         } else if (this.#center !== undefined && this.#center.distanceTo(P).value > this.radius.value) {
             //TODO:  Must check it's outside the circle
-            this._tangentsThroughOnePointOutsideTheCircle(P); return []
+            this.#tangentsThroughOnePointOutsideTheCircle(P); return []
         } else {
             console.log('No tangents as the point is inside !')
         }
         return []
     }
 
-    isPointOnCircle = (P: Vector): boolean => {
+    isPointOnCircle = (P: Point): boolean => {
         return this.#cartesian?.test({ x: P.x, y: P.y }) ?? false
     }
 
-    getPointsOnCircle = (numberIsInteger?: boolean): Vector[] => {
+    getPointsOnCircle = (numberIsInteger?: boolean): Point[] => {
         if (numberIsInteger === undefined) {
             numberIsInteger = false
         }
@@ -156,8 +166,7 @@ export class Circle {
 
         const triplets = Numeric.pythagoreanTripletsWithTarget(this.squareRadius.value, true)
 
-        const points: Vector[] = []
-        let pt: Vector
+        const points: Point[] = []
 
         triplets.forEach(triplet => {
             // Allow positive / negative values
@@ -165,9 +174,10 @@ export class Circle {
             // x-a = -t => x = a - t
 
             for (const k of [[1, 1], [-1, 1], [-1, -1], [1, -1]]) {
-                pt = new Vector(
+                points.push(new Point(
                     this.center.x.clone().add(k[0] * triplet[0]),
                     this.center.y.clone().add(k[1] * triplet[1])
+                )
                 )
                 // Check if the point is not already in points.
                 // TODO: isInListOfPoints not implemented
@@ -179,19 +189,34 @@ export class Circle {
         return points
     }
 
-    clone(): this {
-        this.#center = this.center.clone()
-        this.#squareRadius = this.squareRadius.clone()
-        this._calculateCartesian()
+    clone(): Circle {
+        return new Circle(
+            this.center.clone(),
+            this.squareRadius.clone(),
+            true
+        )
+        // this.#center = this.center.clone()
+        // this.#squareRadius = this.squareRadius.clone()
+        // this._calculateCartesian()
+        // return this
+    }
+
+    setRadius(radius: Fraction | number, square?: boolean): this {
+        if (square) {
+            this.#squareRadius = new Fraction(radius)
+        } else {
+            this.#squareRadius = new Fraction(radius).pow(2)
+        }
+        this.#calculateCartesian()
         return this
     }
 
-    private _tangentsThroughOnePointOnTheCircle = (P: Vector): Line[] => {
-        const CT = new Vector(this.center, P)
+    #tangentsThroughOnePointOnTheCircle = (P: Point): Line[] => {
+        const CT = new Point(this.center, P)
         return [new Line(P, CT, LinePropriety.Perpendicular)]
     }
 
-    private _tangentsThroughOnePointOutsideTheCircle = (P: Vector) => {
+    #tangentsThroughOnePointOutsideTheCircle = (P: Point) => {
         // y = mx + h
         // px, py => h = -m px + py => mx - y -m.px + py = 0 =>
         // Centre: cx, cy, radius: r
@@ -225,7 +250,7 @@ export class Circle {
 
     }
 
-    private _tangentsWithSlope = (slope: Fraction): Line[] => {
+    #tangentsWithSlope = (slope: Fraction): Line[] => {
         // d(C;t)=r => ac1+bc2 + x = +- sqrt(a^2 + b^2)*r
         // x = -ac1-bc2  +-  sqrt(a^2 + b^2)*r
         // y = a/bx + h => ax-by + H = 0
@@ -239,7 +264,7 @@ export class Circle {
         return [new Line(a, b, x1), new Line(a, b, x2)]
     }
 
-    private _reset(): this {
+    #reset(): this {
         this.#center = undefined
         this.#squareRadius = undefined
         this.#cartesian = undefined
@@ -247,7 +272,7 @@ export class Circle {
         return this
     }
 
-    private parse(...values: unknown[]): this {
+    parse(...values: unknown[]): this {
         // Data can be given in these formats:
         // one value, a string -> make it an Equation
         // one value, an Equation
@@ -256,48 +281,51 @@ export class Circle {
         // two values: point and Fraction (center and radius)
         // three values: Vector2D, Fraction, Boolean (center, square radius, true)
 
-        this._reset()
+        this.#reset()
 
         if (typeof values[0] === 'string') {
-            this._parseEquation(new Equation(values[0]))
+            this.#parseEquation(new Equation(values[0]))
         } else if (values[0] instanceof Equation) {
-            this._parseEquation(values[0])
+            this.#parseEquation(values[0])
         } else if (values[0] instanceof Circle) {
-            this._parseCopyCircle(values[0])
-        } else if (values[0] instanceof Vector && values.length > 1) {
-            if (values[1] instanceof Vector) {
-                if (values[2] instanceof Vector) {
+            this.#parseCopyCircle(values[0])
+        } else if (values[0] instanceof Point && values.length > 1) {
+            if (values[1] instanceof Point) {
+                if (values[2] instanceof Point) {
                     // TODO: Add the method to parse through three points
                     // this._parseThroughtThreePoints(values[0], values[1], values[2])
                 } else {
-                    this._parseCenterAndPointThrough(values[0], values[1])
+                    this.#parseCenterAndPointThrough(values[0], values[1])
                 }
             } else if (values[1] instanceof Fraction || typeof values[1] === 'number') {
-                this._parseCenterAndRadius(values[0], values[1], (typeof values[2] === "boolean") ? values[2] : false)
+                this.#parseCenterAndRadius(values[0], values[1], (typeof values[2] === "boolean") ? values[2] : false)
             }
         }
 
         // Calculate once the different values.
-        this._calculateCartesian()
+        this.#calculateCartesian()
 
 
         return this
     }
 
-    private _calculateCartesian() {
-        this.#cartesian = (new Equation(new Polynom(`(x-(${this.center.x.display}))^2+(y-(${this.center.y.display}))^2`), new Polynom(this.squareRadius.display))).moveLeft()
+    #calculateCartesian() {
+        this.#cartesian = (
+            new Equation(
+                new Polynom(`(x-(${this.center.x.display}))^2+(y-(${this.center.y.display}))^2`),
+                new Polynom(this.squareRadius.display))
+        ).moveLeft()
     }
 
-    private _parseCopyCircle(circle: Circle): this {
+    #parseCopyCircle(circle: Circle): this {
         this.#center = circle.center.clone()
         this.#squareRadius = circle.squareRadius.clone()
-        this._calculateCartesian()
+        this.#calculateCartesian()
         return this
     }
 
-    private _parseCenterAndRadius(center: Vector, radius: Fraction | number, square?: boolean): this {
+    #parseCenterAndRadius(center: Point, radius: Fraction | number, square?: boolean): this {
         this.#center = center.clone()
-
         if (square) {
             this.#squareRadius = (new Fraction(radius))
         } else {
@@ -307,13 +335,13 @@ export class Circle {
         return this
     }
 
-    private _parseCenterAndPointThrough(center: Vector, pointThrough: Vector): this {
+    #parseCenterAndPointThrough(center: Point, pointThrough: Point): this {
         this.#center = center.clone()
         this.#squareRadius = new Vector(this.#center, pointThrough).normSquare
         return this
     }
 
-    private _parseEquation(equ: Equation): this {
+    #parseEquation(equ: Equation): this {
 
         // Move everything to the left.
         equ.moveLeft()
@@ -332,13 +360,12 @@ export class Circle {
 
                 c = equ.left.monomByDegree(0)
 
-                this.#center = new Vector(x1.coefficient.clone().divide(2).opposite(), y1.coefficient.clone().divide(2).opposite())
+                this.#center = new Point(x1.coefficient.clone().divide(2).opposite(), y1.coefficient.clone().divide(2).opposite())
 
                 this.#squareRadius = c.coefficient.clone().opposite()
                     .add(this.#center.x.clone().pow(2))
                     .add(this.#center.y.clone().pow(2))
 
-                this._calculateCartesian()
             } else {
                 // The circle is not a valid circle
                 this.#center = undefined
@@ -348,7 +375,7 @@ export class Circle {
         return this
     }
 
-    // private _parseThroughtThreePoints(A: Vector, B: Vector, C: Vector): this {
+    // private _parseThroughtThreePoints(A: Point, B: Point, C: Point): this {
     //     const T = new Triangle(A, B, C), mAB = T.remarquables.mediators.AB.clone(),
     //         mAC = T.remarquables.mediators.AC.clone()
     //     this.parse(mAB.intersection(mAC).point, A)

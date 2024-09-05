@@ -6,8 +6,9 @@ import { Fraction } from './coefficients/fraction';
 import { NthRoot } from './coefficients/nthRoot';
 import { Circle } from './geometry/circle';
 import { Line } from './geometry/line';
+import { Point } from './geometry/point';
+import { Triangle } from './geometry/triangle';
 import { Vector } from './geometry/vector';
-import { Vector3D } from './geometry/vector3d';
 
 declare const PiMath: {
     Numeric: {
@@ -42,16 +43,15 @@ declare const PiMath: {
         shuffle: <T_2>(arr: T_2[]) => T_2[];
         line: (config?: import('./randomization/rndTypes').randomGeometryLineConfig | undefined) => Line;
         line3: (config?: import('./randomization/rndTypes').randomGeometryLine3Config | undefined) => import('./geometry/line3').Line3;
-        point: (config?: import('./randomization/rndTypes').randomGeometryPointConfig | undefined) => import('./geometry/vector').Point;
+        point: (config?: import('./randomization/rndTypes').randomGeometryPointConfig | undefined) => Point;
         circle: (config?: import('./randomization/rndTypes').randomGeometryCircleConfig | undefined) => Circle;
     };
     Geometry: {
         Vector: typeof Vector;
+        Point: typeof Point;
         Line: typeof Line;
+        Triangle: typeof Triangle;
         Circle: typeof Circle;
-    };
-    Geometry3D: {
-        Vector3D: typeof Vector3D;
     };
 };
 export default PiMath;

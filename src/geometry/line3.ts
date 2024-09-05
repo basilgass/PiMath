@@ -5,8 +5,9 @@
 import { Fraction } from "../coefficients/fraction"
 import { Polynom } from "../algebra/polynom"
 import { Monom } from "../algebra/monom"
-import { Point3D, Vector3D } from "./vector3d"
 import { randomIntSym } from "../randomization/rndHelpers"
+import { Vector } from "./vector"
+import { Point } from "./point"
 
 export enum LinePropriety {
     None = 'none',
@@ -20,44 +21,44 @@ export class Line3 {
     static PERPENDICULAR = LinePropriety.Perpendicular
     static PARALLEL = LinePropriety.Parallel
     // ax + by + c = 0
-    #OA: Vector3D = new Vector3D()
-    #d: Vector3D = new Vector3D()
+    #OA: Point = new Point()
+    #d: Vector = new Vector()
 
     /**
      * Value can be a mix of:
      *
      * @param values
      */
-    constructor(A: Point3D, d: Vector3D) {
+    constructor(A: Point, B: Point)
+    constructor(A: Point, d: Vector)
+    constructor(A: Point, d: Vector | Point) {
         this.#OA = A.clone()
-        this.#d = d.clone()
+        this.#d = d.asPoint ? new Vector(A, d) : d.clone()
         return this
     }
 
-    get OA(): Vector3D {
+    get OA(): Point {
         return this.#OA
     }
 
-    set OA(value: Vector3D) {
+    set OA(value: Point) {
         this.#OA = value
     }
-    get point(): Point3D {
+    get point(): Point {
         return this.#OA.clone()
     }
 
-    get d(): Vector3D {
+    get d(): Vector {
         return this.#d
     }
 
-    set d(value: Vector3D) {
+    set d(value: Vector) {
         this.#d = value
     }
 
-
-    get tex(): { parametric: string, system: string } {
-
+    get tex(): { parametric: string, system: string, cartesian: string } {
         return {
-            parametric: `${Vector3D.asTex('x', 'y', 'z')} = ${Vector3D.asTex(this.#OA.x.tex, this.#OA.y.tex, this.#OA.z.tex)} + k\\cdot ${Vector3D.asTex(this.#d.x.tex, this.#d.y.tex, this.#d.z.tex)}`,
+            parametric: `${Vector.asTex('x', 'y', 'z')} = ${Vector.asTex(this.#OA.x.tex, this.#OA.y.tex, this.#OA.z.tex)} + k\\cdot ${Vector.asTex(this.#d.x.tex, this.#d.y.tex, this.#d.z.tex)}`,
             system: `\\left\\{\\begin{aligned}
     x &= ${(new Polynom(this.#OA.x)
                     .add(new Monom(this.#d.x).multiply(new Monom('k'))))
@@ -71,11 +72,28 @@ export class Line3 {
                     .add(new Monom(this.#d.z).multiply(new Monom('k'))))
                     .reorder('k', true)
                     .tex}
-\\end{aligned}\\right.`
+\\end{aligned}\\right.`,
+            cartesian: `\\frac{ ${new Polynom('x', 1, this.#OA.x.clone().opposite()).tex} }{ ${this.direction.x.tex} } = \\frac{ ${new Polynom('y', 1, this.#OA.y.clone().opposite()).tex} }{ ${this.direction.y.tex} } = \\frac{ ${new Polynom('z', 1, this.#OA.z.clone().opposite()).tex} }{ ${this.direction.z.tex} }`
         }
     }
 
-    get direction(): Vector3D {
+    get display(): { parametric: string, system: string, cartesian: string } {
+        const OAx = this.#OA.x.display
+        const OAy = this.#OA.y.display
+        const OAz = this.#OA.z.display
+        const n = this.direction.simplify()
+        const nx = n.x.display
+        const ny = n.y.display
+        const nz = n.z.display
+
+        return {
+            parametric: `${Vector.asDisplay('x', 'y', 'z')} = ${Vector.asDisplay(this.#OA.x.display, this.#OA.y.display, this.#OA.z.display)} + k\\cdot ${Vector.asDisplay(this.#d.x.display, this.#d.y.display, this.#d.z.display)}`,
+            system: '',
+            cartesian: `(x-${OAx})/${nx} = (y-${OAy})/${ny} = (z-${OAz})/${nz}`
+        }
+    }
+
+    get direction(): Vector {
         return this.#d.clone()
     }
 
@@ -88,7 +106,7 @@ export class Line3 {
     // ------------------------------------------
     // Mathematical operations
     // ------------------------------------------
-    isOnLine = (pt: Vector3D): boolean => {
+    isOnLine = (pt: Vector): boolean => {
         return false
     }
 
@@ -119,8 +137,8 @@ export class Line3 {
         // return this
     }
 
-    intersection = (line: Line3): { point: Vector3D, hasIntersection: boolean, isParallel: boolean, isSame: boolean } => {
-        // const Pt = new Vector3D()
+    intersection = (line: Line3): { point: Vector, hasIntersection: boolean, isParallel: boolean, isSame: boolean } => {
+        // const Pt = new Vector()
         // let isParallel = false, isSame = false
 
 
@@ -153,43 +171,25 @@ export class Line3 {
         throw new Error('Method not implemented.')
     }
 
-    distanceTo(pt: Vector3D): { value: number, fraction: Fraction, tex: string } {
-        // const numerator = pt.x.clone().multiply(this.#a)
-        //     .add(pt.y.clone().multiply(this.#b))
-        //     .add(this.#c).abs(),
-        //     d2 = this.normal.normSquare
+    distanceTo(pt: Point): { value: number, fraction: Fraction, tex: string } {
+        // Distance is:
+        // |(x - x0) x d| / |d|
+        const AP = new Vector(this.#OA, pt),
+            d = this.direction,
+            d2 = this.direction.normSquare,
+            num2 = AP.cross(d).normSquare,
+            num2d2 = num2.clone().divide(d2),
+            dnum = num2d2.clone().sqrt()
 
-        // // The denominator is null - shouldn't be possible
-        // if (d2.isZero()) {
-        //     return {
-        //         value: NaN,
-        //         tex: 'Not a line',
-        //         fraction: new Fraction().infinite()
-        //     }
-        // }
-        // // The denominator is a perfect square - simplify the tex result
-        // const value = numerator.value / Math.sqrt(d2.value),
-        //     F = numerator.clone().divide(d2.clone().sqrt())
-
-        // // The denominator is a perfect square.
-        // if (d2.isSquare()) {
-        //     return {
-        //         value,
-        //         tex: F.tex,
-        //         fraction: F
-        //     }
-        // }
-        // // Complete answer...
-        // return {
-        //     value,
-        //     tex: `\\frac{${numerator.tex}}{\\sqrt{${d2.tex}}}`,
-        //     fraction: F
-        // }
-
-        throw new Error('Method not implemented.')
+        console.log('CROSS', AP.cross(d).display)
+        return {
+            value: Math.sqrt(num2d2.value),
+            fraction: num2d2.clone().sqrt(),
+            tex: dnum.isExact() ? dnum.tex : `\\sqrt{${num2d2.tex}}`
+        }
     }
 
-    hitSegment(A: Vector3D, B: Vector3D): boolean {
+    hitSegment(A: Point, B: Point): boolean {
         const iPt = this.intersection(
             new Line3(A, B)
         )
@@ -227,11 +227,11 @@ export class Line3 {
     //     return new Fraction().invalid()
     // }
 
-    randomPoint = (max = 5): Point3D => {
+    randomPoint = (max = 5): Point => {
         const A = this.#OA.clone(),
             k = new Fraction(randomIntSym(max, false))
 
-        return new Point3D(
+        return new Point(
             A.x.clone().add(this.#d.x.clone().multiply(k)),
             A.y.clone().add(this.#d.y.clone().multiply(k)),
             A.z.clone().add(this.#d.z.clone().multiply(k))

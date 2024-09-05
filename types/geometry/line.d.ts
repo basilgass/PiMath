@@ -1,7 +1,7 @@
 import { Fraction } from '../coefficients/fraction';
 import { Equation } from '../algebra/equation';
 import { Vector } from './vector';
-import { InputValue } from '../pimath.interface';
+import { InputValue, IPiMathObject } from '../pimath.interface';
 
 export declare enum LinePropriety {
     None = "none",
@@ -9,7 +9,7 @@ export declare enum LinePropriety {
     Perpendicular = "perpendicular",
     Tangent = "tangent"
 }
-export declare class Line {
+export declare class Line implements IPiMathObject<Line> {
     #private;
     static PERPENDICULAR: LinePropriety;
     static PARALLEL: LinePropriety;
@@ -30,25 +30,16 @@ export declare class Line {
     get d(): Vector;
     set d(value: Vector);
     get n(): Vector;
-    get equation(): Equation;
-    get system(): {
-        x: Equation;
-        y: Equation;
-    };
-    get tex(): {
-        canonical: string;
-        mxh: string;
-        parametric: string;
-        equation: string;
-        system: string;
-    };
+    getEquation(): Equation;
+    get canonical(): this;
+    get equation(): this;
+    get mxh(): this;
+    get parametric(): this;
+    get system(): this;
+    get tex(): string;
     get reduceBeforeDisplay(): boolean;
     set reduceBeforeDisplay(value: boolean);
-    get display(): {
-        canonical: string;
-        mxh: string;
-        parametric: string;
-    };
+    get display(): string;
     get normal(): Vector;
     get director(): Vector;
     get slope(): Fraction;

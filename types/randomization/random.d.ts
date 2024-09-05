@@ -15,6 +15,6 @@ export declare const Random: {
     shuffle: <T_2>(arr: T_2[]) => T_2[];
     line: (config?: randomGeometryLineConfig) => import('../geometry/line').Line;
     line3: (config?: randomGeometryLine3Config) => import('../geometry/line3').Line3;
-    point: (config?: randomGeometryPointConfig) => import('../geometry/vector').Point;
+    point: (config?: randomGeometryPointConfig) => import('../geometry/point').Point;
     circle: (config?: randomGeometryCircleConfig) => import('../geometry/circle').Circle;
 };

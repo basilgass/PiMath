@@ -1,8 +1,7 @@
 import { Fraction } from "../coefficients/fraction"
 import type { Vector } from "./vector"
-import type { Vector3D } from "./vector3d"
 
-type V = Vector | Vector3D
+type V = Vector
 export function areVectorsEquals(v1: V, v2: V): boolean {
     return v1.dimension === v2.dimension &&
         v1.array.every(

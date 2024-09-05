@@ -9,21 +9,18 @@ import { Fraction } from "./coefficients/fraction"
 import { NthRoot } from "./coefficients/nthRoot"
 import { Circle } from "./geometry/circle"
 import { Line } from "./geometry/line"
-// import { Triangle } from "./geometry/triangle.bak"
+import { Point } from "./geometry/point"
+import { Triangle } from "./geometry/triangle"
 import { Vector } from "./geometry/vector"
-import { Vector3D } from "./geometry/vector3d"
 import { Numeric } from "./numeric"
 import { Random } from "./randomization/random"
 
 const Geometry = {
     Vector: Vector,
+    Point: Point,
     Line: Line,
-    // Triangle: Triangle,
+    Triangle: Triangle,
     Circle: Circle
-}
-
-const Geometry3D = {
-    Vector3D: Vector3D
 }
 
 // Make a global object
@@ -38,8 +35,7 @@ const PiMath = {
     Rational,
     // LogicalSet,
     Random,
-    Geometry,
-    Geometry3D
+    Geometry
 }
 
 // Export default value

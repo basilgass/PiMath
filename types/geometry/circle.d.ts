@@ -1,12 +1,18 @@
 import { Line } from './line';
-import { Vector } from './vector';
 import { Fraction } from '../coefficients/fraction';
 import { Equation } from '../algebra/equation';
+import { IPiMathObject } from '../pimath.interface';
+import { Point } from './point';
 
-export declare class Circle {
+export declare class Circle implements IPiMathObject<Circle> {
     #private;
-    constructor(...values: unknown[]);
-    get center(): Vector;
+    constructor();
+    constructor(equation: string | Equation);
+    constructor(circle: Circle);
+    constructor(center: Point, radius: Fraction | number, square?: boolean);
+    constructor(center: Point, pointThrough: Point);
+    constructor(A: Point, B: Point, C: Point);
+    get center(): Point;
     get squareRadius(): Fraction;
     get cartesian(): Equation;
     get radius(): {
@@ -23,19 +29,11 @@ export declare class Circle {
      * @returns {number}
      */
     relativePosition: (L: Line) => number;
-    lineIntersection: (L: Line) => Vector[];
-    tangents: (P: Vector | Fraction) => Line[];
-    isPointOnCircle: (P: Vector) => boolean;
-    getPointsOnCircle: (numberIsInteger?: boolean) => Vector[];
-    clone(): this;
-    private _tangentsThroughOnePointOnTheCircle;
-    private _tangentsThroughOnePointOutsideTheCircle;
-    private _tangentsWithSlope;
-    private _reset;
-    private parse;
-    private _calculateCartesian;
-    private _parseCopyCircle;
-    private _parseCenterAndRadius;
-    private _parseCenterAndPointThrough;
-    private _parseEquation;
+    lineIntersection: (L: Line) => Point[];
+    tangents: (P: Point | Fraction) => Line[];
+    isPointOnCircle: (P: Point) => boolean;
+    getPointsOnCircle: (numberIsInteger?: boolean) => Point[];
+    clone(): Circle;
+    setRadius(radius: Fraction | number, square?: boolean): this;
+    parse(...values: unknown[]): this;
 }
