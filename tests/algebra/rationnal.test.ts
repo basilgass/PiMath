@@ -1,8 +1,80 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, test } from "vitest"
 import { Polynom } from "../../src/algebra/polynom"
 import { Rational } from "../../src/algebra/rational"
+import { PolyFactor } from "../../src/algebra/polyFactor"
 
-describe.skip('Rational tests', () => {
+describe('Rational creation', () => {
+    test('create Rational', () => {
+        const R = new Rational(new Polynom('x+2'), new Polynom('x-4'))
+
+        expect(R).toBeDefined()
+        expect(R).toBeInstanceOf(Rational)
+        expect(R.numerator).toBeInstanceOf(PolyFactor)
+    })
+    test('parse string', () => {
+        const R = new Rational('x+2', '(x-4)^3')
+
+        expect(R).toBeDefined()
+        R.numerator.reduce()
+        R.denominator.reduce()
+        expect(R.numerator).toBeInstanceOf(PolyFactor)
+        expect(R.numerator.display).toBe('(x+2)')
+        expect(R.denominator.display).toBe('(x-4)^(3)')
+    })
+    test('clone Rational', () => {
+        const R = new Rational('x+2', '(x-4)^3')
+
+        const R2 = R.clone()
+        R.numerator = new PolyFactor('x+3')
+
+        expect(R2.numerator.display).toBe('(x+2)')
+    })
+    test('set to zero Rational', () => {
+        const R = new Rational('x+2', '(x-4)^3')
+        R.zero()
+
+        expect(R.numerator.display).toBe('(0)')
+        expect(R.denominator.display).toBe('(1)')
+    })
+    test('set to one Rational', () => {
+        const R = new Rational('x+2', '(x-4)^3')
+        R.one()
+
+        expect(R.numerator.display).toBe('(1)')
+        expect(R.denominator.display).toBe('(1)')
+    })
+})
+
+describe('Rational output', () => {
+    test('output as LaTeX', () => {
+        const R = new Rational('x+2', '(x-4)^3')
+
+        expect(R.tex).toBe('\\frac{ x+2 }{ \\left( x-4 \\right)^{ 3 } }')
+    })
+    test.todo('output as ASCII')
+})
+describe.todo('Rational operations', () => {
+    test.todo('reduce Rational')
+    test.todo('add two Rationals')
+    test.todo('subtract two Rationals')
+    test.todo('multiply two Rationals')
+    test.todo('divide by Rational')
+    test.todo('raise Rational by integer')
+})
+describe.todo('Rational comparisons', () => {
+    test.todo('same Rational')
+    test.todo('equal Rational')
+    test.todo('is one Rational')
+    test.todo('is zero Rational')
+})
+describe.todo('Rational static functions')
+describe.todo('Rational evaluation', () => {
+    test.todo('evaluate Rational')
+})
+describe.todo('Rational generators')
+
+/*
+describe.skip('Old Rational tests', () => {
     it('should calculate correctly the limits to a value', () => {
 
         const FR = new Rational(
@@ -62,3 +134,4 @@ describe.skip('Rational tests', () => {
         expect(P.reduce().display).to.be.equal('(4)/(x-3)')
     })
 })
+*/

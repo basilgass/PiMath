@@ -1,26 +1,31 @@
 import type { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType } from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
 import { Polynom } from "./polynom"
+import { wrapParenthesis } from "../helpers"
 
 export class Factor implements
     IPiMathObject<Factor>,
     IExpression<Factor>,
     IAlgebra<Factor> {
     #displayMode: FACTOR_DISPLAY
+    #singleMode = false
     #polynom: Polynom
     #power: Fraction
 
-    constructor(value: Factor)
-    constructor(value: InputAlgebra<Polynom>, power?: InputValue<Fraction>)
-    constructor(value: Polynom, power?: InputValue<Fraction>)
     constructor(value: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>) {
         if (value instanceof Factor) {
             this.#polynom = value.polynom.clone()
             this.#power = value.power.clone()
+        } else if (typeof value === 'string' && power === undefined) {
+            // Must handle the case where the value is a string like (x-3)^2
+            const [base, p = '1'] = value.split('^')
+            this.#polynom = new Polynom(base)
+            this.#power = new Fraction(p.replace('(', '').replace(')', ''))
         } else {
             this.#polynom = new Polynom(value)
             this.#power = new Fraction(power ?? 1)
         }
+
         this.#displayMode = FACTOR_DISPLAY.POWER
 
         return this
@@ -45,6 +50,10 @@ export class Factor implements
 
     public get asRoot(): this {
         this.#displayMode = FACTOR_DISPLAY.ROOT
+        return this
+    }
+    public get asSingle(): this {
+        this.#singleMode = true
         return this
     }
 
@@ -91,7 +100,7 @@ export class Factor implements
             base = `${den === 2 ? 'sqrt' : `root(${den})`}(${this.polynom.display})`
             power = Math.abs(num) === 1 ? '' : `^(${Math.abs(num)})`
         } else {
-            base = `(${this.polynom.display})`
+            base = this.#singleMode && this.power.isOne() ? this.polynom.display : wrapParenthesis(this.polynom.display, false)
             power = (den === 1 && Math.abs(num) === 1) ? '' : `^(${this.power.display})`
         }
 
@@ -253,7 +262,7 @@ export class Factor implements
             base = `\\sqrt${den === 2 ? '' : `[ ${den} ]`}{ ${this.polynom.tex} }`
             power = Math.abs(num) === 1 ? '' : `^{ ${Math.abs(num)} }`
         } else {
-            base = `\\left( ${this.polynom.tex} \\right)`
+            base = this.#singleMode && this.power.isOne() ? this.polynom.tex : wrapParenthesis(this.polynom.tex)
             power = (den === 1 && Math.abs(num) === 1) ? '' : `^{ ${this.power.tex} }`
         }
 

@@ -1,6 +1,6 @@
 import type { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType } from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
-import { Factor } from "./factor"
+import { Factor, FACTOR_DISPLAY } from "./factor"
 import { Polynom } from "./polynom"
 
 // #region Classes (1)
@@ -14,25 +14,33 @@ export class PolyFactor implements
 
     #factors: Factor[] = []
 
+    #displayMode: FACTOR_DISPLAY = FACTOR_DISPLAY.POWER
+
     // #endregion Class fields (1)
 
     // #region Constructors (1)
-
-    constructor(...values: InputAlgebra<Polynom>[])
-    constructor(...values: Factor[])
-    constructor(...values: (Factor | InputAlgebra<Polynom>)[]) {
+    constructor(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]) {
         this.parse(...values)
-
         return this
     }
 
     // #endregion Constructors (1)
 
     // #region Properties and methods (25)
-    public parse(...values: (Factor | InputAlgebra<Polynom>)[]): this {
-        this.#factors = values.map(value => {
-            if (value instanceof Factor) { return value }
-            return new Factor(value)
+    public parse(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]): this {
+        if (values.length === 0) { return this }
+
+        this.#factors = []
+
+        values.forEach(value => {
+            if (typeof value === 'string') {
+                const factors = value.split(')(').join(')*(').split('*')
+                this.#factors.push(...factors.map(f => new Factor(f)))
+            } else if (value instanceof PolyFactor) {
+                this.#factors.push(...value.factors.map(f => f.clone()))
+            } else {
+                this.#factors.push(new Factor(value))
+            }
         })
 
         return this
@@ -219,12 +227,12 @@ export class PolyFactor implements
     public static gcd(...values: PolyFactor[]): PolyFactor {
         if (values.length === 0) { return new PolyFactor().one() }
         if (values.length === 1) { return values[0] }
-        if (values.length === 2) { return PolyFactor._gcdWith(values[0], values[1]) }
+        if (values.length === 2) { return PolyFactor.#gcdWith(values[0], values[1]) }
 
         // values is not undefined, 
         let PF = values[0]
         values.shift()
-        values.forEach(value => PF = PolyFactor._gcdWith(PF, value))
+        values.forEach(value => PF = PolyFactor.#gcdWith(PF, value))
 
         return PF
     }
@@ -232,10 +240,6 @@ export class PolyFactor implements
     // #endregion Properties and methods (25)
 
     // #region Getters And Setters (5)
-
-    public get display(): string {
-        return this.#factors.map(f => f.display).join("")
-    }
 
     public get factors(): Factor[] {
         return this.#factors
@@ -245,20 +249,98 @@ export class PolyFactor implements
         this.#factors = value
     }
 
-    public get tex(): string {
-        return this.#factors.map(f => f.tex).join("")
-    }
-
     public get variables(): string[] {
         return this.#factors
             .reduce((acc: string[], f: Factor) => acc.concat(f.variables), [])
+    }
+
+    get asRoot(): this {
+        this.#displayMode = FACTOR_DISPLAY.ROOT
+        return this
+    }
+    get asPower(): this {
+        this.#displayMode = FACTOR_DISPLAY.POWER
+        return this
+    }
+
+    get numerator(): Factor[] {
+        return this.#factors.filter(f => f.power.isPositive())
+    }
+    get denominator(): Factor[] {
+        return this.#factors.filter(f => f.power.isNegative())
+    }
+
+    public get display(): string {
+        let num: Factor[] = [],
+            den: Factor[] = []
+
+        if (this.#displayMode === FACTOR_DISPLAY.ROOT) {
+            // the power are positive integers
+            num = this.numerator
+            den = this.denominator.map(f => f.clone().inverse())
+        } else {
+            num = this.#factors
+        }
+
+        // There is no factor
+        if (num.length === 0) {
+            num = [new Factor('1')]
+        }
+
+        if (den.length === 0) {
+            if (num.length === 1) {
+                return num[0].asSingle.display
+            }
+
+            return num.map(f => f.display).join("")
+        }
+
+        // There is a numerator and a denominator
+        const numTeX = num.length === 1 ? num[0].asSingle.display : num.map(f => f.display).join("")
+        const denTeX = den.length === 1 ? den[0].asSingle.display : den.map(f => f.display).join("")
+
+        return `(${numTeX})/(${denTeX})`
+
+    }
+
+    public get tex(): string {
+        let num: Factor[] = [],
+            den: Factor[] = []
+
+        if (this.#displayMode === FACTOR_DISPLAY.ROOT) {
+            // the power are positive integers
+            num = this.numerator
+            den = this.denominator.map(f => f.clone().inverse())
+        } else {
+            num = this.#factors
+        }
+
+        // There is no factor
+        if (num.length === 0) {
+            num = [new Factor('1')]
+        }
+
+        if (den.length === 0) {
+            if (num.length === 1) {
+                return num[0].asSingle.tex
+            }
+
+            return num.map(f => f.tex).join("")
+        }
+
+        // There is a numerator and a denominator
+        const numTeX = num.length === 1 ? num[0].asSingle.tex : num.map(f => f.tex).join("")
+        const denTeX = den.length === 1 ? den[0].asSingle.tex : den.map(f => f.tex).join("")
+
+        return `\\frac{ ${numTeX} }{ ${denTeX} }`
+
     }
 
     // #endregion Getters And Setters (5)
 
     // #region Private methods (1)
 
-    private static _gcdWith(PF1: PolyFactor, PF2: PolyFactor): PolyFactor {
+    static #gcdWith(PF1: PolyFactor, PF2: PolyFactor): PolyFactor {
         // Get all factors of the two polynomials
         // Find the common factors
         const factors1 = keyFactors(PF1)

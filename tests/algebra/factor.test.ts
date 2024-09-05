@@ -20,7 +20,7 @@ describe("Factors creation", () => {
         expect(F.power.value).toBe(1)
     })
 
-    it('should make a pone factor', () => {
+    it('should make a power factor', () => {
         const F = new Factor('3x+2', '1/2')
         F.one()
 
@@ -38,6 +38,13 @@ describe("Factors creation", () => {
         F2.power = 3
 
         expect(F.isEqual(F2)).toBeFalsy()
+    })
+
+    it('should parse a string', () => {
+        const F = new Factor('(3x+2)^(1/2)')
+
+        expect(F.polynom.display).toBe('3x+2')
+        expect(F.power.value).toBe(0.5)
     })
 })
 
@@ -76,6 +83,7 @@ describe("Factors outputs", () => {
 
         expect(F.asRoot.display).toBe('root(3)(3x+2)^(2)')
     })
+
 })
 
 describe("Factors: compare functions", () => {

@@ -66,17 +66,16 @@ describe("PolyFactor creation", () => {
         expect(PF.isOne()).toBeTruthy()
     })
 
-    test.todo('should parse a string')
-    // test('should parse a string', () => {
-    //     const PF = new PolyFactor(
-    //         new Factor('3x+2', '1/2'),
-    //         new Factor('4x-3', '2/3')
-    //     )
-    //
-    //     const PF2 = new PolyFactor().parse(PF.display)
-    //
-    //     expect(PF.isEqual(PF2)).toBeTruthy()
-    // })
+    test('should parse a string', () => {
+        const PF = new PolyFactor(
+            new Factor('3x+2', '1/2'),
+            new Factor('4x-3', '-2/3')
+        )
+
+        // (3x+2)^(1/2)(4x-3)^(-2/3)
+        const PF2 = new PolyFactor(PF.display)
+        expect(PF.isEqual(PF2)).toBeTruthy()
+    })
 })
 
 describe("PolyFactor: output functions", () => {
@@ -87,6 +86,33 @@ describe("PolyFactor: output functions", () => {
         )
 
         expect(PF.tex).toBe('\\left( 3x+2 \\right)^{ \\frac{ 1 }{ 2 } }\\left( 4x-3 \\right)^{ \\frac{ 2 }{ 3 } }')
+    })
+
+    test('should output as LaTex and do not add parenthesis on power if not needed.', () => {
+        const PF = new PolyFactor(
+            new Factor('3x+2', '1'),
+            new Factor('4x-3', '3')
+        )
+
+        expect(PF.tex).toBe('\\left( 3x+2 \\right)\\left( 4x-3 \\right)^{ 3 }')
+    })
+
+    test('should output with fraction', () => {
+        const PF = new PolyFactor(
+            new Factor('3x+2', '1'),
+            new Factor('4x-3', '-2')
+        )
+
+        expect(PF.asRoot.tex).toBe(`\\frac{ 3x+2 }{ \\left( 4x-3 \\right)^{ 2 } }`)
+        expect(PF.asRoot.display).toBe(`(3x+2)/((4x-3)^(2))`)
+    })
+
+    test('should output as LaTex without parenthesis at all', () => {
+        const PF = new PolyFactor(
+            new Factor('3x+2', '1')
+        )
+
+        expect(PF.tex).toBe('3x+2')
     })
 
     test('should output as ASCII', () => {

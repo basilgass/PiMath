@@ -5,49 +5,58 @@
 
 import type { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType } from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
-import { Polynom } from "./polynom"
+import { PolyFactor } from "./polyFactor"
+import type { Polynom } from "./polynom"
 
 /**
  * Rational class can handle rational polynoms
  */
-
 export class Rational implements
     IPiMathObject<Rational>,
     IExpression<Rational>,
     IAnalyse<Rational>,
     IAlgebra<Rational> {
 
-    #numerator: Polynom
-    #denominator: Polynom
+    #numerator: PolyFactor
+    #denominator: PolyFactor
 
-    constructor()
-    constructor(value: Rational)
-    constructor(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>)
-    constructor(value?: InputAlgebra<Polynom> | Rational, denominator?: InputAlgebra<Polynom>) {
+    constructor(...values: (InputAlgebra<Polynom> | PolyFactor | Rational | undefined)[]) {
 
-        this.#numerator = new Polynom().zero()
-        this.#denominator = new Polynom().one()
+        this.#numerator = new PolyFactor().zero()
+        this.#denominator = new PolyFactor().one()
 
-        if (value instanceof Rational) {
-            return value.clone()
-        } else if (value !== undefined) {
-            this.#numerator = new Polynom(value)
-            this.#denominator = new Polynom(denominator ?? 1)
+        // Empty constructor
+        if (values.length > 0) {
+            this.parse(...values)
         }
+
     }
 
     get tex(): string {
+        if (this.#denominator.isOne()) {
+            return this.#numerator.tex
+        }
+
         return `\\frac{ ${this.#numerator.tex} }{ ${this.#denominator.tex} }`
     }
     get display(): string {
+        if (this.#denominator.isOne()) {
+            return this.#numerator.display
+        }
         return `(${this.#numerator.display})/(${this.#denominator.display})`
     }
 
-    get numerator(): Polynom {
+    get numerator(): PolyFactor {
         return this.#numerator
     }
-    get denominator(): Polynom {
+    set numerator(value: PolyFactor) {
+        this.#numerator = value
+    }
+    get denominator(): PolyFactor {
         return this.#denominator
+    }
+    set denominator(value: PolyFactor) {
+        this.#denominator = value
     }
 
     clone(): Rational {
@@ -57,8 +66,30 @@ export class Rational implements
         )
     }
 
-    parse(): Rational {
-        throw new Error("Method not implemented.")
+    parse(...values: ConstructorParameters<typeof Rational>): this {
+        const [numerator, denominator] = values
+
+        // One value is given and it's a Rational object
+        if (numerator === undefined) {
+            this.#numerator = new PolyFactor().zero()
+        } else if (numerator instanceof Rational) {
+            this.#numerator = numerator.numerator.clone()
+            this.#denominator = numerator.denominator.clone()
+        } else {
+            this.#numerator = new PolyFactor(numerator)
+        }
+
+        // Nothing is given as denominator
+        if (denominator === undefined) {
+            // Do nothing more !
+        } else if (denominator instanceof Rational) {
+            this.#numerator.multiply(denominator.denominator)
+            this.#denominator.multiply(denominator.numerator)
+        } else {
+            this.#denominator.multiply(new PolyFactor(denominator))
+        }
+
+        return this
     }
 
     zero(): this {

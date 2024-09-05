@@ -281,7 +281,7 @@ export class Equation implements
      * Reorder will move all monoms containing a letter on the left, all the other on the right.
      */
     public moveLeft = (): this => {
-        this.#left = this.#left.clone().subtract(this.#right)
+        this.#left.subtract(this.#right)
         this.#right.zero()
         return this
     }

@@ -1,8 +1,10 @@
 // Expose as global
 import { Equation } from "./algebra/equation"
+import { Factor } from "./algebra/factor"
 // import { LinearSystem } from "./algebra/linearSystem"
 // import { LogicalSet } from "./algebra/logicalset.bak"
 import { Monom } from "./algebra/monom"
+import { PolyFactor } from "./algebra/polyFactor"
 import { Polynom } from "./algebra/polynom"
 import { Rational } from "./algebra/rational"
 import { Fraction } from "./coefficients/fraction"
@@ -33,6 +35,8 @@ const PiMath = {
     Equation,
     // LinearSystem,
     Rational,
+    Factor,
+    PolyFactor,
     // LogicalSet,
     Random,
     Geometry

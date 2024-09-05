@@ -1,7 +1,7 @@
 import type { InputValue, ISolution } from "../pimath.interface"
+import type { Equation } from "./equation"
 import { Fraction } from "../coefficients/fraction"
 import { Numeric } from "../numeric"
-import { Equation } from "./equation"
 import { Polynom } from "./polynom"
 
 export class EquationSolver {
@@ -13,39 +13,39 @@ export class EquationSolver {
         this.#variable = variable
     }
 
-    solve(): ISolution[] {
+    public solve(): ISolution[] {
 
         if (this.#equation.degree().isOne()) {
-            return this._solveLinear()
+            return this.#solveLinear()
         }
 
         if (this.#equation.degree().value === 2) {
-            return this._solveQuadratic()
+            return this.#solveQuadratic()
         }
 
-        const result = this._solveByFactorization()
+        const result = this.#solveByFactorization()
         if (result.length > 0) {
             return result
         }
 
         // Use Cardan formula for cubic equations
         if (this.#equation.degree().value === 3) {
-            return this._solveCubic_CardanFormula()
+            return this.#solveCubic_CardanFormula()
         }
 
         throw new Error("The equation degree is too high.")
     }
 
-    solveAsCardan(): ISolution[] {
+    public solveAsCardan(): ISolution[] {
         if (this.#equation.degree().value !== 3) {
             throw new Error("The equation is not cubic.")
         }
-        return this._solveCubic_CardanFormula()
+        return this.#solveCubic_CardanFormula()
     }
 
-    private _makeSolution(value: InputValue<Fraction>): ISolution {
+    #makeSolution(value: InputValue<Fraction>): ISolution {
         if (value instanceof Fraction && value.isApproximative()) {
-            return this._makeApproximativeSolution(value.value)
+            return this.#makeApproximativeSolution(value.value)
         }
 
         const fraction = new Fraction(value)
@@ -59,7 +59,7 @@ export class EquationSolver {
         }
     }
 
-    private _makeApproximativeSolution(value: number, output?: { tex: string, display: string }): ISolution {
+    #makeApproximativeSolution(value: number, output?: { tex: string, display: string }): ISolution {
         return {
             variable: this.#variable,
             exact: false,
@@ -69,7 +69,7 @@ export class EquationSolver {
         }
     }
 
-    private _solveLinear(): ISolution[] {
+    #solveLinear(): ISolution[] {
         // The equation is linear.
         // We can solve it by isolating the variable.
         const left = this.#equation.moveLeft().left
@@ -78,11 +78,11 @@ export class EquationSolver {
         const f = left.monomByDegree(0).coefficient.clone().opposite().divide(left.monomByDegree(1).coefficient)
 
         return [
-            this._makeSolution(f)
+            this.#makeSolution(f)
         ]
     }
 
-    private _solveQuadratic(): ISolution[] {
+    #solveQuadratic(): ISolution[] {
 
         // The equation is quadratic.
         // We can solve it by isolating the variable.
@@ -114,13 +114,13 @@ export class EquationSolver {
 
             // Delta is zero, there is only one solution
             if (delta.isZero()) {
-                return [this._makeSolution(f1)]
+                return [this.#makeSolution(f1)]
             }
 
             // delta is positive, there are two solutions
             return [
-                this._makeSolution(f1),
-                this._makeSolution(f2)
+                this.#makeSolution(f1),
+                this.#makeSolution(f2)
             ].sort((a, b) => a.value - b.value)
         }
 
@@ -130,10 +130,10 @@ export class EquationSolver {
         // const f1 = (-b.value + delta) / (2 * a.value)
         // const f2 = (-b.value - delta) / (2 * a.value)
 
-        return this._solveQuadratic_Output(a, b, delta2)
+        return this.#solveQuadratic_Output(a, b, delta2)
     }
 
-    private _solveQuadratic_Output(a: Fraction, b: Fraction, delta: Fraction): ISolution[] {
+    #solveQuadratic_Output(a: Fraction, b: Fraction, delta: Fraction): ISolution[] {
         // -b +/- sqrt(delta) / 2a
         // reduce the sqrt - extract pow.
 
@@ -167,13 +167,13 @@ export class EquationSolver {
         const f2 = (-b.value + d) / (2 * a.value)
 
         return [
-            this._makeApproximativeSolution(f1,
+            this.#makeApproximativeSolution(f1,
                 {
                     tex: texOutput(a2.tex, b2.tex, deltaK1.toString(), delta2.tex),
                     display: displayOutput(a2.display, b2.display, deltaK1.toString(), delta2.display),
                 }
             ),
-            this._makeApproximativeSolution(f2,
+            this.#makeApproximativeSolution(f2,
                 {
                     tex: texOutput(a2.tex, b2.tex, deltaK2.toString(), delta2.tex),
                     display: displayOutput(a2.display, b2.display, deltaK2.toString(), delta2.display),
@@ -182,7 +182,7 @@ export class EquationSolver {
         ].sort((a, b) => a.value - b.value)
     }
 
-    private _solveCubic_CardanFormula(): ISolution[] {
+    #solveCubic_CardanFormula(): ISolution[] {
         // get the coefficients of the equation
         const left = this.#equation.moveLeft().left
 
@@ -231,7 +231,7 @@ export class EquationSolver {
 
             const x = u.clone().add(v).subtract(an.clone().divide(3))
 
-            return [this._makeSolution(x)]
+            return [this.#makeSolution(x)]
         }
 
         // if delta is zero, there are two real solutions
@@ -243,12 +243,12 @@ export class EquationSolver {
 
             // There is only one unique solution
             if (x1.isEqual(x2)) {
-                return [this._makeSolution(x1)]
+                return [this.#makeSolution(x1)]
             }
 
             return [
-                this._makeSolution(x2),
-                this._makeSolution(x1)
+                this.#makeSolution(x2),
+                this.#makeSolution(x1)
             ].sort((a, b) => a.value - b.value)
         }
 
@@ -264,7 +264,7 @@ export class EquationSolver {
             }
 
             return x
-                .map(v => this._makeApproximativeSolution(v))
+                .map(v => this.#makeApproximativeSolution(v))
                 .sort((a, b) => a.value - b.value)
 
         }
@@ -272,9 +272,12 @@ export class EquationSolver {
         return []
     }
 
-    private _solveByFactorization(): ISolution[] {
+    #solveByFactorization(): ISolution[] {
         // Move everything to the left.
-        let left = this.#equation.moveLeft().left.clone()
+        this.#equation.moveLeft()
+
+        // Get the polynom on the left (on the right, it's zero)
+        let left = this.#equation.left.clone()
 
         // The solutions of the equation
         let solutions: ISolution[] = []
@@ -294,7 +297,7 @@ export class EquationSolver {
         const xPolynom = new Polynom('x')
         while (b.isZero()) {
             if (solutions.length === 0) {
-                solutions.push(this._makeSolution(0))
+                solutions.push(this.#makeSolution(0))
             }
 
             left = (left.divide(xPolynom))
@@ -312,13 +315,13 @@ export class EquationSolver {
 
                 // Test with the fraction
                 if ((left.evaluate(f) as Fraction).isZero() && !solutions.find(s => s.value === f.value)) {
-                    solutions.push(this._makeSolution(f))
+                    solutions.push(this.#makeSolution(f))
                 }
 
                 // Test with the opposite fraction
                 f.opposite()
                 if ((left.evaluate(f) as Fraction).isZero() && !solutions.find(s => s.value === f.value)) {
-                    solutions.push(this._makeSolution(f))
+                    solutions.push(this.#makeSolution(f))
                 }
             }
         }
@@ -348,10 +351,13 @@ export class EquationSolver {
             return []
         }
 
-        const solver = new EquationSolver(new Equation(left, 0))
+        // if the reduced polynom is of degree 1 or 2, we can solve it
+        const equ = this.#equation.clone()  // clone the original equation
+        equ.left = left                     // set the reduced polynom on the left
+
+        const solver = new EquationSolver(equ)
         solutions = solutions.concat(solver.solve())
 
         return solutions.sort((a, b) => a.value - b.value)
-
     }
 }
