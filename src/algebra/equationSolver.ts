@@ -1,16 +1,22 @@
 import type { InputValue, ISolution } from "../pimath.interface"
-import type { Equation } from "./equation"
+import type { Polynom } from "./polynom"
 import { Fraction } from "../coefficients/fraction"
 import { Numeric } from "../numeric"
-import { Polynom } from "./polynom"
+import type { Equation } from "./equation"
 
 export class EquationSolver {
-    readonly #equation: Equation
+    readonly #equation: Polynom
     readonly #variable: string
 
-    constructor(equation: Equation, variable = "x") {
-        this.#equation = equation
+    constructor(left: Polynom | Equation, right?: Polynom, variable = "x") {
         this.#variable = variable
+
+        if (Object.hasOwn(left, 'moveLeft')) {
+            const equ = left as Equation
+            this.#equation = equ.left.clone().subtract(equ.right)
+        } else {
+            this.#equation = (left as Polynom).clone().subtract(right ?? 0)
+        }
     }
 
     public solve(): ISolution[] {
@@ -72,10 +78,9 @@ export class EquationSolver {
     #solveLinear(): ISolution[] {
         // The equation is linear.
         // We can solve it by isolating the variable.
-        const left = this.#equation.moveLeft().left
 
         // left is a polynom ax+b => the solution is x = -b/a
-        const f = left.monomByDegree(0).coefficient.clone().opposite().divide(left.monomByDegree(1).coefficient)
+        const f = this.#equation.monomByDegree(0).coefficient.clone().opposite().divide(this.#equation.monomByDegree(1).coefficient)
 
         return [
             this.#makeSolution(f)
@@ -86,7 +91,7 @@ export class EquationSolver {
 
         // The equation is quadratic.
         // We can solve it by isolating the variable.
-        const left = this.#equation.moveLeft().left
+        const left = this.#equation
 
         // left is a polynom ax^2+bx+c => the solution is x = (-b±√(b^2-4ac))/2a
 
@@ -184,7 +189,7 @@ export class EquationSolver {
 
     #solveCubic_CardanFormula(): ISolution[] {
         // get the coefficients of the equation
-        const left = this.#equation.moveLeft().left
+        const left = this.#equation
 
         // left is a polynom ax^3+bx^2+cx+d => the solution is x = (-b±√(b^2-4ac))/2a
         const a = left.monomByDegree(3).coefficient
@@ -274,10 +279,9 @@ export class EquationSolver {
 
     #solveByFactorization(): ISolution[] {
         // Move everything to the left.
-        this.#equation.moveLeft()
 
         // Get the polynom on the left (on the right, it's zero)
-        let left = this.#equation.left.clone()
+        let left = this.#equation.clone()
 
         // The solutions of the equation
         let solutions: ISolution[] = []
@@ -294,13 +298,12 @@ export class EquationSolver {
         let b = left.monomByDegree(0).coefficient // Constant term
 
         // if the constant term is null, the polynom can be divided by x
-        const xPolynom = new Polynom('x')
         while (b.isZero()) {
             if (solutions.length === 0) {
                 solutions.push(this.#makeSolution(0))
             }
 
-            left = (left.divide(xPolynom))
+            left = (left.divide('x'))
             b = left.monomByDegree(0).coefficient
         }
 
@@ -334,9 +337,10 @@ export class EquationSolver {
                 continue
             }
 
-            const p = new Polynom('x', (s.exact as Fraction).denominator, -(s.exact as Fraction).numerator)
+            const p = this.#equation.clone().parse('x', (s.exact as Fraction).denominator, -(s.exact as Fraction).numerator)
 
             while (left.isDividableBy(p)) {
+                console.log(left.display, p.display)
                 left = left.divide(p)
             }
         }
@@ -352,10 +356,10 @@ export class EquationSolver {
         }
 
         // if the reduced polynom is of degree 1 or 2, we can solve it
-        const equ = this.#equation.clone()  // clone the original equation
-        equ.left = left                     // set the reduced polynom on the left
-
-        const solver = new EquationSolver(equ)
+        const right = left.clone().parse('0')
+        console.log(left.display)
+        console.log(right.display)
+        const solver = new EquationSolver(left, left.clone().parse('0'), this.#variable)
         solutions = solutions.concat(solver.solve())
 
         return solutions.sort((a, b) => a.value - b.value)

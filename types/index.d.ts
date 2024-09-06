@@ -1,7 +1,8 @@
 import { Equation } from './algebra/equation';
+import { Factor } from './algebra/factor';
 import { Monom } from './algebra/monom';
+import { PolyFactor } from './algebra/polyFactor';
 import { Polynom } from './algebra/polynom';
-import { Rational } from './algebra/rational';
 import { Fraction } from './coefficients/fraction';
 import { NthRoot } from './coefficients/nthRoot';
 import { Circle } from './geometry/circle';
@@ -28,7 +29,8 @@ declare const PiMath: {
     Monom: typeof Monom;
     Polynom: typeof Polynom;
     Equation: typeof Equation;
-    Rational: typeof Rational;
+    Factor: typeof Factor;
+    PolyFactor: typeof PolyFactor;
     Random: {
         equation: (config?: import('./randomization/rndTypes').randomEquationConfig | undefined) => Equation;
         polynom: (config?: import('./randomization/rndTypes').randomPolynomConfig | undefined) => Polynom;

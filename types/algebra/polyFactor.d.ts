@@ -5,9 +5,8 @@ import { Polynom } from './polynom';
 
 export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpression<PolyFactor>, IAlgebra<PolyFactor> {
     #private;
-    constructor(...values: InputAlgebra<Polynom>[]);
-    constructor(...values: Factor[]);
-    parse(...values: (Factor | InputAlgebra<Polynom>)[]): this;
+    constructor(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]);
+    parse(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]): this;
     clone(): PolyFactor;
     add(...values: PolyFactor[]): this;
     degree(letter?: string): Fraction;
@@ -32,10 +31,13 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     subtract(...values: PolyFactor[]): this;
     zero(): this;
     static gcd(...values: PolyFactor[]): PolyFactor;
-    get display(): string;
     get factors(): Factor[];
     set factors(value: Factor[]);
-    get tex(): string;
     get variables(): string[];
-    private static _gcdWith;
+    get asRoot(): this;
+    get asPower(): this;
+    get numerator(): Factor[];
+    get denominator(): Factor[];
+    get display(): string;
+    get tex(): string;
 }

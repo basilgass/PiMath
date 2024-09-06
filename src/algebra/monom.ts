@@ -45,7 +45,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         this.#literal = {}
 
         if (typeof inputStr === 'string') {
-            this._shutingYardToReducedMonom(inputStr)
+            this.#shutingYardToReducedMonom(inputStr)
         } else if (typeof inputStr === 'number') {
             this.#coefficient = new Fraction(inputStr)
         } else if (inputStr instanceof Fraction) {
@@ -54,7 +54,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             this.#coefficient = inputStr.#coefficient.clone()
 
             // Copy the literal parts
-            this._cloneLiteral(inputStr)
+            this.#cloneLiteral(inputStr)
         }
 
         return this
@@ -135,7 +135,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
 
             if (this.isSameAs(mAsMonom)) {
                 if (this.isZero()) {
-                    this._cloneLiteral(mAsMonom)
+                    this.#cloneLiteral(mAsMonom)
                 }
 
                 this.#coefficient.add(mAsMonom.coefficient)
@@ -338,7 +338,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             // Convert all values to numeric
             // If the value is a Fraction, convert it to a number
             if (values instanceof Fraction) {
-                return this._evaluateAsNumeric(values.value)
+                return this.#evaluateAsNumeric(values.value)
             }
 
             // If the value is a NthRoot, return undefined
@@ -348,7 +348,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
 
             // If the value is a number, return the numeric value
             if (typeof values === 'number') {
-                return this._evaluateAsNumeric(values)
+                return this.#evaluateAsNumeric(values)
             }
 
             // If the value is an object, return the numeric value
@@ -359,7 +359,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
                     tmpValues[L] = new Fraction(values[L]).value
                 }
 
-                return this._evaluateAsNumeric(tmpValues)
+                return this.#evaluateAsNumeric(tmpValues)
             }
         }
 
@@ -782,7 +782,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
 
             if (this.isSameAs(mAsMonom)) {
                 if (this.isZero()) {
-                    this._cloneLiteral(mAsMonom)
+                    this.#cloneLiteral(mAsMonom)
                 }
 
                 this.#coefficient.add(mAsMonom.clone().coefficient.opposite())
@@ -858,13 +858,13 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return this
     }
 
-    private _cloneLiteral(inputStr: Monom) {
+    #cloneLiteral(inputStr: Monom) {
         for (const k in inputStr.literal) {
             this.#literal[k] = inputStr.literal[k].clone()
         }
     }
 
-    private _evaluateAsNumeric = (values: literalType<number | Fraction> | InputValue<Fraction>): number => {
+    #evaluateAsNumeric = (values: literalType<number | Fraction> | InputValue<Fraction>): number => {
         let r = this.coefficient.value
 
         if (typeof values === "number") {
@@ -872,13 +872,13 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             const key = this.variables[0]
             tmpValues[key] = values
 
-            return this._evaluateAsNumeric(tmpValues)
+            return this.#evaluateAsNumeric(tmpValues)
         }
 
         if (values instanceof Fraction) {
             const tmpValues: literalType<number> = {}
             tmpValues[this.variables[0]] = new Fraction(values).value
-            return this._evaluateAsNumeric(tmpValues)
+            return this.#evaluateAsNumeric(tmpValues)
         }
 
         if (values instanceof NthRoot) {
@@ -927,7 +927,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return tmpList
     }
 
-    private _shutingYardToReducedMonom = (inputStr: string): this => {
+    #shutingYardToReducedMonom = (inputStr: string): this => {
         // Get the RPN array of the current expression
         const SY: ShutingYard = new ShutingYard().parse(inputStr)
         const rpn: { token: string, tokenType: ShutingyardType }[] = SY.rpn
@@ -950,7 +950,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         } else {
             // Reset the monom
             for (const element of rpn) {
-                this._shutingYard_AddToken(stack, element)
+                this.#shutingYard_AddToken(stack, element)
             }
         }
 
@@ -959,7 +959,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return this
     }
 
-    private _shutingYard_AddToken = (stack: Monom[], element: Token): void => {
+    #shutingYard_AddToken = (stack: Monom[], element: Token): void => {
         let q1: Monom, q2: Monom, m: Monom, letter: string, pow: Fraction
 
         if (element.tokenType === ShutingyardType.COEFFICIENT) {

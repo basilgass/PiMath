@@ -6,7 +6,6 @@ import { Factor } from "./algebra/factor"
 import { Monom } from "./algebra/monom"
 import { PolyFactor } from "./algebra/polyFactor"
 import { Polynom } from "./algebra/polynom"
-import { Rational } from "./algebra/rational"
 import { Fraction } from "./coefficients/fraction"
 import { NthRoot } from "./coefficients/nthRoot"
 import { Circle } from "./geometry/circle"
@@ -33,8 +32,7 @@ const PiMath = {
     Monom,
     Polynom,
     Equation,
-    // LinearSystem,
-    Rational,
+    // LinearSystem,s
     Factor,
     PolyFactor,
     // LogicalSet,

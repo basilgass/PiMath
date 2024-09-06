@@ -81,7 +81,7 @@ export class Equation implements
     // ------------------------------------------
     public parse = (equationString: string): this => {
         // Find the string separator
-        const strSign: string | false = this._findSign(equationString)
+        const strSign: string | false = this.#findSign(equationString)
 
         if (strSign === false) {
             throw new Error('The equation is not valid (no sign found)')
@@ -90,13 +90,13 @@ export class Equation implements
         // The StrSign is found
         const pStr: string[] = equationString.split(strSign)
 
-        return this.create(new Polynom(pStr[0]), new Polynom(pStr[1]), this._formatSign(strSign))
+        return this.create(new Polynom(pStr[0]), new Polynom(pStr[1]), this.#formatSign(strSign))
     }
 
     public create = (left: Polynom, right: Polynom, sign?: string): this => {
         this.#left = left
         this.#right = right
-        this.#sign = this._formatSign(sign ?? "=")
+        this.#sign = this.#formatSign(sign ?? "=")
         return this
     }
 
@@ -300,7 +300,7 @@ export class Equation implements
 
         // The sign of the inequality must be changed.
         if (this.#sign !== '=' && F.sign() === -1) {
-            this._reverseSign()
+            this.#reverseSign()
         }
 
         return this
@@ -492,7 +492,7 @@ export class Equation implements
 
     public set sign(value: string) {
         // Set the sign value as formatted.
-        this.#sign = this._formatSign(value)
+        this.#sign = this.#formatSign(value)
     }
 
     public get signAsTex(): string {
@@ -519,7 +519,7 @@ export class Equation implements
 
     // #region Private methods (6)
 
-    private _findSign = (equationString: string): string | false => {
+    #findSign = (equationString: string): string | false => {
         if (equationString.includes('geq')) {
             return (equationString.includes('\\geq')) ? '\\geq' : 'geq'
         } else if (equationString.includes('leq')) {
@@ -545,7 +545,7 @@ export class Equation implements
 
     // -----------------------------------------------
     // Equations solving algorithms
-    private _formatSign = (signStr?: string): EQUATION_SIGN => {
+    #formatSign = (signStr?: string): EQUATION_SIGN => {
         if (signStr === undefined) {
             return '='
         }
@@ -571,7 +571,7 @@ export class Equation implements
         }
     }
 
-    private _reverseSign = (): this => {
+    #reverseSign = (): this => {
         if (this.#sign === '=') {
             return this
         }
@@ -587,35 +587,6 @@ export class Equation implements
 
         return this
     }
-
-    private isAlsoEqual = (): boolean => {
-        if (this.#sign.includes('=')) {
-            return true
-        }
-
-        if (this.#sign.includes('geq')) {
-            return true
-        }
-
-        if (this.#sign.includes('leq')) {
-            return true
-        }
-
-        return false
-    }
-
-    private isGreater = (): boolean => {
-        if (this.#sign.includes('>')) {
-            return true
-        }
-
-        return this.#sign.includes('geq')
-    }
-
-    private isStrictEqual = (): boolean => {
-        return this.#sign === '='
-    }
-
     // #endregion Private methods (6)
 }
 

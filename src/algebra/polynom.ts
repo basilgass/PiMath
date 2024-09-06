@@ -5,7 +5,6 @@ import { ShutingYard, ShutingyardType, type Token } from "piexpression"
 import type { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType } from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
 import { Numeric } from '../numeric'
-import { Equation } from "./equation"
 import { EquationSolver } from './equationSolver'
 import { Monom } from './monom'
 
@@ -82,11 +81,9 @@ export class Polynom implements
         this.#monoms = []
         this.#factors = []
 
-
-
         // TODO: allow to enter a liste of Fraction (a, b, c, ...) to make a polynom ax^n + bx^(n-1) + cx^(n-2) + ...
         if (typeof inputStr === 'string') {
-            return this._parseString(inputStr, ...values)
+            return this.#parseString(inputStr, ...values)
         } else if (
             (typeof inputStr === 'number' || inputStr instanceof Fraction || inputStr instanceof Monom)
             && (values.length === 0)
@@ -171,25 +168,27 @@ export class Polynom implements
     public divide = (value: InputAlgebra<Polynom>): Polynom => {
 
         if (value instanceof Fraction) {
-            return this._divideByFraction(value)
+            return this.#divideByFraction(value)
         }
         else if (typeof value === 'number' && Number.isSafeInteger(value)) {
-            return this._divideByInteger(value)
+            return this.#divideByInteger(value)
         }
         else if (value instanceof Monom) {
             return this.divide(new Polynom(value))
         }
         else if (value instanceof Polynom) {
             if (value.monoms.length === 1 && value.variables.length === 0) {
-                return this._divideByFraction(value.monoms[0].coefficient)
+                return this.#divideByFraction(value.monoms[0].coefficient)
             }
             else {
                 const { quotient, reminder } = this.euclidean(value)
                 if (reminder.isZero()) { return quotient }
             }
+        } else if (typeof value === 'string') {
+            return this.divide(new Polynom(value))
         }
 
-        throw new Error('Cannot divide by ${value.toString}')
+        throw new Error(`Cannot divide by ${value as unknown as string}`)
     }
 
     public empty = (): this => {
@@ -248,7 +247,7 @@ export class Polynom implements
 
     public evaluate = (values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number => {
         // Return the numeric value, without using Fraction
-        if (asNumeric) { return this._evaluateAsNumeric(values) }
+        if (asNumeric) { return this.#evaluateAsNumeric(values) }
 
         // Build the evaluated fraction
         const r = new Fraction().zero()
@@ -303,7 +302,7 @@ export class Polynom implements
                 break
             } else {
                 // Create the list of all "potential" polynom dividers.
-                let allDividers: Polynom[] = this._getAllPotentialFactors(P, maxDegree, letter ?? 'x')
+                let allDividers: Polynom[] = this.#getAllPotentialFactors(P, maxDegree, letter ?? 'x')
                 maxDegree = P.degree(letter).value
 
                 // Actually: 100ms
@@ -375,10 +374,7 @@ export class Polynom implements
     }
 
     public getZeroes = (): ISolution[] => {
-        return new EquationSolver(
-            new Equation(this, 0)
-        ).solve()
-
+        return new EquationSolver(this.clone()).solve()
     }
 
     public hasVariable(letter: string): boolean {
@@ -442,7 +438,7 @@ export class Polynom implements
     }
 
     public isEqual = (P: Polynom): boolean => {
-        return this._compare(P, '=')
+        return this.#compare(P, '=')
     }
 
     public isOne(): boolean {
@@ -450,7 +446,7 @@ export class Polynom implements
     }
 
     public isOppositeAt = (P: Polynom): boolean => {
-        return this._compare(P.clone().opposite(), '=')
+        return this.#compare(P.clone().opposite(), '=')
     }
 
     public isReduced = (polynomString: string): boolean => {
@@ -472,7 +468,7 @@ export class Polynom implements
     }
 
     public isSameAs = (P: Polynom): boolean => {
-        return this._compare(P, 'same')
+        return this.#compare(P, 'same')
     }
 
     public isZero(): boolean {
@@ -568,10 +564,10 @@ export class Polynom implements
 
     public multiply = (value: unknown): Polynom => {
 
-        if (value instanceof Polynom) { return this._multiplyByPolynom(value) }
-        else if (value instanceof Fraction) { return this._multiplyByFraction(value) }
-        else if (value instanceof Monom) { return this._multiplyByMonom(value) }
-        else if (Number.isSafeInteger(value) && typeof value === 'number') { return this._multiplyByInteger(value) }
+        if (value instanceof Polynom) { return this.#multiplyByPolynom(value) }
+        else if (value instanceof Fraction) { return this.#multiplyByFraction(value) }
+        else if (value instanceof Monom) { return this.#multiplyByMonom(value) }
+        else if (Number.isSafeInteger(value) && typeof value === 'number') { return this.#multiplyByInteger(value) }
 
 
         // Something went wrong...
@@ -751,7 +747,7 @@ export class Polynom implements
     // ------------------------------------------
 
     public get display(): string {
-        return this.genDisplay()
+        return this.#genDisplay()
     }
 
 
@@ -779,11 +775,11 @@ export class Polynom implements
     }
 
     public get plotFunction(): string {
-        return this.genDisplay('tex', false, false, true)
+        return this.#genDisplay('tex', false, false, true)
     }
 
     public get tex(): string {
-        return this.genDisplay('tex')
+        return this.#genDisplay('tex')
     }
 
     public get variables(): string[] {
@@ -806,7 +802,7 @@ export class Polynom implements
 
     // #region Private methods (15)
 
-    private _compare = (P: Polynom, sign?: string): boolean => {
+    #compare = (P: Polynom, sign?: string): boolean => {
         if (sign === undefined) { sign = '=' }
 
         // Create clone version to reduce them without altering the original polynoms.
@@ -836,20 +832,20 @@ export class Polynom implements
         }
     }
 
-    private _divideByFraction = (F: Fraction): this => {
+    #divideByFraction = (F: Fraction): this => {
         for (const m of this.#monoms) { m.coefficient.divide(F) }
 
         return this
     }
 
-    private _divideByInteger = (nb: number): this => {
+    #divideByInteger = (nb: number): this => {
         const nbF = new Fraction(nb)
         for (const m of this.#monoms) { m.coefficient.divide(nbF) }
 
         return this
     }
 
-    private _evaluateAsNumeric = (values: literalType<number | Fraction> | InputValue<Fraction>): number => {
+    #evaluateAsNumeric = (values: literalType<number | Fraction> | InputValue<Fraction>): number => {
         let r = 0
         this.#monoms.forEach(monom => {
             r += monom.evaluate(values, true) as number
@@ -858,7 +854,7 @@ export class Polynom implements
         return r
     }
 
-    private _factorize2ndDegree = (letter: string): Polynom[] => {
+    #factorize2ndDegree = (letter: string): Polynom[] => {
         let P1: Polynom, P2: Polynom,
             a, b, c, delta, x1, x2, factor
 
@@ -935,7 +931,7 @@ export class Polynom implements
                     // (r X + s Y)(t X + u Y) = rt X^2 + (ru + st) XY + su Y^2
 
                     const xPolynom = new Polynom('x', a.coefficient, b.coefficient, c.coefficient)
-                    const xFactors = xPolynom._factorize2ndDegree('x')
+                    const xFactors = xPolynom.#factorize2ndDegree('x')
 
                     const factors = []
                     let xyzPolynom: Polynom
@@ -965,12 +961,7 @@ export class Polynom implements
         }
     }
 
-    private _factorizeByGroups = (): Polynom[] => {
-        // TODO: Factorize by groups.
-        return []
-    }
-
-    private _getAllPotentialFactors = (P: Polynom, maxDegree: number, letter: string): Polynom[] => {
+    #getAllPotentialFactors = (P: Polynom, maxDegree: number, letter: string): Polynom[] => {
         const m1 = P.monoms[0].dividers,
             m2 = P.monoms[P.monoms.length - 1].dividers
 
@@ -993,24 +984,24 @@ export class Polynom implements
         return allDividers
     }
 
-    private _multiplyByFraction = (F: Fraction): Polynom => {
+    #multiplyByFraction = (F: Fraction): Polynom => {
         for (const m of this.#monoms) { m.coefficient.multiply(F) }
 
 
         return this.reduce()
     }
 
-    private _multiplyByInteger = (nb: number): Polynom => {
-        return this._multiplyByFraction(new Fraction(nb))
+    #multiplyByInteger = (nb: number): Polynom => {
+        return this.#multiplyByFraction(new Fraction(nb))
     }
 
-    private _multiplyByMonom = (M: Monom): Polynom => {
+    #multiplyByMonom = (M: Monom): Polynom => {
         for (const m of this.#monoms) { m.multiply(M) }
 
         return this.reduce()
     }
 
-    private _multiplyByPolynom = (P: Polynom): Polynom => {
+    #multiplyByPolynom = (P: Polynom): Polynom => {
         const M: Monom[] = []
         for (const m1 of this.#monoms) { for (const m2 of P.monoms) { M.push(Monom.xMultiply(m1, m2)) } }
 
@@ -1021,7 +1012,7 @@ export class Polynom implements
         return this.reduce()
     }
 
-    private _parseString(inputStr: string, ...values: unknown[]): this {
+    #parseString(inputStr: string, ...values: unknown[]): this {
         if (values.length === 0) {
             inputStr = '' + inputStr
 
@@ -1037,7 +1028,7 @@ export class Polynom implements
             }
 
             // Parse the string.
-            return this._shutingYardToReducedPolynom(inputStr)
+            return this.#shutingYardToReducedPolynom(inputStr)
         } else if (/^[a-z]+/.test(inputStr)) {
             // We assume the inputStr contains only letters.
             this.empty()
@@ -1075,7 +1066,7 @@ export class Polynom implements
 
     }
 
-    private _shutingYard_addToken = (stack: Polynom[], element: Token): void => {
+    #shutingYard_addToken = (stack: Polynom[], element: Token): void => {
         switch (element.tokenType) {
             case ShutingyardType.COEFFICIENT:
                 stack.push(new Polynom(element.token))
@@ -1153,7 +1144,7 @@ export class Polynom implements
 
     }
 
-    private genDisplay = (output?: string, forceSign?: boolean, wrapParentheses?: boolean, withAllMultiplicationSign?: boolean): string => {
+    #genDisplay = (output?: string, forceSign?: boolean, wrapParentheses?: boolean, withAllMultiplicationSign?: boolean): string => {
         let P = ''
 
         for (const k of this.#monoms) {
@@ -1187,7 +1178,7 @@ export class Polynom implements
      * Main parse using a shutting yard class
      * @param inputStr
      */
-    private _shutingYardToReducedPolynom = (inputStr: string): this => {
+    #shutingYardToReducedPolynom = (inputStr: string): this => {
         // Get the RPN array of the current expression
         const SY: ShutingYard = new ShutingYard().parse(inputStr)
         const rpn: { token: string, tokenType: ShutingyardType }[] = SY.rpn
@@ -1199,7 +1190,7 @@ export class Polynom implements
 
         // Loop through the each element of the RPN
         for (const element of rpn) {
-            this._shutingYard_addToken(stack, element)
+            this.#shutingYard_addToken(stack, element)
         }
 
 

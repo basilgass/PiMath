@@ -4,14 +4,13 @@ import { Polynom } from './polynom';
 
 export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor>, IAlgebra<Factor> {
     #private;
-    constructor(value: Factor);
-    constructor(value: InputAlgebra<Polynom>, power?: InputValue<Fraction>);
-    constructor(value: Polynom, power?: InputValue<Fraction>);
+    constructor(value: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>);
     parse(): Factor;
     clone(): Factor;
     add(): Factor;
     get asPower(): this;
     get asRoot(): this;
+    get asSingle(): this;
     degree(letter?: string): Fraction;
     derivative(): Factor[];
     develop(): Polynom;
