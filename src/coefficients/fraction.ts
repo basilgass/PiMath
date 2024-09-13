@@ -1,14 +1,11 @@
-import type { compareSign, IExpression, InputValue, IPiMathObject } from "./../pimath.interface"
-import { Numeric } from "../numeric"
+import type {compareSign, IExpression, InputValue, IPiMathObject} from "../pimath.interface"
+import {Numeric} from "../numeric"
 
-// #region Type aliases (1)
-
-export type FractionParsingType = number | string | Fraction
-
-// #endregion Type aliases (1)
-
-// #region Classes (1)
-
+enum FRAC_TYPE {
+    frac = 'frac',
+    dfrac = 'dfrac',
+    tfrac= 'tfrac'
+}
 /**
  * The fraction class make possible to handle
  * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
@@ -16,22 +13,16 @@ export type FractionParsingType = number | string | Fraction
 export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> {
     // #region Class fields (2)
 
-    #denominator: number
-    #numerator: number
-    #approximative: boolean
-
-    // #endregion Class fields (2)
-
-    // #region Constructors (5)
+    #numerator = 1
+    #denominator = 1
+    #approximative = false
+    #type: FRAC_TYPE = FRAC_TYPE.frac
 
     constructor()
     constructor(value: InputValue<Fraction>)
     constructor(numerator: number, denominator: number)
     constructor(decimal: number, periodLength: number)
     constructor(value?: InputValue<Fraction>, denominatorOrPeriodic?: number) {
-        this.#numerator = 1
-        this.#denominator = 1
-        this.#approximative = false
 
         if (value !== undefined) {
             this.parse(value, denominatorOrPeriodic)
@@ -39,10 +30,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
         return this
     }
-
-    // #endregion Constructors (5)
-
-    // #region Properties and methods (55)
 
     // ------------------------------------------
     /**
@@ -246,8 +233,8 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     public inverse = (): this => {
-        const n = +this.#numerator, d = +this.#denominator
-        this.#numerator = d
+        const n = +this.#numerator
+        this.#numerator = +this.#denominator
         this.#denominator = n
 
         return this
@@ -592,12 +579,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         this.#denominator = value
     }
 
-    // ------------------------------------------
-    // Creation / parsing functions
-    public get dfrac(): string {
-        return this.tex.replace('\\frac', '\\dfrac')
-    }
-
     public get display(): string {
         if (this.isExact()) {
             if (this.#denominator === 1) {
@@ -608,11 +589,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         } else {
             return this.value.toFixed(3)
         }
-    }
-
-    // Helper function to display fractions
-    public get frac(): string {
-        return this.tex
     }
 
     // ------------------------------------------
@@ -626,19 +602,35 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         this.#numerator = value
     }
 
+    public get tfrac(): this {
+        this.#type = FRAC_TYPE.tfrac
+        return this
+    }
+
+    public get dfrac(): this {
+        this.#type = FRAC_TYPE.dfrac
+        return this
+    }
+
+    public get frac(): this {
+        this.#type = FRAC_TYPE.frac
+        return this
+    }
+
     // Display getter
     public get tex(): string {
         if (this.isInfinity()) {
             return `${this.sign() === 1 ? '+' : '-'}\\infty`
         }
 
+
         if (this.isExact()) {
             if (this.#denominator === 1) {
                 return `${this.#numerator}`
             } else if (this.#numerator < 0) {
-                return `-\\frac{ ${-this.#numerator} }{ ${this.#denominator} }`
+                return `-\\${this.#type}{ ${-this.#numerator} }{ ${this.#denominator} }`
             } else {
-                return `\\frac{ ${this.#numerator} }{ ${this.#denominator} }`
+                return `\\${this.#type}{ ${this.#numerator} }{ ${this.#denominator} }`
             }
         } else {
             return this.value.toFixed(3)
@@ -647,10 +639,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
     public get texWithSign(): string {
         return this.isPositive() ? `+${this.tex}` : this.tex
-    }
-
-    public get tfrac(): string {
-        return this.tex.replace('\\frac', '\\tfrac')
     }
 
     public get value(): number {

@@ -106,7 +106,7 @@ export class Line3 {
     // ------------------------------------------
     // Mathematical operations
     // ------------------------------------------
-    isOnLine = (pt: Vector): boolean => {
+    isOnLine = (pt: Point): boolean => {
         return false
     }
 

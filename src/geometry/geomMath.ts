@@ -14,11 +14,10 @@ export function areVectorsColinears(v1: V, v2: V): boolean {
     if (v1.dimension !== v2.dimension) { return false }
 
     // Constant of proportionality
-    const k = v1.array[0].value / v2.array[0].value
-
+    const k = v2.array[0].value / v1.array[0].value
     return v1.array.every(
         (value, index) => {
-            return v2.array[index].value === k * value.value
+            return v2.array[index].value === value.value * k
         })
 }
 

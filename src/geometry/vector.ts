@@ -2,21 +2,17 @@
  * Vector2D module contains everything necessary to handle 2d vectors.
  * @module Vector
  */
-import type { InputValue } from "../pimath.interface"
+import type { InputValue, IPiMathObject } from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
 import { Numeric } from "../numeric"
 import { areVectorsColinears, areVectorsEquals, dotProduct } from "./geomMath"
 
-export class Vector {
+export class Vector implements
+    IPiMathObject<Vector> {
     #array: Fraction[] = []
     #asPoint = false
 
-    constructor()
-    constructor(value: Vector)
-    constructor(start: Vector, end: Vector)
-    constructor(...values: InputValue<Fraction>[])
     constructor(...values: Vector[] | InputValue<Fraction>[]) {
-        // Initialize the vector
         if (values.length > 0) {
             this.parse(...values)
         }
@@ -93,7 +89,21 @@ export class Vector {
         return `((${this.array.map(x => x.display).join(',')}))`
     }
 
+    setDimension(value = 2): this{
+        if (value < 2) {
+            throw new Error('Dimension must be at least 2')
+        }
 
+        if (value < this.dimension) {
+            this.#array = this.#array.slice(0, value)
+        } else if(value > this.dimension) {
+            for(let i = this.dimension; i < value; i++) {
+                this.#array.push(new Fraction(0))
+            }
+        }
+
+        return this
+    }
     get dimension(): number {
         return this.array.length
     }
@@ -158,26 +168,27 @@ export class Vector {
     }
 
     public copy(): Fraction[] {
-        return this.array.map(x => x.clone())
+        return this.#array.map(x => x.clone())
     }
 
     zero = (): this => {
-        this.array.forEach(x => x.zero())
+        this.#array.forEach(x => x.zero())
         return this
     }
 
     one = (): this => {
-        this.array.forEach((x, index) => index === 1 ? x.one() : x.zero())
+        this.zero()
+        this.x.one()
         return this
     }
 
     opposite = (): this => {
-        this.array.forEach(x => x.opposite())
+        this.#array.forEach(x => x.opposite())
         return this
     }
 
     add = (V: Vector): this => {
-        this.array.forEach((x, index) => x.add(V.array[index]))
+        this.#array.forEach((x, index) => x.add(V.array[index]))
         return this
     }
 
@@ -235,6 +246,13 @@ export class Vector {
         this.#array[0] = y
         this.#array[1] = x
         return this
+    }
+
+    isZero(): boolean {
+        return this.array.every(x => x.isZero())
+    }
+    isOne(): boolean {
+        return this.array.every((x, index) => index === 0 ? x.isOne() : x.isZero())
     }
 
     isEqual = (v: Vector): boolean => {

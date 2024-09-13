@@ -1,29 +1,28 @@
-import type { IAlgebra, IEquation, InputValue, IPiMathObject, ISolution, literalType } from "../pimath.interface"
-import { Fraction } from "../coefficients/fraction"
-import { Numeric } from "../numeric"
-import { Equation } from "./equation"
-import { Monom } from "./monom"
-import { Polynom } from "./polynom"
+import type {IAlgebra, IEquation, InputValue, IPiMathObject, ISolution, literalType} from "../pimath.interface"
+import {Fraction} from "../coefficients/fraction"
+import {Equation} from "./equation"
+import {Monom} from "./monom"
+import {Polynom} from "./polynom"
 
+// FIXME: Build the LinearSystem class
+// TODO: Example
+// BUG: Don't know what's happening !
 /**
  * Linear system of equations
  * @class LinearSystem
  */
-export class LinearSystem implements
-    IPiMathObject<LinearSystem>,
+export class LinearSystem implements IPiMathObject<LinearSystem>,
     IEquation<LinearSystem>,
     IAlgebra<LinearSystem> {
 
     #equations: Equation[]
 
     // Determine the letters in the linear system, usually ['x', 'y']
-    private _variables: string[]
+    #variables: string[]
 
-    constructor(...equations: Equation[])
-    constructor(...equationStrings: string[])
     constructor(...values: (string | Equation)[]) {
         this.#equations = []
-        this._variables = 'xyz'.split('')
+        this.#variables = []
 
         if (values.length > 0) {
             this.parse(...values)
@@ -37,7 +36,7 @@ export class LinearSystem implements
         this.#equations = equations.map(value => new Equation(value))
 
         // get the letters.
-        this._findLetters()
+        this.#findLetters()
         return this
     }
 
@@ -149,6 +148,11 @@ export class LinearSystem implements
         return Fraction.max(...this.#equations.map(equ => equ.degree(letter)))
     }
 
+    get display() {
+        // TODO : LinearSystem - display: implement the display of the linear system
+        return this.tex + 'as display'
+    }
+
     // ------------------------------------------
     public get equations(): Equation[] {
         return this.#equations
@@ -163,11 +167,11 @@ export class LinearSystem implements
     }
 
     public hasVariable(letter: string): boolean {
-        return this._variables.includes(letter)
+        return this.#variables.includes(letter)
     }
 
-    public isEqual(value: InputValue<LinearSystem>): boolean {
-        throw new Error("Method not implemented.")
+    public isEqual(value: LinearSystem): boolean {
+        return this.equations.every((equ, index) => equ.isEqual(value.equations[index]))
     }
 
     public get isSolvable(): boolean {
@@ -184,7 +188,8 @@ export class LinearSystem implements
     }
 
     public get matrix(): [Fraction[][], Fraction[]] {
-        return this._makeMatrix()
+        //TODO: use Matrix class
+        return this.#makeMatrix()
     }
 
     public mergeEquations = (eq1: Equation, eq2: Equation, factor1: Fraction, factor2: Fraction): Equation => {
@@ -200,11 +205,28 @@ export class LinearSystem implements
         return eq1multiplied
     }
 
-    public multiply(value: InputValue<Fraction> | InputValue<Fraction>[], index?: number): LinearSystem {
-        // MUltiply the system by a number
+    public multiply(value: InputValue<Fraction> | InputValue<Fraction>[], index?: number): this {
+        // Multiply the system by a number
         // the value can be an array of numbers
         // the value can be a number and the index of the equation to multiply
-        throw new Error("Method not implemented.")
+        if (Array.isArray(value)) {
+            if (value.length !== this.#equations.length) {
+                throw new Error("The number of values must be the same as the number of equations")
+            }
+
+            for (let i = 0; i < value.length; i++) {
+                this.#equations[i].multiply(value[i])
+            }
+            return this
+        }
+
+        if (index === undefined || index < 0 || index >= this.#equations.length) {
+            throw new Error("Index out of range")
+        }
+
+        this.#equations[index].multiply(value)
+
+        return this
     }
 
     public reduce(): LinearSystem {
@@ -220,28 +242,8 @@ export class LinearSystem implements
         return this
     }
 
-    // #endregion Properties and methods (24)
-
-    // #region Getters And Setters (8)
-
-    public solve = (withResolution?: boolean): this => {
-        // Solve it by linear
-        this._solutions = {}
-        this._resolutionSteps = {}
-
-        // Reorder all equations.
-        this.reorder()
-
-        if (withResolution === undefined) {
-            withResolution = false
-        }
-
-        for (const letter of this.variables) {
-            this._solutions[letter] = this._solveOneLetter(letter, withResolution)
-        }
-
-        // TODO: LinearSystem - solve: optimization and handle undetermined and undefined systems.
-        return this
+    solve(): ISolution[] {
+        return []
     }
 
     public solveMatrix = (): Fraction[] => {
@@ -288,22 +290,6 @@ export class LinearSystem implements
         return augmentedMatrix.map(x => x[x.length - 1])
     }
 
-    public stepTex = (letter: string): string => {
-        const steps = this._resolutionSteps[letter]
-
-        if (steps === undefined) {
-            return ''
-        }
-
-        // steps = { equations[], operations: [[],[]]
-        const tex: string[] = []
-        for (let i = 0; i < steps.length; i++) {
-            tex.push(this.buildTex(steps[i].equations, steps[i].operations))
-        }
-
-        return `\\begin{aligned}&${tex.join('\\\\&')}\\end{aligned}`
-    }
-
     public subtract(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this {
         if (value instanceof LinearSystem) {
             const length = value.equations.length
@@ -335,64 +321,34 @@ export class LinearSystem implements
         return this.buildTex(LS.equations)
     }
 
-    get display() {
-        // TODO : LinearSystem - display: implement the display of the linear system
-        return this.tex + 'as display'
-    }
     public get variables(): string[] {
-        return this._variables
+        return this.#variables
     }
 
     public set variables(value: string | string[]) {
         const vars = (typeof value === "string") ? value.split('') : [...value]
         vars.sort()
-        this._variables = vars
+        this.#variables = vars
     }
 
-    // #endregion Getters And Setters (8)
-
-    // #region Private methods (4)
-
-    private _findLetters = (): this => {
-        // Find all letters used.
-        let variables = new Set<string>()
-
-        for (const equ of this.#equations) {
-            variables = new Set([...variables, ...equ.variables])
-        }
-
-        this._variables = [...variables]
-        this._variables.sort()
+    #findLetters = (): this => {
+        this.#variables = this.#equations.reduce((acc: string[], equ) => {
+            return [...new Set([...acc, ...equ.variables])]
+        }, [])
+        //
+        // // Find all letters used.
+        // let variables = new Set<string>()
+        //
+        // for (const equ of this.#equations) {
+        //     variables = new Set([...variables, ...equ.variables])
+        // }
+        //
+        // this.#variables = [...variables]
+        this.#variables.sort()
         return this
     }
 
-    private _linearReduction(eq1: Equation, eq2: Equation, letter: string): { merged: Equation, factors: Fraction[] } {
-        // Get the monom for the particular letter.
-        const c1 = eq1.left.monomByDegree(1, letter).coefficient.clone(),
-            c2 = eq2.left.monomByDegree(1, letter).coefficient.clone().opposite()
-
-        // Reduce c1 and c2 by the gcd
-        const gcdN = Numeric.gcd(c1.numerator, c2.numerator),
-            gcdD = Numeric.gcd(c1.denominator, c2.denominator)
-        c1.divide(gcdN).multiply(gcdD)
-        c2.divide(gcdN).multiply(gcdD)
-
-        // if one value is -1, use 1 and make the other one opposite
-        if (c2.isNegativeOne()) {
-            c1.opposite()
-            c2.opposite()
-        } else if (c1.isNegativeOne()) {
-            c1.opposite()
-            c2.opposite()
-        }
-
-        return {
-            merged: this.mergeEquations(eq1, eq2, c2, c1),
-            factors: [c2, c1]
-        }
-    }
-
-    private _makeMatrix = (): [Fraction[][], Fraction[]] => {
+    #makeMatrix = (): [Fraction[][], Fraction[]] => {
         // Make the matrix
         const matrix: Fraction[][] = []
         const vector: Fraction[] = []
@@ -416,78 +372,4 @@ export class LinearSystem implements
         return [matrix, vector]
     }
 
-    /**
-     * Linear reduction of the equations to have only one letter
-     * @param letter    letter to isolate
-     * @private
-     */
-    private _solveOneLetter(letter: string, withResolution: boolean): ISolution {
-        // list of equations.
-        let LE: Equation[] = this.clone().equations,
-            reducedEquations: Equation[] = [],
-            lastIndex
-
-        this._resolutionSteps[letter] = []
-
-        // Reduce the equations.
-        // Do it as long as there is more than one step, but no more than the number of equations.
-        for (const L of this.variables) {
-            // Reset the stack
-            reducedEquations = []
-
-            // remove the setLetter from all equations using linear combinations
-            if (L === letter) {
-                continue
-            }
-
-            if (withResolution) {
-                this._resolutionSteps[letter].push({
-                    equations: LE.map(x => x.clone()),
-                    operations: [...new Array(LE.length)].map(x => [...new Array(LE.length - 1)].map(x => ""))
-                })
-                lastIndex = this._resolutionSteps[letter].length - 1
-            }
-
-            // Linear reduction.
-            for (let i = 0; i < LE.length - 1; i++) {
-                const result = this._linearReduction(LE[i], LE[i + 1], L)
-                reducedEquations.push(result.merged)
-
-                if (withResolution) {
-                    this._resolutionSteps[letter][lastIndex].operations[i][i] = result.factors[0].tex
-                    this._resolutionSteps[letter][lastIndex].operations[i + 1][i] = result.factors[1].tex
-                }
-            }
-
-            LE = [...reducedEquations]
-        }
-
-        // Solve the equations
-        // let E = this._resolutionSteps[this._resolutionSteps.length - 1].equations[0];
-        const E = LE[0]
-        E.solve()
-        const solution = E.solutions[0]
-
-        if (withResolution) {
-            this._resolutionSteps[letter].push({
-                equations: [LE[0]],
-                operations: [[LE[0].left.monoms[0].coefficient.tex]]
-            })
-
-            let P: Polynom
-            if (solution.exact instanceof Fraction || typeof solution.exact === "string") {
-                P = new Polynom(solution.exact)
-            } else {
-                P = new Polynom(solution.value)
-            }
-
-            this._resolutionSteps[letter].push({
-                equations: [new Equation(new Polynom(letter), P)],
-                operations: []
-            })
-        }
-        return E.solutions[0]
-    }
-
-    // #endregion Private methods (4)
 }

@@ -1,8 +1,41 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, test } from "vitest"
 import { Line3 } from "../../src/geometry/line3"
 import { Random } from "../../src/randomization/random"
 import { Vector } from "../../src/geometry/vector"
 import { Point } from "../../src/geometry/point"
+import { Plane3 } from "../../src/geometry/plane3"
+import { Equation } from "../../src/algebra/equation"
+
+describe.todo('Line 3D creation', () => {
+    test.todo('create Line 3D')
+    test.todo('parse string')
+    test.todo('clone Line 3D')
+    test.todo('set to zero Line 3D')
+    test.todo('set to one Line 3D')
+})
+describe.todo('Line 3D output', () => {
+    test.todo('output as LaTeX')
+    test.todo('output as ASCII')
+})
+describe.todo('Line 3D operations', () => {
+    test.todo('reduce Line 3D')
+    test.todo('add two Line 3Ds')
+    test.todo('subtract two Line 3Ds')
+    test.todo('multiply two Line 3Ds')
+    test.todo('divide by Line 3D')
+    test.todo('raise Line 3D by integer')
+})
+describe.todo('Line 3D comparisons', () => {
+    test.todo('same Line 3D')
+    test.todo('equal Line 3D')
+    test.todo('is one Line 3D')
+    test.todo('is zero Line 3D')
+})
+describe.todo('Line 3D static functions')
+describe.todo('Line 3D evaluation', () => {
+    test.todo('evaluate Line 3D')
+})
+describe.todo('Line 3D generators')
 
 describe('Geometry Line3 tests', function () {
     it('should create a line from two points', function () {
@@ -82,4 +115,100 @@ describe('Geometry Line3 tests', function () {
         if (!isNaN(k3)) { expect(P.z.display).not.to.be.equal(L.OA.z.display) }
     })
 
+    it('test', () => {
+        const A1 = new Vector(3, -1, 4)
+        const v1 = new Vector(-1, 2, -1)
+
+        const v2 = new Vector(-2, 3, 1)
+
+        const I = A1.clone().add(v1.clone().multiplyByScalar(4))
+        const A2 = I.clone().subtract(v2.clone().multiplyByScalar(3))
+
+        console.log(A2.display)
+
+        const l1 = new Line3(A1, v1)
+        const l2 = new Line3(A2, v2)
+
+        console.log(l1.tex.parametric)
+        console.log(l2.tex.cartesian)
+
+        // const control = l1.intersection(l2)
+        // console.log(control.point.display)
+    })
+    it('test 2', () => {
+        const A = new Point(-1, 3, 4)
+        const B = new Point(3, 3, 7)
+        const D = new Point(3, 5, 0)
+        const AB = new Vector(A, B)
+        const AD = new Vector(A, D)
+
+        console.log('A=', A.display)
+        console.log('B=', B.display)
+        console.log('D=', D.display)
+        console.log('AB=', AB.display, AB.normSquare.display)
+        console.log('AD=', AD.display, AD.normSquare.display)
+        const P = B.add(new Vector(A, D).multiplyByScalar(2))
+        console.log('P=', P.display)
+
+        console.log('ABxAD=', AB.cross(AD).display)
+        const p = new Plane3({
+            points: [A, B, D]
+        })
+        console.log(p.tex)
+
+        const S = P.clone().add(p.normal.clone().multiplyByScalar(1))
+        console.log('S=', S.display)
+    })
+    it('test 2B', () => {
+        const A = new Point(-2, 3, 4)
+        const B = new Point(2, 3, 7)
+        const D = new Point(2, 5, 0)
+        const AB = new Vector(A, B)
+        const AD = new Vector(A, D)
+
+        console.log('A=', A.display)
+        console.log('B=', B.display)
+        console.log('D=', D.display)
+        console.log('AB=', AB.display, AB.normSquare.display)
+        console.log('AD=', AD.display, AD.normSquare.display)
+        const P = B.add(new Vector(A, D).multiplyByScalar(2))
+        console.log('P=', P.display)
+
+        console.log('ABxAD=', AB.cross(AD).display)
+        const p = new Plane3({
+            points: [A, B, D]
+        })
+        console.log(p.tex)
+
+        const S = P.clone().add(p.normal.clone().multiplyByScalar(1))
+        console.log('S=', S.display)
+    })
+
+    it('test 3', () => {
+        const p1 = new Plane3({
+            equation: new Equation('2x-y+z=0')
+        })
+        const p2 = new Plane3({
+            equation: new Equation('x-3y+z+5=0')
+        })
+
+        const d = new Line3(
+            new Point(0, 0, 0),
+            new Vector(1, -2, 3)
+        )
+        console.log(p1.tex)
+        console.log(p2.tex)
+        console.log(d.tex.parametric)
+
+        const cross = p1.normal.cross(p2.normal)
+        console.log('cross', cross.display)
+
+        const pt = new Point(1, 2, 0)
+        console.log(p1.isPointOnPlane(pt))
+        console.log(p2.isPointOnPlane(pt))
+        console.log(pt.display)
+
+        const d2 = new Line3(pt, cross)
+        console.log(d2.display.parametric)
+    })
 })

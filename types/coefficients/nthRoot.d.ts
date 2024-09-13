@@ -2,10 +2,7 @@
  * NthRoot is something like "a+b\sqrt{3}
  */
 export declare class NthRoot {
-    private _radical;
-    private _nth;
-    private _coefficient;
-    private _isValid;
+    #private;
     constructor(...values: number[]);
     get radical(): number;
     set radical(value: number);

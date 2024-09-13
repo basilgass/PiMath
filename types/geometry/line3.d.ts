@@ -36,7 +36,7 @@ export declare class Line3 {
     };
     get direction(): Vector;
     clone: () => this;
-    isOnLine: (pt: Vector) => boolean;
+    isOnLine: (pt: Point) => boolean;
     isParallelTo: (line: Line3) => boolean;
     isSameAs: (line: Line3) => boolean;
     isPerpendicularTo: (line: Line3) => boolean;

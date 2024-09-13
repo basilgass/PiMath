@@ -1,6 +1,5 @@
-import { compareSign, IExpression, InputValue, IPiMathObject } from './../pimath.interface';
+import { compareSign, IExpression, InputValue, IPiMathObject } from '../pimath.interface';
 
-export type FractionParsingType = number | string | Fraction;
 /**
  * The fraction class make possible to handle
  * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
@@ -81,13 +80,13 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     static xMultiply: (...values: (InputValue<Fraction>)[]) => Fraction;
     get denominator(): number;
     set denominator(value: number);
-    get dfrac(): string;
     get display(): string;
-    get frac(): string;
     get numerator(): number;
     set numerator(value: number);
+    get tfrac(): this;
+    get dfrac(): this;
+    get frac(): this;
     get tex(): string;
     get texWithSign(): string;
-    get tfrac(): string;
     get value(): number;
 }

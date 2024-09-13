@@ -1,8 +1,38 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, test } from "vitest"
 import { Random } from "../../src/randomization/random"
 import { Polynom } from "../../src/algebra/polynom"
 import { Fraction } from "../../src/coefficients/fraction"
 
+describe.todo('Polynom creation', () => {
+    test.todo('create Polynom')
+    test.todo('parse string')
+    test.todo('clone Polynom')
+    test.todo('set to zero Polynom')
+    test.todo('set to one Polynom')
+})
+describe.todo('Polynom output', () => {
+    test.todo('output as LaTeX')
+    test.todo('output as ASCII')
+})
+describe.todo('Polynom operations', () => {
+    test.todo('reduce Polynom')
+    test.todo('add two Polynoms')
+    test.todo('subtract two Polynoms')
+    test.todo('multiply two Polynoms')
+    test.todo('divide by Polynom')
+    test.todo('raise Polynom by integer')
+})
+describe.todo('Polynom comparisons', () => {
+    test.todo('same Polynom')
+    test.todo('equal Polynom')
+    test.todo('is one Polynom')
+    test.todo('is zero Polynom')
+})
+describe.todo('Polynom static functions')
+describe.todo('Polynom evaluation', () => {
+    test.todo('evaluate Polynom')
+})
+describe.todo('Polynom generators')
 
 describe('Polynom tests', () => {
     it('Parse polynom', () => {

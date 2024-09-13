@@ -1,10 +1,41 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, test } from "vitest"
 import { Plane3 } from "../../src/geometry/plane3"
 import { Line3 } from "../../src/geometry/line3"
 import { Point } from "../../src/geometry/point"
 import { Vector } from "../../src/geometry/vector"
 import { Matrix } from "../../src/geometry/matrix"
+import { determinant } from "../../src/geometry/geomMath"
 
+describe.todo('Plane 3D creation', () => {
+    test.todo('create Plane 3D')
+    test.todo('parse string')
+    test.todo('clone Plane 3D')
+    test.todo('set to zero Plane 3D')
+    test.todo('set to one Plane 3D')
+})
+describe.todo('Plane 3D output', () => {
+    test.todo('output as LaTeX')
+    test.todo('output as ASCII')
+})
+describe.todo('Plane 3D operations', () => {
+    test.todo('reduce Plane 3D')
+    test.todo('add two Plane 3Ds')
+    test.todo('subtract two Plane 3Ds')
+    test.todo('multiply two Plane 3Ds')
+    test.todo('divide by Plane 3D')
+    test.todo('raise Plane 3D by integer')
+})
+describe.todo('Plane 3D comparisons', () => {
+    test.todo('same Plane 3D')
+    test.todo('equal Plane 3D')
+    test.todo('is one Plane 3D')
+    test.todo('is zero Plane 3D')
+})
+describe.todo('Plane 3D static functions')
+describe.todo('Plane 3D evaluation', () => {
+    test.todo('evaluate Plane 3D')
+})
+describe.todo('Plane 3D generators')
 describe('Geometry Plane', function () {
     it('should create a plane from 3 points', function () {
         const P1 = new Point(1, 0, 0),
@@ -140,10 +171,9 @@ describe('Geometry Plane', function () {
         console.log(bc.distanceTo(D).tex)
         console.log('Hauteur issue de C')
         console.log(ABD.distanceTo(C))
-
     })
 
-    it.skip('test2', () => {
+    it('test2', () => {
         const A = new Point(6, -1, -1)
         const B = new Point(5, 2, 3)
         const Cp = new Point(3, 1, 4)
@@ -153,6 +183,7 @@ describe('Geometry Plane', function () {
         const AB = new Vector(A, B)
         const ACp = new Vector(A, Cp)
         const C = Cp.clone().add(ABCp.normal.simplify().clone().multiplyByScalar(-2))
+        const AC = new Vector(A, C)
         const dAB = new Line3(A, B)
         const dBC = new Line3(B, C)
         const dAC = new Line3(A, C)
@@ -178,11 +209,29 @@ describe('Geometry Plane', function () {
         console.log('dAB=', dAB.display.parametric)
         console.log('d=dAC=', dAC.display.cartesian)
         console.log('dBC=', dBC.display.parametric)
+        console.log('BM=', BM.display)
         console.log('-----------')
         console.log('\\item \\(\\pi_1: ' + BCD.tex + '\\)')
         console.log('\\item \\(\\pi_2: ' + ABCp.tex + '\\)')
         console.log('\\item \\(\\pi_3: ' + BCE.tex + '\\)')
         console.log('\\item \\(' + `A= ${A.tex} ` + '\\)')
         console.log(`\\item \\(\\displaystyle d: ${dAC.tex.cartesian} \\)`)
+
+        console.log('AB - CC\' = ', dAB.distanceTo(Cp).value)
+        console.log('d - BM = ', determinant(AC, BM, new Vector(A, M)).value / AC.cross(BM).norm)
+
     })
+
+    test('test', () => {
+        const p = new Plane3(
+            {
+                points: [new Point(-2, 3, 4),
+                new Point(2, 3, 7),
+                new Point(2, 5, 0)]
+            }
+
+        )
+        console.log(p.tex)
+    })
+
 })

@@ -1,12 +1,9 @@
-import { InputValue } from '../pimath.interface';
+import { InputValue, IPiMathObject } from '../pimath.interface';
 import { Fraction } from '../coefficients/fraction';
 
-export declare class Vector {
+export declare class Vector implements IPiMathObject<Vector> {
     #private;
-    constructor();
-    constructor(value: Vector);
-    constructor(start: Vector, end: Vector);
-    constructor(...values: InputValue<Fraction>[]);
+    constructor(...values: Vector[] | InputValue<Fraction>[]);
     get array(): Fraction[];
     set array(value: Fraction[]);
     get x(): Fraction;
@@ -21,6 +18,7 @@ export declare class Vector {
     get norm(): number;
     get tex(): string;
     get display(): string;
+    setDimension(value?: number): this;
     get dimension(): number;
     get isNull(): boolean;
     static asTex(...values: string[]): string;
@@ -40,6 +38,8 @@ export declare class Vector {
     dot: (V: Vector) => Fraction;
     cross(value: Vector): Vector;
     normal: () => this;
+    isZero(): boolean;
+    isOne(): boolean;
     isEqual: (v: Vector) => boolean;
     isColinearTo: (v: Vector) => boolean;
     isNormalTo: (v: Vector) => boolean;

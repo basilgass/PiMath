@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest"
 import { Equation } from "../../src/algebra/equation"
-import { LinearSystem } from "../../src/algebra/linearSystem.bak"
+import {LinearSystem} from "../../src/algebra/linearSystem"
+
 
 describe('Linear System creation', () => {
     test('create Linear System', () => {
@@ -26,6 +27,7 @@ describe('Linear System creation', () => {
     })
 
     test.todo('parse string')
+
     test('clone Linear System', () => {
         const LS = new LinearSystem(
             '4x+5y=11',

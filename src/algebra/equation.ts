@@ -25,13 +25,6 @@ export class Equation implements
     IPiMathObject<Equation>,
     IEquation<Equation>,
     IAlgebra<Equation> {
-    // #region Class fields (6)
-
-
-    // TODO: Randomize defaults should be something else...
-    #randomizeDefaults: Record<string, number | string | boolean> = {
-        degree: 2
-    }
 
     // Left part of the equation
     #left: Polynom
@@ -110,7 +103,7 @@ export class Equation implements
      * and the right part to the right part of the equation
      * if value is a string, try to create an equation
      * if it fails, create a polynom and add it to the left and right part of the equation
-     * @param Equation | Polynom | Monom | Fraction | string | monom
+     * @param value | Polynom | Monom | Fraction | string | monom
      */
     public add(value: InputValue<Equation | Polynom>): this {
         if (value instanceof Equation) {
@@ -196,6 +189,12 @@ export class Equation implements
      */
     public hasVariable = (letter: string): boolean => {
         return this.variables.includes(letter)
+    }
+
+
+    public isEqual(value: InputValue<Equation>): boolean {
+        const equ = new Equation(value)
+        return equ.left.isEqual(this.#left) && equ.right.isEqual(this.#right)
     }
 
     public isLinearTo = (equ: Equation): boolean => {
@@ -466,15 +465,6 @@ export class Equation implements
 
     public get numberOfVars(): number {
         return this.variables.length
-    }
-
-    // Creation / parsing functions
-    public get randomizeDefaults(): Record<string, number | string | boolean> {
-        return this.#randomizeDefaults
-    }
-
-    public set randomizeDefaults(value) {
-        this.#randomizeDefaults = value
     }
 
     public get right(): Polynom {

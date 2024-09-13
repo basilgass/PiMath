@@ -1,7 +1,37 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, test } from "vitest"
 import { Matrix } from "../../src/geometry/matrix"
 import { Vector } from "../../src/geometry/vector"
 
+describe.todo('Matrix creation', () => {
+    test.todo('create Matrix')
+    test.todo('parse string')
+    test.todo('clone Matrix')
+    test.todo('set to zero Matrix')
+    test.todo('set to one Matrix')
+})
+describe.todo('Matrix output', () => {
+    test.todo('output as LaTeX')
+    test.todo('output as ASCII')
+})
+describe.todo('Matrix operations', () => {
+    test.todo('reduce Matrix')
+    test.todo('add two Matrixs')
+    test.todo('subtract two Matrixs')
+    test.todo('multiply two Matrixs')
+    test.todo('divide by Matrix')
+    test.todo('raise Matrix by integer')
+})
+describe.todo('Matrix comparisons', () => {
+    test.todo('same Matrix')
+    test.todo('equal Matrix')
+    test.todo('is one Matrix')
+    test.todo('is zero Matrix')
+})
+describe.todo('Matrix static functions')
+describe.todo('Matrix evaluation', () => {
+    test.todo('evaluate Matrix')
+})
+describe.todo('Matrix generators')
 
 describe('Geometry Matrix', function () {
     it('should create a matrix from 2 vectors', function () {

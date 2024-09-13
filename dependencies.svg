@@ -19,25 +19,20 @@
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M197,-238C197,-238 539.5,-238 539.5,-238 545.5,-238 551.5,-244 551.5,-250 551.5,-250 551.5,-350 551.5,-350 551.5,-356 545.5,-362 539.5,-362 539.5,-362 197,-362 197,-362 191,-362 185,-356 185,-350 185,-350 185,-250 185,-250 185,-244 191,-238 197,-238"/>
 <text text-anchor="middle" x="368.25" y="-350.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">algebra</text>
 </g>
-<g id="clust4" class="cluster">
-<title>cluster_src/geometry</title>
-<path fill="#ffffff" stroke="black" stroke-width="2" d="M113,-494C113,-494 545,-494 545,-494 551,-494 557,-500 557,-506 557,-506 557,-620 557,-620 557,-626 551,-632 545,-632 545,-632 113,-632 113,-632 107,-632 101,-626 101,-620 101,-620 101,-506 101,-506 101,-500 107,-494 113,-494"/>
-<text text-anchor="middle" x="329" y="-620.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">geometry</text>
-</g>
 <g id="clust3" class="cluster">
 <title>cluster_src/coefficients</title>
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M580,-353C580,-353 631,-353 631,-353 637,-353 643,-359 643,-365 643,-365 643,-423 643,-423 643,-429 637,-435 631,-435 631,-435 580,-435 580,-435 574,-435 568,-429 568,-423 568,-423 568,-365 568,-365 568,-359 574,-353 580,-353"/>
 <text text-anchor="middle" x="605.5" y="-423.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">coefficients</text>
 </g>
+<g id="clust4" class="cluster">
+<title>cluster_src/geometry</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M113,-494C113,-494 545,-494 545,-494 551,-494 557,-500 557,-506 557,-506 557,-620 557,-620 557,-626 551,-632 545,-632 545,-632 113,-632 113,-632 107,-632 101,-626 101,-620 101,-620 101,-506 101,-506 101,-500 107,-494 113,-494"/>
+<text text-anchor="middle" x="329" y="-620.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">geometry</text>
+</g>
 <g id="clust5" class="cluster">
 <title>cluster_src/randomization</title>
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M28,-730C28,-730 448,-730 448,-730 454,-730 460,-736 460,-742 460,-742 460,-1030 460,-1030 460,-1036 454,-1042 448,-1042 448,-1042 28,-1042 28,-1042 22,-1042 16,-1036 16,-1030 16,-1030 16,-742 16,-742 16,-736 22,-730 28,-730"/>
 <text text-anchor="middle" x="238" y="-1030.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">randomization</text>
-</g>
-<g id="clust8" class="cluster">
-<title>cluster_src/randomization/geometry</title>
-<path fill="#ffffff" stroke="black" stroke-width="2" d="M109.5,-768C109.5,-768 253.5,-768 253.5,-768 259.5,-768 265.5,-774 265.5,-780 265.5,-780 265.5,-868 265.5,-868 265.5,-874 259.5,-880 253.5,-880 253.5,-880 109.5,-880 109.5,-880 103.5,-880 97.5,-874 97.5,-868 97.5,-868 97.5,-780 97.5,-780 97.5,-774 103.5,-768 109.5,-768"/>
-<text text-anchor="middle" x="181.5" y="-868.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">geometry</text>
 </g>
 <g id="clust6" class="cluster">
 <title>cluster_src/randomization/algebra</title>
@@ -48,6 +43,11 @@
 <title>cluster_src/randomization/coefficient</title>
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M289.5,-860C289.5,-860 354.5,-860 354.5,-860 360.5,-860 366.5,-866 366.5,-872 366.5,-872 366.5,-900 366.5,-900 366.5,-906 360.5,-912 354.5,-912 354.5,-912 289.5,-912 289.5,-912 283.5,-912 277.5,-906 277.5,-900 277.5,-900 277.5,-872 277.5,-872 277.5,-866 283.5,-860 289.5,-860"/>
 <text text-anchor="middle" x="322" y="-900.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">coefficient</text>
+</g>
+<g id="clust8" class="cluster">
+<title>cluster_src/randomization/geometry</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M109.5,-768C109.5,-768 253.5,-768 253.5,-768 259.5,-768 265.5,-774 265.5,-780 265.5,-780 265.5,-868 265.5,-868 265.5,-874 259.5,-880 253.5,-880 253.5,-880 109.5,-880 109.5,-880 103.5,-880 97.5,-874 97.5,-868 97.5,-868 97.5,-780 97.5,-780 97.5,-774 103.5,-768 109.5,-768"/>
+<text text-anchor="middle" x="181.5" y="-868.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">geometry</text>
 </g>
 <!-- src/algebra/equation.ts -->
 <g id="node1" class="node">
@@ -70,8 +70,8 @@
 <!-- src/algebra/equation.ts&#45;&gt;src/coefficients/fraction.ts -->
 <g id="edge1" class="edge">
 <title>src/algebra/equation.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M245,-336.25C245,-355.89 245,-400 245,-400 245,-400 571.21,-400 571.21,-400"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.21,-402.1 577.21,-400 571.21,-397.9 571.21,-402.1"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M245,-336.02C245,-355.68 245,-400.6 245,-400.6 245,-400.6 571.21,-400.6 571.21,-400.6"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.21,-402.7 577.21,-400.6 571.21,-398.5 571.21,-402.7"/>
 </g>
 <!-- src/numeric.ts -->
 <g id="node3" class="node">
@@ -85,8 +85,8 @@
 <!-- src/algebra/equation.ts&#45;&gt;src/numeric.ts -->
 <g id="edge2" class="edge">
 <title>src/algebra/equation.ts&#45;&gt;src/numeric.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M209,-336.34C209,-337.66 209,-338.57 209,-338.57 209,-338.57 644.76,-338.57 644.76,-338.57"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="644.76,-340.67 650.76,-338.57 644.76,-336.47 644.76,-340.67"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M209,-336.22C209,-337.83 209,-339 209,-339 209,-339 644.76,-339 644.76,-339"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="644.76,-341.1 650.76,-339 644.76,-336.9 644.76,-341.1"/>
 </g>
 <!-- src/pimath.interface.ts -->
 <g id="node4" class="node">
@@ -100,8 +100,8 @@
 <!-- src/algebra/equation.ts&#45;&gt;src/pimath.interface.ts -->
 <g id="edge3" class="edge">
 <title>src/algebra/equation.ts&#45;&gt;src/pimath.interface.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M258.03,-327.5C323.96,-327.5 472,-327.5 472,-327.5 472,-327.5 472,-363.55 472,-363.55"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="469.9,-363.55 472,-369.55 474.1,-363.55 469.9,-363.55"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M258.16,-328C324.35,-328 473,-328 473,-328 473,-328 473,-363.65 473,-363.65"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="470.9,-363.65 473,-369.65 475.1,-363.65 470.9,-363.65"/>
 </g>
 <!-- src/algebra/equationSolver.ts -->
 <g id="node5" class="node">
@@ -116,13 +116,13 @@
 <g id="edge4" class="edge">
 <title>src/algebra/equation.ts&#45;&gt;src/algebra/equationSolver.ts</title>
 <g id="a_edge4"><a xlink:title="type&#45;circular">
-<path fill="none" stroke="orange" stroke-width="2" d="M258.04,-321.12C270.51,-321.12 282,-321.12 282,-321.12 282,-321.12 282,-307.92 282,-307.92"/>
-<polygon fill="orange" stroke="orange" stroke-width="2" points="284.1,-300.12 282,-294.12 279.9,-300.12 284.1,-300.12"/>
-<polyline fill="none" stroke="orange" stroke-width="2" points="282,-300.12 282,-303.12 "/>
-<ellipse fill="none" stroke="orange" stroke-width="2" cx="282" cy="-305.52" rx="2.4" ry="2.4"/>
+<path fill="none" stroke="orange" stroke-width="2" d="M258.17,-324C271.48,-324 284,-324 284,-324 284,-324 284,-307.85 284,-307.85"/>
+<polygon fill="orange" stroke="orange" stroke-width="2" points="286.1,-300.05 284,-294.05 281.9,-300.05 286.1,-300.05"/>
+<polyline fill="none" stroke="orange" stroke-width="2" points="284,-300.05 284,-303.05 "/>
+<ellipse fill="none" stroke="orange" stroke-width="2" cx="284" cy="-305.45" rx="2.4" ry="2.4"/>
 </a>
 </g>
-<text text-anchor="middle" x="301.62" y="-323.93" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
+<text text-anchor="middle" x="304.16" y="-326.8" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
 </g>
 <!-- src/algebra/monom.ts -->
 <g id="node6" class="node">
@@ -136,71 +136,71 @@
 <!-- src/algebra/equation.ts&#45;&gt;src/algebra/monom.ts -->
 <g id="edge5" class="edge">
 <title>src/algebra/equation.ts&#45;&gt;src/algebra/monom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M258.26,-325.38C258.26,-325.38 478.07,-325.38 478.07,-325.38"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="478.07,-327.48 484.07,-325.38 478.07,-323.28 478.07,-327.48"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M258.26,-326C258.26,-326 478.07,-326 478.07,-326"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="478.07,-328.1 484.07,-326 478.07,-323.9 478.07,-328.1"/>
 </g>
 <!-- src/algebra/polynom.ts -->
 <g id="node7" class="node">
 <title>src/algebra/polynom.ts</title>
 <g id="a_node7"><a xlink:href="src/algebra/polynom.ts" xlink:title="polynom.ts">
-<path fill="#ddfeff" stroke="black" d="M440.5,-319C440.5,-319 390.5,-319 390.5,-319 387.5,-319 384.5,-316 384.5,-313 384.5,-313 384.5,-307 384.5,-307 384.5,-304 387.5,-301 390.5,-301 390.5,-301 440.5,-301 440.5,-301 443.5,-301 446.5,-304 446.5,-307 446.5,-307 446.5,-313 446.5,-313 446.5,-316 443.5,-319 440.5,-319"/>
-<text text-anchor="start" x="392.5" y="-307.8" font-family="Helvetica,sans-Serif" font-size="9.00">polynom.ts</text>
+<path fill="#ddfeff" stroke="black" d="M440.5,-316C440.5,-316 390.5,-316 390.5,-316 387.5,-316 384.5,-313 384.5,-310 384.5,-310 384.5,-304 384.5,-304 384.5,-301 387.5,-298 390.5,-298 390.5,-298 440.5,-298 440.5,-298 443.5,-298 446.5,-301 446.5,-304 446.5,-304 446.5,-310 446.5,-310 446.5,-313 443.5,-316 440.5,-316"/>
+<text text-anchor="start" x="392.5" y="-304.8" font-family="Helvetica,sans-Serif" font-size="9.00">polynom.ts</text>
 </a>
 </g>
 </g>
 <!-- src/algebra/equation.ts&#45;&gt;src/algebra/polynom.ts -->
 <g id="edge6" class="edge">
 <title>src/algebra/equation.ts&#45;&gt;src/algebra/polynom.ts</title>
-<g id="a_edge6"><a xlink:title="no&#45;circular&#45;at&#45;runtime">
-<path fill="none" stroke="red" stroke-width="2" d="M238,-317.96C238,-316.38 238,-315.23 238,-315.23 238,-315.23 370.38,-315.23 370.38,-315.23"/>
-<polygon fill="red" stroke="red" stroke-width="2" points="378.18,-317.33 384.18,-315.23 378.18,-313.13 378.18,-317.33"/>
-<polyline fill="none" stroke="red" stroke-width="2" points="378.18,-315.23 375.18,-315.23 "/>
-<ellipse fill="none" stroke="red" stroke-width="2" cx="372.78" cy="-315.23" rx="2.4" ry="2.4"/>
+<g id="a_edge6"><a xlink:title="type&#45;circular">
+<path fill="none" stroke="orange" stroke-width="2" d="M227,-317.97C227,-316.04 227,-314.57 227,-314.57 227,-314.57 370.57,-314.57 370.57,-314.57"/>
+<polygon fill="orange" stroke="orange" stroke-width="2" points="378.37,-316.67 384.37,-314.57 378.37,-312.47 378.37,-316.67"/>
+<polyline fill="none" stroke="orange" stroke-width="2" points="378.37,-314.57 375.37,-314.57 "/>
+<ellipse fill="none" stroke="orange" stroke-width="2" cx="372.97" cy="-314.57" rx="2.4" ry="2.4"/>
 </a>
 </g>
-<text text-anchor="middle" x="258.32" y="-308.03" font-family="Helvetica,sans-Serif" font-size="9.00" fill="red">no&#45;circular&#45;at&#45;runtime</text>
+<text text-anchor="middle" x="322.09" y="-307.37" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
 </g>
 <!-- src/coefficients/fraction.ts&#45;&gt;src/numeric.ts -->
-<g id="edge30" class="edge">
+<g id="edge29" class="edge">
 <title>src/coefficients/fraction.ts&#45;&gt;src/numeric.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M633.66,-400C651.41,-400 671,-400 671,-400 671,-400 671,-351.17 671,-351.17"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="673.1,-351.17 671,-345.17 668.9,-351.17 673.1,-351.17"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M633.61,-400C655.08,-400 681,-400 681,-400 681,-400 681,-351.17 681,-351.17"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="683.1,-351.17 681,-345.17 678.9,-351.17 683.1,-351.17"/>
 </g>
 <!-- src/coefficients/fraction.ts&#45;&gt;src/pimath.interface.ts -->
-<g id="edge31" class="edge">
+<g id="edge30" class="edge">
 <title>src/coefficients/fraction.ts&#45;&gt;src/pimath.interface.ts</title>
-<g id="a_edge31"><a xlink:title="type&#45;circular">
-<path fill="none" stroke="orange" d="M577.29,-393.25C566.62,-393.25 557,-393.25 557,-393.25 557,-393.25 557,-392.74 557,-392.74"/>
-<polygon fill="orange" stroke="orange" points="559.1,-394.11 557,-388.11 554.9,-394.11 559.1,-394.11"/>
-<polyline fill="none" stroke="orange" points="557,-394.11 557,-397.11 "/>
-<ellipse fill="none" stroke="orange" cx="557" cy="-399.51" rx="2.4" ry="2.4"/>
+<g id="a_edge30"><a xlink:title="type&#45;circular">
+<path fill="none" stroke="orange" d="M577.41,-394.6C564.92,-394.6 553,-394.6 553,-394.6 553,-394.6 553,-393.97 553,-393.97"/>
+<polygon fill="orange" stroke="orange" points="555.1,-394.25 553,-388.25 550.9,-394.25 555.1,-394.25"/>
+<polyline fill="none" stroke="orange" points="553,-394.25 553,-397.25 "/>
+<ellipse fill="none" stroke="orange" cx="553" cy="-399.65" rx="2.4" ry="2.4"/>
 </a>
 </g>
-<text text-anchor="middle" x="541.89" y="-396.05" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
+<text text-anchor="middle" x="539.89" y="-397.4" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
 </g>
 <!-- src/pimath.interface.ts&#45;&gt;src/coefficients/fraction.ts -->
-<g id="edge84" class="edge">
+<g id="edge83" class="edge">
 <title>src/pimath.interface.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<g id="a_edge84"><a xlink:title="type&#45;circular">
-<path fill="none" stroke="orange" d="M553,-388.12C553,-391.43 553,-394.38 553,-394.38 553,-394.38 563.61,-394.38 563.61,-394.38"/>
-<polygon fill="orange" stroke="orange" points="571.41,-396.48 577.41,-394.38 571.41,-392.28 571.41,-396.48"/>
-<polyline fill="none" stroke="orange" points="571.41,-394.38 568.41,-394.38 "/>
-<ellipse fill="none" stroke="orange" cx="566.01" cy="-394.38" rx="2.4" ry="2.4"/>
+<g id="a_edge83"><a xlink:title="type&#45;circular">
+<path fill="none" stroke="orange" d="M557,-388.2C557,-391.02 557,-393.4 557,-393.4 557,-393.4 563.49,-393.4 563.49,-393.4"/>
+<polygon fill="orange" stroke="orange" points="571.29,-395.5 577.29,-393.4 571.29,-391.3 571.29,-395.5"/>
+<polyline fill="none" stroke="orange" points="571.29,-393.4 568.29,-393.4 "/>
+<ellipse fill="none" stroke="orange" cx="565.89" cy="-393.4" rx="2.4" ry="2.4"/>
 </a>
 </g>
-<text text-anchor="middle" x="530.18" y="-387.18" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
+<text text-anchor="middle" x="582.64" y="-386.2" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
 </g>
 <!-- src/pimath.interface.ts&#45;&gt;src/algebra/monom.ts -->
-<g id="edge83" class="edge">
+<g id="edge82" class="edge">
 <title>src/pimath.interface.ts&#45;&gt;src/algebra/monom.ts</title>
-<g id="a_edge83"><a xlink:title="type&#45;circular">
-<path fill="none" stroke="orange" d="M527,-369.94C527,-369.94 527,-350.1 527,-350.1"/>
-<polygon fill="orange" stroke="orange" points="529.1,-342.3 527,-336.3 524.9,-342.3 529.1,-342.3"/>
-<polyline fill="none" stroke="orange" points="527,-342.3 527,-345.3 "/>
-<ellipse fill="none" stroke="orange" cx="527" cy="-347.7" rx="2.4" ry="2.4"/>
+<g id="a_edge82"><a xlink:title="type&#45;circular">
+<path fill="none" stroke="orange" d="M514,-369.94C514,-369.94 514,-350.1 514,-350.1"/>
+<polygon fill="orange" stroke="orange" points="516.1,-342.3 514,-336.3 511.9,-342.3 516.1,-342.3"/>
+<polyline fill="none" stroke="orange" points="514,-342.3 514,-345.3 "/>
+<ellipse fill="none" stroke="orange" cx="514" cy="-347.7" rx="2.4" ry="2.4"/>
 </a>
 </g>
-<text text-anchor="middle" x="502" y="-352.82" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
+<text text-anchor="middle" x="489" y="-352.82" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
 </g>
 <!-- src/coefficients/nthRoot.ts -->
 <g id="node10" class="node">
@@ -212,7 +212,7 @@
 </g>
 </g>
 <!-- src/pimath.interface.ts&#45;&gt;src/coefficients/nthRoot.ts -->
-<g id="edge85" class="edge">
+<g id="edge84" class="edge">
 <title>src/pimath.interface.ts&#45;&gt;src/coefficients/nthRoot.ts</title>
 <path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M560.02,-374.5C560.02,-374.5 569.99,-374.5 569.99,-374.5"/>
 <polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="569.99,-376.6 575.99,-374.5 569.98,-372.4 569.99,-376.6"/>
@@ -221,55 +221,55 @@
 <g id="edge10" class="edge">
 <title>src/algebra/equationSolver.ts&#45;&gt;src/algebra/equation.ts</title>
 <g id="a_edge10"><a xlink:title="type&#45;circular">
-<path fill="none" stroke="orange" d="M284,-294.26C284,-305.58 284,-323.25 284,-323.25 284,-323.25 271.97,-323.25 271.97,-323.25"/>
-<polygon fill="orange" stroke="orange" points="264.17,-321.15 258.17,-323.25 264.17,-325.35 264.17,-321.15"/>
-<polyline fill="none" stroke="orange" points="264.17,-323.25 267.17,-323.25 "/>
-<ellipse fill="none" stroke="orange" cx="269.57" cy="-323.25" rx="2.4" ry="2.4"/>
+<path fill="none" stroke="orange" d="M282,-294.34C282,-305.3 282,-322 282,-322 282,-322 271.84,-322 271.84,-322"/>
+<polygon fill="orange" stroke="orange" points="264.04,-319.9 258.04,-322 264.04,-324.1 264.04,-319.9"/>
+<polyline fill="none" stroke="orange" points="264.04,-322 267.04,-322 "/>
+<ellipse fill="none" stroke="orange" cx="269.44" cy="-322" rx="2.4" ry="2.4"/>
 </a>
 </g>
-<text text-anchor="middle" x="309" y="-315.07" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
+<text text-anchor="middle" x="307" y="-316.05" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
 </g>
 <!-- src/algebra/equationSolver.ts&#45;&gt;src/coefficients/fraction.ts -->
 <g id="edge7" class="edge">
 <title>src/algebra/equationSolver.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M360,-294.23C360,-321.15 360,-397.75 360,-397.75 360,-397.75 571.34,-397.75 571.34,-397.75"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.34,-399.85 577.34,-397.75 571.34,-395.65 571.34,-399.85"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M351,-294.26C351,-321.3 351,-398.2 351,-398.2 351,-398.2 571.29,-398.2 571.29,-398.2"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.29,-400.3 577.29,-398.2 571.29,-396.1 571.29,-400.3"/>
 </g>
 <!-- src/algebra/equationSolver.ts&#45;&gt;src/numeric.ts -->
 <g id="edge8" class="edge">
 <title>src/algebra/equationSolver.ts&#45;&gt;src/numeric.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M351,-294.11C351,-309.09 351,-337.29 351,-337.29 351,-337.29 644.84,-337.29 644.84,-337.29"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="644.84,-339.39 650.84,-337.29 644.84,-335.19 644.84,-339.39"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M353,-294.14C353,-309.19 353,-337.5 353,-337.5 353,-337.5 644.73,-337.5 644.73,-337.5"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="644.73,-339.6 650.73,-337.5 644.73,-335.4 644.73,-339.6"/>
 </g>
 <!-- src/algebra/equationSolver.ts&#45;&gt;src/pimath.interface.ts -->
 <g id="edge9" class="edge">
 <title>src/algebra/equationSolver.ts&#45;&gt;src/pimath.interface.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M363,-294.24C363,-317.11 363,-374.5 363,-374.5 363,-374.5 461.87,-374.5 461.87,-374.5"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="461.87,-376.6 467.87,-374.5 461.87,-372.4 461.87,-376.6"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M362,-294.15C362,-316.79 362,-373.6 362,-373.6 362,-373.6 461.98,-373.6 461.98,-373.6"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="461.98,-375.7 467.98,-373.6 461.98,-371.5 461.98,-375.7"/>
 </g>
 <!-- src/algebra/equationSolver.ts&#45;&gt;src/algebra/polynom.ts -->
 <g id="edge11" class="edge">
 <title>src/algebra/equationSolver.ts&#45;&gt;src/algebra/polynom.ts</title>
 <g id="a_edge11"><a xlink:title="type&#45;circular">
-<path fill="none" stroke="orange" d="M365,-294.17C365,-300.18 365,-306.92 365,-306.92 365,-306.92 370.58,-306.92 370.58,-306.92"/>
-<polygon fill="orange" stroke="orange" points="378.38,-309.02 384.38,-306.92 378.38,-304.82 378.38,-309.02"/>
-<polyline fill="none" stroke="orange" points="378.38,-306.92 375.38,-306.92 "/>
-<ellipse fill="none" stroke="orange" cx="372.98" cy="-306.92" rx="2.4" ry="2.4"/>
+<path fill="none" stroke="orange" d="M365,-294.16C365,-296.97 365,-299.33 365,-299.33 365,-299.33 370.58,-299.33 370.58,-299.33"/>
+<polygon fill="orange" stroke="orange" points="378.38,-301.43 384.38,-299.33 378.38,-297.23 378.38,-301.43"/>
+<polyline fill="none" stroke="orange" points="378.38,-299.33 375.38,-299.33 "/>
+<ellipse fill="none" stroke="orange" cx="372.98" cy="-299.33" rx="2.4" ry="2.4"/>
 </a>
 </g>
-<text text-anchor="middle" x="340" y="-306.14" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
+<text text-anchor="middle" x="390.2" y="-292.13" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
 </g>
 <!-- src/algebra/monom.ts&#45;&gt;src/coefficients/fraction.ts -->
 <g id="edge16" class="edge">
 <title>src/algebra/monom.ts&#45;&gt;src/coefficients/fraction.ts</title>
 <g id="a_edge16"><a xlink:title="type&#45;circular">
-<path fill="none" stroke="orange" stroke-width="2" d="M543.53,-333C556.13,-333 568,-333 568,-333 568,-333 568,-392.12 568,-392.12 568,-392.12 568.95,-392.12 568.95,-392.12"/>
-<polygon fill="orange" stroke="orange" stroke-width="2" points="571.46,-394.23 577.46,-392.12 571.46,-390.03 571.46,-394.23"/>
-<polyline fill="none" stroke="orange" stroke-width="2" points="571.46,-392.13 568.46,-392.13 "/>
-<ellipse fill="none" stroke="orange" stroke-width="2" cx="566.06" cy="-392.13" rx="2.4" ry="2.4"/>
+<path fill="none" stroke="orange" stroke-width="2" d="M543.53,-333C556.13,-333 568,-333 568,-333 568,-333 568,-392.2 568,-392.2 568,-392.2 568.95,-392.2 568.95,-392.2"/>
+<polygon fill="orange" stroke="orange" stroke-width="2" points="571.46,-394.3 577.46,-392.2 571.46,-390.1 571.46,-394.3"/>
+<polyline fill="none" stroke="orange" stroke-width="2" points="571.46,-392.2 568.46,-392.2 "/>
+<ellipse fill="none" stroke="orange" stroke-width="2" cx="566.06" cy="-392.2" rx="2.4" ry="2.4"/>
 </a>
 </g>
-<text text-anchor="middle" x="593" y="-343.6" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
+<text text-anchor="middle" x="593" y="-343.64" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
 </g>
 <!-- src/algebra/monom.ts&#45;&gt;src/numeric.ts -->
 <g id="edge18" class="edge">
@@ -281,67 +281,55 @@
 <g id="edge19" class="edge">
 <title>src/algebra/monom.ts&#45;&gt;src/pimath.interface.ts</title>
 <g id="a_edge19"><a xlink:title="type&#45;circular">
-<path fill="none" stroke="orange" d="M519,-336.06C519,-336.06 519,-355.9 519,-355.9"/>
-<polygon fill="orange" stroke="orange" points="516.9,-363.7 519,-369.7 521.1,-363.7 516.9,-363.7"/>
-<polyline fill="none" stroke="orange" points="519,-363.7 519,-360.7 "/>
-<ellipse fill="none" stroke="orange" cx="519" cy="-358.3" rx="2.4" ry="2.4"/>
+<path fill="none" stroke="orange" d="M524,-336.06C524,-336.06 524,-355.9 524,-355.9"/>
+<polygon fill="orange" stroke="orange" points="521.9,-363.7 524,-369.7 526.1,-363.7 521.9,-363.7"/>
+<polyline fill="none" stroke="orange" points="524,-363.7 524,-360.7 "/>
+<ellipse fill="none" stroke="orange" cx="524" cy="-358.3" rx="2.4" ry="2.4"/>
 </a>
 </g>
-<text text-anchor="middle" x="544" y="-341.28" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
+<text text-anchor="middle" x="549" y="-348.78" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
 </g>
 <!-- src/algebra/monom.ts&#45;&gt;src/coefficients/nthRoot.ts -->
 <g id="edge17" class="edge">
 <title>src/algebra/monom.ts&#45;&gt;src/coefficients/nthRoot.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M536,-336.32C536,-347.71 536,-365.5 536,-365.5 536,-365.5 569.62,-365.5 569.62,-365.5"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="569.62,-367.6 575.62,-365.5 569.62,-363.4 569.62,-367.6"/>
-</g>
-<!-- src/algebra/polynom.ts&#45;&gt;src/algebra/equation.ts -->
-<g id="edge27" class="edge">
-<title>src/algebra/polynom.ts&#45;&gt;src/algebra/equation.ts</title>
-<g id="a_edge27"><a xlink:title="no&#45;circular&#45;at&#45;runtime">
-<path fill="none" stroke="red" stroke-width="2" d="M384.48,-316.15C328.66,-316.15 217,-316.15 217,-316.15 217,-316.15 217,-316.32 217,-316.32"/>
-<polygon fill="red" stroke="red" stroke-width="2" points="214.9,-311.85 217,-317.85 219.1,-311.85 214.9,-311.85"/>
-<polyline fill="none" stroke="red" stroke-width="2" points="217,-311.85 217,-308.85 "/>
-<ellipse fill="none" stroke="red" stroke-width="2" cx="217" cy="-306.45" rx="2.4" ry="2.4"/>
-</a>
-</g>
-<text text-anchor="middle" x="345.16" y="-318.95" font-family="Helvetica,sans-Serif" font-size="9.00" fill="red">no&#45;circular&#45;at&#45;runtime</text>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M534,-336.32C534,-347.71 534,-365.5 534,-365.5 534,-365.5 569.59,-365.5 569.59,-365.5"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="569.59,-367.6 575.59,-365.5 569.59,-363.4 569.59,-367.6"/>
 </g>
 <!-- src/algebra/polynom.ts&#45;&gt;src/coefficients/fraction.ts -->
 <g id="edge24" class="edge">
 <title>src/algebra/polynom.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M398,-319.15C398,-341.21 398,-395.5 398,-395.5 398,-395.5 571.08,-395.5 571.08,-395.5"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.08,-397.6 577.08,-395.5 571.08,-393.4 571.08,-397.6"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M411,-316.17C411,-338.86 411,-395.8 411,-395.8 411,-395.8 571.22,-395.8 571.22,-395.8"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.22,-397.9 577.22,-395.8 571.22,-393.7 571.22,-397.9"/>
 </g>
 <!-- src/algebra/polynom.ts&#45;&gt;src/numeric.ts -->
 <g id="edge25" class="edge">
 <title>src/algebra/polynom.ts&#45;&gt;src/numeric.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M446.74,-305.25C516.92,-305.25 681,-305.25 681,-305.25 681,-305.25 681,-320.94 681,-320.94"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="678.9,-320.94 681,-326.94 683.1,-320.94 678.9,-320.94"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M446.74,-302.5C516.92,-302.5 681,-302.5 681,-302.5 681,-302.5 681,-320.85 681,-320.85"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="678.9,-320.85 681,-326.85 683.1,-320.85 678.9,-320.85"/>
 </g>
 <!-- src/algebra/polynom.ts&#45;&gt;src/pimath.interface.ts -->
 <g id="edge26" class="edge">
 <title>src/algebra/polynom.ts&#45;&gt;src/pimath.interface.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M446.64,-313.75C461.04,-313.75 475,-313.75 475,-313.75 475,-313.75 475,-363.93 475,-363.93"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="472.9,-363.93 475,-369.93 477.1,-363.93 472.9,-363.93"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M446.61,-311.5C461.86,-311.5 477,-311.5 477,-311.5 477,-311.5 477,-363.9 477,-363.9"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="474.9,-363.9 477,-369.9 479.1,-363.9 474.9,-363.9"/>
 </g>
 <!-- src/algebra/polynom.ts&#45;&gt;src/algebra/equationSolver.ts -->
-<g id="edge28" class="edge">
+<g id="edge27" class="edge">
 <title>src/algebra/polynom.ts&#45;&gt;src/algebra/equationSolver.ts</title>
-<g id="a_edge28"><a xlink:title="type&#45;circular">
-<path fill="none" stroke="orange" stroke-width="2" d="M384.35,-307.85C373.51,-307.85 364,-307.85 364,-307.85 364,-307.85 364,-306.46 364,-306.46"/>
-<polygon fill="orange" stroke="orange" stroke-width="2" points="366.1,-300.03 364,-294.03 361.9,-300.03 366.1,-300.03"/>
-<polyline fill="none" stroke="orange" stroke-width="2" points="364,-300.03 364,-303.03 "/>
-<ellipse fill="none" stroke="orange" stroke-width="2" cx="364" cy="-305.43" rx="2.4" ry="2.4"/>
+<g id="a_edge27"><a xlink:title="type&#45;circular">
+<path fill="none" stroke="orange" stroke-width="2" d="M384.35,-300.67C373.05,-300.67 363,-300.67 363,-300.67 363,-300.67 363,-300.03 363,-300.03"/>
+<polygon fill="orange" stroke="orange" stroke-width="2" points="365.1,-300.29 363,-294.29 360.9,-300.29 365.1,-300.29"/>
+<polyline fill="none" stroke="orange" stroke-width="2" points="363,-300.29 363,-303.29 "/>
+<ellipse fill="none" stroke="orange" stroke-width="2" cx="363" cy="-305.69" rx="2.4" ry="2.4"/>
 </a>
 </g>
-<text text-anchor="middle" x="348.49" y="-300.65" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
+<text text-anchor="middle" x="348.36" y="-303.47" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
 </g>
 <!-- src/algebra/polynom.ts&#45;&gt;src/algebra/monom.ts -->
-<g id="edge29" class="edge">
+<g id="edge28" class="edge">
 <title>src/algebra/polynom.ts&#45;&gt;src/algebra/monom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M446.67,-309.5C475.52,-309.5 514,-309.5 514,-309.5 514,-309.5 514,-311.84 514,-311.84"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="511.9,-311.84 514,-317.84 516.1,-311.84 511.9,-311.84"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M446.67,-307C475.52,-307 514,-307 514,-307 514,-307 514,-311.94 514,-311.94"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="511.9,-311.94 514,-317.94 516.1,-311.94 511.9,-311.94"/>
 </g>
 <!-- src/algebra/factor.ts -->
 <g id="node8" class="node">
@@ -355,20 +343,20 @@
 <!-- src/algebra/factor.ts&#45;&gt;src/coefficients/fraction.ts -->
 <g id="edge12" class="edge">
 <title>src/algebra/factor.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M349.32,-259.5C362.71,-259.5 376,-259.5 376,-259.5 376,-259.5 376,-396.62 376,-396.62 376,-396.62 571.36,-396.62 571.36,-396.62"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.36,-398.73 577.36,-396.62 571.36,-394.53 571.36,-398.73"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M349.12,-259.5C362.16,-259.5 375,-259.5 375,-259.5 375,-259.5 375,-397 375,-397 375,-397 571.24,-397 571.24,-397"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.24,-399.1 577.24,-397 571.24,-394.9 571.24,-399.1"/>
 </g>
 <!-- src/algebra/factor.ts&#45;&gt;src/pimath.interface.ts -->
 <g id="edge14" class="edge">
 <title>src/algebra/factor.ts&#45;&gt;src/pimath.interface.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M349.14,-250.5C394.79,-250.5 482,-250.5 482,-250.5 482,-250.5 482,-363.76 482,-363.76"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="479.9,-363.76 482,-369.76 484.1,-363.76 479.9,-363.76"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M349.33,-250.5C394.79,-250.5 481,-250.5 481,-250.5 481,-250.5 481,-363.76 481,-363.76"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="478.9,-363.76 481,-369.76 483.1,-363.76 478.9,-363.76"/>
 </g>
 <!-- src/algebra/factor.ts&#45;&gt;src/algebra/polynom.ts -->
 <g id="edge15" class="edge">
 <title>src/algebra/factor.ts&#45;&gt;src/algebra/polynom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M349.05,-255C379.87,-255 426,-255 426,-255 426,-255 426,-294.92 426,-294.92"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="423.9,-294.92 426,-300.92 428.1,-294.92 423.9,-294.92"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M349.19,-255C376.95,-255 416,-255 416,-255 416,-255 416,-291.94 416,-291.94"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="413.9,-291.94 416,-297.94 418.1,-291.94 413.9,-291.94"/>
 </g>
 <!-- src/helpers.ts -->
 <g id="node9" class="node">
@@ -397,20 +385,20 @@
 <!-- src/algebra/polyFactor.ts&#45;&gt;src/coefficients/fraction.ts -->
 <g id="edge20" class="edge">
 <title>src/algebra/polyFactor.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M261.1,-299.25C264.65,-299.25 267,-299.25 267,-299.25 267,-299.25 267,-398.88 267,-398.88 267,-398.88 571.22,-398.88 571.22,-398.88"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.22,-400.98 577.22,-398.88 571.22,-396.78 571.22,-400.98"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M261.1,-304.67C264.65,-304.67 267,-304.67 267,-304.67 267,-304.67 267,-399.4 267,-399.4 267,-399.4 571.22,-399.4 571.22,-399.4"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.22,-401.5 577.22,-399.4 571.22,-397.3 571.22,-401.5"/>
 </g>
 <!-- src/algebra/polyFactor.ts&#45;&gt;src/pimath.interface.ts -->
 <g id="edge21" class="edge">
 <title>src/algebra/polyFactor.ts&#45;&gt;src/pimath.interface.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M261.11,-295.75C329.74,-295.75 478,-295.75 478,-295.75 478,-295.75 478,-363.77 478,-363.77"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="475.9,-363.77 478,-369.77 480.1,-363.77 475.9,-363.77"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M261.16,-303.33C268.45,-303.33 274,-303.33 274,-303.33 274,-303.33 274,-377.2 274,-377.2 274,-377.2 461.73,-377.2 461.73,-377.2"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="461.73,-379.3 467.73,-377.2 461.73,-375.1 461.73,-379.3"/>
 </g>
 <!-- src/algebra/polyFactor.ts&#45;&gt;src/algebra/polynom.ts -->
 <g id="edge23" class="edge">
 <title>src/algebra/polyFactor.ts&#45;&gt;src/algebra/polynom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M261.09,-297.5C313.03,-297.5 406,-297.5 406,-297.5 406,-297.5 406,-297.84 406,-297.84"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="403.9,-294.92 406,-300.92 408.1,-294.92 403.9,-294.92"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M261.14,-302C261.14,-302 378.43,-302 378.43,-302"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="378.43,-304.1 384.43,-302 378.43,-299.9 378.43,-304.1"/>
 </g>
 <!-- src/algebra/polyFactor.ts&#45;&gt;src/algebra/factor.ts -->
 <g id="edge22" class="edge">
@@ -428,40 +416,40 @@
 </g>
 </g>
 <!-- src/geometry/circle.ts&#45;&gt;src/algebra/equation.ts -->
-<g id="edge32" class="edge">
+<g id="edge31" class="edge">
 <title>src/geometry/circle.ts&#45;&gt;src/algebra/equation.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M126,-501.7C126,-464.51 126,-328.5 126,-328.5 126,-328.5 189.87,-328.5 189.87,-328.5"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="189.87,-330.6 195.87,-328.5 189.87,-326.4 189.87,-330.6"/>
 </g>
 <!-- src/geometry/circle.ts&#45;&gt;src/coefficients/fraction.ts -->
-<g id="edge35" class="edge">
+<g id="edge34" class="edge">
 <title>src/geometry/circle.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M157,-501.73C157,-475.43 157,-402.25 157,-402.25 157,-402.25 571.44,-402.25 571.44,-402.25"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.44,-404.35 577.44,-402.25 571.44,-400.15 571.44,-404.35"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M157,-501.79C157,-475.67 157,-403 157,-403 157,-403 571.44,-403 571.44,-403"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.44,-405.1 577.44,-403 571.44,-400.9 571.44,-405.1"/>
 </g>
 <!-- src/geometry/circle.ts&#45;&gt;src/numeric.ts -->
-<g id="edge36" class="edge">
+<g id="edge35" class="edge">
 <title>src/geometry/circle.ts&#45;&gt;src/numeric.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M134,-501.87C134,-466.59 134,-341.14 134,-341.14 134,-341.14 644.81,-341.14 644.81,-341.14"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="644.81,-343.24 650.81,-341.14 644.81,-339.04 644.81,-343.24"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M134,-501.83C134,-466.42 134,-340.5 134,-340.5 134,-340.5 644.81,-340.5 644.81,-340.5"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="644.81,-342.6 650.81,-340.5 644.81,-338.4 644.81,-342.6"/>
 </g>
 <!-- src/geometry/circle.ts&#45;&gt;src/pimath.interface.ts -->
-<g id="edge37" class="edge">
+<g id="edge36" class="edge">
 <title>src/geometry/circle.ts&#45;&gt;src/pimath.interface.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M150,-501.93C150,-472.1 150,-379 150,-379 150,-379 461.9,-379 461.9,-379"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="461.9,-381.1 467.9,-379 461.9,-376.9 461.9,-381.1"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M150,-501.64C150,-471.78 150,-380.8 150,-380.8 150,-380.8 461.9,-380.8 461.9,-380.8"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="461.9,-382.9 467.9,-380.8 461.9,-378.7 461.9,-382.9"/>
 </g>
 <!-- src/geometry/circle.ts&#45;&gt;src/algebra/monom.ts -->
-<g id="edge33" class="edge">
+<g id="edge32" class="edge">
 <title>src/geometry/circle.ts&#45;&gt;src/algebra/monom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M142,-501.76C142,-469.41 142,-363.25 142,-363.25 142,-363.25 510,-363.25 510,-363.25 510,-363.25 510,-342.15 510,-342.15"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="512.1,-342.15 510,-336.15 507.9,-342.15 512.1,-342.15"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M142,-501.76C142,-469.41 142,-363.25 142,-363.25 142,-363.25 505,-363.25 505,-363.25 505,-363.25 505,-342.15 505,-342.15"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="507.1,-342.15 505,-336.15 502.9,-342.15 507.1,-342.15"/>
 </g>
 <!-- src/geometry/circle.ts&#45;&gt;src/algebra/polynom.ts -->
-<g id="edge34" class="edge">
+<g id="edge33" class="edge">
 <title>src/geometry/circle.ts&#45;&gt;src/algebra/polynom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M119,-501.95C119,-463.11 119,-312.46 119,-312.46 119,-312.46 378.33,-312.46 378.33,-312.46"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="378.33,-314.56 384.33,-312.46 378.33,-310.36 378.33,-314.56"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M119,-501.85C119,-462.59 119,-310.29 119,-310.29 119,-310.29 378.33,-310.29 378.33,-310.29"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="378.33,-312.39 384.33,-310.29 378.33,-308.19 378.33,-312.39"/>
 </g>
 <!-- src/geometry/line.ts -->
 <g id="node13" class="node">
@@ -473,7 +461,7 @@
 </g>
 </g>
 <!-- src/geometry/circle.ts&#45;&gt;src/geometry/line.ts -->
-<g id="edge38" class="edge">
+<g id="edge37" class="edge">
 <title>src/geometry/circle.ts&#45;&gt;src/geometry/line.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M164.84,-507.14C164.84,-507.14 193.83,-507.14 193.83,-507.14"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="193.83,-509.24 199.83,-507.14 193.83,-505.04 193.83,-509.24"/>
@@ -488,73 +476,73 @@
 </g>
 </g>
 <!-- src/geometry/circle.ts&#45;&gt;src/geometry/point.ts -->
-<g id="edge39" class="edge">
+<g id="edge38" class="edge">
 <title>src/geometry/circle.ts&#45;&gt;src/geometry/point.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M164.57,-509.71C176.12,-509.71 187,-509.71 187,-509.71 187,-509.71 187,-561.6 187,-561.6 187,-561.6 288.68,-561.6 288.68,-561.6"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="288.68,-563.7 294.68,-561.6 288.68,-559.5 288.68,-563.7"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M164.57,-509.71C176.12,-509.71 187,-509.71 187,-509.71 187,-509.71 187,-565.2 187,-565.2 187,-565.2 288.68,-565.2 288.68,-565.2"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="288.68,-567.3 294.68,-565.2 288.68,-563.1 288.68,-567.3"/>
 </g>
 <!-- src/geometry/vector.ts -->
 <g id="node15" class="node">
 <title>src/geometry/vector.ts</title>
 <g id="a_node15"><a xlink:href="src/geometry/vector.ts" xlink:title="vector.ts">
-<path fill="#ddfeff" stroke="black" d="M436.5,-576C436.5,-576 394.5,-576 394.5,-576 391.5,-576 388.5,-573 388.5,-570 388.5,-570 388.5,-564 388.5,-564 388.5,-561 391.5,-558 394.5,-558 394.5,-558 436.5,-558 436.5,-558 439.5,-558 442.5,-561 442.5,-564 442.5,-564 442.5,-570 442.5,-570 442.5,-573 439.5,-576 436.5,-576"/>
-<text text-anchor="start" x="398.5" y="-564.8" font-family="Helvetica,sans-Serif" font-size="9.00">vector.ts</text>
+<path fill="#ddfeff" stroke="black" d="M436.5,-587C436.5,-587 394.5,-587 394.5,-587 391.5,-587 388.5,-584 388.5,-581 388.5,-581 388.5,-575 388.5,-575 388.5,-572 391.5,-569 394.5,-569 394.5,-569 436.5,-569 436.5,-569 439.5,-569 442.5,-572 442.5,-575 442.5,-575 442.5,-581 442.5,-581 442.5,-584 439.5,-587 436.5,-587"/>
+<text text-anchor="start" x="398.5" y="-575.8" font-family="Helvetica,sans-Serif" font-size="9.00">vector.ts</text>
 </a>
 </g>
 </g>
 <!-- src/geometry/circle.ts&#45;&gt;src/geometry/vector.ts -->
-<g id="edge40" class="edge">
+<g id="edge39" class="edge">
 <title>src/geometry/circle.ts&#45;&gt;src/geometry/vector.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M129,-520.17C129,-522.32 129,-524 129,-524 129,-524 411,-524 411,-524 411,-524 411,-551.88 411,-551.88"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="408.9,-551.88 411,-557.88 413.1,-551.88 408.9,-551.88"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M164.59,-512.29C175.7,-512.29 186,-512.29 186,-512.29 186,-512.29 186,-577.83 186,-577.83 186,-577.83 382.27,-577.83 382.27,-577.83"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="382.27,-579.93 388.27,-577.83 382.27,-575.73 382.27,-579.93"/>
 </g>
 <!-- src/geometry/line.ts&#45;&gt;src/algebra/equation.ts -->
-<g id="edge43" class="edge">
+<g id="edge42" class="edge">
 <title>src/geometry/line.ts&#45;&gt;src/algebra/equation.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M218,-501.88C218,-501.88 218,-342.18 218,-342.18"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="220.1,-342.18 218,-336.18 215.9,-342.18 220.1,-342.18"/>
 </g>
 <!-- src/geometry/line.ts&#45;&gt;src/coefficients/fraction.ts -->
-<g id="edge46" class="edge">
+<g id="edge45" class="edge">
 <title>src/geometry/line.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M236,-501.92C236,-476.17 236,-404.5 236,-404.5 236,-404.5 571.42,-404.5 571.42,-404.5"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.42,-406.6 577.42,-404.5 571.42,-402.4 571.42,-406.6"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M236,-502C236,-476.46 236,-405.4 236,-405.4 236,-405.4 571.42,-405.4 571.42,-405.4"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.42,-407.5 577.42,-405.4 571.42,-403.3 571.42,-407.5"/>
 </g>
 <!-- src/geometry/line.ts&#45;&gt;src/numeric.ts -->
-<g id="edge47" class="edge">
+<g id="edge46" class="edge">
 <title>src/geometry/line.ts&#45;&gt;src/numeric.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M227,-501.94C227,-466.92 227,-342.43 227,-342.43 227,-342.43 644.86,-342.43 644.86,-342.43"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="644.86,-344.53 650.86,-342.43 644.86,-340.33 644.86,-344.53"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M227,-501.91C227,-466.81 227,-342 227,-342 227,-342 644.86,-342 644.86,-342"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="644.86,-344.1 650.86,-342 644.86,-339.9 644.86,-344.1"/>
 </g>
 <!-- src/geometry/line.ts&#45;&gt;src/pimath.interface.ts -->
-<g id="edge48" class="edge">
+<g id="edge47" class="edge">
 <title>src/geometry/line.ts&#45;&gt;src/pimath.interface.ts</title>
 <path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M254.16,-509.71C317.94,-509.71 472,-509.71 472,-509.71 472,-509.71 472,-394.4 472,-394.4"/>
 <polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="474.1,-394.4 472,-388.4 469.9,-394.4 474.1,-394.4"/>
 </g>
 <!-- src/geometry/line.ts&#45;&gt;src/algebra/monom.ts -->
-<g id="edge44" class="edge">
+<g id="edge43" class="edge">
 <title>src/geometry/line.ts&#45;&gt;src/algebra/monom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.36,-504.57C276.5,-504.57 304,-504.57 304,-504.57 304,-504.57 304,-331.75 304,-331.75 304,-331.75 478.36,-331.75 478.36,-331.75"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="478.36,-333.85 484.36,-331.75 478.36,-329.65 478.36,-333.85"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.12,-504.57C261.74,-504.57 268,-504.57 268,-504.57 268,-504.57 268,-330 268,-330 268,-330 478.33,-330 478.33,-330"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="478.33,-332.1 484.33,-330 478.33,-327.9 478.33,-332.1"/>
 </g>
 <!-- src/geometry/line.ts&#45;&gt;src/algebra/polynom.ts -->
-<g id="edge45" class="edge">
+<g id="edge44" class="edge">
 <title>src/geometry/line.ts&#45;&gt;src/algebra/polynom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.04,-507.14C301.08,-507.14 393,-507.14 393,-507.14 393,-507.14 393,-325.24 393,-325.24"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="395.1,-325.24 393,-319.24 390.9,-325.24 395.1,-325.24"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.1,-507.14C302.31,-507.14 398,-507.14 398,-507.14 398,-507.14 398,-322.12 398,-322.12"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="400.1,-322.12 398,-316.12 395.9,-322.12 400.1,-322.12"/>
 </g>
 <!-- src/geometry/line.ts&#45;&gt;src/geometry/point.ts -->
-<g id="edge50" class="edge">
+<g id="edge49" class="edge">
 <title>src/geometry/line.ts&#45;&gt;src/geometry/point.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.22,-514.86C282.3,-514.86 322,-514.86 322,-514.86 322,-514.86 322,-551.92 322,-551.92"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="319.9,-551.92 322,-557.92 324.1,-551.92 319.9,-551.92"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254,-514.86C280.51,-514.86 317,-514.86 317,-514.86 317,-514.86 317,-551.92 317,-551.92"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="314.9,-551.92 317,-557.92 319.1,-551.92 314.9,-551.92"/>
 </g>
 <!-- src/geometry/line.ts&#45;&gt;src/geometry/vector.ts -->
-<g id="edge51" class="edge">
+<g id="edge50" class="edge">
 <title>src/geometry/line.ts&#45;&gt;src/geometry/vector.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.08,-512.29C306.34,-512.29 416,-512.29 416,-512.29 416,-512.29 416,-551.97 416,-551.97"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="413.9,-551.97 416,-557.97 418.1,-551.97 413.9,-551.97"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.24,-512.29C307.44,-512.29 420,-512.29 420,-512.29 420,-512.29 420,-562.86 420,-562.86"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="417.9,-562.86 420,-568.86 422.1,-562.86 417.9,-562.86"/>
 </g>
 <!-- src/randomization/rndHelpers.ts -->
 <g id="node17" class="node">
@@ -566,91 +554,91 @@
 </g>
 </g>
 <!-- src/geometry/line.ts&#45;&gt;src/randomization/rndHelpers.ts -->
-<g id="edge49" class="edge">
+<g id="edge48" class="edge">
 <title>src/geometry/line.ts&#45;&gt;src/randomization/rndHelpers.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.12,-517.43C261.74,-517.43 268,-517.43 268,-517.43 268,-517.43 268,-759.8 268,-759.8 268,-759.8 372.66,-759.8 372.66,-759.8"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.66,-761.9 378.66,-759.8 372.66,-757.7 372.66,-761.9"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.02,-517.43C264.04,-517.43 273,-517.43 273,-517.43 273,-517.43 273,-759.8 273,-759.8 273,-759.8 372.8,-759.8 372.8,-759.8"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.8,-761.9 378.8,-759.8 372.8,-757.7 372.8,-761.9"/>
 </g>
 <!-- src/geometry/point.ts&#45;&gt;src/coefficients/fraction.ts -->
-<g id="edge58" class="edge">
+<g id="edge57" class="edge">
 <title>src/geometry/point.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M340,-557.93C340,-524.03 340,-406.75 340,-406.75 340,-406.75 571.09,-406.75 571.09,-406.75"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.09,-408.85 577.09,-406.75 571.09,-404.65 571.09,-408.85"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M339,-557.92C339,-523.99 339,-406.6 339,-406.6 339,-406.6 571.48,-406.6 571.48,-406.6"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.48,-408.7 577.48,-406.6 571.48,-404.5 571.48,-408.7"/>
 </g>
 <!-- src/geometry/point.ts&#45;&gt;src/pimath.interface.ts -->
-<g id="edge59" class="edge">
+<g id="edge58" class="edge">
 <title>src/geometry/point.ts&#45;&gt;src/pimath.interface.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M331,-557.9C331,-520.87 331,-383.5 331,-383.5 331,-383.5 461.82,-383.5 461.82,-383.5"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="461.82,-385.6 467.82,-383.5 461.82,-381.4 461.82,-385.6"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M328,-557.69C328,-520.48 328,-384.4 328,-384.4 328,-384.4 461.54,-384.4 461.54,-384.4"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="461.54,-386.5 467.54,-384.4 461.54,-382.3 461.54,-386.5"/>
 </g>
 <!-- src/geometry/point.ts&#45;&gt;src/geometry/vector.ts -->
-<g id="edge60" class="edge">
+<g id="edge59" class="edge">
 <title>src/geometry/point.ts&#45;&gt;src/geometry/vector.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M349.04,-562.5C349.04,-562.5 382.19,-562.5 382.19,-562.5"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="382.19,-564.6 388.19,-562.5 382.19,-560.4 382.19,-564.6"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M349.04,-572.5C349.04,-572.5 382.19,-572.5 382.19,-572.5"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="382.19,-574.6 388.19,-572.5 382.19,-570.4 382.19,-574.6"/>
 </g>
 <!-- src/geometry/vector.ts&#45;&gt;src/coefficients/fraction.ts -->
-<g id="edge65" class="edge">
+<g id="edge64" class="edge">
 <title>src/geometry/vector.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M429,-557.99C429,-524.33 429,-407.88 429,-407.88 429,-407.88 571.14,-407.88 571.14,-407.88"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.14,-409.98 577.14,-407.88 571.14,-405.78 571.14,-409.98"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M429,-568.85C429,-533.5 429,-407.8 429,-407.8 429,-407.8 571.14,-407.8 571.14,-407.8"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.14,-409.9 577.14,-407.8 571.14,-405.7 571.14,-409.9"/>
 </g>
 <!-- src/geometry/vector.ts&#45;&gt;src/numeric.ts -->
-<g id="edge66" class="edge">
+<g id="edge65" class="edge">
 <title>src/geometry/vector.ts&#45;&gt;src/numeric.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M425,-557.97C425,-516.2 425,-343.71 425,-343.71 425,-343.71 644.88,-343.71 644.88,-343.71"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="644.88,-345.81 650.88,-343.71 644.88,-341.61 644.88,-345.81"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M425,-568.81C425,-525.45 425,-343.5 425,-343.5 425,-343.5 644.88,-343.5 644.88,-343.5"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="644.88,-345.6 650.88,-343.5 644.88,-341.4 644.88,-345.6"/>
 </g>
 <!-- src/geometry/vector.ts&#45;&gt;src/pimath.interface.ts -->
-<g id="edge67" class="edge">
+<g id="edge66" class="edge">
 <title>src/geometry/vector.ts&#45;&gt;src/pimath.interface.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M442.56,-567C458.67,-567 476,-567 476,-567 476,-567 476,-394.07 476,-394.07"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M442.56,-578C458.67,-578 476,-578 476,-578 476,-578 476,-394.07 476,-394.07"/>
 <polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="478.1,-394.07 476,-388.07 473.9,-394.07 478.1,-394.07"/>
 </g>
 <!-- src/geometry/geomMath.ts -->
 <g id="node16" class="node">
 <title>src/geometry/geomMath.ts</title>
 <g id="a_node16"><a xlink:href="src/geometry/geomMath.ts" xlink:title="geomMath.ts">
-<path fill="#ddfeff" stroke="black" d="M543,-554C543,-554 485,-554 485,-554 482,-554 479,-551 479,-548 479,-548 479,-542 479,-542 479,-539 482,-536 485,-536 485,-536 543,-536 543,-536 546,-536 549,-539 549,-542 549,-542 549,-548 549,-548 549,-551 546,-554 543,-554"/>
-<text text-anchor="start" x="487" y="-542.8" font-family="Helvetica,sans-Serif" font-size="9.00">geomMath.ts</text>
+<path fill="#ddfeff" stroke="black" d="M543,-565C543,-565 485,-565 485,-565 482,-565 479,-562 479,-559 479,-559 479,-553 479,-553 479,-550 482,-547 485,-547 485,-547 543,-547 543,-547 546,-547 549,-550 549,-553 549,-553 549,-559 549,-559 549,-562 546,-565 543,-565"/>
+<text text-anchor="start" x="487" y="-553.8" font-family="Helvetica,sans-Serif" font-size="9.00">geomMath.ts</text>
 </a>
 </g>
 </g>
 <!-- src/geometry/vector.ts&#45;&gt;src/geometry/geomMath.ts -->
-<g id="edge68" class="edge">
+<g id="edge67" class="edge">
 <title>src/geometry/vector.ts&#45;&gt;src/geometry/geomMath.ts</title>
-<g id="a_edge68"><a xlink:title="type&#45;circular">
-<path fill="none" stroke="orange" stroke-width="2" d="M438,-557.71C438,-552.29 438,-546.5 438,-546.5 438,-546.5 464.87,-546.5 464.87,-546.5"/>
-<polygon fill="orange" stroke="orange" stroke-width="2" points="472.67,-548.6 478.67,-546.5 472.67,-544.4 472.67,-548.6"/>
-<polyline fill="none" stroke="orange" stroke-width="2" points="472.67,-546.5 469.67,-546.5 "/>
-<ellipse fill="none" stroke="orange" stroke-width="2" cx="467.27" cy="-546.5" rx="2.4" ry="2.4"/>
+<g id="a_edge67"><a xlink:title="type&#45;circular">
+<path fill="none" stroke="orange" stroke-width="2" d="M434,-568.75C434,-564.48 434,-560.33 434,-560.33 434,-560.33 464.88,-560.33 464.88,-560.33"/>
+<polygon fill="orange" stroke="orange" stroke-width="2" points="472.68,-562.43 478.68,-560.33 472.68,-558.23 472.68,-562.43"/>
+<polyline fill="none" stroke="orange" stroke-width="2" points="472.68,-560.33 469.68,-560.33 "/>
+<ellipse fill="none" stroke="orange" stroke-width="2" cx="467.28" cy="-560.33" rx="2.4" ry="2.4"/>
 </a>
 </g>
-<text text-anchor="middle" x="420.83" y="-539.3" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
+<text text-anchor="middle" x="420.23" y="-553.13" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
 </g>
 <!-- src/geometry/geomMath.ts&#45;&gt;src/coefficients/fraction.ts -->
-<g id="edge41" class="edge">
+<g id="edge40" class="edge">
 <title>src/geometry/geomMath.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M549.3,-545C568.76,-545 589,-545 589,-545 589,-545 589,-415.07 589,-415.07"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="591.1,-415.07 589,-409.07 586.9,-415.07 591.1,-415.07"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M549.2,-556C571.82,-556 597,-556 597,-556 597,-556 597,-415.29 597,-415.29"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="599.1,-415.29 597,-409.29 594.9,-415.29 599.1,-415.29"/>
 </g>
 <!-- src/geometry/geomMath.ts&#45;&gt;src/geometry/vector.ts -->
-<g id="edge42" class="edge">
+<g id="edge41" class="edge">
 <title>src/geometry/geomMath.ts&#45;&gt;src/geometry/vector.ts</title>
-<g id="a_edge42"><a xlink:title="type&#45;circular">
-<path fill="none" stroke="orange" d="M478.68,-544.75C457.25,-544.75 434,-544.75 434,-544.75 434,-544.75 434,-546.07 434,-546.07"/>
-<polygon fill="orange" stroke="orange" points="431.9,-551.95 434,-557.95 436.1,-551.95 431.9,-551.95"/>
-<polyline fill="none" stroke="orange" points="434,-551.95 434,-548.95 "/>
-<ellipse fill="none" stroke="orange" cx="434" cy="-546.55" rx="2.4" ry="2.4"/>
+<g id="a_edge41"><a xlink:title="type&#45;circular">
+<path fill="none" stroke="orange" d="M478.67,-562.67C458.82,-562.67 438,-562.67 438,-562.67 438,-562.67 438,-563.29 438,-563.29"/>
+<polygon fill="orange" stroke="orange" points="435.9,-562.9 438,-568.9 440.1,-562.9 435.9,-562.9"/>
+<polyline fill="none" stroke="orange" points="438,-562.9 438,-559.9 "/>
+<ellipse fill="none" stroke="orange" cx="438" cy="-557.5" rx="2.4" ry="2.4"/>
 </a>
 </g>
-<text text-anchor="middle" x="430.68" y="-547.55" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
+<text text-anchor="middle" x="483.02" y="-565.47" font-family="Helvetica,sans-Serif" font-size="9.00" fill="orange">type&#45;circular</text>
 </g>
 <!-- src/randomization/rndHelpers.ts&#45;&gt;src/numeric.ts -->
-<g id="edge130" class="edge">
+<g id="edge129" class="edge">
 <title>src/randomization/rndHelpers.ts&#45;&gt;src/numeric.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M452.08,-767C527.03,-767 691,-767 691,-767 691,-767 691,-351 691,-351"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="693.1,-351 691,-345 688.9,-351 693.1,-351"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M452.17,-767C528.2,-767 696,-767 696,-767 696,-767 696,-351 696,-351"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="698.1,-351 696,-345 693.9,-351 698.1,-351"/>
 </g>
 <!-- src/geometry/line3.ts -->
 <g id="node18" class="node">
@@ -662,40 +650,40 @@
 </g>
 </g>
 <!-- src/geometry/line3.ts&#45;&gt;src/coefficients/fraction.ts -->
-<g id="edge54" class="edge">
+<g id="edge53" class="edge">
 <title>src/geometry/line3.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.07,-541.25C264.52,-541.25 274,-541.25 274,-541.25 274,-541.25 274,-405.62 274,-405.62 274,-405.62 571.24,-405.62 571.24,-405.62"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.24,-407.73 577.24,-405.62 571.24,-403.53 571.24,-407.73"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.06,-539.5C337.78,-539.5 587,-539.5 587,-539.5 587,-539.5 587,-415.15 587,-415.15"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="589.1,-415.15 587,-409.15 584.9,-415.15 589.1,-415.15"/>
 </g>
 <!-- src/geometry/line3.ts&#45;&gt;src/algebra/monom.ts -->
-<g id="edge52" class="edge">
+<g id="edge51" class="edge">
 <title>src/geometry/line3.ts&#45;&gt;src/algebra/monom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.11,-539.5C263.17,-539.5 271,-539.5 271,-539.5 271,-539.5 271,-329.62 271,-329.62 271,-329.62 478.2,-329.62 478.2,-329.62"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="478.2,-331.73 484.2,-329.62 478.2,-327.53 478.2,-331.73"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.01,-534.5C270.72,-534.5 289,-534.5 289,-534.5 289,-534.5 289,-332 289,-332 289,-332 478.12,-332 478.12,-332"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="478.12,-334.1 484.12,-332 478.12,-329.9 478.12,-334.1"/>
 </g>
 <!-- src/geometry/line3.ts&#45;&gt;src/algebra/polynom.ts -->
-<g id="edge53" class="edge">
+<g id="edge52" class="edge">
 <title>src/geometry/line3.ts&#45;&gt;src/algebra/polynom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.48,-537.75C262.9,-537.75 270,-537.75 270,-537.75 270,-537.75 270,-317.08 270,-317.08 270,-317.08 378.29,-317.08 378.29,-317.08"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="378.29,-319.18 384.29,-317.08 378.29,-314.98 378.29,-319.18"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.34,-537C303.56,-537 402,-537 402,-537 402,-537 402,-322.02 402,-322.02"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="404.1,-322.02 402,-316.02 399.9,-322.02 404.1,-322.02"/>
 </g>
 <!-- src/geometry/line3.ts&#45;&gt;src/geometry/point.ts -->
-<g id="edge56" class="edge">
+<g id="edge55" class="edge">
 <title>src/geometry/line3.ts&#45;&gt;src/geometry/point.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.21,-548.25C279.41,-548.25 313,-548.25 313,-548.25 313,-548.25 313,-551.62 313,-551.62"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="310.9,-551.62 313,-557.62 315.1,-551.63 310.9,-551.62"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M245,-550.34C245,-555.79 245,-561.6 245,-561.6 245,-561.6 288.64,-561.6 288.64,-561.6"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="288.64,-563.7 294.64,-561.6 288.64,-559.5 288.64,-563.7"/>
 </g>
 <!-- src/geometry/line3.ts&#45;&gt;src/geometry/vector.ts -->
-<g id="edge57" class="edge">
+<g id="edge56" class="edge">
 <title>src/geometry/line3.ts&#45;&gt;src/geometry/vector.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.34,-543C303.56,-543 402,-543 402,-543 402,-543 402,-551.79 402,-551.79"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="399.9,-551.79 402,-557.79 404.1,-551.79 399.9,-551.79"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M254.08,-542C306.34,-542 416,-542 416,-542 416,-542 416,-562.92 416,-562.92"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="413.9,-562.92 416,-568.92 418.1,-562.92 413.9,-562.92"/>
 </g>
 <!-- src/geometry/line3.ts&#45;&gt;src/randomization/rndHelpers.ts -->
-<g id="edge55" class="edge">
+<g id="edge54" class="edge">
 <title>src/geometry/line3.ts&#45;&gt;src/randomization/rndHelpers.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M218,-550.2C218,-591.95 218,-761.6 218,-761.6 218,-761.6 372.81,-761.6 372.81,-761.6"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.81,-763.7 378.81,-761.6 372.81,-759.5 372.81,-763.7"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M227,-550.2C227,-591.95 227,-761.6 227,-761.6 227,-761.6 372.71,-761.6 372.71,-761.6"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.71,-763.7 378.71,-761.6 372.71,-759.5 372.71,-763.7"/>
 </g>
 <!-- src/geometry/triangle.ts -->
 <g id="node19" class="node">
@@ -707,28 +695,28 @@
 </g>
 </g>
 <!-- src/geometry/triangle.ts&#45;&gt;src/coefficients/fraction.ts -->
-<g id="edge61" class="edge">
+<g id="edge60" class="edge">
 <title>src/geometry/triangle.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M166.07,-538C172.77,-538 178,-538 178,-538 178,-538 178,-403.38 178,-403.38 178,-403.38 571.45,-403.38 571.45,-403.38"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.45,-405.48 577.45,-403.38 571.45,-401.28 571.45,-405.48"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M166.32,-538C173.4,-538 179,-538 179,-538 179,-538 179,-404.2 179,-404.2 179,-404.2 571.19,-404.2 571.19,-404.2"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.19,-406.3 577.19,-404.2 571.19,-402.1 571.19,-406.3"/>
 </g>
 <!-- src/geometry/triangle.ts&#45;&gt;src/geometry/line.ts -->
-<g id="edge62" class="edge">
+<g id="edge61" class="edge">
 <title>src/geometry/triangle.ts&#45;&gt;src/geometry/line.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M166.15,-544C175.72,-544 184,-544 184,-544 184,-544 184,-514.86 184,-514.86 184,-514.86 193.52,-514.86 193.52,-514.86"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="193.52,-516.96 199.52,-514.86 193.52,-512.76 193.52,-516.96"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M166.27,-544C174.36,-544 181,-544 181,-544 181,-544 181,-514.86 181,-514.86 181,-514.86 193.98,-514.86 193.98,-514.86"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="193.98,-516.96 199.98,-514.86 193.98,-512.76 193.98,-516.96"/>
 </g>
 <!-- src/geometry/triangle.ts&#45;&gt;src/geometry/point.ts -->
-<g id="edge63" class="edge">
+<g id="edge62" class="edge">
 <title>src/geometry/triangle.ts&#45;&gt;src/geometry/point.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M147,-550.01C147,-556.89 147,-565.2 147,-565.2 147,-565.2 288.66,-565.2 288.66,-565.2"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="288.66,-567.3 294.66,-565.2 288.66,-563.1 288.66,-567.3"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M155,-550.1C155,-558.21 155,-568.8 155,-568.8 155,-568.8 288.8,-568.8 288.8,-568.8"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="288.8,-570.9 294.8,-568.8 288.8,-566.7 288.8,-570.9"/>
 </g>
 <!-- src/geometry/triangle.ts&#45;&gt;src/geometry/vector.ts -->
-<g id="edge64" class="edge">
+<g id="edge63" class="edge">
 <title>src/geometry/triangle.ts&#45;&gt;src/geometry/vector.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M147,-531.83C147,-529.68 147,-528 147,-528 147,-528 407,-528 407,-528 407,-528 407,-551.95 407,-551.95"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="404.9,-551.95 407,-557.95 409.1,-551.95 404.9,-551.95"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M132,-550.36C132,-561.8 132,-579.67 132,-579.67 132,-579.67 382.32,-579.67 382.32,-579.67"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="382.32,-581.77 388.32,-579.67 382.32,-577.57 382.32,-581.77"/>
 </g>
 <!-- src/index.ts -->
 <g id="node20" class="node">
@@ -740,82 +728,82 @@
 </g>
 </g>
 <!-- src/index.ts&#45;&gt;src/algebra/equation.ts -->
-<g id="edge69" class="edge">
+<g id="edge68" class="edge">
 <title>src/index.ts&#45;&gt;src/algebra/equation.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M64,-321.27C64,-323.24 64,-324.75 64,-324.75 64,-324.75 189.96,-324.75 189.96,-324.75"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="189.96,-326.85 195.96,-324.75 189.96,-322.65 189.96,-326.85"/>
 </g>
 <!-- src/index.ts&#45;&gt;src/coefficients/fraction.ts -->
-<g id="edge74" class="edge">
+<g id="edge73" class="edge">
 <title>src/index.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M56,-321.2C56,-343.97 56,-401.12 56,-401.12 56,-401.12 571.49,-401.12 571.49,-401.12"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.49,-403.23 577.49,-401.12 571.49,-399.03 571.49,-403.23"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M56,-321.27C56,-344.22 56,-401.8 56,-401.8 56,-401.8 571.49,-401.8 571.49,-401.8"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="571.49,-403.9 577.49,-401.8 571.49,-399.7 571.49,-403.9"/>
 </g>
 <!-- src/index.ts&#45;&gt;src/numeric.ts -->
-<g id="edge81" class="edge">
+<g id="edge80" class="edge">
 <title>src/index.ts&#45;&gt;src/numeric.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M80.74,-310.62C88.06,-310.62 94,-310.62 94,-310.62 94,-310.62 94,-339.86 94,-339.86 94,-339.86 644.68,-339.86 644.68,-339.86"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="644.68,-341.96 650.68,-339.86 644.68,-337.76 644.68,-341.96"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M60,-321.26C60,-334.08 60,-355.67 60,-355.67 60,-355.67 666,-355.67 666,-355.67 666,-355.67 666,-351.37 666,-351.37"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="668.1,-351.37 666,-345.37 663.9,-351.37 668.1,-351.37"/>
 </g>
 <!-- src/index.ts&#45;&gt;src/algebra/monom.ts -->
-<g id="edge71" class="edge">
+<g id="edge70" class="edge">
 <title>src/index.ts&#45;&gt;src/algebra/monom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M60,-321.28C60,-332.62 60,-350.33 60,-350.33 60,-350.33 493,-350.33 493,-350.33 493,-350.33 493,-342.22 493,-342.22"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="495.1,-342.22 493,-336.22 490.9,-342.22 495.1,-342.22"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M80.52,-308.86C145.66,-308.86 306,-308.86 306,-308.86 306,-308.86 306,-320 306,-320 306,-320 478.2,-320 478.2,-320"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="478.2,-322.1 484.2,-320 478.2,-317.9 478.2,-322.1"/>
 </g>
 <!-- src/index.ts&#45;&gt;src/algebra/polynom.ts -->
-<g id="edge73" class="edge">
+<g id="edge72" class="edge">
 <title>src/index.ts&#45;&gt;src/algebra/polynom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M80.71,-308.77C80.71,-308.77 378.41,-308.77 378.41,-308.77"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="378.41,-310.87 384.41,-308.77 378.41,-306.67 378.41,-310.87"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M80.71,-307.43C80.71,-307.43 378.41,-307.43 378.41,-307.43"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="378.41,-309.53 384.41,-307.43 378.41,-305.33 378.41,-309.53"/>
 </g>
 <!-- src/index.ts&#45;&gt;src/algebra/factor.ts -->
-<g id="edge70" class="edge">
+<g id="edge69" class="edge">
 <title>src/index.ts&#45;&gt;src/algebra/factor.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M45,-302.89C45,-286.1 45,-252 45,-252 45,-252 288.94,-252 288.94,-252"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="288.94,-254.1 294.94,-252 288.94,-249.9 288.94,-254.1"/>
 </g>
 <!-- src/index.ts&#45;&gt;src/coefficients/nthRoot.ts -->
-<g id="edge75" class="edge">
+<g id="edge74" class="edge">
 <title>src/index.ts&#45;&gt;src/coefficients/nthRoot.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M80.77,-311.54C85.53,-311.54 89,-311.54 89,-311.54 89,-311.54 89,-367.75 89,-367.75 89,-367.75 569.88,-367.75 569.88,-367.75"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M80.77,-313.14C85.53,-313.14 89,-313.14 89,-313.14 89,-313.14 89,-367.75 89,-367.75 89,-367.75 569.88,-367.75 569.88,-367.75"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="569.88,-369.85 575.88,-367.75 569.88,-365.65 569.88,-369.85"/>
 </g>
 <!-- src/index.ts&#45;&gt;src/algebra/polyFactor.ts -->
-<g id="edge72" class="edge">
+<g id="edge71" class="edge">
 <title>src/index.ts&#45;&gt;src/algebra/polyFactor.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M63,-302.98C63,-299.13 63,-295.5 63,-295.5 63,-295.5 186.62,-295.5 186.62,-295.5"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="186.62,-297.6 192.62,-295.5 186.62,-293.4 186.62,-297.6"/>
 </g>
 <!-- src/index.ts&#45;&gt;src/geometry/circle.ts -->
-<g id="edge76" class="edge">
+<g id="edge75" class="edge">
 <title>src/index.ts&#45;&gt;src/geometry/circle.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M48,-321.07C48,-360 48,-511 48,-511 48,-511 104.16,-511 104.16,-511"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="104.16,-513.1 110.16,-511 104.16,-508.9 104.16,-513.1"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M52,-321.19C52,-359.94 52,-508 52,-508 52,-508 104.45,-508 104.45,-508"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="104.45,-510.1 110.45,-508 104.45,-505.9 104.45,-510.1"/>
 </g>
 <!-- src/index.ts&#45;&gt;src/geometry/line.ts -->
-<g id="edge77" class="edge">
+<g id="edge76" class="edge">
 <title>src/index.ts&#45;&gt;src/geometry/line.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M80.72,-309.69C120.02,-309.69 188,-309.69 188,-309.69 188,-309.69 188,-504.57 188,-504.57 188,-504.57 193.91,-504.57 193.91,-504.57"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M80.72,-311.71C120.02,-311.71 188,-311.71 188,-311.71 188,-311.71 188,-504.57 188,-504.57 188,-504.57 193.91,-504.57 193.91,-504.57"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="193.91,-506.67 199.91,-504.57 193.91,-502.47 193.91,-506.67"/>
 </g>
 <!-- src/index.ts&#45;&gt;src/geometry/point.ts -->
-<g id="edge78" class="edge">
+<g id="edge77" class="edge">
 <title>src/index.ts&#45;&gt;src/geometry/point.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M39,-321.14C39,-366.89 39,-568.8 39,-568.8 39,-568.8 288.86,-568.8 288.86,-568.8"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="288.86,-570.9 294.86,-568.8 288.86,-566.7 288.86,-570.9"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M44,-321.27C44,-367.66 44,-572.4 44,-572.4 44,-572.4 288.84,-572.4 288.84,-572.4"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="288.84,-574.5 294.84,-572.4 288.84,-570.3 288.84,-574.5"/>
 </g>
 <!-- src/index.ts&#45;&gt;src/geometry/vector.ts -->
-<g id="edge80" class="edge">
+<g id="edge79" class="edge">
 <title>src/index.ts&#45;&gt;src/geometry/vector.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M52,-321.42C52,-353.34 52,-455.5 52,-455.5 52,-455.5 420,-455.5 420,-455.5 420,-455.5 420,-551.88 420,-551.88"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="417.9,-551.88 420,-557.88 422.1,-551.88 417.9,-551.88"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M35,-321.28C35,-368.67 35,-581.5 35,-581.5 35,-581.5 382.44,-581.5 382.44,-581.5"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="382.44,-583.6 388.44,-581.5 382.44,-579.4 382.44,-583.6"/>
 </g>
 <!-- src/index.ts&#45;&gt;src/geometry/triangle.ts -->
-<g id="edge79" class="edge">
+<g id="edge78" class="edge">
 <title>src/index.ts&#45;&gt;src/geometry/triangle.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M44,-321.26C44,-364.1 44,-541 44,-541 44,-541 102.94,-541 102.94,-541"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="102.94,-543.1 108.94,-541 102.94,-538.9 102.94,-543.1"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M48,-321.26C48,-364.1 48,-541 48,-541 48,-541 102.69,-541 102.69,-541"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="102.69,-543.1 108.69,-541 102.69,-538.9 102.69,-543.1"/>
 </g>
 <!-- src/randomization/random.ts -->
 <g id="node21" class="node">
@@ -827,16 +815,16 @@
 </g>
 </g>
 <!-- src/index.ts&#45;&gt;src/randomization/random.ts -->
-<g id="edge82" class="edge">
+<g id="edge81" class="edge">
 <title>src/index.ts&#45;&gt;src/randomization/random.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M31,-321.17C31,-321.17 31,-851.92 31,-851.92"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="28.9,-851.92 31,-857.92 33.1,-851.92 28.9,-851.92"/>
 </g>
 <!-- src/randomization/random.ts&#45;&gt;src/randomization/rndHelpers.ts -->
-<g id="edge128" class="edge">
+<g id="edge127" class="edge">
 <title>src/randomization/random.ts&#45;&gt;src/randomization/rndHelpers.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M35,-857.81C35,-832.45 35,-763.4 35,-763.4 35,-763.4 372.67,-763.4 372.67,-763.4"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.67,-765.5 378.67,-763.4 372.67,-761.3 372.67,-765.5"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M39,-857.81C39,-832.45 39,-763.4 39,-763.4 39,-763.4 372.71,-763.4 372.71,-763.4"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.71,-765.5 378.71,-763.4 372.71,-761.3 372.71,-765.5"/>
 </g>
 <!-- src/randomization/algebra/rndEquation.ts -->
 <g id="node22" class="node">
@@ -848,7 +836,7 @@
 </g>
 </g>
 <!-- src/randomization/random.ts&#45;&gt;src/randomization/algebra/rndEquation.ts -->
-<g id="edge120" class="edge">
+<g id="edge119" class="edge">
 <title>src/randomization/random.ts&#45;&gt;src/randomization/algebra/rndEquation.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M54,-876.04C54,-900.3 54,-965 54,-965 54,-965 92.68,-965 92.68,-965"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="92.68,-967.1 98.68,-965 92.68,-962.9 92.68,-967.1"/>
@@ -863,10 +851,10 @@
 </g>
 </g>
 <!-- src/randomization/random.ts&#45;&gt;src/randomization/rndTypes.ts -->
-<g id="edge129" class="edge">
+<g id="edge128" class="edge">
 <title>src/randomization/random.ts&#45;&gt;src/randomization/rndTypes.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M83.27,-864.8C162.59,-864.8 373,-864.8 373,-864.8 373,-864.8 373,-852 373,-852 373,-852 376.86,-852 376.86,-852"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="376.86,-854.1 382.86,-852 376.86,-849.9 376.86,-854.1"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M83.08,-864.8C161.9,-864.8 371,-864.8 371,-864.8 371,-864.8 371,-852.29 371,-852.29 371,-852.29 376.69,-852.29 376.69,-852.29"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="376.69,-854.39 382.69,-852.29 376.69,-850.19 376.69,-854.39"/>
 </g>
 <!-- src/randomization/algebra/rndPolynom.ts -->
 <g id="node24" class="node">
@@ -878,7 +866,7 @@
 </g>
 </g>
 <!-- src/randomization/random.ts&#45;&gt;src/randomization/algebra/rndPolynom.ts -->
-<g id="edge122" class="edge">
+<g id="edge121" class="edge">
 <title>src/randomization/random.ts&#45;&gt;src/randomization/algebra/rndPolynom.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M83.11,-874C130.22,-874 217,-874 217,-874 217,-874 217,-949.94 217,-949.94"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="214.9,-949.94 217,-955.94 219.1,-949.94 214.9,-949.94"/>
@@ -893,10 +881,10 @@
 </g>
 </g>
 <!-- src/randomization/random.ts&#45;&gt;src/randomization/algebra/rndMonom.ts -->
-<g id="edge121" class="edge">
+<g id="edge120" class="edge">
 <title>src/randomization/random.ts&#45;&gt;src/randomization/algebra/rndMonom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M83.11,-872C144.51,-872 280,-872 280,-872 280,-872 280,-966 280,-966 280,-966 280.62,-966 280.62,-966"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="280.2,-968.1 286.2,-966 280.2,-963.9 280.2,-968.1"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M83.11,-872C144.51,-872 280,-872 280,-872 280,-872 280,-967.14 280,-967.14 280,-967.14 280.62,-967.14 280.62,-967.14"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="280.2,-969.24 286.2,-967.14 280.2,-965.04 280.2,-969.24"/>
 </g>
 <!-- src/randomization/coefficient/rndFraction.ts -->
 <g id="node26" class="node">
@@ -908,7 +896,7 @@
 </g>
 </g>
 <!-- src/randomization/random.ts&#45;&gt;src/randomization/coefficient/rndFraction.ts -->
-<g id="edge123" class="edge">
+<g id="edge122" class="edge">
 <title>src/randomization/random.ts&#45;&gt;src/randomization/coefficient/rndFraction.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M83,-870C83,-870 279.18,-870 279.18,-870"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="279.18,-872.1 285.18,-870 279.18,-867.9 279.18,-872.1"/>
@@ -923,10 +911,10 @@
 </g>
 </g>
 <!-- src/randomization/random.ts&#45;&gt;src/randomization/geometry/rndCircle.ts -->
-<g id="edge124" class="edge">
+<g id="edge123" class="edge">
 <title>src/randomization/random.ts&#45;&gt;src/randomization/geometry/rndCircle.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M77,-857.8C77,-851.77 77,-845 77,-845 77,-845 99.48,-845 99.48,-845"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="99.48,-847.1 105.48,-845 99.48,-842.9 99.48,-847.1"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M77,-857.95C77,-853.05 77,-848 77,-848 77,-848 99.48,-848 99.48,-848"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="99.48,-850.1 105.48,-848 99.48,-845.9 99.48,-850.1"/>
 </g>
 <!-- src/randomization/geometry/rndPoint.ts -->
 <g id="node28" class="node">
@@ -938,7 +926,7 @@
 </g>
 </g>
 <!-- src/randomization/random.ts&#45;&gt;src/randomization/geometry/rndPoint.ts -->
-<g id="edge127" class="edge">
+<g id="edge126" class="edge">
 <title>src/randomization/random.ts&#45;&gt;src/randomization/geometry/rndPoint.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M83.14,-863.2C135.3,-863.2 238,-863.2 238,-863.2 238,-863.2 238,-860.1 238,-860.1"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="240.1,-860.1 238,-854.1 235.9,-860.1 240.1,-860.1"/>
@@ -953,7 +941,7 @@
 </g>
 </g>
 <!-- src/randomization/random.ts&#45;&gt;src/randomization/geometry/rndLine.ts -->
-<g id="edge125" class="edge">
+<g id="edge124" class="edge">
 <title>src/randomization/random.ts&#45;&gt;src/randomization/geometry/rndLine.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M73,-857.94C73,-843.04 73,-815 73,-815 73,-815 102.27,-815 102.27,-815"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="102.27,-817.1 108.27,-815 102.27,-812.9 102.27,-817.1"/>
@@ -968,220 +956,220 @@
 </g>
 </g>
 <!-- src/randomization/random.ts&#45;&gt;src/randomization/geometry/rndLine3.ts -->
-<g id="edge126" class="edge">
+<g id="edge125" class="edge">
 <title>src/randomization/random.ts&#45;&gt;src/randomization/geometry/rndLine3.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M69,-857.91C69,-836.56 69,-785 69,-785 69,-785 99.66,-785 99.66,-785"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="99.66,-787.1 105.66,-785 99.66,-782.9 99.66,-787.1"/>
 </g>
 <!-- src/randomization/algebra/rndEquation.ts&#45;&gt;src/algebra/equation.ts -->
-<g id="edge86" class="edge">
+<g id="edge85" class="edge">
 <title>src/randomization/algebra/rndEquation.ts&#45;&gt;src/algebra/equation.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M176.18,-959.6C179.72,-959.6 182,-959.6 182,-959.6 182,-959.6 182,-332.25 182,-332.25 182,-332.25 189.75,-332.25 189.75,-332.25"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="189.75,-334.35 195.75,-332.25 189.75,-330.15 189.75,-334.35"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M176.26,-960.5C177.37,-960.5 178,-960.5 178,-960.5 178,-960.5 178,-332.25 178,-332.25 178,-332.25 189.97,-332.25 189.97,-332.25"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="189.97,-334.35 195.97,-332.25 189.97,-330.15 189.97,-334.35"/>
 </g>
 <!-- src/randomization/algebra/rndEquation.ts&#45;&gt;src/algebra/polynom.ts -->
-<g id="edge87" class="edge">
+<g id="edge86" class="edge">
 <title>src/randomization/algebra/rndEquation.ts&#45;&gt;src/algebra/polynom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M176.08,-966.8C178.51,-966.8 180,-966.8 180,-966.8 180,-966.8 180,-313.38 180,-313.38 180,-313.38 378.23,-313.38 378.23,-313.38"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="378.23,-315.48 384.23,-313.38 378.23,-311.28 378.23,-315.48"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M176.08,-965C178.51,-965 180,-965 180,-965 180,-965 180,-455.5 180,-455.5 180,-455.5 393,-455.5 393,-455.5 393,-455.5 393,-322.29 393,-322.29"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="395.1,-322.29 393,-316.29 390.9,-322.29 395.1,-322.29"/>
 </g>
 <!-- src/randomization/algebra/rndEquation.ts&#45;&gt;src/randomization/rndTypes.ts -->
-<g id="edge88" class="edge">
+<g id="edge87" class="edge">
 <title>src/randomization/algebra/rndEquation.ts&#45;&gt;src/randomization/rndTypes.ts</title>
 <path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M127,-955.9C127,-931.49 127,-866.4 127,-866.4 127,-866.4 416,-866.4 416,-866.4 416,-866.4 416,-865.77 416,-865.77"/>
 <polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="418.1,-866.14 416,-860.14 413.9,-866.14 418.1,-866.14"/>
 </g>
 <!-- src/randomization/algebra/rndEquation.ts&#45;&gt;src/randomization/algebra/rndPolynom.ts -->
-<g id="edge89" class="edge">
+<g id="edge88" class="edge">
 <title>src/randomization/algebra/rndEquation.ts&#45;&gt;src/randomization/algebra/rndPolynom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M176.24,-970.4C176.24,-970.4 182.77,-970.4 182.77,-970.4"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="182.77,-972.5 188.77,-970.4 182.77,-968.3 182.77,-972.5"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M176.24,-969.5C176.24,-969.5 182.77,-969.5 182.77,-969.5"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="182.77,-971.6 188.77,-969.5 182.77,-967.4 182.77,-971.6"/>
 </g>
 <!-- src/randomization/rndTypes.ts&#45;&gt;src/coefficients/fraction.ts -->
-<g id="edge131" class="edge">
+<g id="edge130" class="edge">
 <title>src/randomization/rndTypes.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M448.39,-851C504.33,-851 612,-851 612,-851 612,-851 612,-415.01 612,-415.01"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="614.1,-415.01 612,-409.01 609.9,-415.01 614.1,-415.01"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M448.44,-851C505.11,-851 615,-851 615,-851 615,-851 615,-415.01 615,-415.01"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="617.1,-415.01 615,-409.01 612.9,-415.01 617.1,-415.01"/>
 </g>
 <!-- src/randomization/algebra/rndPolynom.ts&#45;&gt;src/algebra/monom.ts -->
-<g id="edge94" class="edge">
+<g id="edge93" class="edge">
 <title>src/randomization/algebra/rndPolynom.ts&#45;&gt;src/algebra/monom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M265.4,-964C269.94,-964 273,-964 273,-964 273,-964 273,-355.67 273,-355.67 273,-355.67 502,-355.67 502,-355.67 502,-355.67 502,-342.07 502,-342.07"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="504.1,-342.07 502,-336.07 499.9,-342.07 504.1,-342.07"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M265.07,-963.71C268.09,-963.71 270,-963.71 270,-963.71 270,-963.71 270,-350.33 270,-350.33 270,-350.33 495,-350.33 495,-350.33 495,-350.33 495,-342.22 495,-342.22"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="497.1,-342.22 495,-336.22 492.9,-342.22 497.1,-342.22"/>
 </g>
 <!-- src/randomization/algebra/rndPolynom.ts&#45;&gt;src/algebra/polynom.ts -->
-<g id="edge95" class="edge">
+<g id="edge94" class="edge">
 <title>src/randomization/algebra/rndPolynom.ts&#45;&gt;src/algebra/polynom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M188.6,-963.2C184.06,-963.2 181,-963.2 181,-963.2 181,-963.2 181,-314.31 181,-314.31 181,-314.31 378.36,-314.31 378.36,-314.31"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="378.36,-316.41 384.36,-314.31 378.36,-312.21 378.36,-316.41"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M265.25,-965.43C268.74,-965.43 271,-965.43 271,-965.43 271,-965.43 271,-544.5 271,-544.5 271,-544.5 407,-544.5 407,-544.5 407,-544.5 407,-322.02 407,-322.02"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="409.1,-322.02 407,-316.02 404.9,-322.02 409.1,-322.02"/>
 </g>
 <!-- src/randomization/algebra/rndPolynom.ts&#45;&gt;src/randomization/rndHelpers.ts -->
-<g id="edge96" class="edge">
+<g id="edge95" class="edge">
 <title>src/randomization/algebra/rndPolynom.ts&#45;&gt;src/randomization/rndHelpers.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M265.13,-968C271.45,-968 276,-968 276,-968 276,-968 276,-770.6 276,-770.6 276,-770.6 372.85,-770.6 372.85,-770.6"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M265.13,-968.86C271.45,-968.86 276,-968.86 276,-968.86 276,-968.86 276,-770.6 276,-770.6 276,-770.6 372.85,-770.6 372.85,-770.6"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.85,-772.7 378.85,-770.6 372.85,-768.5 372.85,-772.7"/>
 </g>
 <!-- src/randomization/algebra/rndPolynom.ts&#45;&gt;src/randomization/rndTypes.ts -->
-<g id="edge97" class="edge">
+<g id="edge96" class="edge">
 <title>src/randomization/algebra/rndPolynom.ts&#45;&gt;src/randomization/rndTypes.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M265.15,-970C271.99,-970 277,-970 277,-970 277,-970 277,-846 277,-846 277,-846 376.68,-846 376.68,-846"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="376.68,-848.1 382.68,-846 376.68,-843.9 376.68,-848.1"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M265.15,-970.57C271.99,-970.57 277,-970.57 277,-970.57 277,-970.57 277,-847.14 277,-847.14 277,-847.14 376.68,-847.14 376.68,-847.14"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="376.68,-849.24 382.68,-847.14 376.68,-845.04 376.68,-849.24"/>
 </g>
 <!-- src/randomization/algebra/rndPolynom.ts&#45;&gt;src/randomization/algebra/rndMonom.ts -->
-<g id="edge98" class="edge">
+<g id="edge97" class="edge">
 <title>src/randomization/algebra/rndPolynom.ts&#45;&gt;src/randomization/algebra/rndMonom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M265.09,-972C265.09,-972 280.36,-972 280.36,-972"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="280.36,-974.1 286.36,-972 280.36,-969.9 280.36,-974.1"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M265.09,-972.29C265.09,-972.29 280.36,-972.29 280.36,-972.29"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="280.36,-974.39 286.36,-972.29 280.36,-970.19 280.36,-974.39"/>
 </g>
 <!-- src/randomization/algebra/rndMonom.ts&#45;&gt;src/algebra/monom.ts -->
-<g id="edge90" class="edge">
+<g id="edge89" class="edge">
 <title>src/randomization/algebra/rndMonom.ts&#45;&gt;src/algebra/monom.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M357.89,-971C364.83,-971 370,-971 370,-971 370,-971 370,-333.88 370,-333.88 370,-333.88 478.16,-333.88 478.16,-333.88"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="478.16,-335.98 484.16,-333.88 478.16,-331.78 478.16,-335.98"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M357.54,-975.5C398.43,-975.5 460,-975.5 460,-975.5 460,-975.5 460,-334 460,-334 460,-334 478.47,-334 478.47,-334"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="478.47,-336.1 484.47,-334 478.47,-331.9 478.47,-336.1"/>
 </g>
 <!-- src/randomization/algebra/rndMonom.ts&#45;&gt;src/randomization/rndHelpers.ts -->
-<g id="edge92" class="edge">
+<g id="edge91" class="edge">
 <title>src/randomization/algebra/rndMonom.ts&#45;&gt;src/randomization/rndHelpers.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M357.67,-966.5C359.74,-966.5 361,-966.5 361,-966.5 361,-966.5 361,-774.2 361,-774.2 361,-774.2 372.85,-774.2 372.85,-774.2"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.85,-776.3 378.85,-774.2 372.85,-772.1 372.85,-776.3"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M357.51,-966.5C359.07,-966.5 360,-966.5 360,-966.5 360,-966.5 360,-774.2 360,-774.2 360,-774.2 372.79,-774.2 372.79,-774.2"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.79,-776.3 378.79,-774.2 372.79,-772.1 372.79,-776.3"/>
 </g>
 <!-- src/randomization/algebra/rndMonom.ts&#45;&gt;src/randomization/rndTypes.ts -->
-<g id="edge93" class="edge">
+<g id="edge92" class="edge">
 <title>src/randomization/algebra/rndMonom.ts&#45;&gt;src/randomization/rndTypes.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M357.71,-975.5C389.83,-975.5 432,-975.5 432,-975.5 432,-975.5 432,-866.36 432,-866.36"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="434.1,-866.36 432,-860.36 429.9,-866.36 434.1,-866.36"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M357.71,-971C389.83,-971 432,-971 432,-971 432,-971 432,-866.02 432,-866.02"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="434.1,-866.02 432,-860.02 429.9,-866.02 434.1,-866.02"/>
 </g>
 <!-- src/randomization/algebra/rndMonom.ts&#45;&gt;src/randomization/coefficient/rndFraction.ts -->
-<g id="edge91" class="edge">
+<g id="edge90" class="edge">
 <title>src/randomization/algebra/rndMonom.ts&#45;&gt;src/randomization/coefficient/rndFraction.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M322,-961.99C322,-961.99 322,-892.12 322,-892.12"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="324.1,-892.12 322,-886.12 319.9,-892.12 324.1,-892.12"/>
 </g>
 <!-- src/randomization/coefficient/rndFraction.ts&#45;&gt;src/coefficients/fraction.ts -->
-<g id="edge99" class="edge">
+<g id="edge98" class="edge">
 <title>src/randomization/coefficient/rndFraction.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M358.61,-877C438.82,-877 623,-877 623,-877 623,-877 623,-415.1 623,-415.1"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="625.1,-415.1 623,-409.1 620.9,-415.1 625.1,-415.1"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M358.55,-877C439.14,-877 625,-877 625,-877 625,-877 625,-415.1 625,-415.1"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="627.1,-415.1 625,-409.1 622.9,-415.1 627.1,-415.1"/>
 </g>
 <!-- src/randomization/coefficient/rndFraction.ts&#45;&gt;src/randomization/rndHelpers.ts -->
-<g id="edge100" class="edge">
+<g id="edge99" class="edge">
 <title>src/randomization/coefficient/rndFraction.ts&#45;&gt;src/randomization/rndHelpers.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M356,-867.72C356,-842.12 356,-772.4 356,-772.4 356,-772.4 372.83,-772.4 372.83,-772.4"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.83,-774.5 378.83,-772.4 372.83,-770.3 372.83,-774.5"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M355,-867.72C355,-842.12 355,-772.4 355,-772.4 355,-772.4 372.91,-772.4 372.91,-772.4"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.91,-774.5 378.91,-772.4 372.91,-770.3 372.91,-774.5"/>
 </g>
 <!-- src/randomization/coefficient/rndFraction.ts&#45;&gt;src/randomization/rndTypes.ts -->
-<g id="edge101" class="edge">
+<g id="edge100" class="edge">
 <title>src/randomization/coefficient/rndFraction.ts&#45;&gt;src/randomization/rndTypes.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M357,-867.86C357,-860.03 357,-850 357,-850 357,-850 376.83,-850 376.83,-850"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="376.83,-852.1 382.83,-850 376.83,-847.9 376.83,-852.1"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M357,-867.76C357,-860.14 357,-850.57 357,-850.57 357,-850.57 376.83,-850.57 376.83,-850.57"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="376.83,-852.67 382.83,-850.57 376.83,-848.47 376.83,-852.67"/>
 </g>
 <!-- src/randomization/geometry/rndCircle.ts&#45;&gt;src/geometry/circle.ts -->
-<g id="edge102" class="edge">
+<g id="edge101" class="edge">
 <title>src/randomization/geometry/rndCircle.ts&#45;&gt;src/geometry/circle.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M169.79,-840.5C175.15,-840.5 179,-840.5 179,-840.5 179,-840.5 179,-512.29 179,-512.29 179,-512.29 170.95,-512.29 170.95,-512.29"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="170.95,-510.19 164.95,-512.29 170.95,-514.39 170.95,-510.19"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M105.43,-842C98.91,-842 94,-842 94,-842 94,-842 94,-514 94,-514 94,-514 104.2,-514 104.2,-514"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="104.2,-516.1 110.2,-514 104.2,-511.9 104.2,-516.1"/>
 </g>
 <!-- src/randomization/geometry/rndCircle.ts&#45;&gt;src/randomization/rndHelpers.ts -->
-<g id="edge103" class="edge">
+<g id="edge102" class="edge">
 <title>src/randomization/geometry/rndCircle.ts&#45;&gt;src/randomization/rndHelpers.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M169.58,-845C178.6,-845 186,-845 186,-845 186,-845 186,-767 186,-767 186,-767 372.88,-767 372.88,-767"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.88,-769.1 378.88,-767 372.88,-764.9 372.88,-769.1"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M169.71,-842C178.18,-842 185,-842 185,-842 185,-842 185,-767 185,-767 185,-767 372.98,-767 372.98,-767"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.98,-769.1 378.98,-767 372.98,-764.9 372.98,-769.1"/>
 </g>
 <!-- src/randomization/geometry/rndCircle.ts&#45;&gt;src/randomization/rndTypes.ts -->
-<g id="edge104" class="edge">
+<g id="edge103" class="edge">
 <title>src/randomization/geometry/rndCircle.ts&#45;&gt;src/randomization/rndTypes.ts</title>
 <path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M149,-854.08C149,-857.95 149,-861.6 149,-861.6 149,-861.6 400,-861.6 400,-861.6 400,-861.6 400,-861.47 400,-861.47"/>
 <polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="402.1,-866.3 400,-860.3 397.9,-866.3 402.1,-866.3"/>
 </g>
 <!-- src/randomization/geometry/rndCircle.ts&#45;&gt;src/randomization/geometry/rndPoint.ts -->
-<g id="edge105" class="edge">
+<g id="edge104" class="edge">
 <title>src/randomization/geometry/rndCircle.ts&#45;&gt;src/randomization/geometry/rndPoint.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M169.56,-849.5C169.56,-849.5 190.36,-849.5 190.36,-849.5"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="190.36,-851.6 196.36,-849.5 190.36,-847.4 190.36,-851.6"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M169.56,-848C169.56,-848 190.36,-848 190.36,-848"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="190.36,-850.1 196.36,-848 190.36,-845.9 190.36,-850.1"/>
 </g>
 <!-- src/randomization/geometry/rndPoint.ts&#45;&gt;src/coefficients/fraction.ts -->
-<g id="edge115" class="edge">
+<g id="edge114" class="edge">
 <title>src/randomization/geometry/rndPoint.ts&#45;&gt;src/coefficients/fraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M236,-835.93C236,-799.66 236,-667 236,-667 236,-667 600,-667 600,-667 600,-667 600,-415.19 600,-415.19"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="602.1,-415.19 600,-409.19 597.9,-415.19 602.1,-415.19"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M218,-835.73C218,-799.9 218,-672.5 218,-672.5 218,-672.5 606,-672.5 606,-672.5 606,-672.5 606,-415.07 606,-415.07"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="608.1,-415.07 606,-409.07 603.9,-415.07 608.1,-415.07"/>
 </g>
 <!-- src/randomization/geometry/rndPoint.ts&#45;&gt;src/geometry/point.ts -->
-<g id="edge116" class="edge">
+<g id="edge115" class="edge">
 <title>src/randomization/geometry/rndPoint.ts&#45;&gt;src/geometry/point.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M227,-835.93C227,-788.63 227,-572.4 227,-572.4 227,-572.4 288.78,-572.4 288.78,-572.4"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="288.78,-574.5 294.78,-572.4 288.78,-570.3 288.78,-574.5"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M257.64,-843.71C288.32,-843.71 331,-843.71 331,-843.71 331,-843.71 331,-582.21 331,-582.21"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="333.1,-582.21 331,-576.21 328.9,-582.21 333.1,-582.21"/>
 </g>
 <!-- src/randomization/geometry/rndPoint.ts&#45;&gt;src/randomization/rndHelpers.ts -->
-<g id="edge118" class="edge">
+<g id="edge117" class="edge">
 <title>src/randomization/geometry/rndPoint.ts&#45;&gt;src/randomization/rndHelpers.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M245,-835.96C245,-815.78 245,-768.8 245,-768.8 245,-768.8 372.92,-768.8 372.92,-768.8"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.92,-770.9 378.92,-768.8 372.92,-766.7 372.92,-770.9"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M236,-835.96C236,-815.78 236,-768.8 236,-768.8 236,-768.8 372.74,-768.8 372.74,-768.8"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.74,-770.9 378.74,-768.8 372.74,-766.7 372.74,-770.9"/>
 </g>
 <!-- src/randomization/geometry/rndPoint.ts&#45;&gt;src/randomization/rndTypes.ts -->
-<g id="edge119" class="edge">
+<g id="edge118" class="edge">
 <title>src/randomization/geometry/rndPoint.ts&#45;&gt;src/randomization/rndTypes.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M257.71,-844C257.71,-844 376.91,-844 376.91,-844"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="376.91,-846.1 382.91,-844 376.91,-841.9 376.91,-846.1"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M257.71,-845.43C257.71,-845.43 376.91,-845.43 376.91,-845.43"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="376.91,-847.53 382.91,-845.43 376.91,-843.33 376.91,-847.53"/>
 </g>
 <!-- src/randomization/geometry/rndPoint.ts&#45;&gt;src/randomization/coefficient/rndFraction.ts -->
-<g id="edge117" class="edge">
+<g id="edge116" class="edge">
 <title>src/randomization/geometry/rndPoint.ts&#45;&gt;src/randomization/coefficient/rndFraction.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M257.5,-848C273.98,-848 291,-848 291,-848 291,-848 291,-861.82 291,-861.82"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="288.9,-861.82 291,-867.82 293.1,-861.82 288.9,-861.82"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M257.6,-848.86C274.46,-848.86 292,-848.86 292,-848.86 292,-848.86 292,-861.78 292,-861.78"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="289.9,-861.78 292,-867.78 294.1,-861.79 289.9,-861.78"/>
 </g>
 <!-- src/randomization/geometry/rndLine.ts&#45;&gt;src/geometry/line.ts -->
-<g id="edge106" class="edge">
+<g id="edge105" class="edge">
 <title>src/randomization/geometry/rndLine.ts&#45;&gt;src/geometry/line.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M166.77,-809.6C176.55,-809.6 185,-809.6 185,-809.6 185,-809.6 185,-517.43 185,-517.43 185,-517.43 193.69,-517.43 193.69,-517.43"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="193.69,-519.53 199.69,-517.43 193.69,-515.33 193.69,-519.53"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M166.93,-809.6C175.21,-809.6 182,-809.6 182,-809.6 182,-809.6 182,-517.43 182,-517.43 182,-517.43 193.79,-517.43 193.79,-517.43"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="193.79,-519.53 199.79,-517.43 193.79,-515.33 193.79,-519.53"/>
 </g>
 <!-- src/randomization/geometry/rndLine.ts&#45;&gt;src/geometry/vector.ts -->
-<g id="edge107" class="edge">
+<g id="edge106" class="edge">
 <title>src/randomization/geometry/rndLine.ts&#45;&gt;src/geometry/vector.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M166.7,-813.2C225.79,-813.2 354,-813.2 354,-813.2 354,-813.2 354,-571.5 354,-571.5 354,-571.5 382.35,-571.5 382.35,-571.5"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="382.35,-573.6 388.35,-571.5 382.35,-569.4 382.35,-573.6"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M166.69,-813.2C176.03,-813.2 184,-813.2 184,-813.2 184,-813.2 184,-585.17 184,-585.17 184,-585.17 382.49,-585.17 382.49,-585.17"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="382.49,-587.27 388.49,-585.17 382.49,-583.07 382.49,-587.27"/>
 </g>
 <!-- src/randomization/geometry/rndLine.ts&#45;&gt;src/randomization/rndHelpers.ts -->
-<g id="edge108" class="edge">
+<g id="edge107" class="edge">
 <title>src/randomization/geometry/rndLine.ts&#45;&gt;src/randomization/rndHelpers.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M166.6,-816.8C234.94,-816.8 400,-816.8 400,-816.8 400,-816.8 400,-782.13 400,-782.13"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="402.1,-782.13 400,-776.13 397.9,-782.13 402.1,-782.13"/>
 </g>
 <!-- src/randomization/geometry/rndLine.ts&#45;&gt;src/randomization/rndTypes.ts -->
-<g id="edge109" class="edge">
+<g id="edge108" class="edge">
 <title>src/randomization/geometry/rndLine.ts&#45;&gt;src/randomization/rndTypes.ts</title>
 <path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M166.52,-820.4C237.85,-820.4 416,-820.4 416,-820.4 416,-820.4 416,-835.98 416,-835.98"/>
 <polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="413.9,-835.98 416,-841.98 418.1,-835.98 413.9,-835.98"/>
 </g>
 <!-- src/randomization/geometry/rndLine3.ts&#45;&gt;src/geometry/point.ts -->
-<g id="edge111" class="edge">
+<g id="edge110" class="edge">
 <title>src/randomization/geometry/rndLine3.ts&#45;&gt;src/geometry/point.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M169.22,-783.2C221.97,-783.2 322,-783.2 322,-783.2 322,-783.2 322,-582.01 322,-582.01"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="324.1,-582.01 322,-576.01 319.9,-582.01 324.1,-582.01"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M169.28,-785C219.86,-785 313,-785 313,-785 313,-785 313,-582.09 313,-582.09"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="315.1,-582.09 313,-576.09 310.9,-582.09 315.1,-582.09"/>
 </g>
 <!-- src/randomization/geometry/rndLine3.ts&#45;&gt;src/geometry/vector.ts -->
-<g id="edge112" class="edge">
+<g id="edge111" class="edge">
 <title>src/randomization/geometry/rndLine3.ts&#45;&gt;src/geometry/vector.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M169.3,-786.8C229.24,-786.8 353,-786.8 353,-786.8 353,-786.8 353,-567 353,-567 353,-567 382.27,-567 382.27,-567"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="382.27,-569.1 388.27,-567 382.27,-564.9 382.27,-569.1"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M121,-775.81C121,-736.36 121,-583.33 121,-583.33 121,-583.33 382.32,-583.33 382.32,-583.33"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="382.32,-585.43 388.32,-583.33 382.32,-581.23 382.32,-585.43"/>
 </g>
 <!-- src/randomization/geometry/rndLine3.ts&#45;&gt;src/randomization/rndHelpers.ts -->
-<g id="edge113" class="edge">
+<g id="edge112" class="edge">
 <title>src/randomization/geometry/rndLine3.ts&#45;&gt;src/randomization/rndHelpers.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M128,-775.56C128,-770.46 128,-765.2 128,-765.2 128,-765.2 372.8,-765.2 372.8,-765.2"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.8,-767.3 378.8,-765.2 372.8,-763.1 372.8,-767.3"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M144,-775.56C144,-770.46 144,-765.2 144,-765.2 144,-765.2 372.88,-765.2 372.88,-765.2"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="372.88,-767.3 378.88,-765.2 372.88,-763.1 372.88,-767.3"/>
 </g>
 <!-- src/randomization/geometry/rndLine3.ts&#45;&gt;src/geometry/line3.ts -->
-<g id="edge110" class="edge">
+<g id="edge109" class="edge">
 <title>src/randomization/geometry/rndLine3.ts&#45;&gt;src/geometry/line3.ts</title>
-<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M169.07,-779.6C188.22,-779.6 209,-779.6 209,-779.6 209,-779.6 209,-556.06 209,-556.06"/>
-<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="211.1,-556.06 209,-550.06 206.9,-556.06 211.1,-556.06"/>
+<path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M169.07,-780.5C188.22,-780.5 209,-780.5 209,-780.5 209,-780.5 209,-556.1 209,-556.1"/>
+<polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="211.1,-556.1 209,-550.1 206.9,-556.1 211.1,-556.1"/>
 </g>
 <!-- src/randomization/geometry/rndLine3.ts&#45;&gt;src/randomization/rndTypes.ts -->
-<g id="edge114" class="edge">
+<g id="edge113" class="edge">
 <title>src/randomization/geometry/rndLine3.ts&#45;&gt;src/randomization/rndTypes.ts</title>
-<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M169.02,-790.4C244.99,-790.4 432,-790.4 432,-790.4 432,-790.4 432,-835.8 432,-835.8"/>
-<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="429.9,-835.8 432,-841.8 434.1,-835.8 429.9,-835.8"/>
+<path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M169.02,-789.5C244.99,-789.5 432,-789.5 432,-789.5 432,-789.5 432,-835.93 432,-835.93"/>
+<polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="429.9,-835.93 432,-841.93 434.1,-835.93 429.9,-835.93"/>
 </g>
 </g>
 </svg>

@@ -45,7 +45,6 @@ export class Triangle {
     #remarquables: remarquableLines
 
     constructor(...values: unknown[]) {
-        // TODO : initialize the values !
         if (values.length > 0) {
             this.parse(...values)
         }

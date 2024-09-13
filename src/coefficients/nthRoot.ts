@@ -1,3 +1,4 @@
+// TODO: Remove NthRoot class
 /**
  * NthRoot is something like "a+b\sqrt{3}
  */

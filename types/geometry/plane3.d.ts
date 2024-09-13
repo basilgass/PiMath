@@ -1,14 +1,15 @@
 import { Equation } from '../algebra/equation';
 import { Fraction } from '../coefficients/fraction';
 import { Line3 } from './line3';
+import { Point } from './point';
 import { Vector } from './vector';
 
 interface Plane3Config {
-    point?: Vector;
+    point?: Point;
     normal?: Vector;
     directions?: Vector[];
     equation?: Equation;
-    points?: Vector[];
+    points?: Point[];
     coefficients?: number[];
 }
 export declare class Plane3 {
@@ -16,8 +17,8 @@ export declare class Plane3 {
     constructor(config?: Plane3Config);
     get normal(): Vector;
     set normal(value: Vector);
-    get point(): Vector;
-    set point(value: Vector);
+    get point(): Point;
+    set point(value: Point);
     get a(): Fraction;
     get b(): Fraction;
     get c(): Fraction;
@@ -28,6 +29,8 @@ export declare class Plane3 {
     angle(line: Line3, sharp?: boolean, radian?: boolean): number;
     angle(plane: Plane3, sharp?: boolean, radian?: boolean): number;
     distanceTo(point: Vector): number;
-    intersectWithLine(line: Line3): Vector;
+    intersectWithLine(line: Line3): Point;
+    intersectWithPlane(plane: Plane3): Line3;
+    isPointOnPlane(pt: Point): boolean;
 }
 export {};

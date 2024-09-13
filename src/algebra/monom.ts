@@ -39,7 +39,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      * Parse a string to a monom. The string may include fraction.
      * @param inputStr
      */
-    public parse = (inputStr: InputAlgebra<Monom>): this => {
+    public parse(inputStr: InputAlgebra<Monom>): this {
         // Initialize the monom
         this.#coefficient = new Fraction()
         this.#literal = {}
@@ -492,7 +492,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             return false
         }
 
-        // To _compare, both must be different than zero.
+        // To _compare, both must be different from zero.
         if (!this.isZero() && !M.isZero()) {
             for (const key of K) {
                 // The variable is not available in one of the monom
@@ -564,7 +564,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      * @param inputStr  String like x^2y^3
      */
     public set literalStr(inputStr: string) {
-        // TODO : parse using shutingyard tree !
+        // TODO : parse using ShutingYard tree !
 
         // Match all x^n
         for (const v of [...inputStr.matchAll(/([a-z])\^([+-]?[0-9]+)/g)]) {
@@ -730,7 +730,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
 
     /**
      * Get the nth-root of the monom
-     * @param p
      */
     public root = (): this => {
         throw new Error('Method not implemented.')
@@ -805,7 +804,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             if (this.#literal[letter].isNotZero()) {
                 L += letter
                 if (this.#literal[letter].isNotEqual(1)) {
-                    L += `^{ ${this.#literal[letter].tfrac} }`
+                    L += `^{ ${this.#literal[letter].tfrac.tex } }`
                 }
             }
         }
@@ -813,7 +812,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         if (L === '') {
             // No setLetter - means it's only a number !
             if (this.#coefficient.value != 0) {
-                return this.#coefficient.frac
+                return this.#coefficient.frac.tex
             } else {
                 return '0'
             }

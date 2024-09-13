@@ -16,7 +16,7 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
      * and the right part to the right part of the equation
      * if value is a string, try to create an equation
      * if it fails, create a polynom and add it to the left and right part of the equation
-     * @param Equation | Polynom | Monom | Fraction | string | monom
+     * @param value | Polynom | Monom | Fraction | string | monom
      */
     add(value: InputValue<Equation | Polynom>): this;
     /**
@@ -51,6 +51,7 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
      * @param letter
      */
     hasVariable: (letter: string) => boolean;
+    isEqual(value: InputValue<Equation>): boolean;
     isLinearTo: (equ: Equation) => boolean;
     /**
      * Determine if the equation contains more than one letter/variable.
@@ -91,8 +92,6 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
     get left(): Polynom;
     set left(value: Polynom);
     get numberOfVars(): number;
-    get randomizeDefaults(): Record<string, number | string | boolean>;
-    set randomizeDefaults(value: Record<string, number | string | boolean>);
     get right(): Polynom;
     set right(value: Polynom);
     get sign(): string;
@@ -100,10 +99,4 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
     get signAsTex(): string;
     get tex(): string;
     get variables(): string[];
-    private _findSign;
-    private _formatSign;
-    private _reverseSign;
-    private isAlsoEqual;
-    private isGreater;
-    private isStrictEqual;
 }

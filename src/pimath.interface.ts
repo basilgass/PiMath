@@ -23,13 +23,19 @@ export interface IPiMathObject<T> {
 
     clone(): T;
 
-    parse(value: unknown): T;
+    parse(...value: unknown[]): T;
 }
 
 export interface IExpression<T> {
+    isEqual(value: InputValue<T>): boolean;
+
     zero(): T;
 
     one(): T;
+
+    isZero(): boolean;
+
+    isOne(): boolean;
 
     add(value: InputValue<T>): T;
 
@@ -42,12 +48,6 @@ export interface IExpression<T> {
     divide(value: InputValue<T>): T | null;
 
     reduce(): T;
-
-    isEqual(value: InputValue<T>): boolean;
-
-    isZero(): boolean;
-
-    isOne(): boolean;
 
     inverse(): T | undefined;
 

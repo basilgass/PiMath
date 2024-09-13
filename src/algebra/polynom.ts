@@ -222,7 +222,7 @@ export class Polynom implements
 
         let newM: Monom
 
-        // Make the euclidean division of the two polynoms.
+        // Make the Euclidean division of the two polynoms.
         let MaxIteration = this.degree(letter).value * 2
         while (reminder.degree(letter).isGeq(degreeP) && MaxIteration > 0) {
             MaxIteration--
@@ -262,7 +262,7 @@ export class Polynom implements
     // -------------------------------------
     /**
      * Factorize a polynom and store the best results in factors.
-     * @param maxValue Defines the greatest value to search to (default is 20).
+     * @param letter
      */
     public factorize = (letter?: string): Polynom[] => {
         let factors: Polynom[] = []
@@ -656,7 +656,7 @@ export class Polynom implements
             // Values are different
             if (da !== db) { return revert ? da - db : db - da }
 
-            // if values are equals, check other letters - it must be revert in that case !
+            // if values are equals, check other letters - it must be reverted in that case !
             if (otherLetters.length > 0) {
                 for (const L of otherLetters) {
                     const da = a.degree(L).value,

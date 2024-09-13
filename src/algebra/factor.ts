@@ -43,12 +43,12 @@ export class Factor implements
         throw new Error("Adding two factors is not possible")
     }
 
-    public get asPower(): this {
+    public get withPower(): this {
         this.#displayMode = FACTOR_DISPLAY.POWER
         return this
     }
 
-    public get asRoot(): this {
+    public get withRoot(): this {
         this.#displayMode = FACTOR_DISPLAY.ROOT
         return this
     }

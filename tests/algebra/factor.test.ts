@@ -58,12 +58,12 @@ describe("Factors outputs", () => {
     it('should output LaTeX with sqrt', () => {
         const F = new Factor('3x+2', '1/2')
 
-        expect(F.asRoot.tex).toBe('\\sqrt{ 3x+2 }')
+        expect(F.withRoot.tex).toBe('\\sqrt{ 3x+2 }')
     })
     it('should output LaTeX with root', () => {
         const F = new Factor('3x+2', '2/3')
 
-        expect(F.asRoot.tex).toBe('\\sqrt[ 3 ]{ 3x+2 }^{ 2 }')
+        expect(F.withRoot.tex).toBe('\\sqrt[ 3 ]{ 3x+2 }^{ 2 }')
     })
 
     it('should output ASCII with power', () => {
@@ -75,13 +75,13 @@ describe("Factors outputs", () => {
     it('should output ASCII with sqrt', () => {
         const F = new Factor('3x+2', '1/2')
 
-        expect(F.asRoot.display).toBe('sqrt(3x+2)')
+        expect(F.withRoot.display).toBe('sqrt(3x+2)')
     })
 
     it('should output ASCII with root', () => {
         const F = new Factor('3x+2', '2/3')
 
-        expect(F.asRoot.display).toBe('root(3)(3x+2)^(2)')
+        expect(F.withRoot.display).toBe('root(3)(3x+2)^(2)')
     })
 
 })

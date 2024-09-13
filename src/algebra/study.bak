@@ -1,3 +1,6 @@
+// Study.ts is too custom and is really specific to my needs (in conjunction with PiDraw).
+// It will be removed from PiMath.
+
 /**
  * Rational polynom module contains everything necessary to handle rational polynoms.
  * @module Polynom

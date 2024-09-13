@@ -1,6 +1,38 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, test } from "vitest"
 import { Line } from "../../src/geometry/line"
 import { Point } from "../../src/geometry/point"
+
+
+describe.todo('Line creation', () => {
+    test.todo('create Line')
+    test.todo('parse string')
+    test.todo('clone Line')
+    test.todo('set to zero Line')
+    test.todo('set to one Line')
+})
+describe.todo('Line output', () => {
+    test.todo('output as LaTeX')
+    test.todo('output as ASCII')
+})
+describe.todo('Line operations', () => {
+    test.todo('reduce Line')
+    test.todo('add two Lines')
+    test.todo('subtract two Lines')
+    test.todo('multiply two Lines')
+    test.todo('divide by Line')
+    test.todo('raise Line by integer')
+})
+describe.todo('Line comparisons', () => {
+    test.todo('same Line')
+    test.todo('equal Line')
+    test.todo('is one Line')
+    test.todo('is zero Line')
+})
+describe.todo('Line static functions')
+describe.todo('Line evaluation', () => {
+    test.todo('evaluate Line')
+})
+describe.todo('Line generators')
 
 describe('Geometry Line', function () {
     it('should evaluate coordinates', function () {

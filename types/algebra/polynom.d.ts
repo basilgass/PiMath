@@ -46,7 +46,7 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     evaluate: (values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean) => Fraction | number;
     /**
      * Factorize a polynom and store the best results in factors.
-     * @param maxValue Defines the greatest value to search to (default is 20).
+     * @param letter
      */
     factorize: (letter?: string) => Polynom[];
     gcdDenominator: () => number;
@@ -104,23 +104,4 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     get tex(): string;
     get variables(): string[];
     get zeroes(): ISolution[];
-    private _compare;
-    private _divideByFraction;
-    private _divideByInteger;
-    private _evaluateAsNumeric;
-    private _factorize2ndDegree;
-    private _factorizeByGroups;
-    private _getAllPotentialFactors;
-    private _multiplyByFraction;
-    private _multiplyByInteger;
-    private _multiplyByMonom;
-    private _multiplyByPolynom;
-    private _parseString;
-    private _shutingYard_addToken;
-    private genDisplay;
-    /**
-     * Main parse using a shutting yard class
-     * @param inputStr
-     */
-    private _shutingYardToReducedPolynom;
 }

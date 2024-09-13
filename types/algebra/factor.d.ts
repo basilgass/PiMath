@@ -8,8 +8,8 @@ export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor
     parse(): Factor;
     clone(): Factor;
     add(): Factor;
-    get asPower(): this;
-    get asRoot(): this;
+    get withPower(): this;
+    get withRoot(): this;
     get asSingle(): this;
     degree(letter?: string): Fraction;
     derivative(): Factor[];

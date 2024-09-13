@@ -9,7 +9,7 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
      * Parse a string to a monom. The string may include fraction.
      * @param inputStr
      */
-    parse: (inputStr: InputAlgebra<Monom>) => this;
+    parse(inputStr: InputAlgebra<Monom>): this;
     /**
      * Clone the current Monom.
      */
@@ -136,7 +136,6 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
     removeVariable(letter: string): void;
     /**
      * Get the nth-root of the monom
-     * @param p
      */
     root: () => this;
     /**
@@ -166,9 +165,5 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
      * Create a zero value monom
      */
     zero: () => this;
-    private _cloneLiteral;
-    private _evaluateAsNumeric;
     private _getLiteralDividers;
-    private _shutingYardToReducedMonom;
-    private _shutingYard_AddToken;
 }

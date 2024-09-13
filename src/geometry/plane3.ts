@@ -2,20 +2,21 @@ import { Equation } from "../algebra/equation"
 import { Polynom } from "../algebra/polynom"
 import { Fraction } from "../coefficients/fraction"
 import { Line3 } from "./line3"
+import { Point } from "./point"
 import { Vector } from "./vector"
 
 
 interface Plane3Config {
-    point?: Vector,
+    point?: Point,
     normal?: Vector,
     directions?: Vector[],
     equation?: Equation,
-    points?: Vector[],
+    points?: Point[],
     coefficients?: number[]
 }
 export class Plane3 {
     #normal: Vector = new Vector(0, 0, 1)
-    #point: Vector = new Vector(0, 0, 0).defineAsPoint()
+    #point: Point = new Point(0, 0, 0)
 
     constructor(config?: Plane3Config) {
         if (config) {
@@ -32,10 +33,10 @@ export class Plane3 {
         this.#normal = value
         this.#normal.asPoint = false
     }
-    get point(): Vector {
+    get point(): Point {
         return this.#point
     }
-    set point(value: Vector) {
+    set point(value: Point) {
         this.#point = value
         this.#point.asPoint = true
     }
@@ -65,12 +66,14 @@ export class Plane3 {
         if (config.point && config.normal) {
             this.point = config.point
             this.normal = config.normal
+            return
         }
 
         if (config.point && config.directions?.length === 2) {
             this.point = config.point
             const [v1, v2] = config.directions
             this.normal = v1.cross(v2)
+            return
         }
 
         if (config.equation) {
@@ -86,14 +89,14 @@ export class Plane3 {
 
             // Get a point on the plane
             if (a.isNotZero()) {
-                this.point = new Vector(-d.clone().divide(a), 0, 0)
+                this.point = new Point(d.clone().divide(a).opposite(), 0, 0)
             } else if (b.isNotZero()) {
-                this.point = new Vector(0, -d.clone().divide(b), 0)
+                this.point = new Point(0, d.clone().divide(b).opposite(), 0)
             } else {
-                this.point = new Vector(0, 0, -d.clone().divide(c))
+                this.point = new Point(0, 0, d.clone().divide(c).opposite())
             }
             // Make sure it's considered as point
-            this.point.asPoint = true
+            return
         }
 
         if (config.points?.length === 3 && config.points.every(p => p instanceof Vector)) {
@@ -105,12 +108,14 @@ export class Plane3 {
             const AC = new Vector(A, C)
             this.normal = AB.cross(AC)
             this.point = A
+            return
         }
 
         if (config.coefficients?.length === 4) {
             const [a, b, c, d] = config.coefficients
             this.normal = new Vector(a, b, c)
-            this.point = new Vector(0, 0, -d).defineAsPoint()
+            this.point = new Point(0, 0, -d)
+            return
         }
     }
 
@@ -141,10 +146,23 @@ export class Plane3 {
         return this.normal.dot(point).add(this.d).abs().value / this.normal.norm
     }
 
-    intersectWithLine(line: Line3): Vector {
+    intersectWithLine(line: Line3): Point {
         const { point, direction } = line
         const t = this.normal.dot(point).add(this.d).divide(this.normal.dot(direction).opposite())
         return point.clone().add(direction.clone().multiplyByScalar(t))
     }
 
+    intersectWithPlane(plane: Plane3): Line3 {
+        const direction = this.normal.cross(plane.normal)
+
+        // Solve the system:
+        // p1 // p2 // z=0
+        const pt = new Point(0, 0, 0)
+        throw new Error('Intersection with plane  not yet implemented !')
+        return new Line3(pt, direction)
+    }
+
+    isPointOnPlane(pt: Point): boolean {
+        return this.normal.dot(pt).add(this.d).isZero()
+    }
 }

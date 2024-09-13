@@ -69,6 +69,17 @@ describe('Fraction output', () => {
         expect(F.tex).toBe('\\frac{ 2 }{ 3 }')
     })
 
+    test('output as dfrac in LaTeX', () => {
+        const F = new Fraction(2, 3)
+
+        expect(F.dfrac.tex).toBe('\\dfrac{ 2 }{ 3 }')
+    })
+    test('output as tfrac in LaTeX', () => {
+        const F = new Fraction(2, 3)
+
+        expect(F.tfrac.tex).toBe('\\tfrac{ 2 }{ 3 }')
+    })
+
     test('output as ASCII', () => {
         const F = new Fraction(2, 3)
 
@@ -226,12 +237,10 @@ describe("Fraction evaluation", () => {
 describe('Fraction generators', () => {
     test('generate a non natural fraction', function () {
         let F: Fraction = Random.fraction()
-        let result = true
 
         for (let i = 0; i < 100; i++) {
             F = Random.fraction()
             if (!F.isRelative()) {
-                result = false
                 break
             }
         }
