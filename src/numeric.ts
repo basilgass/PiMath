@@ -174,5 +174,4 @@ export const Numeric = {
     primes,
     pythagoreanTripletsWithTarget,
     round
-
 }

@@ -104,7 +104,7 @@ console.log(P.tex);
 console.log(P.texString);
 
 let A = new Pi.Fraction().parse('2/5');
-console.log(A.frac);
+console.log(A.tex);
 
 let F = new Pi.Fraction().parse('18/5');
 let N = new Pi.Root().parse(F).reduce();

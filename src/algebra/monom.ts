@@ -797,6 +797,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      */
     public get tex(): string {
         // TODO: display with square root !
+        // TODO: Refactor to make it more readable
         let L = ''
         const letters = Object.keys(this.#literal).sort()
 
@@ -824,7 +825,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             } else if (this.#coefficient.value === 0) {
                 return '0'
             } else {
-                return `${this.#coefficient.frac}${L}`
+                return `${this.#coefficient.frac.tex}${L}`
             }
         }
     }

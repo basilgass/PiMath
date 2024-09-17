@@ -1156,7 +1156,6 @@ export class Polynom implements
             if (withAllMultiplicationSign) { m = k.plotFunction }
             else { m = (output === 'tex') ? k.tex : k.display }
 
-
             P += `${(k.coefficient.sign() === 1 && (P !== '' || forceSign === true)) ? '+' : ''}${m}`
         }
 

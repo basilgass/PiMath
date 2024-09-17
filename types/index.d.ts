@@ -1,15 +1,19 @@
-import { Equation } from './algebra/equation';
-import { Factor } from './algebra/factor';
-import { Monom } from './algebra/monom';
-import { PolyFactor } from './algebra/polyFactor';
-import { Polynom } from './algebra/polynom';
 import { Fraction } from './coefficients/fraction';
 import { NthRoot } from './coefficients/nthRoot';
+import { Monom } from './algebra/monom';
+import { Polynom } from './algebra/polynom';
+import { Factor } from './algebra/factor';
+import { PolyFactor } from './algebra/polyFactor';
+import { Equation } from './algebra/equation';
+import { LinearSystem } from './algebra/linearSystem';
 import { Circle } from './geometry/circle';
 import { Line } from './geometry/line';
 import { Point } from './geometry/point';
 import { Triangle } from './geometry/triangle';
 import { Vector } from './geometry/vector';
+import { Line3 } from './geometry/line3';
+import { Plane3 } from './geometry/plane3';
+import { Matrix } from './geometry/matrix';
 
 declare const PiMath: {
     Numeric: {
@@ -29,6 +33,8 @@ declare const PiMath: {
     Monom: typeof Monom;
     Polynom: typeof Polynom;
     Equation: typeof Equation;
+    Matrix: typeof Matrix;
+    LinearSystem: typeof LinearSystem;
     Factor: typeof Factor;
     PolyFactor: typeof PolyFactor;
     Random: {
@@ -44,7 +50,7 @@ declare const PiMath: {
         item: <T_1>(arr: T_1[]) => T_1;
         shuffle: <T_2>(arr: T_2[]) => T_2[];
         line: (config?: import('./randomization/rndTypes').randomGeometryLineConfig | undefined) => Line;
-        line3: (config?: import('./randomization/rndTypes').randomGeometryLine3Config | undefined) => import('./geometry/line3').Line3;
+        line3: (config?: import('./randomization/rndTypes').randomGeometryLine3Config | undefined) => Line3;
         point: (config?: import('./randomization/rndTypes').randomGeometryPointConfig | undefined) => Point;
         circle: (config?: import('./randomization/rndTypes').randomGeometryCircleConfig | undefined) => Circle;
     };
@@ -54,6 +60,9 @@ declare const PiMath: {
         Line: typeof Line;
         Triangle: typeof Triangle;
         Circle: typeof Circle;
+        Line3: typeof Line3;
+        Plane3: typeof Plane3;
     };
 };
 export default PiMath;
+export type { Fraction, NthRoot, Monom, Polynom, Factor, PolyFactor, Equation, LinearSystem, Circle, Line, Point, Triangle, Vector, Line3, Plane3, Matrix };

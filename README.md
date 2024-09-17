@@ -8,7 +8,7 @@ Fraction will create... fraction !
 
 ```
 let A = new Pi.Fraction('2/3');
-console.log(A.frac) // -> \frac{ 2 }{ 3 }
+console.log(A.tex) // -> \frac{ 2 }{ 3 }
 
 // Add another fraction
 let B = new Pi.Fraction('2/5');

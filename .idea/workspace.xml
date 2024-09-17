@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
+      <change afterPath="$PROJECT_DIR$/tests/temp.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo/playground.ts" beforeDir="false" afterPath="$PROJECT_DIR$/demo/playground.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/monom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/monom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;basilgass&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/basilgass/PI.git&quot;,
+    &quot;accountId&quot;: &quot;24e63fc7-cda0-42fa-9233-b30aa194e523&quot;
+  }
+}</component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2lv02LnbvB9DMnP4CMMjgXODMcH" />
+  <component name="ProjectViewState">
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Node.js.polynom.ts.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.laravel-idea.search-composer-json": "true",
+    "Vitest.Debug tests.polynom randomisation.executor": "Run",
+    "Vitest.Fraction creation.executor": "Run",
+    "Vitest.Fraction output.executor": "Run",
+    "Vitest.Fraction output.output as dfrac in LaTeX.executor": "Run",
+    "Vitest.Linear System algebra.degree of Linear System.executor": "Run",
+    "Vitest.Linear System algebra.has variable.executor": "Run",
+    "Vitest.Linear System algebra.matrix of Linear System.executor": "Run",
+    "Vitest.Linear System algebra.solve 2x2 Linear System.executor": "Run",
+    "Vitest.Linear System algebra.solve 3x3 Linear System.executor": "Run",
+    "Vitest.Linear System algebra.unsolvable 2x2 Linear System.executor": "Run",
+    "Vitest.Linear System creation.clone Linear System.executor": "Run",
+    "Vitest.Linear System creation.create Linear System.executor": "Run",
+    "Vitest.Linear System creation.executor": "Run",
+    "Vitest.Linear System operations.add two Linear Systems.executor": "Run",
+    "Vitest.Linear System operations.subtract two Linear Systems.executor": "Run",
+    "Vitest.Tests in tests\\.executor": "Run",
+    "Vitest.Vector 3D comparisons.colinear Vector 3D.executor": "Run",
+    "Vitest.Vector 3D comparisons.executor": "Run",
+    "Vitest.Vector 3D creation.create Vector 3D from 2 other vectors.executor": "Run",
+    "Vitest.Vector 3D creation.create Vector 3D.executor": "Run",
+    "Vitest.Vector 3D creation.executor": "Run",
+    "Vitest.Vector 3D creation.set to zero Vector 3D.executor": "Run",
+    "Vitest.Vector 3D operations.angle between two vectors.executor": "Run",
+    "Vitest.Vector 3D operations.executor": "Run",
+    "Vitest.Vector 3D operations.norm of a Vector 3D.executor": "Run",
+    "Vitest.Vector 3D output.executor": "Run",
+    "Vitest.Vector creation.clone Vector.executor": "Run",
+    "Vitest.Vector creation.create Vector.executor": "Run",
+    "Vitest.Vector creation.executor": "Run",
+    "Vitest.Vector creation.parse string.executor": "Run",
+    "Vitest.Vector creation.set to one Vector.executor": "Run",
+    "Vitest.Vector creation.set to zero Vector.executor": "Run",
+    "Vitest.Vector output.executor": "Run",
+    "Vitest.Vector output.output as LaTeX.executor": "Run",
+    "Vitest.linearSystem.test.ts.executor": "Run",
+    "Vitest.vector3d.test.ts.executor": "Run",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.build.executor": "Run",
+    "npm.dependency-cruise.executor": "Run",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "C:\\websites\\PiMath\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "ECMAScript 6"
+    ]
+  }
+}]]></component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="npm run dependency-cruise" />
+      <command value="npm run build" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Vitest.Debug tests.polynom randomisation">
+    <configuration name="Debug tests.polynom randomisation" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/temp.test.ts" />
+      <test-names>
+        <test-name value="Debug tests" />
+        <test-name value="polynom randomisation" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Linear System algebra.unsolvable 2x2 Linear System" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" />
+      <test-names>
+        <test-name value="Linear System algebra" />
+        <test-name value="unsolvable 2x2 Linear System" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="linearSystem.test.ts" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST_FILE" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" />
+      <method v="2" />
+    </configuration>
+    <configuration name="polynom.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/algebra/polynom.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/algebra">
+      <method v="2" />
+    </configuration>
+    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Vitest.Debug tests.polynom randomisation" />
+        <item itemvalue="Node.js.polynom.ts" />
+        <item itemvalue="npm.build" />
+        <item itemvalue="Vitest.linearSystem.test.ts" />
+        <item itemvalue="Vitest.Linear System algebra.unsolvable 2x2 Linear System" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-PS-242.21829.154" />
+        <option value="bundled-php-predefined-a98d8de5180a-4d9f4c849d09-com.jetbrains.php.sharedIndexes-PS-242.21829.154" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="" />
+      <created>1726045036952</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1726045036952</updated>
+      <workItem from="1726045038830" duration="4382000" />
+      <workItem from="1726050627362" duration="111000" />
+      <workItem from="1726050748113" duration="224000" />
+      <workItem from="1726064755998" duration="2000000" />
+      <workItem from="1726067143634" duration="2000" />
+      <workItem from="1726073725892" duration="1365000" />
+      <workItem from="1726216845594" duration="3083000" />
+      <workItem from="1726311160149" duration="834000" />
+      <workItem from="1726552320548" duration="866000" />
+    </task>
+    <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
+      <option name="closed" value="true" />
+      <created>1726231020240</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1726231020240</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning" />
+    <option name="LAST_COMMIT_MESSAGE" value="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/geometry/vector.ts</url>
+          <line>128</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
