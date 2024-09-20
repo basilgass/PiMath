@@ -7,7 +7,7 @@ import { Factor } from "./algebra/factor"
 import { PolyFactor } from "./algebra/polyFactor"
 import { Equation } from "./algebra/equation"
 import { LinearSystem } from "./algebra/linearSystem"
-// import { LogicalSet } from "./algebra/logicalset.bak"
+// import { LogicalSet } from "./algebra/logicalset.ts"
 import { Circle } from "./geometry/circle"
 import { Line } from "./geometry/line"
 import { Point } from "./geometry/point"
@@ -19,6 +19,9 @@ import { Matrix } from "./geometry/matrix"
 
 import { Numeric } from "./numeric"
 import { Random } from "./randomization/random"
+
+import { NumExp} from "piexpression"
+import { LogicalSet} from "./algebra/logicalset"
 
 const Geometry = {
     Vector: Vector,
@@ -42,15 +45,16 @@ const PiMath = {
     LinearSystem,
     Factor,
     PolyFactor,
-    // LogicalSet,
+    LogicalSet,
     Random,
-    Geometry
+    Geometry,
+    NumExp
 }
 
 // Export default value
 export default PiMath
 
-export type {
+export {
     Fraction,
     NthRoot,
     Monom,
@@ -66,5 +70,7 @@ export type {
     Vector,
     Line3,
     Plane3,
-    Matrix
+    Matrix,
+    NumExp,
+    LogicalSet
 }

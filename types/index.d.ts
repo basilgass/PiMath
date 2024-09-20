@@ -14,6 +14,8 @@ import { Vector } from './geometry/vector';
 import { Line3 } from './geometry/line3';
 import { Plane3 } from './geometry/plane3';
 import { Matrix } from './geometry/matrix';
+import { NumExp } from 'piexpression';
+import { LogicalSet } from './algebra/logicalset';
 
 declare const PiMath: {
     Numeric: {
@@ -37,6 +39,7 @@ declare const PiMath: {
     LinearSystem: typeof LinearSystem;
     Factor: typeof Factor;
     PolyFactor: typeof PolyFactor;
+    LogicalSet: typeof LogicalSet;
     Random: {
         equation: (config?: import('./randomization/rndTypes').randomEquationConfig | undefined) => Equation;
         polynom: (config?: import('./randomization/rndTypes').randomPolynomConfig | undefined) => Polynom;
@@ -63,6 +66,7 @@ declare const PiMath: {
         Line3: typeof Line3;
         Plane3: typeof Plane3;
     };
+    NumExp: typeof NumExp;
 };
 export default PiMath;
-export type { Fraction, NthRoot, Monom, Polynom, Factor, PolyFactor, Equation, LinearSystem, Circle, Line, Point, Triangle, Vector, Line3, Plane3, Matrix };
+export { Fraction, NthRoot, Monom, Polynom, Factor, PolyFactor, Equation, LinearSystem, Circle, Line, Point, Triangle, Vector, Line3, Plane3, Matrix, NumExp, LogicalSet };

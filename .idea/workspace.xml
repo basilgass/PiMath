@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="new Vector().fromString() = new Vector(string)&#10;Bug correction on point.ts">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Circle.tangents is now working for an external point">
+      <change afterPath="$PROJECT_DIR$/tests/algebra/logicalSet.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/circle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/circle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/logicalset.bak" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/logicalset.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/geometry/circle.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/circle.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -89,6 +91,8 @@
     "Vitest.Linear System creation.executor": "Run",
     "Vitest.Linear System operations.add two Linear Systems.executor": "Run",
     "Vitest.Linear System operations.subtract two Linear Systems.executor": "Run",
+    "Vitest.LogicalSet tests.Logical set.executor": "Run",
+    "Vitest.LogicalSet tests.executor": "Run",
     "Vitest.PolyFactor creation.create a PolyFactor from a Polynom.executor": "Run",
     "Vitest.Polynom comparisons.equal Polynom.executor": "Run",
     "Vitest.Polynom comparisons.executor": "Run",
@@ -147,6 +151,7 @@
     "Vitest.vector3d.test.ts.executor": "Run",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/websites/PiExpression",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.standard": "true",
     "node.js.detected.package.tslint": "true",
@@ -172,35 +177,7 @@
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.Circle operations.tangents through an external Point on a Circle">
-    <configuration name="Circle operations.tangents of a Circle from an external Point" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/geometry/circle.test.ts" />
-      <test-names>
-        <test-name value="Circle operations" />
-        <test-name value="tangents of a Circle from an external Point" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="Circle operations.tangents through a Point on a Circle" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/geometry/circle.test.ts" />
-      <test-names>
-        <test-name value="Circle operations" />
-        <test-name value="tangents through a Point on a Circle" />
-      </test-names>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Vitest.LogicalSet tests.Logical set">
     <configuration name="Circle operations.tangents through an external Point on a Circle" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -229,16 +206,50 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="circle.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/geometry/circle.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/geometry">
+    <configuration name="LogicalSet tests" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="SUITE" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/logicalSet.test.ts" />
+      <test-names>
+        <test-name value="LogicalSet tests" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="LogicalSet tests.Logical set" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/logicalSet.test.ts" />
+      <test-names>
+        <test-name value="LogicalSet tests" />
+        <test-name value="Logical set" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Vitest.LogicalSet tests.Logical set" />
+        <item itemvalue="Vitest.LogicalSet tests" />
         <item itemvalue="Vitest.Circle operations.tangents through an external Point on a Circle" />
+        <item itemvalue="npm.build" />
         <item itemvalue="Vitest.Circle operations.tangents with a slope on a Circle" />
-        <item itemvalue="Vitest.Circle operations.tangents through a Point on a Circle" />
-        <item itemvalue="Vitest.Circle operations.tangents of a Circle from an external Point" />
-        <item itemvalue="Node.js.circle.ts" />
       </list>
     </recent_temporary>
   </component>
@@ -277,7 +288,7 @@
       <workItem from="1726600577719" duration="104000" />
       <workItem from="1726724654619" duration="3918000" />
       <workItem from="1726743934387" duration="8881000" />
-      <workItem from="1726764390300" duration="8050000" />
+      <workItem from="1726764390300" duration="12566000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -311,7 +322,15 @@
       <option name="project" value="LOCAL" />
       <updated>1726825017427</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Circle.tangents is now working for an external point">
+      <option name="closed" value="true" />
+      <created>1726827745817</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1726827745817</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -322,7 +341,8 @@
     <MESSAGE value="Updating line.ts&#10;parseBy... becomes from...&#10;new Line().fromPoints(), ...." />
     <MESSAGE value="new PolyFactor().fromPolynom(&lt;polynom value&gt;)" />
     <MESSAGE value="new Vector().fromString() = new Vector(string)&#10;Bug correction on point.ts" />
-    <option name="LAST_COMMIT_MESSAGE" value="new Vector().fromString() = new Vector(string)&#10;Bug correction on point.ts" />
+    <MESSAGE value="Circle.tangents is now working for an external point" />
+    <option name="LAST_COMMIT_MESSAGE" value="Circle.tangents is now working for an external point" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

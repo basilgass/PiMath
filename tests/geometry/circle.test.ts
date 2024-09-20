@@ -148,12 +148,12 @@ describe.skip('Circle', function () {
         const D = new Circle('x^2+y^2+10x=2y-6'),
             slope = new Fraction(-2, 1)
 
-        expect(D.tangents(slope).map(x => x.tex.canonical)).to.have.all.members(['2x+y-1=0', '2x+y+19=0'])
+        expect(D.tangents(slope).map(x => x.tex)).to.have.all.members(['2x+y-1=0', '2x+y+19=0'])
 
         const E = new Circle('(x-2)^2+(y-1)^2=5'),
             P2 = new Point(6, -2)
 
-        expect(E.tangents(P2).map(x => x.tex.canonical)).to.have.all.members(['2x+y-10=0', '2x+11y+10=0'])
+        expect(E.tangents(P2).map(x => x.tex)).to.have.all.members(['2x+y-10=0', '2x+11y+10=0'])
 
         const P3 = new Point(2, 2)
         expect(E.tangents(P3)).to.be.empty
