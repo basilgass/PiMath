@@ -1,8 +1,8 @@
-import { describe, expect, test } from "vitest"
-import { Circle } from "../../src/geometry/circle"
-import { Line } from "../../src/geometry/line"
-import { Fraction } from "../../src/coefficients/fraction"
-import { Point } from "../../src/geometry/point"
+import {describe, expect, test} from "vitest"
+import {Circle} from "../../src/geometry/circle"
+import {Line} from "../../src/geometry/line"
+import {Fraction} from "../../src/coefficients/fraction"
+import {Point} from "../../src/geometry/point"
 
 describe('Circle creation', () => {
     test('create Circle', () => {
@@ -56,13 +56,47 @@ describe('Circle output', () => {
     })
 })
 
-describe.todo('Circle operations', () => {
+describe('Circle operations', () => {
     test.todo('reduce Circle')
     test.todo('add two Circles')
     test.todo('subtract two Circles')
     test.todo('multiply two Circles')
     test.todo('divide by Circle')
     test.todo('raise Circle by integer')
+
+    test('tangents through a Point on a Circle', () => {
+        // Through one point on the circle
+        const C = new Circle(
+            new Point(-2, 3),
+            25,
+            true
+        )
+        const P = new Point(-5, 7)
+
+        expect(C.tangents(P).map(x => x.display))
+            .to.have.all.members(['3x-4y+43=0'])
+    })
+    test('tangents with a slope on a Circle', () => {
+        // With a slope
+        const D = new Circle('x^2+y^2+10x=2y-6'),
+            slope = new Fraction(-2, 1)
+
+        expect(D.tangents(slope).map(x => x.display))
+            .to.have.all.members(['2x+y-1=0', '2x+y+19=0'])
+    })
+
+    test('tangents through an external Point on a Circle', () => {
+        const E = new Circle('(x-2)^2+(y-1)^2=5')
+
+        // Point is outside
+        const P2 = new Point(6, -2)
+        expect(E.tangents(P2).map(x => x.display))
+            .to.have.all.members(['2x+y-10=0', '2x+11y+10=0'])
+
+        // Point is inside
+        const P3 = new Point(2, 2)
+        expect(E.tangents(P3)).to.be.empty
+    })
 })
 describe.todo('Circle comparisons', () => {
     test.todo('same Circle')
@@ -79,10 +113,10 @@ describe.todo('Circle generators')
 describe.skip('Circle', function () {
     test('should calculate the intersection of a circle and a line', function () {
         const C = new Circle(
-            new Point(8, 6),
-            20,
-            true
-        ),
+                new Point(8, 6),
+                20,
+                true
+            ),
             LT = new Line('2x+y-32=0'),
             LS = new Line('3x-y-8=0'),
             IPT = C.lineIntersection(LT),
@@ -108,7 +142,7 @@ describe.skip('Circle', function () {
             true
         ), P = new Point(-5, 7)
 
-        expect(C.tangents(P).map(x => x.tex.canonical)).to.have.all.members(['3x-4y+43=0'])
+        expect(C.tangents(P).map(x => x.canonical.tex)).to.have.all.members(['3x-4y+43=0'])
 
         // With a slope
         const D = new Circle('x^2+y^2+10x=2y-6'),

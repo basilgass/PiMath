@@ -145,7 +145,7 @@ export class Circle
             return this.#tangentsThroughOnePointOnTheCircle(P)
         } else if (this.#center !== undefined && this.#center.distanceTo(P).value > this.radius.value) {
             //TODO:  Must check it's outside the circle
-            this.#tangentsThroughOnePointOutsideTheCircle(P); return []
+            return this.#tangentsThroughOnePointOutsideTheCircle(P)
         } else {
             console.log('No tangents as the point is inside !')
         }
@@ -212,11 +212,11 @@ export class Circle
     }
 
     #tangentsThroughOnePointOnTheCircle = (P: Point): Line[] => {
-        const CT = new Point(this.center, P)
+        const CT = new Vector(this.center, P)
         return [new Line(P, CT, LinePropriety.Perpendicular)]
     }
 
-    #tangentsThroughOnePointOutsideTheCircle = (P: Point) => {
+    #tangentsThroughOnePointOutsideTheCircle = (P: Point): Line[] => {
         // y = mx + h
         // px, py => h = -m px + py => mx - y -m.px + py = 0 =>
         // Centre: cx, cy, radius: r
@@ -230,23 +230,23 @@ export class Circle
         polyRight.multiply(this.squareRadius)
 
         const equ = new Equation(polyLeft, polyRight)
-        equ.moveLeft().simplify().solve()
+        const solutions = equ.solve()
 
-        // TODO: solutions for an equations
-        // return equ.solutions.map(sol => {
-        //     //  h = -m px + py
-        //     let h, equ = new Equation('y', 'x')
+        return solutions.map(sol => {
+            //  h = -m px + py
+            let h: Fraction
+            const equ = new Equation('y', 'x')
 
-        //     if (sol.exact instanceof Fraction) {
-        //         h = P.x.clone().opposite().multiply(sol.exact).add(P.y)
-        //         equ.right.multiply(sol.exact).add(h)
-        //     } else {
-        //         h = P.x.clone().opposite().multiply(sol.value).add(P.y)
-        //         equ.right.multiply(sol.value).add(h)
-        //     }
+            if (sol.exact instanceof Fraction) {
+                h = P.x.clone().opposite().multiply(sol.exact).add(P.y)
+                equ.right.multiply(sol.exact).add(h)
+            } else {
+                h = P.x.clone().opposite().multiply(sol.value).add(P.y)
+                equ.right.multiply(sol.value).add(h)
+            }
 
-        //     return new Line(equ)
-        // })
+            return new Line(equ)
+        })
 
     }
 

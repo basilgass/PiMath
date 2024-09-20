@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="new PolyFactor().fromPolynom(&lt;polynom value&gt;)">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="new Vector().fromString() = new Vector(string)&#10;Bug correction on point.ts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/point.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/point.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/vector.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/vector.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/vector.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/vector.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/circle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/circle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/geometry/circle.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/circle.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,11 +59,16 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Node.js.circle.ts.executor": "Run",
     "Node.js.line.ts.executor": "Run",
     "Node.js.point.ts.executor": "Run",
     "Node.js.polynom.ts.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.laravel-idea.search-composer-json": "true",
+    "Vitest.Circle operations.tangents of a Circle from an external Point.executor": "Run",
+    "Vitest.Circle operations.tangents through a Point on a Circle.executor": "Run",
+    "Vitest.Circle operations.tangents through an external Point on a Circle.executor": "Run",
+    "Vitest.Circle operations.tangents with a slope on a Circle.executor": "Run",
     "Vitest.Debug tests.4.executor": "Run",
     "Vitest.Debug tests.ba.executor": "Run",
     "Vitest.Debug tests.cross.executor": "Run",
@@ -168,69 +172,73 @@
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.Vector creation.parse string a,b">
-    <configuration name="Line creation.create Line through two points" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Vitest.Circle operations.tangents through an external Point on a Circle">
+    <configuration name="Circle operations.tangents of a Circle from an external Point" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/geometry/line.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/circle.test.ts" />
       <test-names>
-        <test-name value="Line creation" />
-        <test-name value="create Line through two points" />
+        <test-name value="Circle operations" />
+        <test-name value="tangents of a Circle from an external Point" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="PolyFactor creation.create a PolyFactor from a Polynom" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Circle operations.tangents through a Point on a Circle" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/circle.test.ts" />
       <test-names>
-        <test-name value="PolyFactor creation" />
-        <test-name value="create a PolyFactor from a Polynom" />
+        <test-name value="Circle operations" />
+        <test-name value="tangents through a Point on a Circle" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Vector creation.parse string a,b" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Circle operations.tangents through an external Point on a Circle" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/geometry/vector.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/circle.test.ts" />
       <test-names>
-        <test-name value="Vector creation" />
-        <test-name value="parse string a,b" />
+        <test-name value="Circle operations" />
+        <test-name value="tangents through an external Point on a Circle" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="point.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/geometry/point.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/geometry">
+    <configuration name="Circle operations.tangents with a slope on a Circle" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/circle.test.ts" />
+      <test-names>
+        <test-name value="Circle operations" />
+        <test-name value="tangents with a slope on a Circle" />
+      </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
+    <configuration name="circle.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/geometry/circle.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/geometry">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Vitest.Vector creation.parse string a,b" />
-        <item itemvalue="Node.js.point.ts" />
-        <item itemvalue="npm.build" />
-        <item itemvalue="Vitest.PolyFactor creation.create a PolyFactor from a Polynom" />
-        <item itemvalue="Vitest.Line creation.create Line through two points" />
+        <item itemvalue="Vitest.Circle operations.tangents through an external Point on a Circle" />
+        <item itemvalue="Vitest.Circle operations.tangents with a slope on a Circle" />
+        <item itemvalue="Vitest.Circle operations.tangents through a Point on a Circle" />
+        <item itemvalue="Vitest.Circle operations.tangents of a Circle from an external Point" />
+        <item itemvalue="Node.js.circle.ts" />
       </list>
     </recent_temporary>
   </component>
@@ -269,7 +277,7 @@
       <workItem from="1726600577719" duration="104000" />
       <workItem from="1726724654619" duration="3918000" />
       <workItem from="1726743934387" duration="8881000" />
-      <workItem from="1726764390300" duration="6576000" />
+      <workItem from="1726764390300" duration="8050000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -295,7 +303,15 @@
       <option name="project" value="LOCAL" />
       <updated>1726824257652</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="new Vector().fromString() = new Vector(string)&#10;Bug correction on point.ts">
+      <option name="closed" value="true" />
+      <created>1726825017427</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1726825017427</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -305,7 +321,8 @@
     <MESSAGE value="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning" />
     <MESSAGE value="Updating line.ts&#10;parseBy... becomes from...&#10;new Line().fromPoints(), ...." />
     <MESSAGE value="new PolyFactor().fromPolynom(&lt;polynom value&gt;)" />
-    <option name="LAST_COMMIT_MESSAGE" value="new PolyFactor().fromPolynom(&lt;polynom value&gt;)" />
+    <MESSAGE value="new Vector().fromString() = new Vector(string)&#10;Bug correction on point.ts" />
+    <option name="LAST_COMMIT_MESSAGE" value="new Vector().fromString() = new Vector(string)&#10;Bug correction on point.ts" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
