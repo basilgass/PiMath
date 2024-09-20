@@ -157,7 +157,11 @@ export class Triangle {
             // - Three lines as text.
             if (values.every((x: unknown) => typeof x === 'string')) {
                 // Three lines as text.
-                return this.parse(...values.map((x) => new Line(x as string)))
+                return this.parse(
+                    ...values.map((x) => {
+                        return new Line(x as string)
+                    })
+                )
             } else if (values.every((x: unknown) => x instanceof Line)) {
                 // We have three lines
                 const AB: Line = (values[0] as Line).clone()
@@ -172,18 +176,21 @@ export class Triangle {
                 } else {
                     throw new Error('Lines do not intersect !')
                 }
+
                 intersect = BC.intersection(AC)
                 if (intersect.hasIntersection) {
                     this.#C = intersect.point.clone()
                 } else {
                     throw new Error('Lines do not intersect !')
                 }
+
                 intersect = AC.intersection(AB)
                 if (intersect.hasIntersection) {
                     this.#A = intersect.point.clone()
                 } else {
                     throw new Error('Lines do not intersect !')
                 }
+
             } else if (values.every((x: unknown) => (x instanceof Point))) {
                 // We have three points.
                 this.#A = (values[0] as Point).clone()
@@ -267,23 +274,23 @@ export class Triangle {
     #calculateRemarquableLines = (): remarquableLines => {
 
         const medians = {
-            'A': new Line(this.#A, this.#middles.BC),
-            'B': new Line(this.#B, this.#middles.AC),
-            'C': new Line(this.#C, this.#middles.AB),
+            'A': new Line().fromPoints(this.#A, this.#middles.BC),
+            'B': new Line().fromPoints(this.#B, this.#middles.AC),
+            'C': new Line().fromPoints(this.#C, this.#middles.AB),
             'intersection': null
         }
 
         const mediators = {
-            'AB': new Line(this.#middles.AB, new Vector(this.#A, this.#B).normal()),
-            'AC': new Line(this.#middles.AC, new Vector(this.#A, this.#C).normal()),
-            'BC': new Line(this.#middles.BC, new Vector(this.#B, this.#C).normal()),
+            'AB': new Line().fromPointAndNormal(this.#middles.AB, new Vector(this.#A, this.#B).normal()),
+            'AC': new Line().fromPointAndNormal(this.#middles.AC, new Vector(this.#A, this.#C).normal()),
+            'BC': new Line().fromPointAndNormal(this.#middles.BC, new Vector(this.#B, this.#C).normal()),
             'intersection': null
         }
 
         const heights = {
-            'A': new Line(this.#A, new Vector(this.#B, this.#C).normal()),
-            'B': new Line(this.#B, new Vector(this.#A, this.#C).normal()),
-            'C': new Line(this.#C, new Vector(this.#A, this.#B).normal()),
+            'A': new Line().fromPointAndNormal(this.#A, new Vector(this.#B, this.#C).normal()),
+            'B': new Line().fromPointAndNormal(this.#B, new Vector(this.#A, this.#C).normal()),
+            'C': new Line().fromPointAndNormal(this.#C, new Vector(this.#A, this.#B).normal()),
             'intersection': null
         }
 
@@ -346,8 +353,7 @@ export class Triangle {
         const d2n = d2.n.simplify().norm
         const d1Equ = d1.getEquation().multiply(d2n)
         const d2Equ = d2.getEquation().multiply(d1n)
-        // const b1 = new Line(new Equation(d1.getEquation().left.clone().multiply(d2.n.simplify().norm), d2.getEquation().left.clone().multiply(d1.n.simplify().norm)).reorder(true).simplify()),
-        //     b2 = new Line(new Equation(d1.getEquation().left.clone().multiply(d2.n.simplify().norm), d2.getEquation().left.clone().multiply(d1.n.simplify().norm).opposite()).reorder(true).simplify())
+
         const b1: Line = new Line(d1Equ.clone().subtract(d2Equ).simplify())
         const b2: Line = new Line(d2Equ.clone().subtract(d1Equ).simplify())
 

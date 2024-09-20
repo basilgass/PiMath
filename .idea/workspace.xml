@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Circle.tangents is now working for an external point">
-      <change afterPath="$PROJECT_DIR$/tests/algebra/logicalSet.test.ts" afterDir="false" />
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Enable again logicalSet.ts&#10;Modify index.ts to export the complete class (WIP)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/logicalset.bak" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/logicalset.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/circle.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/circle.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/triangle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/geometry/triangle.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/triangle.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,6 +65,7 @@
     "Node.js.line.ts.executor": "Run",
     "Node.js.point.ts.executor": "Run",
     "Node.js.polynom.ts.executor": "Run",
+    "Node.js.triangle.ts.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.laravel-idea.search-composer-json": "true",
     "Vitest.Circle operations.tangents of a Circle from an external Point.executor": "Run",
@@ -148,6 +149,7 @@
     "Vitest.Vector output.output as LaTeX.executor": "Run",
     "Vitest.linearSystem.test.ts.executor": "Run",
     "Vitest.polynom.test.ts.executor": "Run",
+    "Vitest.triangle creation.create triangle from equations.executor": "Run",
     "Vitest.vector3d.test.ts.executor": "Run",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
@@ -177,35 +179,7 @@
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.LogicalSet tests.Logical set">
-    <configuration name="Circle operations.tangents through an external Point on a Circle" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/geometry/circle.test.ts" />
-      <test-names>
-        <test-name value="Circle operations" />
-        <test-name value="tangents through an external Point on a Circle" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="Circle operations.tangents with a slope on a Circle" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/geometry/circle.test.ts" />
-      <test-names>
-        <test-name value="Circle operations" />
-        <test-name value="tangents with a slope on a Circle" />
-      </test-names>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Vitest.triangle creation.create triangle from equations">
     <configuration name="LogicalSet tests" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -233,6 +207,23 @@
       </test-names>
       <method v="2" />
     </configuration>
+    <configuration name="triangle creation.create triangle from equations" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/triangle.test.ts" />
+      <test-names>
+        <test-name value="triangle creation" />
+        <test-name value="create triangle from equations" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="triangle.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/geometry/triangle.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/geometry">
+      <method v="2" />
+    </configuration>
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -245,11 +236,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Vitest.triangle creation.create triangle from equations" />
+        <item itemvalue="Node.js.triangle.ts" />
+        <item itemvalue="npm.build" />
         <item itemvalue="Vitest.LogicalSet tests.Logical set" />
         <item itemvalue="Vitest.LogicalSet tests" />
-        <item itemvalue="Vitest.Circle operations.tangents through an external Point on a Circle" />
-        <item itemvalue="npm.build" />
-        <item itemvalue="Vitest.Circle operations.tangents with a slope on a Circle" />
       </list>
     </recent_temporary>
   </component>
@@ -288,7 +279,8 @@
       <workItem from="1726600577719" duration="104000" />
       <workItem from="1726724654619" duration="3918000" />
       <workItem from="1726743934387" duration="8881000" />
-      <workItem from="1726764390300" duration="12566000" />
+      <workItem from="1726764390300" duration="13949000" />
+      <workItem from="1726834350685" duration="1514000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -330,7 +322,15 @@
       <option name="project" value="LOCAL" />
       <updated>1726827745817</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Enable again logicalSet.ts&#10;Modify index.ts to export the complete class (WIP)">
+      <option name="closed" value="true" />
+      <created>1726832385914</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1726832385914</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -342,7 +342,8 @@
     <MESSAGE value="new PolyFactor().fromPolynom(&lt;polynom value&gt;)" />
     <MESSAGE value="new Vector().fromString() = new Vector(string)&#10;Bug correction on point.ts" />
     <MESSAGE value="Circle.tangents is now working for an external point" />
-    <option name="LAST_COMMIT_MESSAGE" value="Circle.tangents is now working for an external point" />
+    <MESSAGE value="Enable again logicalSet.ts&#10;Modify index.ts to export the complete class (WIP)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enable again logicalSet.ts&#10;Modify index.ts to export the complete class (WIP)" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

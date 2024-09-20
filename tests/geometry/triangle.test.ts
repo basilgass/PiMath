@@ -1,6 +1,6 @@
-import { describe, test, expect } from "vitest"
-import { Triangle } from "../../src/geometry/triangle"
-import { Point } from "../../src/geometry/point"
+import {describe, expect, test} from "vitest"
+import {Triangle} from "../../src/geometry/triangle"
+import {Point} from "../../src/geometry/point"
 
 describe('triangle creation', () => {
     test('create triangle', () => {
@@ -13,7 +13,16 @@ describe('triangle creation', () => {
         expect(T).toBeDefined()
         expect(T.A).toBeDefined()
         expect(T.A.x.value).toBe(1)
+    })
 
+    test('create triangle from equations', () => {
+        const T = new Triangle("15x-8y+16=0",
+            "3x-4y-6=0",
+            "5x+12y-24=0"
+        )
+
+        expect(T).toBeDefined()
+        expect(T).toBeInstanceOf(Triangle)
     })
     test.todo('parse string')
     test.todo('clone triangle')

@@ -58,7 +58,7 @@ export declare class Line implements IPiMathObject<Line> {
      * @param {any} values
      * @returns {Line}
      */
-    parse: (...values: unknown[]) => Line;
+    parse: (...values: unknown[]) => this;
     fromPoints(pt1: Point, pt2: Point): this;
     fromEquation: (equ: Equation) => this;
     fromCoefficient: (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>) => this;
@@ -84,7 +84,7 @@ export declare class Line implements IPiMathObject<Line> {
         fraction: Fraction;
         tex: string;
     };
-    hitSegment(A: Vector, B: Vector): boolean;
+    hitSegment(A: Point, B: Point): boolean;
     getValueAtX: (value: Fraction | number) => Fraction;
     getValueAtY: (value: Fraction | number) => Fraction;
     canonicalAsFloatCoefficient(decimals?: number): string;

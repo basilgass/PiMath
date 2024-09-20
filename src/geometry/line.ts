@@ -292,7 +292,7 @@ export class Line implements IPiMathObject<Line> {
      * @param {any} values
      * @returns {Line}
      */
-    parse = (...values: unknown[]): Line => {
+    parse = (...values: unknown[]): this => {
         // Nothing is given...
         if (values.length === 0) {
             return this
@@ -302,7 +302,7 @@ export class Line implements IPiMathObject<Line> {
         if (values.length === 1) {
             if (values[0] instanceof Line) {
                 // Already a Line
-                return values[0].clone()
+                return this.fromCoefficient(values[0].a, values[0].b, values[0].c)
             } else if (values[0] instanceof Equation) {
                 // It's an Equation
                 return this.fromEquation(values[0])
@@ -318,7 +318,6 @@ export class Line implements IPiMathObject<Line> {
         }
 
         // Two values are given: two vectors
-        // TODO: it's not intuitive: vector + point or point + vector -> add a property !
         if (values.length === 2 && values.every(x=>x instanceof Vector)) {
             const formattedValues: Vector[] = values as Vector[]
 
@@ -332,15 +331,6 @@ export class Line implements IPiMathObject<Line> {
                 return this.fromPointAndDirection(formattedValues[0], formattedValues[1])
             }
 
-            // if (values[0].asPoint && !values[1].asPoint) {
-            //     // One point and one vector
-            // } else if (values[0].asPoint && values[1].asPoint) {
-            //     // Two points
-            //     return this.fromPointAndDirection(values[0], new Vector(values[0], values[1]))
-            // } else if (!values[0].asPoint && values[1].asPoint) {
-            //     // One vector and one point
-            //     return this.fromPointAndNormal(values[1], values[0])
-            // }
         }
 
         if (values.length === 3) {
@@ -367,9 +357,8 @@ export class Line implements IPiMathObject<Line> {
             )
         }
 
-        // TODO: Add the ability to create line from a normal vector
-
         console.log('Something wrong happened while creating the line')
+        console.log(values)
         return this
     }
 
@@ -400,7 +389,11 @@ export class Line implements IPiMathObject<Line> {
         }
 
         // Everything should be ok now...
-        return this.fromCoefficient(equ.left.monomByLetter('x').coefficient, equ.left.monomByLetter('y').coefficient, equ.left.monomByDegree(0).coefficient)
+        return this.fromCoefficient(
+            equ.left.monomByLetter('x').coefficient,
+            equ.left.monomByLetter('y').coefficient,
+            equ.left.monomByDegree(0).coefficient
+        )
     }
     fromCoefficient = (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>): this => {
         this.#a = new Fraction(a)
@@ -598,9 +591,9 @@ export class Line implements IPiMathObject<Line> {
         }
     }
 
-    hitSegment(A: Vector, B: Vector): boolean {
+    hitSegment(A: Point, B: Point): boolean {
         const iPt = this.intersection(
-            new Line(A, B)
+            new Line().fromPoints(A, B)
         )
 
         // There is an intersection point
