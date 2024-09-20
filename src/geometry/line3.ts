@@ -128,7 +128,7 @@ export class Line3 {
         // const lcm = Numeric.lcm(this.#a.denominator, this.#b.denominator, this.#c.denominator),
         //     gcd = Numeric.gcd(this.#a.numerator, this.#b.numerator, this.#c.numerator)
 
-        // this.parseByCoefficient(
+        // this.fromCoefficient(
         //     this.#a.clone().multiply(lcm).divide(gcd),
         //     this.#b.clone().multiply(lcm).divide(gcd),
         //     this.#c.clone().multiply(lcm).divide(gcd),

@@ -2,12 +2,19 @@ import { Fraction } from '../coefficients/fraction';
 import { Equation } from '../algebra/equation';
 import { Vector } from './vector';
 import { InputValue, IPiMathObject } from '../pimath.interface';
+import { Point } from './point';
 
 export declare enum LinePropriety {
     None = "none",
     Parallel = "parallel",
     Perpendicular = "perpendicular",
     Tangent = "tangent"
+}
+export interface LineConfig {
+    points?: Point[];
+    point?: Point;
+    direction?: Vector;
+    normal?: Vector;
 }
 export declare class Line implements IPiMathObject<Line> {
     #private;
@@ -52,11 +59,12 @@ export declare class Line implements IPiMathObject<Line> {
      * @returns {Line}
      */
     parse: (...values: unknown[]) => Line;
-    parseEquation: (equ: Equation) => this;
-    parseByCoefficient: (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>) => this;
-    parseByPointAndVector: (P: Vector, d: Vector) => this;
-    parseByPointAndNormal: (P: Vector, n: Vector) => this;
-    parseByPointAndLine: (P: Vector, L: Line, orientation?: LinePropriety) => this;
+    fromPoints(pt1: Point, pt2: Point): this;
+    fromEquation: (equ: Equation) => this;
+    fromCoefficient: (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>) => this;
+    fromPointAndDirection: (P: Point, d: Vector) => this;
+    fromPointAndNormal: (P: Point, n: Vector) => this;
+    fromPointAndLine: (P: Vector, L: Line, orientation?: LinePropriety) => this;
     clone: () => this;
     isOnLine: (pt: Vector) => boolean;
     isParallelTo: (line: Line) => boolean;

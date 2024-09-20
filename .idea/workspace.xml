@@ -5,11 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
-      <change afterPath="$PROJECT_DIR$/tests/temp.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/playground.ts" beforeDir="false" afterPath="$PROJECT_DIR$/demo/playground.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/monom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/monom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/line3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line3.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/geometry/line.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/line.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/temp.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/temp.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +43,9 @@
     &quot;accountId&quot;: &quot;24e63fc7-cda0-42fa-9233-b30aa194e523&quot;
   }
 }</component>
+  <component name="HierarchyBrowserManager">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="true" />
+  </component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP" />
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -58,13 +63,19 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Node.js.line.ts.executor": "Run",
     "Node.js.polynom.ts.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.laravel-idea.search-composer-json": "true",
+    "Vitest.Debug tests.4.executor": "Run",
+    "Vitest.Debug tests.ba.executor": "Run",
+    "Vitest.Debug tests.cross.executor": "Run",
     "Vitest.Debug tests.polynom randomisation.executor": "Run",
     "Vitest.Fraction creation.executor": "Run",
     "Vitest.Fraction output.executor": "Run",
     "Vitest.Fraction output.output as dfrac in LaTeX.executor": "Run",
+    "Vitest.Line creation.create Line through two points.executor": "Run",
+    "Vitest.Line creation.create Line.executor": "Run",
     "Vitest.Linear System algebra.degree of Linear System.executor": "Run",
     "Vitest.Linear System algebra.has variable.executor": "Run",
     "Vitest.Linear System algebra.matrix of Linear System.executor": "Run",
@@ -76,6 +87,38 @@
     "Vitest.Linear System creation.executor": "Run",
     "Vitest.Linear System operations.add two Linear Systems.executor": "Run",
     "Vitest.Linear System operations.subtract two Linear Systems.executor": "Run",
+    "Vitest.Polynom comparisons.equal Polynom.executor": "Run",
+    "Vitest.Polynom comparisons.executor": "Run",
+    "Vitest.Polynom comparisons.is Polynom developed.executor": "Run",
+    "Vitest.Polynom comparisons.is one Polynom.executor": "Run",
+    "Vitest.Polynom comparisons.is zero Polynom.executor": "Run",
+    "Vitest.Polynom comparisons.same Polynom.executor": "Run",
+    "Vitest.Polynom creation.clone Polynom.executor": "Run",
+    "Vitest.Polynom creation.create Polynom from [x] and numbers.executor": "Run",
+    "Vitest.Polynom creation.create Polynom from [xyz] and numbers.executor": "Run",
+    "Vitest.Polynom creation.create trivial Polynom.executor": "Run",
+    "Vitest.Polynom creation.executor": "Run",
+    "Vitest.Polynom creation.parse string with parenthesis and power.executor": "Run",
+    "Vitest.Polynom creation.parse string with parenthesis.executor": "Run",
+    "Vitest.Polynom creation.parse with multiple variables.executor": "Run",
+    "Vitest.Polynom creation.set to one Polynom.executor": "Run",
+    "Vitest.Polynom creation.set to zero Polynom.executor": "Run",
+    "Vitest.Polynom creation.should parse with rational powers.executor": "Run",
+    "Vitest.Polynom evaluation.evaluate Polynom.executor": "Run",
+    "Vitest.Polynom operations.add two Polynoms.executor": "Run",
+    "Vitest.Polynom operations.derivative of a Polynom.executor": "Run",
+    "Vitest.Polynom operations.divide by Fraction.executor": "Run",
+    "Vitest.Polynom operations.divide by Monom.executor": "Run",
+    "Vitest.Polynom operations.divide by Polynom (not dividable).executor": "Run",
+    "Vitest.Polynom operations.divide by Polynom.executor": "Run",
+    "Vitest.Polynom operations.euclidian division of two Polynoms.executor": "Run",
+    "Vitest.Polynom operations.executor": "Run",
+    "Vitest.Polynom operations.integrate Polynom.executor": "Run",
+    "Vitest.Polynom operations.multiply two Polynoms.executor": "Run",
+    "Vitest.Polynom operations.raise Polynom by integer.executor": "Run",
+    "Vitest.Polynom operations.reduce Polynom.executor": "Run",
+    "Vitest.Polynom operations.reorder Polynom.executor": "Run",
+    "Vitest.Polynom operations.subtract two Polynoms.executor": "Run",
     "Vitest.Tests in tests\\.executor": "Run",
     "Vitest.Vector 3D comparisons.colinear Vector 3D.executor": "Run",
     "Vitest.Vector 3D comparisons.executor": "Run",
@@ -96,7 +139,9 @@
     "Vitest.Vector output.executor": "Run",
     "Vitest.Vector output.output as LaTeX.executor": "Run",
     "Vitest.linearSystem.test.ts.executor": "Run",
+    "Vitest.polynom.test.ts.executor": "Run",
     "Vitest.vector3d.test.ts.executor": "Run",
+    "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.standard": "true",
@@ -107,7 +152,7 @@
     "nodejs_package_manager_path": "npm",
     "npm.build.executor": "Run",
     "npm.dependency-cruise.executor": "Run",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "preferences.keymap",
     "ts.external.directory.path": "C:\\websites\\PiMath\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   },
@@ -123,8 +168,8 @@
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.Debug tests.polynom randomisation">
-    <configuration name="Debug tests.polynom randomisation" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Vitest.Line creation.create Line through two points">
+    <configuration name="Debug tests.4" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
@@ -134,62 +179,70 @@
       <test-file value="$PROJECT_DIR$/tests/temp.test.ts" />
       <test-names>
         <test-name value="Debug tests" />
-        <test-name value="polynom randomisation" />
+        <test-name value="4" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Linear System algebra.unsolvable 2x2 Linear System" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Debug tests.ba" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/temp.test.ts" />
       <test-names>
-        <test-name value="Linear System algebra" />
-        <test-name value="unsolvable 2x2 Linear System" />
+        <test-name value="Debug tests" />
+        <test-name value="ba" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="linearSystem.test.ts" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Line creation.create Line through two points" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
-      <scope-kind value="TEST_FILE" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/line.test.ts" />
+      <test-names>
+        <test-name value="Line creation" />
+        <test-name value="create Line through two points" />
+      </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="polynom.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/algebra/polynom.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/algebra">
-      <method v="2" />
-    </configuration>
-    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build" />
-      </scripts>
+    <configuration name="Line creation.create Line" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
       <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/line.test.ts" />
+      <test-names>
+        <test-name value="Line creation" />
+        <test-name value="create Line" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="line.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/geometry/line.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/geometry">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Vitest.Debug tests.polynom randomisation" />
-        <item itemvalue="Node.js.polynom.ts" />
-        <item itemvalue="npm.build" />
-        <item itemvalue="Vitest.linearSystem.test.ts" />
-        <item itemvalue="Vitest.Linear System algebra.unsolvable 2x2 Linear System" />
+        <item itemvalue="Vitest.Line creation.create Line through two points" />
+        <item itemvalue="Node.js.line.ts" />
+        <item itemvalue="Vitest.Line creation.create Line" />
+        <item itemvalue="Vitest.Debug tests.4" />
+        <item itemvalue="Vitest.Debug tests.ba" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-PS-242.21829.154" />
-        <option value="bundled-php-predefined-a98d8de5180a-4d9f4c849d09-com.jetbrains.php.sharedIndexes-PS-242.21829.154" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PS-242.22855.33" />
+        <option value="bundled-php-predefined-a98d8de5180a-90914f2295cb-com.jetbrains.php.sharedIndexes-PS-242.22855.33" />
       </set>
     </attachedChunks>
   </component>
@@ -210,6 +263,17 @@
       <workItem from="1726216845594" duration="3083000" />
       <workItem from="1726311160149" duration="834000" />
       <workItem from="1726552320548" duration="866000" />
+      <workItem from="1726556483939" duration="910000" />
+      <workItem from="1726583086477" duration="157000" />
+      <workItem from="1726583261671" duration="126000" />
+      <workItem from="1726583593318" duration="824000" />
+      <workItem from="1726598887793" duration="179000" />
+      <workItem from="1726599081545" duration="79000" />
+      <workItem from="1726599368880" duration="141000" />
+      <workItem from="1726600577719" duration="104000" />
+      <workItem from="1726724654619" duration="3918000" />
+      <workItem from="1726743934387" duration="8881000" />
+      <workItem from="1726764390300" duration="4566000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -228,17 +292,6 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning" />
     <option name="LAST_COMMIT_MESSAGE" value="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/geometry/vector.ts</url>
-          <line>128</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

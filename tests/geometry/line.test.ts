@@ -1,11 +1,24 @@
 import { describe, expect, it, test } from "vitest"
 import { Line } from "../../src/geometry/line"
 import { Point } from "../../src/geometry/point"
+import {Vector} from "../../src/geometry/vector"
 
 
-describe.todo('Line creation', () => {
-    test.todo('create Line')
-    test.todo('parse string')
+describe('Line creation', () => {
+    test('create Line', ()=>{
+        const line = new Line()
+
+        expect(line).toBeDefined()
+    })
+    test('create Line through two points', ()=>{
+        const line = new Line().fromPoints(
+            new Point(3,4),
+            new Point(1,2)
+        )
+
+        expect(line).toBeDefined()
+        expect(line.director.isColinearTo(new Vector(1,1))).toBeTruthy()
+    })
     test.todo('clone Line')
     test.todo('set to zero Line')
     test.todo('set to one Line')

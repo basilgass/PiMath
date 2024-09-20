@@ -62,8 +62,6 @@ export class Polynom implements
         if (polynomString !== undefined) {
             this.parse(polynomString, ...values)
         }
-
-
         return this
     }
 
@@ -87,13 +85,18 @@ export class Polynom implements
         } else if (
             (typeof inputStr === 'number' || inputStr instanceof Fraction || inputStr instanceof Monom)
             && (values.length === 0)
-        ) { this.#monoms.push(new Monom(inputStr as Monom)) }
-        else if (inputStr instanceof Monom && values.length > 0) {
+        ) {
+            this.#monoms.push(new Monom(inputStr as Monom))
+        } else if (inputStr instanceof Monom && values.length > 0) {
             this.#monoms.push(new Monom(inputStr))
             values.forEach(m => {
                 this.#monoms.push(new Monom(m as Monom))
             })
-        } else if (inputStr instanceof Polynom) { for (const m of inputStr.monoms) { this.#monoms.push(m.clone()) } }
+        } else if (inputStr instanceof Polynom) {
+            for (const m of inputStr.monoms) {
+                this.#monoms.push(m.clone())
+            }
+        }
 
 
 
@@ -182,7 +185,10 @@ export class Polynom implements
             }
             else {
                 const { quotient, reminder } = this.euclidean(value)
-                if (reminder.isZero()) { return quotient }
+                if (reminder.isZero()) {
+                    this.#monoms = quotient.monoms
+                    return this
+                }
             }
         } else if (typeof value === 'string') {
             return this.divide(new Polynom(value))
@@ -442,7 +448,7 @@ export class Polynom implements
     }
 
     public isOne(): boolean {
-        return this.#monoms.length === 1 && this.#monoms[0].coefficient.isOne()
+        return this.#monoms.length === 1 && this.#monoms[0].coefficient.isOne() && this.degree().isZero()
     }
 
     public isOppositeAt = (P: Polynom): boolean => {
@@ -805,15 +811,16 @@ export class Polynom implements
     #compare = (P: Polynom, sign?: string): boolean => {
         if (sign === undefined) { sign = '=' }
 
+        // TODO: compare must also check the variables.
+
         // Create clone version to reduce them without altering the original polynoms.
-        const cP1 = this.clone().reduce()
-        const cP2 = P.clone().reduce()
+        const cP1 = this.clone().reduce().reorder()
+        const cP2 = P.clone().reduce().reorder()
 
         switch (sign) {
             case '=':
                 // They must have the isSame length and the isSame degree
-                if (cP1.length !== cP2.length || cP1.degree().isNotEqual(cP2.degree())) { return false }
-
+                if (cP1.length !== cP2.length || !cP1.degree().isEqual(cP2.degree())) { return false }
 
                 // Check if the coefficients are the isSame.
                 return cP1.monoms
@@ -825,7 +832,6 @@ export class Polynom implements
 
                 return cP1.monoms
                     .every((m1, index) => m1.isSameAs(cP2.monoms[index]))
-
 
             default:
                 return false

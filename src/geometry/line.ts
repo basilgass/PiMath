@@ -19,6 +19,13 @@ export enum LinePropriety {
     Tangent = 'tangent'
 }
 
+export interface LineConfig {
+    points?: Point[],
+    point?: Point,
+    direction?: Vector,
+    normal?: Vector
+}
+
 export class Line implements IPiMathObject<Line> {
     // A line is defined as the canonical form
     static PERPENDICULAR = LinePropriety.Perpendicular
@@ -48,7 +55,6 @@ export class Line implements IPiMathObject<Line> {
         this.#n = new Vector()
 
         this.#reduceBeforeDisplay = true
-
 
         if (values.length > 0) {
             this.parse(...values)
@@ -299,7 +305,7 @@ export class Line implements IPiMathObject<Line> {
                 return values[0].clone()
             } else if (values[0] instanceof Equation) {
                 // It's an Equation
-                return this.parseEquation(values[0])
+                return this.fromEquation(values[0])
             } else if (typeof values[0] === "string") {
                 // It's a string - create an Equation from it.
                 try {
@@ -313,46 +319,48 @@ export class Line implements IPiMathObject<Line> {
 
         // Two values are given: two vectors
         // TODO: it's not intuitive: vector + point or point + vector -> add a property !
-        if (values.length === 2) {
-            if (values[0] instanceof Point && values[1] instanceof Vector) {
-                // One point and one vector director
-                return this.parseByPointAndVector(values[0], values[1])
+        if (values.length === 2 && values.every(x=>x instanceof Vector)) {
+            const formattedValues: Vector[] = values as Vector[]
+
+            if (formattedValues[0].asPoint && formattedValues[1].asPoint) {
+                // Two points
+                return this.fromPointAndDirection(formattedValues[0], new Vector(formattedValues[0], formattedValues[1]))
             }
 
-            if (values[0] instanceof Point && values[1] instanceof Point) {
-                // Two points
-                return this.parseByPointAndVector(values[0], new Vector(values[0], values[1]))
+            if (formattedValues[0].asPoint && !formattedValues[1].asPoint) {
+                // One point and one vector director
+                return this.fromPointAndDirection(formattedValues[0], formattedValues[1])
             }
+
             // if (values[0].asPoint && !values[1].asPoint) {
             //     // One point and one vector
-
             // } else if (values[0].asPoint && values[1].asPoint) {
             //     // Two points
-            //     return this.parseByPointAndVector(values[0], new Vector(values[0], values[1]))
+            //     return this.fromPointAndDirection(values[0], new Vector(values[0], values[1]))
             // } else if (!values[0].asPoint && values[1].asPoint) {
             //     // One vector and one point
-            //     return this.parseByPointAndNormal(values[1], values[0])
+            //     return this.fromPointAndNormal(values[1], values[0])
             // }
         }
 
         if (values.length === 3) {
             if (values[0] instanceof Vector && values[1] instanceof Vector) {
                 if (values[2] === LinePropriety.Perpendicular) {
-                    return this.parseByPointAndNormal(values[0], values[1])
+                    return this.fromPointAndNormal(values[0], values[1])
                 } else if (values[2] === LinePropriety.Parallel) {
-                    return this.parseByPointAndVector(values[0], values[1])
+                    return this.fromPointAndDirection(values[0], values[1])
                 }
             }
 
             if (values[0] instanceof Vector && values[1] instanceof Line) {
                 if (values[2] === LinePropriety.Parallel || values[2] === null) {
-                    return this.parseByPointAndLine(values[0], values[1], LinePropriety.Parallel)
+                    return this.fromPointAndLine(values[0], values[1], LinePropriety.Parallel)
                 } else {
-                    return this.parseByPointAndLine(values[0], values[1], LinePropriety.Perpendicular)
+                    return this.fromPointAndLine(values[0], values[1], LinePropriety.Perpendicular)
                 }
             }
 
-            return this.parseByCoefficient(
+            return this.fromCoefficient(
                 values[0] as InputValue<Fraction>,
                 values[1] as InputValue<Fraction>,
                 values[2] as InputValue<Fraction>
@@ -365,7 +373,10 @@ export class Line implements IPiMathObject<Line> {
         return this
     }
 
-    parseEquation = (equ: Equation): this => {
+    fromPoints(pt1: Point, pt2: Point){
+        return this.fromPointAndDirection(pt1, new Vector(pt1, pt2))
+    }
+    fromEquation = (equ: Equation): this => {
         // Reorder the eequation
         equ.reorder(true)
 
@@ -389,9 +400,9 @@ export class Line implements IPiMathObject<Line> {
         }
 
         // Everything should be ok now...
-        return this.parseByCoefficient(equ.left.monomByLetter('x').coefficient, equ.left.monomByLetter('y').coefficient, equ.left.monomByDegree(0).coefficient)
+        return this.fromCoefficient(equ.left.monomByLetter('x').coefficient, equ.left.monomByLetter('y').coefficient, equ.left.monomByDegree(0).coefficient)
     }
-    parseByCoefficient = (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>): this => {
+    fromCoefficient = (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>): this => {
         this.#a = new Fraction(a)
         this.#b = new Fraction(b)
         this.#c = new Fraction(c)
@@ -403,7 +414,7 @@ export class Line implements IPiMathObject<Line> {
         return this
     }
 
-    parseByPointAndVector = (P: Vector, d: Vector): this => {
+    fromPointAndDirection = (P: Point, d: Vector): this => {
         // OX = OP + k*d
         // x = px + kdx     * dy
         // y = py + kdy     * dx
@@ -413,7 +424,7 @@ export class Line implements IPiMathObject<Line> {
         // ------------------
         // dy * x - dx * y = px * dy - py * dx
         // dy * x - dx * y - (px * dy - py * dx) = 0
-        this.parseByCoefficient(
+        this.fromCoefficient(
             d.y,
             d.x.clone().opposite(),
             P.x.clone().multiply(d.y).subtract(P.y.clone().multiply(d.x)).opposite()
@@ -427,8 +438,8 @@ export class Line implements IPiMathObject<Line> {
         return this
     }
 
-    parseByPointAndNormal = (P: Vector, n: Vector): this => {
-        return this.parseByCoefficient(
+    fromPointAndNormal = (P: Point, n: Vector): this => {
+        return this.fromCoefficient(
             n.x,
             n.y,
             P.x.clone().multiply(n.x)
@@ -436,16 +447,16 @@ export class Line implements IPiMathObject<Line> {
         )
     }
 
-    parseByPointAndLine = (P: Vector, L: Line, orientation?: LinePropriety): this => {
+    fromPointAndLine = (P: Vector, L: Line, orientation?: LinePropriety): this => {
 
         if (orientation === undefined) {
             orientation = LinePropriety.Parallel
         }
 
         if (orientation === LinePropriety.Parallel) {
-            return this.parseByPointAndNormal(P, L.normal)
+            return this.fromPointAndNormal(P, L.normal)
         } else if (orientation === LinePropriety.Perpendicular) {
-            return this.parseByPointAndNormal(P, L.director)
+            return this.fromPointAndNormal(P, L.director)
         }
 
         return this
@@ -493,7 +504,7 @@ export class Line implements IPiMathObject<Line> {
         const lcm = Numeric.lcm(this.#a.denominator, this.#b.denominator, this.#c.denominator),
             gcd = Numeric.gcd(this.#a.numerator, this.#b.numerator, this.#c.numerator)
 
-        this.parseByCoefficient(
+        this.fromCoefficient(
             this.#a.clone().multiply(lcm).divide(gcd),
             this.#b.clone().multiply(lcm).divide(gcd),
             this.#c.clone().multiply(lcm).divide(gcd),
