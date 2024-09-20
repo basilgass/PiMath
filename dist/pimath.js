@@ -328,25 +328,25 @@ w = new WeakMap(), b = new WeakMap(), ht = new WeakMap(), Se = new WeakMap(), a(
   return t;
 });
 let c = $;
-var V, J, se, Xe;
+var V, ee, se, Xe;
 class pt {
   constructor(...e) {
     d(this, V);
-    d(this, J);
+    d(this, ee);
     d(this, se);
     d(this, Xe);
     // ------------------------------------------
     // Creation / parsing functions
     // ------------------------------------------
-    a(this, "parse", (e, t, s) => (h(this, se, s ?? 1), h(this, J, t ?? 2), h(this, V, e), i(this, J) % 2 === 0 && i(this, V) < 0 && h(this, Xe, !1), this));
+    a(this, "parse", (e, t, s) => (h(this, se, s ?? 1), h(this, ee, t ?? 2), h(this, V, e), i(this, ee) % 2 === 0 && i(this, V) < 0 && h(this, Xe, !1), this));
     // ------------------------------------------
     // Mathematical operations
     // ------------------------------------------
     a(this, "reduce", () => {
-      let e = Math.floor(Math.pow(i(this, V), 1 / i(this, J)));
+      let e = Math.floor(Math.pow(i(this, V), 1 / i(this, ee)));
       for (; e > 1; ) {
-        if (i(this, V) % Math.pow(e, i(this, J)) === 0) {
-          h(this, se, i(this, se) * e), h(this, V, i(this, V) / Math.pow(e, i(this, J))), e = Math.floor(Math.pow(i(this, V), 1 / i(this, J)));
+        if (i(this, V) % Math.pow(e, i(this, ee)) === 0) {
+          h(this, se, i(this, se) * e), h(this, V, i(this, V) / Math.pow(e, i(this, ee))), e = Math.floor(Math.pow(i(this, V), 1 / i(this, ee)));
           continue;
         }
         e--;
@@ -358,7 +358,7 @@ class pt {
     // Help functions
     // ------------------------------------------
     a(this, "hasRadical", () => !(i(this, V) === 1 || i(this, V) === 0 || !i(this, Xe)));
-    h(this, V, 1), h(this, se, 1), h(this, J, 2), h(this, Xe, !0), e.length > 0 && this.parse(e[0], e[1], e[2]);
+    h(this, V, 1), h(this, se, 1), h(this, ee, 2), h(this, Xe, !0), e.length > 0 && this.parse(e[0], e[1], e[2]);
   }
   // ------------------------------------------
   // Getter and setter
@@ -370,10 +370,10 @@ class pt {
     h(this, V, e);
   }
   get nth() {
-    return i(this, J);
+    return i(this, ee);
   }
   set nth(e) {
-    Number.isSafeInteger(e) && e >= 2 ? h(this, J, e) : (console.log("Error setting the nth root"), h(this, J, 2));
+    Number.isSafeInteger(e) && e >= 2 ? h(this, ee, e) : (console.log("Error setting the nth root"), h(this, ee, 2));
   }
   get coefficient() {
     return i(this, se);
@@ -383,20 +383,20 @@ class pt {
   }
   get tex() {
     let e;
-    return i(this, se) === 1 ? e = "" : i(this, se) === -1 ? e = "-" : e = i(this, se).toString(), i(this, V) === 1 ? `${i(this, se)}` : i(this, J) === 2 ? `${e}\\sqrt{${i(this, V)}}` : `${e}\\sqrt[${i(this, J)}]{${i(this, V)}}`;
+    return i(this, se) === 1 ? e = "" : i(this, se) === -1 ? e = "-" : e = i(this, se).toString(), i(this, V) === 1 ? `${i(this, se)}` : i(this, ee) === 2 ? `${e}\\sqrt{${i(this, V)}}` : `${e}\\sqrt[${i(this, ee)}]{${i(this, V)}}`;
   }
   get display() {
     let e;
-    return i(this, se) === 1 ? e = "" : i(this, se) === -1 ? e = "-" : e = i(this, se).toString(), i(this, V) === 1 ? `${i(this, se)}` : i(this, J) === 2 ? `${e}sqrt{${i(this, V)}}` : `${e}root(${i(this, J)}){${i(this, V)}}`;
+    return i(this, se) === 1 ? e = "" : i(this, se) === -1 ? e = "-" : e = i(this, se).toString(), i(this, V) === 1 ? `${i(this, se)}` : i(this, ee) === 2 ? `${e}sqrt{${i(this, V)}}` : `${e}root(${i(this, ee)}){${i(this, V)}}`;
   }
   get value() {
-    return i(this, se) * Math.pow(i(this, V), 1 / i(this, J));
+    return i(this, se) * Math.pow(i(this, V), 1 / i(this, ee));
   }
 }
-V = new WeakMap(), J = new WeakMap(), se = new WeakMap(), Xe = new WeakMap();
+V = new WeakMap(), ee = new WeakMap(), se = new WeakMap(), Xe = new WeakMap();
 var Di = Object.defineProperty, fi = (o) => {
   throw TypeError(o);
-}, Vi = (o, e, t) => e in o ? Di(o, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : o[e] = t, Xt = (o, e, t) => Vi(o, typeof e != "symbol" ? e + "" : e, t), di = (o, e, t) => e.has(o) || fi("Cannot " + t), K = (o, e, t) => (di(o, e, "read from private field"), t ? t.call(o) : e.get(o)), st = (o, e, t) => e.has(o) ? fi("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(o) : e.set(o, t), be = (o, e, t, s) => (di(o, e, "write to private field"), e.set(o, t), t);
+}, Vi = (o, e, t) => e in o ? Di(o, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : o[e] = t, Xt = (o, e, t) => Vi(o, typeof e != "symbol" ? e + "" : e, t), di = (o, e, t) => e.has(o) || fi("Cannot " + t), _ = (o, e, t) => (di(o, e, "read from private field"), t ? t.call(o) : e.get(o)), st = (o, e, t) => e.has(o) ? fi("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(o) : e.set(o, t), be = (o, e, t, s) => (di(o, e, "write to private field"), e.set(o, t), t);
 const ri = {
   pi: Math.PI,
   e: Math.exp(1)
@@ -497,13 +497,13 @@ class Gt {
   }
   // Getter
   get rpn() {
-    return K(this, nt);
+    return _(this, nt);
   }
   get rpnToken() {
-    return K(this, nt).map((e) => e.token);
+    return _(this, nt).map((e) => e.token);
   }
   tokenConfigInitialization() {
-    return K(this, Ge) === Ve.SET ? (be(this, ie, Wi), be(this, Le, !1)) : K(this, Ge) === Ve.NUMERIC ? (be(this, ie, Gi), be(this, Le, !0)) : K(this, Ge) === Ve.EXPRESSION ? (be(this, ie, Ui), be(this, Le, !0)) : (be(this, ie, ji), be(this, Le, !0)), be(this, mt, Object.keys(K(this, ie)).sort((e, t) => t.length - e.length)), K(this, ie);
+    return _(this, Ge) === Ve.SET ? (be(this, ie, Wi), be(this, Le, !1)) : _(this, Ge) === Ve.NUMERIC ? (be(this, ie, Gi), be(this, Le, !0)) : _(this, Ge) === Ve.EXPRESSION ? (be(this, ie, Ui), be(this, Le, !0)) : (be(this, ie, ji), be(this, Le, !0)), be(this, mt, Object.keys(_(this, ie)).sort((e, t) => t.length - e.length)), _(this, ie);
   }
   /**
    * Get the next token to analyse.
@@ -519,9 +519,9 @@ class Gt {
     else if (e[t] === ",")
       s = ",", n = p.FUNCTION_ARGUMENT;
     else {
-      for (const r of K(this, mt))
+      for (const r of _(this, mt))
         if (e.substring(t, t + r.length) === r) {
-          s += r, n = K(this, ie)[r].type;
+          s += r, n = _(this, ie)[r].type;
           break;
         }
       for (const r in ri)
@@ -552,7 +552,7 @@ class Gt {
   parse(e, t) {
     const s = [], n = [];
     let r = "", l = 0, u;
-    (t ?? K(this, Le)) && (e = Zi(e, K(this, ie)));
+    (t ?? _(this, Le)) && (e = Zi(e, _(this, ie)));
     const f = 50;
     let m = 50, g;
     for (; l < e.length; ) {
@@ -573,9 +573,9 @@ class Gt {
         case p.OPERATION:
           if (n.length > 0) {
             let E = n[n.length - 1];
-            for (g = +f; E.token in K(this, ie) && //either o1 is left-associative and its precedence is less than or equal to that of o2,
-            (K(this, ie)[r].associative === "left" && K(this, ie)[r].precedence <= K(this, ie)[E.token].precedence || //or o1 is right associative, and has precedence less than that of o2,
-            K(this, ie)[r].associative === "right" && K(this, ie)[r].precedence < K(this, ie)[E.token].precedence); ) {
+            for (g = +f; E.token in _(this, ie) && //either o1 is left-associative and its precedence is less than or equal to that of o2,
+            (_(this, ie)[r].associative === "left" && _(this, ie)[r].precedence <= _(this, ie)[E.token].precedence || //or o1 is right associative, and has precedence less than that of o2,
+            _(this, ie)[r].associative === "right" && _(this, ie)[r].precedence < _(this, ie)[E.token].precedence); ) {
               if (g--, g === 0) {
                 console.log("SECURITY LEVEL 2 OPERATION EXIT");
                 break;
@@ -2866,7 +2866,7 @@ function de(o, e, t) {
     s = de(o, e);
   return s;
 }
-function X(o, e) {
+function Y(o, e) {
   return e === !1 ? vi() ? de(1, o) : -de(1, o) : de(-o, o);
 }
 function Ji(o) {
@@ -2913,7 +2913,7 @@ class j extends x {
     return e.array = this.copy(), e.asPoint = !0, e;
   }
 }
-var xi = /* @__PURE__ */ ((o) => (o.None = "none", o.Parallel = "parallel", o.Perpendicular = "perpendicular", o.Tangent = "tangent", o))(xi || {}), $e, B, S, U, re, Y, Ie, ve;
+var xi = /* @__PURE__ */ ((o) => (o.None = "none", o.Parallel = "parallel", o.Perpendicular = "perpendicular", o.Tangent = "tangent", o))(xi || {}), $e, B, S, U, re, Q, Ie, ve;
 const De = class De {
   /**
    * Value can be a mix of:
@@ -2927,15 +2927,15 @@ const De = class De {
     d(this, S);
     d(this, U);
     d(this, re);
-    d(this, Y);
+    d(this, Q);
     d(this, Ie);
     d(this, ve, "canonical");
-    a(this, "randomPoint", (e) => i(this, Y).clone().multiplyByScalar(X(e === void 0 || e <= 1 ? 3 : e, !1)).add(i(this, re)));
+    a(this, "randomPoint", (e) => i(this, Q).clone().multiplyByScalar(Y(e === void 0 || e <= 1 ? 3 : e, !1)).add(i(this, re)));
     a(this, "randomNearPoint", (e) => {
       const t = this.randomPoint(e);
       let s = 10;
       for (; this.isOnLine(t) && s > 0; )
-        t.x.add(X(1, !1)), t.y.add(X(1, !1)), s--;
+        t.x.add(Y(1, !1)), t.y.add(Y(1, !1)), s--;
       return t;
     });
     // ------------------------------------------
@@ -3007,19 +3007,19 @@ const De = class De {
         e.left.monomByDegree(0).coefficient
       );
     });
-    a(this, "fromCoefficient", (e, t, s) => (h(this, B, new c(e)), h(this, S, new c(t)), h(this, U, new c(s)), h(this, Y, new x(i(this, S).clone(), i(this, B).clone().opposite())), h(this, re, new x(new c().zero(), i(this, U).clone())), h(this, Ie, i(this, Y).clone().normal()), this));
+    a(this, "fromCoefficient", (e, t, s) => (h(this, B, new c(e)), h(this, S, new c(t)), h(this, U, new c(s)), h(this, Q, new x(i(this, S).clone(), i(this, B).clone().opposite())), h(this, re, new x(new c().zero(), i(this, U).clone())), h(this, Ie, i(this, Q).clone().normal()), this));
     a(this, "fromPointAndDirection", (e, t) => (this.fromCoefficient(
       t.y,
       t.x.clone().opposite(),
       e.x.clone().multiply(t.y).subtract(e.y.clone().multiply(t.x)).opposite()
-    ), h(this, re, e.clone()), h(this, Y, t.clone()), h(this, Ie, i(this, Y).clone().normal()), this));
+    ), h(this, re, e.clone()), h(this, Q, t.clone()), h(this, Ie, i(this, Q).clone().normal()), this));
     a(this, "fromPointAndNormal", (e, t) => this.fromCoefficient(
       t.x,
       t.y,
       e.x.clone().multiply(t.x).add(e.y.clone().multiply(t.y)).opposite()
     ));
     a(this, "fromPointAndLine", (e, t, s) => (s === void 0 && (s = "parallel"), s === "parallel" ? this.fromPointAndNormal(e, t.normal) : s === "perpendicular" ? this.fromPointAndNormal(e, t.director) : this));
-    a(this, "clone", () => (h(this, B, i(this, B).clone()), h(this, S, i(this, S).clone()), h(this, U, i(this, U).clone()), h(this, Y, i(this, Y).clone()), h(this, re, i(this, re).clone()), h(this, Ie, i(this, Ie).clone()), this));
+    a(this, "clone", () => (h(this, B, i(this, B).clone()), h(this, S, i(this, S).clone()), h(this, U, i(this, U).clone()), h(this, Q, i(this, Q).clone()), h(this, re, i(this, re).clone()), h(this, Ie, i(this, Ie).clone()), this));
     // ------------------------------------------
     // Mathematical operations
     // ------------------------------------------
@@ -3038,7 +3038,7 @@ const De = class De {
         i(this, U).clone().multiply(e).divide(t)
       ), this;
     });
-    a(this, "simplifyDirection", () => (i(this, Y).simplify(), this));
+    a(this, "simplifyDirection", () => (i(this, Q).simplify(), this));
     a(this, "intersection", (e) => {
       const t = new x();
       let s = !1, n = !1;
@@ -3057,7 +3057,7 @@ const De = class De {
       const t = this.getEquation().isolate("x"), s = new c(e);
       return t instanceof H ? t.right.evaluate({ y: s }) : new c().invalid();
     });
-    return h(this, B, new c().zero()), h(this, S, new c().zero()), h(this, U, new c().zero()), h(this, re, new x()), h(this, Y, new x()), h(this, Ie, new x()), h(this, $e, !0), e.length > 0 && this.parse(...e), this;
+    return h(this, B, new c().zero()), h(this, S, new c().zero()), h(this, U, new c().zero()), h(this, re, new x()), h(this, Q, new x()), h(this, Ie, new x()), h(this, $e, !0), e.length > 0 && this.parse(...e), this;
   }
   get a() {
     return i(this, B);
@@ -3086,10 +3086,10 @@ const De = class De {
     h(this, re, e);
   }
   get d() {
-    return i(this, Y);
+    return i(this, Q);
   }
   set d(e) {
-    h(this, Y, e);
+    h(this, Q, e);
   }
   get n() {
     return i(this, Ie);
@@ -3136,10 +3136,10 @@ const De = class De {
         return this.slope.isInfinity() ? "x=" + this.OA.x.tex : "y=" + new O().parse("x", this.slope, this.height).tex;
       case "parametric":
       case "system": {
-        const t = i(this, Y).clone();
+        const t = i(this, Q).clone();
         return i(this, $e) && t.simplify(), e === "parametric" ? `${x.asTex("x", "y")} = ${x.asTex(i(this, re).x.tex, i(this, re).y.tex)} + k\\cdot ${x.asTex(t.x.tex, t.y.tex)}` : `\\left\\{\\begin{aligned}
-            x &= ${new O(i(this, re).x).add(new k(i(this, Y).x).multiply(new k("k"))).reorder("k", !0).tex}\\\\ 
-            y &= ${new O(i(this, re).y).add(new k(i(this, Y).y).multiply(new k("k"))).reorder("k", !0).tex}
+            x &= ${new O(i(this, re).x).add(new k(i(this, Q).x).multiply(new k("k"))).reorder("k", !0).tex}\\\\ 
+            y &= ${new O(i(this, re).y).add(new k(i(this, Q).y).multiply(new k("k"))).reorder("k", !0).tex}
             \\end{aligned}\\right.`;
       }
       default: {
@@ -3162,7 +3162,7 @@ const De = class De {
       case "mxh":
         return this.slope.isInfinity() ? "x=" + this.OA.x.display : "y=" + new O().parse("x", this.slope, this.height).display;
       case "parametric": {
-        const t = i(this, Y).clone();
+        const t = i(this, Q).clone();
         return i(this, $e) && t.simplify(), `((x,y))=((${i(this, re).x.display},${i(this, re).y.display}))+k((${t.x.display},${t.y.display}))`;
       }
       default: {
@@ -3175,7 +3175,7 @@ const De = class De {
     return new x(i(this, B), i(this, S));
   }
   get director() {
-    return i(this, Y).clone();
+    return i(this, Q).clone();
   }
   get slope() {
     return i(this, B).clone().opposite().divide(i(this, S));
@@ -3220,7 +3220,7 @@ const De = class De {
     return i(this, B).isZero() || (i(this, B).isOne() ? t = "x" : i(this, B).clone().opposite().isOne() ? t = "-x" : t = i(this, B).value.toFixed(e) + "x"), i(this, S).isZero() || (i(this, S).isPositive() && (t += "+"), t += i(this, S).value.toFixed(e) + "y"), i(this, U).isZero() || (i(this, U).isPositive() && (t += "+"), t += i(this, U).value.toFixed(e)), t + "=0";
   }
 };
-$e = new WeakMap(), B = new WeakMap(), S = new WeakMap(), U = new WeakMap(), re = new WeakMap(), Y = new WeakMap(), Ie = new WeakMap(), ve = new WeakMap(), // A line is defined as the canonical form
+$e = new WeakMap(), B = new WeakMap(), S = new WeakMap(), U = new WeakMap(), re = new WeakMap(), Q = new WeakMap(), Ie = new WeakMap(), ve = new WeakMap(), // A line is defined as the canonical form
 a(De, "PERPENDICULAR", "perpendicular"), a(De, "PARALLEL", "parallel");
 let D = De;
 var oe, F, Ae, Lt, Dt, Vt, he, Ei, yt, Ni, Ti, Ai, ei;
@@ -3358,12 +3358,12 @@ oe = new WeakMap(), F = new WeakMap(), Ae = new WeakMap(), Lt = new WeakMap(), D
   return this;
 };
 let vt = Zt;
-var Q, _, ee, et, Oe, ut, Ft, ft, Pe, jt, tt;
+var X, K, J, et, Oe, ut, Ft, ft, Pe, jt, tt;
 const Ut = class Ut {
   constructor(...e) {
-    d(this, Q);
-    d(this, _);
-    d(this, ee);
+    d(this, X);
+    d(this, K);
+    d(this, J);
     d(this, et);
     d(this, Oe);
     d(this, ut);
@@ -3397,21 +3397,21 @@ const Ut = class Ut {
           h(this, et, { AB: t, BC: s, AC: n });
           let r = t.intersection(s);
           if (r.hasIntersection)
-            h(this, _, r.point.clone());
+            h(this, K, r.point.clone());
           else
             throw new Error("Lines do not intersect !");
           if (r = s.intersection(n), r.hasIntersection)
-            h(this, ee, r.point.clone());
+            h(this, J, r.point.clone());
           else
             throw new Error("Lines do not intersect !");
           if (r = n.intersection(t), r.hasIntersection)
-            h(this, Q, r.point.clone());
+            h(this, X, r.point.clone());
           else
             throw new Error("Lines do not intersect !");
-        } else e.every((t) => t instanceof j) && (h(this, Q, e[0].clone()), h(this, _, e[1].clone()), h(this, ee, e[2].clone()), h(this, et, {
-          AB: new D(i(this, Q), i(this, _)),
-          BC: new D(i(this, _), i(this, ee)),
-          AC: new D(i(this, Q), i(this, ee))
+        } else e.every((t) => t instanceof j) && (h(this, X, e[0].clone()), h(this, K, e[1].clone()), h(this, J, e[2].clone()), h(this, et, {
+          AB: new D(i(this, X), i(this, K)),
+          BC: new D(i(this, K), i(this, J)),
+          AC: new D(i(this, X), i(this, J))
         }));
       } else if (e.length === 1 && e[0] instanceof Ut)
         return e[0].clone();
@@ -3421,9 +3421,9 @@ const Ut = class Ut {
      * Clone the Triangle class
      */
     a(this, "clone", () => new Ut(
-      i(this, Q).clone(),
-      i(this, _).clone(),
-      i(this, ee).clone()
+      i(this, X).clone(),
+      i(this, K).clone(),
+      i(this, J).clone()
     ));
     // ------------------------------------------
     // Triangle operations and properties
@@ -3432,10 +3432,10 @@ const Ut = class Ut {
      * Generate the Line object for the three segments of the triangle
      */
     d(this, Ft, () => {
-      h(this, Oe, {
-        AB: new j().middleOf(i(this, Q), i(this, _)),
-        AC: new j().middleOf(i(this, Q), i(this, ee)),
-        BC: new j().middleOf(i(this, _), i(this, ee))
+      i(this, X).asPoint = !0, i(this, K).asPoint = !0, i(this, J).asPoint = !0, h(this, Oe, {
+        AB: new j().middleOf(i(this, X), i(this, K)),
+        AC: new j().middleOf(i(this, X), i(this, J)),
+        BC: new j().middleOf(i(this, K), i(this, J))
       }), h(this, ut, i(this, jt).call(this));
     });
     /**
@@ -3445,13 +3445,13 @@ const Ut = class Ut {
     d(this, ft, (e) => {
       switch (e.toUpperCase()) {
         case "A":
-          return i(this, Q);
+          return i(this, X);
         case "B":
-          return i(this, _);
+          return i(this, K);
         case "C":
-          return i(this, ee);
+          return i(this, J);
       }
-      return i(this, Q);
+      return i(this, X);
     });
     /**
      * Get the vector for the segment given by name.
@@ -3464,19 +3464,19 @@ const Ut = class Ut {
     ));
     d(this, jt, () => {
       const e = {
-        A: new D().fromPoints(i(this, Q), i(this, Oe).BC),
-        B: new D().fromPoints(i(this, _), i(this, Oe).AC),
-        C: new D().fromPoints(i(this, ee), i(this, Oe).AB),
+        A: new D().fromPoints(i(this, X), i(this, Oe).BC),
+        B: new D().fromPoints(i(this, K), i(this, Oe).AC),
+        C: new D().fromPoints(i(this, J), i(this, Oe).AB),
         intersection: null
       }, t = {
-        AB: new D().fromPointAndNormal(i(this, Oe).AB, new x(i(this, Q), i(this, _)).normal()),
-        AC: new D().fromPointAndNormal(i(this, Oe).AC, new x(i(this, Q), i(this, ee)).normal()),
-        BC: new D().fromPointAndNormal(i(this, Oe).BC, new x(i(this, _), i(this, ee)).normal()),
+        AB: new D().fromPointAndNormal(i(this, Oe).AB, new x(i(this, X), i(this, K)).normal()),
+        AC: new D().fromPointAndNormal(i(this, Oe).AC, new x(i(this, X), i(this, J)).normal()),
+        BC: new D().fromPointAndNormal(i(this, Oe).BC, new x(i(this, K), i(this, J)).normal()),
         intersection: null
       }, s = {
-        A: new D().fromPointAndNormal(i(this, Q), new x(i(this, _), i(this, ee)).normal()),
-        B: new D().fromPointAndNormal(i(this, _), new x(i(this, Q), i(this, ee)).normal()),
-        C: new D().fromPointAndNormal(i(this, ee), new x(i(this, Q), i(this, _)).normal()),
+        A: new D().fromPointAndNormal(i(this, X), new x(i(this, K), i(this, J)).normal()),
+        B: new D().fromPointAndNormal(i(this, K), new x(i(this, X), i(this, J)).normal()),
+        C: new D().fromPointAndNormal(i(this, J), new x(i(this, X), i(this, K)).normal()),
         intersection: null
       }, n = i(this, tt).call(this, "A"), r = i(this, tt).call(this, "B"), l = i(this, tt).call(this, "C"), u = {
         A: n.internal,
@@ -3511,13 +3511,13 @@ const Ut = class Ut {
   // Getter and setters
   // ------------------------------------------
   get A() {
-    return i(this, Q);
+    return i(this, X);
   }
   get B() {
-    return i(this, _);
+    return i(this, K);
   }
   get C() {
-    return i(this, ee);
+    return i(this, J);
   }
   get AB() {
     return i(this, Pe).call(this, "A", "B");
@@ -3553,7 +3553,7 @@ const Ut = class Ut {
     return i(this, ut);
   }
 };
-Q = new WeakMap(), _ = new WeakMap(), ee = new WeakMap(), et = new WeakMap(), Oe = new WeakMap(), ut = new WeakMap(), Ft = new WeakMap(), ft = new WeakMap(), Pe = new WeakMap(), jt = new WeakMap(), tt = new WeakMap();
+X = new WeakMap(), K = new WeakMap(), J = new WeakMap(), et = new WeakMap(), Oe = new WeakMap(), ut = new WeakMap(), Ft = new WeakMap(), ft = new WeakMap(), Pe = new WeakMap(), jt = new WeakMap(), tt = new WeakMap();
 let ti = Ut;
 var R, W;
 const ot = class ot {
@@ -3601,7 +3601,7 @@ const ot = class ot {
     //     return new Fraction().invalid()
     // }
     a(this, "randomPoint", (e = 5) => {
-      const t = i(this, R).clone(), s = new c(X(e, !1));
+      const t = i(this, R).clone(), s = new c(Y(e, !1));
       return new j(
         t.x.clone().add(i(this, W).x.clone().multiply(s)),
         t.y.clone().add(i(this, W).y.clone().multiply(s)),
@@ -3794,7 +3794,7 @@ function xt(o) {
     },
     o
   ), t = new c();
-  if (e.negative ? t.numerator = X(e.max, e.zero) : t.numerator = de(e.zero ? 0 : 1, e.max), e.natural)
+  if (e.negative ? t.numerator = Y(e.max, e.zero) : t.numerator = de(e.zero ? 0 : 1, e.max), e.natural)
     t.denominator = 1;
   else {
     let s = 0;
@@ -3901,7 +3901,7 @@ function Mi(o) {
       quadrant: null
     },
     o
-  ), t = e.axis === "x", s = e.axis === "y", n = e.fraction ? xt({ max: e.max, zero: t }) : new c(X(e.max, t)), r = e.fraction ? xt({ max: e.max, zero: s }) : new c(X(e.max, s));
+  ), t = e.axis === "x", s = e.axis === "y", n = e.fraction ? xt({ max: e.max, zero: t }) : new c(Y(e.max, t)), r = e.fraction ? xt({ max: e.max, zero: s }) : new c(Y(e.max, s));
   return Number(e.quadrant) === 1 && (n.abs(), r.abs()), Number(e.quadrant) === 2 && (n.isPositive() && n.opposite(), r.isNegative() && r.opposite()), Number(e.quadrant) === 3 && (n.isPositive() && n.opposite(), r.isPositive() && r.opposite()), Number(e.quadrant) === 4 && (n.isNegative() && n.opposite(), r.isPositive() && r.opposite()), new j(n, r);
 }
 function ss(o) {
@@ -3922,31 +3922,31 @@ function ns(o) {
   const e = Object.assign(
     {
       A: {
-        x: X(10),
-        y: X(10)
+        x: Y(10),
+        y: Y(10)
       }
     },
     o
   ), t = new x(
-    X(10),
-    X(10)
+    Y(10),
+    Y(10)
   );
   for (; t.isNull; )
-    t.x = X(10), t.y = X(10);
+    t.x = Y(10), t.y = Y(10);
   return e.slope === 1 ? t.x.sign() !== t.y.sign() && t.y.opposite() : e.slope === -1 && t.x.sign() !== t.y.sign() && t.y.opposite(), new D(new x(e.A.x, e.A.y), t);
 }
 function rs(o) {
   const e = Object.assign(
     {
       A: {
-        x: X(10),
-        y: X(10),
-        z: X(10)
+        x: Y(10),
+        y: Y(10),
+        z: Y(10)
       },
       direction: {
-        x: X(10),
-        y: X(10),
-        z: X(10)
+        x: Y(10),
+        y: Y(10),
+        z: Y(10)
       }
     },
     o
@@ -3959,7 +3959,7 @@ const os = {
   monom: (o) => Oi(o),
   fraction: (o) => xt(o),
   number: (o, e, t) => de(o, e, t),
-  numberSym: (o, e) => X(o, e),
+  numberSym: (o, e) => Y(o, e),
   prime: (o) => Ji(o),
   bool: (o) => vi(o),
   array: (o, e) => _i(o, e),

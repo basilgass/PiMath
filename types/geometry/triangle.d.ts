@@ -1,5 +1,6 @@
 import { Line } from './line';
 import { Vector } from './vector';
+import { Point } from './point';
 
 export interface remarquableLines {
     'medians': {
@@ -36,9 +37,9 @@ export interface remarquableLines {
 export declare class Triangle {
     #private;
     constructor(...values: unknown[]);
-    get A(): Vector;
-    get B(): Vector;
-    get C(): Vector;
+    get A(): Point;
+    get B(): Point;
+    get C(): Point;
     get AB(): Vector;
     get BA(): Vector;
     get BC(): Vector;

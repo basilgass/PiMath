@@ -4,12 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Enable again logicalSet.ts&#10;Modify index.ts to export the complete class (WIP)">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Update triangle.ts to use the new structure.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/pimath.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/geometry/triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/triangle.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/triangle.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/triangle.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/triangle.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/triangle.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/triangle.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/triangle.d.ts.map" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -236,9 +237,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.build" />
         <item itemvalue="Vitest.triangle creation.create triangle from equations" />
         <item itemvalue="Node.js.triangle.ts" />
-        <item itemvalue="npm.build" />
         <item itemvalue="Vitest.LogicalSet tests.Logical set" />
         <item itemvalue="Vitest.LogicalSet tests" />
       </list>
@@ -280,7 +281,7 @@
       <workItem from="1726724654619" duration="3918000" />
       <workItem from="1726743934387" duration="8881000" />
       <workItem from="1726764390300" duration="13949000" />
-      <workItem from="1726834350685" duration="1514000" />
+      <workItem from="1726834350685" duration="1780000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -330,7 +331,15 @@
       <option name="project" value="LOCAL" />
       <updated>1726832385914</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Update triangle.ts to use the new structure.">
+      <option name="closed" value="true" />
+      <created>1726835911081</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1726835911081</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -343,7 +352,8 @@
     <MESSAGE value="new Vector().fromString() = new Vector(string)&#10;Bug correction on point.ts" />
     <MESSAGE value="Circle.tangents is now working for an external point" />
     <MESSAGE value="Enable again logicalSet.ts&#10;Modify index.ts to export the complete class (WIP)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Enable again logicalSet.ts&#10;Modify index.ts to export the complete class (WIP)" />
+    <MESSAGE value="Update triangle.ts to use the new structure." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update triangle.ts to use the new structure." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

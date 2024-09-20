@@ -56,15 +56,15 @@ export class Triangle {
     // Getter and setters
     // ------------------------------------------
 
-    get A(): Vector {
+    get A(): Point {
         return this.#A
     }
 
-    get B(): Vector {
+    get B(): Point {
         return this.#B
     }
 
-    get C(): Vector {
+    get C(): Point {
         return this.#C
     }
 
@@ -232,6 +232,10 @@ export class Triangle {
      * Generate the Line object for the three segments of the triangle
      */
     #updateTriangle = () => {
+        this.#A.asPoint = true
+        this.#B.asPoint = true
+        this.#C.asPoint = true
+
         this.#middles = {
             'AB': new Point().middleOf(this.#A, this.#B),
             'AC': new Point().middleOf(this.#A, this.#C),
