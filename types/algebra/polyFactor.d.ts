@@ -7,6 +7,7 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     #private;
     constructor(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]);
     parse(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]): this;
+    fromPolynom(polynom: InputAlgebra<Polynom>, letter?: string): this;
     clone(): PolyFactor;
     add(...values: PolyFactor[]): this;
     degree(letter?: string): Fraction;

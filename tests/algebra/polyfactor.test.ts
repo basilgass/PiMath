@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest"
 import { PolyFactor } from "../../src/algebra/polyFactor"
 import { Factor } from "../../src/algebra/factor"
+import {Polynom} from "../../src"
 
 
 describe("PolyFactor creation", () => {
@@ -19,6 +20,12 @@ describe("PolyFactor creation", () => {
         expect(PF2.factors.length).toBe(2)
     })
 
+    test('create a PolyFactor from a Polynom', ()=>{
+        const PF = new PolyFactor().fromPolynom('x^2-5x+6')
+
+        expect(PF).toBeDefined()
+        expect(PF.factors).toHaveLength(2)
+    })
     test('should clone a PolyFactor', () => {
         const PF = new PolyFactor(
             new Factor('3x+2', '1/2'),

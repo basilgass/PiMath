@@ -1933,191 +1933,7 @@ const we = class we {
 };
 Ee = new WeakMap(), Qe = new WeakMap(), Ne = new WeakMap(), Oe = new WeakMap();
 let fe = we;
-var Ue = /* @__PURE__ */ ((o) => (o[o.ROOT = 0] = "ROOT", o[o.POWER = 1] = "POWER", o))(Ue || {}), N, Ve, lt, Yt;
-const me = class me {
-  // #endregion Class fields (1)
-  // #region Constructors (1)
-  constructor(...e) {
-    // #region Class fields (1)
-    f(this, N, []);
-    f(this, Ve, Ue.POWER);
-    return this.parse(...e), this;
-  }
-  // #endregion Constructors (1)
-  // #region Properties and methods (25)
-  parse(...e) {
-    return e.length === 0 ? this : (h(this, N, []), e.forEach((t) => {
-      if (typeof t == "string") {
-        const s = t.split(")(").join(")*(").split("*");
-        i(this, N).push(...s.map((r) => new fe(r)));
-      } else t instanceof me ? i(this, N).push(...t.factors.map((s) => s.clone())) : i(this, N).push(new fe(t));
-    }), this);
-  }
-  clone() {
-    return new me(...i(this, N).map((e) => e.clone()));
-  }
-  add(...e) {
-    let t = [this, ...e];
-    const s = me.gcd(...t);
-    t = t.map((n) => n.divide(s).reduce());
-    const r = new T("0");
-    return t.forEach((n) => r.add(n.develop())), h(this, N, [
-      ...s.factors,
-      new fe(r)
-    ]), this;
-  }
-  degree(e) {
-    return i(this, N).reduce((t, s) => t.add(s.degree(e)), new c("0"));
-  }
-  derivative() {
-    const e = [], t = i(this, N).length;
-    for (let r = 0; r < t; r++) {
-      const n = i(this, N).slice(), l = n.splice(r, 1)[0];
-      e.push(new me(...n).multiply(new me(...l.derivative())));
-    }
-    e.forEach((r) => r.reduce());
-    const s = e.shift();
-    return s !== void 0 && h(this, N, s.factors), this.add(...e);
-  }
-  develop() {
-    const e = new T("1");
-    return i(this, N).forEach((t) => {
-      e.multiply(t.develop());
-    }), e;
-  }
-  divide(e) {
-    return h(this, N, i(this, N).concat(e.clone().factors.map((t) => t.inverse()))), this;
-  }
-  evaluate(e, t) {
-    return t ? i(this, N).reduce((s, r) => s * r.evaluate(e, t), 1) : i(this, N).reduce((s, r) => s.multiply(r.evaluate(e)), new c("1"));
-  }
-  hasVariable(e) {
-    return i(this, N).some((t) => t.hasVariable(e));
-  }
-  inverse() {
-    return h(this, N, i(this, N).map((e) => e.inverse())), this;
-  }
-  isEqual(e) {
-    const t = me.gcd(this, e), s = this.clone().divide(t).reduce(), r = e.clone().divide(t).reduce();
-    return s.isOne() && r.isOne();
-  }
-  isOne() {
-    return i(this, N).every((e) => e.isOne());
-  }
-  isZero() {
-    return i(this, N).every((e) => e.isZero());
-  }
-  multiply(...e) {
-    return e.forEach((t) => {
-      h(this, N, i(this, N).concat(t.clone().factors));
-    }), this;
-  }
-  one() {
-    return h(this, N, [new fe("1", "1")]), this;
-  }
-  opposite() {
-    const e = i(this, N).findIndex((t) => t.display === "(-1)");
-    return e >= 0 ? i(this, N).splice(e, 1) : i(this, N).push(new fe("-1", "1")), this;
-  }
-  pow(e) {
-    return h(this, N, i(this, N).map((t) => t.pow(e))), this;
-  }
-  primitive() {
-    throw new Error("Method not implemented.");
-  }
-  reduce() {
-    const e = Wt(this);
-    return h(this, N, Object.values(e).map((t) => {
-      const s = t[0].polynom, r = t.reduce((n, l) => n.add(l.power), new c("0"));
-      return new fe(s, r.reduce());
-    }).filter((t) => !t.power.isZero())), this;
-  }
-  root(e) {
-    return h(this, N, i(this, N).map((t) => t.root(e))), this;
-  }
-  sort() {
-    return h(this, N, i(this, N).sort((e, t) => e.degree().isLeq(t.degree()) ? -1 : 1)), this;
-  }
-  sqrt() {
-    return h(this, N, i(this, N).map((e) => e.sqrt())), this;
-  }
-  subtract(...e) {
-    return this.add(...e.map((t) => t.opposite()));
-  }
-  zero() {
-    return h(this, N, [new fe("0", "1")]), this;
-  }
-  static gcd(...e) {
-    var s;
-    if (e.length === 0)
-      return new me().one();
-    if (e.length === 1)
-      return e[0];
-    if (e.length === 2)
-      return M(s = me, lt, Yt).call(s, e[0], e[1]);
-    let t = e[0];
-    return e.shift(), e.forEach((r) => {
-      var n;
-      return t = M(n = me, lt, Yt).call(n, t, r);
-    }), t;
-  }
-  // #endregion Properties and methods (25)
-  // #region Getters And Setters (5)
-  get factors() {
-    return i(this, N);
-  }
-  set factors(e) {
-    h(this, N, e);
-  }
-  get variables() {
-    return i(this, N).reduce((e, t) => e.concat(t.variables), []);
-  }
-  get asRoot() {
-    return h(this, Ve, Ue.ROOT), this;
-  }
-  get asPower() {
-    return h(this, Ve, Ue.POWER), this;
-  }
-  get numerator() {
-    return i(this, N).filter((e) => e.power.isPositive());
-  }
-  get denominator() {
-    return i(this, N).filter((e) => e.power.isNegative());
-  }
-  get display() {
-    let e = [], t = [];
-    if (i(this, Ve) === Ue.ROOT ? (e = this.numerator, t = this.denominator.map((n) => n.clone().inverse())) : e = i(this, N), e.length === 0 && (e = [new fe("1")]), t.length === 0)
-      return e.length === 1 ? e[0].asSingle.display : e.map((n) => n.display).join("");
-    const s = e.length === 1 ? e[0].asSingle.display : e.map((n) => n.display).join(""), r = t.length === 1 ? t[0].asSingle.display : t.map((n) => n.display).join("");
-    return `(${s})/(${r})`;
-  }
-  get tex() {
-    let e = [], t = [];
-    if (i(this, Ve) === Ue.ROOT ? (e = this.numerator, t = this.denominator.map((n) => n.clone().inverse())) : e = i(this, N), e.length === 0 && (e = [new fe("1")]), t.length === 0)
-      return e.length === 1 ? e[0].asSingle.tex : e.map((n) => n.tex).join("");
-    const s = e.length === 1 ? e[0].asSingle.tex : e.map((n) => n.tex).join(""), r = t.length === 1 ? t[0].asSingle.tex : t.map((n) => n.tex).join("");
-    return `\\frac{ ${s} }{ ${r} }`;
-  }
-  // #endregion Private methods (1)
-};
-N = new WeakMap(), Ve = new WeakMap(), lt = new WeakSet(), Yt = function(e, t) {
-  const s = Wt(e), r = Wt(t), l = Object.keys(s).filter((u) => Object.hasOwn(r, u)).map((u) => {
-    const p = s[u].reduce((g, E) => g.add(E.power), new c("0")), m = r[u].reduce((g, E) => g.add(E.power), new c("0"));
-    return new fe(u, c.min(p, m));
-  });
-  return new me(...l);
-}, f(me, lt);
-let Xt = me;
-function Wt(o) {
-  const e = new c().one(), t = o.factors.reduce((s, r) => {
-    if (r.polynom.degree().isZero())
-      return r.polynom.monoms.length > 0 && e.multiply(r.polynom.monoms[0].coefficient), s;
-    const n = r.polynom.display;
-    return Object.hasOwn(s, n) ? s[n].push(r) : s[n] = [r], s;
-  }, {});
-  return e.isOne() || (t[e.display] = [new fe(e.display, 1)]), t;
-}
-var q, A, re, Pt, Ke, St;
+var Ue = /* @__PURE__ */ ((o) => (o[o.ROOT = 0] = "ROOT", o[o.POWER = 1] = "POWER", o))(Ue || {}), q, A, re, Pt, Ke, St;
 const xe = class xe {
   constructor(e, t, s) {
     // Left part of the equation
@@ -2357,6 +2173,193 @@ const xe = class xe {
 };
 q = new WeakMap(), A = new WeakMap(), re = new WeakMap(), Pt = new WeakMap(), Ke = new WeakMap(), St = new WeakMap();
 let H = xe;
+var N, Ve, lt, Yt;
+const me = class me {
+  // #endregion Class fields (1)
+  // #region Constructors (1)
+  constructor(...e) {
+    // #region Class fields (1)
+    f(this, N, []);
+    f(this, Ve, Ue.POWER);
+    return this.parse(...e), this;
+  }
+  // #endregion Constructors (1)
+  // #region Properties and methods (25)
+  parse(...e) {
+    return e.length === 0 ? this : (h(this, N, []), e.forEach((t) => {
+      if (typeof t == "string") {
+        const s = t.split(")(").join(")*(").split("*");
+        i(this, N).push(...s.map((r) => new fe(r)));
+      } else t instanceof me ? i(this, N).push(...t.factors.map((s) => s.clone())) : i(this, N).push(new fe(t));
+    }), this);
+  }
+  fromPolynom(e, t) {
+    return h(this, N, new T(e).factorize(t).map((s) => new fe(s))), this;
+  }
+  clone() {
+    return new me(...i(this, N).map((e) => e.clone()));
+  }
+  add(...e) {
+    let t = [this, ...e];
+    const s = me.gcd(...t);
+    t = t.map((n) => n.divide(s).reduce());
+    const r = new T("0");
+    return t.forEach((n) => r.add(n.develop())), h(this, N, [
+      ...s.factors,
+      new fe(r)
+    ]), this;
+  }
+  degree(e) {
+    return i(this, N).reduce((t, s) => t.add(s.degree(e)), new c("0"));
+  }
+  derivative() {
+    const e = [], t = i(this, N).length;
+    for (let r = 0; r < t; r++) {
+      const n = i(this, N).slice(), l = n.splice(r, 1)[0];
+      e.push(new me(...n).multiply(new me(...l.derivative())));
+    }
+    e.forEach((r) => r.reduce());
+    const s = e.shift();
+    return s !== void 0 && h(this, N, s.factors), this.add(...e);
+  }
+  develop() {
+    const e = new T("1");
+    return i(this, N).forEach((t) => {
+      e.multiply(t.develop());
+    }), e;
+  }
+  divide(e) {
+    return h(this, N, i(this, N).concat(e.clone().factors.map((t) => t.inverse()))), this;
+  }
+  evaluate(e, t) {
+    return t ? i(this, N).reduce((s, r) => s * r.evaluate(e, t), 1) : i(this, N).reduce((s, r) => s.multiply(r.evaluate(e)), new c("1"));
+  }
+  hasVariable(e) {
+    return i(this, N).some((t) => t.hasVariable(e));
+  }
+  inverse() {
+    return h(this, N, i(this, N).map((e) => e.inverse())), this;
+  }
+  isEqual(e) {
+    const t = me.gcd(this, e), s = this.clone().divide(t).reduce(), r = e.clone().divide(t).reduce();
+    return s.isOne() && r.isOne();
+  }
+  isOne() {
+    return i(this, N).every((e) => e.isOne());
+  }
+  isZero() {
+    return i(this, N).every((e) => e.isZero());
+  }
+  multiply(...e) {
+    return e.forEach((t) => {
+      h(this, N, i(this, N).concat(t.clone().factors));
+    }), this;
+  }
+  one() {
+    return h(this, N, [new fe("1", "1")]), this;
+  }
+  opposite() {
+    const e = i(this, N).findIndex((t) => t.display === "(-1)");
+    return e >= 0 ? i(this, N).splice(e, 1) : i(this, N).push(new fe("-1", "1")), this;
+  }
+  pow(e) {
+    return h(this, N, i(this, N).map((t) => t.pow(e))), this;
+  }
+  primitive() {
+    throw new Error("Method not implemented.");
+  }
+  reduce() {
+    const e = Wt(this);
+    return h(this, N, Object.values(e).map((t) => {
+      const s = t[0].polynom, r = t.reduce((n, l) => n.add(l.power), new c("0"));
+      return new fe(s, r.reduce());
+    }).filter((t) => !t.power.isZero())), this;
+  }
+  root(e) {
+    return h(this, N, i(this, N).map((t) => t.root(e))), this;
+  }
+  sort() {
+    return h(this, N, i(this, N).sort((e, t) => e.degree().isLeq(t.degree()) ? -1 : 1)), this;
+  }
+  sqrt() {
+    return h(this, N, i(this, N).map((e) => e.sqrt())), this;
+  }
+  subtract(...e) {
+    return this.add(...e.map((t) => t.opposite()));
+  }
+  zero() {
+    return h(this, N, [new fe("0", "1")]), this;
+  }
+  static gcd(...e) {
+    var s;
+    if (e.length === 0)
+      return new me().one();
+    if (e.length === 1)
+      return e[0];
+    if (e.length === 2)
+      return M(s = me, lt, Yt).call(s, e[0], e[1]);
+    let t = e[0];
+    return e.shift(), e.forEach((r) => {
+      var n;
+      return t = M(n = me, lt, Yt).call(n, t, r);
+    }), t;
+  }
+  // #endregion Properties and methods (25)
+  // #region Getters And Setters (5)
+  get factors() {
+    return i(this, N);
+  }
+  set factors(e) {
+    h(this, N, e);
+  }
+  get variables() {
+    return i(this, N).reduce((e, t) => e.concat(t.variables), []);
+  }
+  get asRoot() {
+    return h(this, Ve, Ue.ROOT), this;
+  }
+  get asPower() {
+    return h(this, Ve, Ue.POWER), this;
+  }
+  get numerator() {
+    return i(this, N).filter((e) => e.power.isPositive());
+  }
+  get denominator() {
+    return i(this, N).filter((e) => e.power.isNegative());
+  }
+  get display() {
+    let e = [], t = [];
+    if (i(this, Ve) === Ue.ROOT ? (e = this.numerator, t = this.denominator.map((n) => n.clone().inverse())) : e = i(this, N), e.length === 0 && (e = [new fe("1")]), t.length === 0)
+      return e.length === 1 ? e[0].asSingle.display : e.map((n) => n.display).join("");
+    const s = e.length === 1 ? e[0].asSingle.display : e.map((n) => n.display).join(""), r = t.length === 1 ? t[0].asSingle.display : t.map((n) => n.display).join("");
+    return `(${s})/(${r})`;
+  }
+  get tex() {
+    let e = [], t = [];
+    if (i(this, Ve) === Ue.ROOT ? (e = this.numerator, t = this.denominator.map((n) => n.clone().inverse())) : e = i(this, N), e.length === 0 && (e = [new fe("1")]), t.length === 0)
+      return e.length === 1 ? e[0].asSingle.tex : e.map((n) => n.tex).join("");
+    const s = e.length === 1 ? e[0].asSingle.tex : e.map((n) => n.tex).join(""), r = t.length === 1 ? t[0].asSingle.tex : t.map((n) => n.tex).join("");
+    return `\\frac{ ${s} }{ ${r} }`;
+  }
+  // #endregion Private methods (1)
+};
+N = new WeakMap(), Ve = new WeakMap(), lt = new WeakSet(), Yt = function(e, t) {
+  const s = Wt(e), r = Wt(t), l = Object.keys(s).filter((u) => Object.hasOwn(r, u)).map((u) => {
+    const p = s[u].reduce((g, E) => g.add(E.power), new c("0")), m = r[u].reduce((g, E) => g.add(E.power), new c("0"));
+    return new fe(u, c.min(p, m));
+  });
+  return new me(...l);
+}, f(me, lt);
+let Xt = me;
+function Wt(o) {
+  const e = new c().one(), t = o.factors.reduce((s, r) => {
+    if (r.polynom.degree().isZero())
+      return r.polynom.monoms.length > 0 && e.multiply(r.polynom.monoms[0].coefficient), s;
+    const n = r.polynom.display;
+    return Object.hasOwn(s, n) ? s[n].push(r) : s[n] = [r], s;
+  }, {});
+  return e.isOne() || (t[e.display] = [new fe(e.display, 1)]), t;
+}
 var k, Ie, Bt, Rt;
 const Ge = class Ge {
   constructor(...e) {

@@ -2,6 +2,7 @@ import type { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, li
 import { Fraction } from "../coefficients/fraction"
 import { Factor, FACTOR_DISPLAY } from "./factor"
 import { Polynom } from "./polynom"
+import {Equation} from "./equation"
 
 // #region Classes (1)
 
@@ -46,6 +47,11 @@ export class PolyFactor implements
         return this
     }
 
+    public fromPolynom(polynom: InputAlgebra<Polynom>, letter?: string):this {
+        // Find all factors from a polynom
+        this.#factors = new Polynom(polynom).factorize(letter).map(value=>new Factor(value))
+        return this
+    }
     public clone(): PolyFactor {
         return new PolyFactor(...this.#factors.map(f => f.clone()))
     }

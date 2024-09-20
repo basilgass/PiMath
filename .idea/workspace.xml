@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Updating line.ts&#10;parseBy... becomes from...&#10;new Line().fromPoints(), ....">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/line3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line3.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/line.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/line.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/temp.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/temp.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,6 +83,7 @@
     "Vitest.Linear System creation.executor": "Run",
     "Vitest.Linear System operations.add two Linear Systems.executor": "Run",
     "Vitest.Linear System operations.subtract two Linear Systems.executor": "Run",
+    "Vitest.PolyFactor creation.create a PolyFactor from a Polynom.executor": "Run",
     "Vitest.Polynom comparisons.equal Polynom.executor": "Run",
     "Vitest.Polynom comparisons.executor": "Run",
     "Vitest.Polynom comparisons.is Polynom developed.executor": "Run",
@@ -168,35 +165,7 @@
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.Line creation.create Line through two points">
-    <configuration name="Debug tests.4" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/temp.test.ts" />
-      <test-names>
-        <test-name value="Debug tests" />
-        <test-name value="4" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="Debug tests.ba" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/temp.test.ts" />
-      <test-names>
-        <test-name value="Debug tests" />
-        <test-name value="ba" />
-      </test-names>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Vitest.PolyFactor creation.create a PolyFactor from a Polynom">
     <configuration name="Line creation.create Line through two points" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -225,16 +194,40 @@
       </test-names>
       <method v="2" />
     </configuration>
+    <configuration name="PolyFactor creation.create a PolyFactor from a Polynom" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
+      <test-names>
+        <test-name value="PolyFactor creation" />
+        <test-name value="create a PolyFactor from a Polynom" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <configuration name="line.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/geometry/line.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/geometry">
+      <method v="2" />
+    </configuration>
+    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Vitest.PolyFactor creation.create a PolyFactor from a Polynom" />
+        <item itemvalue="npm.build" />
         <item itemvalue="Vitest.Line creation.create Line through two points" />
         <item itemvalue="Node.js.line.ts" />
         <item itemvalue="Vitest.Line creation.create Line" />
-        <item itemvalue="Vitest.Debug tests.4" />
-        <item itemvalue="Vitest.Debug tests.ba" />
       </list>
     </recent_temporary>
   </component>
@@ -273,7 +266,7 @@
       <workItem from="1726600577719" duration="104000" />
       <workItem from="1726724654619" duration="3918000" />
       <workItem from="1726743934387" duration="8881000" />
-      <workItem from="1726764390300" duration="4566000" />
+      <workItem from="1726764390300" duration="5838000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -283,7 +276,15 @@
       <option name="project" value="LOCAL" />
       <updated>1726231020240</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Updating line.ts&#10;parseBy... becomes from...&#10;new Line().fromPoints(), ....">
+      <option name="closed" value="true" />
+      <created>1726823025175</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1726823025175</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -291,7 +292,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning" />
-    <option name="LAST_COMMIT_MESSAGE" value="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning" />
+    <MESSAGE value="Updating line.ts&#10;parseBy... becomes from...&#10;new Line().fromPoints(), ...." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updating line.ts&#10;parseBy... becomes from...&#10;new Line().fromPoints(), ...." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
