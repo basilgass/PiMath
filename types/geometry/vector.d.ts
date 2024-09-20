@@ -47,6 +47,7 @@ export declare class Vector implements IPiMathObject<Vector> {
     divideByScalar: (k: InputValue<Fraction>) => this;
     simplify: () => this;
     angle: (V: Vector, sharp?: boolean, radian?: boolean) => number;
+    fromString: (value: string) => this;
     distanceTo(item: Vector): {
         value: number;
         fraction: Fraction;

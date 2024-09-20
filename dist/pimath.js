@@ -1,22 +1,22 @@
-var Ti = Object.defineProperty;
-var ri = (o) => {
+var qi = Object.defineProperty;
+var si = (o) => {
   throw TypeError(o);
 };
-var Ai = (o, e, t) => e in o ? Ti(o, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : o[e] = t;
-var a = (o, e, t) => Ai(o, typeof e != "symbol" ? e + "" : e, t), Gt = (o, e, t) => e.has(o) || ri("Cannot " + t);
-var i = (o, e, t) => (Gt(o, e, "read from private field"), t ? t.call(o) : e.get(o)), f = (o, e, t) => e.has(o) ? ri("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(o) : e.set(o, t), h = (o, e, t, s) => (Gt(o, e, "write to private field"), s ? s.call(o, t) : e.set(o, t), t), M = (o, e, t) => (Gt(o, e, "access private method"), t);
-function Mi(o) {
-  const e = oi(o), t = [];
+var Ti = (o, e, t) => e in o ? qi(o, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : o[e] = t;
+var a = (o, e, t) => Ti(o, typeof e != "symbol" ? e + "" : e, t), Ut = (o, e, t) => e.has(o) || si("Cannot " + t);
+var i = (o, e, t) => (Ut(o, e, "read from private field"), t ? t.call(o) : e.get(o)), f = (o, e, t) => e.has(o) ? si("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(o) : e.set(o, t), h = (o, e, t, s) => (Ut(o, e, "write to private field"), s ? s.call(o, t) : e.set(o, t), t), M = (o, e, t) => (Ut(o, e, "access private method"), t);
+function Ai(o) {
+  const e = ni(o), t = [];
   let s, r;
   for (; e.length > 0; )
     s = e.shift() ?? 1, r = (e.length > 0 ? e.pop() : +s) ?? 1, t.push([s, r]);
   return t;
 }
-function Ii(...o) {
-  const e = ei(...o);
+function Mi(...o) {
+  const e = _t(...o);
   return o.map((t) => t / e);
 }
-function oi(o) {
+function ni(o) {
   const e = Math.abs(o), t = Math.sqrt(e), s = [];
   for (let r = 1; r <= t; r++)
     o % r === 0 && (s.push(r), s.push(e / r));
@@ -24,7 +24,7 @@ function oi(o) {
     return r - n;
   }), [...new Set(s)];
 }
-function ei(...o) {
+function _t(...o) {
   const e = function(r, n) {
     return n === 0 ? r : e(n, r % n);
   };
@@ -39,44 +39,44 @@ function ei(...o) {
     ;
   return Math.abs(t);
 }
-function Ci(...o) {
+function Ii(...o) {
   return o.reduce(function(e, t) {
-    return Math.abs(e * t / ei(e, t));
+    return Math.abs(e * t / _t(e, t));
   });
 }
-function $i(o, e = 3) {
+function Ci(o, e = 3) {
   return +o.toFixed(e);
 }
-function Pi(o) {
+function $i(o) {
   if (Number.isSafeInteger(o) || o.toString().split(".")[0].length < 10)
     return 0;
   throw new Error("Periodic value: Not implemented yet");
 }
-function Si(o) {
+function Pi(o) {
   const e = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249, 1259, 1277, 1279, 1283, 1289, 1291, 1297, 1301, 1303, 1307, 1319, 1321, 1327, 1361, 1367, 1373, 1381, 1399, 1409, 1423, 1427, 1429, 1433, 1439, 1447, 1451, 1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499, 1511, 1523, 1531, 1543, 1549, 1553, 1559, 1567, 1571, 1579, 1583, 1597, 1601, 1607, 1609, 1613, 1619, 1621, 1627, 1637, 1657, 1663, 1667, 1669, 1693, 1697, 1699, 1709, 1721, 1723, 1733, 1741, 1747, 1753, 1759, 1777, 1783, 1787, 1789, 1801, 1811, 1823, 1831, 1847, 1861, 1867, 1871, 1873, 1877, 1879, 1889, 1901, 1907, 1913, 1931, 1933, 1949, 1951, 1973, 1979, 1987, 1993, 1997, 1999, 2003, 2011, 2017, 2027, 2029, 2039, 2053, 2063, 2069, 2081, 2083, 2087, 2089, 2099, 2111, 2113, 2129, 2131, 2137, 2141, 2143, 2153, 2161, 2179, 2203, 2207, 2213, 2221, 2237, 2239, 2243, 2251, 2267, 2269, 2273, 2281, 2287, 2293, 2297, 2309, 2311, 2333, 2339, 2341, 2347, 2351, 2357, 2371, 2377, 2381, 2383, 2389, 2393, 2399, 2411, 2417, 2423, 2437, 2441, 2447, 2459, 2467, 2473, 2477, 2503, 2521, 2531, 2539, 2543, 2549, 2551, 2557, 2579, 2591, 2593, 2609, 2617, 2621, 2633, 2647, 2657, 2659, 2663, 2671, 2677, 2683, 2687, 2689, 2693, 2699, 2707, 2711, 2713, 2719, 2729, 2731, 2741, 2749, 2753, 2767, 2777, 2789, 2791, 2797, 2801, 2803, 2819, 2833, 2837, 2843, 2851, 2857, 2861, 2879, 2887, 2897, 2903, 2909, 2917, 2927, 2939, 2953, 2957, 2963, 2969, 2971, 2999, 3001, 3011, 3019, 3023, 3037, 3041, 3049, 3061, 3067, 3079, 3083, 3089, 3109, 3119, 3121, 3137, 3163, 3167, 3169, 3181, 3187, 3191, 3203, 3209, 3217, 3221, 3229, 3251, 3253, 3257, 3259, 3271, 3299, 3301, 3307, 3313, 3319, 3323, 3329, 3331, 3343, 3347, 3359, 3361, 3371, 3373, 3389, 3391, 3407, 3413, 3433, 3449, 3457, 3461, 3463, 3467, 3469, 3491, 3499, 3511, 3517, 3527, 3529, 3533, 3539, 3541, 3547, 3557, 3559, 3571, 3581, 3583, 3593, 3607, 3613, 3617, 3623, 3631, 3637, 3643, 3659, 3671, 3673, 3677, 3691, 3697, 3701, 3709, 3719, 3727, 3733, 3739, 3761, 3767, 3769, 3779, 3793, 3797, 3803, 3821, 3823, 3833, 3847, 3851, 3853, 3863, 3877, 3881, 3889, 3907, 3911, 3917, 3919, 3923, 3929, 3931, 3943, 3947, 3967, 3989, 4001, 4003, 4007, 4013, 4019, 4021, 4027, 4049, 4051, 4057, 4073, 4079, 4091, 4093, 4099, 4111, 4127, 4129, 4133, 4139, 4153, 4157, 4159, 4177, 4201, 4211, 4217, 4219, 4229, 4231, 4241, 4243, 4253, 4259, 4261, 4271, 4273, 4283, 4289, 4297, 4327, 4337, 4339, 4349, 4357, 4363, 4373, 4391, 4397, 4409, 4421, 4423, 4441, 4447, 4451, 4457, 4463, 4481, 4483, 4493, 4507, 4513, 4517, 4519, 4523, 4547, 4549, 4561, 4567, 4583, 4591, 4597, 4603, 4621, 4637, 4639, 4643, 4649, 4651, 4657, 4663, 4673, 4679, 4691, 4703, 4721, 4723, 4729, 4733, 4751, 4759, 4783, 4787, 4789, 4793, 4799, 4801, 4813, 4817, 4831, 4861, 4871, 4877, 4889, 4903, 4909, 4919, 4931, 4933, 4937, 4943, 4951, 4957, 4967, 4969, 4973, 4987, 4993, 4999, 5003, 5009, 5011, 5021, 5023, 5039, 5051, 5059, 5077, 5081, 5087, 5099, 5101, 5107, 5113, 5119, 5147, 5153, 5167, 5171, 5179, 5189, 5197, 5209, 5227, 5231, 5233, 5237, 5261, 5273, 5279, 5281, 5297, 5303, 5309, 5323, 5333, 5347, 5351, 5381, 5387, 5393, 5399, 5407, 5413, 5417, 5419, 5431, 5437, 5441, 5443, 5449, 5471, 5477, 5479, 5483, 5501, 5503, 5507, 5519, 5521, 5527, 5531, 5557, 5563, 5569, 5573, 5581, 5591, 5623, 5639, 5641, 5647, 5651, 5653, 5657, 5659, 5669, 5683, 5689, 5693, 5701, 5711, 5717, 5737, 5741, 5743, 5749, 5779, 5783, 5791, 5801, 5807, 5813, 5821, 5827, 5839, 5843, 5849, 5851, 5857, 5861, 5867, 5869, 5879, 5881, 5897, 5903, 5923, 5927, 5939, 5953, 5981, 5987, 6007, 6011, 6029, 6037, 6043, 6047, 6053, 6067, 6073, 6079, 6089, 6091, 6101, 6113, 6121, 6131, 6133, 6143, 6151, 6163, 6173, 6197, 6199, 6203, 6211, 6217, 6221, 6229, 6247, 6257, 6263, 6269, 6271, 6277, 6287, 6299, 6301, 6311, 6317, 6323, 6329, 6337, 6343, 6353, 6359, 6361, 6367, 6373, 6379, 6389, 6397, 6421, 6427, 6449, 6451, 6469, 6473, 6481, 6491, 6521, 6529, 6547, 6551, 6553, 6563, 6569, 6571, 6577, 6581, 6599, 6607, 6619, 6637, 6653, 6659, 6661, 6673, 6679, 6689, 6691, 6701, 6703, 6709, 6719, 6733, 6737, 6761, 6763, 6779, 6781, 6791, 6793, 6803, 6823, 6827, 6829, 6833, 6841, 6857, 6863, 6869, 6871, 6883, 6899, 6907, 6911, 6917, 6947, 6949, 6959, 6961, 6967, 6971, 6977, 6983, 6991, 6997, 7001, 7013, 7019, 7027, 7039, 7043, 7057, 7069, 7079, 7103, 7109, 7121, 7127, 7129, 7151, 7159, 7177, 7187, 7193, 7207, 7211, 7213, 7219, 7229, 7237, 7243, 7247, 7253, 7283, 7297, 7307, 7309, 7321, 7331, 7333, 7349, 7351, 7369, 7393, 7411, 7417, 7433, 7451, 7457, 7459, 7477, 7481, 7487, 7489, 7499, 7507, 7517, 7523, 7529, 7537, 7541, 7547, 7549, 7559, 7561, 7573, 7577, 7583, 7589, 7591, 7603, 7607, 7621, 7639, 7643, 7649, 7669, 7673, 7681, 7687, 7691, 7699, 7703, 7717, 7723, 7727, 7741, 7753, 7757, 7759, 7789, 7793, 7817, 7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919, 7927, 7933, 7937, 7949, 7951, 7963, 7993, 8009, 8011, 8017, 8039, 8053, 8059, 8069, 8081, 8087, 8089, 8093, 8101, 8111, 8117, 8123, 8147, 8161, 8167, 8171, 8179, 8191, 8209, 8219, 8221, 8231, 8233, 8237, 8243, 8263, 8269, 8273, 8287, 8291, 8293, 8297, 8311, 8317, 8329, 8353, 8363, 8369, 8377, 8387, 8389, 8419, 8423, 8429, 8431, 8443, 8447, 8461, 8467, 8501, 8513, 8521, 8527, 8537, 8539, 8543, 8563, 8573, 8581, 8597, 8599, 8609, 8623, 8627, 8629, 8641, 8647, 8663, 8669, 8677, 8681, 8689, 8693, 8699, 8707, 8713, 8719, 8731, 8737, 8741, 8747, 8753, 8761, 8779, 8783, 8803, 8807, 8819, 8821, 8831, 8837, 8839, 8849, 8861, 8863, 8867, 8887, 8893, 8923, 8929, 8933, 8941, 8951, 8963, 8969, 8971, 8999, 9001, 9007, 9011, 9013, 9029, 9041, 9043, 9049, 9059, 9067, 9091, 9103, 9109, 9127, 9133, 9137, 9151, 9157, 9161, 9173, 9181, 9187, 9199, 9203, 9209, 9221, 9227, 9239, 9241, 9257, 9277, 9281, 9283, 9293, 9311, 9319, 9323, 9337, 9341, 9343, 9349, 9371, 9377, 9391, 9397, 9403, 9413, 9419, 9421, 9431, 9433, 9437, 9439, 9461, 9463, 9467, 9473, 9479, 9491, 9497, 9511, 9521, 9533, 9539, 9547, 9551, 9587, 9601, 9613, 9619, 9623, 9629, 9631, 9643, 9649, 9661, 9677, 9679, 9689, 9697, 9719, 9721, 9733, 9739, 9743, 9749, 9767, 9769, 9781, 9787, 9791, 9803, 9811, 9817, 9829, 9833, 9839, 9851, 9857, 9859, 9871, 9883, 9887, 9901, 9907, 9923, 9929, 9931, 9941, 9949, 9967, 9973];
   return o === void 0 ? e : e.slice(0, Math.min(e.length, o));
 }
-function Bi(o, e) {
+function Si(o, e) {
   const t = [], s = e === !0 ? +o : o ** 2;
   for (let r = 0; r <= o; r++)
     for (let n = 0; n <= o; n++)
       r ** 2 + n ** 2 === s && t.push([r, n, o]);
   return t;
 }
-function Ri(o, e = 2) {
+function Bi(o, e = 2) {
   return +`${Math.round(+`${o}e${e}`)}e-${e}`;
 }
 const G = {
-  decompose: Mi,
-  dividers: oi,
-  divideNumbersByGCD: Ii,
-  gcd: ei,
-  lcm: Ci,
-  numberCorrection: $i,
-  periodic: Pi,
-  primes: Si,
-  pythagoreanTripletsWithTarget: Bi,
-  round: Ri
+  decompose: Ai,
+  dividers: ni,
+  divideNumbersByGCD: Mi,
+  gcd: _t,
+  lcm: Ii,
+  numberCorrection: Ci,
+  periodic: $i,
+  primes: Pi,
+  pythagoreanTripletsWithTarget: Si,
+  round: Bi
 };
 var w, b, ot, Be;
 const $ = class $ {
@@ -394,20 +394,20 @@ class ft {
   }
 }
 Z = new WeakMap(), J = new WeakMap(), se = new WeakMap(), We = new WeakMap();
-var hi = (o) => {
+var oi = (o) => {
   throw TypeError(o);
-}, ai = (o, e, t) => e.has(o) || hi("Cannot " + t), K = (o, e, t) => (ai(o, e, "read from private field"), t ? t.call(o) : e.get(o)), tt = (o, e, t) => e.has(o) ? hi("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(o) : e.set(o, t), be = (o, e, t, s) => (ai(o, e, "write to private field"), e.set(o, t), t);
-const li = {
+}, hi = (o, e, t) => e.has(o) || oi("Cannot " + t), K = (o, e, t) => (hi(o, e, "read from private field"), t ? t.call(o) : e.get(o)), tt = (o, e, t) => e.has(o) ? oi("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(o) : e.set(o, t), be = (o, e, t, s) => (hi(o, e, "write to private field"), e.set(o, t), t);
+const ai = {
   pi: Math.PI,
   e: Math.exp(1)
 };
 var d = /* @__PURE__ */ ((o) => (o.VARIABLE = "variable", o.COEFFICIENT = "coefficient", o.OPERATION = "operation", o.CONSTANT = "constant", o.FUNCTION = "function", o.FUNCTION_ARGUMENT = "function-argument", o.MONOM = "monom", o.LEFT_PARENTHESIS = "(", o.RIGHT_PARENTHESIS = ")", o))(d || {}), it = /* @__PURE__ */ ((o) => (o.EXPRESSION = "expression", o.POLYNOM = "polynom", o.SET = "set", o.NUMERIC = "numeric", o))(it || {});
-function zi(o, e) {
+function Ri(o, e) {
   if (o.length <= 1)
     return o;
   const t = Object.keys(e).filter((E) => e[E].type === d.FUNCTION).map((E) => E);
   t.sort((E, L) => L.length - E.length);
-  const s = new RegExp(`^(${t.join("|")})\\(`), r = Object.keys(li);
+  const s = new RegExp(`^(${t.join("|")})\\(`), r = Object.keys(ai);
   r.sort((E, L) => L.length - E.length);
   const n = new RegExp(`^(${r.join("|")})`), l = /^(\d+(\.\d+)?)/;
   let u = "", p, m, g;
@@ -444,20 +444,20 @@ function zi(o, e) {
       }
     if (g === void 0 || m === void 0)
       throw new Error("The token is undefined");
-    u += ki(p, m), u += g;
+    u += zi(p, m), u += g;
   }
   return u;
 }
-function ki(o, e) {
+function zi(o, e) {
   return o === void 0 || o === d.OPERATION || e === d.OPERATION || o === d.LEFT_PARENTHESIS || o === d.FUNCTION || o === d.FUNCTION_ARGUMENT || e === d.RIGHT_PARENTHESIS || e === d.FUNCTION_ARGUMENT ? "" : "*";
 }
-const Li = {
+const ki = {
   "^": { precedence: 4, associative: "right", type: d.OPERATION },
   "*": { precedence: 3, associative: "left", type: d.OPERATION },
   "/": { precedence: 3, associative: "left", type: d.OPERATION },
   "+": { precedence: 2, associative: "left", type: d.OPERATION },
   "-": { precedence: 2, associative: "left", type: d.OPERATION }
-}, Di = {
+}, Li = {
   "^": { precedence: 4, associative: "right", type: d.OPERATION },
   "*": { precedence: 3, associative: "left", type: d.OPERATION },
   "/": { precedence: 3, associative: "left", type: d.OPERATION },
@@ -470,7 +470,7 @@ const Li = {
   sqrt: { precedence: 4, associative: "right", type: d.FUNCTION },
   nthrt: { precedence: 4, associative: "right", type: d.FUNCTION },
   ",": { precedence: 2, associative: "left", type: d.FUNCTION_ARGUMENT }
-}, Zi = {
+}, Di = {
   "^": { precedence: 4, associative: "right", type: d.OPERATION },
   "*": { precedence: 3, associative: "left", type: d.OPERATION },
   "/": { precedence: 3, associative: "left", type: d.OPERATION },
@@ -484,14 +484,14 @@ const Li = {
   nthrt: { precedence: 4, associative: "right", type: d.FUNCTION },
   ln: { precedence: 4, associative: "right", type: d.FUNCTION },
   log: { precedence: 4, associative: "right", type: d.FUNCTION }
-}, Vi = {
+}, Zi = {
   "&": { precedence: 3, associative: "left", type: d.OPERATION },
   "|": { precedence: 3, associative: "left", type: d.OPERATION },
   "!": { precedence: 4, associative: "right", type: d.OPERATION },
   "-": { precedence: 2, associative: "left", type: d.OPERATION }
 };
 var je, st, ie, dt, ke;
-class ci {
+class li {
   constructor(e) {
     tt(this, je), tt(this, st, []), tt(this, ie, {}), tt(this, dt, []), tt(this, ke), be(this, je, typeof e > "u" ? it.POLYNOM : e), this.tokenConfigInitialization();
   }
@@ -503,7 +503,7 @@ class ci {
     return K(this, st).map((e) => e.token);
   }
   tokenConfigInitialization() {
-    return K(this, je) === it.SET ? (be(this, ie, Vi), be(this, ke, !1)) : K(this, je) === it.NUMERIC ? (be(this, ie, Zi), be(this, ke, !0)) : K(this, je) === it.EXPRESSION ? (be(this, ie, Di), be(this, ke, !0)) : (be(this, ie, Li), be(this, ke, !0)), be(this, dt, Object.keys(K(this, ie)).sort((e, t) => t.length - e.length)), K(this, ie);
+    return K(this, je) === it.SET ? (be(this, ie, Zi), be(this, ke, !1)) : K(this, je) === it.NUMERIC ? (be(this, ie, Di), be(this, ke, !0)) : K(this, je) === it.EXPRESSION ? (be(this, ie, Li), be(this, ke, !0)) : (be(this, ie, ki), be(this, ke, !0)), be(this, dt, Object.keys(K(this, ie)).sort((e, t) => t.length - e.length)), K(this, ie);
   }
   /**
    * Get the next token to analyse.
@@ -524,7 +524,7 @@ class ci {
           s += n, r = K(this, ie)[n].type;
           break;
         }
-      for (const n in li)
+      for (const n in ai)
         if (e.substring(t, t + n.length) === n) {
           s += n, r = d.CONSTANT;
           break;
@@ -552,7 +552,7 @@ class ci {
   parse(e, t) {
     const s = [], r = [];
     let n = "", l = 0, u;
-    (t ?? K(this, ke)) && (e = zi(e, K(this, ie)));
+    (t ?? K(this, ke)) && (e = Ri(e, K(this, ie)));
     const p = 50;
     let m = 50, g;
     for (; l < e.length; ) {
@@ -878,7 +878,7 @@ const P = class P {
       return t;
     });
     f(this, bt, (e) => {
-      const s = new ci().parse(e).rpn, r = [];
+      const s = new li().parse(e).rpn, r = [];
       if (s.length === 0)
         return this.zero(), this;
       if (s.length === 1) {
@@ -1097,8 +1097,8 @@ a(P, "xMultiply", (...e) => {
   return t;
 });
 let I = P;
-var ue, De, S, ye, rt, ui, fi, di, Ht, pi;
-const ii = class ii {
+var ue, De, S, ye, rt, ci, ui, fi, Wt, di;
+const ti = class ti {
   constructor(e, t, s = "x") {
     f(this, S);
     f(this, ue);
@@ -1111,20 +1111,20 @@ const ii = class ii {
   }
   solve() {
     if (i(this, ue).degree().isOne())
-      return M(this, S, ui).call(this);
+      return M(this, S, ci).call(this);
     if (i(this, ue).degree().value === 2)
-      return M(this, S, fi).call(this);
-    const e = M(this, S, pi).call(this);
+      return M(this, S, ui).call(this);
+    const e = M(this, S, di).call(this);
     if (e.length > 0)
       return e;
     if (i(this, ue).degree().value === 3)
-      return M(this, S, Ht).call(this);
+      return M(this, S, Wt).call(this);
     throw new Error("The equation degree is too high.");
   }
   solveAsCardan() {
     if (i(this, ue).degree().value !== 3)
       throw new Error("The equation is not cubic.");
-    return M(this, S, Ht).call(this);
+    return M(this, S, Wt).call(this);
   }
 };
 ue = new WeakMap(), De = new WeakMap(), S = new WeakSet(), ye = function(e) {
@@ -1146,12 +1146,12 @@ ue = new WeakMap(), De = new WeakMap(), S = new WeakSet(), ye = function(e) {
     tex: (t == null ? void 0 : t.tex) ?? "",
     display: (t == null ? void 0 : t.display) ?? ""
   };
-}, ui = function() {
+}, ci = function() {
   const e = i(this, ue).monomByDegree(0).coefficient.clone().opposite().divide(i(this, ue).monomByDegree(1).coefficient);
   return [
     M(this, S, ye).call(this, e)
   ];
-}, fi = function() {
+}, ui = function() {
   const e = i(this, ue), t = e.monomByDegree(2).coefficient, s = e.monomByDegree(1).coefficient, r = e.monomByDegree(0).coefficient, n = s.clone().pow(2).subtract(t.clone().multiply(r).multiply(4));
   if (n.isNegative())
     return [];
@@ -1162,14 +1162,14 @@ ue = new WeakMap(), De = new WeakMap(), S = new WeakSet(), ye = function(e) {
       M(this, S, ye).call(this, p)
     ].sort((m, g) => m.value - g.value);
   }
-  return M(this, S, di).call(this, t, s, n);
-}, di = function(e, t, s) {
+  return M(this, S, fi).call(this, t, s, n);
+}, fi = function(e, t, s) {
   const r = G.dividers(s.value).filter((pe) => Math.sqrt(pe) % 1 === 0).map((pe) => Math.sqrt(pe)).pop() ?? 1, n = G.gcd(2 * e.value, t.value, r) * (e.isNegative() ? -1 : 1), l = t.clone().divide(n).opposite(), u = e.clone().divide(n).multiply(2), p = s.clone().divide(r ** 2), m = Math.abs(r / n), g = r === 1 ? "-" : `-${m} `, E = r === 1 ? "+" : `+${m} `;
-  function L(pe, ce, et, Ut) {
-    return `\\frac{ ${ce} ${et}\\sqrt{ ${Ut} } }{ ${pe} }`;
+  function L(pe, ce, et, jt) {
+    return `\\frac{ ${ce} ${et}\\sqrt{ ${jt} } }{ ${pe} }`;
   }
-  function te(pe, ce, et, Ut) {
-    return `(${ce}${et}sqrt(${Ut}))/${pe}`;
+  function te(pe, ce, et, jt) {
+    return `(${ce}${et}sqrt(${jt}))/${pe}`;
   }
   const ae = s.value ** 0.5, le = (-t.value - ae) / (2 * e.value), ge = (-t.value + ae) / (2 * e.value);
   return [
@@ -1182,7 +1182,7 @@ ue = new WeakMap(), De = new WeakMap(), S = new WeakSet(), ye = function(e) {
       display: te(u.display, l.display, E.toString(), p.display)
     })
   ].sort((pe, ce) => pe.value - ce.value);
-}, Ht = function() {
+}, Wt = function() {
   const e = i(this, ue), t = e.monomByDegree(3).coefficient, s = e.monomByDegree(2).coefficient, r = e.monomByDegree(1).coefficient, n = e.monomByDegree(0).coefficient, l = s.clone().divide(t), u = r.clone().divide(t), p = n.clone().divide(t), m = u.clone().subtract(l.clone().pow(2).divide(3)), g = p.clone().subtract(l.clone().multiply(u).divide(3)).add(l.clone().pow(3).multiply(2).divide(27)), E = g.clone().opposite(), L = m.clone().opposite().pow(3).divide(27), te = E.clone().pow(2).subtract(L.clone().multiply(4)).opposite();
   if (te.isNegative()) {
     const ae = g.clone().opposite().add(te.clone().opposite().sqrt()).divide(2).root(3), le = g.clone().opposite().subtract(te.clone().opposite().sqrt()).divide(2).root(3), ge = ae.clone().add(le).subtract(l.clone().divide(3));
@@ -1202,7 +1202,7 @@ ue = new WeakMap(), De = new WeakMap(), S = new WeakSet(), ye = function(e) {
     return ae.map((ce) => M(this, S, rt).call(this, ce)).sort((ce, et) => ce.value - et.value);
   }
   return [];
-}, pi = function() {
+}, di = function() {
   let e = i(this, ue).clone(), t = [];
   const s = e.lcmDenominator();
   s !== 1 && e.multiply(s);
@@ -1229,11 +1229,11 @@ ue = new WeakMap(), De = new WeakMap(), S = new WeakSet(), ye = function(e) {
     return [];
   const p = e.clone().parse("0");
   console.log(e.display), console.log(p.display);
-  const m = new ii(e, e.clone().parse("0"), i(this, De));
+  const m = new ti(e, e.clone().parse("0"), i(this, De));
   return t = t.concat(m.solve()), t.sort((g, E) => g.value - E.value);
 };
-let gt = ii;
-var Ze, y, Xe, ht, Et, Nt, Ot, qt, at, Tt, At, Mt, It, mi, Ct, Ye, $t;
+let gt = ti;
+var Ze, y, Xe, ht, Et, Nt, Ot, qt, at, Tt, At, Mt, It, pi, Ct, Ye, $t;
 const C = class C {
   constructor(e, ...t) {
     f(this, It);
@@ -1249,7 +1249,7 @@ const C = class C {
      */
     a(this, "parse", (e, ...t) => {
       if (h(this, y, []), h(this, Ze, []), typeof e == "string")
-        return M(this, It, mi).call(this, e, ...t);
+        return M(this, It, pi).call(this, e, ...t);
       if ((typeof e == "number" || e instanceof c || e instanceof I) && t.length === 0)
         i(this, y).push(new I(e));
       else if (e instanceof I && t.length > 0)
@@ -1693,7 +1693,7 @@ const C = class C {
      * @param inputStr
      */
     f(this, $t, (e) => {
-      const s = new ci().parse(e).rpn;
+      const s = new li().parse(e).rpn;
       this.zero();
       const r = [];
       for (const n of s)
@@ -1758,7 +1758,7 @@ const C = class C {
   }
   // #endregion Private methods (15)
 };
-Ze = new WeakMap(), y = new WeakMap(), Xe = new WeakMap(), ht = new WeakMap(), Et = new WeakMap(), Nt = new WeakMap(), Ot = new WeakMap(), qt = new WeakMap(), at = new WeakMap(), Tt = new WeakMap(), At = new WeakMap(), Mt = new WeakMap(), It = new WeakSet(), mi = function(e, ...t) {
+Ze = new WeakMap(), y = new WeakMap(), Xe = new WeakMap(), ht = new WeakMap(), Et = new WeakMap(), Nt = new WeakMap(), Ot = new WeakMap(), qt = new WeakMap(), at = new WeakMap(), Tt = new WeakMap(), At = new WeakMap(), Mt = new WeakMap(), It = new WeakSet(), pi = function(e, ...t) {
   if (t.length === 0) {
     if (e = "" + e, e !== "" && !isNaN(Number(e))) {
       this.empty();
@@ -1788,7 +1788,7 @@ Ze = new WeakMap(), y = new WeakMap(), Xe = new WeakMap(), ht = new WeakMap(), E
     return this.zero();
 }, Ct = new WeakMap(), Ye = new WeakMap(), $t = new WeakMap();
 let T = C;
-function ni(o, e = !0) {
+function ri(o, e = !0) {
   return e ? `\\left( ${o} \\right)` : `(${o})`;
 }
 var Ee, Qe, Ne, Oe;
@@ -1843,7 +1843,7 @@ const we = class we {
   get display() {
     const e = this.power.numerator, t = this.power.denominator;
     let s, r;
-    return i(this, Ee) === 0 && t > 1 ? (s = `${t === 2 ? "sqrt" : `root(${t})`}(${this.polynom.display})`, r = Math.abs(e) === 1 ? "" : `^(${Math.abs(e)})`) : (s = i(this, Qe) && this.power.isOne() ? this.polynom.display : ni(this.polynom.display, !1), r = t === 1 && Math.abs(e) === 1 ? "" : `^(${this.power.display})`), s = `${s}${r}`, i(this, Ee) === 0 && e < 0 && (s = `1/(${s})`), s;
+    return i(this, Ee) === 0 && t > 1 ? (s = `${t === 2 ? "sqrt" : `root(${t})`}(${this.polynom.display})`, r = Math.abs(e) === 1 ? "" : `^(${Math.abs(e)})`) : (s = i(this, Qe) && this.power.isOne() ? this.polynom.display : ri(this.polynom.display, !1), r = t === 1 && Math.abs(e) === 1 ? "" : `^(${this.power.display})`), s = `${s}${r}`, i(this, Ee) === 0 && e < 0 && (s = `1/(${s})`), s;
   }
   divide(e) {
     if (e instanceof we && this.isSameAs(e))
@@ -1922,7 +1922,7 @@ const we = class we {
   get tex() {
     const e = this.power.numerator, t = this.power.denominator;
     let s, r;
-    return i(this, Ee) === 0 && t > 1 ? (s = `\\sqrt${t === 2 ? "" : `[ ${t} ]`}{ ${this.polynom.tex} }`, r = Math.abs(e) === 1 ? "" : `^{ ${Math.abs(e)} }`) : (s = i(this, Qe) && this.power.isOne() ? this.polynom.tex : ni(this.polynom.tex), r = t === 1 && Math.abs(e) === 1 ? "" : `^{ ${this.power.tex} }`), s = `${s}${r}`, i(this, Ee) === 0 && e < 0 && (s = `\\frac{ 1 }{ ${s} }`), s;
+    return i(this, Ee) === 0 && t > 1 ? (s = `\\sqrt${t === 2 ? "" : `[ ${t} ]`}{ ${this.polynom.tex} }`, r = Math.abs(e) === 1 ? "" : `^{ ${Math.abs(e)} }`) : (s = i(this, Qe) && this.power.isOne() ? this.polynom.tex : ri(this.polynom.tex), r = t === 1 && Math.abs(e) === 1 ? "" : `^{ ${this.power.tex} }`), s = `${s}${r}`, i(this, Ee) === 0 && e < 0 && (s = `\\frac{ 1 }{ ${s} }`), s;
   }
   get variables() {
     return this.polynom.variables;
@@ -2173,7 +2173,7 @@ const xe = class xe {
 };
 q = new WeakMap(), A = new WeakMap(), re = new WeakMap(), Pt = new WeakMap(), Ke = new WeakMap(), St = new WeakMap();
 let H = xe;
-var N, Ve, lt, Yt;
+var N, Ve, lt, Xt;
 const me = class me {
   // #endregion Class fields (1)
   // #region Constructors (1)
@@ -2269,7 +2269,7 @@ const me = class me {
     throw new Error("Method not implemented.");
   }
   reduce() {
-    const e = Wt(this);
+    const e = Gt(this);
     return h(this, N, Object.values(e).map((t) => {
       const s = t[0].polynom, r = t.reduce((n, l) => n.add(l.power), new c("0"));
       return new fe(s, r.reduce());
@@ -2297,11 +2297,11 @@ const me = class me {
     if (e.length === 1)
       return e[0];
     if (e.length === 2)
-      return M(s = me, lt, Yt).call(s, e[0], e[1]);
+      return M(s = me, lt, Xt).call(s, e[0], e[1]);
     let t = e[0];
     return e.shift(), e.forEach((r) => {
       var n;
-      return t = M(n = me, lt, Yt).call(n, t, r);
+      return t = M(n = me, lt, Xt).call(n, t, r);
     }), t;
   }
   // #endregion Properties and methods (25)
@@ -2343,15 +2343,15 @@ const me = class me {
   }
   // #endregion Private methods (1)
 };
-N = new WeakMap(), Ve = new WeakMap(), lt = new WeakSet(), Yt = function(e, t) {
-  const s = Wt(e), r = Wt(t), l = Object.keys(s).filter((u) => Object.hasOwn(r, u)).map((u) => {
+N = new WeakMap(), Ve = new WeakMap(), lt = new WeakSet(), Xt = function(e, t) {
+  const s = Gt(e), r = Gt(t), l = Object.keys(s).filter((u) => Object.hasOwn(r, u)).map((u) => {
     const p = s[u].reduce((g, E) => g.add(E.power), new c("0")), m = r[u].reduce((g, E) => g.add(E.power), new c("0"));
     return new fe(u, c.min(p, m));
   });
   return new me(...l);
 }, f(me, lt);
-let Xt = me;
-function Wt(o) {
+let Ht = me;
+function Gt(o) {
   const e = new c().one(), t = o.factors.reduce((s, r) => {
     if (r.polynom.degree().isZero())
       return r.polynom.monoms.length > 0 && e.multiply(r.polynom.monoms[0].coefficient), s;
@@ -2532,13 +2532,13 @@ const Ge = class Ge {
   }
 };
 k = new WeakMap(), Ie = new WeakMap(), Bt = new WeakMap(), Rt = new WeakMap();
-let Qt = Ge;
-function Fi(o, e) {
+let Yt = Ge;
+function Vi(o, e) {
   return o.dimension === e.dimension && o.array.every(
     (t, s) => e.array[s].isEqual(t)
   );
 }
-function ji(o, e) {
+function Fi(o, e) {
   if (o.dimension !== e.dimension)
     return !1;
   const t = e.array[0].value / o.array[0].value;
@@ -2546,13 +2546,13 @@ function ji(o, e) {
     (s, r) => e.array[r].value === s.value * t
   );
 }
-function Ui(o, e) {
+function ji(o, e) {
   return o.dimension !== e.dimension ? new c().invalid() : o.array.reduce(
     (t, s, r) => t.add(s.clone().multiply(e.array[r])),
     new c(0)
   );
 }
-function Gi(...o) {
+function Ui(...o) {
   return o.some((e) => e.dimension !== o[0].dimension) ? new c().invalid() : o[0].dimension === 2 && o.length !== 2 ? new c().invalid() : o[0].dimension === 3 && o.length !== 3 ? new c().invalid() : o[0].dimension === 2 ? o[0].array[0].clone().multiply(o[1].array[1]).subtract(o[0].array[1].clone().multiply(o[1].array[0])) : o[0].array[0].clone().multiply(
     o[1].array[1].clone().multiply(o[2].array[2]).subtract(o[1].array[2].clone().multiply(o[2].array[1]))
   ).subtract(
@@ -2561,7 +2561,7 @@ function Gi(...o) {
     )
   ).add(o[0].array[2].clone().multiply(o[1].array[0].clone().multiply(o[2].array[1]).subtract(o[1].array[1].clone().multiply(o[2].array[0]))));
 }
-var V, ze, zt;
+var V, ze;
 const Se = class Se {
   constructor(...e) {
     f(this, V, []);
@@ -2575,15 +2575,15 @@ const Se = class Se {
       const e = this.norm;
       return e === 0 ? this : this.divideByScalar(e);
     });
-    a(this, "dot", (e) => Ui(this, e));
+    a(this, "dot", (e) => ji(this, e));
     a(this, "normal", () => {
       if (this.dimension >= 3)
         throw new Error("Normal vector can only be determined in 2D");
       const e = this.x.clone().opposite(), t = this.y.clone();
       return i(this, V)[0] = t, i(this, V)[1] = e, this;
     });
-    a(this, "isEqual", (e) => Fi(this, e));
-    a(this, "isColinearTo", (e) => ji(this, e));
+    a(this, "isEqual", (e) => Vi(this, e));
+    a(this, "isColinearTo", (e) => Fi(this, e));
     a(this, "isNormalTo", (e) => this.dot(e).isZero());
     a(this, "multiplyByScalar", (e) => {
       const t = new c(e);
@@ -2601,7 +2601,7 @@ const Se = class Se {
       let r = this.dot(e).value;
       return t && (r = Math.abs(r)), (s ? 1 : 180 / Math.PI) * Math.acos(r / (this.norm * e.norm));
     });
-    f(this, zt, (e) => {
+    a(this, "fromString", (e) => {
       e.startsWith("(") && (e = e.substring(1)), e.endsWith(")") && (e = e.substring(0, e.length - 1));
       const t = e.split(/[,;\s]/g).filter((s) => s.trim() !== "");
       return t.length < 2 ? this : (h(this, V, t.map((s) => new c(s))), this);
@@ -2692,7 +2692,7 @@ const Se = class Se {
       if (e[0] instanceof Se)
         return e[0].clone();
       if (typeof e[0] == "string")
-        return i(this, zt).call(this, e[0]);
+        return this.fromString(e[0]);
       throw new Error("Invalid value");
     }
     if (e.length === 2) {
@@ -2746,9 +2746,9 @@ const Se = class Se {
     };
   }
 };
-V = new WeakMap(), ze = new WeakMap(), zt = new WeakMap();
+V = new WeakMap(), ze = new WeakMap();
 let x = Se;
-function gi(o = 0.5) {
+function mi(o = 0.5) {
   return Math.random() < o;
 }
 function de(o, e, t) {
@@ -2766,19 +2766,19 @@ function de(o, e, t) {
   return s;
 }
 function X(o, e) {
-  return e === !1 ? gi() ? de(1, o) : -de(1, o) : de(-o, o);
+  return e === !1 ? mi() ? de(1, o) : -de(1, o) : de(-o, o);
 }
-function Wi(o) {
+function Gi(o) {
   let e = G.primes();
-  return o !== void 0 && (e = e.filter((t) => t < o)), ti(e);
+  return o !== void 0 && (e = e.filter((t) => t < o)), ei(e);
 }
-function Hi(o, e) {
-  return e === void 0 && (e = 1), o.length <= 0 ? Object.values(o) : yi(o).slice(0, e);
+function Wi(o, e) {
+  return e === void 0 && (e = 1), o.length <= 0 ? Object.values(o) : gi(o).slice(0, e);
 }
-function ti(o) {
+function ei(o) {
   return o.length === 0 ? null : o[de(0, o.length - 1)];
 }
-function yi(o) {
+function gi(o) {
   const e = Object.values(o);
   for (let t = e.length - 1; t > 0; t--) {
     const s = Math.floor(Math.random() * (t + 1)), r = e[t];
@@ -2791,15 +2791,11 @@ class D extends x {
     super(), e.length > 0 && this.parse(...e);
   }
   parse(...e) {
-    if (this.asPoint = !0, e.length === 0) {
+    if (this.asPoint = !0, e.length === 1) {
       if (e[0] instanceof x)
         return this.array = e[0].copy(), this;
-      if (typeof e[0] == "string") {
-        const t = e[0].replaceAll("(", "").replaceAll(")", "").split(",").map((s) => new c(s));
-        if (t.some((s) => s.isNaN()))
-          throw new Error("The value is not a valid point sting (a,b): " + e[0]);
-        this.array = t;
-      }
+      if (typeof e[0] == "string")
+        return this.fromString(e[0]), this;
     }
     if (e.length > 1) {
       if (e.some((s) => s instanceof x))
@@ -2816,7 +2812,7 @@ class D extends x {
     return e.array = this.copy(), e.asPoint = !0, e;
   }
 }
-var wi = /* @__PURE__ */ ((o) => (o.None = "none", o.Parallel = "parallel", o.Perpendicular = "perpendicular", o.Tangent = "tangent", o))(wi || {}), Ce, B, R, U, ne, Y, $e, ve;
+var yi = /* @__PURE__ */ ((o) => (o.None = "none", o.Parallel = "parallel", o.Perpendicular = "perpendicular", o.Tangent = "tangent", o))(yi || {}), Ce, B, R, U, ne, Y, $e, ve;
 const Le = class Le {
   /**
    * Value can be a mix of:
@@ -3122,8 +3118,8 @@ const Le = class Le {
 Ce = new WeakMap(), B = new WeakMap(), R = new WeakMap(), U = new WeakMap(), ne = new WeakMap(), Y = new WeakMap(), $e = new WeakMap(), ve = new WeakMap(), // A line is defined as the canonical form
 a(Le, "PERPENDICULAR", "perpendicular"), a(Le, "PARALLEL", "parallel");
 let j = Le;
-var oe, F, qe, kt, Lt, Dt, he, vi, mt, bi, xi, Ei, Kt;
-const Zt = class Zt {
+var oe, F, qe, zt, kt, Lt, he, wi, mt, vi, bi, xi, Qt;
+const Dt = class Dt {
   constructor(...e) {
     f(this, he);
     f(this, oe);
@@ -3147,7 +3143,7 @@ const Zt = class Zt {
       const s = i(this, qe).clone(), r = e.getEquation().clone().isolate("x"), n = e.getEquation().clone().isolate("y");
       return r instanceof H && n instanceof H && (s.replaceBy("y", n.right).simplify(), s.solve()), t;
     });
-    a(this, "tangents", (e) => e instanceof c ? i(this, Dt).call(this, e) : this.isPointOnCircle(e) ? i(this, kt).call(this, e) : i(this, oe) !== void 0 && i(this, oe).distanceTo(e).value > this.radius.value ? (i(this, Lt).call(this, e), []) : (console.log("No tangents as the point is inside !"), []));
+    a(this, "tangents", (e) => e instanceof c ? i(this, Lt).call(this, e) : this.isPointOnCircle(e) ? i(this, zt).call(this, e) : i(this, oe) !== void 0 && i(this, oe).distanceTo(e).value > this.radius.value ? (i(this, kt).call(this, e), []) : (console.log("No tangents as the point is inside !"), []));
     a(this, "isPointOnCircle", (e) => {
       var t;
       return ((t = i(this, qe)) == null ? void 0 : t.test({ x: e.x, y: e.y })) ?? !1;
@@ -3164,15 +3160,15 @@ const Zt = class Zt {
           );
       }), s;
     });
-    f(this, kt, (e) => {
+    f(this, zt, (e) => {
       const t = new D(this.center, e);
-      return [new j(e, t, wi.Perpendicular)];
+      return [new j(e, t, yi.Perpendicular)];
     });
-    f(this, Lt, (e) => {
+    f(this, kt, (e) => {
       const t = this.center.x.clone().subtract(e.x), s = this.center.y.clone().subtract(e.y), r = new T("x"), n = new T("x^2+1");
       r.multiply(t).subtract(s).pow(2), n.multiply(this.squareRadius), new H(r, n).moveLeft().simplify().solve();
     });
-    f(this, Dt, (e) => {
+    f(this, Lt, (e) => {
       const t = e.numerator, s = -e.denominator, r = this.center.x.clone(), n = this.center.y.clone(), l = this.squareRadius.clone().multiply(e.numerator ** 2 + e.denominator ** 2), u = r.clone().multiply(t).opposite().subtract(n.clone().multiply(s)).add(l.clone().sqrt()), p = r.clone().multiply(t).opposite().subtract(n.clone().multiply(s)).subtract(l.clone().sqrt());
       return [new j(t, s, u), new j(t, s, p)];
     });
@@ -3212,7 +3208,7 @@ const Zt = class Zt {
     return this.center.x.isZero() ? e = "x^2" : e = `(x${this.center.x.isNegative() ? "+" : "-"}${this.center.x.clone().abs().tex})^2`, this.center.y.isZero() ? t = "y^2" : t = `(y${this.center.y.isNegative() ? "+" : "-"}${this.center.y.clone().abs().tex})^2`, `${e}+${t}=${this.squareRadius.display}`;
   }
   clone() {
-    return new Zt(
+    return new Dt(
       this.center.clone(),
       this.squareRadius.clone(),
       !0
@@ -3222,7 +3218,7 @@ const Zt = class Zt {
     return t ? h(this, F, new c(e)) : h(this, F, new c(e).pow(2)), M(this, he, mt).call(this), this;
   }
   parse(...e) {
-    return M(this, he, vi).call(this), typeof e[0] == "string" ? M(this, he, Kt).call(this, new H(e[0])) : e[0] instanceof H ? M(this, he, Kt).call(this, e[0]) : e[0] instanceof Zt ? M(this, he, bi).call(this, e[0]) : e[0] instanceof D && e.length > 1 && (e[1] instanceof D ? e[2] instanceof D || M(this, he, Ei).call(this, e[0], e[1]) : (e[1] instanceof c || typeof e[1] == "number") && M(this, he, xi).call(this, e[0], e[1], typeof e[2] == "boolean" ? e[2] : !1)), M(this, he, mt).call(this), this;
+    return M(this, he, wi).call(this), typeof e[0] == "string" ? M(this, he, Qt).call(this, new H(e[0])) : e[0] instanceof H ? M(this, he, Qt).call(this, e[0]) : e[0] instanceof Dt ? M(this, he, vi).call(this, e[0]) : e[0] instanceof D && e.length > 1 && (e[1] instanceof D ? e[2] instanceof D || M(this, he, xi).call(this, e[0], e[1]) : (e[1] instanceof c || typeof e[1] == "number") && M(this, he, bi).call(this, e[0], e[1], typeof e[2] == "boolean" ? e[2] : !1)), M(this, he, mt).call(this), this;
   }
   // private _parseThroughtThreePoints(A: Point, B: Point, C: Point): this {
   //     const T = new Triangle(A, B, C), mAB = T.remarquables.mediators.AB.clone(),
@@ -3231,20 +3227,20 @@ const Zt = class Zt {
   //     return this
   // }
 };
-oe = new WeakMap(), F = new WeakMap(), qe = new WeakMap(), kt = new WeakMap(), Lt = new WeakMap(), Dt = new WeakMap(), he = new WeakSet(), vi = function() {
+oe = new WeakMap(), F = new WeakMap(), qe = new WeakMap(), zt = new WeakMap(), kt = new WeakMap(), Lt = new WeakMap(), he = new WeakSet(), wi = function() {
   return h(this, oe, void 0), h(this, F, void 0), h(this, qe, void 0), this;
 }, mt = function() {
   h(this, qe, new H(
     new T(`(x-(${this.center.x.display}))^2+(y-(${this.center.y.display}))^2`),
     new T(this.squareRadius.display)
   ).moveLeft());
-}, bi = function(e) {
+}, vi = function(e) {
   return h(this, oe, e.center.clone()), h(this, F, e.squareRadius.clone()), M(this, he, mt).call(this), this;
-}, xi = function(e, t, s) {
+}, bi = function(e, t, s) {
   return h(this, oe, e.clone()), s ? h(this, F, new c(t)) : h(this, F, new c(t).pow(2)), this;
-}, Ei = function(e, t) {
+}, xi = function(e, t) {
   return h(this, oe, e.clone()), h(this, F, new x(i(this, oe), t).normSquare), this;
-}, Kt = function(e) {
+}, Qt = function(e) {
   if (e.moveLeft(), e.degree("x").value === 2 && e.degree("y").value === 2) {
     const t = e.left.monomByDegree(2, "x"), s = e.left.monomByDegree(2, "y");
     let r, n, l;
@@ -3252,9 +3248,9 @@ oe = new WeakMap(), F = new WeakMap(), qe = new WeakMap(), kt = new WeakMap(), L
   }
   return this;
 };
-let yt = Zt;
-var Q, _, ee, Je, Te, ct, Vt, ut, Pe, Ft, _e;
-const jt = class jt {
+let yt = Dt;
+var Q, _, ee, Je, Te, ct, Zt, ut, Pe, Vt, _e;
+const Ft = class Ft {
   constructor(...e) {
     f(this, Q);
     f(this, _);
@@ -3306,14 +3302,14 @@ const jt = class jt {
           BC: new j(i(this, _), i(this, ee)),
           AC: new j(i(this, Q), i(this, ee))
         }));
-      } else if (e.length === 1 && e[0] instanceof jt)
+      } else if (e.length === 1 && e[0] instanceof Ft)
         return e[0].clone();
-      return i(this, Vt).call(this), this;
+      return i(this, Zt).call(this), this;
     });
     /**
      * Clone the Triangle class
      */
-    a(this, "clone", () => new jt(
+    a(this, "clone", () => new Ft(
       i(this, Q).clone(),
       i(this, _).clone(),
       i(this, ee).clone()
@@ -3324,12 +3320,12 @@ const jt = class jt {
     /**
      * Generate the Line object for the three segments of the triangle
      */
-    f(this, Vt, () => {
+    f(this, Zt, () => {
       h(this, Te, {
         AB: new D().middleOf(i(this, Q), i(this, _)),
         AC: new D().middleOf(i(this, Q), i(this, ee)),
         BC: new D().middleOf(i(this, _), i(this, ee))
-      }), h(this, ct, i(this, Ft).call(this));
+      }), h(this, ct, i(this, Vt).call(this));
     });
     /**
      * Get the Vector2D class for the given name
@@ -3355,7 +3351,7 @@ const jt = class jt {
       i(this, ut).call(this, e),
       i(this, ut).call(this, t)
     ));
-    f(this, Ft, () => {
+    f(this, Vt, () => {
       const e = {
         A: new j(i(this, Q), i(this, Te).BC),
         B: new j(i(this, _), i(this, Te).AC),
@@ -3446,8 +3442,8 @@ const jt = class jt {
     return i(this, ct);
   }
 };
-Q = new WeakMap(), _ = new WeakMap(), ee = new WeakMap(), Je = new WeakMap(), Te = new WeakMap(), ct = new WeakMap(), Vt = new WeakMap(), ut = new WeakMap(), Pe = new WeakMap(), Ft = new WeakMap(), _e = new WeakMap();
-let Jt = jt;
+Q = new WeakMap(), _ = new WeakMap(), ee = new WeakMap(), Je = new WeakMap(), Te = new WeakMap(), ct = new WeakMap(), Zt = new WeakMap(), ut = new WeakMap(), Pe = new WeakMap(), Vt = new WeakMap(), _e = new WeakMap();
+let Kt = Ft;
 var z, W;
 const nt = class nt {
   constructor(e, t) {
@@ -3559,7 +3555,7 @@ z = new WeakMap(), W = new WeakMap(), // A line is defined as the canonical form
 a(nt, "PERPENDICULAR", "perpendicular"), a(nt, "PARALLEL", "parallel");
 let wt = nt;
 var Ae, Fe;
-const si = class si {
+const ii = class ii {
   constructor(e) {
     f(this, Ae, new x(0, 0, 1));
     f(this, Fe, new D(0, 0, 0));
@@ -3624,7 +3620,7 @@ const si = class si {
     }
   }
   angle(e, t, s) {
-    if (e instanceof si)
+    if (e instanceof ii)
       return this.normal.angle(e.normal, t, s);
     let r;
     if (e instanceof x) {
@@ -3650,9 +3646,9 @@ const si = class si {
   }
 };
 Ae = new WeakMap(), Fe = new WeakMap();
-let _t = si;
+let Jt = ii;
 var Me;
-class Xi {
+class Hi {
   constructor(...e) {
     f(this, Me, []);
     return h(this, Me, e), this;
@@ -3672,7 +3668,7 @@ class Xi {
   determinant() {
     if (!this.isSquare())
       throw new Error("Matrix is not square");
-    return Gi(...this.values);
+    return Ui(...this.values);
   }
 }
 Me = new WeakMap();
@@ -3696,7 +3692,7 @@ function vt(o) {
   }
   return e.reduced ? t.reduce() : t;
 }
-function Ni(o) {
+function Ei(o) {
   const e = Object.assign(
     {
       letters: "x",
@@ -3714,14 +3710,14 @@ function Ni(o) {
     for (const s of e.letters.split(""))
       t.setLetter(s, 0);
     for (let s = 0; s < e.degree; s++) {
-      const r = ti(e.letters.split(""));
+      const r = ei(e.letters.split(""));
       t.setLetter(r, t.degree(r).clone().add(1));
     }
   } else
     t.setLetter(e.letters, e.degree);
   return t;
 }
-const Yi = {
+const Xi = {
   letters: "x",
   degree: 2,
   fraction: !1,
@@ -3732,14 +3728,14 @@ const Yi = {
   numberOfMonoms: 0,
   positive: !0
 };
-function Oi(o) {
+function Ni(o) {
   const e = Object.assign(
-    Yi,
+    Xi,
     o
   ), t = new T().empty();
   let s;
   for (let r = e.degree; r >= 0; r--)
-    s = Ni({
+    s = Ei({
       letters: e.letters,
       degree: r,
       fraction: e.fraction,
@@ -3752,7 +3748,7 @@ function Oi(o) {
     }
   return t;
 }
-function Qi(o) {
+function Yi(o) {
   const e = Object.assign(
     {
       letters: "x",
@@ -3774,7 +3770,7 @@ function Qi(o) {
     o
   ), t = new T().one();
   for (let s = 0; s < e.degree; s++) {
-    const r = Oi({
+    const r = Ni({
       degree: 1,
       unit: e.unit,
       fraction: e.fraction,
@@ -3785,7 +3781,7 @@ function Qi(o) {
   }
   return new H(t, 0);
 }
-function qi(o) {
+function Oi(o) {
   const e = Object.assign(
     {
       axis: !0,
@@ -3797,7 +3793,7 @@ function qi(o) {
   ), t = e.axis === "x", s = e.axis === "y", r = e.fraction ? vt({ max: e.max, zero: t }) : new c(X(e.max, t)), n = e.fraction ? vt({ max: e.max, zero: s }) : new c(X(e.max, s));
   return Number(e.quadrant) === 1 && (r.abs(), n.abs()), Number(e.quadrant) === 2 && (r.isPositive() && r.opposite(), n.isNegative() && n.opposite()), Number(e.quadrant) === 3 && (r.isPositive() && r.opposite(), n.isPositive() && n.opposite()), Number(e.quadrant) === 4 && (r.isNegative() && r.opposite(), n.isPositive() && n.opposite()), new D(r, n);
 }
-function Ki(o) {
+function Qi(o) {
   const e = Object.assign(
     {
       center: {
@@ -3807,11 +3803,11 @@ function Ki(o) {
       pointsOnCircle: 8
     },
     o
-  ), t = qi(e.center);
+  ), t = Oi(e.center);
   let s, r;
   return e.pointsOnCircle === 8 ? (s = de(1, 3), r = s ** 2 + (s + 1) ** 2) : r = de(1, 20), new yt(t, r, !0);
 }
-function Ji(o) {
+function Ki(o) {
   const e = Object.assign(
     {
       A: {
@@ -3828,7 +3824,7 @@ function Ji(o) {
     t.x = X(10), t.y = X(10);
   return e.slope === 1 ? t.x.sign() !== t.y.sign() && t.y.opposite() : e.slope === -1 && t.x.sign() !== t.y.sign() && t.y.opposite(), new j(new x(e.A.x, e.A.y), t);
 }
-function _i(o) {
+function Ji(o) {
   const e = Object.assign(
     {
       A: {
@@ -3846,45 +3842,45 @@ function _i(o) {
   ), t = new D(e.A.x, e.A.y, e.A.z), s = new x(e.direction.x, e.direction.y, e.direction.z);
   return new wt(t, s);
 }
-const es = {
-  equation: (o) => Qi(o),
-  polynom: (o) => Oi(o),
-  monom: (o) => Ni(o),
+const _i = {
+  equation: (o) => Yi(o),
+  polynom: (o) => Ni(o),
+  monom: (o) => Ei(o),
   fraction: (o) => vt(o),
   number: (o, e, t) => de(o, e, t),
   numberSym: (o, e) => X(o, e),
-  prime: (o) => Wi(o),
-  bool: (o) => gi(o),
-  array: (o, e) => Hi(o, e),
-  item: (o) => ti(o),
-  shuffle: (o) => yi(o),
-  line: (o) => Ji(o),
-  line3: (o) => _i(o),
-  point: (o) => qi(o),
-  circle: (o) => Ki(o)
-}, ts = {
+  prime: (o) => Gi(o),
+  bool: (o) => mi(o),
+  array: (o, e) => Wi(o, e),
+  item: (o) => ei(o),
+  shuffle: (o) => gi(o),
+  line: (o) => Ki(o),
+  line3: (o) => Ji(o),
+  point: (o) => Oi(o),
+  circle: (o) => Qi(o)
+}, es = {
   Vector: x,
   Point: D,
   Line: j,
-  Triangle: Jt,
+  Triangle: Kt,
   Circle: yt,
   Line3: wt,
-  Plane3: _t
-}, ss = {
+  Plane3: Jt
+}, is = {
   Numeric: G,
   Fraction: c,
   Root: ft,
   Monom: I,
   Polynom: T,
   Equation: H,
-  Matrix: Xi,
-  LinearSystem: Qt,
+  Matrix: Hi,
+  LinearSystem: Yt,
   Factor: fe,
-  PolyFactor: Xt,
+  PolyFactor: Ht,
   // LogicalSet,
-  Random: es,
-  Geometry: ts
+  Random: _i,
+  Geometry: es
 };
 export {
-  ss as default
+  is as default
 };

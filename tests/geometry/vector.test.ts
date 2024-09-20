@@ -1,5 +1,6 @@
 import {describe, test, expect} from "vitest"
 import {Vector} from "../../src/geometry/vector"
+import {Point} from "../../src/geometry/point"
 
 
 describe('Vector creation', () => {
@@ -8,11 +9,22 @@ describe('Vector creation', () => {
         expect(v).toBeDefined()
         expect(v.array.map(x=>x.value)).toEqual([1,2])
     })
-    test('parse string', ()=>{
+    test('parse string (a;b)', ()=>{
         const v = new Vector('(1;2/3)')
         expect(v.x.display).toBe('1')
         expect(v.y.display).toBe('2/3')
     })
+
+    test('parse string a,b', ()=>{
+        const v = new Vector('2,3')
+        expect(v.x.display).toBe('2')
+        expect(v.y.display).toBe('3')
+
+        const p = new Point('2,3')
+        expect(p.x.display).toBe('2')
+        expect(p.y.display).toBe('3')
+    })
+
     test('clone Vector', ()=>{
         const v = new Vector(1,2)
         const clone = v.clone()

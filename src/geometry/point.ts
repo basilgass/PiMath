@@ -25,31 +25,24 @@ export class Point extends Vector {
     public override parse(...values: Vector[] | InputValue<Fraction>[]): this {
         this.asPoint = true
 
-        if (values.length === 0) {
+        if (values.length === 1) {
             if (values[0] instanceof Vector) {
                 this.array = values[0].copy()
                 return this
             }
 
             if (typeof values[0] === 'string') {
-                // Can be something like (6,4/3)
-                const nbs: Fraction[] = values[0]
-                    .replaceAll('(', '').replaceAll(')', '')
-                    .split(',')
-                    .map(x => new Fraction(x))
-
-                if (nbs.some(x => x.isNaN())) {
-                    throw new Error('The value is not a valid point sting (a,b): ' + values[0])
-                }
-                this.array = nbs
+                this.fromString(values[0])
+                return this
             }
-
         }
+
 
         if (values.length > 1) {
             if (values.some(x => x instanceof Vector)) {
                 throw new Error('Creating a point with  multiple argument requires an input fraction')
             }
+
             const nbs: Fraction[] = values.map(x => new Fraction(x as InputValue<Fraction>))
 
             if (nbs.some(x => x.isNaN())) {

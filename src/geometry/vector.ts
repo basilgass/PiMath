@@ -135,7 +135,7 @@ export class Vector implements
             if (values[0] instanceof Vector) {
                 return values[0].clone() as this
             } else if (typeof values[0] === 'string') {
-                return this.#parseString(values[0])
+                return this.fromString(values[0])
             } else {
                 throw new Error(`Invalid value`)
             }
@@ -303,12 +303,14 @@ export class Vector implements
         return toDegree * Math.acos(scalar / (this.norm * V.norm))
     }
 
-    #parseString = (value: string): this => {
-        // Remove the first letter if it's a bracket.
+
+    fromString = (value: string): this => {
+        // Remove the first letter if it's a parenthesis.
         if (value.startsWith('(')) {
             value = value.substring(1)
         }
-        // Remove the last letter if it's a bracket.
+
+        // Remove the last letter if it's a parenthesis.
         if (value.endsWith(')')) {
             value = value.substring(0, value.length - 1)
         }
