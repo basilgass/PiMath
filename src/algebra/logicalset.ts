@@ -2,8 +2,6 @@
  * Polynom module contains everything necessary to handle polynoms.
  * @module Logicalset
  */
-
-
 import {ShutingYard, ShutingyardMode} from "piexpression"
 
 /**

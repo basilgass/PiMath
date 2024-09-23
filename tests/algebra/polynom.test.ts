@@ -2,6 +2,7 @@ import {describe, expect, it, test} from "vitest"
 import {Polynom} from "../../src/algebra/polynom"
 import {Fraction} from "../../src/coefficients/fraction"
 import {Monom} from "../../src/algebra/monom"
+import type {ISolution} from "../../src/pimath.interface"
 
 describe('Polynom creation', () => {
     test('create Polynom', () => {
@@ -12,13 +13,13 @@ describe('Polynom creation', () => {
         expect(P).toBeDefined()
         expect(P.monoms.length).toBe(2)
     })
-    test('create trivial Polynom', ()=>{
+    test('create trivial Polynom', () => {
         const P = new Polynom()
 
         expect(P).toBeDefined()
         expect(P.display).toBe('0')
     })
-    test('create trivial Polynom', ()=>{
+    test('create trivial Polynom', () => {
         const P = new Polynom(6)
 
         expect(P).toBeDefined()
@@ -52,12 +53,12 @@ describe('Polynom creation', () => {
         const P = new Polynom('ax')
         expect(P.display).toBe('ax')
     })
-    test('create Polynom from [x] and numbers', ()=>{
+    test('create Polynom from [x] and numbers', () => {
         const P = new Polynom('x', 2, 3, -4, 5)
 
         expect(P.display).toBe('2x^(3)+3x^(2)-4x+5')
     })
-    test('create Polynom from [xyz] and numbers', ()=>{
+    test('create Polynom from [xyz] and numbers', () => {
         const P = new Polynom('xyz', 2, 3, -4, 5)
 
         expect(P.display).toBe('2x+3y-4z+5')
@@ -97,13 +98,13 @@ describe('Polynom output', () => {
 })
 
 describe('Polynom operations', () => {
-    test('reduce Polynom', ()=>{
+    test('reduce Polynom', () => {
         const P = new Polynom('3x+2x+4-1')
         P.reduce()
 
         expect(P.display).toBe('5x+3')
     })
-    test('reorder Polynom', ()=>{
+    test('reorder Polynom', () => {
         const P = new Polynom('4')
         P.monoms.push(new Monom('-3x'))
 
@@ -111,7 +112,7 @@ describe('Polynom operations', () => {
         P.reorder()
         expect(P.display).toBe('-3x+4')
     })
-    test('add two Polynoms', ()=>{
+    test('add two Polynoms', () => {
         const P = new Polynom('3x-2')
         const Q = new Polynom('2x+5')
 
@@ -121,7 +122,7 @@ describe('Polynom operations', () => {
         expect(P.display).toBe('5x+3')
 
     })
-    test('subtract two Polynoms', ()=>{
+    test('subtract two Polynoms', () => {
         const P = new Polynom('3x-2')
         const Q = new Polynom('2x+5')
 
@@ -130,7 +131,7 @@ describe('Polynom operations', () => {
         expect(Q.display).toBe('2x+5')
         expect(P.display).toBe('x-7')
     })
-    test('multiply two Polynoms', ()=>{
+    test('multiply two Polynoms', () => {
         const P = new Polynom('3x-2')
         const Q = new Polynom('2x+5')
 
@@ -139,14 +140,14 @@ describe('Polynom operations', () => {
         expect(Q.display).toBe('2x+5')
         expect(P.display).toBe('6x^(2)+11x-10')
     })
-    test('divide by Fraction', ()=>{
+    test('divide by Fraction', () => {
         const P = new Polynom('4x^2+6x-8')
 
         P.divide(2)
 
         expect(P.display).toBe('2x^(2)+3x-4')
     })
-    test('divide by Monom', ()=>{
+    test('divide by Monom', () => {
         const P = new Polynom('4x^2-8x')
         const Q = new Monom('2x')
 
@@ -154,7 +155,7 @@ describe('Polynom operations', () => {
 
         expect(P.display).toBe('2x-4')
     })
-    test('divide by Polynom', ()=>{
+    test('divide by Polynom', () => {
         const P = new Polynom('6x^2+11x-10')
         const Q = new Polynom('2x+5')
 
@@ -162,13 +163,13 @@ describe('Polynom operations', () => {
 
         expect(P.display).toBe('3x-2')
     })
-    test('divide by Polynom (not dividable)', ()=>{
+    test('divide by Polynom (not dividable)', () => {
         const P = new Polynom('x^2+2x+1')
         const Q = new Polynom('x+2')
 
-        expect(()=>P.divide(Q)).toThrowError()
+        expect(() => P.divide(Q)).toThrowError()
     })
-    test('raise Polynom by integer', ()=>{
+    test('raise Polynom by integer', () => {
         const P = new Polynom('x+2')
         P.pow(2)
 
@@ -185,7 +186,7 @@ describe('Polynom operations', () => {
         expect(euclidian.quotient.display).toBe('x^(2)+5x-4')
         expect(euclidian.reminder.display).toBe('12')
     })
-    test('derivative of a Polynom', ()=>{
+    test('derivative of a Polynom', () => {
         const P = new Polynom('x^2+3x-2')
 
         expect(P.derivative().display).toBe('2x+3')
@@ -201,16 +202,16 @@ describe('Polynom operations', () => {
 })
 
 describe('Polynom comparisons', () => {
-    test('same Polynom', ()=>{
+    test('same Polynom', () => {
         const P = new Polynom('2x+1')
-        const Q =new Polynom('3')
+        const Q = new Polynom('3')
         const Q2 = new Polynom('x^2+1')
         Q.monoms.push(new Monom('6x'))
 
         expect(Q.isSameAs(P)).toBeTruthy()
         expect(Q2.isSameAs(P)).toBeFalsy()
     })
-    test('equal Polynom', ()=>{
+    test('equal Polynom', () => {
         const P = new Polynom('2x+1')
         const Q = new Polynom('1')
         Q.monoms.push(new Monom('2x'))
@@ -221,14 +222,14 @@ describe('Polynom comparisons', () => {
         expect(P.isEqual(R)).toBeFalsy()
         expect(R.isEqual(R)).toBeTruthy()
     })
-    test('is one Polynom', ()=>{
+    test('is one Polynom', () => {
         const P = new Polynom('1')
         const Q = new Polynom('x')
 
         expect(P.isOne()).toBeTruthy()
         expect(Q.isOne()).toBeFalsy()
     })
-    test('is zero Polynom', ()=>{
+    test('is zero Polynom', () => {
         const P = new Polynom('0')
         const Q = new Polynom('x')
         const R = new Polynom('x-x')
@@ -252,10 +253,10 @@ describe('Polynom comparisons', () => {
 describe.todo('Polynom static functions')
 
 describe('Polynom evaluation', () => {
-    test('evaluate Polynom', ()=>{
+    test('evaluate Polynom', () => {
         const P = new Polynom('2x+1')
 
-        const evalF =P.evaluate(3) as Fraction
+        const evalF = P.evaluate(3) as Fraction
         const evalN = P.evaluate(-2, true) as number
 
         expect(evalF.display).toBe('7')
@@ -263,25 +264,94 @@ describe('Polynom evaluation', () => {
     })
 })
 
-describe.todo('Polynom generators')
+describe('Table of signs of a Polynom', () => {
+    test('first degree', () => {
+        const P = new Polynom('x+3')
+        const tos = P.tableOfSigns()
 
-// describe('Polynom used as complex number', () => {
-//     let P = new Polynom('4+3i')
-//
-//     P.pow(2)
-//
-//     P.monoms.forEach(m => {
-//         const d = m.degree('i').value
-//         if (d >= 2) {
-//             if (d % 2 === 0) {
-//                 m.coefficient = m.coefficient.multiply((-1) ** (d / 2))
-//                 m.setLetter('i', 0)
-//             } else {
-//                 m.coefficient = m.coefficient.multiply((-1) ** ((d - 1) / 2))
-//                 m.setLetter('i', 1)
-//             }
-//         }
-//     })
-//     // console.log(P.reduce().tex)
-//
-// })
+        expect(tos.signs).toEqual(['-', 'z', '+'])
+        expect(tos.roots).toHaveLength(1)
+        expect(tos.roots[0].value).toBe(-3)
+    })
+
+    test('a constant', () => {
+        const P = new Polynom('3')
+        const tos = P.tableOfSigns()
+
+        expect(tos.signs).toEqual(['+'])
+        expect(tos.roots).toHaveLength(0)
+    })
+
+    test('2nd degree (two solutions)', () => {
+        const P = new Polynom('(x-2)(3-x)')
+        const tos = P.tableOfSigns()
+
+        expect(tos.signs).toEqual(['-', 'z', '+', 'z', '-'])
+        expect(tos.roots).toHaveLength(2)
+        expect(tos.roots.map(x => x.value)).toEqual(expect.arrayContaining([3, 2]))
+    })
+
+    test('2nd degree (one solution)', () => {
+        const P = new Polynom('(x-2)^2')
+        const tos = P.tableOfSigns()
+
+        expect(tos.signs).toEqual(['+', 'z', '+'])
+        expect(tos.roots).toHaveLength(1)
+        expect(tos.roots[0].value).toEqual(2)
+    })
+
+    test('2nd degree (no solution)', () => {
+        const P = new Polynom('x^2+2')
+        const tos = P.tableOfSigns()
+
+        expect(tos.signs).toEqual(['+'])
+        expect(tos.roots).toHaveLength(0)
+    })
+
+    test('6th degree (three solutions)', () => {
+        const P = new Polynom('x^3(x-2)^2(x+3)')
+        const tos = P.tableOfSigns()
+
+        expect(tos.signs).toEqual(['+', 'z', '-', 'z', '+', 'z', '+'])
+        expect(tos.roots).toHaveLength(3)
+        expect(tos.roots.map(x => x.value)).toEqual(expect.arrayContaining([0, 2, -3]))
+    })
+
+    function createSolution(value: number): ISolution{
+        return {value: value, tex: '', display: '', exact: true, variable: 'x'}
+    }
+
+    test('2nd degree polynom with extra roots', () => {
+        const P = new Polynom('(x-2)(x+5)') // roots are -5, 2
+        const tos = P.tableOfSigns([
+            createSolution(-8),
+            createSolution(-5),
+            createSolution(-3),
+            createSolution(0),
+            createSolution(2),
+            createSolution(4)
+        ])
+
+        expect(tos.signs).toEqual([
+                '+', 't', '+', 'z',
+                '-', 't', '-', 't',
+                '-', 'z', '+', 't',
+                '+'
+            ]
+        )
+    })
+
+    test('2nd degree polynom with extra roots (and missing zero)', ()=>{
+        const P = new Polynom('(x-2)(x+5)') // roots are -5, 2
+
+        expect(()=>P.tableOfSigns([
+            createSolution(-8),
+            createSolution(-5),
+            createSolution(-3),
+            createSolution(0),
+            createSolution(4)
+        ])).toThrowError()
+
+    })
+})
+describe.todo('Polynom generators')

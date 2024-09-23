@@ -1,11 +1,13 @@
 import type {compareSign, IExpression, InputValue, IPiMathObject} from "../pimath.interface"
 import {Numeric} from "../numeric"
+import {loadConfigFromFile} from "vite"
 
 enum FRAC_TYPE {
     frac = 'frac',
     dfrac = 'dfrac',
-    tfrac= 'tfrac'
+    tfrac = 'tfrac'
 }
+
 /**
  * The fraction class make possible to handle
  * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
@@ -13,9 +15,9 @@ enum FRAC_TYPE {
 export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> {
     // #region Class fields (2)
 
-    #numerator = 1
-    #denominator = 1
     #approximative = false
+    #denominator = 1
+    #numerator = 1
     #type: FRAC_TYPE = FRAC_TYPE.frac
 
     constructor()
@@ -53,8 +55,12 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
                 S = value.split('/')
 
                 // Security checks
-                if (S.length > 2) { throw new Error(`The given value is not a valid fraction (${value})`) }
-                if (S.map(x => x === '' || isNaN(Number(x))).includes(true)) { throw new Error(`The given value is not a valid fraction (${value})`) }
+                if (S.length > 2) {
+                    throw new Error(`The given value is not a valid fraction (${value})`)
+                }
+                if (S.map(x => x === '' || isNaN(Number(x))).includes(true)) {
+                    throw new Error(`The given value is not a valid fraction (${value})`)
+                }
 
                 if (S.length === 1) {
                     // No divide sign - it's a number
@@ -123,6 +129,92 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return F
     }
 
+    public static average = (...fractions: (InputValue<Fraction>)[]): Fraction => {
+        const M = new Fraction().zero()
+
+        for (const f of fractions) {
+            M.add(f)
+        }
+
+        M.divide(fractions.length)
+
+        return M
+    }
+
+    public static max = (...fractions: InputValue<Fraction>[]): Fraction => {
+        let M = new Fraction(fractions[0])
+
+        for (const m of fractions) {
+            const compare = new Fraction(m)
+            if (compare.isGreater(M)) {
+                M = compare.clone()
+            }
+        }
+
+        return M
+    }
+
+    public static min = (...fractions: (InputValue<Fraction>)[]): Fraction => {
+        let M = new Fraction(fractions[0])
+
+        for (const m of fractions) {
+            const compare = new Fraction(m)
+            if (compare.isLesser(M)) {
+                M = compare.clone()
+            }
+        }
+
+        return M
+    }
+
+    public static sort = (fractions: (InputValue<Fraction>)[], reverse?: boolean): Fraction[] => {
+        const fractionsObject: Fraction[] = fractions.map(f => f instanceof Fraction ? f : new Fraction(f))
+
+        const sorted = fractionsObject.sort((a, b) => a.value - b.value)
+
+        if (reverse) {
+            sorted.reverse()
+        }
+
+        return sorted
+    }
+
+    // ------------------------------------------
+    // Compare functions
+
+    public static unique = (fractions: (InputValue<Fraction>)[]): Fraction[] => {
+        const unique: Record<string, boolean> = {},
+            distinct: Fraction[] = []
+
+        fractions.forEach(x => {
+            if (!(x instanceof Fraction)) {
+                x = new Fraction(x)
+            }
+
+            if (!unique[x.clone().reduce().tex]) {
+                distinct.push(x.clone())
+                unique[x.tex] = true
+            }
+        })
+
+        return distinct
+    }
+
+    public static xMultiply = (...values: (InputValue<Fraction>)[]): Fraction => {
+        const R = new Fraction()
+        // Parse the value.
+        // If it's a fraction, return a clone of it
+        // If it's an integer, return the fraction F/1
+        for (const value of values) {
+
+            const F = new Fraction(value)
+            R.numerator = R.numerator * F.numerator
+            R.denominator = R.denominator * F.denominator
+        }
+
+        return R
+    }
+
     public abs = (): this => {
         this.#numerator = Math.abs(this.#numerator)
         this.#denominator = Math.abs(this.#denominator)
@@ -158,9 +250,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     public areEquals = (...F: Fraction[]): boolean => {
         return F.every(f => f.isEqual(F[0]))
     }
-
-    // ------------------------------------------
-    // Compare functions
 
     // ------------------------------------------
     /**
@@ -205,6 +294,31 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         }
     }
 
+    public get denominator(): number {
+        return this.#denominator
+    }
+
+    public set denominator(value: number) {
+        this.#denominator = value
+    }
+
+    public get dfrac(): this {
+        this.#type = FRAC_TYPE.dfrac
+        return this
+    }
+
+    public get display(): string {
+        if (this.isExact()) {
+            if (this.#denominator === 1) {
+                return `${this.#numerator}`
+            } else {
+                return `${this.#numerator}/${this.#denominator}`
+            }
+        } else {
+            return this.value.toFixed(3)
+        }
+    }
+
     public divide = (F: Fraction | number): Fraction => {
         const Q = new Fraction(F)
 
@@ -218,6 +332,11 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         this.#numerator = N * Q.denominator
         this.#denominator = D * Q.numerator
         return this.reduce()
+    }
+
+    public get frac(): this {
+        this.#type = FRAC_TYPE.frac
+        return this
     }
 
     public infinite = (): this => {
@@ -306,6 +425,8 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this.compare(than, '<>')
     }
 
+    // ------------------------------------------
+
     public isNotZero = (): boolean => {
         return this.#numerator !== 0
     }
@@ -350,7 +471,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this.value > 0
     }
 
-    // ------------------------------------------
     // Mathematical operations specific to fractions
     public isZero = (): boolean => {
         return this.#numerator === 0
@@ -368,6 +488,15 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this.reduce()
     }
 
+    // ------------------------------------------
+    public get numerator(): number {
+        return this.#numerator
+    }
+
+    public set numerator(value: number) {
+        this.#numerator = value
+    }
+
     public one = (): this => {
         this.#numerator = 1
         this.#denominator = 1
@@ -378,6 +507,10 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         this.#numerator = -this.#numerator
         return this
     }
+
+    // #endregion Properties and methods (55)
+
+    // #region Getters And Setters (11)
 
     public pow = (p: number | Fraction): Fraction => {
         // TODO: Fraction.pow with a value different than a safe integer !
@@ -425,16 +558,24 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         // TODO: nth - root of a fraction => this will return another type of coefficient.
 
         // Check if they are perfect roots..
-        if (p === 0) { return this }
+        if (p === 0) {
+            return this
+        }
 
         // If negative, inverse the fraction
-        if (p < 0) { this.inverse() }
+        if (p < 0) {
+            this.inverse()
+        }
 
         // if p is not a safe integer, throw error
-        if (!Number.isSafeInteger(p)) { throw new Error("The root must be an integer.") }
+        if (!Number.isSafeInteger(p)) {
+            throw new Error("The root must be an integer.")
+        }
 
         // if the fraction is negative and the root is even, throw error
-        if (this.isNegative() && p % 2 === 0) { throw new Error("The root of a negative number must be odd.") }
+        if (this.isNegative() && p % 2 === 0) {
+            throw new Error("The root of a negative number must be odd.")
+        }
 
         // get the sign of the fraction and make it positive
         const sign = this.sign()
@@ -466,6 +607,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
+    // ------------------------------------------
+    // Getter and setter
+
     public sign = (): number => {
         return (this.#numerator * this.#denominator >= 0) ? 1 : -1
     }
@@ -480,141 +624,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         } else {
             return this.add(-F)
         }
-    }
-
-    public zero = (): this => {
-        this.#numerator = 0
-        this.#denominator = 1
-        return this
-    }
-
-    public static average = (...fractions: (InputValue<Fraction>)[]): Fraction => {
-        const M = new Fraction().zero()
-
-        for (const f of fractions) {
-            M.add(f)
-        }
-
-        M.divide(fractions.length)
-
-        return M
-    }
-
-    public static max = (...fractions: InputValue<Fraction>[]): Fraction => {
-        let M = new Fraction(fractions[0])
-
-        for (const m of fractions) {
-            const compare = new Fraction(m)
-            if (compare.isGreater(M)) {
-                M = compare.clone()
-            }
-        }
-
-        return M
-    }
-
-    public static min = (...fractions: (InputValue<Fraction>)[]): Fraction => {
-        let M = new Fraction(fractions[0])
-
-        for (const m of fractions) {
-            const compare = new Fraction(m)
-            if (compare.isLesser(M)) {
-                M = compare.clone()
-            }
-        }
-
-        return M
-    }
-
-    public static sort = (fractions: (InputValue<Fraction>)[], reverse?: boolean): Fraction[] => {
-        const fractionsObject: Fraction[] = fractions.map(f => f instanceof Fraction ? f : new Fraction(f))
-
-        const sorted = fractionsObject.sort((a, b) => a.value - b.value)
-
-        if (reverse) { sorted.reverse() }
-
-        return sorted
-    }
-
-    public static unique = (fractions: (InputValue<Fraction>)[]): Fraction[] => {
-        const unique: Record<string, boolean> = {},
-            distinct: Fraction[] = []
-
-        fractions.forEach(x => {
-            if (!(x instanceof Fraction)) { x = new Fraction(x) }
-
-            if (!unique[x.clone().reduce().tex]) {
-                distinct.push(x.clone())
-                unique[x.tex] = true
-            }
-        })
-
-        return distinct
-    }
-
-    public static xMultiply = (...values: (InputValue<Fraction>)[]): Fraction => {
-        const R = new Fraction()
-        // Parse the value.
-        // If it's a fraction, return a clone of it
-        // If it's an integer, return the fraction F/1
-        for (const value of values) {
-
-            const F = new Fraction(value)
-            R.numerator = R.numerator * F.numerator
-            R.denominator = R.denominator * F.denominator
-        }
-
-        return R
-    }
-
-    // #endregion Properties and methods (55)
-
-    // #region Getters And Setters (11)
-
-    public get denominator(): number {
-        return this.#denominator
-    }
-
-    public set denominator(value: number) {
-        this.#denominator = value
-    }
-
-    public get display(): string {
-        if (this.isExact()) {
-            if (this.#denominator === 1) {
-                return `${this.#numerator}`
-            } else {
-                return `${this.#numerator}/${this.#denominator}`
-            }
-        } else {
-            return this.value.toFixed(3)
-        }
-    }
-
-    // ------------------------------------------
-    // Getter and setter
-    // ------------------------------------------
-    public get numerator(): number {
-        return this.#numerator
-    }
-
-    public set numerator(value: number) {
-        this.#numerator = value
-    }
-
-    public get tfrac(): this {
-        this.#type = FRAC_TYPE.tfrac
-        return this
-    }
-
-    public get dfrac(): this {
-        this.#type = FRAC_TYPE.dfrac
-        return this
-    }
-
-    public get frac(): this {
-        this.#type = FRAC_TYPE.frac
-        return this
     }
 
     // Display getter
@@ -641,8 +650,20 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this.isPositive() ? `+${this.tex}` : this.tex
     }
 
+    public get tfrac(): this {
+        this.#type = FRAC_TYPE.tfrac
+        return this
+    }
+
     public get value(): number {
-        return this.#numerator / this.#denominator
+        const result = this.#numerator / this.#denominator
+        return result === 0 ? 0 : result
+    }
+
+    public zero = (): this => {
+        this.#numerator = 0
+        this.#denominator = 1
+        return this
     }
 
     // #endregion Getters And Setters (11)

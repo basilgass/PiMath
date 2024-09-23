@@ -7,7 +7,6 @@ import { Factor } from "./algebra/factor"
 import { PolyFactor } from "./algebra/polyFactor"
 import { Equation } from "./algebra/equation"
 import { LinearSystem } from "./algebra/linearSystem"
-// import { LogicalSet } from "./algebra/logicalset.ts"
 import { Circle } from "./geometry/circle"
 import { Line } from "./geometry/line"
 import { Point } from "./geometry/point"
@@ -30,7 +29,7 @@ const Geometry = {
     Triangle: Triangle,
     Circle: Circle,
     Line3: Line3,
-    Plane3: Plane3
+    Plane3: Plane3,
 }
 
 // Make a global object
@@ -53,24 +52,3 @@ const PiMath = {
 
 // Export default value
 export default PiMath
-
-export {
-    Fraction,
-    NthRoot,
-    Monom,
-    Polynom,
-    Factor,
-    PolyFactor,
-    Equation,
-    LinearSystem,
-    Circle,
-    Line,
-    Point,
-    Triangle,
-    Vector,
-    Line3,
-    Plane3,
-    Matrix,
-    NumExp,
-    LogicalSet
-}

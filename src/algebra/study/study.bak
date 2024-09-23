@@ -14,13 +14,6 @@ import type { Rational } from "./rational"
 
 export type StudyableFunction = Rational
 
-
-export enum ZEROTYPE {
-    ZERO = 'z',
-    DEFENCE = 'd',
-    NOTHING = 't'
-}
-
 export interface IZero extends ISolution {
     extrema: FUNCTION_EXTREMA,
     type: ZEROTYPE

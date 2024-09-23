@@ -4,13 +4,6 @@ import {Equation} from "./equation"
 import {Monom} from "./monom"
 import {Polynom} from "./polynom"
 
-// FIXME: Build the LinearSystem class
-// TODO: Example
-// BUG: Don't know what's happening !
-/**
- * Linear system of equations
- * @class LinearSystem
- */
 export class LinearSystem implements IPiMathObject<LinearSystem>,
     IEquation<LinearSystem>,
     IAlgebra<LinearSystem> {

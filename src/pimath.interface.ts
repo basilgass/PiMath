@@ -90,3 +90,5 @@ export interface ISolution {
     tex: string,
     value: number,
 }
+
+export type TABLE_OF_SIGN_VALUES = '-'|'+'|'h'|'z'|'t'|'d'|''

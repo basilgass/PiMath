@@ -4,7 +4,7 @@ import { rndFraction } from "../coefficient/rndFraction"
 import { randomIntSym } from "../rndHelpers"
 import { Point } from "../../geometry/point"
 
-export function rndPoint(userConfig?: randomGeometryPointConfig): Point {
+export function rndVector(userConfig?: randomGeometryPointConfig): Point {
     const config: {
         axis: 'x' | 'y' | 'z' | null,
         fraction: boolean,

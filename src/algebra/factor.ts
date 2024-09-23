@@ -1,7 +1,15 @@
-import type { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType } from "../pimath.interface"
+import type {
+    IAlgebra,
+    IExpression,
+    InputAlgebra,
+    InputValue,
+    IPiMathObject,
+    ISolution,
+    literalType, TABLE_OF_SIGN_VALUES
+} from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
 import { Polynom } from "./polynom"
-import { wrapParenthesis } from "../helpers"
+import {replace_in_array, wrapParenthesis} from "../helpers"
 
 export class Factor implements
     IPiMathObject<Factor>,
@@ -288,9 +296,34 @@ export class Factor implements
         return this
     }
 
+    public tableOfSigns(roots?: ISolution[]): { roots: ISolution[], signs: TABLE_OF_SIGN_VALUES[] } {
+        const pow = this.#power.clone().reduce()
+        const tos = this.#polynom.tableOfSigns(roots)
+
+        // The zero roots becomes defence (d) if the power is negative
+        if (pow.isStrictlyNegative()) {
+            tos.signs = replace_in_array(tos.signs, 'z', 'd')
+        }
+
+        // The - sign becomes
+        // + (plus) if the power num is even and the power den is odd
+        // i (invalid) if the power denominator is even
+        if (pow.denominator % 2 === 0){
+            // it's an even roots : no negative values!
+            tos.signs = replace_in_array(tos.signs, '-', 'h')
+        }else if(pow.numerator % 2 === 0) {
+            // it's an even power :  negative values becomes positive !
+            tos.signs = replace_in_array(tos.signs, '-', '+')
+        }
+
+
+        return {roots: tos.roots, signs: tos.signs}
+    }
+
 }
 
 export enum FACTOR_DISPLAY {
     ROOT,
     POWER
 }
+

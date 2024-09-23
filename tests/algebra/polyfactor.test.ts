@@ -1,8 +1,6 @@
 import { describe, expect, test } from "vitest"
 import { PolyFactor } from "../../src/algebra/polyFactor"
 import { Factor } from "../../src/algebra/factor"
-import {Polynom} from "../../src"
-
 
 describe("PolyFactor creation", () => {
     test('should create a PolyFactor', () => {
@@ -450,5 +448,20 @@ describe("PolyFactor: comparison operations", () => {
         expect(PF.isEqual(PF3)).toBeFalsy()
 
     })
-}
-)
+})
+
+describe('PolyFactor: Table of signs', ()=>{
+    test('compile table of signs of factors', ()=>{
+        const PF = new PolyFactor(
+            new Factor('x-3', 3),
+            new Factor('x-2', 2),
+            new Factor('x+5', '1/2'),
+            new Factor('x', -2)
+        )
+
+        const tos = PF.tableOfSigns()
+
+        expect(tos.roots.map(x=>x.value)).toEqual([-5,0,2,3])
+        expect(tos.signs).toEqual(['h', 'z', '-', 'd', '-', 'z', '-', 'z', '+'])
+    })
+})

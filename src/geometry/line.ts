@@ -262,15 +262,19 @@ export class Line implements IPiMathObject<Line> {
         return this.#c.clone().opposite().divide(this.#b)
     }
 
-    randomPoint = (k?: number): Vector => {
+    randomPoint = (k?: number): Point => {
         // Return a random point on the line.
-        return this.#d
+        const pt = this.#d
             .clone()
             .multiplyByScalar(randomIntSym((k === undefined || k <= 1) ? 3 : k, false))
             .add(this.#OA)
+
+        pt.asPoint = true
+
+        return pt
     }
 
-    randomNearPoint = (k?: number): Vector => {
+    randomNearPoint = (k?: number): Point => {
         const pt = this.randomPoint(k)
 
         let maxIterationTest = 10
@@ -280,6 +284,7 @@ export class Line implements IPiMathObject<Line> {
             maxIterationTest--
 
         }
+
         return pt
     }
 
@@ -510,8 +515,8 @@ export class Line implements IPiMathObject<Line> {
         this.#d.simplify()
         return this
     }
-    intersection = (line: Line): { point: Vector, hasIntersection: boolean, isParallel: boolean, isSame: boolean } => {
-        const Pt = new Vector()
+    intersection = (line: Line): { point: Point, hasIntersection: boolean, isParallel: boolean, isSame: boolean } => {
+        const Pt = new Point()
         let isParallel = false, isSame = false
 
         // this         => ax+by+c = 0
@@ -557,7 +562,7 @@ export class Line implements IPiMathObject<Line> {
         }
     }
 
-    distanceTo(pt: Vector): { value: number, fraction: Fraction, tex: string } {
+    distanceTo(pt: Point): { value: number, fraction: Fraction, tex: string } {
         const numerator = pt.x.clone().multiply(this.#a)
             .add(pt.y.clone().multiply(this.#b))
             .add(this.#c).abs(),

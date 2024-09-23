@@ -1,4 +1,6 @@
-import { Point } from "../src/geometry/vector"
+import {Point} from "../src/geometry/point"
+import {Line} from "../src/geometry/line"
+
 
 const A = new Point(0, 2),
     B = new Point(2, 3),
@@ -8,21 +10,21 @@ const A = new Point(0, 2),
 const L1 = new Line(A, B).simplifyDirection(),
     L2 = new Line(C, D).simplifyDirection()
 
-document.getElementById('app').innerHTML = `<p>\\( ${L1.tex.parametric} \\)</p>`
-document.getElementById('app').innerHTML += `<p>\\( ${L2.tex.parametric} \\)</p>`
+const app = document.getElementById('app') ?? document.createElement('DIV')
+app.innerHTML = `<p>\\( ${L1.parametric.tex} \\)</p>`
+app.innerHTML += `<p>\\( ${L2.parametric.tex} \\)</p>`
 
 const I = L1.intersection(L2)
 if (I.hasIntersection) {
-    document.getElementById('app').innerHTML += `<p>\\[ ${L1.intersection(L2).point.tex} \\]</p>`
+    app.innerHTML += `<p>\\[ ${L1.intersection(L2).point.tex} \\]</p>`
 } else if (I.isParallel) {
-    document.getElementById('app').innerHTML += `<p>Elles sont parallèles</p>`
+    app.innerHTML += `<p>Elles sont parallèles.</p>`
 } else if (I.isSame) {
-    document.getElementById('app').innerHTML += `<p>Elles sont confondues</p>`
+    app.innerHTML += `<p>Elles sont confondues</p>`
 }
 
+renderMathInElement(app, { fleqn: true })
 
-// @ts-ignore
-renderMathInElement(document.getElementById('app'), { fleqn: true })
 /*let p;
 p = new Pi.Polynom('3x(6x+9)+6(6x+9)');
 document.getElementById('app').innerHTML = `<p>${p.raw}</p>`;
