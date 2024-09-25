@@ -1,9 +1,11 @@
 import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, POLYFACTOR_TABLE_OF_SIGNS } from '../pimath.interface';
 import { Fraction } from '../coefficients/fraction';
-import { Factor } from './factor';
+import { Factor, FACTOR_DISPLAY } from './factor';
 import { Polynom } from './polynom';
 export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpression<PolyFactor>, IAlgebra<PolyFactor> {
     #private;
+    _displayMode: FACTOR_DISPLAY;
+    _factors: Factor[];
     constructor(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]);
     parse(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]): this;
     clone(): PolyFactor;
@@ -18,6 +20,7 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     get display(): string;
     divide(value: PolyFactor): this;
     evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction;
+    getFactors(): Factor[];
     get factors(): Factor[];
     set factors(value: Factor[]);
     fromPolynom(polynom: InputAlgebra<Polynom>, letter?: string): this;

@@ -2,7 +2,10 @@ import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, ISoluti
 import { Fraction } from '../coefficients/fraction';
 import { Polynom } from './polynom';
 export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor>, IAlgebra<Factor> {
-    #private;
+    private _displayMode;
+    private _singleMode;
+    private _polynom;
+    private _power;
     constructor(value: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>);
     parse(): Factor;
     clone(): Factor;

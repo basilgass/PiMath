@@ -22,8 +22,8 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     IAlgebra<PolyFactor> {
     // #region Class fields (1)
 
-    #displayMode: FACTOR_DISPLAY = FACTOR_DISPLAY.POWER
-    #factors: Factor[] = []
+    _displayMode: FACTOR_DISPLAY = FACTOR_DISPLAY.POWER
+    _factors: Factor[] = []
 
     // #endregion Class fields (1)
 
@@ -41,16 +41,16 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             return this
         }
 
-        this.#factors = []
+        this._factors = []
 
         values.forEach(value => {
             if (typeof value === 'string') {
                 const factors = value.split(')(').join(')*(').split('*')
-                this.#factors.push(...factors.map(f => new Factor(f)))
+                this._factors.push(...factors.map(f => new Factor(f)))
             } else if (value instanceof PolyFactor) {
-                this.#factors.push(...value.factors.map(f => f.clone()))
+                this._factors.push(...value.factors.map(f => f.clone()))
             } else {
-                this.#factors.push(new Factor(value))
+                this._factors.push(new Factor(value))
             }
         })
 
@@ -58,7 +58,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     public clone(): PolyFactor {
-        return new PolyFactor(...this.#factors.map(f => f.clone()))
+        return new PolyFactor(...this._factors.map(f => f.clone()))
     }
 
     static #gcdWith(PF1: PolyFactor, PF2: PolyFactor): PolyFactor {
@@ -114,7 +114,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         PF.forEach(pf => P.add(pf.develop()))
 
         // Make the new factor
-        this.#factors = [
+        this._factors = [
             ...gcd.factors,
             new Factor(P)
         ]
@@ -123,30 +123,30 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     get asPower(): this {
-        this.#displayMode = FACTOR_DISPLAY.POWER
+        this._displayMode = FACTOR_DISPLAY.POWER
         return this
     }
 
     get asRoot(): this {
-        this.#displayMode = FACTOR_DISPLAY.ROOT
+        this._displayMode = FACTOR_DISPLAY.ROOT
         return this
     }
 
     public degree(letter?: string): Fraction {
-        return this.#factors.reduce((acc, f) => acc.add(f.degree(letter)), new Fraction('0'))
+        return this._factors.reduce((acc, f) => acc.add(f.degree(letter)), new Fraction('0'))
     }
 
     get denominator(): Factor[] {
-        return this.#factors.filter(f => f.power.isNegative())
+        return this._factors.filter(f => f.power.isNegative())
     }
 
     public derivative(): this {
         const dPF: PolyFactor[] = []
 
-        const length = this.#factors.length
+        const length = this._factors.length
 
         for (let i = 0; i < length; i++) {
-            const factors = this.#factors.slice()
+            const factors = this._factors.slice()
             const factor = factors.splice(i, 1)[0]
             dPF.push(new PolyFactor(...factors).multiply(new PolyFactor(...factor.derivative())))
         }
@@ -156,7 +156,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
 
         const first = dPF.shift()
         if (first !== undefined) {
-            this.#factors = first.factors
+            this._factors = first.factors
         }
 
         return this.add(...dPF)
@@ -166,7 +166,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         // Develop each factor and multiply them
         const P = new Polynom('1')
 
-        this.#factors.forEach(f => {
+        this._factors.forEach(f => {
             P.multiply(f.develop())
         })
 
@@ -177,12 +177,12 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         let num: Factor[] = [],
             den: Factor[] = []
 
-        if (this.#displayMode === FACTOR_DISPLAY.ROOT) {
+        if (this._displayMode === FACTOR_DISPLAY.ROOT) {
             // the power are positive integers
             num = this.numerator
             den = this.denominator.map(f => f.clone().inverse())
         } else {
-            num = this.#factors
+            num = this._factors
         }
 
         // There is no factor
@@ -207,38 +207,42 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     public divide(value: PolyFactor): this {
-        this.#factors = this.#factors.concat(value.clone().factors.map(f => f.inverse()))
+        this._factors = this._factors.concat(value.clone().factors.map(f => f.inverse()))
         return this
     }
 
     public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction {
         if (asNumeric) {
-            return this.#factors
+            return this._factors
                 .reduce((acc, f) => acc * (f.evaluate(values, asNumeric) as number), 1)
         }
 
-        return this.#factors
+        return this._factors
             .reduce((acc, f) => acc.multiply(f.evaluate(values)), new Fraction('1'))
     }
 
+    public getFactors(){
+        return this._factors
+    }
+
     public get factors(): Factor[] {
-        return this.#factors
+        return this._factors
     }
 
     public set factors(value: Factor[]) {
-        this.#factors = value
+        this._factors = value
     }
 
     public fromPolynom(polynom: InputAlgebra<Polynom>, letter?: string): this {
         // Find all factors from a polynom
-        this.#factors = new Polynom(polynom).factorize(letter).map(value => new Factor(value))
+        this._factors = new Polynom(polynom).factorize(letter).map(value => new Factor(value))
         return this
     }
 
     public getZeroes(): ISolution[] {
         // Calculate the list of roots (ordered, unique)
         const roots: ISolution[] = ([] as ISolution[])
-            .concat(...this.#factors.map(x => x.polynom.getZeroes()))
+            .concat(...this._factors.map(x => x.polynom.getZeroes()))
         // .concat(...tos.map(x => x.roots))
 
         // Sort the values.
@@ -253,11 +257,11 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     public hasVariable(letter: string): boolean {
-        return this.#factors.some(f => f.hasVariable(letter))
+        return this._factors.some(f => f.hasVariable(letter))
     }
 
     public inverse(): this {
-        this.#factors = this.#factors.map(f => f.inverse())
+        this._factors = this._factors.map(f => f.inverse())
         return this
     }
 
@@ -271,27 +275,27 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     public isOne(): boolean {
-        return this.#factors.every(f => f.isOne())
+        return this._factors.every(f => f.isOne())
     }
 
     public isZero(): boolean {
-        return this.#factors.every(f => f.isZero())
+        return this._factors.every(f => f.isZero())
     }
 
     public multiply(...values: PolyFactor[]): this {
         values.forEach(value => {
-            this.#factors = this.#factors.concat(value.clone().factors)
+            this._factors = this._factors.concat(value.clone().factors)
         })
 
         return this
     }
 
     get numerator(): Factor[] {
-        return this.#factors.filter(f => f.power.isPositive())
+        return this._factors.filter(f => f.power.isPositive())
     }
 
     public one(): this {
-        this.#factors = [new Factor('1', '1')]
+        this._factors = [new Factor('1', '1')]
         return this
     }
 
@@ -301,19 +305,19 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
 
     public opposite(): this {
         // Add the -1 factor or remove if it exists
-        const index = this.#factors.findIndex(f => f.display === '(-1)')
+        const index = this._factors.findIndex(f => f.display === '(-1)')
 
         if (index >= 0) {
-            this.#factors.splice(index, 1)
+            this._factors.splice(index, 1)
         } else {
-            this.#factors.push(new Factor('-1', '1'))
+            this._factors.push(new Factor('-1', '1'))
         }
 
         return this
     }
 
     public pow(value: number | Fraction): this {
-        this.#factors = this.#factors.map(f => f.pow(value))
+        this._factors = this._factors.map(f => f.pow(value))
         return this
     }
 
@@ -326,7 +330,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         const factors = keyFactors(this)
 
         // Multiply the factors of the same base
-        this.#factors = Object.values(factors)
+        this._factors = Object.values(factors)
             .map(f => {
                 const base = f[0].polynom
                 const power = f.reduce((acc, f) => acc.add(f.power), new Fraction('0'))
@@ -338,18 +342,18 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     public root(value: number): this {
-        this.#factors = this.#factors.map(f => f.root(value))
+        this._factors = this._factors.map(f => f.root(value))
         return this
     }
 
     public sort(): this {
-        this.#factors = this.#factors
+        this._factors = this._factors
             .sort((a, b) => a.degree().isLeq(b.degree()) ? -1 : 1)
         return this
     }
 
     public sqrt(): this {
-        this.#factors = this.#factors.map(f => f.sqrt())
+        this._factors = this._factors.map(f => f.sqrt())
         return this
     }
 
@@ -456,12 +460,12 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         let num: Factor[] = [],
             den: Factor[] = []
 
-        if (this.#displayMode === FACTOR_DISPLAY.ROOT) {
+        if (this._displayMode === FACTOR_DISPLAY.ROOT) {
             // the power are positive integers
             num = this.numerator
             den = this.denominator.map(f => f.clone().inverse())
         } else {
-            num = this.#factors
+            num = this._factors
         }
 
         // There is no factor
@@ -486,7 +490,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     public get variables(): string[] {
-        return this.#factors
+        return this._factors
             .reduce((acc: string[], f: Factor) => acc.concat(f.variables), [])
     }
 
@@ -495,7 +499,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     // #region Private methods (1)
 
     public zero(): this {
-        this.#factors = [new Factor('0', '1')]
+        this._factors = [new Factor('0', '1')]
         return this
     }
 
