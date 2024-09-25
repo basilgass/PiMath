@@ -10,8 +10,8 @@ import type {
     InputValue,
     IPiMathObject,
     ISolution,
-    literalType,
-    TABLE_OF_SIGN_VALUES
+    literalType, TABLE_OF_SIGNS,
+    TABLE_OF_SIGNS_VALUES
 } from "../pimath.interface"
 import {Fraction} from "../coefficients/fraction"
 import {Numeric} from '../numeric'
@@ -880,7 +880,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.reduce()
     }
 
-    public tableOfSigns(rootsArray?: ISolution[]): { roots: ISolution[], signs: TABLE_OF_SIGN_VALUES[] } {
+    public tableOfSigns(rootsArray?: ISolution[]): TABLE_OF_SIGNS {
         // returns ['+-', 'd|t|z', '+-']...
 
         // global roots from eventually Polyfactor. Allows to add "extra column".
@@ -897,7 +897,7 @@ export class Polynom implements IPiMathObject<Polynom>,
 
         // Build the table os sign length and default values
         // The signs looks like: ['', 't', '', 't', '', 't', '']
-        let signs: TABLE_OF_SIGN_VALUES[] = ['']
+        let signs: TABLE_OF_SIGNS_VALUES[] = ['']
         roots.forEach(() => signs.push('t', ''))
 
         if (roots.length === 0) {
@@ -1422,7 +1422,7 @@ export class Polynom implements IPiMathObject<Polynom>,
 
     }
 
-    #tableOfSigns_evaluate(signs: TABLE_OF_SIGN_VALUES[]) {
+    #tableOfSigns_evaluate(signs: TABLE_OF_SIGNS_VALUES[]) {
 
     }
 

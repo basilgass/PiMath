@@ -5,7 +5,7 @@ import type {
     InputValue,
     IPiMathObject,
     ISolution,
-    literalType, TABLE_OF_SIGN_VALUES
+    literalType, TABLE_OF_SIGNS, TABLE_OF_SIGNS_VALUES
 } from "../pimath.interface"
 import { Fraction } from "../coefficients/fraction"
 import { Polynom } from "./polynom"
@@ -296,7 +296,7 @@ export class Factor implements
         return this
     }
 
-    public tableOfSigns(roots?: ISolution[]): { roots: ISolution[], signs: TABLE_OF_SIGN_VALUES[] } {
+    public tableOfSigns(roots?: ISolution[]): TABLE_OF_SIGNS {
         const pow = this.#power.clone().reduce()
         const tos = this.#polynom.tableOfSigns(roots)
 

@@ -5,8 +5,8 @@ import type {
     InputValue,
     IPiMathObject,
     ISolution,
-    literalType,
-    TABLE_OF_SIGN_VALUES
+    literalType, TABLE_OF_SIGNS,
+    TABLE_OF_SIGNS_VALUES
 } from "../pimath.interface"
 import {Fraction} from "../coefficients/fraction"
 import {Factor, FACTOR_DISPLAY} from "./factor"
@@ -355,15 +355,18 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this.add(...values.map(f => f.opposite()))
     }
 
-    public tableOfSigns(): { roots: ISolution[], signs: TABLE_OF_SIGN_VALUES[] } {
+    public tableOfSigns(): TABLE_OF_SIGNS & { factors: {factor: Factor, tableOfSigns: TABLE_OF_SIGNS}[] } {
         // Calculate the table of signs for each factor
         const roots = this.getZeroes()
 
         // Modify each lines of tos[<index>].signs to display extra zeroes
-        const tos = this.#factors.map(x => x.tableOfSigns(roots))
+        const factors: {factor: Factor, tableOfSigns: TABLE_OF_SIGNS}[] = this.#factors.map(factor=>{
+            return {factor, tableOfSigns: factor.tableOfSigns(roots)}
+        })
 
         // Build the table of signs with extra roots
-        const signs: TABLE_OF_SIGN_VALUES[] = tos.reduce<TABLE_OF_SIGN_VALUES[]>((a, b) => {
+        const signs: TABLE_OF_SIGNS_VALUES[] = factors.map(item=>item.tableOfSigns)
+            .reduce<TABLE_OF_SIGNS_VALUES[]>((a, b) => {
             if (a.length === 0) {
                 a = b.signs
             }else{
@@ -391,11 +394,11 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             return a
         }, [])
 
-        return {signs, roots}
+        return {signs, roots, factors}
         //
         // // the signs of the PolyFactor
-        // const signs: TABLE_OF_SIGN_VALUES[] = []
-        // const currentColumn: TABLE_OF_SIGN_VALUES[] = []
+        // const signs: TABLE_OF_SIGNS_VALUES[] = []
+        // const currentColumn: TABLE_OF_SIGNS_VALUES[] = []
         // tos.forEach(item => {
         //     currentColumn.push(item.signs[0])
         // })
@@ -410,7 +413,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         //
         // // Go through each roots
         // roots.forEach(root => {
-        //     let currentColumn: TABLE_OF_SIGN_VALUES[] = []
+        //     let currentColumn: TABLE_OF_SIGNS_VALUES[] = []
         //
         //     // Remove the sign and zero of the factor's table of signs it root is the zero of the factor.
         //     tos.forEach(item=>{

@@ -91,4 +91,6 @@ export interface ISolution {
     value: number,
 }
 
-export type TABLE_OF_SIGN_VALUES = '-'|'+'|'h'|'z'|'t'|'d'|''
+export type TABLE_OF_SIGNS_VALUES = '-'|'+'|'h'|'z'|'t'|'d'|''
+
+export interface TABLE_OF_SIGNS {roots: ISolution[], signs: TABLE_OF_SIGNS_VALUES[]}

@@ -1,4 +1,4 @@
-import { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, TABLE_OF_SIGN_VALUES } from '../pimath.interface';
+import { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, TABLE_OF_SIGNS } from '../pimath.interface';
 import { Fraction } from '../coefficients/fraction';
 import { Monom } from './monom';
 export type PolynomParsingType = InputValue<Polynom> | Monom;
@@ -97,10 +97,7 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     set roots(value: ISolution[]);
     sqrt(): Polynom;
     subtract: (...values: InputAlgebra<Polynom>[]) => Polynom;
-    tableOfSigns(rootsArray?: ISolution[]): {
-        roots: ISolution[];
-        signs: TABLE_OF_SIGN_VALUES[];
-    };
+    tableOfSigns(rootsArray?: ISolution[]): TABLE_OF_SIGNS;
     get tex(): string;
     get variables(): string[];
     /**

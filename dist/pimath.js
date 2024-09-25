@@ -2240,8 +2240,8 @@ const me = class me {
     return this.add(...e.map((t) => t.opposite()));
   }
   tableOfSigns() {
-    const e = this.getZeroes();
-    return { signs: s(this, E).map((n) => n.tableOfSigns(e)).reduce((n, r) => (n.length === 0 ? n = r.signs : r.signs.forEach((l, c) => {
+    const e = this.getZeroes(), t = s(this, E).map((n) => ({ factor: n, tableOfSigns: n.tableOfSigns(e) }));
+    return { signs: t.map((n) => n.tableOfSigns).reduce((n, r) => (n.length === 0 ? n = r.signs : r.signs.forEach((l, c) => {
       switch (l) {
         case "d":
           n[c] = "d";
@@ -2256,7 +2256,7 @@ const me = class me {
           n[c] = n[c] === "h" ? "h" : n[c] === "-" ? "+" : "-";
           break;
       }
-    }), n), []), roots: e };
+    }), n), []), roots: e, factors: t };
   }
   get tex() {
     let e = [], t = [];

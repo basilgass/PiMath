@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Phantmo import removed. Build ok," />
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Phantmo import removed. Build ok,">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/factor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/factor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pimath.interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pimath.interface.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/logicalSet.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/logicalSet.test.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -221,7 +228,7 @@
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.fraction.ts">
+  <component name="RunManager" selected="Vitest.PolyFactor: Table of signs.compile table of signs of factors">
     <configuration name="PolyFactor: Table of signs.compile table of signs of factors" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -271,11 +278,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs of factors" />
+        <item itemvalue="Vitest.Tests in tests\" />
         <item itemvalue="npm.build" />
         <item itemvalue="Node.js.fraction.ts" />
         <item itemvalue="npm.dependency-cruise" />
-        <item itemvalue="Vitest.Tests in tests\" />
-        <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs of factors" />
       </list>
     </recent_temporary>
   </component>
@@ -320,6 +327,8 @@
       <workItem from="1726920051101" duration="3701000" />
       <workItem from="1727090198424" duration="11250000" />
       <workItem from="1727247246560" duration="81000" />
+      <workItem from="1727247338134" duration="389000" />
+      <workItem from="1727273270439" duration="618000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -409,7 +418,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727247321530</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Phantmo import removed. Build ok,">
+      <option name="closed" value="true" />
+      <created>1727251504996</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1727251504996</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

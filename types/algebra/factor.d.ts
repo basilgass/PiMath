@@ -1,4 +1,4 @@
-import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, TABLE_OF_SIGN_VALUES } from '../pimath.interface';
+import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, TABLE_OF_SIGNS } from '../pimath.interface';
 import { Fraction } from '../coefficients/fraction';
 import { Polynom } from './polynom';
 export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor>, IAlgebra<Factor> {
@@ -38,10 +38,7 @@ export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor
     get tex(): string;
     get variables(): string[];
     zero(): this;
-    tableOfSigns(roots?: ISolution[]): {
-        roots: ISolution[];
-        signs: TABLE_OF_SIGN_VALUES[];
-    };
+    tableOfSigns(roots?: ISolution[]): TABLE_OF_SIGNS;
 }
 export declare enum FACTOR_DISPLAY {
     ROOT = 0,
