@@ -1,6 +1,7 @@
 import type { Fraction } from "./coefficients/fraction"
 import type { NthRoot } from "./coefficients/nthRoot"
 import type { Monom } from "./algebra/monom"
+import type {Factor} from "./algebra/factor"
 
 export type InputValue<T> = T | string | number | Fraction | NthRoot;
 export type InputAlgebra<T> = InputValue<T> | Monom
@@ -94,3 +95,7 @@ export interface ISolution {
 export type TABLE_OF_SIGNS_VALUES = '-'|'+'|'h'|'z'|'t'|'d'|''
 
 export interface TABLE_OF_SIGNS {roots: ISolution[], signs: TABLE_OF_SIGNS_VALUES[]}
+export interface FACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {factor: Factor}
+export interface POLYFACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {
+    factors: FACTOR_TABLE_OF_SIGNS[]
+}

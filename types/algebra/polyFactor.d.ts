@@ -1,4 +1,4 @@
-import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, TABLE_OF_SIGNS } from '../pimath.interface';
+import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, POLYFACTOR_TABLE_OF_SIGNS } from '../pimath.interface';
 import { Fraction } from '../coefficients/fraction';
 import { Factor } from './factor';
 import { Polynom } from './polynom';
@@ -38,12 +38,7 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     sort(): this;
     sqrt(): this;
     subtract(...values: PolyFactor[]): this;
-    tableOfSigns(): TABLE_OF_SIGNS & {
-        factors: {
-            factor: Factor;
-            tableOfSigns: TABLE_OF_SIGNS;
-        }[];
-    };
+    tableOfSigns(): POLYFACTOR_TABLE_OF_SIGNS;
     get tex(): string;
     get variables(): string[];
     zero(): this;

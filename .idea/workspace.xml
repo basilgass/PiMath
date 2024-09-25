@@ -4,15 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Set export type in index.ts">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Adding exports type to index.ts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pimath.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/index.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/index.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/random.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/random.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pimath.interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pimath.interface.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,6 +227,19 @@
     </option>
   </component>
   <component name="RunManager" selected="Vitest.PolyFactor: Table of signs.compile table of signs of factors">
+    <configuration name="PolyFactor: Table of signs" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="SUITE" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
+      <test-names>
+        <test-name value="PolyFactor: Table of signs" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <configuration name="PolyFactor: Table of signs.compile table of signs of factors" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -268,23 +277,13 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="dependency-cruise" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dependency-cruise" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.build" />
         <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs of factors" />
+        <item itemvalue="Vitest.PolyFactor: Table of signs" />
+        <item itemvalue="npm.build" />
         <item itemvalue="Vitest.Tests in tests\" />
         <item itemvalue="Node.js.fraction.ts" />
-        <item itemvalue="npm.dependency-cruise" />
       </list>
     </recent_temporary>
   </component>
@@ -330,7 +329,7 @@
       <workItem from="1727090198424" duration="11250000" />
       <workItem from="1727247246560" duration="81000" />
       <workItem from="1727247338134" duration="389000" />
-      <workItem from="1727273270439" duration="2542000" />
+      <workItem from="1727273270439" duration="4749000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -444,7 +443,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727275166532</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Adding exports type to index.ts">
+      <option name="closed" value="true" />
+      <created>1727275994341</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1727275994341</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -463,7 +470,8 @@
     <MESSAGE value="Phantmo import removed. Build ok," />
     <MESSAGE value="Adding factors to PolyFactor.TableOfSigns() to list all factors tos.&#10;Adding TABLE_OF_SIGNS type." />
     <MESSAGE value="Set export type in index.ts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Set export type in index.ts" />
+    <MESSAGE value="Adding exports type to index.ts" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding exports type to index.ts" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

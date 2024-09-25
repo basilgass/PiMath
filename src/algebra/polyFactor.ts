@@ -1,11 +1,13 @@
 import type {
+    FACTOR_TABLE_OF_SIGNS,
     IAlgebra,
     IExpression,
     InputAlgebra,
     InputValue,
     IPiMathObject,
     ISolution,
-    literalType, TABLE_OF_SIGNS,
+    literalType,
+    POLYFACTOR_TABLE_OF_SIGNS,
     TABLE_OF_SIGNS_VALUES
 } from "../pimath.interface"
 import {Fraction} from "../coefficients/fraction"
@@ -355,44 +357,46 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this.add(...values.map(f => f.opposite()))
     }
 
-    public tableOfSigns(): TABLE_OF_SIGNS & { factors: {factor: Factor, tableOfSigns: TABLE_OF_SIGNS}[] } {
+    public tableOfSigns(): POLYFACTOR_TABLE_OF_SIGNS {
         // Calculate the table of signs for each factor
         const roots = this.getZeroes()
 
         // Modify each lines of tos[<index>].signs to display extra zeroes
-        const factors: {factor: Factor, tableOfSigns: TABLE_OF_SIGNS}[] = this.#factors.map(factor=>{
-            return {factor: factor.clone(), tableOfSigns: factor.tableOfSigns(roots)}
-        })
+        const factors: FACTOR_TABLE_OF_SIGNS[] = this.factors
+            .map(factor => {
+                return {factor: new Factor(factor), ...factor.tableOfSigns(roots)}
+            })
 
         // Build the table of signs with extra roots
-        const signs: TABLE_OF_SIGNS_VALUES[] = factors.map(item=>item.tableOfSigns)
+        const signs: TABLE_OF_SIGNS_VALUES[] = factors
+            .map(item => item.signs)
             .reduce<TABLE_OF_SIGNS_VALUES[]>((a, b) => {
-            if (a.length === 0) {
-                a = b.signs
-            }else{
-                // assume a and b are array from same length.
-                b.signs.forEach((value, index) =>  {
-                    // Case of a zero, invalid or tab value
-                    // tab < zero < defence
-                    switch (value){
-                        case "d":
-                            a[index] = "d"
-                            break
-                        case "z":
-                            a[index] = a[index] === "d" ? "d": "z"
-                            break
-                        case "h":
-                            a[index] = "h"
-                            break
-                        case "-":
-                            a[index] = a[index] === "h" ? "h": a[index]==="-" ? "+": "-"
-                            break
-                    }
-                })
-            }
+                if (a.length === 0) {
+                    a = b
+                } else {
+                    // assume a and b are array from same length.
+                    b.forEach((value, index) => {
+                        // Case of a zero, invalid or tab value
+                        // tab < zero < defence
+                        switch (value) {
+                            case "d":
+                                a[index] = "d"
+                                break
+                            case "z":
+                                a[index] = a[index] === "d" ? "d" : "z"
+                                break
+                            case "h":
+                                a[index] = "h"
+                                break
+                            case "-":
+                                a[index] = a[index] === "h" ? "h" : a[index] === "-" ? "+" : "-"
+                                break
+                        }
+                    })
+                }
 
-            return a
-        }, [])
+                return a
+            }, [])
 
         return {signs, roots, factors}
         //

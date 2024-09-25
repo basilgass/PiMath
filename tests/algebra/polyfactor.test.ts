@@ -464,4 +464,8 @@ describe('PolyFactor: Table of signs', ()=>{
         expect(tos.roots.map(x=>x.value)).toEqual([-5,0,2,3])
         expect(tos.signs).toEqual(['h', 'z', '-', 'd', '-', 'z', '-', 'z', '+'])
     })
+
+    test('compile table of signs of factors', ()=>{
+
+    })
 })
