@@ -1,6 +1,5 @@
 import type {compareSign, IExpression, InputValue, IPiMathObject} from "../pimath.interface"
 import {Numeric} from "../numeric"
-import {loadConfigFromFile} from "vite"
 
 enum FRAC_TYPE {
     frac = 'frac',

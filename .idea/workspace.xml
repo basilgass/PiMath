@@ -4,107 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Force point from triangle to be a Point and not a Vector">
-      <change afterPath="$PROJECT_DIR$/tests/helpers.test.ts" afterDir="false" />
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Commit and build - but there are some strange problems about rollup...">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/playground.ts" beforeDir="false" afterPath="$PROJECT_DIR$/demo/playground.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependencies.svg" beforeDir="false" afterPath="$PROJECT_DIR$/dependencies.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pimath.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/equationSolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equationSolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/factor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/factor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/linearSystem.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/linearSystem.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/logicalset.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/logicalset.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/study.bak" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/study/study.bak" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/index.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eslint.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/eslint.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/coefficients/fraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/fraction.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pimath.interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pimath.interface.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/randomization/geometry/rndCircle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/geometry/rndCircle.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/randomization/geometry/rndPoint.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/geometry/rndVector.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/randomization/random.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/random.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/factor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/factor.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/equation.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/equation.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/equationSolver.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/equationSolver.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/factor.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/factor.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/linearSystem.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/linearSystem.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/logicalset.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/logicalset.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/monom.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/monom.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/polyFactor.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/polyFactor.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/polynom.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/polynom.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/rational.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/rational.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/coefficients/fraction.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/coefficients/fraction.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/coefficients/nthRoot.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/coefficients/nthRoot.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/circle.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/circle.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/geomMath.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/geomMath.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/line.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/line.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/line3.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/line3.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/matrix.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/matrix.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/plane3.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/plane3.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/point.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/point.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/triangle.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/triangle.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/vector.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/vector.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/vector3d.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/vector3d.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/helpers.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/helpers.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/index.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/numeric.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/numeric.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/pimath.interface.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/pimath.interface.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/algebra/rndEquation.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/algebra/rndEquation.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/algebra/rndMonom.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/algebra/rndMonom.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/algebra/rndPolynom.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/algebra/rndPolynom.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/coefficient/rndFraction.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/coefficient/rndFraction.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndCircle.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndCircle.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndLine.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndLine.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndLine3.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndLine3.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndPoint.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndPoint.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/random.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/random.d.ts.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/rndHelpers.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/rndTypes.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/rndTypes.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,6 +68,7 @@
     "Node.js.circle.ts.executor": "Run",
     "Node.js.equationSolver.ts.executor": "Run",
     "Node.js.factor.ts.executor": "Run",
+    "Node.js.fraction.ts.executor": "Run",
     "Node.js.line.ts.executor": "Run",
     "Node.js.point.ts.executor": "Run",
     "Node.js.polynom.ts.executor": "Run",
@@ -321,20 +231,7 @@
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.Tests in tests\">
-    <configuration name="PolyFactor: Table of signs" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="SUITE" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
-      <test-names>
-        <test-name value="PolyFactor: Table of signs" />
-      </test-names>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Node.js.fraction.ts">
     <configuration name="PolyFactor: Table of signs.compile table of signs of factors" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -357,6 +254,9 @@
       <envs />
       <scope-kind value="DIRECTORY" />
       <test-directory value="$PROJECT_DIR$/tests" />
+      <method v="2" />
+    </configuration>
+    <configuration name="fraction.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/coefficients/fraction.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/coefficients">
       <method v="2" />
     </configuration>
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
@@ -382,10 +282,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="npm.build" />
+        <item itemvalue="Node.js.fraction.ts" />
         <item itemvalue="npm.dependency-cruise" />
         <item itemvalue="Vitest.Tests in tests\" />
         <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs of factors" />
-        <item itemvalue="Vitest.PolyFactor: Table of signs" />
       </list>
     </recent_temporary>
   </component>
@@ -428,7 +328,7 @@
       <workItem from="1726834350685" duration="1971000" />
       <workItem from="1726907262280" duration="5977000" />
       <workItem from="1726920051101" duration="3701000" />
-      <workItem from="1727090198424" duration="8918000" />
+      <workItem from="1727090198424" duration="11250000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -494,7 +394,23 @@
       <option name="project" value="LOCAL" />
       <updated>1726836157654</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Commit and build - but there are some strange problems about rollup...">
+      <option name="closed" value="true" />
+      <created>1727099368276</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1727099368276</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Commit and build - but there are some strange problems about rollup...">
+      <option name="closed" value="true" />
+      <created>1727099379781</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1727099379781</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -509,7 +425,8 @@
     <MESSAGE value="Enable again logicalSet.ts&#10;Modify index.ts to export the complete class (WIP)" />
     <MESSAGE value="Update triangle.ts to use the new structure." />
     <MESSAGE value="Force point from triangle to be a Point and not a Vector" />
-    <option name="LAST_COMMIT_MESSAGE" value="Force point from triangle to be a Point and not a Vector" />
+    <MESSAGE value="Commit and build - but there are some strange problems about rollup..." />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit and build - but there are some strange problems about rollup..." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
