@@ -44,7 +44,7 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
      * @param values
      * @param asNumeric
      */
-    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean | undefined): boolean;
+    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): boolean;
     /**
      * Determine if the equation contains a variable.
      * @param letter

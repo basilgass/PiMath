@@ -1,10 +1,10 @@
 import { randomCoefficientConfig, randomEquationConfig, randomGeometryCircleConfig, randomGeometryLine3Config, randomGeometryLineConfig, randomGeometryPointConfig, randomMonomConfig, randomPolynomConfig } from './rndTypes';
 export type * from './rndTypes';
 export declare const Random: {
-    equation: (config?: randomEquationConfig) => import('..').Equation;
-    polynom: (config?: randomPolynomConfig) => import('..').Polynom;
-    monom: (config?: randomMonomConfig) => import('..').Monom;
-    fraction: (config?: randomCoefficientConfig) => import('..').Fraction;
+    equation: (config?: randomEquationConfig) => import('../algebra/equation').Equation;
+    polynom: (config?: randomPolynomConfig) => import('../algebra/polynom').Polynom;
+    monom: (config?: randomMonomConfig) => import('../algebra/monom').Monom;
+    fraction: (config?: randomCoefficientConfig) => import('../coefficients/fraction').Fraction;
     number: (from: number, to: number, exclude?: number[]) => number;
     numberSym: (max: number, allowZero?: boolean) => number;
     prime: (max: number) => number;
@@ -12,9 +12,9 @@ export declare const Random: {
     array: <T>(arr: T[], number?: number) => T[];
     item: <T>(arr: T[]) => T;
     shuffle: <T>(arr: T[]) => T[];
-    line: (config?: randomGeometryLineConfig) => import('..').Line;
-    line3: (config?: randomGeometryLine3Config) => import('..').Line3;
-    vector: (config?: randomGeometryPointConfig) => import('..').Point;
-    point: (config?: randomGeometryPointConfig) => import('..').Point;
-    circle: (config?: randomGeometryCircleConfig) => import('..').Circle;
+    line: (config?: randomGeometryLineConfig) => import('../geometry/line').Line;
+    line3: (config?: randomGeometryLine3Config) => import('../geometry/line3').Line3;
+    vector: (config?: randomGeometryPointConfig) => import('../geometry/point').Point;
+    point: (config?: randomGeometryPointConfig) => import('../geometry/point').Point;
+    circle: (config?: randomGeometryCircleConfig) => import('../geometry/circle').Circle;
 };

@@ -12,8 +12,6 @@ enum FRAC_TYPE {
  * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
  */
 export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> {
-    // #region Class fields (2)
-
     #approximative = false
     #denominator = 1
     #numerator = 1
@@ -507,10 +505,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    // #endregion Properties and methods (55)
-
-    // #region Getters And Setters (11)
-
     public pow = (p: number | Fraction): Fraction => {
         // TODO: Fraction.pow with a value different than a safe integer !
         if (p instanceof Fraction) {
@@ -664,8 +658,4 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         this.#denominator = 1
         return this
     }
-
-    // #endregion Getters And Setters (11)
 }
-
-// #endregion Classes (1)

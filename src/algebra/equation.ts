@@ -13,13 +13,7 @@ import { EquationSolver } from "./equationSolver"
 import { Monom } from "./monom"
 import { Polynom } from "./polynom"
 
-// #region Type aliases (1)
-
 export type EQUATION_SIGN = "=" | "<=" | ">=" | "<" | ">"
-
-// #endregion Type aliases (1)
-
-// #region Classes (1)
 
 export class Equation implements
     IPiMathObject<Equation>,
@@ -33,9 +27,6 @@ export class Equation implements
     // Signe of the equation
     #sign: EQUATION_SIGN
 
-    // #endregion Class fields (6)
-
-    // #region Constructors (3)
 
     constructor(equation: InputAlgebra<Polynom> | Equation)
     constructor(left: InputAlgebra<Polynom>, right: InputAlgebra<Polynom>, sign?: EQUATION_SIGN)
@@ -66,10 +57,6 @@ export class Equation implements
 
         return this
     }
-
-    // #endregion Constructors (3)
-
-    // #region Properties and methods (26)
 
     // ------------------------------------------
     public parse = (equationString: string): this => {
@@ -167,7 +154,7 @@ export class Equation implements
      * @param values
      * @param asNumeric
      */
-    public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean | undefined): boolean {
+    public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean  ): boolean {
         // Evaluate the left and right part of the equation.
         // compare the results.
 
@@ -446,10 +433,6 @@ export class Equation implements
         return uniqueSolutions
     }
 
-    // #endregion Properties and methods (26)
-
-    // #region Getters And Setters (13)
-
     public get display(): string {
         return `${this.#left.display}${this.signAsTex}${this.#right.display}`
     }
@@ -504,10 +487,6 @@ export class Equation implements
     public get variables(): string[] {
         return [...new Set(this.#right.variables.concat(this.#left.variables))]
     }
-
-    // #endregion Getters And Setters (13)
-
-    // #region Private methods (6)
 
     #findSign = (equationString: string): string | false => {
         if (equationString.includes('geq')) {
@@ -577,12 +556,4 @@ export class Equation implements
 
         return this
     }
-    // #endregion Private methods (6)
 }
-
-// #endregion Classes (1)
-
-// #region Enums (1)
-
-
-// #endregion Enums (1)

@@ -19,26 +19,13 @@ import {EquationSolver} from './equationSolver'
 import {Monom} from './monom'
 import {replace_in_array} from "../helpers"
 
-// #region Type aliases (1)
 
 export type PolynomParsingType = InputValue<Polynom> | Monom
 
-// #endregion Type aliases (1)
-
-// #region Interfaces (1)
-
 export interface IEuclidean {
-    // #region Properties and methods (2)
-
     quotient: Polynom,
     reminder: Polynom
-
-    // #endregion Properties and methods (2)
 }
-
-// #endregion Interfaces (1)
-
-// #region Classes (1)
 
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
@@ -50,16 +37,11 @@ export class Polynom implements IPiMathObject<Polynom>,
     IExpression<Polynom>,
     IAnalyse<Polynom>,
     IAlgebra<Polynom> {
-    // #region Class fields (8)
 
     #factors: Polynom[]
     #monoms: Monom[]
     #roots: ISolution[]
     #rootsCache = false
-
-    // #endregion Class fields (8)
-
-    // #region Constructors (7)
 
     constructor(value: InputValue<Fraction>)
     constructor(value: string)
@@ -77,10 +59,6 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
         return this
     }
-
-    // #endregion Constructors (7)
-
-    // #region Properties and methods (49)
 
     /**
      * Parse a string to a polynom.
@@ -810,10 +788,6 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this
     }
 
-    // #endregion Properties and methods (49)
-
-    // #region Getters And Setters (22)
-
     // ------------------------------------------
 
     /**
@@ -1025,9 +999,6 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
     }
 
-    // #endregion Getters And Setters (22)
-
-    // #region Private methods (15)
 
     #divideByFraction = (F: Fraction): this => {
         for (const m of this.#monoms) {
@@ -1422,11 +1393,4 @@ export class Polynom implements IPiMathObject<Polynom>,
 
     }
 
-    #tableOfSigns_evaluate(signs: TABLE_OF_SIGNS_VALUES[]) {
-
-    }
-
-    // #endregion Private methods (15)
 }
-
-// #endregion Classes (1)

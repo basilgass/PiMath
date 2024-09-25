@@ -66,7 +66,7 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
      * @param letter
      */
     hasVariable: (letter?: string) => boolean;
-    integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string | undefined): Fraction;
+    integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string): Fraction;
     inverse: () => this;
     isDivisible: (div: Monom) => boolean;
     /**

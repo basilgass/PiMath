@@ -70,4 +70,3 @@ declare const PiMath: {
     NumExp: typeof NumExp;
 };
 export default PiMath;
-export type { Fraction, NthRoot, Monom, Polynom, Equation, Matrix, LinearSystem, Factor, PolyFactor, LogicalSet, NumExp, Vector, Point, Line, Triangle, Circle, Line3, Plane3, };

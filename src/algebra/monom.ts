@@ -401,7 +401,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return Object.hasOwn(this.#literal, letter ?? 'x')
     }
 
-    public integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string | undefined): Fraction {
+    public integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string  ): Fraction {
         const primitive = this.primitive(letter)
 
         return (primitive.evaluate(b) as Fraction)
@@ -677,10 +677,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         }
         return this
     }
-
-    // #endregion Properties and methods (31)
-
-    // #region Getters And Setters (11)
 
     public primitive = (letter?: string): Monom => {
         // TODO: derivative including the ln value => implies creating different monom system ?
@@ -1013,6 +1009,4 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             }
         }
     }
-
-    // #endregion Private methods (5)
 }

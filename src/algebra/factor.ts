@@ -15,26 +15,26 @@ export class Factor implements
     IPiMathObject<Factor>,
     IExpression<Factor>,
     IAlgebra<Factor> {
-    private _displayMode: FACTOR_DISPLAY
-    private _singleMode = false
-    private _polynom: Polynom
-    private _power: Fraction
+    #displayMode: FACTOR_DISPLAY
+    #singleMode = false
+    #polynom: Polynom
+    #power: Fraction
 
     constructor(value: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>) {
         if (value instanceof Factor) {
-            this._polynom = value.polynom.clone()
-            this._power = value.power.clone()
+            this.#polynom = value.polynom.clone()
+            this.#power = value.power.clone()
         } else if (typeof value === 'string' && power === undefined) {
             // Must handle the case where the value is a string like (x-3)^2
             const [base, p = '1'] = value.split('^')
-            this._polynom = new Polynom(base)
-            this._power = new Fraction(p.replace('(', '').replace(')', ''))
+            this.#polynom = new Polynom(base)
+            this.#power = new Fraction(p.replace('(', '').replace(')', ''))
         } else {
-            this._polynom = new Polynom(value)
-            this._power = new Fraction(power ?? 1)
+            this.#polynom = new Polynom(value)
+            this.#power = new Fraction(power ?? 1)
         }
 
-        this._displayMode = FACTOR_DISPLAY.POWER
+        this.#displayMode = FACTOR_DISPLAY.POWER
 
         return this
     }
@@ -52,16 +52,16 @@ export class Factor implements
     }
 
     public get withPower(): this {
-        this._displayMode = FACTOR_DISPLAY.POWER
+        this.#displayMode = FACTOR_DISPLAY.POWER
         return this
     }
 
     public get withRoot(): this {
-        this._displayMode = FACTOR_DISPLAY.ROOT
+        this.#displayMode = FACTOR_DISPLAY.ROOT
         return this
     }
     public get asSingle(): this {
-        this._singleMode = true
+        this.#singleMode = true
         return this
     }
 
@@ -104,11 +104,11 @@ export class Factor implements
         let base: string
         let power: string
 
-        if (this._displayMode === FACTOR_DISPLAY.ROOT && den > 1) {
+        if (this.#displayMode === FACTOR_DISPLAY.ROOT && den > 1) {
             base = `${den === 2 ? 'sqrt' : `root(${den})`}(${this.polynom.display})`
             power = Math.abs(num) === 1 ? '' : `^(${Math.abs(num)})`
         } else {
-            base = this._singleMode && this.power.isOne() ? this.polynom.display : wrapParenthesis(this.polynom.display, false)
+            base = this.#singleMode && this.power.isOne() ? this.polynom.display : wrapParenthesis(this.polynom.display, false)
             power = (den === 1 && Math.abs(num) === 1) ? '' : `^(${this.power.display})`
         }
 
@@ -116,7 +116,7 @@ export class Factor implements
         base = `${base}${power}`
 
         // If the power is negative, make it as a fraction.
-        if (this._displayMode === FACTOR_DISPLAY.ROOT && num < 0) {
+        if (this.#displayMode === FACTOR_DISPLAY.ROOT && num < 0) {
             base = `1/(${base})`
         }
 
@@ -208,8 +208,8 @@ export class Factor implements
     }
 
     public one(): this {
-        this._polynom.one()
-        this._power.one()
+        this.#polynom.one()
+        this.#power.one()
         return this
     }
 
@@ -218,11 +218,11 @@ export class Factor implements
     }
 
     public get polynom(): Polynom {
-        return this._polynom
+        return this.#polynom
     }
 
     public set polynom(value: Polynom) {
-        this._polynom = value
+        this.#polynom = value
     }
 
     public pow(value: number | Fraction): this {
@@ -231,11 +231,11 @@ export class Factor implements
     }
 
     public get power(): Fraction {
-        return this._power
+        return this.#power
     }
 
     public set power(value: InputValue<Fraction>) {
-        this._power = new Fraction(value)
+        this.#power = new Fraction(value)
     }
 
     public primitive(): Factor {
@@ -266,11 +266,11 @@ export class Factor implements
         let base: string
         let power: string
 
-        if (this._displayMode === FACTOR_DISPLAY.ROOT && den > 1) {
+        if (this.#displayMode === FACTOR_DISPLAY.ROOT && den > 1) {
             base = `\\sqrt${den === 2 ? '' : `[ ${den} ]`}{ ${this.polynom.tex} }`
             power = Math.abs(num) === 1 ? '' : `^{ ${Math.abs(num)} }`
         } else {
-            base = this._singleMode && this.power.isOne() ? this.polynom.tex : wrapParenthesis(this.polynom.tex)
+            base = this.#singleMode && this.power.isOne() ? this.polynom.tex : wrapParenthesis(this.polynom.tex)
             power = (den === 1 && Math.abs(num) === 1) ? '' : `^{ ${this.power.tex} }`
         }
 
@@ -278,7 +278,7 @@ export class Factor implements
         base = `${base}${power}`
 
         // If the power is negative, make it as a fraction.
-        if (this._displayMode === FACTOR_DISPLAY.ROOT && num < 0) {
+        if (this.#displayMode === FACTOR_DISPLAY.ROOT && num < 0) {
             base = `\\frac{ 1 }{ ${base} }`
         }
 
@@ -291,14 +291,14 @@ export class Factor implements
     }
 
     public zero(): this {
-        this._polynom.zero()
-        this._power.one()
+        this.#polynom.zero()
+        this.#power.one()
         return this
     }
 
     public tableOfSigns(roots?: ISolution[]): TABLE_OF_SIGNS {
-        const pow = this._power.clone().reduce()
-        const tos = this._polynom.tableOfSigns(roots)
+        const pow = this.power.clone().reduce()
+        const tos = this.polynom.tableOfSigns(roots)
 
         // The zero roots becomes defence (d) if the power is negative
         if (pow.isStrictlyNegative()) {
