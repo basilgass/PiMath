@@ -16,6 +16,7 @@ import { Plane3 } from './geometry/plane3';
 import { Matrix } from './geometry/matrix';
 import { NumExp } from 'piexpression';
 import { LogicalSet } from './algebra/logicalset';
+export type * from './pimath.interface';
 declare const PiMath: {
     Numeric: {
         decompose: (value: number) => number[][];

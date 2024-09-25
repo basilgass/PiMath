@@ -22,6 +22,8 @@ import { Random } from "./randomization/random"
 import { NumExp} from "piexpression"
 import { LogicalSet} from "./algebra/logicalset"
 
+export type * from  "./pimath.interface"
+
 const Geometry = {
     Vector: Vector,
     Point: Point,
