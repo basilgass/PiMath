@@ -2240,7 +2240,7 @@ const me = class me {
     return this.add(...e.map((t) => t.opposite()));
   }
   tableOfSigns() {
-    const e = this.getZeroes(), t = s(this, E).map((n) => ({ factor: n, tableOfSigns: n.tableOfSigns(e) }));
+    const e = this.getZeroes(), t = s(this, E).map((n) => ({ factor: n.clone(), tableOfSigns: n.tableOfSigns(e) }));
     return { signs: t.map((n) => n.tableOfSigns).reduce((n, r) => (n.length === 0 ? n = r.signs : r.signs.forEach((l, c) => {
       switch (l) {
         case "d":

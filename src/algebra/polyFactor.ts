@@ -361,7 +361,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
 
         // Modify each lines of tos[<index>].signs to display extra zeroes
         const factors: {factor: Factor, tableOfSigns: TABLE_OF_SIGNS}[] = this.#factors.map(factor=>{
-            return {factor, tableOfSigns: factor.tableOfSigns(roots)}
+            return {factor: factor.clone(), tableOfSigns: factor.tableOfSigns(roots)}
         })
 
         // Build the table of signs with extra roots
