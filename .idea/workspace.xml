@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Back to # private fields.&#10;Removes extra (old) region grouping (from VS Code).&#10;&#10;Removed export type from index.ts">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="bug: Random.Polynom wasn't reducing the polynom">
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/randomization/algebra/rndPolynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/algebra/rndPolynom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/factor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/factor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,7 +202,7 @@
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.build.executor&quot;: &quot;Run&quot;,
     &quot;npm.dependency-cruise.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.TypeScript&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\websites\\PiMath\\node_modules\\typescript\\lib&quot;,
     &quot;ts.rename.search.for.js.occurrences&quot;: &quot;false&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -330,7 +332,8 @@
       <workItem from="1727247338134" duration="389000" />
       <workItem from="1727273270439" duration="6509000" />
       <workItem from="1727285050934" duration="447000" />
-      <workItem from="1727684832905" duration="36000" />
+      <workItem from="1727684832905" duration="853000" />
+      <workItem from="1727703230335" duration="6000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -476,7 +479,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727285499567</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="bug: Random.Polynom wasn't reducing the polynom">
+      <option name="closed" value="true" />
+      <created>1727684891820</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1727684891820</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -499,7 +510,8 @@
     <MESSAGE value="Changing output of PolyFactor.tableOfSigns()" />
     <MESSAGE value="Testing to change # to private keyword" />
     <MESSAGE value="Back to # private fields.&#10;Removes extra (old) region grouping (from VS Code).&#10;&#10;Removed export type from index.ts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Back to # private fields.&#10;Removes extra (old) region grouping (from VS Code).&#10;&#10;Removed export type from index.ts" />
+    <MESSAGE value="bug: Random.Polynom wasn't reducing the polynom" />
+    <option name="LAST_COMMIT_MESSAGE" value="bug: Random.Polynom wasn't reducing the polynom" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

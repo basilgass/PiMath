@@ -175,6 +175,20 @@
           <section>
             <rule>
               <match>
+                <NAME>tex</NAME>
+              </match>
+            </rule>
+          </section>
+          <section>
+            <rule>
+              <match>
+                <NAME>display</NAME>
+              </match>
+            </rule>
+          </section>
+          <section>
+            <rule>
+              <match>
                 <STATIC>true</STATIC>
               </match>
               <order>BY_NAME</order>

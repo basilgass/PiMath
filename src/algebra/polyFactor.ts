@@ -53,6 +53,44 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return new PolyFactor(...this.#factors.map(f => f.clone()))
     }
 
+    public get tex(): string {
+        const {num, den} = this.#extractNumeratorAndDenominator()
+
+        if (den.length === 0) {
+            if (num.length === 1) {
+                return num[0].asSingle.tex
+            }
+
+            return num.map(f => f.tex).join("")
+        }
+
+        // There is a numerator and a denominator
+        const numTeX = num.length === 1 ? num[0].asSingle.tex : num.map(f => f.tex).join("")
+        const denTeX = den.length === 1 ? den[0].asSingle.tex : den.map(f => f.tex).join("")
+
+        return `\\frac{ ${numTeX} }{ ${denTeX} }`
+
+    }
+
+    public get display(): string {
+        const {num, den} = this.#extractNumeratorAndDenominator()
+
+        if (den.length === 0) {
+            if (num.length === 1) {
+                return num[0].asSingle.display
+            }
+
+            return num.map(f => f.display).join("")
+        }
+
+        // There is a numerator and a denominator
+        const numTeX = num.length === 1 ? num[0].asSingle.display : num.map(f => f.display).join("")
+        const denTeX = den.length === 1 ? den[0].asSingle.display : den.map(f => f.display).join("")
+
+        return `(${numTeX})/(${denTeX})`
+
+    }
+
     static #gcdWith(PF1: PolyFactor, PF2: PolyFactor): PolyFactor {
         // Get all factors of the two polynomials
         // Find the common factors
@@ -165,39 +203,6 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return P
     }
 
-    public get display(): string {
-        let num: Factor[] = [],
-            den: Factor[] = []
-
-        if (this.#displayMode === FACTOR_DISPLAY.ROOT) {
-            // the power are positive integers
-            num = this.numerator
-            den = this.denominator.map(f => f.clone().inverse())
-        } else {
-            num = this.#factors
-        }
-
-        // There is no factor
-        if (num.length === 0) {
-            num = [new Factor('1')]
-        }
-
-        if (den.length === 0) {
-            if (num.length === 1) {
-                return num[0].asSingle.display
-            }
-
-            return num.map(f => f.display).join("")
-        }
-
-        // There is a numerator and a denominator
-        const numTeX = num.length === 1 ? num[0].asSingle.display : num.map(f => f.display).join("")
-        const denTeX = den.length === 1 ? den[0].asSingle.display : den.map(f => f.display).join("")
-
-        return `(${numTeX})/(${denTeX})`
-
-    }
-
     public divide(value: PolyFactor): this {
         this.#factors = this.#factors.concat(value.clone().factors.map(f => f.inverse()))
         return this
@@ -213,10 +218,6 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             .reduce((acc, f) => acc.multiply(f.evaluate(values)), new Fraction('1'))
     }
 
-    public getFactors(){
-        return this.#factors
-    }
-
     public get factors(): Factor[] {
         return this.#factors
     }
@@ -229,6 +230,10 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         // Find all factors from a polynom
         this.#factors = new Polynom(polynom).factorize(letter).map(value => new Factor(value))
         return this
+    }
+
+    public getFactors() {
+        return this.#factors
     }
 
     public getZeroes(): ISolution[] {
@@ -444,8 +449,18 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         // return {roots, signs}
     }
 
-    public get tex(): string {
-        let num: Factor[] = [],
+    public get variables(): string[] {
+        return this.#factors
+            .reduce((acc: string[], f: Factor) => acc.concat(f.variables), [])
+    }
+
+    public zero(): this {
+        this.#factors = [new Factor('0', '1')]
+        return this
+    }
+
+    #extractNumeratorAndDenominator() {
+        let num: Factor[],
             den: Factor[] = []
 
         if (this.#displayMode === FACTOR_DISPLAY.ROOT) {
@@ -460,31 +475,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         if (num.length === 0) {
             num = [new Factor('1')]
         }
-
-        if (den.length === 0) {
-            if (num.length === 1) {
-                return num[0].asSingle.tex
-            }
-
-            return num.map(f => f.tex).join("")
-        }
-
-        // There is a numerator and a denominator
-        const numTeX = num.length === 1 ? num[0].asSingle.tex : num.map(f => f.tex).join("")
-        const denTeX = den.length === 1 ? den[0].asSingle.tex : den.map(f => f.tex).join("")
-
-        return `\\frac{ ${numTeX} }{ ${denTeX} }`
-
-    }
-
-    public get variables(): string[] {
-        return this.#factors
-            .reduce((acc: string[], f: Factor) => acc.concat(f.variables), [])
-    }
-
-    public zero(): this {
-        this.#factors = [new Factor('0', '1')]
-        return this
+        return {num, den}
     }
 
 }

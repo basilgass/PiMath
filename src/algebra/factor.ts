@@ -5,20 +5,20 @@ import type {
     InputValue,
     IPiMathObject,
     ISolution,
-    literalType, TABLE_OF_SIGNS
+    literalType,
+    TABLE_OF_SIGNS
 } from "../pimath.interface"
-import { Fraction } from "../coefficients/fraction"
-import { Polynom } from "./polynom"
+import {Fraction} from "../coefficients/fraction"
+import {Polynom} from "./polynom"
 import {replace_in_array, wrapParenthesis} from "../helpers"
 
-export class Factor implements
-    IPiMathObject<Factor>,
+export class Factor implements IPiMathObject<Factor>,
     IExpression<Factor>,
     IAlgebra<Factor> {
     #displayMode: FACTOR_DISPLAY
-    #singleMode = false
     #polynom: Polynom
     #power: Fraction
+    #singleMode = false
 
     constructor(value: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>) {
         if (value instanceof Factor) {
@@ -47,19 +47,65 @@ export class Factor implements
         return new Factor(this)
     }
 
+    public get tex(): string {
+        const num = this.power.numerator
+        const den = this.power.denominator
+
+        let base: string
+        let power: string
+
+        // TODO: Check power system.
+        if (this.#displayMode === FACTOR_DISPLAY.ROOT && den > 1) {
+            base = `\\sqrt${den === 2 ? '' : `[ ${den} ]`}{ ${this.polynom.tex} }`
+            power = num === 1 ? '' : `^{ num } }`
+        } else {
+            base = this.#singleMode && this.power.isOne() ? this.polynom.tex : wrapParenthesis(this.polynom.tex)
+            power = (den === 1 && num === 1) ? '' : `^{ ${this.power.tex} }`
+        }
+
+        // Add the power if it's not 1 or -1
+        base = `${base}${power}`
+
+        // If the power is negative, make it as a fraction.
+        if (this.#displayMode === FACTOR_DISPLAY.ROOT && num < 0) {
+            base = `\\frac{ 1 }{ ${base} }`
+        }
+
+
+        return base
+    }
+
+    public get display(): string {
+        const num = this.power.numerator
+        const den = this.power.denominator
+
+        let base: string
+        let power: string
+
+        if (this.#displayMode === FACTOR_DISPLAY.ROOT && den > 1) {
+            base = `${den === 2 ? 'sqrt' : `root(${den})`}(${this.polynom.display})`
+            power = num === 1 ? '' : `^(${num})`
+        } else {
+            base = this.#singleMode && this.power.isOne() ? this.polynom.display : wrapParenthesis(this.polynom.display, false)
+            power = (den === 1 && num === 1) ? '' : `^(${this.power.display})`
+        }
+
+        // Add the power if it's not 1 or -1
+        base = `${base}${power}`
+
+        // If the power is negative, make it as a fraction.
+        if (this.#displayMode === FACTOR_DISPLAY.ROOT && num < 0) {
+            base = `1/(${base})`
+        }
+
+
+        return base
+    }
+
     public add(): Factor {
         throw new Error("Adding two factors is not possible")
     }
 
-    public get withPower(): this {
-        this.#displayMode = FACTOR_DISPLAY.POWER
-        return this
-    }
-
-    public get withRoot(): this {
-        this.#displayMode = FACTOR_DISPLAY.ROOT
-        return this
-    }
     public get asSingle(): this {
         this.#singleMode = true
         return this
@@ -95,33 +141,6 @@ export class Factor implements
         }
 
         throw new Error("The power must be a natural number")
-    }
-
-    public get display(): string {
-        const num = this.power.numerator
-        const den = this.power.denominator
-
-        let base: string
-        let power: string
-
-        if (this.#displayMode === FACTOR_DISPLAY.ROOT && den > 1) {
-            base = `${den === 2 ? 'sqrt' : `root(${den})`}(${this.polynom.display})`
-            power = Math.abs(num) === 1 ? '' : `^(${Math.abs(num)})`
-        } else {
-            base = this.#singleMode && this.power.isOne() ? this.polynom.display : wrapParenthesis(this.polynom.display, false)
-            power = (den === 1 && Math.abs(num) === 1) ? '' : `^(${this.power.display})`
-        }
-
-        // Add the power if it's not 1 or -1
-        base = `${base}${power}`
-
-        // If the power is negative, make it as a fraction.
-        if (this.#displayMode === FACTOR_DISPLAY.ROOT && num < 0) {
-            base = `1/(${base})`
-        }
-
-
-        return base
     }
 
     public divide(value: InputAlgebra<Factor | Polynom>): this {
@@ -259,43 +278,6 @@ export class Factor implements
         throw new Error("Subtracting two factors is not possible")
     }
 
-    public get tex(): string {
-        const num = this.power.numerator
-        const den = this.power.denominator
-
-        let base: string
-        let power: string
-
-        if (this.#displayMode === FACTOR_DISPLAY.ROOT && den > 1) {
-            base = `\\sqrt${den === 2 ? '' : `[ ${den} ]`}{ ${this.polynom.tex} }`
-            power = Math.abs(num) === 1 ? '' : `^{ ${Math.abs(num)} }`
-        } else {
-            base = this.#singleMode && this.power.isOne() ? this.polynom.tex : wrapParenthesis(this.polynom.tex)
-            power = (den === 1 && Math.abs(num) === 1) ? '' : `^{ ${this.power.tex} }`
-        }
-
-        // Add the power if it's not 1 or -1
-        base = `${base}${power}`
-
-        // If the power is negative, make it as a fraction.
-        if (this.#displayMode === FACTOR_DISPLAY.ROOT && num < 0) {
-            base = `\\frac{ 1 }{ ${base} }`
-        }
-
-
-        return base
-    }
-
-    public get variables(): string[] {
-        return this.polynom.variables
-    }
-
-    public zero(): this {
-        this.#polynom.zero()
-        this.#power.one()
-        return this
-    }
-
     public tableOfSigns(roots?: ISolution[]): TABLE_OF_SIGNS {
         const pow = this.power.clone().reduce()
         const tos = this.polynom.tableOfSigns(roots)
@@ -308,16 +290,36 @@ export class Factor implements
         // The - sign becomes
         // + (plus) if the power num is even and the power den is odd
         // i (invalid) if the power denominator is even
-        if (pow.denominator % 2 === 0){
+        if (pow.denominator % 2 === 0) {
             // it's an even roots : no negative values!
             tos.signs = replace_in_array(tos.signs, '-', 'h')
-        }else if(pow.numerator % 2 === 0) {
+        } else if (pow.numerator % 2 === 0) {
             // it's an even power :  negative values becomes positive !
             tos.signs = replace_in_array(tos.signs, '-', '+')
         }
 
 
         return {roots: tos.roots, signs: tos.signs}
+    }
+
+    public get variables(): string[] {
+        return this.polynom.variables
+    }
+
+    public get withPower(): this {
+        this.#displayMode = FACTOR_DISPLAY.POWER
+        return this
+    }
+
+    public get withRoot(): this {
+        this.#displayMode = FACTOR_DISPLAY.ROOT
+        return this
+    }
+
+    public zero(): this {
+        this.#polynom.zero()
+        this.#power.one()
+        return this
     }
 
 }
