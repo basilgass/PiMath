@@ -53,7 +53,7 @@ export declare class Triangle {
         'BC': Line;
         'AC': Line;
     };
-    get remarquables(): remarquableLines;
+    get remarquables(): remarquableLines | null;
     /**
      * Parse values to a triangle. Supported formats:
      * Vector2D, Vector2D, Vector2D

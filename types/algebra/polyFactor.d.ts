@@ -7,6 +7,8 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     constructor(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]);
     parse(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]): this;
     clone(): PolyFactor;
+    get tex(): string;
+    get display(): string;
     static gcd(...values: PolyFactor[]): PolyFactor;
     add(...values: PolyFactor[]): this;
     get asPower(): this;
@@ -15,13 +17,12 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     get denominator(): Factor[];
     derivative(): this;
     develop(): Polynom;
-    get display(): string;
     divide(value: PolyFactor): this;
     evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction;
-    getFactors(): Factor[];
     get factors(): Factor[];
     set factors(value: Factor[]);
     fromPolynom(polynom: InputAlgebra<Polynom>, letter?: string): this;
+    getFactors(): Factor[];
     getZeroes(): ISolution[];
     hasVariable(letter: string): boolean;
     inverse(): this;
@@ -40,7 +41,6 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     sqrt(): this;
     subtract(...values: PolyFactor[]): this;
     tableOfSigns(): POLYFACTOR_TABLE_OF_SIGNS;
-    get tex(): string;
     get variables(): string[];
     zero(): this;
 }
