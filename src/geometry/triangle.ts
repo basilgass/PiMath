@@ -37,14 +37,23 @@ export interface remarquableLines {
 }
 
 export class Triangle {
-    #A: Point
-    #B: Point
-    #C: Point
-    #lines: { 'AB': Line, 'AC': Line, 'BC': Line }
-    #middles: { 'AB': Point, 'AC': Point, 'BC': Point }
-    #remarquables: remarquableLines
+    #A: Point = new Point()
+    #B: Point = new Point()
+    #C: Point = new Point()
+    #lines: { 'AB': Line, 'AC': Line, 'BC': Line } = {
+        'AB': new Line(),
+        'AC': new Line(),
+        'BC': new Line()
+    }
+    #middles: { 'AB': Point, 'AC': Point, 'BC': Point } = {
+        'AB': new Point(),
+        'AC': new Point(),
+        'BC': new Point()
+    }
+    #remarquables: remarquableLines | null = null
 
     constructor(...values: unknown[]) {
+
         if (values.length > 0) {
             this.parse(...values)
         }
@@ -121,7 +130,7 @@ export class Triangle {
         return this.#lines
     }
 
-    get remarquables(): remarquableLines {
+    get remarquables(): remarquableLines | null {
         return this.#remarquables
     }
 
@@ -159,14 +168,14 @@ export class Triangle {
                 // Three lines as text.
                 return this.parse(
                     ...values.map((x) => {
-                        return new Line(x as string)
+                        return new Line(x)
                     })
                 )
             } else if (values.every((x: unknown) => x instanceof Line)) {
                 // We have three lines
-                const AB: Line = (values[0] as Line).clone()
-                const BC: Line = (values[1] as Line).clone()
-                const AC: Line = (values[2] as Line).clone()
+                const AB: Line = (values[0]).clone()
+                const BC: Line = (values[1]).clone()
+                const AC: Line = (values[2]).clone()
                 this.#lines = { AB, BC, AC }
 
                 // Get the intersection points -> build the triangle using these intersection points.
@@ -193,9 +202,9 @@ export class Triangle {
 
             } else if (values.every((x: unknown) => (x instanceof Point))) {
                 // We have three points.
-                this.#A = (values[0] as Point).clone()
-                this.#B = (values[1] as Point).clone()
-                this.#C = (values[2] as Point).clone()
+                this.#A = (values[0]).clone()
+                this.#B = (values[1]).clone()
+                this.#C = (values[2]).clone()
                 this.#lines = {
                     'AB': new Line(this.#A, this.#B),
                     'BC': new Line(this.#B, this.#C),

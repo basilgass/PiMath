@@ -54,10 +54,9 @@ export class Factor implements IPiMathObject<Factor>,
         let base: string
         let power: string
 
-        // TODO: Check power system.
         if (this.#displayMode === FACTOR_DISPLAY.ROOT && den > 1) {
             base = `\\sqrt${den === 2 ? '' : `[ ${den} ]`}{ ${this.polynom.tex} }`
-            power = num === 1 ? '' : `^{ num } }`
+            power = num === 1 ? '' : `^{ ${num} }`
         } else {
             base = this.#singleMode && this.power.isOne() ? this.polynom.tex : wrapParenthesis(this.polynom.tex)
             power = (den === 1 && num === 1) ? '' : `^{ ${this.power.tex} }`
