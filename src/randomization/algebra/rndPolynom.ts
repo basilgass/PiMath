@@ -61,7 +61,8 @@ export function rndPolynom(userConfig?: randomPolynomConfig): Polynom {
             P.monoms.splice(index, 1)
         }
     }
-    return P
+
+    return P.reduce()
 }
 
 export function rndFactorablePolynom(userConfig?: randomPolynomConfig): Polynom {
@@ -80,5 +81,5 @@ export function rndFactorablePolynom(userConfig?: randomPolynomConfig): Polynom 
         P.multiply(rndPolynom(_factorableConfig))
     }
 
-    return P
+    return P.reduce()
 }
