@@ -11,12 +11,14 @@ export default defineConfig({
 			fileName: "pimath",
 			entry: resolve(__dirname, "src/index.ts"),
 			formats: ["es"]
-		}
+		},
+		sourcemap: true,
+		emptyOutDir: true,
 	},
 	plugins: [
 		dtsPlugin({
 			include: ['src', "es2022"],
-			outDir: "./types"
+			outDir: "dist"
 		}), // generate .d.ts files for the src folder
 	],
 	rollupOptions: {
@@ -26,9 +28,5 @@ export default defineConfig({
 				Vue: "Vue"
 			}
 		}
-		// input: {
-		// 	main: resolve(__dirname, "src/index.html"),
-		// 	playground: "src/demo/playground.html"
-		// }
 	}
 })

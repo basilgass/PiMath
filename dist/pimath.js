@@ -4200,3 +4200,4 @@ const ds = {
 export {
   ms as default
 };
+//# sourceMappingURL=pimath.js.map

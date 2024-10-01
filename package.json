@@ -3,22 +3,18 @@
   "version": "0.1.18",
   "description": "A math library for teacher :)",
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "main": "dist/pimath.js",
+  "module": "dist/pimath.js",
   "types": "types/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/pimath.js",
-      "require": "./dist/pimath.js"
-    },
-    "./types": {
-      "import": "./types/index.d.ts",
-      "require": "./types/index.d.ts"
+      "require": "./dist/pimath.js",
+      "types": "./types/index.d.ts"
     }
   },
   "files": [
-    "dist",
-    "types"
+    "dist"
   ],
   "scripts": {
     "test": "vitest",
