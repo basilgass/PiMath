@@ -1,7 +1,7 @@
-import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, POLYFACTOR_TABLE_OF_SIGNS } from '../pimath.interface';
-import { Fraction } from '../coefficients/fraction';
-import { Factor } from './factor';
-import { Polynom } from './polynom';
+import type { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, POLYFACTOR_TABLE_OF_SIGNS } from "../pimath.interface";
+import { Fraction } from "../coefficients/fraction";
+import { Factor } from "./factor";
+import { Polynom } from "./polynom";
 export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpression<PolyFactor>, IAlgebra<PolyFactor> {
     #private;
     constructor(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]);
@@ -44,3 +44,4 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     get variables(): string[];
     zero(): this;
 }
+//# sourceMappingURL=polyFactor.d.ts.map

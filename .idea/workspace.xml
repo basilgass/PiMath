@@ -4,23 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Update of config files... and new build">
-      <change afterPath="$PROJECT_DIR$/src/algebra/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/coefficients/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/geometry/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dependency-cruiser.cjs" beforeDir="false" afterPath="$PROJECT_DIR$/.dependency-cruiser.cjs" afterDir="false" />
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Reformating and rebuild the exports system.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependencies.svg" beforeDir="false" afterPath="$PROJECT_DIR$/dependencies.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/equation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/circle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/circle.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/line3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line3.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/plane3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/plane3.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/triangle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/pimath.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/pimath.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pimath.interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pimath.interface.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/randomization/random.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/random.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -235,8 +226,8 @@
   </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
-      <command value="npm run build" />
       <command value="npm run dependency-cruise" />
+      <command value="npm run build" />
     </option>
   </component>
   <component name="RunManager" selected="Vitest.Tests in tests\">
@@ -289,8 +280,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.dependency-cruise" />
         <item itemvalue="npm.build" />
+        <item itemvalue="npm.dependency-cruise" />
         <item itemvalue="Vitest.Tests in tests\" />
         <item itemvalue="Node.js.factor.ts" />
         <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs of factors" />
@@ -345,7 +336,7 @@
       <workItem from="1727703230335" duration="860000" />
       <workItem from="1727711875796" duration="168000" />
       <workItem from="1727712187149" duration="202000" />
-      <workItem from="1727713155081" duration="2824000" />
+      <workItem from="1727713155081" duration="4374000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -531,7 +522,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727795766393</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Reformating and rebuild the exports system.">
+      <option name="closed" value="true" />
+      <created>1727858886051</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1727858886051</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -559,7 +558,8 @@
     <MESSAGE value="Initialize triangle.ts" />
     <MESSAGE value="Build and tests successes" />
     <MESSAGE value="Update of config files... and new build" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update of config files... and new build" />
+    <MESSAGE value="Reformating and rebuild the exports system." />
+    <option name="LAST_COMMIT_MESSAGE" value="Reformating and rebuild the exports system." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

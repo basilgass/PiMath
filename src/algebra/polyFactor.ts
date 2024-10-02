@@ -226,9 +226,17 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         this.#factors = value
     }
 
-    public fromPolynom(polynom: InputAlgebra<Polynom>, letter?: string): this {
+    public fromPolynom(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>, letter?: string): this {
         // Find all factors from a polynom
-        this.#factors = new Polynom(polynom).factorize(letter).map(value => new Factor(value))
+        this.#factors = new Polynom(numerator)
+            .factorize(letter)
+            .map(value => new Factor(value))
+
+        if(denominator){
+            new Polynom(denominator)
+                .factorize(letter)
+                .forEach(value => this.#factors.push(new Factor(value, -1)))
+        }
         return this
     }
 

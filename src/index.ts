@@ -4,18 +4,28 @@ export * from "./algebra"
 export * from "./geometry"
 
 // Import items individually to make a global object
+
 // Coefficients
 import {Fraction, NthRoot} from "./coefficients"
+
 // Algebra
 import {Equation, Factor, LinearSystem, LogicalSet, Monom, PolyFactor, Polynom} from "./algebra"
+
 // Geometry
 import {Circle, Line, Line3, Matrix, Plane3, Point, Triangle, Vector} from "./geometry"
+
 // Numeric
 import {Numeric} from "./numeric"
+export {Numeric}
+
 // NumExp
 import {NumExp} from "piexpression"
+export {NumExp}
+
 // randomization
 import {Random} from "./randomization/random"
+export {Random}
+
 // Typesetting
 export type * from "./pimath.interface"
 
