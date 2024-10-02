@@ -1,7 +1,6 @@
-import { IAlgebra, IEquation, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType } from '../pimath.interface';
+import { EQUATION_SIGN, IAlgebra, IEquation, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType } from '../pimath.interface';
 import { Fraction } from '../coefficients/fraction';
 import { Polynom } from './polynom';
-export type EQUATION_SIGN = "=" | "<=" | ">=" | "<" | ">";
 export declare class Equation implements IPiMathObject<Equation>, IEquation<Equation>, IAlgebra<Equation> {
     #private;
     constructor(equation: InputAlgebra<Polynom> | Equation);

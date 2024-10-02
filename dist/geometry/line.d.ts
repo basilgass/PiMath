@@ -1,14 +1,8 @@
 import { Fraction } from '../coefficients/fraction';
 import { Equation } from '../algebra/equation';
 import { Vector } from './vector';
-import { InputValue, IPiMathObject } from '../pimath.interface';
+import { InputValue, IPiMathObject, LinePropriety } from '../pimath.interface';
 import { Point } from './point';
-export declare enum LinePropriety {
-    None = "none",
-    Parallel = "parallel",
-    Perpendicular = "perpendicular",
-    Tangent = "tangent"
-}
 export interface LineConfig {
     points?: Point[];
     point?: Point;

@@ -8,16 +8,9 @@ import { Equation } from "../algebra/equation"
 import { Polynom } from "../algebra/polynom"
 import { Monom } from "../algebra/monom"
 import { Vector } from "./vector"
-import type { InputValue, IPiMathObject } from "../pimath.interface"
+import {type InputValue, type IPiMathObject, LinePropriety} from "../pimath.interface"
 import { randomIntSym } from "../randomization/rndHelpers"
 import { Point } from "./point"
-
-export enum LinePropriety {
-    None = 'none',
-    Parallel = 'parallel',
-    Perpendicular = 'perpendicular',
-    Tangent = 'tangent'
-}
 
 export interface LineConfig {
     points?: Point[],
@@ -324,7 +317,7 @@ export class Line implements IPiMathObject<Line> {
 
         // Two values are given: two vectors
         if (values.length === 2 && values.every(x=>x instanceof Vector)) {
-            const formattedValues: Vector[] = values as Vector[]
+            const formattedValues: Vector[] = values
 
             if (formattedValues[0].asPoint && formattedValues[1].asPoint) {
                 // Two points

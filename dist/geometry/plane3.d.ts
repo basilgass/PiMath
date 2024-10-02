@@ -1,16 +1,8 @@
-import { Equation } from '../algebra/equation';
 import { Fraction } from '../coefficients/fraction';
 import { Line3 } from './line3';
 import { Point } from './point';
 import { Vector } from './vector';
-interface Plane3Config {
-    point?: Point;
-    normal?: Vector;
-    directions?: Vector[];
-    equation?: Equation;
-    points?: Point[];
-    coefficients?: number[];
-}
+import { Plane3Config } from '../pimath.interface';
 export declare class Plane3 {
     #private;
     constructor(config?: Plane3Config);
@@ -32,4 +24,3 @@ export declare class Plane3 {
     intersectWithPlane(plane: Plane3): Line3;
     isPointOnPlane(pt: Point): boolean;
 }
-export {};

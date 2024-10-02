@@ -1,7 +1,10 @@
+// TODO: split interface, enum, types
 import type { Fraction } from "./coefficients/fraction"
 import type { NthRoot } from "./coefficients/nthRoot"
 import type { Monom } from "./algebra/monom"
 import type {Factor} from "./algebra/factor"
+import type {Line, Point, Vector} from "./geometry"
+import type {Equation} from "./algebra"
 
 export type InputValue<T> = T | string | number | Fraction | NthRoot;
 export type InputAlgebra<T> = InputValue<T> | Monom
@@ -12,6 +15,7 @@ export type compareSign =
     '<' | "<=" | "=<" | "leq" |
     '=' | "<>" | "neq" | "same";
 
+export type EQUATION_SIGN = "=" | "<=" | ">=" | "<" | ">"
 
 export enum PARTICULAR_SOLUTION {
     real = "\\mathbb{R}",
@@ -98,4 +102,61 @@ export interface TABLE_OF_SIGNS {roots: ISolution[], signs: TABLE_OF_SIGNS_VALUE
 export interface FACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {factor: Factor}
 export interface POLYFACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {
     factors: FACTOR_TABLE_OF_SIGNS[]
+}
+
+export enum LinePropriety {
+    None = 'none',
+    Parallel = 'parallel',
+    Perpendicular = 'perpendicular',
+    Tangent = 'tangent'
+}
+
+export enum Line3Propriety {
+    None = 'none',
+    Parallel = 'parallel',
+    Perpendicular = 'perpendicular',
+    Tangent = 'tangent'
+}
+
+export interface Plane3Config {
+    point?: Point,
+    normal?: Vector,
+    directions?: Vector[],
+    equation?: Equation,
+    points?: Point[],
+    coefficients?: number[]
+}
+
+
+export interface remarquableLines {
+    'medians': {
+        'A': Line,
+        'B': Line,
+        'C': Line,
+        'intersection': Vector | null
+    },
+    'mediators': {
+        'AB': Line,
+        'AC': Line,
+        'BC': Line,
+        'intersection': Vector | null
+    },
+    'heights': {
+        'A': Line,
+        'B': Line,
+        'C': Line,
+        'intersection': Vector | null
+    },
+    'bisectors': {
+        'A': Line,
+        'B': Line,
+        'C': Line,
+        'intersection': Vector | null
+    },
+    externalBisectors: {
+        'A': Line,
+        'B': Line,
+        'C': Line,
+        'intersection': Vector | null
+    }
 }

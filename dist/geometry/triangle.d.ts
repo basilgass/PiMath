@@ -1,38 +1,7 @@
 import { Line } from './line';
 import { Vector } from './vector';
 import { Point } from './point';
-export interface remarquableLines {
-    'medians': {
-        'A': Line;
-        'B': Line;
-        'C': Line;
-        'intersection': Vector | null;
-    };
-    'mediators': {
-        'AB': Line;
-        'AC': Line;
-        'BC': Line;
-        'intersection': Vector | null;
-    };
-    'heights': {
-        'A': Line;
-        'B': Line;
-        'C': Line;
-        'intersection': Vector | null;
-    };
-    'bisectors': {
-        'A': Line;
-        'B': Line;
-        'C': Line;
-        'intersection': Vector | null;
-    };
-    externalBisectors: {
-        'A': Line;
-        'B': Line;
-        'C': Line;
-        'intersection': Vector | null;
-    };
-}
+import { remarquableLines } from '../pimath.interface';
 export declare class Triangle {
     #private;
     constructor(...values: unknown[]);

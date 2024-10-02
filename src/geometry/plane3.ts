@@ -4,16 +4,10 @@ import { Fraction } from "../coefficients/fraction"
 import { Line3 } from "./line3"
 import { Point } from "./point"
 import { Vector } from "./vector"
+import type {Plane3Config} from "../pimath.interface"
 
 
-interface Plane3Config {
-    point?: Point,
-    normal?: Vector,
-    directions?: Vector[],
-    equation?: Equation,
-    points?: Point[],
-    coefficients?: number[]
-}
+
 export class Plane3 {
     #normal: Vector = new Vector(0, 0, 1)
     #point: Point = new Point(0, 0, 0)

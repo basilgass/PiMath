@@ -1,38 +1,23 @@
 // Expose as global
-import {Fraction} from "./coefficients/fraction"
-import {NthRoot} from "./coefficients/nthRoot"
-import {Monom} from "./algebra/monom"
-import {Polynom} from "./algebra/polynom"
-import {Factor} from "./algebra/factor"
-import {PolyFactor} from "./algebra/polyFactor"
-import {Equation} from "./algebra/equation"
-import {LinearSystem} from "./algebra/linearSystem"
-import {Circle} from "./geometry/circle"
-import {Line} from "./geometry/line"
-import {Point} from "./geometry/point"
-import {Triangle} from "./geometry/triangle"
-import {Vector} from "./geometry/vector"
-import {Line3} from "./geometry/line3"
-import {Plane3} from "./geometry/plane3"
-import {Matrix} from "./geometry/matrix"
+export * from "./coefficients"
+export * from "./algebra"
+export * from "./geometry"
 
+// Import items individually to make a global object
+// Coefficients
+import {Fraction, NthRoot} from "./coefficients"
+// Algebra
+import {Equation, Factor, LinearSystem, LogicalSet, Monom, PolyFactor, Polynom} from "./algebra"
+// Geometry
+import {Circle, Line, Line3, Matrix, Plane3, Point, Triangle, Vector} from "./geometry"
+// Numeric
 import {Numeric} from "./numeric"
-import {Random} from "./randomization/random"
-
+// NumExp
 import {NumExp} from "piexpression"
-import {LogicalSet} from "./algebra/logicalset"
-
+// randomization
+import {Random} from "./randomization/random"
+// Typesetting
 export type * from "./pimath.interface"
-
-const Geometry = {
-    Vector: Vector,
-    Point: Point,
-    Line: Line,
-    Triangle: Triangle,
-    Circle: Circle,
-    Line3: Line3,
-    Plane3: Plane3,
-}
 
 // Make a global object
 const PiMath = {
@@ -48,9 +33,17 @@ const PiMath = {
     PolyFactor,
     LogicalSet,
     Random,
-    Geometry,
+    Geometry: {
+        Vector: Vector,
+        Point: Point,
+        Line: Line,
+        Triangle: Triangle,
+        Circle: Circle,
+        Line3: Line3,
+        Plane3: Plane3,
+    },
     NumExp
 }
 
-// Export default value
+// Export as default value
 export default PiMath

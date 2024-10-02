@@ -1,16 +1,11 @@
 import { Fraction } from '../coefficients/fraction';
 import { Vector } from './vector';
 import { Point } from './point';
-export declare enum LinePropriety {
-    None = "none",
-    Parallel = "parallel",
-    Perpendicular = "perpendicular",
-    Tangent = "tangent"
-}
+import { Line3Propriety } from '../pimath.interface';
 export declare class Line3 {
     #private;
-    static PERPENDICULAR: LinePropriety;
-    static PARALLEL: LinePropriety;
+    static PERPENDICULAR: Line3Propriety;
+    static PARALLEL: Line3Propriety;
     /**
      * Value can be a mix of:
      *

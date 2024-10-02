@@ -1,6 +1,6 @@
 import { Line } from './line';
-import { Fraction } from '../coefficients/fraction';
-import { Equation } from '../algebra/equation';
+import { Fraction } from '../coefficients';
+import { Equation } from '../algebra';
 import { IPiMathObject } from '../pimath.interface';
 import { Point } from './point';
 export declare class Circle implements IPiMathObject<Circle> {

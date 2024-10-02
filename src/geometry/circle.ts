@@ -1,11 +1,11 @@
-import { Line, LinePropriety } from "./line"
+import { Line } from "./line"
 import { Vector } from "./vector"
 import { Numeric } from "../numeric"
-import { Fraction } from "../coefficients/fraction"
-import { Equation } from "../algebra/equation"
-import { Polynom } from "../algebra/polynom"
-import { Monom } from "../algebra/monom"
-import type { IPiMathObject } from "../pimath.interface"
+import { Fraction } from "../coefficients"
+import { Equation } from "../algebra"
+import { Polynom } from "../algebra"
+import { Monom } from "../algebra"
+import {type IPiMathObject, LinePropriety} from "../pimath.interface"
 import { Point } from "./point"
 
 export class Circle

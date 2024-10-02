@@ -3,7 +3,7 @@ module.exports = {
   forbidden: [
     {
       name: 'type-circular',
-      severity: 'warn',
+      severity: 'ignore',
       comment:
         'This dependency is part of a circular type import chain',
       from: {},

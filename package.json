@@ -5,12 +5,12 @@
   "type": "module",
   "main": "dist/pimath.js",
   "module": "dist/pimath.js",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/pimath.js",
       "require": "./dist/pimath.js",
-      "types": "./types/index.d.ts"
+      "types": "./dist/index.d.ts"
     }
   },
   "files": [

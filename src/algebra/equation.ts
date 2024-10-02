@@ -1,4 +1,5 @@
 import type {
+    EQUATION_SIGN,
     IAlgebra,
     IEquation,
     InputAlgebra,
@@ -12,8 +13,6 @@ import { Numeric } from "../numeric"
 import { EquationSolver } from "./equationSolver"
 import { Monom } from "./monom"
 import { Polynom } from "./polynom"
-
-export type EQUATION_SIGN = "=" | "<=" | ">=" | "<" | ">"
 
 export class Equation implements
     IPiMathObject<Equation>,

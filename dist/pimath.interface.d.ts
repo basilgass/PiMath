@@ -2,10 +2,13 @@ import { Fraction } from './coefficients/fraction';
 import { NthRoot } from './coefficients/nthRoot';
 import { Monom } from './algebra/monom';
 import { Factor } from './algebra/factor';
+import { Line, Point, Vector } from './geometry';
+import { Equation } from './algebra';
 export type InputValue<T> = T | string | number | Fraction | NthRoot;
 export type InputAlgebra<T> = InputValue<T> | Monom;
 export type literalType<T> = Record<string, T>;
 export type compareSign = '>' | ">=" | "=>" | "geq" | '<' | "<=" | "=<" | "leq" | '=' | "<>" | "neq" | "same";
+export type EQUATION_SIGN = "=" | "<=" | ">=" | "<" | ">";
 export declare enum PARTICULAR_SOLUTION {
     real = "\\mathbb{R}",
     varnothing = "\\varnothing"
@@ -65,4 +68,56 @@ export interface FACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {
 }
 export interface POLYFACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {
     factors: FACTOR_TABLE_OF_SIGNS[];
+}
+export declare enum LinePropriety {
+    None = "none",
+    Parallel = "parallel",
+    Perpendicular = "perpendicular",
+    Tangent = "tangent"
+}
+export declare enum Line3Propriety {
+    None = "none",
+    Parallel = "parallel",
+    Perpendicular = "perpendicular",
+    Tangent = "tangent"
+}
+export interface Plane3Config {
+    point?: Point;
+    normal?: Vector;
+    directions?: Vector[];
+    equation?: Equation;
+    points?: Point[];
+    coefficients?: number[];
+}
+export interface remarquableLines {
+    'medians': {
+        'A': Line;
+        'B': Line;
+        'C': Line;
+        'intersection': Vector | null;
+    };
+    'mediators': {
+        'AB': Line;
+        'AC': Line;
+        'BC': Line;
+        'intersection': Vector | null;
+    };
+    'heights': {
+        'A': Line;
+        'B': Line;
+        'C': Line;
+        'intersection': Vector | null;
+    };
+    'bisectors': {
+        'A': Line;
+        'B': Line;
+        'C': Line;
+        'intersection': Vector | null;
+    };
+    externalBisectors: {
+        'A': Line;
+        'B': Line;
+        'C': Line;
+        'intersection': Vector | null;
+    };
 }

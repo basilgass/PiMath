@@ -8,18 +8,13 @@ import { Monom } from "../algebra/monom"
 import { randomIntSym } from "../randomization/rndHelpers"
 import { Vector } from "./vector"
 import { Point } from "./point"
+import {Line3Propriety} from "../pimath.interface"
 
-export enum LinePropriety {
-    None = 'none',
-    Parallel = 'parallel',
-    Perpendicular = 'perpendicular',
-    Tangent = 'tangent'
-}
 
 export class Line3 {
     // A line is defined as the canonical form
-    static PERPENDICULAR = LinePropriety.Perpendicular
-    static PARALLEL = LinePropriety.Parallel
+    static PERPENDICULAR = Line3Propriety.Perpendicular
+    static PARALLEL = Line3Propriety.Parallel
     // ax + by + c = 0
     #OA: Point = new Point()
     #d: Vector = new Vector()

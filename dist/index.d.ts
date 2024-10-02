@@ -1,21 +1,10 @@
-import { Fraction } from './coefficients/fraction';
-import { NthRoot } from './coefficients/nthRoot';
-import { Monom } from './algebra/monom';
-import { Polynom } from './algebra/polynom';
-import { Factor } from './algebra/factor';
-import { PolyFactor } from './algebra/polyFactor';
-import { Equation } from './algebra/equation';
-import { LinearSystem } from './algebra/linearSystem';
-import { Circle } from './geometry/circle';
-import { Line } from './geometry/line';
-import { Point } from './geometry/point';
-import { Triangle } from './geometry/triangle';
-import { Vector } from './geometry/vector';
-import { Line3 } from './geometry/line3';
-import { Plane3 } from './geometry/plane3';
-import { Matrix } from './geometry/matrix';
+import { Fraction, NthRoot } from './coefficients';
+import { Equation, Factor, LinearSystem, LogicalSet, Monom, PolyFactor, Polynom } from './algebra';
+import { Circle, Line, Line3, Matrix, Plane3, Point, Triangle, Vector } from './geometry';
 import { NumExp } from 'piexpression';
-import { LogicalSet } from './algebra/logicalset';
+export * from './coefficients';
+export * from './algebra';
+export * from './geometry';
 export type * from './pimath.interface';
 declare const PiMath: {
     Numeric: {
