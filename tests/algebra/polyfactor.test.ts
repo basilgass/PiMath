@@ -29,7 +29,8 @@ describe("PolyFactor creation", () => {
         expect(PF).toBeDefined()
         expect(PF.factors).toHaveLength(4)
 
-        const {numerator, denominator} = PF.splitFactors()
+        const numerator = PF.numerator
+        const denominator = PF.denominator
         expect(numerator.factors).toHaveLength(2)
         expect(numerator.factors.every(x=>x.power.isPositive())).toBeTruthy()
         expect(denominator.factors).toHaveLength(2)

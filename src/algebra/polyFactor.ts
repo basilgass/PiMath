@@ -166,8 +166,8 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this.#factors.reduce((acc, f) => acc.add(f.degree(letter)), new Fraction('0'))
     }
 
-    get denominator(): Factor[] {
-        return this.#factors.filter(f => f.power.isNegative())
+    get denominator(): PolyFactor {
+        return new PolyFactor(...this.#factors.filter(f => f.power.isNegative()))
     }
 
     public derivative(): this {
@@ -295,8 +295,8 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this
     }
 
-    get numerator(): Factor[] {
-        return this.#factors.filter(f => f.power.isPositive())
+    get numerator(): PolyFactor {
+        return new PolyFactor(...this.#factors.filter(f => f.power.isPositive()))
     }
 
     public one(): this {
@@ -351,13 +351,6 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         this.#factors = this.#factors
             .sort((a, b) => a.degree().isLeq(b.degree()) ? -1 : 1)
         return this
-    }
-
-    public splitFactors(): { numerator: PolyFactor, denominator: PolyFactor } {
-        return {
-            numerator: new PolyFactor(...this.#factors.filter(x => x.power.isPositive())),
-            denominator: new PolyFactor(...this.#factors.filter(x => x.power.isStrictlyNegative()))
-        }
     }
 
     public sqrt(): this {
@@ -480,8 +473,8 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
 
         if (this.#displayMode === FACTOR_DISPLAY.ROOT) {
             // the power are positive integers
-            num = this.numerator
-            den = this.denominator.map(f => f.clone().inverse())
+            num = this.numerator.factors
+            den = this.denominator.factors.map(f => f.clone().inverse())
         } else {
             num = this.#factors
         }

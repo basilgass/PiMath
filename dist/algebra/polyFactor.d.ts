@@ -14,7 +14,7 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     get asPower(): this;
     get asRoot(): this;
     degree(letter?: string): Fraction;
-    get denominator(): Factor[];
+    get denominator(): PolyFactor;
     derivative(): this;
     develop(): Polynom;
     divide(value: PolyFactor): this;
@@ -30,7 +30,7 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     isOne(): boolean;
     isZero(): boolean;
     multiply(...values: PolyFactor[]): this;
-    get numerator(): Factor[];
+    get numerator(): PolyFactor;
     one(): this;
     opposite(): this;
     pow(value: number | Fraction): this;
@@ -38,10 +38,6 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     reduce(): this;
     root(value: number): this;
     sort(): this;
-    splitFactors(): {
-        numerator: PolyFactor;
-        denominator: PolyFactor;
-    };
     sqrt(): this;
     subtract(...values: PolyFactor[]): this;
     tableOfSigns(): POLYFACTOR_TABLE_OF_SIGNS;
