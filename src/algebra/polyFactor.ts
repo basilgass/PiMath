@@ -232,7 +232,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             .factorize(letter)
             .map(value => new Factor(value))
 
-        if(denominator){
+        if (denominator) {
             new Polynom(denominator)
                 .factorize(letter)
                 .forEach(value => this.#factors.push(new Factor(value, -1)))
@@ -351,6 +351,13 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         this.#factors = this.#factors
             .sort((a, b) => a.degree().isLeq(b.degree()) ? -1 : 1)
         return this
+    }
+
+    public splitFactors(): { numerator: PolyFactor, denominator: PolyFactor } {
+        return {
+            numerator: new PolyFactor(...this.#factors.filter(x => x.power.isPositive())),
+            denominator: new PolyFactor(...this.#factors.filter(x => x.power.isStrictlyNegative()))
+        }
     }
 
     public sqrt(): this {

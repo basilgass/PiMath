@@ -24,6 +24,17 @@ describe("PolyFactor creation", () => {
         expect(PF).toBeDefined()
         expect(PF.factors).toHaveLength(2)
     })
+    test('create a PolyfFactor from a numerator and denominator', ()=>{
+        const PF = new PolyFactor().fromPolynom('x^2-5x+6', 'x^2+3x+2')
+        expect(PF).toBeDefined()
+        expect(PF.factors).toHaveLength(4)
+
+        const {numerator, denominator} = PF.splitFactors()
+        expect(numerator.factors).toHaveLength(2)
+        expect(numerator.factors.every(x=>x.power.isPositive())).toBeTruthy()
+        expect(denominator.factors).toHaveLength(2)
+        expect(denominator.factors.every(x=>x.power.isStrictlyNegative())).toBeTruthy()
+    })
     test('should clone a PolyFactor', () => {
         const PF = new PolyFactor(
             new Factor('3x+2', '1/2'),
@@ -446,7 +457,6 @@ describe("PolyFactor: comparison operations", () => {
         expect(PF.isEqual(PF)).toBeTruthy()
         expect(PF.isEqual(PF2)).toBeTruthy()
         expect(PF.isEqual(PF3)).toBeFalsy()
-
     })
 })
 
