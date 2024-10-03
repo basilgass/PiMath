@@ -10,7 +10,7 @@ import type {
     POLYFACTOR_TABLE_OF_SIGNS,
     TABLE_OF_SIGNS_VALUES
 } from "../pimath.interface"
-import {Fraction} from "../coefficients/fraction"
+import {Fraction} from "../coefficients"
 import {Factor, FACTOR_DISPLAY} from "./factor"
 import {Polynom} from "./polynom"
 
@@ -110,6 +110,29 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return new PolyFactor(...factors)
     }
 
+    static #lcmWith(PF1: PolyFactor, PF2: PolyFactor): PolyFactor {
+
+        const factors1 = keyFactors(PF1)
+
+        const factors2 = keyFactors(PF2)
+
+        const common = [...new Set([...Object.keys(factors1), ...Object.keys(factors2)])]
+
+        // Find the maximum power of the common factors
+        const factors = common.map(k => {
+            const power =
+                Object.hasOwn(factors1, k) ?
+                    factors1[k].reduce((acc, f) => acc.add(f.power), new Fraction('0')) :
+                    new Fraction(0)
+            const power2 = Object.hasOwn(factors2, k) ?
+                factors2[k].reduce((acc, f) => acc.add(f.power), new Fraction('0')) :
+                new Fraction(0)
+            return new Factor(k, Fraction.max(power, power2))
+        })
+
+        return new PolyFactor(...factors)
+    }
+
     public static gcd(...values: PolyFactor[]): PolyFactor {
         if (values.length === 0) {
             return new PolyFactor().one()
@@ -129,25 +152,65 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return PF
     }
 
+    public static lcm(...values: PolyFactor[]): PolyFactor {
+        if (values.length === 0) {
+            return new PolyFactor().one()
+        }
+        if (values.length === 1) {
+            return values[0]
+        }
+
+        let PF = values[0]
+        values.shift()
+        values.forEach(value => PF = PolyFactor.#lcmWith(PF, value))
+        return PF
+    }
+
     public add(...values: PolyFactor[]): this {
-        // List of the polyFactors
-        let PF: PolyFactor[] = [this, ...values]
+        // Adding two (or more) polyfactors:
+        // if both are numerators only, use the common polynom
+        // if there are denominators, multiply every polyfactors to match the lcm polyfactor.
 
-        // Get the gcd of the PolyFactors
-        const gcd = PolyFactor.gcd(...PF)
+        const numerators: PolyFactor[] = [this.numerator, ...values.map(x => x.numerator)]
+        const denominators: PolyFactor[] = [this.denominator, ...values.map(x => x.denominator)]
 
-        // Divide the PF by the gcd
-        PF = PF.map(pf => pf.divide(gcd).reduce())
+        let denominator: PolyFactor | undefined
+        if (denominators.some(d => d.factors.length > 0)) {
+            // At least one of the denominators is not empty.
+            const lcm = PolyFactor.lcm(...denominators)
 
-        // Add the dPF values: develop the polynoms and add them
-        const P = new Polynom('0')
-        PF.forEach(pf => P.add(pf.develop()))
+            // Multiply each numerators by the complementary.
+            numerators.forEach((n, index) => {
+                n.multiply(lcm.clone().divide(denominators[index]))
+            })
 
-        // Make the new factor
+            // Set the common denominator to the lcm PolyFctor
+            denominator = lcm
+        }
+
+        // Now, every polyfactor should have a common denominator. Just add the numerators.
+        const gcd = PolyFactor.gcd(...numerators)
+        const remainingPolynom = new Polynom(0)
+            .add(...numerators.map(pf => {
+                    return pf
+                        .divide(gcd).reduce()
+                        .develop() // should be a polyfactor with one factor, with a power of 1
+                        .factors[0]
+                        .polynom
+                })
+            )
+
         this.#factors = [
             ...gcd.factors,
-            new Factor(P)
+            new Factor(remainingPolynom)
         ]
+
+        if (denominator) {
+            this.divide(denominator)
+        }
+
+        // Remove all factros with a power of zero
+        this.#factors = this.#factors.filter(x=>!x.power.isZero())
 
         return this
     }
@@ -167,7 +230,10 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     get denominator(): PolyFactor {
-        return new PolyFactor(...this.#factors.filter(f => f.power.isNegative()))
+        return new PolyFactor(...this.#factors
+            .filter(f => f.power.isNegative())
+            .map(f => f.clone().inverse())
+        )
     }
 
     public derivative(): this {
@@ -192,15 +258,19 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this.add(...dPF)
     }
 
-    public develop(): Polynom {
+    public develop(): PolyFactor {
         // Develop each factor and multiply them
-        const P = new Polynom('1')
+        const N = new Polynom('1')
+        const D = new Polynom('1')
 
-        this.#factors.forEach(f => {
-            P.multiply(f.develop())
+        this.numerator.factors.forEach(f => {
+            N.multiply(f.develop())
+        })
+        this.denominator.factors.forEach(f => {
+            D.multiply(f.develop())
         })
 
-        return P
+        return new PolyFactor().fromPolynom(N, D)
     }
 
     public divide(value: PolyFactor): this {
@@ -218,6 +288,28 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             .reduce((acc, f) => acc.multiply(f.evaluate(values)), new Fraction('1'))
     }
 
+    public factorize(letter?: string): PolyFactor {
+        // Go through each factors.
+        // If it can be factorized, remove the factor (set its power to zero) and insert the new factors instead.
+        const newFactors: Factor[] = []
+
+        this.#factors.forEach(factor => {
+            const factors = factor.polynom.factorize(letter)
+            if (factors.length > 1) {
+                const pow = factor.power.clone()
+                newFactors.push(...factors.map(x => new Factor(x, pow)))
+            } else {
+                newFactors.push(factor.clone())
+            }
+        })
+
+        const result = new PolyFactor(...newFactors)
+        const numerator = result.numerator.reduce()
+        const denominator = result.denominator.reduce()
+
+        return numerator.divide(denominator)
+    }
+
     public get factors(): Factor[] {
         return this.#factors
     }
@@ -226,22 +318,33 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         this.#factors = value
     }
 
-    public fromPolynom(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>, letter?: string): this {
-        // Find all factors from a polynom
-        this.#factors = new Polynom(numerator)
-            .factorize(letter)
-            .map(value => new Factor(value))
+    public fromPolynom(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>): this {
+        // fromPolynom loads the numerator and denominator as is, without factorizing !
+        this.#factors = [new Factor(new Polynom(numerator))]
 
         if (denominator) {
-            new Polynom(denominator)
-                .factorize(letter)
-                .forEach(value => this.#factors.push(new Factor(value, -1)))
-        }
-        return this
-    }
+            const polynom = new Polynom(denominator)
 
-    public getFactors() {
-        return this.#factors
+            if (polynom.isOne()) {
+                return this
+            }
+            if (polynom.isZero()) {
+                throw new Error("Cannot divide by zero")
+            }
+            this.#factors.push(new Factor(polynom, -1))
+        }
+        // // Find all factors from a polynom
+        // this.#factors = new Polynom(numerator)
+        //     .factorize(letter)
+        //     .map(value => new Factor(value))
+        //
+        // if (denominator) {
+        //     new Polynom(denominator)
+        //         .factorize(letter)
+        //         .forEach(value => this.#factors.push(new Factor(value, -1)))
+        // }
+
+        return this
     }
 
     public getZeroes(): ISolution[] {
@@ -474,7 +577,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         if (this.#displayMode === FACTOR_DISPLAY.ROOT) {
             // the power are positive integers
             num = this.numerator.factors
-            den = this.denominator.factors.map(f => f.clone().inverse())
+            den = this.denominator.factors
         } else {
             num = this.#factors
         }

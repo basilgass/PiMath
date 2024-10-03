@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest"
-import { PolyFactor } from "../../src/algebra/polyFactor"
-import { Factor } from "../../src/algebra/factor"
+import {PolyFactor} from "../../src"
+import { Factor } from "../../src"
 
 describe("PolyFactor creation", () => {
     test('should create a PolyFactor', () => {
@@ -20,21 +20,19 @@ describe("PolyFactor creation", () => {
 
     test('create a PolyFactor from a Polynom', ()=>{
         const PF = new PolyFactor().fromPolynom('x^2-5x+6')
-
         expect(PF).toBeDefined()
-        expect(PF.factors).toHaveLength(2)
+        expect(PF.factors).toHaveLength(1)
     })
-    test('create a PolyfFactor from a numerator and denominator', ()=>{
+
+    test('create a PolyFactor from a numerator and denominator', ()=>{
         const PF = new PolyFactor().fromPolynom('x^2-5x+6', 'x^2+3x+2')
         expect(PF).toBeDefined()
-        expect(PF.factors).toHaveLength(4)
+        expect(PF.factors).toHaveLength(2)
 
         const numerator = PF.numerator
         const denominator = PF.denominator
-        expect(numerator.factors).toHaveLength(2)
-        expect(numerator.factors.every(x=>x.power.isPositive())).toBeTruthy()
-        expect(denominator.factors).toHaveLength(2)
-        expect(denominator.factors.every(x=>x.power.isStrictlyNegative())).toBeTruthy()
+        expect(numerator.factors).toHaveLength(1)
+        expect(denominator.factors).toHaveLength(1)
     })
     test('should clone a PolyFactor', () => {
         const PF = new PolyFactor(
@@ -323,6 +321,8 @@ describe("PolyFactor: operations", () => {
 
         expect(gcd.isOne()).toBeTruthy()
     })
+
+    test.todo('should get the lcm of two PolyFactors')
 })
 
 describe("PolyFactor: algebra operations", () => {
@@ -376,6 +376,45 @@ describe("PolyFactor: algebra operations", () => {
 
         expect(PF2.display).toBe('48x^(3)-40x^(2)-21x+18')
     })
+    test('should develop the PolyFactor in a more complex situation', ()=>{
+        const PF = new PolyFactor(
+            new Factor('x+1', 2),
+            new Factor('x+2', 1),
+            new Factor('x-3', -3)
+        )
+
+        const PF2 = PF.develop()
+        expect(PF.factors).toHaveLength(3)
+        expect(PF2.factors).toHaveLength(2)
+
+        expect(PF2.numerator.display).toBe('x^(3)+4x^(2)+5x+2')
+        expect(PF2.denominator.display).toBe('x^(3)-9x^(2)+27x-27')
+
+
+    })
+
+    test('should factorize the PolyFactor', ()=>{
+        const PF = new PolyFactor().fromPolynom('x^2-5x+6')
+        const PF2 = PF.factorize()
+        expect(PF.factors).toHaveLength(1)
+        expect(PF.display).toBe('x^(2)-5x+6')
+        expect(PF2.factors).toHaveLength(2)
+    })
+
+    test('should factorize the PolyFactor in a more complex situation', ()=>{
+        const PF = new PolyFactor(
+            new Factor('x^2-5x+6', 2),
+            new Factor('x^2+2x+1', -3)
+        )
+
+        const PF2 = PF.factorize()
+
+        expect(PF.factors).toHaveLength(2)
+        expect(PF.numerator.factors).toHaveLength(1)
+
+        expect(PF2.factors).toHaveLength(3)
+
+    })
 
     test('should add two PolyFactors', () => {
         const PF = new PolyFactor(
@@ -392,6 +431,24 @@ describe("PolyFactor: algebra operations", () => {
 
         expect(PF.factors.length).toBe(2)
         expect(PF.display).toBe('(3x+2)(28x^(2)-13x+11)')
+    })
+
+    test('should add two PolyFactors with denominators', () => {
+        // 2/(4x-3) + x/x+1 = 2x+2 + 4x^2-3x = 4x^2-x+2 / (4x-3)(x+1)
+        const PF = new PolyFactor(
+            new Factor('2', '1'),
+            new Factor('4x-3', '-1')
+        )
+
+        const PF2 = new PolyFactor(
+            new Factor('x', '1'),
+            new Factor('x+1', '-1')
+        )
+
+        PF.add(PF2)
+
+        expect(PF.factors.length).toBe(3)
+        expect(PF.numerator.display).toBe('4x^(2)-x+2')
     })
 
     test('should get the opposite of a PolyFactor', () => {
@@ -474,9 +531,5 @@ describe('PolyFactor: Table of signs', ()=>{
 
         expect(tos.roots.map(x=>x.value)).toEqual([-5,0,2,3])
         expect(tos.signs).toEqual(['h', 'z', '-', 'd', '-', 'z', '-', 'z', '+'])
-    })
-
-    test('compile table of signs of factors', ()=>{
-
     })
 })
