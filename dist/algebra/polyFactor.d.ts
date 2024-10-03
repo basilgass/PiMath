@@ -38,6 +38,10 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     reduce(): this;
     root(value: number): this;
     sort(): this;
+    splitFactors(): {
+        numerator: PolyFactor;
+        denominator: PolyFactor;
+    };
     sqrt(): this;
     subtract(...values: PolyFactor[]): this;
     tableOfSigns(): POLYFACTOR_TABLE_OF_SIGNS;

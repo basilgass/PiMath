@@ -4,10 +4,43 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Added u and n in TABLE_OF_SIGNS_VALUES for concave/convex">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="polyFactor.ts: added splitFactors(): {numerator: PolyFactor, denominator: PolyFactor}">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig-build.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/equation.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/equationSolver.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/factor.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/index.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/linearSystem.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/monom.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/polyFactor.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/polyFactor.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/polynom.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/coefficients/fraction.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/coefficients/index.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/circle.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/geomMath.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/index.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/line.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/line3.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/matrix.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/plane3.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/point.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/triangle.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/vector.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/index.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/index.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/pimath.interface.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/randomization/algebra/rndEquation.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/randomization/algebra/rndMonom.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/randomization/algebra/rndPolynom.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/randomization/coefficient/rndFraction.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndCircle.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndLine.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndLine3.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndVector.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/randomization/random.d.ts.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/randomization/rndTypes.d.ts.map" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,7 +260,7 @@
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.PolyFactor creation.create a PolyfFactor from a numerator and denominator">
+  <component name="RunManager" selected="Vitest.Tests in tests\">
     <configuration name="PolyFactor creation.create a PolyfFactor from a numerator and denominator" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -277,8 +310,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Vitest.PolyFactor creation.create a PolyfFactor from a numerator and denominator" />
         <item itemvalue="Vitest.Tests in tests\" />
+        <item itemvalue="Vitest.PolyFactor creation.create a PolyfFactor from a numerator and denominator" />
         <item itemvalue="npm.build" />
         <item itemvalue="npm.dependency-cruise" />
         <item itemvalue="Node.js.factor.ts" />
@@ -335,7 +368,7 @@
       <workItem from="1727712187149" duration="202000" />
       <workItem from="1727713155081" duration="4537000" />
       <workItem from="1727885360182" duration="52000" />
-      <workItem from="1727939795120" duration="527000" />
+      <workItem from="1727939795120" duration="684000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -545,7 +578,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727939830929</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="polyFactor.ts: added splitFactors(): {numerator: PolyFactor, denominator: PolyFactor}">
+      <option name="closed" value="true" />
+      <created>1727940378116</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1727940378116</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -576,7 +617,8 @@
     <MESSAGE value="Reformating and rebuild the exports system." />
     <MESSAGE value="Exports completed...&#10;PolyFactor.fromPolynom accepts three values (numerator, denominator, letter)" />
     <MESSAGE value="Added u and n in TABLE_OF_SIGNS_VALUES for concave/convex" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added u and n in TABLE_OF_SIGNS_VALUES for concave/convex" />
+    <MESSAGE value="polyFactor.ts: added splitFactors(): {numerator: PolyFactor, denominator: PolyFactor}" />
+    <option name="LAST_COMMIT_MESSAGE" value="polyFactor.ts: added splitFactors(): {numerator: PolyFactor, denominator: PolyFactor}" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
