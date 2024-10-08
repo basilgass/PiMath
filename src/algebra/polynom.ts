@@ -10,7 +10,8 @@ import type {
     InputValue,
     IPiMathObject,
     ISolution,
-    literalType, TABLE_OF_SIGNS,
+    literalType,
+    TABLE_OF_SIGNS,
     TABLE_OF_SIGNS_VALUES
 } from "../pimath.interface"
 import {Fraction} from "../coefficients/fraction"
@@ -110,6 +111,14 @@ export class Polynom implements IPiMathObject<Polynom>,
         return P
     }
 
+    public get tex(): string {
+        return this.#genDisplay('tex')
+    }
+
+    public get display(): string {
+        return this.#genDisplay()
+    }
+
     public add = (...values: InputAlgebra<Polynom>[]): Polynom => {
 
         for (const value of values) {
@@ -165,11 +174,7 @@ export class Polynom implements IPiMathObject<Polynom>,
             dP.add(m.derivative(letter))
         }
 
-        return dP
-    }
-
-    public get display(): string {
-        return this.#genDisplay()
+        return dP.reduce()
     }
 
     public divide = (value: InputAlgebra<Polynom>): Polynom => {
@@ -375,6 +380,22 @@ export class Polynom implements IPiMathObject<Polynom>,
 
     public gcdNumerator = (): number => {
         return Numeric.gcd(...this.getNumerators())
+    }
+
+    public getCoefficients(): Fraction[] {
+        // Assume there is only one letter.
+        const orderedPolynom = this.clone().reorder()
+
+        const length = this.degree().value + 1
+        const coeffs = new Array(length).fill(new Fraction(0))
+
+        orderedPolynom.monoms.forEach(monom=>{
+            const index = length - monom.degree().value - 1
+            coeffs[index] = monom.coefficient.clone()
+        })
+
+        // return orderedPolynom.monoms.map(x=>x.coefficient)
+        return coeffs
     }
 
     // Next functions are used for for commonMonom, which is used in the factorize method.
@@ -752,6 +773,8 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.reorder()
     }
 
+    // ------------------------------------------
+
     public reorder = (letter = 'x', revert?: boolean): this => {
         if (revert === undefined) {
             revert = false
@@ -787,8 +810,6 @@ export class Polynom implements IPiMathObject<Polynom>,
 
         return this
     }
-
-    // ------------------------------------------
 
     /**
      * Replace a variable (letter) by a polynom.
@@ -874,7 +895,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         let signs: TABLE_OF_SIGNS_VALUES[] = ['']
         roots.forEach(() => signs.push('t', ''))
 
-        if (roots.length === 0) {
+        if (this.degree().isZero()) {
             // The polynom is a constant: [+,t,+,t,+,t,+]
             signs = replace_in_array(signs, '', this.monomsByDegree()[0].coefficient.isPositive() ? '+' : '-')
         } else if (this.degree().isOne()) {
@@ -929,10 +950,6 @@ export class Polynom implements IPiMathObject<Polynom>,
 
 
         return {roots, signs}
-    }
-
-    public get tex(): string {
-        return this.#genDisplay('tex')
     }
 
     public get variables(): string[] {

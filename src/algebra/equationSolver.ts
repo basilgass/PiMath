@@ -2,7 +2,7 @@
 
 import type {InputValue, ISolution} from "../pimath.interface"
 import type {Polynom} from "./polynom"
-import {Fraction} from "../coefficients/fraction"
+import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 import type {Equation} from "./equation"
 
@@ -22,27 +22,37 @@ export class EquationSolver {
     }
 
     public solve(): ISolution[] {
+        const degree = this.#equation.degree().value
         // TODO: Make sure the solutions are listed in growing order !
-        if (this.#equation.degree().isOne()) {
+        if (degree === 0) {
+            return []
+        }
+
+        if (degree === 1) {
             return this.#solveLinear()
         }
 
-        if (this.#equation.degree().value === 2) {
+        if (degree === 2) {
             return this.#solveQuadratic()
         }
 
+        // Try to solve by factorization -> exact solutions.
         const result = this.#solveByFactorization()
         if (result.length > 0) {
             return result
         }
 
-        // Use Cardan formula for cubic equations
-        if (this.#equation.degree().value === 3) {
-            return this.#solveCubic_CardanFormula()
-        }
+        // Use approximative solutions, using bissection algorithm.
+        return this.#solveByBissection()
 
-        throw new Error("The equation degree is too high.")
+        // // Use Cardan formula for cubic equations
+        // if (this.#equation.degree().value === 3) {
+        //     return this.#solveCubic_CardanFormula()
+        // }
+        //
+        // throw new Error("The equation degree is too high.")
     }
+
 
     public solveAsCardan(): ISolution[] {
         if (this.#equation.degree().value !== 3) {
@@ -74,6 +84,98 @@ export class EquationSolver {
             tex: fraction.tex,
             display: fraction.display
         }
+    }
+
+    #solveByBissection(): ISolution[] {
+        const solutions: ISolution[] = []
+        const degree = this.#equation.degree().value
+        const coeffs = this.#equation.getCoefficients().map(x=>x.value)
+
+        // Calculate the Cauchy Bounds.
+        const [a, ...values] = this.#equation.getCoefficients()
+        console.log(this.#equation.display)
+        const B = 1 + Math.max(...values.map(x => x.value / a.value))
+
+        // Cut the [-B;B] interval in *n* parts
+
+        // Calculate the value at each points
+        const n = 100
+        const dx = 2 * B / n
+        const evaluatedPoints: { x: number, fx: number }[] = []
+        for (let searchValue = -B; searchValue <= B; searchValue += dx) {
+            const x = Numeric.numberCorrection(searchValue)
+            evaluatedPoints.push(
+                {
+                    x,
+                    fx: this.#equation.evaluate(x, true) as number
+                }
+            )
+        }
+
+        // Sort every points
+        evaluatedPoints.sort((a, b) => a.x - b.x)
+
+        // Check if there is a least n opposite couples
+        const couples: [number, number][] = []
+        evaluatedPoints.forEach((value, index) => {
+            if (index > 0) {
+                if (value.fx === 0) {
+                    couples.push([value.x, value.x])
+                } else if (evaluatedPoints[index - 1].fx * value.fx < 0) {
+                    couples.push([
+                        evaluatedPoints[index - 1].x,
+                        value.x
+                    ])
+
+                }
+            }
+        })
+
+        // All solutions fund !
+        couples.forEach(couple => {
+            const [a, b] = couple
+
+            if (a === b) {
+                // Exact solution
+                solutions.push(this.#makeSolution(a))
+            }else{
+                const bissection = this.#solveByBissection_algorithm(coeffs, a, b)
+                if(bissection!==null) {
+                    solutions.push(this.#makeApproximativeSolution(bissection))
+                }
+            }
+        })
+
+        console.log(solutions.map(x=>x.value))
+
+        return solutions
+    }
+
+    #solveByBissection_algorithm(coeffs: number[], a: number, b: number, tol = 1e-10): number | null {
+        let fa = this.#equation.evaluate(a, true) as number
+        let fb = this.#equation.evaluate(b, true) as number
+
+        if (fa * fb > 0) {
+            console.log("Pas de racine dans l'intervalle donné")
+            return null
+        }
+
+        let mid: number
+        while ((b - a) / 2 > tol) {
+            mid = (a + b) / 2
+            const fmid = this.#equation.evaluate( mid, true) as number
+
+            if (fmid === 0) {
+                return mid // racine exacte trouvée
+            } else if (fa * fmid < 0) {
+                b = mid
+                fb = fmid
+            } else {
+                a = mid
+                fa = fmid
+            }
+        }
+        return (a + b) / 2 // retourner la racine approximative
     }
 
     #solveByFactorization(): ISolution[] {
@@ -252,11 +354,10 @@ export class EquationSolver {
 
     #solveLinear(): ISolution[] {
         // The equation is linear.
-        // We can solve it by isolating the variable.
+        const [a, b] = this.#equation.getCoefficients()
 
         // left is a polynom ax+b => the solution is x = -b/a
-        const f = this.#equation.monomByDegree(0).coefficient.clone().opposite()
-            .divide(this.#equation.monomByDegree(1).coefficient)
+        const f = b.opposite().divide(a)
 
         return [
             this.#makeSolution(f)
@@ -270,11 +371,9 @@ export class EquationSolver {
         const left = this.#equation
 
         // left is a polynom ax^2+bx+c => the solution is x = (-b±√(b^2-4ac))/2a
+        const [a, b, c] = left.getCoefficients()
 
-        const a = left.monomByDegree(2).coefficient
-        const b = left.monomByDegree(1).coefficient
-        const c = left.monomByDegree(0).coefficient
-
+        // delta2 = b^2-4ac
         const delta2 = b.clone().pow(2).subtract(a.clone().multiply(c).multiply(4))
 
         // if delta2 is negative, there is no solution

@@ -80,7 +80,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
                 return num[0].asSingle.display
             }
 
-            return num.map(f => f.display).join("")
+            return num.map((f, index) =>
+                index===0 && f.polynom.monoms.length===1? f.asSingle.display: f.display
+            ).join("")
         }
 
         // There is a numerator and a denominator
@@ -198,7 +200,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
                         .factors[0]
                         .polynom
                 })
-            )
+            ).reduce()
 
         this.#factors = [
             ...gcd.factors,
@@ -209,8 +211,8 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             this.divide(denominator)
         }
 
-        // Remove all factros with a power of zero
-        this.#factors = this.#factors.filter(x=>!x.power.isZero())
+        // Remove all factors with a power of zero
+        this.#factors = this.#factors.filter(x => !x.power.isZero())
 
         return this
     }
@@ -237,14 +239,20 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     public derivative(): this {
+        // (fgh)' = f'gh+fg'h+fgh'
+        // dPF = [f'gh, fg'h, fgh']
         const dPF: PolyFactor[] = []
 
         const length = this.#factors.length
 
         for (let i = 0; i < length; i++) {
+            // unchanged factors
             const factors = this.#factors.slice()
-            const factor = factors.splice(i, 1)[0]
-            dPF.push(new PolyFactor(...factors).multiply(new PolyFactor(...factor.derivative())))
+            // derivative factor
+            const derivativeFactor = factors.splice(i, 1)[0].derivative()
+            // Add the product of factors
+            dPF.push(
+                new PolyFactor(...factors, ...derivativeFactor))
         }
 
         // Reduce the polyFactors
@@ -255,6 +263,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             this.#factors = first.factors
         }
 
+        // Add each factors together.
         return this.add(...dPF)
     }
 
@@ -420,6 +429,47 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this
     }
 
+    /**
+     * Reoarder the factors using :
+     * 1. number of monoms
+     * 2. degree of polynom
+     * 3. power of polyfactor
+     */
+    public sort(letter?: string): this {
+        this.#factors.sort((a, b) => {
+            // If the compare powers are opposite, the negative power goes to the end.
+            const aPower = a.power.value
+            const bPower = b.power.value
+            if(aPower*bPower < 0) {
+                return -aPower
+            }
+
+
+            // Monom length
+            const aLength = a.polynom.monoms.length
+            const bLength = b.polynom.monoms.length
+            if (aLength !== bLength) {
+                return aLength - bLength
+            }
+
+            // The monom length are the same, check the polynom degree.
+            const aDegree = a.polynom.degree(letter).value
+            const bDegree = b.polynom.degree(letter).value
+            if (aDegree !== bDegree) {
+                return aDegree - bDegree
+            }
+
+            // The power of the PolyFactor
+            if(aPower !== bPower) {
+                return aPower - bPower
+            }
+
+            return a.degree().isLeq(b.degree()) ? -1 : 1
+        })
+
+        return this
+    }
+
     public pow(value: number | Fraction): this {
         this.#factors = this.#factors.map(f => f.pow(value))
         return this
@@ -447,12 +497,6 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
 
     public root(value: number): this {
         this.#factors = this.#factors.map(f => f.root(value))
-        return this
-    }
-
-    public sort(): this {
-        this.#factors = this.#factors
-            .sort((a, b) => a.degree().isLeq(b.degree()) ? -1 : 1)
         return this
     }
 

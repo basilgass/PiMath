@@ -460,7 +460,7 @@ describe("PolyFactor: algebra operations", () => {
         const PF2 = PF.opposite()
 
         expect(PF2.factors.length).toBe(3)
-        expect(PF2.sort().display).toBe('(-1)(3x+2)(4x-3)^(2)')
+        expect(PF2.sort().display).toBe('-1(3x+2)(4x-3)^(2)')
     })
 
     test('should subtract two PolyFactors', () => {
@@ -492,6 +492,29 @@ describe("PolyFactor: algebra operations", () => {
         expect(PF2.factors.length).toBe(3)
 
         expect(PF2.display).toBe('(x^(2)-3x)(3x+2)^(3)(24x^(2)-46x-12)')
+    })
+
+    test('should get the derivative of a PolyFactor with negative power', ()=>{
+        const PF = new PolyFactor(
+            new Factor('x-4', 3),
+            new Factor('2x+3', -5)
+        )
+
+        const dPF = PF.derivative().sort()
+
+        expect(dPF.display).toBe('(-4x+49)(x-4)^(2)(2x+3)^(-6)')
+    })
+
+    test('should get the derivative of a PolyFactor with three factors', ()=>{
+        const PF = new PolyFactor(
+            new Factor('x-4', 3),
+            new Factor('x', 2),
+            new Factor('2x+3', -5)
+        )
+
+        const dPF = PF.derivative().sort()
+
+        expect(dPF.display).toBe('x(39x-24)(x-4)^(2)(2x+3)^(-6)')
     })
 })
 
@@ -531,5 +554,25 @@ describe('PolyFactor: Table of signs', ()=>{
 
         expect(tos.roots.map(x=>x.value)).toEqual([-5,0,2,3])
         expect(tos.signs).toEqual(['h', 'z', '-', 'd', '-', 'z', '-', 'z', '+'])
+    })
+
+    test('compile table of signs with constant value', ()=>{
+        const PF = new PolyFactor().fromPolynom('3', 'x^2-1')
+
+        const tos = PF.tableOfSigns()
+
+        expect(tos.roots.map(x=>x.value)).toEqual([-1,1])
+        expect(tos.signs).toEqual([ '+', 'd', '-', 'd', '+' ])
+    })
+})
+
+describe.skip('PolyFactor temporary tests', ()=>{
+    test('test 1', ()=>{
+        const PF = new PolyFactor().fromPolynom('(x-3)(x+2)', '(2x-4)')
+
+        console.log(PF.display)
+        const PFF = PF.factorize()
+
+        console.log(PFF.asRoot.display)
     })
 })

@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Removed splitFactors and refactored getter numerator and denominator to output a new PolyFactor">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Tested and build">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/equationSolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equationSolver.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -65,6 +68,7 @@
     "Node.js.fraction.ts.executor": "Run",
     "Node.js.line.ts.executor": "Run",
     "Node.js.point.ts.executor": "Run",
+    "Node.js.polyFactor.ts.executor": "Run",
     "Node.js.polynom.ts.executor": "Run",
     "Node.js.triangle.ts.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -77,6 +81,17 @@
     "Vitest.Debug tests.ba.executor": "Run",
     "Vitest.Debug tests.cross.executor": "Run",
     "Vitest.Debug tests.polynom randomisation.executor": "Run",
+    "Vitest.Equation Solver.should mix two methods to solve the equation (with trivial solutions).executor": "Run",
+    "Vitest.Equation Solver.should mix two methods to solve the equation.executor": "Run",
+    "Vitest.Equation Solver.should not be able to solve .executor": "Run",
+    "Vitest.Equation Solver.should solve a factorisable equation.executor": "Run",
+    "Vitest.Equation Solver.should solve the cubic equation (one double solution).executor": "Run",
+    "Vitest.Equation Solver.should solve the cubic equation (unique triple solution).executor": "Run",
+    "Vitest.Equation Solver.should solve the equation.executor": "Run",
+    "Vitest.Equation Solver.should solve the quadratic equation (approximative).executor": "Run",
+    "Vitest.Equation Solver.should solve the quadratic equation (no solution).executor": "Run",
+    "Vitest.Equation Solver.should solve the quadratic equation (one solution).executor": "Run",
+    "Vitest.Equation Solver.should solve the quadratic equation.executor": "Run",
     "Vitest.Fraction creation.executor": "Run",
     "Vitest.Fraction output.executor": "Run",
     "Vitest.Fraction output.output as dfrac in LaTeX.executor": "Run",
@@ -98,8 +113,10 @@
     "Vitest.PolyFactor creation.create a PolyFactor from a Polynom.executor": "Run",
     "Vitest.PolyFactor creation.create a PolyFactor from a numerator and denominator.executor": "Run",
     "Vitest.PolyFactor creation.create a PolyfFactor from a numerator and denominator.executor": "Run",
+    "Vitest.PolyFactor temporary tests.test 1.executor": "Run",
     "Vitest.PolyFactor: Table of signs.WIP.executor": "Run",
     "Vitest.PolyFactor: Table of signs.compile table of signs of factors.executor": "Run",
+    "Vitest.PolyFactor: Table of signs.compile table of signs with constant value.executor": "Run",
     "Vitest.PolyFactor: Table of signs.executor": "Run",
     "Vitest.PolyFactor: algebra operations.should add two PolyFactors with denominators.executor": "Run",
     "Vitest.PolyFactor: algebra operations.should add two PolyFactors.executor": "Run",
@@ -107,6 +124,9 @@
     "Vitest.PolyFactor: algebra operations.should develop the PolyFactor.executor": "Run",
     "Vitest.PolyFactor: algebra operations.should factorize the PolyFactor in a more complex situation.executor": "Run",
     "Vitest.PolyFactor: algebra operations.should factorize the PolyFactor.executor": "Run",
+    "Vitest.PolyFactor: algebra operations.should get the derivative of a PolyFactor with negative power.executor": "Run",
+    "Vitest.PolyFactor: algebra operations.should get the derivative of a PolyFactor with three factors.executor": "Run",
+    "Vitest.PolyFactor: algebra operations.should get the derivative of the PolyFactor.executor": "Run",
     "Vitest.PolyFactor: operations.should divide two PolyFactors.executor": "Run",
     "Vitest.PolyFactor: output functions.should output as LaTex and do not add parenthesis on power if not needed..executor": "Run",
     "Vitest.Polynom comparisons.equal Polynom.executor": "Run",
@@ -237,7 +257,7 @@
     </option>
   </component>
   <component name="RunManager" selected="Vitest.polyfactor.test.ts">
-    <configuration name="PolyFactor: algebra operations.should add two PolyFactors with denominators" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="PolyFactor: Table of signs.compile table of signs of factors" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
@@ -246,12 +266,12 @@
       <scope-kind value="TEST" />
       <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
       <test-names>
-        <test-name value="PolyFactor: algebra operations" />
-        <test-name value="should add two PolyFactors with denominators" />
+        <test-name value="PolyFactor: Table of signs" />
+        <test-name value="compile table of signs of factors" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="PolyFactor: operations.should divide two PolyFactors" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="PolyFactor: Table of signs.compile table of signs with constant value" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
@@ -260,33 +280,9 @@
       <scope-kind value="TEST" />
       <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
       <test-names>
-        <test-name value="PolyFactor: operations" />
-        <test-name value="should divide two PolyFactors" />
+        <test-name value="PolyFactor: Table of signs" />
+        <test-name value="compile table of signs with constant value" />
       </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="PolyFactor: output functions.should output as LaTex and do not add parenthesis on power if not needed." type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
-      <test-names>
-        <test-name value="PolyFactor: output functions" />
-        <test-name value="should output as LaTex and do not add parenthesis on power if not needed." />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="Tests in tests\" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="DIRECTORY" />
-      <test-directory value="$PROJECT_DIR$/tests" />
       <method v="2" />
     </configuration>
     <configuration name="polyfactor.test.ts" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
@@ -299,13 +295,19 @@
       <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
       <method v="2" />
     </configuration>
+    <configuration name="equationSolver.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/algebra/equationSolver.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/algebra">
+      <method v="2" />
+    </configuration>
+    <configuration name="polynom.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/algebra/polynom.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/algebra">
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Vitest.polyfactor.test.ts" />
-        <item itemvalue="Vitest.PolyFactor: algebra operations.should add two PolyFactors with denominators" />
-        <item itemvalue="Vitest.Tests in tests\" />
-        <item itemvalue="Vitest.PolyFactor: operations.should divide two PolyFactors" />
-        <item itemvalue="Vitest.PolyFactor: output functions.should output as LaTex and do not add parenthesis on power if not needed." />
+        <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs with constant value" />
+        <item itemvalue="Node.js.polynom.ts" />
+        <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs of factors" />
+        <item itemvalue="Node.js.equationSolver.ts" />
       </list>
     </recent_temporary>
   </component>
@@ -360,7 +362,12 @@
       <workItem from="1727713155081" duration="4537000" />
       <workItem from="1727885360182" duration="52000" />
       <workItem from="1727939795120" duration="774000" />
-      <workItem from="1727941052018" duration="6618000" />
+      <workItem from="1727941052018" duration="6715000" />
+      <workItem from="1727967094412" duration="618000" />
+      <workItem from="1728025433736" duration="2835000" />
+      <workItem from="1728029394876" duration="6443000" />
+      <workItem from="1728284711399" duration="17000" />
+      <workItem from="1728392358801" duration="1252000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -594,14 +601,29 @@
       <option name="project" value="LOCAL" />
       <updated>1727941527854</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="PolyFactor.add(...values) now supports PolyFactros with denominators.">
+      <option name="closed" value="true" />
+      <created>1727947981399</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1727947981400</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Tested and build">
+      <option name="closed" value="true" />
+      <created>1727948015281</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1727948015281</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="new PolyFactor().fromPolynom(&lt;polynom value&gt;)" />
     <MESSAGE value="new Vector().fromString() = new Vector(string)&#10;Bug correction on point.ts" />
     <MESSAGE value="Circle.tangents is now working for an external point" />
     <MESSAGE value="Enable again logicalSet.ts&#10;Modify index.ts to export the complete class (WIP)" />
@@ -624,9 +646,10 @@
     <MESSAGE value="Exports completed...&#10;PolyFactor.fromPolynom accepts three values (numerator, denominator, letter)" />
     <MESSAGE value="Added u and n in TABLE_OF_SIGNS_VALUES for concave/convex" />
     <MESSAGE value="polyFactor.ts: added splitFactors(): {numerator: PolyFactor, denominator: PolyFactor}" />
-    <MESSAGE value="Tested and build" />
     <MESSAGE value="Removed splitFactors and refactored getter numerator and denominator to output a new PolyFactor" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed splitFactors and refactored getter numerator and denominator to output a new PolyFactor" />
+    <MESSAGE value="PolyFactor.add(...values) now supports PolyFactros with denominators." />
+    <MESSAGE value="Tested and build" />
+    <option name="LAST_COMMIT_MESSAGE" value="Tested and build" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
