@@ -81,15 +81,15 @@ describe("PolyFactor creation", () => {
         expect(PF.isOne()).toBeTruthy()
     })
 
-    test('should parse a string', () => {
-        const PF = new PolyFactor(
-            new Factor('3x+2', '1/2'),
-            new Factor('4x-3', '-2/3')
-        )
-
-        // (3x+2)^(1/2)(4x-3)^(-2/3)
-        const PF2 = new PolyFactor(PF.display)
-        expect(PF.isEqual(PF2)).toBeTruthy()
+    test.skip('should parse a string', () => {
+        // const PF = new PolyFactor(
+        //     new Factor('3x+2', '1/2'),
+        //     new Factor('4x-3', '-2/3')
+        // )
+        //
+        // // (3x+2)^(1/2)(4x-3)^(-2/3)
+        // const PF2 = new PolyFactor(PF.display)
+        // expect(PF.isEqual(PF2)).toBeTruthy()
     })
 })
 

@@ -1,8 +1,8 @@
 // TODO: split interface, enum, types
-import type { Fraction } from "./coefficients/fraction"
-import type { NthRoot } from "./coefficients/nthRoot"
-import type { Monom } from "./algebra/monom"
-import type {Factor} from "./algebra/factor"
+import type { Fraction } from "./coefficients"
+import type { NthRoot } from "./coefficients"
+import type { Monom } from "./algebra"
+import type {Factor} from "./algebra"
 import type {Line, Point, Vector} from "./geometry"
 import type {Equation} from "./algebra"
 

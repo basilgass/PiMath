@@ -20,18 +20,22 @@ export class Factor implements IPiMathObject<Factor>,
     #power: Fraction
     #singleMode = false
 
-    constructor(value: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>) {
+    constructor(value?: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>) {
+
+
         if (value instanceof Factor) {
             this.#polynom = value.polynom.clone()
             this.#power = value.power.clone()
-        } else if (typeof value === 'string' && power === undefined) {
-            // Must handle the case where the value is a string like (x-3)^2
-            const [base, p = '1'] = value.split('^')
-            this.#polynom = new Polynom(base)
-            this.#power = new Fraction(p.replace('(', '').replace(')', ''))
-        } else {
+
+            if(power !== undefined){
+                this.#power.multiply(new Fraction(power))
+            }
+        } else if(value !== undefined) {
             this.#polynom = new Polynom(value)
             this.#power = new Fraction(power ?? 1)
+        }else{
+            this.#polynom = new Polynom()
+            this.#power = new Fraction(1)
         }
 
         this.#displayMode = FACTOR_DISPLAY.POWER
@@ -47,6 +51,11 @@ export class Factor implements IPiMathObject<Factor>,
         return new Factor(this)
     }
 
+    public fromPolynom(polynom: InputValue<Polynom>): this {
+        this.#polynom = new Polynom(polynom)
+        this.#power = new Fraction(1)
+        return this
+    }
     public get tex(): string {
         const num = this.power.numerator
         const den = this.power.denominator
@@ -117,7 +126,7 @@ export class Factor implements IPiMathObject<Factor>,
     public derivative(): Factor[] {
         // The power is zero, the derivative is zero
         if (this.power.isZero()) {
-            return [new Factor('0', '1')]
+            return [new Factor('0')]
         }
 
         // The power is one, the derivative is the derivative of the polynom
@@ -277,9 +286,9 @@ export class Factor implements IPiMathObject<Factor>,
         throw new Error("Subtracting two factors is not possible")
     }
 
-    public tableOfSigns(roots?: ISolution[]): TABLE_OF_SIGNS {
+    public tableOfSigns(): TABLE_OF_SIGNS {
         const pow = this.power.clone().reduce()
-        const tos = this.polynom.tableOfSigns(roots)
+        const tos = this.polynom.tableOfSigns()
 
         // The zero roots becomes defence (d) if the power is negative
         if (pow.isStrictlyNegative()) {

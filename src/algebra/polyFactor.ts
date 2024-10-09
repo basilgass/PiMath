@@ -23,23 +23,22 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     #displayMode: FACTOR_DISPLAY = FACTOR_DISPLAY.POWER
     #factors: Factor[] = []
 
-    constructor(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]) {
+    constructor(...values: (Factor | PolyFactor)[]) {
         this.parse(...values)
         return this
     }
 
-    public parse(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]): this {
+    public parse(...values: (Factor | PolyFactor)[]): this {
+        // Init the factors list
+        this.#factors = []
+
+        // Nothing to create
         if (values.length === 0) {
             return this
         }
 
-        this.#factors = []
-
         values.forEach(value => {
-            if (typeof value === 'string') {
-                const factors = value.split(')(').join(')*(').split('*')
-                this.#factors.push(...factors.map(f => new Factor(f)))
-            } else if (value instanceof PolyFactor) {
+            if (value instanceof PolyFactor) {
                 this.#factors.push(...value.factors.map(f => f.clone()))
             } else {
                 this.#factors.push(new Factor(value))
@@ -81,7 +80,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             }
 
             return num.map((f, index) =>
-                index===0 && f.polynom.monoms.length===1? f.asSingle.display: f.display
+                index === 0 && f.polynom.monoms.length === 1 ? f.asSingle.display : f.display
             ).join("")
         }
 
@@ -429,47 +428,6 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this
     }
 
-    /**
-     * Reoarder the factors using :
-     * 1. number of monoms
-     * 2. degree of polynom
-     * 3. power of polyfactor
-     */
-    public sort(letter?: string): this {
-        this.#factors.sort((a, b) => {
-            // If the compare powers are opposite, the negative power goes to the end.
-            const aPower = a.power.value
-            const bPower = b.power.value
-            if(aPower*bPower < 0) {
-                return -aPower
-            }
-
-
-            // Monom length
-            const aLength = a.polynom.monoms.length
-            const bLength = b.polynom.monoms.length
-            if (aLength !== bLength) {
-                return aLength - bLength
-            }
-
-            // The monom length are the same, check the polynom degree.
-            const aDegree = a.polynom.degree(letter).value
-            const bDegree = b.polynom.degree(letter).value
-            if (aDegree !== bDegree) {
-                return aDegree - bDegree
-            }
-
-            // The power of the PolyFactor
-            if(aPower !== bPower) {
-                return aPower - bPower
-            }
-
-            return a.degree().isLeq(b.degree()) ? -1 : 1
-        })
-
-        return this
-    }
-
     public pow(value: number | Fraction): this {
         this.#factors = this.#factors.map(f => f.pow(value))
         return this
@@ -500,6 +458,47 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this
     }
 
+    /**
+     * Reoarder the factors using :
+     * 1. number of monoms
+     * 2. degree of polynom
+     * 3. power of polyfactor
+     */
+    public sort(letter?: string): this {
+        this.#factors.sort((a, b) => {
+            // If the compare powers are opposite, the negative power goes to the end.
+            const aPower = a.power.value
+            const bPower = b.power.value
+            if (aPower * bPower < 0) {
+                return -aPower
+            }
+
+
+            // Monom length
+            const aLength = a.polynom.monoms.length
+            const bLength = b.polynom.monoms.length
+            if (aLength !== bLength) {
+                return aLength - bLength
+            }
+
+            // The monom length are the same, check the polynom degree.
+            const aDegree = a.polynom.degree(letter).value
+            const bDegree = b.polynom.degree(letter).value
+            if (aDegree !== bDegree) {
+                return aDegree - bDegree
+            }
+
+            // The power of the PolyFactor
+            if (aPower !== bPower) {
+                return aPower - bPower
+            }
+
+            return a.degree().isLeq(b.degree()) ? -1 : 1
+        })
+
+        return this
+    }
+
     public sqrt(): this {
         this.#factors = this.#factors.map(f => f.sqrt())
         return this
@@ -512,96 +511,79 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     public tableOfSigns(): POLYFACTOR_TABLE_OF_SIGNS {
         // Calculate the table of signs for each factor
         const roots = this.getZeroes()
+        const roots_key = roots.map(x => x.value)
 
-        // Modify each lines of tos[<index>].signs to display extra zeroes
+        // Get the table of signs of every factors
+        // These signs are NOT aligned
         const factors: FACTOR_TABLE_OF_SIGNS[] = this.factors
             .map(factor => {
-                return {factor: new Factor(factor), ...factor.tableOfSigns(roots)}
+                return {factor: new Factor(factor), ...factor.tableOfSigns()}
             })
+
+        // Build the table of signs with extra roots.
+        factors.forEach(item => {
+            // Create the new signs row
+            const empty_signs: TABLE_OF_SIGNS_VALUES[] = new Array(2 * roots.length + 1).fill('') as unknown as TABLE_OF_SIGNS_VALUES[]
+
+            let sign = item.signs.shift() as unknown as TABLE_OF_SIGNS_VALUES
+            let root = item.roots.shift()
+
+            const aligned_signs = empty_signs.map((_sign, index) => {
+                if (index % 2 === 0) {
+                    return sign
+                }
+
+                // The sign for this indexed root is a t(ab)
+                if (root===undefined || root.value !== roots_key[(index - 1) / 2]) {
+                    return 't'
+                }
+
+                // The indexed root is the new root
+                const rootSign = item.signs.shift() as unknown as TABLE_OF_SIGNS_VALUES
+
+                // Make the new signs.
+                sign = item.signs.shift() as unknown as TABLE_OF_SIGNS_VALUES
+                root = item.roots.shift()
+                return rootSign
+            })
+
+            // Set the roots for this item to all roots
+            item.roots = roots
+            item.signs = aligned_signs
+        })
 
         // Build the table of signs with extra roots
         const signs: TABLE_OF_SIGNS_VALUES[] = factors
-            .map(item => item.signs)
+            .map((item) => item.signs)
             .reduce<TABLE_OF_SIGNS_VALUES[]>((a, b) => {
                 if (a.length === 0) {
-                    a = b
-                } else {
-                    // assume a and b are array from same length.
-                    b.forEach((value, index) => {
-                        // Case of a zero, invalid or tab value
-                        // tab < zero < defence
-                        switch (value) {
-                            case "d":
-                                a[index] = "d"
-                                break
-                            case "z":
-                                a[index] = a[index] === "d" ? "d" : "z"
-                                break
-                            case "h":
-                                a[index] = "h"
-                                break
-                            case "-":
-                                a[index] = a[index] === "h" ? "h" : a[index] === "-" ? "+" : "-"
-                                break
-                        }
-                    })
+                    return b
                 }
+
+                // a and b are "not aligned"
+                b.forEach((value, index) => {
+                    // Case of a zero, invalid or tab value
+                    // tab < zero < defence
+                    switch (value) {
+                        case "d":
+                            a[index] = "d"
+                            break
+                        case "z":
+                            a[index] = a[index] === "d" ? "d" : "z"
+                            break
+                        case "h":
+                            a[index] = "h"
+                            break
+                        case "-":
+                            a[index] = a[index] === "h" ? "h" : a[index] === "-" ? "+" : "-"
+                            break
+                    }
+                })
 
                 return a
             }, [])
 
         return {signs, roots, factors}
-        //
-        // // the signs of the PolyFactor
-        // const signs: TABLE_OF_SIGNS_VALUES[] = []
-        // const currentColumn: TABLE_OF_SIGNS_VALUES[] = []
-        // tos.forEach(item => {
-        //     currentColumn.push(item.signs[0])
-        // })
-        // // add the global signs:
-        // // if there is an invalid value, it's invalid
-        // // if there is an even number of negative signs, it's positive
-        // signs.push(
-        //     currentColumn.filter(x => x === 'h').length > 0 ? 'h' :
-        //         currentColumn.filter(x => x === '-').length % 2 === 0 ? '+' :
-        //             '-'
-        // )
-        //
-        // // Go through each roots
-        // roots.forEach(root => {
-        //     let currentColumn: TABLE_OF_SIGNS_VALUES[] = []
-        //
-        //     // Remove the sign and zero of the factor's table of signs it root is the zero of the factor.
-        //     tos.forEach(item=>{
-        //         if(item.signs.length>2){
-        //             if(item.roots[0].value === root.value){
-        //                 currentColumn.push(item.signs[1])
-        //                 item.signs = item.signs.slice(2)
-        //                 item.roots.pop() // remove the root from the list
-        //             }
-        //         }
-        //     })
-        //     signs.push(
-        //         currentColumn.filter(x => x === 'd').length > 0 ? 'd' :
-        //             currentColumn.filter(x => x === 'z').length > 0 ? 'z' :
-        //                 't'
-        //     )
-        //
-        //
-        //     currentColumn = []
-        //     tos.forEach(item => {
-        //         currentColumn.push(item.signs[0])
-        //     })
-        //     signs.push(
-        //         currentColumn.filter(x => x === 'h').length > 0 ? 'h' :
-        //             currentColumn.filter(x => x === '-').length % 2 === 0 ? '+' :
-        //                 '-'
-        //     )
-        // })
-        //
-        //
-        //
-        // return {roots, signs}
     }
 
     public get variables(): string[] {

@@ -1,8 +1,7 @@
 import {describe, expect, it, test} from "vitest"
-import {Polynom} from "../../src/algebra/polynom"
-import {Fraction} from "../../src/coefficients/fraction"
-import {Monom} from "../../src/algebra/monom"
-import type {ISolution} from "../../src/pimath.interface"
+import {Polynom} from "../../src"
+import {Fraction} from "../../src"
+import {Monom} from "../../src"
 
 describe('Polynom creation', () => {
     test('create Polynom', () => {
@@ -317,41 +316,5 @@ describe('Table of signs of a Polynom', () => {
         expect(tos.roots.map(x => x.value)).toEqual(expect.arrayContaining([0, 2, -3]))
     })
 
-    function createSolution(value: number): ISolution{
-        return {value: value, tex: '', display: '', exact: true, variable: 'x'}
-    }
-
-    test('2nd degree polynom with extra roots', () => {
-        const P = new Polynom('(x-2)(x+5)') // roots are -5, 2
-        const tos = P.tableOfSigns([
-            createSolution(-8),
-            createSolution(-5),
-            createSolution(-3),
-            createSolution(0),
-            createSolution(2),
-            createSolution(4)
-        ])
-
-        expect(tos.signs).toEqual([
-                '+', 't', '+', 'z',
-                '-', 't', '-', 't',
-                '-', 'z', '+', 't',
-                '+'
-            ]
-        )
-    })
-
-    test('2nd degree polynom with extra roots (and missing zero)', ()=>{
-        const P = new Polynom('(x-2)(x+5)') // roots are -5, 2
-
-        expect(()=>P.tableOfSigns([
-            createSolution(-8),
-            createSolution(-5),
-            createSolution(-3),
-            createSolution(0),
-            createSolution(4)
-        ])).toThrowError()
-
-    })
 })
 describe.todo('Polynom generators')

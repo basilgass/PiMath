@@ -40,12 +40,6 @@ describe("Factors creation", () => {
         expect(F.isEqual(F2)).toBeFalsy()
     })
 
-    test('should parse a string', () => {
-        const F = new Factor('(3x+2)^(1/2)')
-
-        expect(F.polynom.display).toBe('3x+2')
-        expect(F.power.value).toBe(0.5)
-    })
 })
 
 describe("Factors outputs", () => {
@@ -213,6 +207,23 @@ describe("Factors: algebra operations", () => {
 
         expect((F.evaluate({ x: 2 }) as Fraction).value).toBe(2.8284271247461903)
     })
+
+    test('should get the derivative of a trivial Factor', ()=>{
+        const F = new Factor('3')
+        const dF = F.derivative()
+
+        expect(dF).toHaveLength(1)
+        expect(dF[0].asSingle.display).toBe('0')
+    })
+
+
+    test('should get the derivative of a monomial Factor', ()=>{
+        const F = new Factor().fromPolynom('3x^4')
+        const dF = F.derivative()
+        expect(dF).toHaveLength(1)
+        expect(dF[0].asSingle.display).toBe('12x^(3)')
+    })
+
 
     test('should get the derivative of the factor', () => {
         const F = new Factor('3x^2+2x-1', '1/2')

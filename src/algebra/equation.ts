@@ -217,13 +217,11 @@ export class Equation implements
         // Determine if we can isolate the variables.
 
         // Both part of the equations must be of the first degree.
-        //TODO: handle equations of degree two or more ?
         if (!this.degree(letter).isOne()) {
             return false
         }
 
         // Modify the equation to isolate the asked variable.
-        // TODO: must handle equations like 3xy+5y=4 => y = 4/(3x-5)
         if (this.isMultiVariable()) {
             return false
         }

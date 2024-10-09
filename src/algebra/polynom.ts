@@ -14,7 +14,7 @@ import type {
     TABLE_OF_SIGNS,
     TABLE_OF_SIGNS_VALUES
 } from "../pimath.interface"
-import {Fraction} from "../coefficients/fraction"
+import {Fraction} from "../coefficients"
 import {Numeric} from '../numeric'
 import {EquationSolver} from './equationSolver'
 import {Monom} from './monom'
@@ -71,7 +71,6 @@ export class Polynom implements IPiMathObject<Polynom>,
         this.#monoms = []
         this.#factors = []
 
-        // TODO: allow to enter a liste of Fraction (a, b, c, ...) to make a polynom ax^n + bx^(n-1) + cx^(n-2) + ...
         if (typeof inputStr === 'string') {
             return this.#parseString(inputStr, ...values)
         } else if (
@@ -109,6 +108,20 @@ export class Polynom implements IPiMathObject<Polynom>,
         P.monoms = M
 
         return P
+    }
+
+    public fromCoefficients(...values: InputValue<Fraction>[]){
+        this.#monoms = []
+        const letter = 'x'
+        values.reverse().forEach((coeff, index)=>{
+            const monom = new Monom()
+            monom.coefficient = new Fraction(coeff)
+            monom.setLetter(letter, index)
+
+            this.#monoms.push(monom)
+        })
+
+        return this
     }
 
     public get tex(): string {
@@ -389,7 +402,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         const length = this.degree().value + 1
         const coeffs = new Array(length).fill(new Fraction(0))
 
-        orderedPolynom.monoms.forEach(monom=>{
+        orderedPolynom.monoms.forEach(monom => {
             const index = length - monom.degree().value - 1
             coeffs[index] = monom.coefficient.clone()
         })
@@ -875,79 +888,48 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.reduce()
     }
 
-    public tableOfSigns(rootsArray?: ISolution[]): TABLE_OF_SIGNS {
+    public tableOfSigns(): TABLE_OF_SIGNS {
         // returns ['+-', 'd|t|z', '+-']...
 
         // global roots from eventually Polyfactor. Allows to add "extra column".
-        const roots: ISolution[] = rootsArray ?? this.getZeroes()
-
-        // Polynom roots (named zeroes)
-        const zeroes: ISolution[] = this.roots // if here, means, the roots has already been calculated !
-
-        // All zeroes from the function must be in the rootsArray.
-        if (rootsArray && zeroes.some(zero => roots.findIndex(x => x.value === zero.value) === -1)) {
-            throw new Error('Some roots cannot be found !')
-        }
-
+        const roots: ISolution[] = this.roots
 
         // Build the table os sign length and default values
-        // The signs looks like: ['', 't', '', 't', '', 't', '']
-        let signs: TABLE_OF_SIGNS_VALUES[] = ['']
-        roots.forEach(() => signs.push('t', ''))
-
-        if (this.degree().isZero()) {
-            // The polynom is a constant: [+,t,+,t,+,t,+]
-            signs = replace_in_array(signs, '', this.monomsByDegree()[0].coefficient.isPositive() ? '+' : '-')
-        } else if (this.degree().isOne()) {
-            // First degree: ax+b
-            // [-,t,-,z,+,t,+,t,+]
-            const sign = this.monomsByDegree(1)[0].coefficient.sign()
-            // Get the index of the zero.
-            const idx = roots.findIndex(x => x.value === zeroes[0].value) * 2 + 1
-
-            signs[idx] = 'z'
-            signs = replace_in_array(signs, '', sign === 1 ? '-' : '+', 0, idx)
-            signs = replace_in_array(signs, '', sign === 1 ? '+' : '-', idx)
-
-        } else {
-            let start = 0, end: number, sign = '+'
-
-            zeroes.forEach((zero, index) => {
-                const zeroIndex = roots.findIndex(x => x.value === zeroes[index].value)
-
-                // Get the position of the (current) zero of the polynom
-                if (index === 0) {
-                    // Initialize.
-                    end = zeroIndex * 2 + 1
-                    signs[end] = 'z'
-                    signs = replace_in_array(
-                        signs, '',
-                        (this.evaluate(zero.value - 1, true) as number) < 0 ? '-' : '+',
-                        0, end)
-                }
-
-                start = zeroIndex * 2 + 1
-                end = index === zeroes.length - 1 ?
-                    signs.length :
-                    roots.findIndex(x => x.value === zeroes[index + 1].value) * 2 + 1
-
-                // evaluate the sign between current zero and the next one..
-                const x = index === zeroes.length - 1 ? zero.value + 1 :
-                    (zero.value + zeroes[index + 1].value) / 2
-
-                sign = (this.evaluate(x, true) as number) < 0 ? '-' : '+'
-
-                // Update the table of signs
-                signs[start] = 'z'
-                signs = replace_in_array(signs, '', sign, start, end)
-
-                // Prepare for the next line
-                start = +end
-                end = signs.length
+        // The signs looks like: ['+', 't', '+', 't', '+', 't', '+']
+        let signs: TABLE_OF_SIGNS_VALUES[] = new Array(2 * roots.length + 1)
+            .fill('')
+            .map((_x, index) => {
+                return index % 2 === 0 ? '' : 'z'
             })
 
-        }
 
+        if (signs.length === 1) {
+            // The polynom is a constant or has not roots
+            const [a] = this.getCoefficients().map(x => x.value)
+            signs = replace_in_array(signs, '', a > 0 ? '+' : '-')
+        } else if (this.degree().isOne()) {
+            // First degree: ax+b
+            const [a] = this.getCoefficients().map(x => x.value)
+
+            // Get the index of the zero.
+            signs[0] = a > 0 ? '-' : '+'
+            signs[1] = 'z'
+            signs[2] = a > 0 ? '+' : '-'
+        } else {
+            const testingRoots = [
+                roots[0].value - 1,
+                ...roots.map((_root, index) => {
+                    return index === roots.length - 1 ?
+                        roots[index].value + 1 :
+                        (roots[index].value + roots[index + 1].value) / 2
+                })
+            ]
+
+            testingRoots.forEach((test, index) => {
+                const sign = this.evaluate({x: test}, true) as number
+                signs[index * 2] = sign > 0 ? '+' : '-'
+            })
+        }
 
         return {roots, signs}
     }

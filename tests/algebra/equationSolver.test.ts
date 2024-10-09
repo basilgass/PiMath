@@ -1,7 +1,7 @@
-import { describe, expect, test } from "vitest"
-import { Equation } from "../../src/algebra/equation"
-import { EquationSolver } from "../../src/algebra/equationSolver"
-import type { Fraction } from "../../src/coefficients/fraction"
+import {describe, expect, test} from "vitest"
+import {Equation} from "../../src/algebra/equation"
+import {EquationSolver} from "../../src/algebra/equationSolver"
+import type {Fraction} from "../../src/coefficients/fraction"
 
 
 describe("Equation Solver", () => {
@@ -105,18 +105,18 @@ describe("Equation Solver", () => {
     })
 
     test.skip('should solve the cubic equation (Cardan method, delta is positive)', () => {
-        const equation = new Equation("x^3+2x^2-5x-6=0")
+            const equation = new Equation("x^3+2x^2-5x-6=0")
 
-        const solver = new EquationSolver(equation)
-        const result = solver.solveAsCardan()
+            const solver = new EquationSolver(equation)
+            const result = solver.solveAsCardan()
 
-        expect(result.length).to.eq(3)
-        expect(result[0].variable).to.eq("x")
-        expect(result[0].value).to.eq(-3)
-        expect(result[1].value).to.eq(-1)
-        expect(result[2].value).to.eq(2)
-        expect(result[0].exact).toBeFalsy()
-    }
+            expect(result.length).to.eq(3)
+            expect(result[0].variable).to.eq("x")
+            expect(result[0].value).to.eq(-3)
+            expect(result[1].value).to.eq(-1)
+            expect(result[2].value).to.eq(2)
+            expect(result[0].exact).toBeFalsy()
+        }
     )
 
     test('should solve a factorisable equation', () => {
@@ -160,11 +160,17 @@ describe("Equation Solver", () => {
         expect(result[2].display).to.eq("(-1+sqrt(5))/2")
     })
 
-    test('should not be able to solve ', () => {
+    test('should mix multiple methods', () => {
         const equation = new Equation("x^5(x^2+x-1)^3=0")
+        const solutions = new EquationSolver(equation).solve()
 
-        const solver = new EquationSolver(equation)
-        expect(() => solver.solve()).to.throw()
+        expect(solutions).toHaveLength(3)
+        expect(solutions[0].exact).toBeFalsy()
+        expect(solutions[0].value).toBeCloseTo(-1.618, 3)
+        expect(solutions[1].exact).not.toBeFalsy()
+        expect(solutions[1].value).toBe(0)
+        expect(solutions[2].exact).toBeFalsy()
+        expect(solutions[2].value).toBeCloseTo(0.618, 3)
     })
 
     test.todo('should solve complex equation')

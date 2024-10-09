@@ -23,7 +23,6 @@ export class EquationSolver {
 
     public solve(): ISolution[] {
         const degree = this.#equation.degree().value
-        // TODO: Make sure the solutions are listed in growing order !
         if (degree === 0) {
             return []
         }
@@ -44,15 +43,7 @@ export class EquationSolver {
 
         // Use approximative solutions, using bissection algorithm.
         return this.#solveByBissection()
-
-        // // Use Cardan formula for cubic equations
-        // if (this.#equation.degree().value === 3) {
-        //     return this.#solveCubic_CardanFormula()
-        // }
-        //
-        // throw new Error("The equation degree is too high.")
     }
-
 
     public solveAsCardan(): ISolution[] {
         if (this.#equation.degree().value !== 3) {
@@ -93,7 +84,6 @@ export class EquationSolver {
 
         // Calculate the Cauchy Bounds.
         const [a, ...values] = this.#equation.getCoefficients()
-        console.log(this.#equation.display)
         const B = 1 + Math.max(...values.map(x => x.value / a.value))
 
         // Cut the [-B;B] interval in *n* parts
@@ -145,8 +135,6 @@ export class EquationSolver {
                 }
             }
         })
-
-        console.log(solutions.map(x=>x.value))
 
         return solutions
     }

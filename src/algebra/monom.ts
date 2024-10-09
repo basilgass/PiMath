@@ -543,7 +543,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
 
     /**
      * Get the literal square roots of the Monom.
-     * TODO: remove this getter ? Is it used and is it correct ?
      * @returns {literalType<Fraction>}
      */
     public get literalSqrt(): literalType<Fraction> {
