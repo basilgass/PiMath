@@ -4,17 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Update of Table of signs">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Tests -&gt; ok&#10;Dependency check -&gt; ok&#10;Build -&gt; ok">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/equationSolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equationSolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/study/rationalStudy.bak" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/study/study.bak" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/coefficients/fraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/fraction.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/geomMath.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/geomMath.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/line3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line3.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/triangle.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pimath.interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pimath.interface.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -261,8 +253,8 @@
   </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
-      <command value="npm run dependency-cruise" />
       <command value="npm run build" />
+      <command value="npm run dependency-cruise" />
     </option>
   </component>
   <component name="RunManager" selected="Vitest.Tests in tests\">
@@ -304,26 +296,33 @@
       <test-directory value="$PROJECT_DIR$/tests" />
       <method v="2" />
     </configuration>
-    <configuration name="polyfactor.test.ts" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
       <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
       <envs />
-      <scope-kind value="TEST_FILE" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
       <method v="2" />
     </configuration>
-    <configuration name="factor.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/algebra/factor.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/algebra">
+    <configuration name="dependency-cruise" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dependency-cruise" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.dependency-cruise" />
+        <item itemvalue="npm.build" />
         <item itemvalue="Vitest.Tests in tests\" />
         <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs of factors" />
         <item itemvalue="Vitest.Equation Solver.should mix multiple methods" />
-        <item itemvalue="Vitest.polyfactor.test.ts" />
-        <item itemvalue="Node.js.factor.ts" />
       </list>
     </recent_temporary>
   </component>
@@ -385,7 +384,7 @@
       <workItem from="1728284711399" duration="17000" />
       <workItem from="1728392358801" duration="1342000" />
       <workItem from="1728462720561" duration="7874000" />
-      <workItem from="1728484345598" duration="1523000" />
+      <workItem from="1728484345598" duration="1683000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -651,15 +650,29 @@
       <option name="project" value="LOCAL" />
       <updated>1728485042230</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Cleaning TODOs">
+      <option name="closed" value="true" />
+      <created>1728485934149</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1728485934149</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Tests -&gt; ok&#10;Dependency check -&gt; ok&#10;Build -&gt; ok">
+      <option name="closed" value="true" />
+      <created>1728486028030</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1728486028030</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Enable again logicalSet.ts&#10;Modify index.ts to export the complete class (WIP)" />
-    <MESSAGE value="Update triangle.ts to use the new structure." />
     <MESSAGE value="Force point from triangle to be a Point and not a Vector" />
     <MESSAGE value="Commit and build - but there are some strange problems about rollup..." />
     <MESSAGE value="Phantmo import removed. Build ok," />
@@ -683,7 +696,9 @@
     <MESSAGE value="Tested and build" />
     <MESSAGE value="Updated getCoefficient to handle polynom with missing degrees." />
     <MESSAGE value="Update of Table of signs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update of Table of signs" />
+    <MESSAGE value="Cleaning TODOs" />
+    <MESSAGE value="Tests -&gt; ok&#10;Dependency check -&gt; ok&#10;Build -&gt; ok" />
+    <option name="LAST_COMMIT_MESSAGE" value="Tests -&gt; ok&#10;Dependency check -&gt; ok&#10;Build -&gt; ok" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
