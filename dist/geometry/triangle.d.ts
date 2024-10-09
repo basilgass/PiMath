@@ -27,7 +27,6 @@ export declare class Triangle {
      * Parse values to a triangle. Supported formats:
      * Vector2D, Vector2D, Vector2D
      * x1, y1, x2, y2, x3, y3
-     * TODO: Something else ?
      * @param values
      */
     parse: (...values: unknown[]) => Triangle;

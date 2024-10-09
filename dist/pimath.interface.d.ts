@@ -1,9 +1,6 @@
-import { Fraction } from './coefficients/fraction';
-import { NthRoot } from './coefficients/nthRoot';
-import { Monom } from './algebra/monom';
-import { Factor } from './algebra/factor';
+import { Fraction, NthRoot } from './coefficients';
+import { Monom, Factor, Equation } from './algebra';
 import { Line, Point, Vector } from './geometry';
-import { Equation } from './algebra';
 export type InputValue<T> = T | string | number | Fraction | NthRoot;
 export type InputAlgebra<T> = InputValue<T> | Monom;
 export type literalType<T> = Record<string, T>;

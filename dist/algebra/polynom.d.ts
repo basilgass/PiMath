@@ -1,5 +1,5 @@
 import { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, TABLE_OF_SIGNS } from '../pimath.interface';
-import { Fraction } from '../coefficients/fraction';
+import { Fraction } from '../coefficients';
 import { Monom } from './monom';
 export type PolynomParsingType = InputValue<Polynom> | Monom;
 export interface IEuclidean {
@@ -30,11 +30,12 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
      * Clone the polynom
      */
     clone: () => Polynom;
+    get tex(): string;
+    get display(): string;
     add: (...values: InputAlgebra<Polynom>[]) => Polynom;
     commonMonom: () => Monom;
     degree: (letter?: string) => Fraction;
     derivative: (letter?: string) => Polynom;
-    get display(): string;
     divide: (value: InputAlgebra<Polynom>) => Polynom;
     empty: () => this;
     /**
@@ -49,8 +50,10 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
      * @param letter
      */
     factorize: (letter?: string) => Polynom[];
+    fromCoefficients(...values: InputValue<Fraction>[]): this;
     gcdDenominator: () => number;
     gcdNumerator: () => number;
+    getCoefficients(): Fraction[];
     getDenominators: () => number[];
     getNumerators: () => number[];
     getZeroes: () => ISolution[];
@@ -97,8 +100,7 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     set roots(value: ISolution[]);
     sqrt(): Polynom;
     subtract: (...values: InputAlgebra<Polynom>[]) => Polynom;
-    tableOfSigns(rootsArray?: ISolution[]): TABLE_OF_SIGNS;
-    get tex(): string;
+    tableOfSigns(): TABLE_OF_SIGNS;
     get variables(): string[];
     /**
      * Set the polynom to zero.

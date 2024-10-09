@@ -1,11 +1,12 @@
-import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, TABLE_OF_SIGNS } from '../pimath.interface';
+import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType, TABLE_OF_SIGNS } from '../pimath.interface';
 import { Fraction } from '../coefficients/fraction';
 import { Polynom } from './polynom';
 export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor>, IAlgebra<Factor> {
     #private;
-    constructor(value: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>);
+    constructor(value?: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>);
     parse(): Factor;
     clone(): Factor;
+    fromPolynom(polynom: InputValue<Polynom>): this;
     get tex(): string;
     get display(): string;
     add(): Factor;
@@ -34,7 +35,7 @@ export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor
     root(value: number): this;
     sqrt(): this;
     subtract(): Factor;
-    tableOfSigns(roots?: ISolution[]): TABLE_OF_SIGNS;
+    tableOfSigns(): TABLE_OF_SIGNS;
     get variables(): string[];
     get withPower(): this;
     get withRoot(): this;

@@ -4,8 +4,8 @@ import { Factor } from './factor';
 import { Polynom } from './polynom';
 export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpression<PolyFactor>, IAlgebra<PolyFactor> {
     #private;
-    constructor(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]);
-    parse(...values: (Factor | InputAlgebra<Polynom> | PolyFactor)[]): this;
+    constructor(...values: (Factor | PolyFactor)[]);
+    parse(...values: (Factor | PolyFactor)[]): this;
     clone(): PolyFactor;
     get tex(): string;
     get display(): string;
@@ -38,7 +38,13 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     primitive(): PolyFactor;
     reduce(): this;
     root(value: number): this;
-    sort(): this;
+    /**
+     * Reoarder the factors using :
+     * 1. number of monoms
+     * 2. degree of polynom
+     * 3. power of polyfactor
+     */
+    sort(letter?: string): this;
     sqrt(): this;
     subtract(...values: PolyFactor[]): this;
     tableOfSigns(): POLYFACTOR_TABLE_OF_SIGNS;

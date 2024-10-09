@@ -101,7 +101,6 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
     set literal(L: literalType<Fraction>);
     /**
      * Get the literal square roots of the Monom.
-     * TODO: remove this getter ? Is it used and is it correct ?
      * @returns {literalType<Fraction>}
      */
     get literalSqrt(): literalType<Fraction>;
