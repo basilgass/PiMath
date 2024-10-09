@@ -38,16 +38,12 @@ export function determinant(...values: V[]): Fraction {
     // TODO: Make it work for vectors of dimension n
     // Check if the vectors are in the same dimension
     if (values.some((value) => value.dimension !== values[0].dimension)) {
-        return new Fraction().invalid()
+        throw new Error('All vectors must have the same dimension')
     }
 
     // Check if the vectors are in dimension 2 or 3 and that the number of values is correct
-    if (values[0].dimension === 2 && values.length !== 2) {
-        return new Fraction().invalid()
-    }
-
-    if (values[0].dimension === 3 && values.length !== 3) {
-        return new Fraction().invalid()
+    if (values[0].dimension !== values.length ) {
+        throw new Error(`The determinant of dimension ${values[0].dimension} must have the same number of vectors (${values.length} given)`)
     }
 
     // Calculate the determinant 2x2

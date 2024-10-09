@@ -110,7 +110,6 @@ export class Triangle {
      * Parse values to a triangle. Supported formats:
      * Vector2D, Vector2D, Vector2D
      * x1, y1, x2, y2, x3, y3
-     * TODO: Something else ?
      * @param values
      */
     parse = (...values: unknown[]): Triangle => {
@@ -129,7 +128,7 @@ export class Triangle {
             )
         } else if (values.length === 3) {
             // Possibilities:
-            // - Three points (or part of points, only dict for example, or array (TODO: Add the array syntax for point)
+            // - Three points (or part of points, only dict for example, or array
             // - Three lines
             // - Three lines as text.
             if (values.every((x: unknown) => typeof x === 'string')) {

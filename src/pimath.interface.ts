@@ -1,4 +1,3 @@
-// TODO: split interface, enum, types
 import type { Fraction } from "./coefficients"
 import type { NthRoot } from "./coefficients"
 import type { Monom } from "./algebra"

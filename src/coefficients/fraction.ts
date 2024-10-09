@@ -240,7 +240,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    // TODO: The rest of the functions are not used or unnecessary ?
     /**
      * Simple function to determine if it's a fraction
      */
@@ -506,7 +505,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     public pow = (p: number | Fraction): Fraction => {
-        // TODO: Fraction.pow with a value different than a safe integer !
         if (p instanceof Fraction) {
             return this.pow(p.value)
         }
@@ -548,7 +546,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     public root = (p: number): this => {
-        // TODO: nth - root of a fraction => this will return another type of coefficient.
 
         // Check if they are perfect roots..
         if (p === 0) {

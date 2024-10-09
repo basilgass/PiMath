@@ -133,36 +133,7 @@ export class Line3 {
     }
 
     intersection = (line: Line3): { point: Vector, hasIntersection: boolean, isParallel: boolean, isSame: boolean } => {
-        // const Pt = new Vector()
-        // let isParallel = false, isSame = false
 
-
-        // // Theres is no 'y'
-        // if (this.#b.isZero() || line.b.isZero()) {
-        //     // TODO : handle no y in the line canonical form
-        // }
-
-        // if (this.isParallelTo(line)) {
-        //     Pt.x = new Fraction().invalid()
-        //     Pt.y = new Fraction().invalid()
-        //     isParallel = true
-        // } else if (this.isSameAs(line)) {
-        //     Pt.x = new Fraction().invalid()
-        //     Pt.y = new Fraction().invalid()
-        //     isSame = true
-        // } else {
-        //     Pt.x = this.#b.clone().multiply(line.c).subtract(this.#c.clone().multiply(line.b))
-        //         .divide(this.#a.clone().multiply(line.b).subtract(this.#b.clone().multiply(line.a)))
-        //     Pt.y = this.#a.clone().multiply(line.c).subtract(this.#c.clone().multiply(line.a))
-        //         .divide(this.#b.clone().multiply(line.a).subtract(this.#a.clone().multiply(line.b)))
-        // }
-
-        // return {
-        //     point: Pt,
-        //     hasIntersection: !(isParallel || isSame),
-        //     isParallel,
-        //     isSame
-        // }
         throw new Error('Method not implemented.')
     }
 

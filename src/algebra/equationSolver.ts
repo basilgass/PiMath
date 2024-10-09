@@ -1,5 +1,3 @@
-// TODO: Convert EquationSolver class to a simple function ?
-
 import type {InputValue, ISolution} from "../pimath.interface"
 import type {Polynom} from "./polynom"
 import {Fraction} from "../coefficients"

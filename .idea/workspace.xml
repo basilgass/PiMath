@@ -4,19 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Updated getCoefficient to handle polynom with missing degrees.">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Update of Table of signs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/equation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equation.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/equationSolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equationSolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/factor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/factor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/monom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/monom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/study/rationalStudy.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/study/study.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/coefficients/fraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/fraction.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/geomMath.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/geomMath.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/line3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line3.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/triangle.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pimath.interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pimath.interface.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/factor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/factor.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,195 +63,196 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Node.js.circle.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Node.js.equationSolver.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Node.js.factor.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Node.js.fraction.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Node.js.line.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Node.js.point.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Node.js.polyFactor.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Node.js.polynom.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Node.js.triangle.ts.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.laravel-idea.search-composer-json&quot;: &quot;true&quot;,
-    &quot;Vitest.Circle operations.tangents of a Circle from an external Point.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Circle operations.tangents through a Point on a Circle.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Circle operations.tangents through an external Point on a Circle.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Circle operations.tangents with a slope on a Circle.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Debug tests.4.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Debug tests.ba.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Debug tests.cross.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Debug tests.polynom randomisation.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Equation Solver.should mix multiple methods.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Equation Solver.should mix two methods to solve the equation (with trivial solutions).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Equation Solver.should mix two methods to solve the equation.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Equation Solver.should not be able to solve .executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Equation Solver.should solve a factorisable equation.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Equation Solver.should solve the cubic equation (one double solution).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Equation Solver.should solve the cubic equation (unique triple solution).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Equation Solver.should solve the equation.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Equation Solver.should solve the quadratic equation (approximative).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Equation Solver.should solve the quadratic equation (no solution).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Equation Solver.should solve the quadratic equation (one solution).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Equation Solver.should solve the quadratic equation.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Factors: algebra operations.should get the derivative of a monomial Factor.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Factors: algebra operations.should get the derivative of a trivial Factor.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Fraction creation.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Fraction output.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Fraction output.output as dfrac in LaTeX.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Line creation.create Line through two points.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Line creation.create Line.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Linear System algebra.degree of Linear System.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Linear System algebra.has variable.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Linear System algebra.matrix of Linear System.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Linear System algebra.solve 2x2 Linear System.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Linear System algebra.solve 3x3 Linear System.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Linear System algebra.unsolvable 2x2 Linear System.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Linear System creation.clone Linear System.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Linear System creation.create Linear System.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Linear System creation.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Linear System operations.add two Linear Systems.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Linear System operations.subtract two Linear Systems.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.LogicalSet tests.Logical set.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.LogicalSet tests.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor creation.create a PolyFactor from a Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor creation.create a PolyFactor from a numerator and denominator.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor creation.create a PolyfFactor from a numerator and denominator.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor creation.should parse a string.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor temporary tests.test 1.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: Table of signs.WIP.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: Table of signs.compile table of signs of factors.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: Table of signs.compile table of signs with constant value.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: Table of signs.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: algebra operations.should add two PolyFactors with denominators.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: algebra operations.should add two PolyFactors.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: algebra operations.should develop the PolyFactor in a more complex situation.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: algebra operations.should develop the PolyFactor.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: algebra operations.should factorize the PolyFactor in a more complex situation.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: algebra operations.should factorize the PolyFactor.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: algebra operations.should get the derivative of a PolyFactor with negative power.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: algebra operations.should get the derivative of a PolyFactor with three factors.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: algebra operations.should get the derivative of the PolyFactor.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: operations.should divide two PolyFactors.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.PolyFactor: output functions.should output as LaTex and do not add parenthesis on power if not needed..executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom comparisons.equal Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom comparisons.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom comparisons.is Polynom developed.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom comparisons.is one Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom comparisons.is zero Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom comparisons.same Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom creation.clone Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom creation.create Polynom from [x] and numbers.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom creation.create Polynom from [xyz] and numbers.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom creation.create trivial Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom creation.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom creation.parse string with parenthesis and power.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom creation.parse string with parenthesis.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom creation.parse with multiple variables.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom creation.set to one Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom creation.set to zero Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom creation.should parse with rational powers.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom evaluation.evaluate Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.add two Polynoms.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.derivative of a Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.divide by Fraction.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.divide by Monom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.divide by Polynom (not dividable).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.divide by Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.euclidian division of two Polynoms.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.integrate Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.multiply two Polynoms.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.raise Polynom by integer.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.reduce Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.reorder Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom operations.subtract two Polynoms.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom properties.Polynom of 2nd degree table of signs.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom properties.Polynom table of signs.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom properties.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom properties.table of signs of a Polynom as a constant.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom properties.table of signs of a Polynom of 2nd degree (no solution).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Polynom properties.table of signs of a Polynom of 2nd degree (one solution).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Replace in array.array from index to end.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Replace in array.array from start to end.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Replace in array.array from start to index.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Replace in array.complete array.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of Factors.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of Factors.with power even.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of Factors.with power odd.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of Factors.with root even.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of a Polynom.2nd degree (one solution).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of a Polynom.2nd degree (two solutions).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of a Polynom.2nd degree polynom with extra roots (and missing zero).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of a Polynom.2nd degree polynom with extra roots.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of a Polynom.6th degree (four solutions).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of a Polynom.6th degree (three solutions).executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of a Polynom.a constant.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of a Polynom.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs of a Polynom.first degree.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Table of signs.of a Polynom as a constant.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Tests in geometry\\.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Tests in tests\\.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector 3D comparisons.colinear Vector 3D.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector 3D comparisons.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector 3D creation.create Vector 3D from 2 other vectors.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector 3D creation.create Vector 3D.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector 3D creation.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector 3D creation.set to zero Vector 3D.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector 3D operations.angle between two vectors.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector 3D operations.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector 3D operations.norm of a Vector 3D.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector 3D output.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector creation.clone Vector.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector creation.create Vector.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector creation.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector creation.parse string a,b.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector creation.parse string.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector creation.set to one Vector.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector creation.set to zero Vector.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector output.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.Vector output.output as LaTeX.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.WIP.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.equation.test.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.equationSolver.test.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.factor.test.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.fraction.test.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.linearSystem.test.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.logicalSet.test.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.monom.test.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.polyfactor.test.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.polynom.test.ts.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.triangle creation.create triangle from equations.executor&quot;: &quot;Run&quot;,
-    &quot;Vitest.vector3d.test.ts.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/websites/PiMath/tests&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.dependency-cruise.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\websites\\PiMath\\node_modules\\typescript\\lib&quot;,
-    &quot;ts.rename.search.for.js.occurrences&quot;: &quot;false&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Node.js.circle.ts.executor": "Run",
+    "Node.js.equationSolver.ts.executor": "Run",
+    "Node.js.factor.ts.executor": "Run",
+    "Node.js.fraction.ts.executor": "Run",
+    "Node.js.line.ts.executor": "Run",
+    "Node.js.point.ts.executor": "Run",
+    "Node.js.polyFactor.ts.executor": "Run",
+    "Node.js.polynom.ts.executor": "Run",
+    "Node.js.triangle.ts.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.laravel-idea.search-composer-json": "true",
+    "Vitest.Circle operations.tangents of a Circle from an external Point.executor": "Run",
+    "Vitest.Circle operations.tangents through a Point on a Circle.executor": "Run",
+    "Vitest.Circle operations.tangents through an external Point on a Circle.executor": "Run",
+    "Vitest.Circle operations.tangents with a slope on a Circle.executor": "Run",
+    "Vitest.Debug tests.4.executor": "Run",
+    "Vitest.Debug tests.ba.executor": "Run",
+    "Vitest.Debug tests.cross.executor": "Run",
+    "Vitest.Debug tests.polynom randomisation.executor": "Run",
+    "Vitest.Equation Solver.should mix multiple methods.executor": "Run",
+    "Vitest.Equation Solver.should mix two methods to solve the equation (with trivial solutions).executor": "Run",
+    "Vitest.Equation Solver.should mix two methods to solve the equation.executor": "Run",
+    "Vitest.Equation Solver.should not be able to solve .executor": "Run",
+    "Vitest.Equation Solver.should solve a factorisable equation.executor": "Run",
+    "Vitest.Equation Solver.should solve the cubic equation (one double solution).executor": "Run",
+    "Vitest.Equation Solver.should solve the cubic equation (unique triple solution).executor": "Run",
+    "Vitest.Equation Solver.should solve the equation.executor": "Run",
+    "Vitest.Equation Solver.should solve the quadratic equation (approximative).executor": "Run",
+    "Vitest.Equation Solver.should solve the quadratic equation (no solution).executor": "Run",
+    "Vitest.Equation Solver.should solve the quadratic equation (one solution).executor": "Run",
+    "Vitest.Equation Solver.should solve the quadratic equation.executor": "Run",
+    "Vitest.Factors: algebra operations.should get the derivative of a monomial Factor.executor": "Run",
+    "Vitest.Factors: algebra operations.should get the derivative of a trivial Factor.executor": "Run",
+    "Vitest.Fraction creation.executor": "Run",
+    "Vitest.Fraction output.executor": "Run",
+    "Vitest.Fraction output.output as dfrac in LaTeX.executor": "Run",
+    "Vitest.Line creation.create Line through two points.executor": "Run",
+    "Vitest.Line creation.create Line.executor": "Run",
+    "Vitest.Linear System algebra.degree of Linear System.executor": "Run",
+    "Vitest.Linear System algebra.has variable.executor": "Run",
+    "Vitest.Linear System algebra.matrix of Linear System.executor": "Run",
+    "Vitest.Linear System algebra.solve 2x2 Linear System.executor": "Run",
+    "Vitest.Linear System algebra.solve 3x3 Linear System.executor": "Run",
+    "Vitest.Linear System algebra.unsolvable 2x2 Linear System.executor": "Run",
+    "Vitest.Linear System creation.clone Linear System.executor": "Run",
+    "Vitest.Linear System creation.create Linear System.executor": "Run",
+    "Vitest.Linear System creation.executor": "Run",
+    "Vitest.Linear System operations.add two Linear Systems.executor": "Run",
+    "Vitest.Linear System operations.subtract two Linear Systems.executor": "Run",
+    "Vitest.LogicalSet tests.Logical set.executor": "Run",
+    "Vitest.LogicalSet tests.executor": "Run",
+    "Vitest.PolyFactor creation.create a PolyFactor from a Polynom.executor": "Run",
+    "Vitest.PolyFactor creation.create a PolyFactor from a numerator and denominator.executor": "Run",
+    "Vitest.PolyFactor creation.create a PolyfFactor from a numerator and denominator.executor": "Run",
+    "Vitest.PolyFactor creation.should parse a string.executor": "Run",
+    "Vitest.PolyFactor temporary tests.test 1.executor": "Run",
+    "Vitest.PolyFactor: Table of signs.WIP.executor": "Run",
+    "Vitest.PolyFactor: Table of signs.compile table of signs of factors.executor": "Run",
+    "Vitest.PolyFactor: Table of signs.compile table of signs with constant value.executor": "Run",
+    "Vitest.PolyFactor: Table of signs.executor": "Run",
+    "Vitest.PolyFactor: algebra operations.should add two PolyFactors with denominators.executor": "Run",
+    "Vitest.PolyFactor: algebra operations.should add two PolyFactors.executor": "Run",
+    "Vitest.PolyFactor: algebra operations.should develop the PolyFactor in a more complex situation.executor": "Run",
+    "Vitest.PolyFactor: algebra operations.should develop the PolyFactor.executor": "Run",
+    "Vitest.PolyFactor: algebra operations.should factorize the PolyFactor in a more complex situation.executor": "Run",
+    "Vitest.PolyFactor: algebra operations.should factorize the PolyFactor.executor": "Run",
+    "Vitest.PolyFactor: algebra operations.should get the derivative of a PolyFactor with negative power.executor": "Run",
+    "Vitest.PolyFactor: algebra operations.should get the derivative of a PolyFactor with three factors.executor": "Run",
+    "Vitest.PolyFactor: algebra operations.should get the derivative of the PolyFactor.executor": "Run",
+    "Vitest.PolyFactor: operations.should divide two PolyFactors.executor": "Run",
+    "Vitest.PolyFactor: output functions.should output as LaTex and do not add parenthesis on power if not needed..executor": "Run",
+    "Vitest.Polynom comparisons.equal Polynom.executor": "Run",
+    "Vitest.Polynom comparisons.executor": "Run",
+    "Vitest.Polynom comparisons.is Polynom developed.executor": "Run",
+    "Vitest.Polynom comparisons.is one Polynom.executor": "Run",
+    "Vitest.Polynom comparisons.is zero Polynom.executor": "Run",
+    "Vitest.Polynom comparisons.same Polynom.executor": "Run",
+    "Vitest.Polynom creation.clone Polynom.executor": "Run",
+    "Vitest.Polynom creation.create Polynom from [x] and numbers.executor": "Run",
+    "Vitest.Polynom creation.create Polynom from [xyz] and numbers.executor": "Run",
+    "Vitest.Polynom creation.create trivial Polynom.executor": "Run",
+    "Vitest.Polynom creation.executor": "Run",
+    "Vitest.Polynom creation.parse string with parenthesis and power.executor": "Run",
+    "Vitest.Polynom creation.parse string with parenthesis.executor": "Run",
+    "Vitest.Polynom creation.parse with multiple variables.executor": "Run",
+    "Vitest.Polynom creation.set to one Polynom.executor": "Run",
+    "Vitest.Polynom creation.set to zero Polynom.executor": "Run",
+    "Vitest.Polynom creation.should parse with rational powers.executor": "Run",
+    "Vitest.Polynom evaluation.evaluate Polynom.executor": "Run",
+    "Vitest.Polynom operations.add two Polynoms.executor": "Run",
+    "Vitest.Polynom operations.derivative of a Polynom.executor": "Run",
+    "Vitest.Polynom operations.divide by Fraction.executor": "Run",
+    "Vitest.Polynom operations.divide by Monom.executor": "Run",
+    "Vitest.Polynom operations.divide by Polynom (not dividable).executor": "Run",
+    "Vitest.Polynom operations.divide by Polynom.executor": "Run",
+    "Vitest.Polynom operations.euclidian division of two Polynoms.executor": "Run",
+    "Vitest.Polynom operations.executor": "Run",
+    "Vitest.Polynom operations.integrate Polynom.executor": "Run",
+    "Vitest.Polynom operations.multiply two Polynoms.executor": "Run",
+    "Vitest.Polynom operations.raise Polynom by integer.executor": "Run",
+    "Vitest.Polynom operations.reduce Polynom.executor": "Run",
+    "Vitest.Polynom operations.reorder Polynom.executor": "Run",
+    "Vitest.Polynom operations.subtract two Polynoms.executor": "Run",
+    "Vitest.Polynom properties.Polynom of 2nd degree table of signs.executor": "Run",
+    "Vitest.Polynom properties.Polynom table of signs.executor": "Run",
+    "Vitest.Polynom properties.executor": "Run",
+    "Vitest.Polynom properties.table of signs of a Polynom as a constant.executor": "Run",
+    "Vitest.Polynom properties.table of signs of a Polynom of 2nd degree (no solution).executor": "Run",
+    "Vitest.Polynom properties.table of signs of a Polynom of 2nd degree (one solution).executor": "Run",
+    "Vitest.Replace in array.array from index to end.executor": "Run",
+    "Vitest.Replace in array.array from start to end.executor": "Run",
+    "Vitest.Replace in array.array from start to index.executor": "Run",
+    "Vitest.Replace in array.complete array.executor": "Run",
+    "Vitest.Table of signs of Factors.executor": "Run",
+    "Vitest.Table of signs of Factors.with power even.executor": "Run",
+    "Vitest.Table of signs of Factors.with power odd.executor": "Run",
+    "Vitest.Table of signs of Factors.with root even.executor": "Run",
+    "Vitest.Table of signs of a Polynom.2nd degree (one solution).executor": "Run",
+    "Vitest.Table of signs of a Polynom.2nd degree (two solutions).executor": "Run",
+    "Vitest.Table of signs of a Polynom.2nd degree polynom with extra roots (and missing zero).executor": "Run",
+    "Vitest.Table of signs of a Polynom.2nd degree polynom with extra roots.executor": "Run",
+    "Vitest.Table of signs of a Polynom.6th degree (four solutions).executor": "Run",
+    "Vitest.Table of signs of a Polynom.6th degree (three solutions).executor": "Run",
+    "Vitest.Table of signs of a Polynom.a constant.executor": "Run",
+    "Vitest.Table of signs of a Polynom.executor": "Run",
+    "Vitest.Table of signs of a Polynom.first degree.executor": "Run",
+    "Vitest.Table of signs.executor": "Run",
+    "Vitest.Table of signs.of a Polynom as a constant.executor": "Run",
+    "Vitest.Tests in geometry\\.executor": "Run",
+    "Vitest.Tests in tests\\.executor": "Run",
+    "Vitest.Vector 3D comparisons.colinear Vector 3D.executor": "Run",
+    "Vitest.Vector 3D comparisons.executor": "Run",
+    "Vitest.Vector 3D creation.create Vector 3D from 2 other vectors.executor": "Run",
+    "Vitest.Vector 3D creation.create Vector 3D.executor": "Run",
+    "Vitest.Vector 3D creation.executor": "Run",
+    "Vitest.Vector 3D creation.set to zero Vector 3D.executor": "Run",
+    "Vitest.Vector 3D operations.angle between two vectors.executor": "Run",
+    "Vitest.Vector 3D operations.executor": "Run",
+    "Vitest.Vector 3D operations.norm of a Vector 3D.executor": "Run",
+    "Vitest.Vector 3D output.executor": "Run",
+    "Vitest.Vector creation.clone Vector.executor": "Run",
+    "Vitest.Vector creation.create Vector.executor": "Run",
+    "Vitest.Vector creation.executor": "Run",
+    "Vitest.Vector creation.parse string a,b.executor": "Run",
+    "Vitest.Vector creation.parse string.executor": "Run",
+    "Vitest.Vector creation.set to one Vector.executor": "Run",
+    "Vitest.Vector creation.set to zero Vector.executor": "Run",
+    "Vitest.Vector output.executor": "Run",
+    "Vitest.Vector output.output as LaTeX.executor": "Run",
+    "Vitest.WIP.executor": "Run",
+    "Vitest.equation.test.ts.executor": "Run",
+    "Vitest.equationSolver.test.ts.executor": "Run",
+    "Vitest.factor.test.ts.executor": "Run",
+    "Vitest.fraction.test.ts.executor": "Run",
+    "Vitest.linearSystem.test.ts.executor": "Run",
+    "Vitest.logicalSet.test.ts.executor": "Run",
+    "Vitest.monom.test.ts.executor": "Run",
+    "Vitest.polyfactor.test.ts.executor": "Run",
+    "Vitest.polynom.test.ts.executor": "Run",
+    "Vitest.triangle creation.create triangle from equations.executor": "Run",
+    "Vitest.vector3d.test.ts.executor": "Run",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/websites/PiMath/src",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.build.executor": "Run",
+    "npm.dependency-cruise.executor": "Run",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "ts.external.directory.path": "C:\\websites\\PiMath\\node_modules\\typescript\\lib",
+    "ts.rename.search.for.js.occurrences": "false",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;ECMAScript 6&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "ECMAScript 6"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\websites\PiMath\src" />
       <recent name="C:\websites\PiMath\tests" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -386,7 +385,7 @@
       <workItem from="1728284711399" duration="17000" />
       <workItem from="1728392358801" duration="1342000" />
       <workItem from="1728462720561" duration="7874000" />
-      <workItem from="1728484345598" duration="662000" />
+      <workItem from="1728484345598" duration="1523000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -644,14 +643,21 @@
       <option name="project" value="LOCAL" />
       <updated>1728395619654</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Update of Table of signs">
+      <option name="closed" value="true" />
+      <created>1728485042230</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1728485042230</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Circle.tangents is now working for an external point" />
     <MESSAGE value="Enable again logicalSet.ts&#10;Modify index.ts to export the complete class (WIP)" />
     <MESSAGE value="Update triangle.ts to use the new structure." />
     <MESSAGE value="Force point from triangle to be a Point and not a Vector" />
@@ -676,7 +682,8 @@
     <MESSAGE value="PolyFactor.add(...values) now supports PolyFactros with denominators." />
     <MESSAGE value="Tested and build" />
     <MESSAGE value="Updated getCoefficient to handle polynom with missing degrees." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated getCoefficient to handle polynom with missing degrees." />
+    <MESSAGE value="Update of Table of signs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update of Table of signs" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

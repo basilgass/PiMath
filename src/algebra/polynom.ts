@@ -110,20 +110,6 @@ export class Polynom implements IPiMathObject<Polynom>,
         return P
     }
 
-    public fromCoefficients(...values: InputValue<Fraction>[]){
-        this.#monoms = []
-        const letter = 'x'
-        values.reverse().forEach((coeff, index)=>{
-            const monom = new Monom()
-            monom.coefficient = new Fraction(coeff)
-            monom.setLetter(letter, index)
-
-            this.#monoms.push(monom)
-        })
-
-        return this
-    }
-
     public get tex(): string {
         return this.#genDisplay('tex')
     }
@@ -387,6 +373,20 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.#factors
     }
 
+    public fromCoefficients(...values: InputValue<Fraction>[]) {
+        this.#monoms = []
+        const letter = 'x'
+        values.reverse().forEach((coeff, index) => {
+            const monom = new Monom()
+            monom.coefficient = new Fraction(coeff)
+            monom.setLetter(letter, index)
+
+            this.#monoms.push(monom)
+        })
+
+        return this
+    }
+
     public gcdDenominator = (): number => {
         return Numeric.gcd(...this.getDenominators())
     }
@@ -536,7 +536,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
 
 
-        // TODO: Not ur the reduced system checking is working properly !
+        // TODO: Not sure the reduced system checking is working properly !
         for (const m of P.monoms) {
             if (!m.coefficient.isReduced()) {
                 return false
@@ -564,7 +564,6 @@ export class Polynom implements IPiMathObject<Polynom>,
     }
 
     public get length() {
-        // TODO: Must reduce the monoms list to remove the zero coefficient.
         return this.#monoms.length
     }
 
@@ -793,7 +792,6 @@ export class Polynom implements IPiMathObject<Polynom>,
             revert = false
         }
 
-        // TODO: Must handle multiple setLetter reorder system
         const otherLetters = this.variables.filter(x => x !== letter)
         this.#monoms.sort(function (a, b) {
             const da = a.degree(letter).value,
@@ -967,8 +965,6 @@ export class Polynom implements IPiMathObject<Polynom>,
             sign = '='
         }
 
-        // TODO: compare must also check the variables.
-
         // Create clone version to reduce them without altering the original polynoms.
         const cP1 = this.clone().reduce().reorder()
         const cP2 = P.clone().reduce().reorder()
@@ -1042,9 +1038,7 @@ export class Polynom implements IPiMathObject<Polynom>,
                 P2 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator)
                 factor = a.divide(x1.denominator).divide(x1.denominator)
 
-                if (!factor.isOne())
-                    // TODO: Update new Polynom to accept anything...
-                {
+                if (!factor.isOne()) {
                     return [new Polynom(factor.display), P1, P2]
                 } else {
                     return [P1, P2]
@@ -1247,10 +1241,13 @@ export class Polynom implements IPiMathObject<Polynom>,
             const fractions = values.map(x => new Fraction(x as InputValue<Fraction>))
 
             // Multiple setLetter version
-
             if (inputStr.length > 1) {
-                // TODO: check that the number of values given correspond to the letters (+1 eventually)
                 const letters = inputStr.split('')
+
+                if (letters.length < values.length - 2) {
+                    throw new Error('Too many factors for too few variables !')
+                }
+
                 let i = 0
 
                 for (const F of fractions) {
