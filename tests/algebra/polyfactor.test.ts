@@ -247,6 +247,15 @@ describe("PolyFactor: operations", () => {
         expect(groupedFactor[0].power.display).toBe('7/2')
     })
 
+    test('should reduce a PolyFactors with constant factors', ()=>{
+        const PF = new PolyFactor().fromPolynom('18(x+6)(x+3)','27x+243')
+        const PFF = PF.factorize()
+        expect(PFF.asRoot.display).toBe('((18)(x+3)(x+6))/((27)(x+9))')
+
+        PFF.reduce()
+        expect(PFF.asRoot.display).toBe('((2)(x+3)(x+6))/((3)(x+9))')
+    })
+
     test('should get the gcd of two PolyFactors', () => {
         const PF = new PolyFactor(
             new Factor('3x+2', '4'),
@@ -574,5 +583,13 @@ describe.skip('PolyFactor temporary tests', ()=>{
         const PFF = PF.factorize()
 
         console.log(PFF.asRoot.display)
+    })
+    test('test 2', ()=>{
+       const PF = new PolyFactor().fromPolynom('18(x+6)(x+3)','27x+243')
+        const PFF = PF.factorize()
+        expect(PFF.asRoot.display).toBe('((18)(x+3)(x+6))/((27)(x+9))')
+
+        PFF.reduce()
+        expect(PFF.asRoot.display).toBe('((2)(x+3)(x+6))/((3)(x+9))')
     })
 })

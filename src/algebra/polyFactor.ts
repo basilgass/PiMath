@@ -534,7 +534,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
                 }
 
                 // The sign for this indexed root is a t(ab)
-                if (root===undefined || root.value !== roots_key[(index - 1) / 2]) {
+                if (root === undefined || root.value !== roots_key[(index - 1) / 2]) {
                     return 't'
                 }
 
@@ -618,35 +618,41 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
 }
 
 function keyFactors(value: PolyFactor): Record<string, Factor[]> {
-    const coefficient = new Fraction().one()
+    const k_numerator = new Fraction().one()
+    const k_denominator = new Fraction().one()
 
-    const kF = value.factors.reduce((acc: Record<string, Factor[]>, f) => {
-        // It's only a value
-        if (f.polynom.degree().isZero()) {
-            if (f.polynom.monoms.length > 0) {
-                coefficient.multiply(f.polynom.monoms[0].coefficient)
+    const kF = value.factors
+        .reduce((acc: Record<string, Factor[]>, f) => {
+            // It's only a value
+            if (f.polynom.degree().isZero()) {
+                if (f.power.isPositive()) {
+                    k_numerator.multiply(f.polynom.monoms[0].coefficient)
+                } else {
+                    k_denominator.multiply(f.polynom.monoms[0].coefficient)
+                }
+
+                return acc
+            }
+
+            // It's a polynom
+            const base = f.polynom.display
+            if (Object.hasOwn(acc, base)) {
+                acc[base].push(f)
+            } else {
+                acc[base] = [f]
             }
 
             return acc
-        }
+        }, {})
 
-        // It's a polynom
-        const base = f.polynom.display
-        if (Object.hasOwn(acc, base)) {
-            acc[base].push(f)
-        } else {
-            acc[base] = [f]
-        }
 
-        return acc
-    }, {})
-
-    if (coefficient.isOne()) {
-        return kF
+    const {numerator, denominator} = k_numerator.divide(k_denominator).reduce()
+    if(numerator!==1){
+        kF[numerator.toString()] = [new Factor(numerator, 1)]
     }
-
-    // Add the coefficient
-    kF[coefficient.display] = [new Factor(coefficient.display, 1)]
+    if(denominator!==1){
+        kF[denominator.toString()] = [new Factor(denominator, -1)]
+    }
 
     return kF
 }

@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Tests -&gt; ok&#10;Dependency check -&gt; ok&#10;Build -&gt; ok">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Should work on the readme file...">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,6 +115,7 @@
     "Vitest.PolyFactor creation.create a PolyfFactor from a numerator and denominator.executor": "Run",
     "Vitest.PolyFactor creation.should parse a string.executor": "Run",
     "Vitest.PolyFactor temporary tests.test 1.executor": "Run",
+    "Vitest.PolyFactor temporary tests.test 2.executor": "Run",
     "Vitest.PolyFactor: Table of signs.WIP.executor": "Run",
     "Vitest.PolyFactor: Table of signs.compile table of signs of factors.executor": "Run",
     "Vitest.PolyFactor: Table of signs.compile table of signs with constant value.executor": "Run",
@@ -231,7 +233,7 @@
     "nodejs_package_manager_path": "npm",
     "npm.build.executor": "Run",
     "npm.dependency-cruise.executor": "Run",
-    "settings.editor.selected.configurable": "preferences.keymap",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "ts.external.directory.path": "C:\\websites\\PiMath\\node_modules\\typescript\\lib",
     "ts.rename.search.for.js.occurrences": "false",
     "vue.rearranger.settings.migration": "true"
@@ -257,22 +259,8 @@
       <command value="npm run dependency-cruise" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.Tests in tests\">
-    <configuration name="Equation Solver.should mix multiple methods" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" />
-      <test-names>
-        <test-name value="Equation Solver" />
-        <test-name value="should mix multiple methods" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="PolyFactor: Table of signs.compile table of signs of factors" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Vitest.PolyFactor temporary tests.test 2">
+    <configuration name="PolyFactor temporary tests.test 2" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
@@ -281,8 +269,8 @@
       <scope-kind value="TEST" />
       <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
       <test-names>
-        <test-name value="PolyFactor: Table of signs" />
-        <test-name value="compile table of signs of factors" />
+        <test-name value="PolyFactor temporary tests" />
+        <test-name value="test 2" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -294,6 +282,9 @@
       <envs />
       <scope-kind value="DIRECTORY" />
       <test-directory value="$PROJECT_DIR$/tests" />
+      <method v="2" />
+    </configuration>
+    <configuration name="polyFactor.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/algebra/polyFactor.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/algebra">
       <method v="2" />
     </configuration>
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
@@ -318,11 +309,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Vitest.PolyFactor temporary tests.test 2" />
+        <item itemvalue="Vitest.Tests in tests\" />
+        <item itemvalue="Node.js.polyFactor.ts" />
         <item itemvalue="npm.dependency-cruise" />
         <item itemvalue="npm.build" />
-        <item itemvalue="Vitest.Tests in tests\" />
-        <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs of factors" />
-        <item itemvalue="Vitest.Equation Solver.should mix multiple methods" />
       </list>
     </recent_temporary>
   </component>
@@ -384,7 +375,8 @@
       <workItem from="1728284711399" duration="17000" />
       <workItem from="1728392358801" duration="1342000" />
       <workItem from="1728462720561" duration="7874000" />
-      <workItem from="1728484345598" duration="1683000" />
+      <workItem from="1728484345598" duration="1719000" />
+      <workItem from="1728547072538" duration="1654000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -666,14 +658,21 @@
       <option name="project" value="LOCAL" />
       <updated>1728486028030</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Should work on the readme file...">
+      <option name="closed" value="true" />
+      <created>1728486076631</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1728486076631</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Force point from triangle to be a Point and not a Vector" />
     <MESSAGE value="Commit and build - but there are some strange problems about rollup..." />
     <MESSAGE value="Phantmo import removed. Build ok," />
     <MESSAGE value="Adding factors to PolyFactor.TableOfSigns() to list all factors tos.&#10;Adding TABLE_OF_SIGNS type." />
@@ -698,7 +697,8 @@
     <MESSAGE value="Update of Table of signs" />
     <MESSAGE value="Cleaning TODOs" />
     <MESSAGE value="Tests -&gt; ok&#10;Dependency check -&gt; ok&#10;Build -&gt; ok" />
-    <option name="LAST_COMMIT_MESSAGE" value="Tests -&gt; ok&#10;Dependency check -&gt; ok&#10;Build -&gt; ok" />
+    <MESSAGE value="Should work on the readme file..." />
+    <option name="LAST_COMMIT_MESSAGE" value="Should work on the readme file..." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
