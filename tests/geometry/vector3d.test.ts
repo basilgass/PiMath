@@ -2,6 +2,7 @@ import {describe, expect, it, test} from "vitest"
 import {determinant} from "../../src/geometry/geomMath"
 import {Vector} from "../../src/geometry/vector"
 import {Numeric} from "../../src/numeric"
+import {Plane3, Point} from "../../src"
 
 describe('Vector 3D creation', () => {
 
@@ -244,5 +245,4 @@ describe('Geometry Vector', function () {
 
         expect(det.value).to.be.equal(74)
     })
-
 })

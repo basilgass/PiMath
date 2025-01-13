@@ -33,5 +33,5 @@ export function rndLine(userConfig?: randomGeometryLineConfig): Line {
         }
     }
 
-    return new Line(new Vector(config.A.x, config.A.y), d)
+    return new Line().fromPointAndDirection(new Vector(config.A.x, config.A.y), d)
 }

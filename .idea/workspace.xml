@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Should work on the readme file...">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="PolyFactor.reduce() was not working correctly with a constant factor at the denominator.&#10;&#10;Tested and builded">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/randomization/geometry/rndLine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/geometry/rndLine.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/geometry/line.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/line.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +43,7 @@
   <component name="HierarchyBrowserManager">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="true" />
   </component>
-  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP" />
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\xampp\php\php.exe" />
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -69,6 +70,7 @@
     "Node.js.polynom.ts.executor": "Run",
     "Node.js.triangle.ts.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.laravel-idea.search-composer-json": "true",
     "Vitest.Circle operations.tangents of a Circle from an external Point.executor": "Run",
     "Vitest.Circle operations.tangents through a Point on a Circle.executor": "Run",
@@ -95,8 +97,11 @@
     "Vitest.Fraction creation.executor": "Run",
     "Vitest.Fraction output.executor": "Run",
     "Vitest.Fraction output.output as dfrac in LaTeX.executor": "Run",
+    "Vitest.Geometry Vector.custom.executor": "Run",
+    "Vitest.Geometry Vector.deter test.executor": "Run",
     "Vitest.Line creation.create Line through two points.executor": "Run",
     "Vitest.Line creation.create Line.executor": "Run",
+    "Vitest.Line creation.random.executor": "Run",
     "Vitest.Linear System algebra.degree of Linear System.executor": "Run",
     "Vitest.Linear System algebra.has variable.executor": "Run",
     "Vitest.Linear System algebra.matrix of Linear System.executor": "Run",
@@ -223,7 +228,7 @@
     "Vitest.vector3d.test.ts.executor": "Run",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/websites/PiMath/src",
+    "last_opened_file_path": "C:/websites/PiMath",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.standard": "true",
     "node.js.detected.package.tslint": "true",
@@ -255,22 +260,50 @@
   </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
-      <command value="npm run build" />
       <command value="npm run dependency-cruise" />
+      <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.PolyFactor temporary tests.test 2">
-    <configuration name="PolyFactor temporary tests.test 2" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Vitest.Line creation.random">
+    <configuration name="Geometry Vector.custom" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" />
       <test-names>
-        <test-name value="PolyFactor temporary tests" />
-        <test-name value="test 2" />
+        <test-name value="Geometry Vector" />
+        <test-name value="custom" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Geometry Vector.deter test" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" />
+      <test-names>
+        <test-name value="Geometry Vector" />
+        <test-name value="deter test" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Line creation.random" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/line.test.ts" />
+      <test-names>
+        <test-name value="Line creation" />
+        <test-name value="random" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -284,9 +317,6 @@
       <test-directory value="$PROJECT_DIR$/tests" />
       <method v="2" />
     </configuration>
-    <configuration name="polyFactor.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/algebra/polyFactor.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/algebra">
-      <method v="2" />
-    </configuration>
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -297,31 +327,21 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="dependency-cruise" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dependency-cruise" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Vitest.PolyFactor temporary tests.test 2" />
-        <item itemvalue="Vitest.Tests in tests\" />
-        <item itemvalue="Node.js.polyFactor.ts" />
-        <item itemvalue="npm.dependency-cruise" />
+        <item itemvalue="Vitest.Line creation.random" />
+        <item itemvalue="Vitest.Geometry Vector.deter test" />
+        <item itemvalue="Vitest.Geometry Vector.custom" />
         <item itemvalue="npm.build" />
+        <item itemvalue="Vitest.Tests in tests\" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PS-242.23339.16" />
-        <option value="bundled-php-predefined-a98d8de5180a-90914f2295cb-com.jetbrains.php.sharedIndexes-PS-242.23339.16" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-PS-243.22562.233" />
+        <option value="bundled-php-predefined-a98d8de5180a-7980c7aaca61-com.jetbrains.php.sharedIndexes-PS-243.22562.233" />
       </set>
     </attachedChunks>
   </component>
@@ -376,7 +396,14 @@
       <workItem from="1728392358801" duration="1342000" />
       <workItem from="1728462720561" duration="7874000" />
       <workItem from="1728484345598" duration="1719000" />
-      <workItem from="1728547072538" duration="1654000" />
+      <workItem from="1728547072538" duration="2023000" />
+      <workItem from="1728987315235" duration="30000" />
+      <workItem from="1730027502179" duration="892000" />
+      <workItem from="1730033477908" duration="21000" />
+      <workItem from="1732875766522" duration="74000" />
+      <workItem from="1732875912212" duration="1387000" />
+      <workItem from="1733127853479" duration="20000" />
+      <workItem from="1736759718071" duration="601000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -666,14 +693,21 @@
       <option name="project" value="LOCAL" />
       <updated>1728486076631</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="PolyFactor.reduce() was not working correctly with a constant factor at the denominator.&#10;&#10;Tested and builded">
+      <option name="closed" value="true" />
+      <created>1728548860356</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1728548860356</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Commit and build - but there are some strange problems about rollup..." />
     <MESSAGE value="Phantmo import removed. Build ok," />
     <MESSAGE value="Adding factors to PolyFactor.TableOfSigns() to list all factors tos.&#10;Adding TABLE_OF_SIGNS type." />
     <MESSAGE value="Set export type in index.ts" />
@@ -698,7 +732,8 @@
     <MESSAGE value="Cleaning TODOs" />
     <MESSAGE value="Tests -&gt; ok&#10;Dependency check -&gt; ok&#10;Build -&gt; ok" />
     <MESSAGE value="Should work on the readme file..." />
-    <option name="LAST_COMMIT_MESSAGE" value="Should work on the readme file..." />
+    <MESSAGE value="PolyFactor.reduce() was not working correctly with a constant factor at the denominator.&#10;&#10;Tested and builded" />
+    <option name="LAST_COMMIT_MESSAGE" value="PolyFactor.reduce() was not working correctly with a constant factor at the denominator.&#10;&#10;Tested and builded" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

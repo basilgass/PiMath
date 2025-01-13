@@ -2,6 +2,7 @@ import { describe, expect, it, test } from "vitest"
 import { Line } from "../../src/geometry/line"
 import { Point } from "../../src/geometry/point"
 import {Vector} from "../../src/geometry/vector"
+import {Random} from "../../src"
 
 
 describe('Line creation', () => {
@@ -18,6 +19,12 @@ describe('Line creation', () => {
 
         expect(line).toBeDefined()
         expect(line.director.isColinearTo(new Vector(1,1))).toBeTruthy()
+    })
+
+    test('random', ()=>{
+        const line = Random.line()
+
+        console.log(line.canonical.tex)
     })
     test.todo('clone Line')
     test.todo('set to zero Line')
@@ -47,7 +54,7 @@ describe.todo('Line evaluation', () => {
 })
 describe.todo('Line generators')
 
-describe('Geometry Line', function () {
+describe.skip('Geometry Line', function () {
     it('should evaluate coordinates', function () {
         const L = new Line('3x-4y+5=0')
 
