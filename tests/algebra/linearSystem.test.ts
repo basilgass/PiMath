@@ -1,5 +1,5 @@
-import { describe, expect, test } from "vitest"
-import { Equation } from "../../src/algebra/equation"
+import {describe, expect, test} from "vitest"
+import {Equation} from "../../src/algebra/equation"
 import {LinearSystem} from "../../src/algebra/linearSystem"
 
 
@@ -98,6 +98,7 @@ describe('Linear System algebra', () => {
             '4x+5y=11',
             '7y-24=3x'
         )
+
         expect(LS.hasVariable('x')).to.be.true
         expect(LS.hasVariable('y')).to.be.true
         expect(LS.hasVariable('z')).to.be.false
@@ -119,9 +120,9 @@ describe('Linear System algebra', () => {
         const [matrix, vector] = LS.matrix
         expect(matrix.map(x => x.map(y => y.value)))
             .to.be.deep.equal([
-                [4, 5],
-                [-3, 7]
-            ])
+            [4, 5],
+            [-3, 7]
+        ])
 
         expect(vector.map(x => x.value)).to.be.deep.equal([11, 24])
     })
@@ -169,6 +170,16 @@ describe('Linear System algebra', () => {
         expect(LS_unsolvable.solveMatrix()).to.have.length(0)
     })
 
+    test('starting equation with zero', () => {
+        const LS = new LinearSystem(
+            'b+c=0',
+            'a+b-4c=0',
+            '3a-6b+4c=3'
+        )
+
+        expect(LS.solveMatrix().map(x => x.display))
+            .to.be.deep.equal(['3/5', '-3/25', '3/25'])
+    })
 })
 
 describe.todo('Linear System generators')

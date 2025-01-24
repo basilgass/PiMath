@@ -137,7 +137,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return `\\left\\{\\begin{array}{${"r".repeat(letters.length)}cl ${"|l".repeat(operatorsColumns)}}${equArray.join('\\\\ ')}\\end{array}\\right.`
     }
 
-    public degree(letter?: string | undefined): Fraction {
+    public degree(letter?: string): Fraction {
         return Fraction.max(...this.#equations.map(equ => equ.degree(letter)))
     }
 
@@ -155,7 +155,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         this.#equations = value
     }
 
-    public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean | undefined): number | Fraction {
+    public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction {
         throw new Error("Method not implemented.")
     }
 
@@ -243,13 +243,33 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         const [matrix, vector] = this.matrix
         // Solve the matrix
 
+        // console.log(matrix.map(row=>row.map(x=>x.display)))
+        // console.log(vector.map(x=>x.display))
+
         // Make the augmented matrix (matrix + vector)
         const augmentedMatrix: Fraction[][] = matrix.map((row, index) => [...row, vector[index]])
 
         // Reduce the matrix
         for (let i = 0; i < matrix.length; i++) {
             // Find the pivot (the first non-zero element in the row)
-            const pivot = augmentedMatrix[i][i].clone()
+            let pivot = augmentedMatrix[i][i].clone()
+            if (pivot.isZero()) {
+                // throw new Error('Divide by zero !')
+                // Search a line below that would add it.
+                const row_to_add = augmentedMatrix
+                    .find((row, index) => {
+                        return index > i && !row[i].isZero()
+                    })
+
+                if (row_to_add) {
+                    augmentedMatrix[i].forEach((value, index) => value.add(row_to_add[index]))
+                    pivot = augmentedMatrix[i][i].clone()
+                } else {
+                    throw new Error('Unsolvable...')
+                }
+
+
+            }
 
             // Normalize the row: divide all elements by the pivot
             // the pivot is now 1
