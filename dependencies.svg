@@ -19,30 +19,30 @@
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M92.5,-266C92.5,-266 608,-266 608,-266 614,-266 620,-272 620,-278 620,-278 620,-436 620,-436 620,-442 614,-448 608,-448 608,-448 92.5,-448 92.5,-448 86.5,-448 80.5,-442 80.5,-436 80.5,-436 80.5,-278 80.5,-278 80.5,-272 86.5,-266 92.5,-266"/>
 <text text-anchor="middle" x="350.25" y="-436.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">algebra</text>
 </g>
-<g id="clust3" class="cluster">
-<title>cluster_src/coefficients</title>
-<path fill="#ffffff" stroke="black" stroke-width="2" d="M559.5,-80C559.5,-80 688.5,-80 688.5,-80 694.5,-80 700.5,-86 700.5,-92 700.5,-92 700.5,-150 700.5,-150 700.5,-156 694.5,-162 688.5,-162 688.5,-162 559.5,-162 559.5,-162 553.5,-162 547.5,-156 547.5,-150 547.5,-150 547.5,-92 547.5,-92 547.5,-86 553.5,-80 559.5,-80"/>
-<text text-anchor="middle" x="624" y="-150.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">coefficients</text>
-</g>
 <g id="clust4" class="cluster">
 <title>cluster_src/geometry</title>
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M92.5,-704C92.5,-704 613.5,-704 613.5,-704 619.5,-704 625.5,-710 625.5,-716 625.5,-716 625.5,-914 625.5,-914 625.5,-920 619.5,-926 613.5,-926 613.5,-926 92.5,-926 92.5,-926 86.5,-926 80.5,-920 80.5,-914 80.5,-914 80.5,-716 80.5,-716 80.5,-710 86.5,-704 92.5,-704"/>
 <text text-anchor="middle" x="353" y="-914.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">geometry</text>
+</g>
+<g id="clust3" class="cluster">
+<title>cluster_src/coefficients</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M559.5,-80C559.5,-80 688.5,-80 688.5,-80 694.5,-80 700.5,-86 700.5,-92 700.5,-92 700.5,-150 700.5,-150 700.5,-156 694.5,-162 688.5,-162 688.5,-162 559.5,-162 559.5,-162 553.5,-162 547.5,-156 547.5,-150 547.5,-150 547.5,-92 547.5,-92 547.5,-86 553.5,-80 559.5,-80"/>
+<text text-anchor="middle" x="624" y="-150.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">coefficients</text>
 </g>
 <g id="clust5" class="cluster">
 <title>cluster_src/randomization</title>
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M90,-968C90,-968 521,-968 521,-968 527,-968 533,-974 533,-980 533,-980 533,-1268 533,-1268 533,-1274 527,-1280 521,-1280 521,-1280 90,-1280 90,-1280 84,-1280 78,-1274 78,-1268 78,-1268 78,-980 78,-980 78,-974 84,-968 90,-968"/>
 <text text-anchor="middle" x="305.5" y="-1268.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">randomization</text>
 </g>
-<g id="clust7" class="cluster">
-<title>cluster_src/randomization/coefficient</title>
-<path fill="#ffffff" stroke="black" stroke-width="2" d="M353,-1192C353,-1192 418,-1192 418,-1192 424,-1192 430,-1198 430,-1204 430,-1204 430,-1232 430,-1232 430,-1238 424,-1244 418,-1244 418,-1244 353,-1244 353,-1244 347,-1244 341,-1238 341,-1232 341,-1232 341,-1204 341,-1204 341,-1198 347,-1192 353,-1192"/>
-<text text-anchor="middle" x="385.5" y="-1232.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">coefficient</text>
-</g>
 <g id="clust6" class="cluster">
 <title>cluster_src/randomization/algebra</title>
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M165,-996C165,-996 417,-996 417,-996 423,-996 429,-1002 429,-1008 429,-1008 429,-1036 429,-1036 429,-1042 423,-1048 417,-1048 417,-1048 165,-1048 165,-1048 159,-1048 153,-1042 153,-1036 153,-1036 153,-1008 153,-1008 153,-1002 159,-996 165,-996"/>
 <text text-anchor="middle" x="291" y="-1036.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">algebra</text>
+</g>
+<g id="clust7" class="cluster">
+<title>cluster_src/randomization/coefficient</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M353,-1192C353,-1192 418,-1192 418,-1192 424,-1192 430,-1198 430,-1204 430,-1204 430,-1232 430,-1232 430,-1238 424,-1244 418,-1244 418,-1244 353,-1244 353,-1244 347,-1244 341,-1238 341,-1232 341,-1232 341,-1204 341,-1204 341,-1198 347,-1192 353,-1192"/>
+<text text-anchor="middle" x="385.5" y="-1232.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">coefficient</text>
 </g>
 <g id="clust8" class="cluster">
 <title>cluster_src/randomization/geometry</title>

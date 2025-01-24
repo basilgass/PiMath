@@ -10,11 +10,11 @@ export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquat
     static fromMatrix(matrix: InputValue<Fraction>[][], letters?: string): LinearSystem;
     add(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this;
     buildTex: (equations: Equation[], operators?: (string[])[]) => string;
-    degree(letter?: string | undefined): Fraction;
+    degree(letter?: string): Fraction;
     get display(): string;
     get equations(): Equation[];
     set equations(value: Equation[]);
-    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean | undefined): number | Fraction;
+    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction;
     hasVariable(letter: string): boolean;
     isEqual(value: LinearSystem): boolean;
     get isSolvable(): boolean;
