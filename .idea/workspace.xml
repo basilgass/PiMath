@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Added Spheres&#10;Minor changes&#10;Build OK.">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Build OK">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/geometry/sphere3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/sphere3.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" afterDir="false" />
@@ -188,6 +188,12 @@
     "Vitest.Replace in array.complete array.executor": "Run",
     "Vitest.Sphere creation.create Sphere from string.executor": "Run",
     "Vitest.Sphere creation.create Sphere.executor": "Run",
+    "Vitest.Spheres relative position.Sphere inside another.executor": "Run",
+    "Vitest.Spheres relative position.executor": "Run",
+    "Vitest.Spheres relative position.sphere exterior to another.executor": "Run",
+    "Vitest.Spheres relative position.sphere secant to another.executor": "Run",
+    "Vitest.Spheres relative position.sphere superposed to another.executor": "Run",
+    "Vitest.Spheres relative position.sphere tangent inside another.executor": "Run",
     "Vitest.Table of signs of Factors.executor": "Run",
     "Vitest.Table of signs of Factors.with power even.executor": "Run",
     "Vitest.Table of signs of Factors.with power odd.executor": "Run",
@@ -277,36 +283,21 @@
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.Sphere creation.create Sphere from string">
-    <configuration name="Geometry Plane.test" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Vitest.Spheres relative position.sphere superposed to another">
+    <configuration name="Spheres relative position" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/geometry/plane3.test.ts" />
+      <scope-kind value="SUITE" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" />
       <test-names>
-        <test-name value="Geometry Plane" />
-        <test-name value="test" />
+        <test-name value="Spheres relative position" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Geometry Vector.custom tests" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" />
-      <test-names>
-        <test-name value="Geometry Vector" />
-        <test-name value="custom tests" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="Sphere creation.create Sphere from string" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Spheres relative position.sphere exterior to another" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
@@ -315,12 +306,12 @@
       <scope-kind value="TEST" />
       <test-file value="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" />
       <test-names>
-        <test-name value="Sphere creation" />
-        <test-name value="create Sphere from string" />
+        <test-name value="Spheres relative position" />
+        <test-name value="sphere exterior to another" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Sphere creation.create Sphere" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Spheres relative position.sphere secant to another" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
@@ -329,28 +320,46 @@
       <scope-kind value="TEST" />
       <test-file value="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" />
       <test-names>
-        <test-name value="Sphere creation" />
-        <test-name value="create Sphere" />
+        <test-name value="Spheres relative position" />
+        <test-name value="sphere secant to another" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build" />
-      </scripts>
+    <configuration name="Spheres relative position.sphere superposed to another" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
       <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" />
+      <test-names>
+        <test-name value="Spheres relative position" />
+        <test-name value="sphere superposed to another" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Spheres relative position.sphere tangent inside another" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" />
+      <test-names>
+        <test-name value="Spheres relative position" />
+        <test-name value="sphere tangent inside another" />
+      </test-names>
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.build" />
-        <item itemvalue="Vitest.Sphere creation.create Sphere from string" />
-        <item itemvalue="Vitest.Sphere creation.create Sphere" />
-        <item itemvalue="Vitest.Geometry Vector.custom tests" />
-        <item itemvalue="Vitest.Geometry Plane.test" />
+        <item itemvalue="Vitest.Spheres relative position.sphere superposed to another" />
+        <item itemvalue="Vitest.Spheres relative position" />
+        <item itemvalue="Vitest.Spheres relative position.sphere tangent inside another" />
+        <item itemvalue="Vitest.Spheres relative position.sphere secant to another" />
+        <item itemvalue="Vitest.Spheres relative position.sphere exterior to another" />
       </list>
     </recent_temporary>
   </component>
@@ -434,7 +443,7 @@
       <workItem from="1739256701703" duration="380000" />
       <workItem from="1740036893102" duration="3177000" />
       <workItem from="1741169094038" duration="1155000" />
-      <workItem from="1741171612429" duration="4000000" />
+      <workItem from="1741171612429" duration="5117000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -772,7 +781,23 @@
       <option name="project" value="LOCAL" />
       <updated>1741187192161</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="Rename fromPolynom to fromEquation in Sphere3 class; update related test case">
+      <option name="closed" value="true" />
+      <created>1741187543480</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1741187543480</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Build OK">
+      <option name="closed" value="true" />
+      <created>1741187576107</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1741187576107</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -781,8 +806,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Testing to change # to private keyword" />
-    <MESSAGE value="Back to # private fields.&#10;Removes extra (old) region grouping (from VS Code).&#10;&#10;Removed export type from index.ts" />
     <MESSAGE value="bug: Random.Polynom wasn't reducing the polynom" />
     <MESSAGE value="Bug where ()^-1 was not rendering the -1." />
     <MESSAGE value="Initialize triangle.ts" />
@@ -806,7 +829,9 @@
     <MESSAGE value="Update LinearSystem to solve equation with an wquation startiing with a 0 value." />
     <MESSAGE value="Build: Ok&#10;Tests: OK&#10;Dependency: OK" />
     <MESSAGE value="Added Spheres&#10;Minor changes&#10;Build OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Spheres&#10;Minor changes&#10;Build OK." />
+    <MESSAGE value="Rename fromPolynom to fromEquation in Sphere3 class; update related test case" />
+    <MESSAGE value="Build OK" />
+    <option name="LAST_COMMIT_MESSAGE" value="Build OK" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -187,16 +187,17 @@ export class Sphere3 {
             return SPHERE3_RELATIVE_POSITION.TANGENT_OUTSIDE
         }
 
+        if(distance===0) {
+            return r1===r2 ? SPHERE3_RELATIVE_POSITION.SUPERPOSED : SPHERE3_RELATIVE_POSITION.CONCENTRIC
+        }
+
         if (distance === Math.abs(r1 - r2)) {
             return SPHERE3_RELATIVE_POSITION.TANGENT_INSIDE
         }
 
+
         if (distance < Math.abs(r1 - r2)) {
             return SPHERE3_RELATIVE_POSITION.INTERIOR
-        }
-
-        if(distance===0) {
-            return r1===r2 ? SPHERE3_RELATIVE_POSITION.SUPERPOSED : SPHERE3_RELATIVE_POSITION.CONCENTRIC
         }
 
         return SPHERE3_RELATIVE_POSITION.SECANT
