@@ -14,7 +14,7 @@ export declare enum SPHERE3_RELATIVE_POSITION {
 export declare class Sphere3 {
     #private;
     constructor(center?: Point, radius?: InputValue<Fraction>);
-    fromPolynom(polynom: Equation | string): this;
+    fromEquation(equation: Equation | string): this;
     get center(): Point;
     get squareRadius(): Fraction;
     get radius(): {
@@ -28,6 +28,7 @@ export declare class Sphere3 {
     get developped(): this;
     get tex(): string;
     get display(): string;
+    static RELATIVE_POSITION: typeof SPHERE3_RELATIVE_POSITION;
     relativePosition: (S: Sphere3) => SPHERE3_RELATIVE_POSITION;
     isPointOnSphere: (P: Point) => boolean;
 }
