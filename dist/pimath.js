@@ -4134,7 +4134,7 @@ class Ui {
     });
     a(this, "relativePosition", (e) => {
       const t = this.center.distanceTo(e.center).value, i = this.radius.value, n = e.radius.value;
-      return t > i + n ? 1 : t === i + n ? 4 : t === Math.abs(i - n) ? 3 : t < Math.abs(i - n) ? 0 : t === 0 ? i === n ? 5 : 6 : 2;
+      return t > i + n ? 1 : t === i + n ? 4 : t === 0 ? i === n ? 5 : 6 : t === Math.abs(i - n) ? 3 : t < Math.abs(i - n) ? 0 : 2;
     });
     a(this, "isPointOnSphere", (e) => {
       var t;
