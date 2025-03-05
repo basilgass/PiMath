@@ -17,7 +17,7 @@ describe('Sphere creation', () => {
 
     test('create Sphere from string', () => {
         const C = new Sphere3()
-            .fromPolynom('(x-1)^2+y^2+(z+3)^2=25')
+            .fromEquation('(x-1)^2+y^2+(z+3)^2=25')
 
         expect(C).toBeDefined()
         expect(C.center.x.value).toBe(1)

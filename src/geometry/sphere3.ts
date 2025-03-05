@@ -22,7 +22,6 @@ export class Sphere3 {
     #center: Point | undefined = undefined
     #squareRadius: Fraction | undefined = undefined
     #equation: Equation | undefined = undefined
-
     #format: SPHERE3_FORMAT = SPHERE3_FORMAT.CENTER_RADIUS
 
     constructor(center?: Point, radius?: InputValue<Fraction>) {
@@ -34,8 +33,8 @@ export class Sphere3 {
         return this
     }
 
-    fromPolynom(polynom: Equation | string): this {
-        const equ = new Equation(polynom).moveLeft().reduce()
+    fromEquation(equation: Equation | string): this {
+        const equ = new Equation(equation).moveLeft().reduce()
 
         // Check that x, y, z has the same power and same coefficient.
         const letters = ['x', 'y', 'z']
@@ -174,6 +173,7 @@ export class Sphere3 {
         ).reduce()
     }
 
+    static RELATIVE_POSITION = SPHERE3_RELATIVE_POSITION
     relativePosition = (S: Sphere3): SPHERE3_RELATIVE_POSITION => {
         const distance = this.center.distanceTo(S.center).value
         const r1 = this.radius.value

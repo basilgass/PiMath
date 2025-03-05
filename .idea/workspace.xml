@@ -4,24 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Build: Ok&#10;Tests: OK&#10;Dependency: OK">
-      <change afterPath="$PROJECT_DIR$/src/geometry/sphere3.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Added Spheres&#10;Minor changes&#10;Build OK.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/linearSystem.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/linearSystem.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/circle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/circle.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/plane3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/plane3.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/randomization/algebra/rndPolynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/algebra/rndPolynom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/plane3.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/plane3.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/sphere3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/sphere3.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
   </component>
   <component name="ComposerSettings">
     <execution />
@@ -277,8 +273,8 @@
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="npm run dev" />
-      <command value="npm run build" />
       <command value="npm run dependency-cruise" />
+      <command value="npm run build" />
     </option>
   </component>
   <component name="RunManager" selected="Vitest.Sphere creation.create Sphere from string">
@@ -338,23 +334,23 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Tests in tests\" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
       <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
       <envs />
-      <scope-kind value="DIRECTORY" />
-      <test-directory value="$PROJECT_DIR$/tests" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.build" />
         <item itemvalue="Vitest.Sphere creation.create Sphere from string" />
         <item itemvalue="Vitest.Sphere creation.create Sphere" />
         <item itemvalue="Vitest.Geometry Vector.custom tests" />
         <item itemvalue="Vitest.Geometry Plane.test" />
-        <item itemvalue="Vitest.Tests in tests\" />
       </list>
     </recent_temporary>
   </component>
@@ -438,7 +434,7 @@
       <workItem from="1739256701703" duration="380000" />
       <workItem from="1740036893102" duration="3177000" />
       <workItem from="1741169094038" duration="1155000" />
-      <workItem from="1741171612429" duration="3502000" />
+      <workItem from="1741171612429" duration="4000000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -768,14 +764,23 @@
       <option name="project" value="LOCAL" />
       <updated>1737722948821</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="Added Spheres&#10;Minor changes&#10;Build OK.">
+      <option name="closed" value="true" />
+      <created>1741187192161</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1741187192161</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Changing output of PolyFactor.tableOfSigns()" />
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="Testing to change # to private keyword" />
     <MESSAGE value="Back to # private fields.&#10;Removes extra (old) region grouping (from VS Code).&#10;&#10;Removed export type from index.ts" />
     <MESSAGE value="bug: Random.Polynom wasn't reducing the polynom" />
@@ -800,7 +805,8 @@
     <MESSAGE value="Test: success&#10;Dependency graph: success&#10;Build: success" />
     <MESSAGE value="Update LinearSystem to solve equation with an wquation startiing with a 0 value." />
     <MESSAGE value="Build: Ok&#10;Tests: OK&#10;Dependency: OK" />
-    <option name="LAST_COMMIT_MESSAGE" value="Build: Ok&#10;Tests: OK&#10;Dependency: OK" />
+    <MESSAGE value="Added Spheres&#10;Minor changes&#10;Build OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Spheres&#10;Minor changes&#10;Build OK." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
