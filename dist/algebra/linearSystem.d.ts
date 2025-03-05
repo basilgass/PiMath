@@ -1,5 +1,5 @@
 import { IAlgebra, IEquation, InputValue, IPiMathObject, ISolution, literalType } from '../pimath.interface';
-import { Fraction } from '../coefficients/fraction';
+import { Fraction } from '../coefficients';
 import { Equation } from './equation';
 import { Polynom } from './polynom';
 export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquation<LinearSystem>, IAlgebra<LinearSystem> {

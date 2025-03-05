@@ -7,3 +7,4 @@ export * from './plane3';
 export * from './point';
 export * from './triangle';
 export * from './vector';
+export * from './sphere3';

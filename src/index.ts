@@ -12,7 +12,7 @@ import {Fraction, NthRoot} from "./coefficients"
 import {Equation, Factor, LinearSystem, LogicalSet, Monom, PolyFactor, Polynom} from "./algebra"
 
 // Geometry
-import {Circle, Line, Line3, Matrix, Plane3, Point, Triangle, Vector} from "./geometry"
+import {Circle, Line, Line3, Matrix, Plane3, Point, Triangle, Vector, Sphere3} from "./geometry"
 
 // Numeric
 import {Numeric} from "./numeric"
@@ -44,13 +44,14 @@ const PiMath = {
     LogicalSet,
     Random,
     Geometry: {
-        Vector: Vector,
-        Point: Point,
-        Line: Line,
-        Triangle: Triangle,
-        Circle: Circle,
-        Line3: Line3,
-        Plane3: Plane3,
+        Vector,
+        Point,
+        Line,
+        Triangle,
+        Circle,
+        Line3,
+        Plane3,
+        Sphere3
     },
     NumExp
 }

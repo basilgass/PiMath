@@ -4,12 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Test: success&#10;Dependency graph: success&#10;Build: success">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Build: Ok&#10;Tests: OK&#10;Dependency: OK">
+      <change afterPath="$PROJECT_DIR$/src/geometry/sphere3.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/matrices.html" beforeDir="false" afterPath="$PROJECT_DIR$/demo/matrices.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/playground.html" beforeDir="false" afterPath="$PROJECT_DIR$/demo/playground.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/linearSystem.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/linearSystem.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/circle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/circle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/plane3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/plane3.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/randomization/algebra/rndPolynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/algebra/rndPolynom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/geometry/plane3.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/plane3.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +45,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/basilgass/PI.git&quot;,
-    &quot;accountId&quot;: &quot;24e63fc7-cda0-42fa-9233-b30aa194e523&quot;
+    &quot;accountId&quot;: &quot;4124b351-5d69-42b4-9afa-6c311eafdd49&quot;
   }
 }</component>
   <component name="HierarchyBrowserManager">
@@ -98,6 +105,8 @@
     "Vitest.Fraction creation.executor": "Run",
     "Vitest.Fraction output.executor": "Run",
     "Vitest.Fraction output.output as dfrac in LaTeX.executor": "Run",
+    "Vitest.Geometry Plane.test.executor": "Run",
+    "Vitest.Geometry Vector.custom tests.executor": "Run",
     "Vitest.Geometry Vector.custom.executor": "Run",
     "Vitest.Geometry Vector.deter test.executor": "Run",
     "Vitest.Line creation.create Line through two points.executor": "Run",
@@ -181,6 +190,8 @@
     "Vitest.Replace in array.array from start to end.executor": "Run",
     "Vitest.Replace in array.array from start to index.executor": "Run",
     "Vitest.Replace in array.complete array.executor": "Run",
+    "Vitest.Sphere creation.create Sphere from string.executor": "Run",
+    "Vitest.Sphere creation.create Sphere.executor": "Run",
     "Vitest.Table of signs of Factors.executor": "Run",
     "Vitest.Table of signs of Factors.with power even.executor": "Run",
     "Vitest.Table of signs of Factors.with power odd.executor": "Run",
@@ -242,9 +253,10 @@
     "npm.build.executor": "Run",
     "npm.dependency-cruise.executor": "Run",
     "npm.dev.executor": "Run",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "editor.preferences.import",
     "ts.external.directory.path": "C:\\websites\\PiMath\\node_modules\\typescript\\lib",
     "ts.rename.search.for.js.occurrences": "false",
+    "typescript.add.unambiguous.imports.on.the.fly": "true",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -264,93 +276,93 @@
   </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
+      <command value="npm run dev" />
       <command value="npm run build" />
       <command value="npm run dependency-cruise" />
-      <command value="npm run dev" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.Linear System algebra.starting equation with zero">
-    <configuration name="Linear System algebra.max call error" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Vitest.Sphere creation.create Sphere from string">
+    <configuration name="Geometry Plane.test" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/plane3.test.ts" />
       <test-names>
-        <test-name value="Linear System algebra" />
-        <test-name value="max call error" />
+        <test-name value="Geometry Plane" />
+        <test-name value="test" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Linear System algebra.solve 3x3 Linear System" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Geometry Vector.custom tests" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" />
       <test-names>
-        <test-name value="Linear System algebra" />
-        <test-name value="solve 3x3 Linear System" />
+        <test-name value="Geometry Vector" />
+        <test-name value="custom tests" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Linear System algebra.starting equation with zero" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Sphere creation.create Sphere from string" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" />
       <test-names>
-        <test-name value="Linear System algebra" />
-        <test-name value="starting equation with zero" />
+        <test-name value="Sphere creation" />
+        <test-name value="create Sphere from string" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Linear System creation.create Linear System" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Sphere creation.create Sphere" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/sphere3.test.ts" />
       <test-names>
-        <test-name value="Linear System creation" />
-        <test-name value="create Linear System" />
+        <test-name value="Sphere creation" />
+        <test-name value="create Sphere" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dev" />
-      </scripts>
+    <configuration name="Tests in tests\" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
       <envs />
+      <scope-kind value="DIRECTORY" />
+      <test-directory value="$PROJECT_DIR$/tests" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Vitest.Linear System algebra.starting equation with zero" />
-        <item itemvalue="Vitest.Linear System algebra.max call error" />
-        <item itemvalue="Vitest.Linear System algebra.solve 3x3 Linear System" />
-        <item itemvalue="Vitest.Linear System creation.create Linear System" />
-        <item itemvalue="npm.dev" />
+        <item itemvalue="Vitest.Sphere creation.create Sphere from string" />
+        <item itemvalue="Vitest.Sphere creation.create Sphere" />
+        <item itemvalue="Vitest.Geometry Vector.custom tests" />
+        <item itemvalue="Vitest.Geometry Plane.test" />
+        <item itemvalue="Vitest.Tests in tests\" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-PS-243.22562.233" />
-        <option value="bundled-php-predefined-a98d8de5180a-7980c7aaca61-com.jetbrains.php.sharedIndexes-PS-243.22562.233" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-PS-243.25659.45" />
+        <option value="bundled-php-predefined-a98d8de5180a-1ec7b7818973-com.jetbrains.php.sharedIndexes-PS-243.25659.45" />
       </set>
     </attachedChunks>
   </component>
@@ -417,7 +429,16 @@
       <workItem from="1737557924642" duration="51000" />
       <workItem from="1737558172749" duration="1354000" />
       <workItem from="1737717286945" duration="21000" />
-      <workItem from="1737720266361" duration="2470000" />
+      <workItem from="1737720266361" duration="2682000" />
+      <workItem from="1737726908967" duration="398000" />
+      <workItem from="1738235900877" duration="914000" />
+      <workItem from="1738330237887" duration="8000" />
+      <workItem from="1738914510071" duration="1856000" />
+      <workItem from="1739111978080" duration="578000" />
+      <workItem from="1739256701703" duration="380000" />
+      <workItem from="1740036893102" duration="3177000" />
+      <workItem from="1741169094038" duration="1155000" />
+      <workItem from="1741171612429" duration="3502000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -731,15 +752,29 @@
       <option name="project" value="LOCAL" />
       <updated>1736760530146</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="Update LinearSystem to solve equation with an wquation startiing with a 0 value.">
+      <option name="closed" value="true" />
+      <created>1737722836203</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1737722836203</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Build: Ok&#10;Tests: OK&#10;Dependency: OK">
+      <option name="closed" value="true" />
+      <created>1737722948821</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1737722948821</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Set export type in index.ts" />
-    <MESSAGE value="Adding exports type to index.ts" />
     <MESSAGE value="Changing output of PolyFactor.tableOfSigns()" />
     <MESSAGE value="Testing to change # to private keyword" />
     <MESSAGE value="Back to # private fields.&#10;Removes extra (old) region grouping (from VS Code).&#10;&#10;Removed export type from index.ts" />
@@ -763,7 +798,9 @@
     <MESSAGE value="PolyFactor.reduce() was not working correctly with a constant factor at the denominator.&#10;&#10;Tested and builded" />
     <MESSAGE value="Bug: rndLine was still using &quot;parse&quot; instead of &quot;fromPointAndDirection&quot; helper function." />
     <MESSAGE value="Test: success&#10;Dependency graph: success&#10;Build: success" />
-    <option name="LAST_COMMIT_MESSAGE" value="Test: success&#10;Dependency graph: success&#10;Build: success" />
+    <MESSAGE value="Update LinearSystem to solve equation with an wquation startiing with a 0 value." />
+    <MESSAGE value="Build: Ok&#10;Tests: OK&#10;Dependency: OK" />
+    <option name="LAST_COMMIT_MESSAGE" value="Build: Ok&#10;Tests: OK&#10;Dependency: OK" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

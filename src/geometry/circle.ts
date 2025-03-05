@@ -108,7 +108,7 @@ export class Circle
         } else if (Math.abs(distance.value - radius) < 0.0000000001) {
             return 1 // tangent
         } else {
-            return 2 // external
+            return 2 // secant
         }
     }
 

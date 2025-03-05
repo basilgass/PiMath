@@ -1,7 +1,6 @@
 import type { randomPolynomConfig } from "../rndTypes"
 import { rndMonom } from "./rndMonom"
-import { Polynom } from "../../algebra/polynom"
-import { Monom } from "../../algebra/monom"
+import { Polynom, Monom } from "../../algebra"
 import { randomInt } from "../rndHelpers"
 
 const factorableConfig = {
@@ -21,6 +20,8 @@ export function rndPolynom(userConfig?: randomPolynomConfig): Polynom {
         factorableConfig,
         userConfig
     )
+
+    // TODO: Create a factorable polynom does not work !!!!!
 
     // Create the polynom
     const P = new Polynom().empty()

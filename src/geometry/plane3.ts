@@ -56,6 +56,14 @@ export class Plane3 {
         ).reduce().tex
     }
 
+    get display(): string {
+        // return the cartesian equation of the plane
+        return new Equation(
+            new Polynom('xyz', this.a, this.b, this.c, this.d),
+            new Polynom(0)
+        ).reduce().display
+    }
+
     parse(config: Plane3Config) {
         if (config.point && config.normal) {
             this.point = config.point

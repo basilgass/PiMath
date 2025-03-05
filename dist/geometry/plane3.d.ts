@@ -15,6 +15,7 @@ export declare class Plane3 {
     get c(): Fraction;
     get d(): Fraction;
     get tex(): string;
+    get display(): string;
     parse(config: Plane3Config): void;
     angle(vector: Vector, sharp?: boolean, radian?: boolean): number;
     angle(line: Line3, sharp?: boolean, radian?: boolean): number;

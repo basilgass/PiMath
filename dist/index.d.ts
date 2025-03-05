@@ -1,6 +1,6 @@
 import { Fraction, NthRoot } from './coefficients';
 import { Equation, Factor, LinearSystem, LogicalSet, Monom, PolyFactor, Polynom } from './algebra';
-import { Circle, Line, Line3, Matrix, Plane3, Point, Triangle, Vector } from './geometry';
+import { Circle, Line, Line3, Matrix, Plane3, Point, Triangle, Vector, Sphere3 } from './geometry';
 import { Numeric } from './numeric';
 import { NumExp } from 'piexpression';
 import { Random } from './randomization/random';
@@ -60,6 +60,7 @@ declare const PiMath: {
         Circle: typeof Circle;
         Line3: typeof Line3;
         Plane3: typeof Plane3;
+        Sphere3: typeof Sphere3;
     };
     NumExp: typeof NumExp;
 };

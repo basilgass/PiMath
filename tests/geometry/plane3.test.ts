@@ -1,10 +1,10 @@
-import { describe, expect, it, test } from "vitest"
-import { Plane3 } from "../../src/geometry/plane3"
-import { Line3 } from "../../src/geometry/line3"
-import { Point } from "../../src/geometry/point"
-import { Vector } from "../../src/geometry/vector"
-import { Matrix } from "../../src/geometry/matrix"
-import { determinant } from "../../src/geometry/geomMath"
+import {describe, expect, it, test} from "vitest"
+import {Plane3} from "../../src/geometry/plane3"
+import {Line3} from "../../src/geometry/line3"
+import {Point} from "../../src/geometry/point"
+import {Vector} from "../../src/geometry/vector"
+import {Matrix} from "../../src/geometry/matrix"
+import {determinant} from "../../src/geometry/geomMath"
 
 describe.todo('Plane 3D creation', () => {
     test.todo('create Plane 3D')
@@ -41,7 +41,7 @@ describe('Geometry Plane', function () {
         const P1 = new Point(1, 0, 0),
             P2 = new Point(0, 1, 0),
             P3 = new Point(0, 0, 1),
-            plane = new Plane3({ points: [P1, P2, P3] })
+            plane = new Plane3({points: [P1, P2, P3]})
 
         expect(plane).toBeDefined()
         expect(plane.normal.display).to.be.equal('((1,1,1))')
@@ -50,7 +50,7 @@ describe('Geometry Plane', function () {
     it('should create a plane from a point and a normal', function () {
         const P = new Point(1, 2, 3),
             N = new Vector(4, 5, 6),
-            plane = new Plane3({ point: P, normal: N })
+            plane = new Plane3({point: P, normal: N})
 
         expect(plane).toBeDefined()
         expect(plane.normal.display).to.be.equal('((4,5,6))')
@@ -60,7 +60,7 @@ describe('Geometry Plane', function () {
     it('should output nice Tex', function () {
         const P = new Point(1, 2, 3),
             N = new Point(4, 5, 6),
-            plane = new Plane3({ point: P, normal: N })
+            plane = new Plane3({point: P, normal: N})
 
         expect(plane.tex).to.be.equal('4x+5y+6z-32=0')
     })
@@ -96,8 +96,8 @@ describe('Geometry Plane', function () {
             P2 = new Point(8, 0, 10),
             P3 = new Point(14, 8, 0),
             P4 = new Point(0, 14, 12),
-            plane1 = new Plane3({ points: [P1, P2, P3] }),
-            plane2 = new Plane3({ points: [P1, P2, P4] })
+            plane1 = new Plane3({points: [P1, P2, P3]}),
+            plane2 = new Plane3({points: [P1, P2, P4]})
         console.log(plane1.tex)
         console.log(plane2.tex)
 
@@ -109,7 +109,7 @@ describe('Geometry Plane', function () {
         const P = new Point(1, 0, 3),
             v1 = new Vector(2, 1, -3),
             v2 = new Vector(0, 2, -1),
-            plane = new Plane3({ point: P, directions: [v1, v2] })
+            plane = new Plane3({point: P, directions: [v1, v2]})
 
         console.log(v1.cross(v2).display)
         expect(plane).toBeDefined()
@@ -134,10 +134,10 @@ describe('Geometry Plane', function () {
         const ACxAD = AC.cross(AD)
         const BDxCD = BD.cross(CD)
 
-        const ABC = new Plane3({ points: [A, B, C] })
-        const BCD = new Plane3({ points: [B, C, D] })
-        const ACD = new Plane3({ points: [A, C, D] })
-        const ABD = new Plane3({ points: [A, B, D] })
+        const ABC = new Plane3({points: [A, B, C]})
+        const BCD = new Plane3({points: [B, C, D]})
+        const ACD = new Plane3({points: [A, C, D]})
+        const ABD = new Plane3({points: [A, B, D]})
         const M = new Matrix(AB, AC, AD)
         const d = AB.clone().multiplyByScalar(AC.norm).add(AC.clone().multiplyByScalar(AB.norm)).simplify()
         const b = new Line3(A, d)
@@ -190,9 +190,9 @@ describe('Geometry Plane', function () {
         const M = new Point().middleOf(A, Cp)
         const BM = new Vector(B, M)
         const D = B.clone().add(BM.clone().multiplyByScalar(3))
-        const BCD = new Plane3({ points: [B, C, D] })
+        const BCD = new Plane3({points: [B, C, D]})
         const E = Cp.clone().add(AB)
-        const BCE = new Plane3({ points: [B, C, E] })
+        const BCE = new Plane3({points: [B, C, E]})
 
         console.log('A=', A.display)
         console.log('B=', B.display)
@@ -223,13 +223,21 @@ describe('Geometry Plane', function () {
     })
 
     test('test', () => {
+        const A = new Point(-1, 2, -1),
+            B = new Point(2, 1, 4),
+            C = new Point(3, 3, 3)
+
+        const AB = new Vector(A, B)
+        const AC = new Vector(A, C)
+        console.log(AB.display)
+        console.log(AC.display)
+        console.log(AB.cross(AC).display)
         const p = new Plane3(
             {
-                points: [new Point(-2, 3, 4),
-                new Point(2, 3, 7),
-                new Point(2, 5, 0)]
+                points: [
+                    A,B,C
+                ]
             }
-
         )
         console.log(p.tex)
     })

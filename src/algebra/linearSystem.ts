@@ -1,5 +1,5 @@
 import type {IAlgebra, IEquation, InputValue, IPiMathObject, ISolution, literalType} from "../pimath.interface"
-import {Fraction} from "../coefficients/fraction"
+import {Fraction} from "../coefficients"
 import {Equation} from "./equation"
 import {Monom} from "./monom"
 import {Polynom} from "./polynom"
