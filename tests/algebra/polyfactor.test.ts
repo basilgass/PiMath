@@ -573,6 +573,17 @@ describe('PolyFactor: Table of signs', ()=>{
         expect(tos.roots.map(x=>x.value)).toEqual([-1,1])
         expect(tos.signs).toEqual([ '+', 'd', '-', 'd', '+' ])
     })
+
+    test('compile table of signs from two polynoms', ()=>{
+        const PF = new PolyFactor().fromPolynom('(x^2-16)(x+3)', '(x+5)')
+
+        const tos = PF.tableOfSigns()
+        expect(tos.factors[0].signs).toEqual([
+            '-', 't', '-',
+            't', '-', 'z',
+            '+', 't', '+'
+        ])
+    })
 })
 
 describe.skip('PolyFactor temporary tests', ()=>{

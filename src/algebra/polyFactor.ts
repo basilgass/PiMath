@@ -514,13 +514,15 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         const roots_key = roots.map(x => x.value)
 
         // Get the table of signs of every factors
+
+
         // These signs are NOT aligned
-        const factors: FACTOR_TABLE_OF_SIGNS[] = this.factors
+        const factors: FACTOR_TABLE_OF_SIGNS[] = this.factorize().factors
             .map(factor => {
                 return {factor: new Factor(factor), ...factor.tableOfSigns()}
             })
 
-        // Build the table of signs with extra roots.
+        // Build the table of signs with extra roots for each factors.
         factors.forEach(item => {
             // Create the new signs row
             const empty_signs: TABLE_OF_SIGNS_VALUES[] = new Array(2 * roots.length + 1).fill('') as unknown as TABLE_OF_SIGNS_VALUES[]
@@ -552,9 +554,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             item.signs = aligned_signs
         })
 
-        // Build the table of signs with extra roots
+        // Build the table of signs with extra roots : reault line
         const signs: TABLE_OF_SIGNS_VALUES[] = factors
-            .map((item) => item.signs)
+            .map((item) => [...item.signs])
             .reduce<TABLE_OF_SIGNS_VALUES[]>((a, b) => {
                 if (a.length === 0) {
                     return b
