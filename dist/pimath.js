@@ -2884,7 +2884,7 @@ const Y = class Y {
     return this.add(...e.map((t) => t.opposite()));
   }
   tableOfSigns() {
-    const e = this.getZeroes(), t = e.map((r) => r.value), i = this.factors.map((r) => ({ factor: new se(r), ...r.tableOfSigns() }));
+    const e = this.getZeroes(), t = e.map((r) => r.value), i = this.factorize().factors.map((r) => ({ factor: new se(r), ...r.tableOfSigns() }));
     return i.forEach((r) => {
       const l = new Array(2 * e.length + 1).fill("");
       let c = r.signs.shift(), f = r.roots.shift();
@@ -2897,7 +2897,7 @@ const Y = class Y {
         return c = r.signs.shift(), f = r.roots.shift(), L;
       });
       r.roots = e, r.signs = d;
-    }), { signs: i.map((r) => r.signs).reduce((r, l) => r.length === 0 ? l : (l.forEach((c, f) => {
+    }), { signs: i.map((r) => [...r.signs]).reduce((r, l) => r.length === 0 ? l : (l.forEach((c, f) => {
       switch (c) {
         case "d":
           r[f] = "d";
