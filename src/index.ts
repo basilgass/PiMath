@@ -9,10 +9,10 @@ export * from "./geometry"
 import {Fraction, NthRoot} from "./coefficients"
 
 // Algebra
-import {Equation, Factor, LinearSystem, LogicalSet, Monom, PolyFactor, Polynom} from "./algebra"
+import {Equation, Factor, LinearSystem, LogicalSet, Monom, PolyFactor, Polynom, Matrix} from "./algebra"
 
 // Geometry
-import {Circle, Line, Line3, Matrix, Plane3, Point, Triangle, Vector, Sphere3} from "./geometry"
+import {Circle, Line, Line3, Plane3, Point, Triangle, Vector, Sphere3} from "./geometry"
 
 // Numeric
 import {Numeric} from "./numeric"

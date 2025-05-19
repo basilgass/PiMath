@@ -16,7 +16,7 @@ export interface IPiMathObject<T> {
     clone(): T;
     parse(...value: unknown[]): T;
 }
-export interface IExpression<T> {
+export interface IExpressionBase<T> {
     isEqual(value: InputValue<T>): boolean;
     zero(): T;
     one(): T;
@@ -25,12 +25,16 @@ export interface IExpression<T> {
     add(value: InputValue<T>): T;
     subtract(value: InputValue<T>): T;
     opposite(): T;
-    multiply(value: InputValue<T>): T;
-    divide(value: InputValue<T>): T | null;
     reduce(): T;
-    inverse(): T | undefined;
-    sqrt(): T | undefined;
+}
+export interface IExpressionMultiply<T> extends IExpressionBase<T> {
+    multiply(value: InputValue<T>): T;
     pow(value: number): T;
+}
+export interface IExpression<T> extends IExpressionMultiply<T> {
+    inverse(): T | undefined;
+    divide(value: InputValue<T>): T | null;
+    sqrt(): T | undefined;
     root(value: number): T | undefined;
 }
 export interface IEquation<T> {

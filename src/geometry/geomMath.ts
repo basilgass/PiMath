@@ -1,4 +1,4 @@
-import { Fraction } from "../coefficients/fraction"
+import { Fraction } from "../coefficients"
 import type { Vector } from "./vector"
 
 type V = Vector
@@ -34,7 +34,7 @@ export function dotProduct(v1: V, v2: V): Fraction {
         }, new Fraction(0))
 }
 
-export function determinant(...values: V[]): Fraction {
+export function determinantFromVectors(...values: V[]): Fraction {
     // TODO: Make it work for vectors of dimension n
     // Check if the vectors are in the same dimension
     if (values.some((value) => value.dimension !== values[0].dimension)) {

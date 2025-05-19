@@ -1,5 +1,5 @@
 import {describe, expect, it, test} from "vitest"
-import {determinant} from "../../src/geometry/geomMath"
+import {determinantFromVectors} from "../../src/geometry/geomMath"
 import {Vector} from "../../src/geometry/vector"
 import {Numeric} from "../../src/numeric"
 import {Line, Line3, Plane3, Point} from "../../src"
@@ -240,7 +240,7 @@ describe('Geometry Vector', function () {
         const v1 = new Vector(1, 2, 4)
         const v2 = new Vector(5, 4, 6)
         const v3 = new Vector(3, 7, 2)
-        const det = determinant(v1.clone(), v2.clone(), v3.clone())
+        const det = determinantFromVectors(v1.clone(), v2.clone(), v3.clone())
         expect(det).toBeDefined()
         console.log(det.value / 6)
 

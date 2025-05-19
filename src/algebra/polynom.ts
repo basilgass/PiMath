@@ -19,6 +19,7 @@ import {Numeric} from '../numeric'
 import {EquationSolver} from './equationSolver'
 import {Monom} from './monom'
 import {replace_in_array} from "../helpers"
+import {operation_pow} from "./operations"
 
 
 export type PolynomParsingType = InputValue<Polynom> | Monom
@@ -116,6 +117,14 @@ export class Polynom implements IPiMathObject<Polynom>,
 
     public get display(): string {
         return this.#genDisplay()
+    }
+
+    public get value(): number | undefined {
+        if(this.degree().isZero()){
+            return this.monoms[0]?.coefficient.value ?? 0
+        }
+
+        return undefined
     }
 
     public add = (...values: InputAlgebra<Polynom>[]): Polynom => {
@@ -713,25 +722,7 @@ export class Polynom implements IPiMathObject<Polynom>,
     }
 
     public pow = (nb: number): Polynom => {
-        if (!Number.isSafeInteger(nb)) {
-            return this.zero()
-        }
-
-        if (nb < 0) {
-            return this.zero()
-        }
-
-        if (nb === 0) {
-            return new Polynom()
-        }
-
-
-        const P = this.clone()
-        for (let i = 1; i < nb; i++) {
-            this.multiply(P)
-        }
-
-        return this.reduce()
+        return operation_pow(this as Polynom, nb).reduce()
     }
 
     public primitive = (letter?: string): Polynom => {

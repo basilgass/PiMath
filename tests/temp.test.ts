@@ -2,7 +2,7 @@ import {describe, test} from "vitest"
 import {Random} from "../src/randomization/random"
 import {PolyFactor} from "../src/algebra/polyFactor"
 import {Vector} from "../src/geometry/vector"
-import {determinant} from "../src/geometry/geomMath"
+import {determinantFromVectors} from "../src/geometry/geomMath"
 
 describe('Debug tests', ()=>{
     test('polynom randomisation', ()=>{
@@ -44,7 +44,7 @@ describe('Debug tests', ()=>{
         console.log(C.dot(A1A2).display)
         console.log(C.dot(A1A2).value / C.norm)
 
-        console.log(determinant(
+        console.log(determinantFromVectors(
             V2, V1, new Vector(-1,3,-10)
         ).value)
     })
@@ -78,6 +78,6 @@ describe('Debug tests', ()=>{
         const v2 = new Vector(4,0,3)
         const v3 = new Vector(6,32,3)
 
-        console.log(determinant(v1, v2, v3).display)
+        console.log(determinantFromVectors(v1, v2, v3).display)
     })
 })

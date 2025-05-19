@@ -32,6 +32,7 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     clone: () => Polynom;
     get tex(): string;
     get display(): string;
+    get value(): number | undefined;
     add: (...values: InputAlgebra<Polynom>[]) => Polynom;
     commonMonom: () => Monom;
     degree: (letter?: string) => Fraction;

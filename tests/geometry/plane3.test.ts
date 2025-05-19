@@ -4,7 +4,7 @@ import {Line3} from "../../src/geometry/line3"
 import {Point} from "../../src/geometry/point"
 import {Vector} from "../../src/geometry/vector"
 import {Matrix} from "../../src/geometry/matrix"
-import {determinant} from "../../src/geometry/geomMath"
+import {determinantFromVectors} from "../../src/geometry/geomMath"
 
 describe.todo('Plane 3D creation', () => {
     test.todo('create Plane 3D')
@@ -218,7 +218,7 @@ describe('Geometry Plane', function () {
         console.log(`\\item \\(\\displaystyle d: ${dAC.tex.cartesian} \\)`)
 
         console.log('AB - CC\' = ', dAB.distanceTo(Cp).value)
-        console.log('d - BM = ', determinant(AC, BM, new Vector(A, M)).value / AC.cross(BM).norm)
+        console.log('d - BM = ', determinantFromVectors(AC, BM, new Vector(A, M)).value / AC.cross(BM).norm)
 
     })
 

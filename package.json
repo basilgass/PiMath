@@ -5,17 +5,20 @@
   "type": "module",
   "main": "dist/pimath.js",
   "module": "dist/pimath.js",
-  "types": "dist/index.d.ts",
+  "types": "types/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/pimath.js",
-      "require": "./dist/pimath.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/pimath.js"
     }
   },
+  "files": [
+    "dist",
+    "types"
+  ],
   "scripts": {
-    "test": "vitest",
     "dev": "vite serve",
+    "test": "vitest",
     "build": "tsc --p ./tsconfig-build.json && vite build",
     "preview": "vite preview",
     "docs": "typedoc",
@@ -27,6 +30,10 @@
   ],
   "author": "Basil Gass",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/basilgass/PiMath.git"
+  },
   "devDependencies": {
     "@eslint/js": "^9.25.1",
     "@types/eslint__js": "^8.42.3",
@@ -46,6 +53,6 @@
     "vitest": "^3.1.2"
   },
   "dependencies": {
-    "piexpression": "^0.0.8"
+    "piexpression": "^0.1.0"
   }
 }

@@ -6,3 +6,4 @@ export * from './logicalset';
 export * from './monom';
 export * from './polyFactor';
 export * from './polynom';
+export * from './matrix';
