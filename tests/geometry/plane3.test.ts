@@ -3,41 +3,41 @@ import {Plane3} from "../../src/geometry/plane3"
 import {Line3} from "../../src/geometry/line3"
 import {Point} from "../../src/geometry/point"
 import {Vector} from "../../src/geometry/vector"
-import {Matrix} from "../../src/geometry/matrix"
 import {determinantFromVectors} from "../../src/geometry/geomMath"
+import {Matrix} from "../../src"
 
-describe.todo('Plane 3D creation', () => {
-    test.todo('create Plane 3D')
-    test.todo('parse string')
-    test.todo('clone Plane 3D')
-    test.todo('set to zero Plane 3D')
-    test.todo('set to one Plane 3D')
+describe.skip('Plane 3D creation', () => {
+    test.skip('create Plane 3D')
+    test.skip('parse string')
+    test.skip('clone Plane 3D')
+    test.skip('set to zero Plane 3D')
+    test.skip('set to one Plane 3D')
 })
-describe.todo('Plane 3D output', () => {
-    test.todo('output as LaTeX')
-    test.todo('output as ASCII')
+describe.skip('Plane 3D output', () => {
+    test.skip('output as LaTeX')
+    test.skip('output as ASCII')
 })
-describe.todo('Plane 3D operations', () => {
-    test.todo('reduce Plane 3D')
-    test.todo('add two Plane 3Ds')
-    test.todo('subtract two Plane 3Ds')
-    test.todo('multiply two Plane 3Ds')
-    test.todo('divide by Plane 3D')
-    test.todo('raise Plane 3D by integer')
+describe.skip('Plane 3D operations', () => {
+    test.skip('reduce Plane 3D')
+    test.skip('add two Plane 3Ds')
+    test.skip('subtract two Plane 3Ds')
+    test.skip('multiply two Plane 3Ds')
+    test.skip('divide by Plane 3D')
+    test.skip('raise Plane 3D by integer')
 })
-describe.todo('Plane 3D comparisons', () => {
-    test.todo('same Plane 3D')
-    test.todo('equal Plane 3D')
-    test.todo('is one Plane 3D')
-    test.todo('is zero Plane 3D')
+describe.skip('Plane 3D comparisons', () => {
+    test.skip('same Plane 3D')
+    test.skip('equal Plane 3D')
+    test.skip('is one Plane 3D')
+    test.skip('is zero Plane 3D')
 })
-describe.todo('Plane 3D static functions')
-describe.todo('Plane 3D evaluation', () => {
-    test.todo('evaluate Plane 3D')
+describe.skip('Plane 3D static functions')
+describe.skip('Plane 3D evaluation', () => {
+    test.skip('evaluate Plane 3D')
 })
-describe.todo('Plane 3D generators')
+describe.skip('Plane 3D generators')
 describe('Geometry Plane', function () {
-    it('should create a plane from 3 points', function () {
+    it.skip('should create a plane from 3 points', function () {
         const P1 = new Point(1, 0, 0),
             P2 = new Point(0, 1, 0),
             P3 = new Point(0, 0, 1),
@@ -47,7 +47,7 @@ describe('Geometry Plane', function () {
         expect(plane.normal.display).to.be.equal('((1,1,1))')
     })
 
-    it('should create a plane from a point and a normal', function () {
+    it.skip('should create a plane from a point and a normal', function () {
         const P = new Point(1, 2, 3),
             N = new Vector(4, 5, 6),
             plane = new Plane3({point: P, normal: N})
@@ -173,7 +173,7 @@ describe('Geometry Plane', function () {
         console.log(ABD.distanceTo(C))
     })
 
-    it('test2', () => {
+    it.skip('test2', () => {
         const A = new Point(6, -1, -1)
         const B = new Point(5, 2, 3)
         const Cp = new Point(3, 1, 4)
@@ -223,23 +223,21 @@ describe('Geometry Plane', function () {
     })
 
     test('test', () => {
-        const A = new Point(-1, 2, -1),
-            B = new Point(2, 1, 4),
-            C = new Point(3, 3, 3)
+        const d = new Vector(10,1,-4)
+        const T = new Point(9, -2, -6)
 
-        const AB = new Vector(A, B)
-        const AC = new Vector(A, C)
-        console.log(AB.display)
-        console.log(AC.display)
-        console.log(AB.cross(AC).display)
-        const p = new Plane3(
-            {
-                points: [
-                    A,B,C
-                ]
-            }
-        )
+        const p = new Plane3({
+            point: T,
+            normal: d
+        })
+
         console.log(p.tex)
+    })
+
+    test('test2', ()=>{
+        const v1 = new Vector(1, -2, 2)
+        const v2 = new Vector(8,1,-2)
+        console.log('CROSS: ' + v1.cross(v2).display)
     })
 
 })

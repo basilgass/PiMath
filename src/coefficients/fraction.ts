@@ -126,6 +126,38 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return F
     }
 
+    // Display getter
+    public get tex(): string {
+        if (this.isInfinity()) {
+            return `${this.sign() === 1 ? '+' : '-'}\\infty`
+        }
+
+
+        if (this.isExact()) {
+            if (this.#denominator === 1) {
+                return `${this.#numerator}`
+            } else if (this.#numerator < 0) {
+                return `-\\${this.#type}{ ${-this.#numerator} }{ ${this.#denominator} }`
+            } else {
+                return `\\${this.#type}{ ${this.#numerator} }{ ${this.#denominator} }`
+            }
+        } else {
+            return this.value.toFixed(3)
+        }
+    }
+
+    public get display(): string {
+        if (this.isExact()) {
+            if (this.#denominator === 1) {
+                return `${this.#numerator}`
+            } else {
+                return `${this.#numerator}/${this.#denominator}`
+            }
+        } else {
+            return this.value.toFixed(3)
+        }
+    }
+
     public static average = (...fractions: (InputValue<Fraction>)[]): Fraction => {
         const M = new Fraction().zero()
 
@@ -151,6 +183,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return M
     }
 
+    // ------------------------------------------
+    // Compare functions
+
     public static min = (...fractions: (InputValue<Fraction>)[]): Fraction => {
         let M = new Fraction(fractions[0])
 
@@ -175,9 +210,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
         return sorted
     }
-
-    // ------------------------------------------
-    // Compare functions
 
     public static unique = (fractions: (InputValue<Fraction>)[]): Fraction[] => {
         const unique: Record<string, boolean> = {},
@@ -254,9 +286,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
      * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
      */
     public compare = (F: InputValue<Fraction>, sign?: compareSign): boolean => {
-        if (sign === undefined) {
-            sign = '='
-        }
+        sign ??= '='
 
         let compareFraction: Fraction
         if (F instanceof Fraction) {
@@ -279,9 +309,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
             case "leq":
                 return this.value <= compareFraction.value
             case "=":
-                // let F2: Fraction = compareFraction.clone().reduce(),
-                //     F1: Fraction = this.clone().reduce();
-                // return (F1.numerator === F2.numerator && F1.denominator === F2.denominator);
                 return this.value === compareFraction.value
             case "<>":
                 return this.value !== compareFraction.value
@@ -301,18 +328,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     public get dfrac(): this {
         this.#type = FRAC_TYPE.dfrac
         return this
-    }
-
-    public get display(): string {
-        if (this.isExact()) {
-            if (this.#denominator === 1) {
-                return `${this.#numerator}`
-            } else {
-                return `${this.#numerator}/${this.#denominator}`
-            }
-        } else {
-            return this.value.toFixed(3)
-        }
     }
 
     public divide = (F: Fraction | number): Fraction => {
@@ -417,11 +432,11 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this.#numerator === -1 && this.#denominator === 1
     }
 
+    // ------------------------------------------
+
     public isNotEqual = (than: Fraction | number): boolean => {
         return this.compare(than, '<>')
     }
-
-    // ------------------------------------------
 
     public isNotZero = (): boolean => {
         return this.#numerator !== 0
@@ -545,6 +560,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
+    // ------------------------------------------
+    // Getter and setter
+
     public root = (p: number): this => {
 
         // Check if they are perfect roots..
@@ -597,9 +615,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    // ------------------------------------------
-    // Getter and setter
-
     public sign = (): number => {
         return (this.#numerator * this.#denominator >= 0) ? 1 : -1
     }
@@ -613,26 +628,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
             return this.add(F.clone().opposite())
         } else {
             return this.add(-F)
-        }
-    }
-
-    // Display getter
-    public get tex(): string {
-        if (this.isInfinity()) {
-            return `${this.sign() === 1 ? '+' : '-'}\\infty`
-        }
-
-
-        if (this.isExact()) {
-            if (this.#denominator === 1) {
-                return `${this.#numerator}`
-            } else if (this.#numerator < 0) {
-                return `-\\${this.#type}{ ${-this.#numerator} }{ ${this.#denominator} }`
-            } else {
-                return `\\${this.#type}{ ${this.#numerator} }{ ${this.#denominator} }`
-            }
-        } else {
-            return this.value.toFixed(3)
         }
     }
 

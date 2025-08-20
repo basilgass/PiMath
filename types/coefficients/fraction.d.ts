@@ -16,6 +16,8 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
      */
     parse: (value: InputValue<Fraction>, denominatorOrPeriodic?: number) => Fraction;
     clone: () => Fraction;
+    get tex(): string;
+    get display(): string;
     static average: (...fractions: (InputValue<Fraction>)[]) => Fraction;
     static max: (...fractions: InputValue<Fraction>[]) => Fraction;
     static min: (...fractions: (InputValue<Fraction>)[]) => Fraction;
@@ -38,7 +40,6 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     get denominator(): number;
     set denominator(value: number);
     get dfrac(): this;
-    get display(): string;
     divide: (F: Fraction | number) => Fraction;
     get frac(): this;
     infinite: () => this;
@@ -83,7 +84,6 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     sign: () => number;
     sqrt: () => this;
     subtract: (F: Fraction | number) => Fraction;
-    get tex(): string;
     get texWithSign(): string;
     get tfrac(): this;
     get value(): number;

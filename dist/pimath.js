@@ -144,7 +144,7 @@ const B = class B {
      * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
      */
     a(this, "compare", (e, t) => {
-      t === void 0 && (t = "=");
+      t ?? (t = "=");
       let i;
       switch (e instanceof B ? i = e.clone() : i = new B(e), t) {
         case ">":
@@ -196,8 +196,8 @@ const B = class B {
     a(this, "isNatural", () => this.isRelative() && this.isPositive());
     a(this, "isNegative", () => this.sign() === -1);
     a(this, "isNegativeOne", () => s(this, y) === -1 && s(this, E) === 1);
-    a(this, "isNotEqual", (e) => this.compare(e, "<>"));
     // ------------------------------------------
+    a(this, "isNotEqual", (e) => this.compare(e, "<>"));
     a(this, "isNotZero", () => s(this, y) !== 0);
     a(this, "isOdd", () => this.isRelative() && this.value % 2 === 1);
     a(this, "isOne", () => s(this, y) === 1 && s(this, E) === 1);
@@ -229,6 +229,8 @@ const B = class B {
       const e = W.gcd(s(this, y), s(this, E));
       return h(this, y, s(this, y) / e), h(this, E, s(this, E) / e), s(this, E) < 0 && (h(this, E, -s(this, E)), h(this, y, -s(this, y))), this;
     });
+    // ------------------------------------------
+    // Getter and setter
     a(this, "root", (e) => {
       if (e === 0)
         return this;
@@ -241,13 +243,18 @@ const B = class B {
       const i = Math.floor(Math.pow(s(this, y), Math.abs(1 / e))), r = Math.floor(Math.pow(s(this, E), Math.abs(1 / e)));
       return h(this, y, Math.pow(s(this, y), Math.abs(1 / e))), h(this, E, Math.pow(s(this, E), Math.abs(1 / e))), (i !== s(this, y) || r !== s(this, E)) && (h(this, y, s(this, y) / s(this, E)), h(this, E, 1), h(this, wt, !0)), this.multiply(t), this;
     });
-    // ------------------------------------------
-    // Getter and setter
     a(this, "sign", () => s(this, y) * s(this, E) >= 0 ? 1 : -1);
     a(this, "sqrt", () => this.root(2));
     a(this, "subtract", (e) => e instanceof B ? this.add(e.clone().opposite()) : this.add(-e));
     a(this, "zero", () => (h(this, y, 0), h(this, E, 1), this));
     return e !== void 0 && this.parse(e, t), this;
+  }
+  // Display getter
+  get tex() {
+    return this.isInfinity() ? `${this.sign() === 1 ? "+" : "-"}\\infty` : this.isExact() ? s(this, E) === 1 ? `${s(this, y)}` : s(this, y) < 0 ? `-\\${s(this, Ze)}{ ${-s(this, y)} }{ ${s(this, E)} }` : `\\${s(this, Ze)}{ ${s(this, y)} }{ ${s(this, E)} }` : this.value.toFixed(3);
+  }
+  get display() {
+    return this.isExact() ? s(this, E) === 1 ? `${s(this, y)}` : `${s(this, y)}/${s(this, E)}` : this.value.toFixed(3);
   }
   get denominator() {
     return s(this, E);
@@ -258,9 +265,6 @@ const B = class B {
   get dfrac() {
     return h(this, Ze, "dfrac"), this;
   }
-  get display() {
-    return this.isExact() ? s(this, E) === 1 ? `${s(this, y)}` : `${s(this, y)}/${s(this, E)}` : this.value.toFixed(3);
-  }
   get frac() {
     return h(this, Ze, "frac"), this;
   }
@@ -270,10 +274,6 @@ const B = class B {
   }
   set numerator(e) {
     h(this, y, e);
-  }
-  // Display getter
-  get tex() {
-    return this.isInfinity() ? `${this.sign() === 1 ? "+" : "-"}\\infty` : this.isExact() ? s(this, E) === 1 ? `${s(this, y)}` : s(this, y) < 0 ? `-\\${s(this, Ze)}{ ${-s(this, y)} }{ ${s(this, E)} }` : `\\${s(this, Ze)}{ ${s(this, y)} }{ ${s(this, E)} }` : this.value.toFixed(3);
   }
   get texWithSign() {
     return this.isPositive() ? `+${this.tex}` : this.tex;
@@ -298,7 +298,9 @@ wt = new WeakMap(), E = new WeakMap(), y = new WeakMap(), Ze = new WeakMap(), a(
     r.isGreater(t) && (t = r.clone());
   }
   return t;
-}), a(B, "min", (...e) => {
+}), // ------------------------------------------
+// Compare functions
+a(B, "min", (...e) => {
   let t = new B(e[0]);
   for (const i of e) {
     const r = new B(i);
@@ -308,9 +310,7 @@ wt = new WeakMap(), E = new WeakMap(), y = new WeakMap(), Ze = new WeakMap(), a(
 }), a(B, "sort", (e, t) => {
   const r = e.map((n) => n instanceof B ? n : new B(n)).sort((n, l) => n.value - l.value);
   return t && r.reverse(), r;
-}), // ------------------------------------------
-// Compare functions
-a(B, "unique", (e) => {
+}), a(B, "unique", (e) => {
   const t = {}, i = [];
   return e.forEach((r) => {
     r instanceof B || (r = new B(r)), t[r.clone().reduce().tex] || (i.push(r.clone()), t[r.tex] = !0);

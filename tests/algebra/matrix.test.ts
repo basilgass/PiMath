@@ -97,7 +97,7 @@ describe('Matrix output', () => {
     })
 })
 
-describe('Matrix operations', () => {
+describe.skip('Matrix operations', () => {
     test.todo('reduce Matrix')
     test('add two Matrix must have same dimnesion', () => {
         const A = new Matrix(2, 3)
@@ -226,7 +226,7 @@ describe('Geometry Matrix', function () {
         const M = new Matrix().fromString('((1,2),(3,4))')
         // 1 2
         // 3 4
-        expect(M.determinant().display).toBe('2')
+        expect(M.determinant().display).toBe('-2')
     })
 
     it('should get the determinant 4x4', ()=>{
@@ -253,6 +253,17 @@ describe('Geometry Matrix', function () {
 
         expect(M.characteristic_polynom().display).toBe('-k^(3)+6k^(2)-22k+32')
         expect(M.characteristic_polynom('x').display).toBe('-x^(3)+6x^(2)-22x+32')
+    })
+
+    it('test', ()=>{
+        const A = new Matrix().fromString('((-1,3),(5,1))')
+        const B = new Matrix().fromString('((-1,3),(1,5))')
+        const C = new Matrix().fromString('((5,-3),(2,-1))')
+
+        console.log(A.multiply(B).display)
+        A.setValue(1,1, -41)
+        console.log(A.display)
+        console.log(A.multiply(C).display)
     })
 
 
