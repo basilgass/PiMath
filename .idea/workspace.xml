@@ -4,66 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Removes files from package.json&#10;Package.json update">
-      <change afterPath="$PROJECT_DIR$/src/algebra/operations.ts" afterDir="false" />
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Added a nice version of Matrix :)&#10;Dependencies and Build oK">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependencies.svg" beforeDir="false" afterPath="$PROJECT_DIR$/dependencies.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/algebra/equation.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/algebra/equationSolver.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/algebra/factor.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/algebra/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/algebra/linearSystem.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/algebra/logicalset.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/algebra/monom.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/algebra/polyFactor.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/algebra/polynom.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/coefficients/fraction.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/coefficients/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/coefficients/nthRoot.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/geometry/circle.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/geometry/geomMath.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/geometry/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/geometry/line.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/geometry/line3.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/geometry/matrix.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/geometry/plane3.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/geometry/point.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/geometry/sphere3.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/geometry/triangle.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/geometry/vector.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/helpers.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/numeric.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pimath.interface.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pimath.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pimath.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/randomization/algebra/rndEquation.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/randomization/algebra/rndMonom.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/randomization/algebra/rndPolynom.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/randomization/coefficient/rndFraction.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/randomization/geometry/rndCircle.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/randomization/geometry/rndLine.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/randomization/geometry/rndLine3.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/randomization/geometry/rndVector.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/randomization/random.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/randomization/rndHelpers.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/randomization/rndTypes.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/geomMath.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/geomMath.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/matrix.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/matrix.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pimath.interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pimath.interface.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/matrix.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/matrix.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/coefficients/fraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/fraction.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/matrix.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/matrix.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/geometry/plane3.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/plane3.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/temp.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/temp.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig-build.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -170,6 +115,7 @@
     "Vitest.Geometry Matrix.test 3.executor": "Run",
     "Vitest.Geometry Matrix.test.executor": "Run",
     "Vitest.Geometry Plane.test.executor": "Run",
+    "Vitest.Geometry Plane.test2.executor": "Run",
     "Vitest.Geometry Vector.custom tests.executor": "Run",
     "Vitest.Geometry Vector.custom.executor": "Run",
     "Vitest.Geometry Vector.deter test.executor": "Run",
@@ -337,6 +283,7 @@
     "npm.build.executor": "Run",
     "npm.dependency-cruise.executor": "Run",
     "npm.dev.executor": "Run",
+    "npm.test.executor": "Run",
     "rearrange.code.on.save": "true",
     "settings.editor.selected.configurable": "preferences.sourceCode.TypeScript",
     "ts.external.directory.path": "C:\\websites\\PiMath\\node_modules\\typescript\\lib",
@@ -364,39 +311,12 @@
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="npm run dev" />
-      <command value="npm run build" />
       <command value="npm run dependency-cruise" />
+      <command value="npm run build" />
+      <command value="npm run test" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.Geometry Matrix.should get the caracteristic polynom from a 3x3 matrix">
-    <configuration name="Geometry Matrix.should get the caracteristic polynom from a 3x3 matrix" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/matrix.test.ts" />
-      <test-names>
-        <test-name value="Geometry Matrix" />
-        <test-name value="should get the caracteristic polynom from a 3x3 matrix" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="Geometry Matrix.should get the determinant 2x2" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/matrix.test.ts" />
-      <test-names>
-        <test-name value="Geometry Matrix" />
-        <test-name value="should get the determinant 2x2" />
-      </test-names>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Vitest.Geometry Matrix.should get the determinant 4x4">
     <configuration name="Geometry Matrix.should get the determinant 4x4" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -411,18 +331,28 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Geometry Matrix.should get the determinant with polynoms 3x3" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Geometry Plane.test2" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/matrix.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/plane3.test.ts" />
       <test-names>
-        <test-name value="Geometry Matrix" />
-        <test-name value="should get the determinant with polynoms 3x3" />
+        <test-name value="Geometry Plane" />
+        <test-name value="test2" />
       </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
       <method v="2" />
     </configuration>
     <configuration name="dependency-cruise" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
@@ -435,21 +365,31 @@
       <envs />
       <method v="2" />
     </configuration>
+    <configuration name="test" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="test" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.build" />
         <item itemvalue="npm.dependency-cruise" />
-        <item itemvalue="Vitest.Geometry Matrix.should get the caracteristic polynom from a 3x3 matrix" />
-        <item itemvalue="Vitest.Geometry Matrix.should get the determinant with polynoms 3x3" />
         <item itemvalue="Vitest.Geometry Matrix.should get the determinant 4x4" />
-        <item itemvalue="Vitest.Geometry Matrix.should get the determinant 2x2" />
+        <item itemvalue="npm.test" />
+        <item itemvalue="Vitest.Geometry Plane.test2" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-PS-251.25410.64" />
-        <option value="bundled-php-predefined-a98d8de5180a-c5828cf854d9-com.jetbrains.php.sharedIndexes-PS-251.25410.64" />
+        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-PS-252.23892.419" />
+        <option value="bundled-php-predefined-a98d8de5180a-c72577f2c82f-com.jetbrains.php.sharedIndexes-PS-252.23892.419" />
       </set>
     </attachedChunks>
   </component>
@@ -545,7 +485,15 @@
       <workItem from="1747386307773" duration="2185000" />
       <workItem from="1747398038423" duration="10075000" />
       <workItem from="1747659246944" duration="511000" />
-      <workItem from="1747659777928" duration="3387000" />
+      <workItem from="1747659777928" duration="3581000" />
+      <workItem from="1747665014107" duration="111000" />
+      <workItem from="1747762772059" duration="301000" />
+      <workItem from="1748009283813" duration="108000" />
+      <workItem from="1749571470803" duration="3755000" />
+      <workItem from="1755587246680" duration="612000" />
+      <workItem from="1755610049422" duration="415000" />
+      <workItem from="1755682531167" duration="12000" />
+      <workItem from="1755701434196" duration="104000" />
     </task>
     <task id="LOCAL-00001" summary="Major changes - working to finalize things.&#10;&#10;What to do next:&#10;- continue / finish all test files.&#10;- optimize cloning">
       <option name="closed" value="true" />
@@ -931,7 +879,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745267774573</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="Added a nice version of Matrix :)&#10;Dependencies and Build oK">
+      <option name="closed" value="true" />
+      <created>1747663380347</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1747663380347</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -940,7 +896,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Initialize triangle.ts" />
     <MESSAGE value="Build and tests successes" />
     <MESSAGE value="Update of config files... and new build" />
     <MESSAGE value="Reformating and rebuild the exports system." />
@@ -965,7 +920,8 @@
     <MESSAGE value="Build OK" />
     <MESSAGE value="Solved a bug in TableOfSigns that was setting a defence in any factor if there is one with a defence." />
     <MESSAGE value="Removes files from package.json&#10;Package.json update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removes files from package.json&#10;Package.json update" />
+    <MESSAGE value="Added a nice version of Matrix :)&#10;Dependencies and Build oK" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added a nice version of Matrix :)&#10;Dependencies and Build oK" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
