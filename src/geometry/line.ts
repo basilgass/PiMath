@@ -2,37 +2,36 @@
  * This class works for 2d line in a plane.
  */
 
-import { Numeric } from "../numeric"
-import { Fraction } from "../coefficients/fraction"
-import { Equation } from "../algebra/equation"
-import { Polynom } from "../algebra/polynom"
-import { Monom } from "../algebra/monom"
-import { Vector } from "./vector"
+import {Numeric} from "../numeric"
+import {Fraction} from "../coefficients/fraction"
+import {Equation} from "../algebra/equation"
+import {Polynom} from "../algebra/polynom"
+import {Monom} from "../algebra/monom"
+import {Vector} from "./vector"
 import {type InputValue, type IPiMathObject, LinePropriety} from "../pimath.interface"
-import { randomIntSym } from "../randomization/rndHelpers"
-import { Point } from "./point"
+import {randomIntSym} from "../randomization/rndHelpers"
+import {Point} from "./point"
 
 export interface LineConfig {
-    points?: Point[],
-    point?: Point,
     direction?: Vector,
     normal?: Vector
+    point?: Point,
+    points?: Point[],
 }
 
 export class Line implements IPiMathObject<Line> {
+    static PARALLEL = LinePropriety.Parallel
     // A line is defined as the canonical form
     static PERPENDICULAR = LinePropriety.Perpendicular
-    static PARALLEL = LinePropriety.Parallel
-    #reduceBeforeDisplay: boolean
+    #OA: Vector
     // ax + by + c = 0
     #a: Fraction
     #b: Fraction
     #c: Fraction
-    #OA: Vector
     #d: Vector
     #n: Vector
-
     #outputMode: 'canonical' | 'equation' | 'mxh' | 'parametric' | 'system' = "canonical"
+    #reduceBeforeDisplay: boolean
 
     /**
      * Value can be a mix of:
@@ -55,234 +54,6 @@ export class Line implements IPiMathObject<Line> {
 
         return this
     }
-
-    get a(): Fraction {
-        return this.#a
-    }
-
-    // ------------------------------------------
-    // Getter and setter
-
-    set a(value: Fraction) {
-        this.#a = value
-    }
-
-    get b(): Fraction {
-        return this.#b
-    }
-
-    set b(value: Fraction) {
-        this.#b = value
-    }
-
-    get c(): Fraction {
-        return this.#c
-    }
-
-    set c(value: Fraction) {
-        this.#c = value
-    }
-
-    get OA(): Vector {
-        return this.#OA
-    }
-
-    set OA(value: Vector) {
-        this.#OA = value
-    }
-
-    get d(): Vector {
-        return this.#d
-    }
-
-    set d(value: Vector) {
-        this.#d = value
-    }
-
-    get n(): Vector {
-        return this.#n
-    }
-
-    // ------------------------------------------
-    getEquation(): Equation {
-        const equ = new Equation(new Polynom().parse('xy', this.#a, this.#b, this.#c), new Polynom('0'))
-        if (this.#reduceBeforeDisplay) {
-            return equ.simplify()
-        } else {
-            return equ
-        }
-    }
-
-    // get system(): { x: Equation, y: Equation } {
-    //     const e1 = new Equation(
-    //         new Polynom('x'),
-    //         new Polynom(this.#OA.x)
-    //             .add(new Monom('k').multiply(this.#d.x))
-    //     ),
-    //         e2 = new Equation(
-    //             new Polynom('y'),
-    //             new Polynom(this.#OA.y)
-    //                 .add(new Monom('k').multiply(this.#d.y))
-    //         )
-
-    //     return { x: e1, y: e2 }
-    // }
-
-    get canonical(): this {
-        this.#outputMode = 'canonical'
-        return this
-    }
-    get equation(): this {
-        this.#outputMode = 'equation'
-        return this
-    }
-    get mxh(): this {
-        this.#outputMode = 'mxh'
-        return this
-    }
-    get parametric(): this {
-        this.#outputMode = 'parametric'
-        return this
-    }
-    get system(): this {
-        this.#outputMode = 'system'
-        return this
-    }
-
-    get tex(): string {
-        // canonical    =>  ax + by + c = 0
-        // mxh          =>  y = -a/b x - c/b
-        // parametric   =>  (xy) = OA + k*d
-        // equation     => ax + by = -c
-        const output = this.#outputMode
-        this.#outputMode = 'canonical'
-        switch (output) {
-            case 'equation':
-                return this.getEquation().reorder().tex
-            case 'mxh':
-                return this.slope.isInfinity() ?
-                    'x=' + this.OA.x.tex :
-                    'y=' + new Polynom().parse('x', this.slope, this.height).tex
-            case 'parametric':
-            case 'system': {
-                const d = this.#d.clone()
-                if (this.#reduceBeforeDisplay) {
-                    d.simplify()
-                }
-
-                if (output === 'parametric') {
-                    return `${Vector.asTex('x', 'y')} = ${Vector.asTex(this.#OA.x.tex, this.#OA.y.tex)} + k\\cdot ${Vector.asTex(d.x.tex, d.y.tex)}`
-                } else {
-                    return `\\left\\{\\begin{aligned}
-            x &= ${(new Polynom(this.#OA.x)
-                            .add(new Monom(this.#d.x).multiply(new Monom('k'))))
-                            .reorder('k', true)
-                            .tex}\\\\ 
-            y &= ${(new Polynom(this.#OA.y)
-                            .add(new Monom(this.#d.y).multiply(new Monom('k'))))
-                            .reorder('k', true)
-                            .tex}
-            \\end{aligned}\\right.`
-                }
-            }
-            default:
-                {
-                    const canonical = this.getEquation()
-                    if (this.#a.isNegative()) {
-                        canonical.multiply(-1)
-                    }
-                    return canonical.tex
-                }
-        }
-
-    }
-
-    get reduceBeforeDisplay(): boolean {
-        return this.#reduceBeforeDisplay
-    }
-
-    set reduceBeforeDisplay(value: boolean) {
-        this.#reduceBeforeDisplay = value
-    }
-
-    get display(): string {
-        // canonical    =>  ax + by + c = 0
-        // mxh          =>  y = -a/b x - c/b
-        // parametric   =>  (xy) = OA + k*d // not relevant in display mode.
-        const output = this.#outputMode
-        this.#outputMode = 'canonical'
-
-        switch (output) {
-            case 'equation':
-                return this.getEquation().reorder().display
-            case 'mxh':
-                return this.slope.isInfinity() ?
-                    'x=' + this.OA.x.display :
-                    'y=' + new Polynom().parse('x', this.slope, this.height).display
-            case 'parametric': {
-                const d = this.#d.clone()
-                if (this.#reduceBeforeDisplay) {
-                    d.simplify()
-                }
-
-                return `((x,y))=((${this.#OA.x.display},${this.#OA.y.display}))+k((${d.x.display},${d.y.display}))`
-            }
-            default: {
-                const canonical = this.getEquation()
-                // Make sur the first item is positive.
-                if (this.#a.isNegative()) {
-                    canonical.multiply(-1)
-                }
-                return canonical.display
-            }
-
-        }
-    }
-
-    get normal(): Vector {
-        return new Vector(this.#a, this.#b)
-    }
-
-    get director(): Vector {
-        return this.#d.clone()
-    }
-
-    get slope(): Fraction {
-        return this.#a.clone().opposite().divide(this.#b)
-    }
-
-    get height(): Fraction {
-        return this.#c.clone().opposite().divide(this.#b)
-    }
-
-    randomPoint = (k?: number): Point => {
-        // Return a random point on the line.
-        const pt = this.#d
-            .clone()
-            .multiplyByScalar(randomIntSym((k === undefined || k <= 1) ? 3 : k, false))
-            .add(this.#OA)
-
-        pt.asPoint = true
-
-        return pt
-    }
-
-    randomNearPoint = (k?: number): Point => {
-        const pt = this.randomPoint(k)
-
-        let maxIterationTest = 10
-        while (this.isOnLine(pt) && maxIterationTest > 0) {
-            pt.x.add(randomIntSym(1, false))
-            pt.y.add(randomIntSym(1, false))
-            maxIterationTest--
-
-        }
-
-        return pt
-    }
-
-    // ------------------------------------------
-    // Creation / parsing functions
 
     // ------------------------------------------
     /**
@@ -360,11 +131,256 @@ export class Line implements IPiMathObject<Line> {
         return this
     }
 
-    fromPoints(pt1: Point, pt2: Point){
-        return this.fromPointAndDirection(pt1, new Vector(pt1, pt2))
+    // ------------------------------------------
+    // Getter and setter
+
+    clone = (): this => {
+        this.#a = this.#a.clone()
+        this.#b = this.#b.clone()
+        this.#c = this.#c.clone()
+
+        this.#d = this.#d.clone()
+        this.#OA = this.#OA.clone()
+        this.#n = this.#n.clone()
+
+        return this
     }
+
+    get tex(): string {
+        // canonical    =>  ax + by + c = 0
+        // mxh          =>  y = -a/b x - c/b
+        // parametric   =>  (xy) = OA + k*d
+        // equation     => ax + by = -c
+        const output = this.#outputMode
+        this.#outputMode = 'canonical'
+        switch (output) {
+            case 'equation':
+                return this.getEquation().reorder().tex
+            case 'mxh':
+                return this.slope.isInfinity() ?
+                    'x=' + this.OA.x.tex :
+                    'y=' + new Polynom().parse('x', this.slope, this.height).tex
+            case 'parametric':
+            case 'system': {
+                const d = this.#d.clone()
+                if (this.#reduceBeforeDisplay) {
+                    d.simplify()
+                }
+
+                if (output === 'parametric') {
+                    return `${Vector.asTex('x', 'y')} = ${Vector.asTex(this.#OA.x.tex, this.#OA.y.tex)} + k\\cdot ${Vector.asTex(d.x.tex, d.y.tex)}`
+                } else {
+                    return `\\left\\{\\begin{aligned}
+            x &= ${(new Polynom(this.#OA.x)
+                            .add(new Monom(this.#d.x).multiply(new Monom('k'))))
+                            .reorder('k', true)
+                            .tex}\\\\ 
+            y &= ${(new Polynom(this.#OA.y)
+                            .add(new Monom(this.#d.y).multiply(new Monom('k'))))
+                            .reorder('k', true)
+                            .tex}
+            \\end{aligned}\\right.`
+                }
+            }
+            default:
+                {
+                    const canonical = this.getEquation()
+                    if (this.#a.isNegative()) {
+                        canonical.multiply(-1)
+                    }
+                    return canonical.tex
+                }
+        }
+
+    }
+
+    get display(): string {
+        // canonical    =>  ax + by + c = 0
+        // mxh          =>  y = -a/b x - c/b
+        // parametric   =>  (xy) = OA + k*d // not relevant in display mode.
+        const output = this.#outputMode
+        this.#outputMode = 'canonical'
+
+        switch (output) {
+            case 'equation':
+                return this.getEquation().reorder().display
+            case 'mxh':
+                return this.slope.isInfinity() ?
+                    'x=' + this.OA.x.display :
+                    'y=' + new Polynom().parse('x', this.slope, this.height).display
+            case 'parametric': {
+                const d = this.#d.clone()
+                if (this.#reduceBeforeDisplay) {
+                    d.simplify()
+                }
+
+                return `((x,y))=((${this.#OA.x.display},${this.#OA.y.display}))+k((${d.x.display},${d.y.display}))`
+            }
+            default: {
+                const canonical = this.getEquation()
+                // Make sur the first item is positive.
+                if (this.#a.isNegative()) {
+                    canonical.multiply(-1)
+                }
+                return canonical.display
+            }
+
+        }
+    }
+
+    get OA(): Vector {
+        return this.#OA
+    }
+
+    set OA(value: Vector) {
+        this.#OA = value
+    }
+
+    get a(): Fraction {
+        return this.#a
+    }
+
+    set a(value: Fraction) {
+        this.#a = value
+    }
+
+    get b(): Fraction {
+        return this.#b
+    }
+
+    set b(value: Fraction) {
+        this.#b = value
+    }
+
+    get c(): Fraction {
+        return this.#c
+    }
+
+    set c(value: Fraction) {
+        this.#c = value
+    }
+
+    // get system(): { x: Equation, y: Equation } {
+    //     const e1 = new Equation(
+    //         new Polynom('x'),
+    //         new Polynom(this.#OA.x)
+    //             .add(new Monom('k').multiply(this.#d.x))
+    //     ),
+    //         e2 = new Equation(
+    //             new Polynom('y'),
+    //             new Polynom(this.#OA.y)
+    //                 .add(new Monom('k').multiply(this.#d.y))
+    //         )
+
+    //     return { x: e1, y: e2 }
+    // }
+
+    get canonical(): this {
+        this.#outputMode = 'canonical'
+        return this
+    }
+
+    // ------------------------------------------
+    canonicalAsFloatCoefficient(decimals?: number): string {
+        if (decimals === undefined) {
+            decimals = 2
+        }
+
+        let canonical = ''
+
+        if (!this.#a.isZero()) {
+            if (this.#a.isOne()) {
+                canonical = 'x'
+            } else if (this.#a.clone().opposite().isOne()) {
+                canonical = '-x'
+            } else {
+                canonical = this.#a.value.toFixed(decimals) + 'x'
+            }
+        }
+
+        if (!this.#b.isZero()) {
+            if (this.#b.isPositive()) {
+                canonical += '+'
+            }
+            canonical += this.#b.value.toFixed(decimals) + 'y'
+        }
+
+        if (!this.#c.isZero()) {
+            if (this.#c.isPositive()) {
+                canonical += '+'
+            }
+            canonical += this.#c.value.toFixed(decimals)
+        }
+
+
+        return canonical + '=0'
+    }
+
+    get d(): Vector {
+        return this.#d
+    }
+
+    set d(value: Vector) {
+        this.#d = value
+    }
+
+    get director(): Vector {
+        return this.#d.clone()
+    }
+
+    distanceTo(pt: Point): { value: number, fraction: Fraction, tex: string } {
+        const numerator = pt.x.clone().multiply(this.#a)
+            .add(pt.y.clone().multiply(this.#b))
+            .add(this.#c).abs(),
+            d2 = this.normal.normSquare
+
+        // The denominator is null - shouldn't be possible
+        if (d2.isZero()) {
+            return {
+                value: NaN,
+                tex: 'Not a line',
+                fraction: new Fraction().infinite()
+            }
+        }
+        // The denominator is a perfect square - simplify the tex result
+        const value = numerator.value / Math.sqrt(d2.value),
+            F = numerator.clone().divide(d2.clone().sqrt())
+
+        // The denominator is a perfect square.
+        if (d2.isSquare()) {
+            return {
+                value,
+                tex: F.tex,
+                fraction: F
+            }
+        }
+        // Complete answer...
+        return {
+            value,
+            tex: `\\frac{${numerator.tex}}{\\sqrt{${d2.tex}}}`,
+            fraction: F
+        }
+    }
+
+    get equation(): this {
+        this.#outputMode = 'equation'
+        return this
+    }
+
+    fromCoefficient = (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>): this => {
+        this.#a = new Fraction(a)
+        this.#b = new Fraction(b)
+        this.#c = new Fraction(c)
+
+        this.#d = new Vector(this.#b.clone(), this.#a.clone().opposite())
+        this.#OA = new Vector(new Fraction().zero(), this.#c.clone())
+        this.#n = this.#d.clone().normal()
+
+        return this
+    }
+
     fromEquation = (equ: Equation): this => {
-        // Reorder the eequation
+        // Reorder the equation
         equ.reorder(true)
 
         // It must contain either x, y or both.
@@ -393,17 +409,6 @@ export class Line implements IPiMathObject<Line> {
             equ.left.monomByDegree(0).coefficient
         )
     }
-    fromCoefficient = (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>): this => {
-        this.#a = new Fraction(a)
-        this.#b = new Fraction(b)
-        this.#c = new Fraction(c)
-
-        this.#d = new Vector(this.#b.clone(), this.#a.clone().opposite())
-        this.#OA = new Vector(new Fraction().zero(), this.#c.clone())
-        this.#n = this.#d.clone().normal()
-
-        return this
-    }
 
     fromPointAndDirection = (P: Point, d: Vector): this => {
         // OX = OP + k*d
@@ -429,15 +434,6 @@ export class Line implements IPiMathObject<Line> {
         return this
     }
 
-    fromPointAndNormal = (P: Point, n: Vector): this => {
-        return this.fromCoefficient(
-            n.x,
-            n.y,
-            P.x.clone().multiply(n.x)
-                .add(P.y.clone().multiply(n.y)).opposite()
-        )
-    }
-
     fromPointAndLine = (P: Vector, L: Line, orientation?: LinePropriety): this => {
 
         if (orientation === undefined) {
@@ -453,61 +449,72 @@ export class Line implements IPiMathObject<Line> {
         return this
     }
 
-    clone = (): this => {
-        this.#a = this.#a.clone()
-        this.#b = this.#b.clone()
-        this.#c = this.#c.clone()
-
-        this.#d = this.#d.clone()
-        this.#OA = this.#OA.clone()
-        this.#n = this.#n.clone()
-
-        return this
+    fromPointAndNormal = (P: Point, n: Vector): this => {
+        return this.fromCoefficient(
+            n.x,
+            n.y,
+            P.x.clone().multiply(n.x)
+                .add(P.y.clone().multiply(n.y)).opposite()
+        )
     }
+
+    fromPoints(pt1: Point, pt2: Point){
+        return this.fromPointAndDirection(pt1, new Vector(pt1, pt2))
+    }
+
     // ------------------------------------------
-    // Mathematical operations
+    getEquation(): Equation {
+        const equ = new Equation(new Polynom().parse('xy', this.#a, this.#b, this.#c), new Polynom('0'))
+        if (this.#reduceBeforeDisplay) {
+            return equ.simplify()
+        } else {
+            return equ
+        }
+    }
+
+    getValueAtX = (value: Fraction | number): Fraction => {
+        const equ = this.getEquation().isolate('y'),
+            F = new Fraction(value)
+
+        if (equ instanceof Equation) {
+            return equ.right.evaluate({ x: F }) as Fraction
+        }
+        return new Fraction().invalid()
+    }
+
     // ------------------------------------------
-    isOnLine = (pt: Vector): boolean => {
-        return this.#a.clone()
-            .multiply(pt.x)
-            .add(
-                this.#b.clone()
-                    .multiply(pt.y)
-            )
-            .add(this.#c)
-            .isZero()
+    // Creation / parsing functions
+
+    getValueAtY = (value: Fraction | number): Fraction => {
+        const equ = this.getEquation().isolate('x'),
+            F = new Fraction(value)
+
+        if (equ instanceof Equation) {
+            return equ.right.evaluate({ y: F }) as Fraction
+        }
+
+        return new Fraction().invalid()
     }
 
-    isParallelTo = (line: Line): boolean => {
-        // Do they have the isSame direction ?
-        return this.slope.isEqual(line.slope) && this.height.isNotEqual(line.height)
+    get height(): Fraction {
+        return this.#c.clone().opposite().divide(this.#b)
     }
-    isSameAs = (line: Line): boolean => {
-        return this.slope.isEqual(line.slope) && this.height.isEqual(line.height)
-    }
-    isPerpendicularTo = (line: Line): boolean => {
-        return this.d.isNormalTo(line.d)
-    }
-    isVertical = (): boolean => {
-        return this.slope.isInfinity()
-    }
-    simplify = (): this => {
-        const lcm = Numeric.lcm(this.#a.denominator, this.#b.denominator, this.#c.denominator),
-            gcd = Numeric.gcd(this.#a.numerator, this.#b.numerator, this.#c.numerator)
 
-        this.fromCoefficient(
-            this.#a.clone().multiply(lcm).divide(gcd),
-            this.#b.clone().multiply(lcm).divide(gcd),
-            this.#c.clone().multiply(lcm).divide(gcd),
+    hitSegment(A: Point, B: Point): boolean {
+        const iPt = this.intersection(
+            new Line().fromPoints(A, B)
         )
 
-        return this
+        // There is an intersection point
+        if (iPt.hasIntersection) {
+            return iPt.point.x.value >= Math.min(A.x.value, B.x.value)
+                && iPt.point.x.value <= Math.max(A.x.value, B.x.value)
+                && iPt.point.y.value >= Math.min(A.y.value, B.y.value)
+                && iPt.point.y.value <= Math.max(A.y.value, B.y.value)
+        }
+        return false
     }
 
-    simplifyDirection = (): this => {
-        this.#d.simplify()
-        return this
-    }
     intersection = (line: Line): { point: Point, hasIntersection: boolean, isParallel: boolean, isSame: boolean } => {
         const Pt = new Point()
         let isParallel = false, isSame = false
@@ -555,111 +562,116 @@ export class Line implements IPiMathObject<Line> {
         }
     }
 
-    distanceTo(pt: Point): { value: number, fraction: Fraction, tex: string } {
-        const numerator = pt.x.clone().multiply(this.#a)
-            .add(pt.y.clone().multiply(this.#b))
-            .add(this.#c).abs(),
-            d2 = this.normal.normSquare
-
-        // The denominator is null - shouldn't be possible
-        if (d2.isZero()) {
-            return {
-                value: NaN,
-                tex: 'Not a line',
-                fraction: new Fraction().infinite()
-            }
-        }
-        // The denominator is a perfect square - simplify the tex result
-        const value = numerator.value / Math.sqrt(d2.value),
-            F = numerator.clone().divide(d2.clone().sqrt())
-
-        // The denominator is a perfect square.
-        if (d2.isSquare()) {
-            return {
-                value,
-                tex: F.tex,
-                fraction: F
-            }
-        }
-        // Complete answer...
-        return {
-            value,
-            tex: `\\frac{${numerator.tex}}{\\sqrt{${d2.tex}}}`,
-            fraction: F
-        }
+    // ------------------------------------------
+    isOnLine = (pt: Vector): boolean => {
+        return this.#a.clone()
+            .multiply(pt.x)
+            .add(
+                this.#b.clone()
+                    .multiply(pt.y)
+            )
+            .add(this.#c)
+            .isZero()
     }
 
-    hitSegment(A: Point, B: Point): boolean {
-        const iPt = this.intersection(
-            new Line().fromPoints(A, B)
+    isParallelTo = (line: Line): boolean => {
+        // Do they have the isSame direction ?
+        return this.slope.isEqual(line.slope) && this.height.isNotEqual(line.height)
+    }
+
+    isPerpendicularTo = (line: Line): boolean => {
+        return this.d.isNormalTo(line.d)
+    }
+
+    isSameAs = (line: Line): boolean => {
+        return this.slope.isEqual(line.slope) && this.height.isEqual(line.height)
+    }
+    // ------------------------------------------
+    // Mathematical operations
+
+    isVertical = (): boolean => {
+        return this.slope.isInfinity()
+    }
+
+    get mxh(): this {
+        this.#outputMode = 'mxh'
+        return this
+    }
+
+    get n(): Vector {
+        return this.#n
+    }
+
+    get normal(): Vector {
+        return new Vector(this.#a, this.#b)
+    }
+
+    get parametric(): this {
+        this.#outputMode = 'parametric'
+        return this
+    }
+
+    randomNearPoint = (k?: number): Point => {
+        const pt = this.randomPoint(k)
+
+        let maxIterationTest = 10
+        while (this.isOnLine(pt) && maxIterationTest > 0) {
+            pt.x.add(randomIntSym(1, false))
+            pt.y.add(randomIntSym(1, false))
+            maxIterationTest--
+
+        }
+
+        return pt
+    }
+
+    randomPoint = (k?: number): Point => {
+        // Return a random point on the line.
+        const pt = this.#d
+            .clone()
+            .multiplyByScalar(randomIntSym((k === undefined || k <= 1) ? 3 : k, false))
+            .add(this.#OA)
+
+        pt.asPoint = true
+
+        return pt
+    }
+
+    get reduceBeforeDisplay(): boolean {
+        return this.#reduceBeforeDisplay
+    }
+
+    set reduceBeforeDisplay(value: boolean) {
+        this.#reduceBeforeDisplay = value
+    }
+
+    simplify = (): this => {
+        const lcm = Numeric.lcm(this.#a.denominator, this.#b.denominator, this.#c.denominator),
+            gcd = Numeric.gcd(this.#a.numerator, this.#b.numerator, this.#c.numerator)
+
+        this.fromCoefficient(
+            this.#a.clone().multiply(lcm).divide(gcd),
+            this.#b.clone().multiply(lcm).divide(gcd),
+            this.#c.clone().multiply(lcm).divide(gcd),
         )
 
-        // There is an intersection point
-        if (iPt.hasIntersection) {
-            return iPt.point.x.value >= Math.min(A.x.value, B.x.value)
-                && iPt.point.x.value <= Math.max(A.x.value, B.x.value)
-                && iPt.point.y.value >= Math.min(A.y.value, B.y.value)
-                && iPt.point.y.value <= Math.max(A.y.value, B.y.value)
-        }
-        return false
+        return this
     }
 
-    getValueAtX = (value: Fraction | number): Fraction => {
-        const equ = this.getEquation().isolate('y'),
-            F = new Fraction(value)
-
-        if (equ instanceof Equation) {
-            return equ.right.evaluate({ x: F }) as Fraction
-        }
-        return new Fraction().invalid()
+    simplifyDirection = (): this => {
+        this.#d.simplify()
+        return this
     }
 
-    getValueAtY = (value: Fraction | number): Fraction => {
-        const equ = this.getEquation().isolate('x'),
-            F = new Fraction(value)
-
-        if (equ instanceof Equation) {
-            return equ.right.evaluate({ y: F }) as Fraction
-        }
-
-        return new Fraction().invalid()
+    get slope(): Fraction {
+        return this.#a.clone().opposite().divide(this.#b)
     }
 
     // ------------------------------------------
     // Special functions
-    // ------------------------------------------
-    canonicalAsFloatCoefficient(decimals?: number): string {
-        if (decimals === undefined) {
-            decimals = 2
-        }
 
-        let canonical = ''
-
-        if (!this.#a.isZero()) {
-            if (this.#a.isOne()) {
-                canonical = 'x'
-            } else if (this.#a.clone().opposite().isOne()) {
-                canonical = '-x'
-            } else {
-                canonical = this.#a.value.toFixed(decimals) + 'x'
-            }
-        }
-
-        if (!this.#b.isZero()) {
-            if (this.#b.isPositive()) {
-                canonical += '+'
-            }
-            canonical += this.#b.value.toFixed(decimals) + 'y'
-        }
-
-        if (!this.#c.isZero()) {
-            if (this.#c.isPositive()) {
-                canonical += '+'
-            }
-            canonical += this.#c.value.toFixed(decimals)
-        }
-
-
-        return canonical + '=0'
+    get system(): this {
+        this.#outputMode = 'system'
+        return this
     }
 }

@@ -81,6 +81,14 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
+    public aij(i: number, j: number) {
+        if (i < 0 || i > this.dimension.rows || j < 0 || j > this.dimension.cols) {
+            return null
+        }
+
+        return this.#values[i][j]
+    }
+
     get bmatrix(): this {
         this.#matrix_parenthesis = false
         return this
@@ -91,6 +99,19 @@ export class Matrix implements IPiMathObject<Matrix>,
         const {rows: rows2, cols: cols2} = matrix.dimension
 
         return rows === rows2 && cols === cols2
+    }
+
+    public canBeInverted():boolean {
+        if(!this.isSquare()){
+            return false
+        }
+
+        const determinant = this.determinant()
+        if(determinant.isZero()){
+            return false
+        }
+
+        return true
     }
 
     public canBeMultiplied(matrix: Matrix): boolean {
@@ -251,6 +272,25 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
+    public inverse(): this {
+        if(!this.canBeInverted()){
+            throw new Error('The matrix cannot be inverted.')
+        }
+
+        const cofactors_matrix = new Matrix().fromDimensions(this.dimension.rows, this.dimension.cols)
+        cofactors_matrix.forEach((_, row, column)=>{
+            cofactors_matrix.setValue(row, column, this.cofactor(row, column))
+        })
+
+        cofactors_matrix.transpose()
+
+        // Copy the value to "this"
+        const determinant = this.determinant()
+        cofactors_matrix.forEach((aij, i, j)=>this.setValue(i,j, aij.divide(determinant).reduce()))
+
+        return this
+    }
+
     public isEqual(value: Matrix): boolean {
         // Two matrix are equals if they are the same dimension and all aij are equals.
         if (!this.canBeAdded(value)) {
@@ -307,7 +347,7 @@ export class Matrix implements IPiMathObject<Matrix>,
     public multiply(value: InputValue<Polynom> | Matrix): this {
         if (value instanceof Matrix) {
             if (!this.canBeMultiplied(value)) {
-                throw new Error(`Cannot multiply a matrix with incompatibles dimensions: ${this.cols.length} -> ${value.rows.length} `)
+                throw new Error(`Cannot multiply a matrix with incompatibles dimensions`)
             }
 
             // Multiply two matrix
@@ -331,10 +371,9 @@ export class Matrix implements IPiMathObject<Matrix>,
         }
 
         // Scalar multiplication
-        this.forEach((aij) => {
-            aij.multiply(value)
+        this.forEach((aij, i, j) => {
+            this.setValue(i, j, aij.multiply(value))
         })
-
         return this
     }
 
@@ -391,6 +430,16 @@ export class Matrix implements IPiMathObject<Matrix>,
 
         this.forEach((aij, i, j) => {
             aij.subtract(value.values[i][j])
+        })
+
+        return this
+    }
+
+    public transpose(): this {
+        const temp = this.clone()
+
+        temp.forEach((aij, i, j)=>{
+            this.setValue(j, i, aij.clone())
         })
 
         return this

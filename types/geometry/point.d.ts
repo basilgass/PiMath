@@ -1,6 +1,6 @@
-import { Fraction } from '../coefficients/fraction';
-import { InputValue } from '../pimath.interface';
-import { Vector } from './vector';
+import { Fraction } from "../coefficients/fraction";
+import type { InputValue } from "../pimath.interface";
+import { Vector } from "./vector";
 export declare class Point extends Vector {
     constructor();
     constructor(value: Vector);
@@ -9,3 +9,4 @@ export declare class Point extends Vector {
     parse(...values: Vector[] | InputValue<Fraction>[]): this;
     clone(): Point;
 }
+//# sourceMappingURL=point.d.ts.map

@@ -2,8 +2,6 @@ import {describe, expect, it, test} from "vitest"
 import {determinantFromVectors} from "../../src/geometry/geomMath"
 import {Vector} from "../../src/geometry/vector"
 import {Numeric} from "../../src/numeric"
-import {Line, Line3, Plane3, Point} from "../../src"
-import {loadDiffConfig} from "vitest/browser"
 
 describe('Vector 3D creation', () => {
 

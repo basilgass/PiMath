@@ -1,17 +1,11 @@
-import { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, TABLE_OF_SIGNS } from '../pimath.interface';
-import { Fraction } from '../coefficients';
+import type { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, TABLE_OF_SIGNS } from "../pimath.interface";
+import { Fraction } from "../coefficients";
 import { Monom } from './monom';
 export type PolynomParsingType = InputValue<Polynom> | Monom;
 export interface IEuclidean {
     quotient: Polynom;
     reminder: Polynom;
 }
-/**
- * Polynom class can handle polynoms, reorder, resolve, ...
- * ```
- * let P = new Polynom('3x-4')
- * ```
- */
 export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Polynom>, IAnalyse<Polynom>, IAlgebra<Polynom> {
     #private;
     constructor(value: InputValue<Fraction>);
@@ -20,15 +14,7 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     constructor(value: Polynom);
     constructor(...values: InputValue<Fraction>[]);
     constructor(...values: InputAlgebra<Polynom>[]);
-    /**
-     * Parse a string to a polynom.
-     * @param inputStr
-     * @param values
-     */
     parse: (inputStr: PolynomParsingType, ...values: InputAlgebra<Monom>[]) => this;
-    /**
-     * Clone the polynom
-     */
     clone: () => Polynom;
     get tex(): string;
     get display(): string;
@@ -39,17 +25,8 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     derivative: (letter?: string) => Polynom;
     divide: (value: InputAlgebra<Polynom>) => Polynom;
     empty: () => this;
-    /**
-     * Divide the current polynom by another polynom.
-     * @param P
-     * returns {quotient: Polynom, reminder: Polynom}
-     */
     euclidean: (P: Polynom) => IEuclidean;
     evaluate: (values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean) => Fraction | number;
-    /**
-     * Factorize a polynom and store the best results in factors.
-     * @param letter
-     */
     factorize: (letter?: string) => Polynom[];
     fromCoefficients(...values: InputValue<Fraction>[]): this;
     gcdDenominator: () => number;
@@ -90,11 +67,6 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     primitive: (letter?: string) => Polynom;
     reduce: () => Polynom;
     reorder: (letter?: string, revert?: boolean) => this;
-    /**
-     * Replace a variable (letter) by a polynom.
-     * @param letter
-     * @param P
-     */
     replaceBy: (letter: string, P: Polynom) => this;
     root(): Polynom;
     get roots(): ISolution[];
@@ -103,10 +75,7 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     subtract: (...values: InputAlgebra<Polynom>[]) => Polynom;
     tableOfSigns(): TABLE_OF_SIGNS;
     get variables(): string[];
-    /**
-     * Set the polynom to zero.
-     * @returns {this}
-     */
     zero: () => this;
     get zeroes(): ISolution[];
 }
+//# sourceMappingURL=polynom.d.ts.map

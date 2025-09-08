@@ -1,26 +1,10 @@
 declare function decompose(value: number): number[][];
 declare function divideNumbersByGCD(...values: number[]): number[];
-/**
- * Get the list of all dividers of a number.
- * @param value
- */
 declare function dividers(value: number): number[];
-/**
- * Great Common Divisor
- * @param values : number values
- */
 declare function greatestCommonDivisor(...values: number[]): number;
-/**
- * Least Common Multiple
- * @param values: list of numbers
- */
 declare function leastCommonMultiple(...values: number[]): number;
 declare function numberCorrection(value: number, number_of_digits?: number): number;
 declare function periodic(value: number): number;
-/**
- * Get the list of the nth first prime numbers.
- * @param nb : number of primes to choose from
- */
 declare function primes(nb?: number): number[];
 declare function pythagoreanTripletsWithTarget(target: number, targetIsSquare?: boolean): number[][];
 declare function round(value: number, decimals?: number): number;
@@ -37,3 +21,4 @@ export declare const Numeric: {
     round: typeof round;
 };
 export {};
+//# sourceMappingURL=numeric.d.ts.map

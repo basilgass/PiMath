@@ -1,5 +1,5 @@
-import { InputValue, IPiMathObject } from '../pimath.interface';
-import { Fraction } from '../coefficients/fraction';
+import type { InputValue, IPiMathObject } from "../pimath.interface";
+import { Fraction } from "../coefficients/fraction";
 export declare class Vector implements IPiMathObject<Vector> {
     #private;
     constructor(...values: Vector[] | InputValue<Fraction>[]);
@@ -53,3 +53,4 @@ export declare class Vector implements IPiMathObject<Vector> {
         tex: string;
     };
 }
+//# sourceMappingURL=vector.d.ts.map

@@ -1,8 +1,10 @@
-import {describe, test} from "vitest"
+import {describe, expect, test} from "vitest"
 import {LogicalSet} from "../../src/algebra/logicalset"
 
-describe('LogicalSet tests', ()=>{
-    test('Logical set', ()=>{
+
+describe('LogicalSet tests', () => {
+    test('Logical set', () => {
+
         const LS = new LogicalSet('A|B')
 
         console.log(LS)
@@ -13,5 +15,6 @@ describe('LogicalSet tests', ()=>{
         console.log(LS.evaluate(
             {A: true, B: false}
         ))
+        expect(1).toBe(1)
     })
 })

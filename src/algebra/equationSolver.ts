@@ -21,6 +21,7 @@ export class EquationSolver {
 
     public solve(): ISolution[] {
         const degree = this.#equation.degree().value
+
         if (degree === 0) {
             return []
         }
@@ -33,8 +34,10 @@ export class EquationSolver {
             return this.#solveQuadratic()
         }
 
+        // TODO: doit gérer le fait que si on a trouvé des solutions, on peut réduire avant de faire la bissection
         // Try to solve by factorization -> exact solutions.
         const result = this.#solveByFactorization()
+        console.log(result)
         if (result.length > 0) {
             return result
         }
@@ -78,46 +81,19 @@ export class EquationSolver {
     #solveByBissection(): ISolution[] {
         const solutions: ISolution[] = []
         const degree = this.#equation.degree().value
-        const coeffs = this.#equation.getCoefficients().map(x=>x.value)
+        const coeffs = this.#equation.getCoefficients().map(x => x.value)
 
         // Calculate the Cauchy Bounds.
         const [a, ...values] = this.#equation.getCoefficients()
-        const B = 1 + Math.max(...values.map(x => x.value / a.value))
+        const B = 2 + Math.max(...values.map(x => x.value / a.value))
 
         // Cut the [-B;B] interval in *n* parts
 
         // Calculate the value at each points
-        const n = 100
-        const dx = 2 * B / n
-        const evaluatedPoints: { x: number, fx: number }[] = []
-        for (let searchValue = -B; searchValue <= B; searchValue += dx) {
-            const x = Numeric.numberCorrection(searchValue)
-            evaluatedPoints.push(
-                {
-                    x,
-                    fx: this.#equation.evaluate(x, true) as number
-                }
-            )
-        }
-
-        // Sort every points
-        evaluatedPoints.sort((a, b) => a.x - b.x)
+        const evaluatedPoints = this.#solveByBissection_evaluatePoints(B, 100)
 
         // Check if there is a least n opposite couples
-        const couples: [number, number][] = []
-        evaluatedPoints.forEach((value, index) => {
-            if (index > 0) {
-                if (value.fx === 0) {
-                    couples.push([value.x, value.x])
-                } else if (evaluatedPoints[index - 1].fx * value.fx < 0) {
-                    couples.push([
-                        evaluatedPoints[index - 1].x,
-                        value.x
-                    ])
-
-                }
-            }
-        })
+        const couples = this.#solveByBissection_getCouples(evaluatedPoints, degree)
 
         // All solutions fund !
         couples.forEach(couple => {
@@ -126,9 +102,9 @@ export class EquationSolver {
             if (a === b) {
                 // Exact solution
                 solutions.push(this.#makeSolution(a))
-            }else{
+            } else {
                 const bissection = this.#solveByBissection_algorithm(coeffs, a, b)
-                if(bissection!==null) {
+                if (bissection !== null) {
                     solutions.push(this.#makeApproximativeSolution(bissection))
                 }
             }
@@ -149,7 +125,7 @@ export class EquationSolver {
         let mid: number
         while ((b - a) / 2 > tol) {
             mid = (a + b) / 2
-            const fmid = this.#equation.evaluate( mid, true) as number
+            const fmid = this.#equation.evaluate(mid, true) as number
 
             if (fmid === 0) {
                 return mid // racine exacte trouvée
@@ -162,6 +138,51 @@ export class EquationSolver {
             }
         }
         return (a + b) / 2 // retourner la racine approximative
+    }
+
+    #solveByBissection_evaluatePoints(bounds: number, slice: number): { x: number, fx: number }[] {
+
+        const evaluatedPoints: { x: number, fx: number }[] = []
+
+        const dx = 2 * bounds / slice
+
+        for (let searchValue = -bounds; searchValue <= bounds; searchValue += dx) {
+
+            const x = Numeric.numberCorrection(searchValue)
+            evaluatedPoints.push(
+                {
+                    x,
+                    fx: this.#equation.evaluate(x, true) as number
+                }
+            )
+        }
+
+        return evaluatedPoints
+    }
+
+    #solveByBissection_getCouples(evaluatedPoints: { x: number, fx: number }[], degree: number): [number, number][] {
+        const couples: [number, number][] = []
+
+        for (let index = 1; index < evaluatedPoints.length; index++) {
+
+            const value = evaluatedPoints[index]
+            const previous = evaluatedPoints[index - 1]
+
+            if (value.fx === 0) {
+                // exact value
+                couples.push([value.x, value.x])
+            } else if (value.fx * previous.fx < 0) {
+                // both evaluated expression are of opposite sign.
+                couples.push([previous.x, value.x])
+            }
+
+            if (couples.length === degree) {
+                // All couples are found.
+                return couples
+            }
+        }
+
+        return couples
     }
 
     #solveByFactorization(): ISolution[] {
@@ -180,16 +201,29 @@ export class EquationSolver {
             left.multiply(lcm)
         }
 
+        // alternative method:
+        // - get the monom with the smallest degree.
+        // - if degree>0, divide by x^{degree}
+        const m = left.monoms.reduce((min, curr) => curr.degree().value < min.degree().value ? curr : min)
+        const a = left.monomByDegree().coefficient
+        if(!m.degree().isZero()){
+
+        }
+        // if(m.degree().value){
+        //     const a = left.monomByDegree().coefficient
+
+        // }
         // left is a polynom ax^n+...+b
-        const a = left.monomByDegree().coefficient // Greatest coefficient
-        let b = left.monomByDegree(0).coefficient // Constant term
+        // {} // Greatest coefficient
+        // let b = left.monomByDegree(0).coefficient // Constant term
 
         // if the constant term is null, the polynom can be divided by x
+        let b = left.monomByDegree(0).coefficient
         while (b.isZero()) {
             if (solutions.length === 0) {
                 solutions.push(this.#makeSolution(0))
             }
-
+            console.log(solutions.length)
             left = (left.divide('x'))
             b = left.monomByDegree(0).coefficient
         }

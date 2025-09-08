@@ -337,8 +337,8 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
             return new Fraction().infinite()
         }
 
-        const N: number = +this.#numerator,
-            D: number = +this.#denominator
+        const N: number = this.#numerator,
+            D: number = this.#denominator
 
         this.#numerator = N * Q.denominator
         this.#denominator = D * Q.numerator

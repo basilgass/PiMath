@@ -173,5 +173,9 @@ describe("Equation Solver", () => {
         expect(solutions[2].value).toBeCloseTo(0.618, 3)
     })
 
-    test.todo('should solve complex equation')
+    test('should solve complex equation', ()=>{
+        const equation = new Equation('x^5-5x^4+3x^2+3=0')
+        const solutions = new EquationSolver(equation).solve()
+        console.log(solutions)
+    })
 })

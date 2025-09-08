@@ -1,8 +1,8 @@
-import { Line } from './line';
-import { Fraction } from '../coefficients';
-import { Equation } from '../algebra';
-import { IPiMathObject } from '../pimath.interface';
-import { Point } from './point';
+import { Line } from "./line";
+import { Fraction } from "../coefficients";
+import { Equation } from "../algebra";
+import { type IPiMathObject } from "../pimath.interface";
+import { Point } from "./point";
 export declare class Circle implements IPiMathObject<Circle> {
     #private;
     constructor();
@@ -22,11 +22,6 @@ export declare class Circle implements IPiMathObject<Circle> {
     get tex(): string;
     get developed(): string;
     get display(): string;
-    /**
-     * Get the relative position between circle and line. It corresponds to the number of intersection.
-     * @param {Line} L
-     * @returns {number}
-     */
     relativePosition: (L: Line) => number;
     lineIntersection: (L: Line) => Point[];
     tangents: (P: Point | Fraction) => Line[];
@@ -36,3 +31,4 @@ export declare class Circle implements IPiMathObject<Circle> {
     setRadius(radius: Fraction | number, square?: boolean): this;
     parse(...values: unknown[]): this;
 }
+//# sourceMappingURL=circle.d.ts.map

@@ -1,6 +1,9 @@
-import { Fraction, NthRoot } from './coefficients';
-import { Monom, Factor, Equation } from './algebra';
-import { Line, Point, Vector } from './geometry';
+import type { Fraction } from "./coefficients";
+import type { NthRoot } from "./coefficients";
+import type { Monom } from "./algebra";
+import type { Factor } from "./algebra";
+import type { Line, Point, Vector } from "./geometry";
+import type { Equation } from "./algebra";
 export type InputValue<T> = T | string | number | Fraction | NthRoot;
 export type InputAlgebra<T> = InputValue<T> | Monom;
 export type literalType<T> = Record<string, T>;
@@ -122,3 +125,4 @@ export interface remarquableLines {
         'intersection': Vector | null;
     };
 }
+//# sourceMappingURL=pimath.interface.d.ts.map

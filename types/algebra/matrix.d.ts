@@ -1,6 +1,6 @@
-import { IExpressionMultiply, InputAlgebra, InputValue, IPiMathObject } from '../pimath.interface';
-import { Polynom } from './polynom';
-import { Vector } from '../geometry';
+import type { IExpressionMultiply, InputAlgebra, InputValue, IPiMathObject } from "../pimath.interface";
+import { Polynom } from "./polynom";
+import type { Vector } from "../geometry";
 export type IMatrixValues = InputAlgebra<Polynom>[][];
 export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultiply<Matrix> {
     #private;
@@ -27,6 +27,7 @@ export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultipl
     fromString(value: string): this;
     fromValues(values: IMatrixValues): this;
     fromVectors(...vectors: Vector[]): this;
+    getAij(i: number, j: number): Polynom | null;
     isEqual(value: Matrix): boolean;
     isOne(): boolean;
     isSquare(): boolean;
@@ -44,3 +45,4 @@ export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultipl
     get values(): Polynom[][];
     zero(): this;
 }
+//# sourceMappingURL=matrix.d.ts.map

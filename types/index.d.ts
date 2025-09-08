@@ -1,16 +1,16 @@
-import { Fraction, NthRoot } from './coefficients';
-import { Equation, Factor, LinearSystem, LogicalSet, Monom, PolyFactor, Polynom, Matrix } from './algebra';
-import { Circle, Line, Line3, Plane3, Point, Triangle, Vector, Sphere3 } from './geometry';
-import { Numeric } from './numeric';
-import { NumExp } from 'piexpression';
-import { Random } from './randomization/random';
-export * from './coefficients';
-export * from './algebra';
-export * from './geometry';
+export * from "./coefficients";
+export * from "./algebra";
+export * from "./geometry";
+import { Fraction, NthRoot } from "./coefficients";
+import { Equation, Factor, LinearSystem, LogicalSet, Monom, PolyFactor, Polynom, Matrix } from "./algebra";
+import { Circle, Line, Line3, Plane3, Point, Triangle, Vector, Sphere3 } from "./geometry";
+import { Numeric } from "./numeric";
 export { Numeric };
+import { NumExp } from "piexpression";
 export { NumExp };
+import { Random } from "./randomization/random";
 export { Random };
-export type * from './pimath.interface';
+export type * from "./pimath.interface";
 declare const PiMath: {
     Numeric: {
         decompose: (value: number) => number[][];
@@ -35,10 +35,10 @@ declare const PiMath: {
     PolyFactor: typeof PolyFactor;
     LogicalSet: typeof LogicalSet;
     Random: {
-        equation: (config?: import('./randomization/rndTypes').randomEquationConfig) => Equation;
-        polynom: (config?: import('./randomization/rndTypes').randomPolynomConfig) => Polynom;
-        monom: (config?: import('./randomization/rndTypes').randomMonomConfig) => Monom;
-        fraction: (config?: import('./randomization/rndTypes').randomCoefficientConfig) => Fraction;
+        equation: (config?: import("./randomization/rndTypes").randomEquationConfig) => Equation;
+        polynom: (config?: import("./randomization/rndTypes").randomPolynomConfig) => Polynom;
+        monom: (config?: import("./randomization/rndTypes").randomMonomConfig) => Monom;
+        fraction: (config?: import("./randomization/rndTypes").randomCoefficientConfig) => Fraction;
         number: (from: number, to: number, exclude?: number[]) => number;
         numberSym: (max: number, allowZero?: boolean) => number;
         prime: (max: number) => number;
@@ -46,11 +46,11 @@ declare const PiMath: {
         array: <T>(arr: T[], number?: number) => T[];
         item: <T>(arr: T[]) => T;
         shuffle: <T>(arr: T[]) => T[];
-        line: (config?: import('./randomization/rndTypes').randomGeometryLineConfig) => Line;
-        line3: (config?: import('./randomization/rndTypes').randomGeometryLine3Config) => Line3;
-        vector: (config?: import('./randomization/rndTypes').randomGeometryPointConfig) => Point;
-        point: (config?: import('./randomization/rndTypes').randomGeometryPointConfig) => Point;
-        circle: (config?: import('./randomization/rndTypes').randomGeometryCircleConfig) => Circle;
+        line: (config?: import("./randomization/rndTypes").randomGeometryLineConfig) => Line;
+        line3: (config?: import("./randomization/rndTypes").randomGeometryLine3Config) => Line3;
+        vector: (config?: import("./randomization/rndTypes").randomGeometryPointConfig) => Point;
+        point: (config?: import("./randomization/rndTypes").randomGeometryPointConfig) => Point;
+        circle: (config?: import("./randomization/rndTypes").randomGeometryCircleConfig) => Circle;
     };
     Geometry: {
         Vector: typeof Vector;
@@ -65,3 +65,4 @@ declare const PiMath: {
     NumExp: typeof NumExp;
 };
 export default PiMath;
+//# sourceMappingURL=index.d.ts.map

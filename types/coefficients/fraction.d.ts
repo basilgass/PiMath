@@ -1,19 +1,10 @@
-import { compareSign, IExpression, InputValue, IPiMathObject } from '../pimath.interface';
-/**
- * The fraction class make possible to handle
- * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
- */
+import type { compareSign, IExpression, InputValue, IPiMathObject } from "../pimath.interface";
 export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> {
     #private;
     constructor();
     constructor(value: InputValue<Fraction>);
     constructor(numerator: number, denominator: number);
     constructor(decimal: number, periodLength: number);
-    /**
-     * Parse the value to get the numerator and denominator
-     * @param value : number or string to parse to get the fraction
-     * @param denominatorOrPeriodic (optional|number) : length of the periodic part: 2.333333 => 1 or denominator value
-     */
     parse: (value: InputValue<Fraction>, denominatorOrPeriodic?: number) => Fraction;
     clone: () => Fraction;
     get tex(): string;
@@ -27,15 +18,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     abs: () => this;
     add: (F: InputValue<Fraction>) => Fraction;
     amplify: (k: number) => this;
-    /**
-     * Simple function to determine if it's a fraction
-     */
     areEquals: (...F: Fraction[]) => boolean;
-    /**
-     * Compare the current coefficient with another coefficient
-     * @param F (Coefficient) The coefficient to _compare
-     * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
-     */
     compare: (F: InputValue<Fraction>, sign?: compareSign) => boolean;
     get denominator(): number;
     set denominator(value: number);
@@ -89,3 +72,4 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     get value(): number;
     zero: () => this;
 }
+//# sourceMappingURL=fraction.d.ts.map

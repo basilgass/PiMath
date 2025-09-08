@@ -119,14 +119,6 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.#genDisplay()
     }
 
-    public get value(): number | undefined {
-        if(this.degree().isZero()){
-            return this.monoms[0]?.coefficient.value ?? 0
-        }
-
-        return undefined
-    }
-
     public add = (...values: InputAlgebra<Polynom>[]): Polynom => {
 
         for (const value of values) {
@@ -684,7 +676,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         // Nothing was found - return
     }
 
-    public multiply = (value: unknown): Polynom => {
+    public multiply = (value: InputAlgebra<Polynom>): Polynom => {
 
         if (value instanceof Polynom) {
             return this.#multiplyByPolynom(value)
@@ -694,11 +686,20 @@ export class Polynom implements IPiMathObject<Polynom>,
             return this.#multiplyByMonom(value)
         } else if (Number.isSafeInteger(value) && typeof value === 'number') {
             return this.#multiplyByInteger(value)
+        }else if(typeof value === 'string'){
+            try {
+                const k = new Fraction(value)
+                return this.#multiplyByFraction(k)
+            }catch{
+                throw new Error('Cannot multiply by this value.')
+            }
+
+
         }
 
 
         // Something went wrong...
-        return this
+        throw new Error('Cannot multiply by this value.')
     }
 
     public get numberOfVars(): number {
@@ -776,8 +777,6 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.reorder()
     }
 
-    // ------------------------------------------
-
     public reorder = (letter = 'x', revert?: boolean): this => {
         if (revert === undefined) {
             revert = false
@@ -812,6 +811,8 @@ export class Polynom implements IPiMathObject<Polynom>,
 
         return this
     }
+
+    // ------------------------------------------
 
     /**
      * Replace a variable (letter) by a polynom.
@@ -921,6 +922,14 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
 
         return {roots, signs}
+    }
+
+    public get value(): number | undefined {
+        if(this.degree().isZero()){
+            return this.monoms[0]?.coefficient.value ?? 0
+        }
+
+        return undefined
     }
 
     public get variables(): string[] {

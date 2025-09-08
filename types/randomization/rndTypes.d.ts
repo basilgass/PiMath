@@ -1,4 +1,4 @@
-import { Fraction } from '../coefficients/fraction';
+import { Fraction } from "../coefficients/fraction";
 export interface randomCoefficientConfig {
     negative?: boolean;
     max?: number;
@@ -61,3 +61,4 @@ export interface randomGeometryCircleConfig {
     radius?: number;
     pointsOnCircle?: number;
 }
+//# sourceMappingURL=rndTypes.d.ts.map

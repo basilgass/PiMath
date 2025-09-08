@@ -1,7 +1,7 @@
-import { Line } from './line';
-import { Vector } from './vector';
-import { Point } from './point';
-import { remarquableLines } from '../pimath.interface';
+import { Line } from "./line";
+import { Vector } from "./vector";
+import { Point } from "./point";
+import type { remarquableLines } from "../pimath.interface";
 export declare class Triangle {
     #private;
     constructor(...values: unknown[]);
@@ -23,15 +23,7 @@ export declare class Triangle {
         'AC': Line;
     };
     get remarquables(): remarquableLines | null;
-    /**
-     * Parse values to a triangle. Supported formats:
-     * Vector2D, Vector2D, Vector2D
-     * x1, y1, x2, y2, x3, y3
-     * @param values
-     */
     parse: (...values: unknown[]) => Triangle;
-    /**
-     * Clone the Triangle class
-     */
     clone: () => Triangle;
 }
+//# sourceMappingURL=triangle.d.ts.map

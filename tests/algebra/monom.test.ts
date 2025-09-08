@@ -1,7 +1,5 @@
-import { describe, expect, test, } from "vitest"
-import { Random } from "../../src/randomization/random"
-import { Monom } from "../../src/algebra/monom"
-import { Fraction } from "../../src/coefficients/fraction"
+import {describe, expect, test,} from "vitest"
+import {Fraction, Monom, Random} from "../../src"
 
 describe('Monom creation', () => {
     test('create Monom', () => {
@@ -18,7 +16,7 @@ describe('Monom creation', () => {
 
     test('set literal', () => {
         const M = new Monom()
-        M.literal = { x: new Fraction(2) }
+        M.literal = {x: new Fraction(2)}
 
         expect(Object.hasOwn(M.literal, 'x')).toBeTruthy()
         expect(M.literal.x.value).toBe(2)
@@ -228,8 +226,8 @@ describe('Monom evaluation', () => {
 
     test('evaluate Monom with multiple variables', () => {
         const M = new Monom('3x^2y^3')
-        expect((M.evaluate({ x: 2, y: 3 }) as Fraction).value).toBe(324)
-        expect((M.evaluate({ x: 2, y: 3 }, true) as number)).toBe(324)
+        expect((M.evaluate({x: 2, y: 3}) as Fraction).value).toBe(324)
+        expect((M.evaluate({x: 2, y: 3}, true) as number)).toBe(324)
     })
 })
 
