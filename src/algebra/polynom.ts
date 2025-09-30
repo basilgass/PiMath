@@ -40,6 +40,7 @@ export class Polynom implements IPiMathObject<Polynom>,
     IAnalyse<Polynom>,
     IAlgebra<Polynom> {
 
+    #defaultVariable = 'x'
     #factors: Polynom[]
     #monoms: Monom[]
     #roots: ISolution[]
@@ -281,6 +282,8 @@ export class Polynom implements IPiMathObject<Polynom>,
      * Factorize a polynom and store the best results in factors.
      * @param letter
      */
+
+        // REFACTOR: duplicate code with equationSolver.
     public factorize = (letter?: string): Polynom[] => {
         let factors: Polynom[] = []
         let P = this.clone().reorder()
@@ -375,8 +378,9 @@ export class Polynom implements IPiMathObject<Polynom>,
     }
 
     public fromCoefficients(...values: InputValue<Fraction>[]) {
+
         this.#monoms = []
-        const letter = 'x'
+        const letter = this.#defaultVariable ?? 'x'
         values.reverse().forEach((coeff, index) => {
             const monom = new Monom()
             monom.coefficient = new Fraction(coeff)
@@ -385,7 +389,7 @@ export class Polynom implements IPiMathObject<Polynom>,
             this.#monoms.push(monom)
         })
 
-        return this
+        return this.reorder()
     }
 
     public gcdDenominator = (): number => {
@@ -401,7 +405,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         const orderedPolynom = this.clone().reorder()
 
         const length = this.degree().value + 1
-        const coeffs = new Array(length).fill(new Fraction(0))
+        const coeffs = new Array(length).fill(new Fraction(0)) as unknown as Fraction[]
 
         orderedPolynom.monoms.forEach(monom => {
             const index = length - monom.degree().value - 1
@@ -476,7 +480,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         try {
             // Build the polynom
             P = new Polynom(polynomString)
-        } catch (e) {
+        } catch {
             return false
         }
 
@@ -686,11 +690,11 @@ export class Polynom implements IPiMathObject<Polynom>,
             return this.#multiplyByMonom(value)
         } else if (Number.isSafeInteger(value) && typeof value === 'number') {
             return this.#multiplyByInteger(value)
-        }else if(typeof value === 'string'){
+        } else if (typeof value === 'string') {
             try {
                 const k = new Fraction(value)
                 return this.#multiplyByFraction(k)
-            }catch{
+            } catch {
                 throw new Error('Cannot multiply by this value.')
             }
 
@@ -777,11 +781,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.reorder()
     }
 
-    public reorder = (letter = 'x', revert?: boolean): this => {
-        if (revert === undefined) {
-            revert = false
-        }
-
+    public reorder = (letter = 'x', revert = false): this => {
         const otherLetters = this.variables.filter(x => x !== letter)
         this.#monoms.sort(function (a, b) {
             const da = a.degree(letter).value,
@@ -811,8 +811,6 @@ export class Polynom implements IPiMathObject<Polynom>,
 
         return this
     }
-
-    // ------------------------------------------
 
     /**
      * Replace a variable (letter) by a polynom.
@@ -846,6 +844,8 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this
     }
 
+    // ------------------------------------------
+
     public root(): Polynom {
         throw new Error('Cannot take the root from a polynom')
     }
@@ -857,6 +857,12 @@ export class Polynom implements IPiMathObject<Polynom>,
     set roots(value: ISolution[]) {
         this.#rootsCache = true
         this.#roots = value
+    }
+
+    public setVariable(value: string): this {
+        this.#defaultVariable = value
+
+        return this
     }
 
     public sqrt(): Polynom {
@@ -925,7 +931,7 @@ export class Polynom implements IPiMathObject<Polynom>,
     }
 
     public get value(): number | undefined {
-        if(this.degree().isZero()){
+        if (this.degree().isZero()) {
             return this.monoms[0]?.coefficient.value ?? 0
         }
 
@@ -961,9 +967,7 @@ export class Polynom implements IPiMathObject<Polynom>,
     }
 
     #compare = (P: Polynom, sign?: string): boolean => {
-        if (sign === undefined) {
-            sign = '='
-        }
+        sign ??= '='
 
         // Create clone version to reduce them without altering the original polynoms.
         const cP1 = this.clone().reduce().reorder()
@@ -1219,7 +1223,6 @@ export class Polynom implements IPiMathObject<Polynom>,
 
     #parseString(inputStr: string, ...values: unknown[]): this {
         if (values.length === 0) {
-            inputStr = '' + inputStr
 
             // Parse the polynom using the shutting yard algorithm
             if (inputStr !== '' && !isNaN(Number(inputStr))) {

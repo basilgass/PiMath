@@ -1,7 +1,7 @@
 import type {compareSign, IExpression, InputValue, IPiMathObject} from "../pimath.interface"
 import {Numeric} from "../numeric"
 
-enum FRAC_TYPE {
+export enum FRAC_TYPE {
     frac = 'frac',
     dfrac = 'dfrac',
     tfrac = 'tfrac'
@@ -11,6 +11,7 @@ enum FRAC_TYPE {
  * The fraction class make possible to handle
  * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
  */
+
 export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> {
     #approximative = false
     #denominator = 1
@@ -53,10 +54,12 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
                 // Security checks
                 if (S.length > 2) {
-                    throw new Error(`The given value is not a valid fraction (${value})`)
+                    this.#numerator = NaN
+                    // throw new Error(`The given value is not a valid fraction (${value})`)
                 }
                 if (S.map(x => x === '' || isNaN(Number(x))).includes(true)) {
-                    throw new Error(`The given value is not a valid fraction (${value})`)
+                    this.#numerator = NaN
+                    // throw new Error(`The given value is not a valid fraction (${value})`)
                 }
 
                 if (S.length === 1) {
@@ -74,7 +77,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
                     }
                 } else {
                     // More than one divide sign ?
-                    // This is impossible
+                    // This is not a fraction
                     this.#numerator = NaN
                     this.#denominator = 1
                 }
@@ -94,16 +97,18 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
                     // Get the number of decimals after the float sign
                     const [, decimal] = (value.toString()).split('.')
                     const p: number = decimal ? decimal.length : 0
+                    const power = Math.pow(10, p)
 
                     // Detect if the decimal part is periodic or not...
 
-                    // Transform the float number in two integer
                     if (denominatorOrPeriodic === undefined) {
-                        this.#numerator = value * Math.pow(10, p)
-                        this.#denominator = Math.pow(10, p)
+                        // Transform the float number in two integer
+                        // 0.123 = 0.123*10^3 / 10^3
+                        this.#numerator = value * power
+                        this.#denominator = power
                     } else if (Number.isSafeInteger(denominatorOrPeriodic)) {
-                        this.#numerator = value * Math.pow(10, p) - Math.floor(value * Math.pow(10, p - denominatorOrPeriodic))
-                        this.denominator = Math.pow(10, p) - Math.pow(10, p - denominatorOrPeriodic)
+                        this.#numerator = value * power - Math.floor(value * Math.pow(10, p - denominatorOrPeriodic))
+                        this.denominator = power - Math.pow(10, p - denominatorOrPeriodic)
                     }
 
                     this.reduce()
@@ -168,6 +173,23 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         M.divide(fractions.length)
 
         return M
+    }
+
+    public static isFraction(value: InputValue<Fraction>) {
+        if (value instanceof Fraction ||
+            (typeof value === "number" && !isNaN(value))
+        ) {
+            return true
+        }
+
+        if(typeof value === "string"){
+            const [num, den] = value.split('/')
+
+            return !isNaN(+num) && (den===undefined || !isNaN(+den))
+        }
+
+        return false
+
     }
 
     public static max = (...fractions: InputValue<Fraction>[]): Fraction => {

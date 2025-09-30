@@ -5,7 +5,7 @@ import {Numeric} from "../numeric"
 import type {Equation} from "./equation"
 
 export class EquationSolver {
-    readonly #equation: Polynom
+    readonly #leftPolynom: Polynom
     readonly #variable: string
 
     constructor(left: Polynom | Equation, right?: Polynom, variable = "x") {
@@ -13,14 +13,14 @@ export class EquationSolver {
 
         if (Object.hasOwn(left, 'moveLeft')) {
             const equ = left as Equation
-            this.#equation = equ.left.clone().subtract(equ.right)
+            this.#leftPolynom = equ.left.clone().subtract(equ.right)
         } else {
-            this.#equation = (left as Polynom).clone().subtract(right ?? 0)
+            this.#leftPolynom = (left as Polynom).clone().subtract(right ?? 0)
         }
     }
 
     public solve(): ISolution[] {
-        const degree = this.#equation.degree().value
+        const degree = this.#leftPolynom.degree().value
 
         if (degree === 0) {
             return []
@@ -36,18 +36,21 @@ export class EquationSolver {
 
         // TODO: doit gérer le fait que si on a trouvé des solutions, on peut réduire avant de faire la bissection
         // Try to solve by factorization -> exact solutions.
-        const result = this.#solveByFactorization()
-        console.log(result)
-        if (result.length > 0) {
-            return result
+        const {solutions, polynom} = this.#solveByFactorization()
+
+        // The remaining polynom is of degree zero. No more solutions available.
+        if (polynom.degree().isZero()) {
+            return solutions
         }
 
         // Use approximative solutions, using bissection algorithm.
-        return this.#solveByBissection()
+        return solutions.concat(
+            this.#solveByBissection(polynom)
+        ).sort((a, b) => a.value - b.value)
     }
 
     public solveAsCardan(): ISolution[] {
-        if (this.#equation.degree().value !== 3) {
+        if (this.#leftPolynom.degree().value !== 3) {
             throw new Error("The equation is not cubic.")
         }
         return this.#solveCubic_CardanFormula()
@@ -78,19 +81,19 @@ export class EquationSolver {
         }
     }
 
-    #solveByBissection(): ISolution[] {
+    #solveByBissection(polynom: Polynom): ISolution[] {
         const solutions: ISolution[] = []
-        const degree = this.#equation.degree().value
-        const coeffs = this.#equation.getCoefficients().map(x => x.value)
+        const degree = polynom.degree().value
+        const coeffs = polynom.getCoefficients().map(x => x.value)
 
         // Calculate the Cauchy Bounds.
-        const [a, ...values] = this.#equation.getCoefficients()
+        const [a, ...values] = polynom.getCoefficients()
         const B = 2 + Math.max(...values.map(x => x.value / a.value))
 
         // Cut the [-B;B] interval in *n* parts
 
         // Calculate the value at each points
-        const evaluatedPoints = this.#solveByBissection_evaluatePoints(B, 100)
+        const evaluatedPoints = this.#solveByBissection_evaluatePoints(polynom, B, 100)
 
         // Check if there is a least n opposite couples
         const couples = this.#solveByBissection_getCouples(evaluatedPoints, degree)
@@ -103,7 +106,7 @@ export class EquationSolver {
                 // Exact solution
                 solutions.push(this.#makeSolution(a))
             } else {
-                const bissection = this.#solveByBissection_algorithm(coeffs, a, b)
+                const bissection = this.#solveByBissection_algorithm(polynom, coeffs, a, b)
                 if (bissection !== null) {
                     solutions.push(this.#makeApproximativeSolution(bissection))
                 }
@@ -113,9 +116,9 @@ export class EquationSolver {
         return solutions
     }
 
-    #solveByBissection_algorithm(coeffs: number[], a: number, b: number, tol = 1e-10): number | null {
-        let fa = this.#equation.evaluate(a, true) as number
-        let fb = this.#equation.evaluate(b, true) as number
+    #solveByBissection_algorithm(polynom: Polynom, coeffs: number[], a: number, b: number, tol = 1e-10): number | null {
+        let fa = polynom.evaluate(a, true) as number
+        let fb = polynom.evaluate(b, true) as number
 
         if (fa * fb > 0) {
             console.log("Pas de racine dans l'intervalle donné")
@@ -125,7 +128,7 @@ export class EquationSolver {
         let mid: number
         while ((b - a) / 2 > tol) {
             mid = (a + b) / 2
-            const fmid = this.#equation.evaluate(mid, true) as number
+            const fmid = polynom.evaluate(mid, true) as number
 
             if (fmid === 0) {
                 return mid // racine exacte trouvée
@@ -140,7 +143,7 @@ export class EquationSolver {
         return (a + b) / 2 // retourner la racine approximative
     }
 
-    #solveByBissection_evaluatePoints(bounds: number, slice: number): { x: number, fx: number }[] {
+    #solveByBissection_evaluatePoints(polynom: Polynom, bounds: number, slice: number): { x: number, fx: number }[] {
 
         const evaluatedPoints: { x: number, fx: number }[] = []
 
@@ -152,7 +155,7 @@ export class EquationSolver {
             evaluatedPoints.push(
                 {
                     x,
-                    fx: this.#equation.evaluate(x, true) as number
+                    fx: polynom.evaluate(x, true) as number
                 }
             )
         }
@@ -185,14 +188,14 @@ export class EquationSolver {
         return couples
     }
 
-    #solveByFactorization(): ISolution[] {
+    #solveByFactorization(): { solutions: ISolution[], polynom: Polynom } {
         // Move everything to the left.
 
         // Get the polynom on the left (on the right, it's zero)
-        let left = this.#equation.clone()
+        const left = this.#leftPolynom.clone()
 
         // The solutions of the equation
-        let solutions: ISolution[] = []
+        const solutions: ISolution[] = []
 
         // multiply by the lcm of the denominators
         // to get rid of the fractions
@@ -201,90 +204,93 @@ export class EquationSolver {
             left.multiply(lcm)
         }
 
-        // alternative method:
+        // alternative method : if there is no monom of degree zero.
         // - get the monom with the smallest degree.
         // - if degree>0, divide by x^{degree}
-        const m = left.monoms.reduce((min, curr) => curr.degree().value < min.degree().value ? curr : min)
         const a = left.monomByDegree().coefficient
-        if(!m.degree().isZero()){
+        const b = left.monomByDegree(0).coefficient
+        if (b.isZero()) {
+            solutions.push(this.#makeSolution(0))
 
-        }
-        // if(m.degree().value){
-        //     const a = left.monomByDegree().coefficient
-
-        // }
-        // left is a polynom ax^n+...+b
-        // {} // Greatest coefficient
-        // let b = left.monomByDegree(0).coefficient // Constant term
-
-        // if the constant term is null, the polynom can be divided by x
-        let b = left.monomByDegree(0).coefficient
-        while (b.isZero()) {
-            if (solutions.length === 0) {
-                solutions.push(this.#makeSolution(0))
-            }
-            console.log(solutions.length)
-            left = (left.divide('x'))
-            b = left.monomByDegree(0).coefficient
+            const m = left.monoms.reduce((min, curr) => curr.degree().value < min.degree().value ? curr : min)
+            const k = m.coefficient
+            m.clone().divide(k) // make the monom unit
+            left.divide(m)
         }
 
         // get all dividers of a and b
         const dividersA = Numeric.dividers(a.value)
         const dividersB = Numeric.dividers(b.value)
 
-        // test all possible solutions
+        // gel all possible solutions
+        const testingSolutions: Fraction[] = []
         for (const da of dividersA) {
             for (const db of dividersB) {
                 const f = new Fraction(db, da)
-
-                // Test with the fraction
-                if ((left.evaluate(f) as Fraction).isZero() && !solutions.find(s => s.value === f.value)) {
-                    solutions.push(this.#makeSolution(f))
+                if (!testingSolutions.find(s => s.value === f.value)) {
+                    testingSolutions.push(f.clone())
+                    testingSolutions.push(f.opposite().clone())
                 }
 
-                // Test with the opposite fraction
-                f.opposite()
-                if ((left.evaluate(f) as Fraction).isZero() && !solutions.find(s => s.value === f.value)) {
-                    solutions.push(this.#makeSolution(f))
-                }
             }
         }
+
+        // Each value in testingSolutions are "unique" -> juste test them to see if it evaluates to zero.
+        testingSolutions.forEach(f => {
+            if ((left.evaluate(f) as Fraction).isZero()) {
+                solutions.push(this.#makeSolution(f))
+            }
+        })
 
         // divide the left polynom by the solutions (as polynom)
         // to get the reduced polynom
         for (const s of solutions) {
-            // if the solution is exact and is zero, it's already divided: skip it !
-            if (s.exact !== false && (s.exact as Fraction).isZero()) {
+            // all solutions are exact solutions.
+            // skip the zero solutions if it exists.
+            if ((s.exact as Fraction).isZero()) {
                 continue
             }
 
-            const p = this.#equation.clone().parse('x', (s.exact as Fraction).denominator, -(s.exact as Fraction).numerator)
+            // // if the solution is exact and is zero, it's already divided: skip it !
+            // if (s.exact !== false && (s.exact as Fraction).isZero()) {
+            //     continue
+            // }
+
+            const p = left.clone().fromCoefficients(
+                (s.exact as Fraction).denominator,
+                -(s.exact as Fraction).numerator
+            )
+
+            // const p = this.#equation.clone().parse('x', (s.exact as Fraction).denominator, -(s.exact as Fraction).numerator)
 
             while (left.isDividableBy(p)) {
-                left = left.divide(p)
+                left.divide(p)
             }
         }
 
         // if the reduced polynom is of degree 0, we have found all the solutions
-        if (left.degree().isZero()) {
-            return solutions.sort((a, b) => a.value - b.value)
-        }
-
         // if the reduced polynom is of degree greater than 3, we can't solve it
-        if (left.degree().value > 3) {
-            return []
+        if (left.degree().isZero() || left.degree().value > 3) {
+            // Tri des réponses
+            solutions.sort((a, b) => a.value - b.value)
+            return {solutions, polynom: left}
         }
 
         // if the reduced polynom is of degree 1 or 2, we can solve it
-        const solver = new EquationSolver(left, left.clone().parse('0'), this.#variable)
-        solutions = solutions.concat(solver.solve())
+        const zeroPolynom = left.clone().zero()
 
-        return solutions.sort((a, b) => a.value - b.value)
+        const solver = new EquationSolver(left, zeroPolynom, this.#variable)
+        return {
+            solutions: solutions
+                .concat(solver.solve())
+                .sort((a, b) => a.value - b.value),
+            polynom: zeroPolynom
+        }
     }
 
     #solveCubic_CardanFormula(): ISolution[] {
         // get the coefficients of the equation
-        const left = this.#equation
+        const left = this.#leftPolynom
 
         // left is a polynom ax^3+bx^2+cx+d => the solution is x = (-b±√(b^2-4ac))/2a
         const a = left.monomByDegree(3).coefficient
@@ -374,7 +380,7 @@ export class EquationSolver {
 
     #solveLinear(): ISolution[] {
         // The equation is linear.
-        const [a, b] = this.#equation.getCoefficients()
+        const [a, b] = this.#leftPolynom.getCoefficients()
 
         // left is a polynom ax+b => the solution is x = -b/a
         const f = b.opposite().divide(a)
@@ -388,7 +394,12 @@ export class EquationSolver {
 
         // The equation is quadratic.
         // We can solve it by isolating the variable.
-        const left = this.#equation
+
+        // The monom with greatest degree must be positive.
+        const left = this.#leftPolynom
+        if(left.monomByDegree().coefficient.isNegative()){
+            left.opposite()
+        }
 
         // left is a polynom ax^2+bx+c => the solution is x = (-b±√(b^2-4ac))/2a
         const [a, b, c] = left.getCoefficients()
@@ -409,8 +420,8 @@ export class EquationSolver {
             // delta is a fraction.
             // the solutions are (-b±√(b^2-4ac))/2a
             const delta = delta2.sqrt()
-            const f1 = b.clone().opposite().add(delta).divide(a.clone().multiply(2))
-            const f2 = b.clone().opposite().subtract(delta).divide(a.clone().multiply(2))
+            const f1 = b.clone().opposite().subtract(delta).divide(a.clone().multiply(2))
+            const f2 = b.clone().opposite().add(delta).divide(a.clone().multiply(2))
 
             // Delta is zero, there is only one solution
             if (delta.isZero()) {
@@ -469,14 +480,14 @@ export class EquationSolver {
         return [
             this.#makeApproximativeSolution(f1,
                 {
-                    tex: texOutput(a2.tex, b2.tex, deltaK1.toString(), delta2.tex),
-                    display: displayOutput(a2.display, b2.display, deltaK1.toString(), delta2.display),
+                    tex: texOutput(a2.tex, b2.tex, deltaK1, delta2.tex),
+                    display: displayOutput(a2.display, b2.display, deltaK1, delta2.display),
                 }
             ),
             this.#makeApproximativeSolution(f2,
                 {
-                    tex: texOutput(a2.tex, b2.tex, deltaK2.toString(), delta2.tex),
-                    display: displayOutput(a2.display, b2.display, deltaK2.toString(), delta2.display),
+                    tex: texOutput(a2.tex, b2.tex, deltaK2, delta2.tex),
+                    display: displayOutput(a2.display, b2.display, deltaK2, delta2.display),
                 }
             )
         ].sort((a, b) => a.value - b.value)

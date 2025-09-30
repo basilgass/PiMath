@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Matrix, Vector} from "../../src"
+import {Fraction, Matrix, Vector} from "../../src"
 
 describe('Matrix creation', () => {
     test('create Matrix', () => {
@@ -288,6 +288,43 @@ describe('Matrix operations', () => {
     })
 })
 
+describe('temp', ()=>{
+    test('pow', ()=>{
+        const A  = new Matrix().fromValues([
+            [0.8, 0.2],
+            [0.6, 0.4]
+        ])
+
+        const values = A.pow(5).flat().map(x=>x.value)
+        console.log(values)
+    })
+    test('t1', ()=>{
+        const A = new Matrix().fromValues([
+            [3,2],
+            [5,7]
+        ])
+        const B = new Matrix().fromValues([
+            [9,3],
+            [1,0]
+        ])
+
+        console.log(A.determinant().display)
+
+        const X = A.clone().add(B.clone().multiply(2)).multiply(new Fraction(1, 3))
+        console.log(X.display)
+
+        const C = new Matrix().fromValues([
+            [3, 5, -1],
+            [0, 0, 2],
+            [5, 1, 4]
+        ])
+
+        console.log(C.determinant().display)
+
+        const AB = A.clone().multiply(B)
+        console.log(AB.display)
+    })
+})
 /*describe.skip('Matrix comparisons', () => {
     // test.todo('same Matrix')
     // test.todo('equal Matrix')
