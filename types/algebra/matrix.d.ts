@@ -1,6 +1,6 @@
-import type { IExpressionMultiply, InputAlgebra, InputValue, IPiMathObject } from "../pimath.interface";
-import { Polynom } from "./polynom";
-import type { Vector } from "../geometry";
+import { IExpressionMultiply, InputAlgebra, InputValue, IPiMathObject } from '../pimath.interface';
+import { Polynom } from './polynom';
+import { Vector } from '../geometry';
 export type IMatrixValues = InputAlgebra<Polynom>[][];
 export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultiply<Matrix> {
     #private;
@@ -10,8 +10,10 @@ export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultipl
     get tex(): string;
     get display(): string;
     add(value: Matrix): this;
+    aij(i: number, j: number): Polynom | null;
     get bmatrix(): this;
     canBeAdded(matrix: Matrix): boolean;
+    canBeInverted(): boolean;
     canBeMultiplied(matrix: Matrix): boolean;
     characteristic_polynom(letter?: string): Polynom;
     cofactor(row: number, column: number): Polynom;
@@ -27,7 +29,7 @@ export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultipl
     fromString(value: string): this;
     fromValues(values: IMatrixValues): this;
     fromVectors(...vectors: Vector[]): this;
-    getAij(i: number, j: number): Polynom | null;
+    inverse(): this;
     isEqual(value: Matrix): boolean;
     isOne(): boolean;
     isSquare(): boolean;
@@ -42,7 +44,8 @@ export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultipl
     get rows(): Polynom[][];
     setValue(row: number, column: number, value: InputAlgebra<Polynom>): this;
     subtract(value: Matrix): this;
+    toFixed(value: number): this;
+    transpose(): this;
     get values(): Polynom[][];
     zero(): this;
 }
-//# sourceMappingURL=matrix.d.ts.map

@@ -8,6 +8,7 @@
   "types": "types/index.d.ts",
   "exports": {
     ".": {
+      "types": "./types/index.d.ts",
       "import": "./dist/pimath.js",
       "require": "./dist/pimath.js"
     }
@@ -36,7 +37,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
-    "@types/eslint__js": "^9.14.0",
+    "@types/eslint__js": "^8.42.3",
     "autoprefixer": "^10.4.21",
     "dependency-cruiser": "^17.0.1",
     "eslint": "^9.34.0",

@@ -1,6 +1,6 @@
-import { describe, expect, it, test } from "vitest"
-import { Fraction } from "../../src/coefficients/fraction"
-import { Random } from "../../src/randomization/random"
+import {describe, expect, it, test} from "vitest"
+import {Fraction} from "../../src/coefficients/fraction"
+import {Random} from "../../src/randomization/random"
 
 describe('Fraction creation', () => {
     test('create Fraction', () => {

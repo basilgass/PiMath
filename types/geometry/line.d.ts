@@ -1,8 +1,8 @@
-import { Fraction } from "../coefficients/fraction";
-import { Equation } from "../algebra/equation";
-import { Vector } from "./vector";
-import { type InputValue, type IPiMathObject, LinePropriety } from "../pimath.interface";
-import { Point } from "./point";
+import { Fraction } from '../coefficients/fraction';
+import { Equation } from '../algebra/equation';
+import { Vector } from './vector';
+import { InputValue, IPiMathObject, LinePropriety } from '../pimath.interface';
+import { Point } from './point';
 export interface LineConfig {
     direction?: Vector;
     normal?: Vector;
@@ -13,7 +13,17 @@ export declare class Line implements IPiMathObject<Line> {
     #private;
     static PARALLEL: LinePropriety;
     static PERPENDICULAR: LinePropriety;
+    /**
+     * Value can be a mix of:
+     *
+     * @param values
+     */
     constructor(...values: unknown[]);
+    /**
+     * Parse data to a line
+     * @param {any} values
+     * @returns {Line}
+     */
     parse: (...values: unknown[]) => this;
     clone: () => this;
     get tex(): string;
@@ -72,4 +82,3 @@ export declare class Line implements IPiMathObject<Line> {
     get slope(): Fraction;
     get system(): this;
 }
-//# sourceMappingURL=line.d.ts.map

@@ -1,6 +1,6 @@
-import type { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType, TABLE_OF_SIGNS } from "../pimath.interface";
-import { Fraction } from "../coefficients/fraction";
-import { Polynom } from "./polynom";
+import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType, TABLE_OF_SIGNS } from '../pimath.interface';
+import { Fraction } from '../coefficients/fraction';
+import { Polynom } from './polynom';
 export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor>, IAlgebra<Factor> {
     #private;
     constructor(value?: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>);
@@ -45,4 +45,3 @@ export declare enum FACTOR_DISPLAY {
     ROOT = 0,
     POWER = 1
 }
-//# sourceMappingURL=factor.d.ts.map

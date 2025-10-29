@@ -7,4 +7,3 @@ export * from './monom';
 export * from './polyFactor';
 export * from './polynom';
 export * from './matrix';
-//# sourceMappingURL=index.d.ts.map

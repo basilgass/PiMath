@@ -1,3 +1,6 @@
+/**
+ * NthRoot is something like "a+b\sqrt{3}
+ */
 export declare class NthRoot {
     #private;
     constructor(...values: number[]);
@@ -15,4 +18,3 @@ export declare class NthRoot {
     multiply: (N: NthRoot) => this;
     hasRadical: () => boolean;
 }
-//# sourceMappingURL=nthRoot.d.ts.map

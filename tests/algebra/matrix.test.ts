@@ -135,9 +135,9 @@ describe('Geometry Matrix', function () {
         // Check that the result is a fraction
         // Check that the result is correct
 
-        const v1 = new Vector(1,2,7)
-        const v2 = new Vector(3,4,2)
-        const v3 = new Vector(5,6,3)
+        const v1 = new Vector(1, 2, 7)
+        const v2 = new Vector(3, 4, 2)
+        const v3 = new Vector(5, 6, 3)
         const M = new Matrix().fromVectors(v1, v2, v3)
 
         console.log(M.display)
@@ -203,7 +203,7 @@ describe('Geometry Matrix', function () {
         console.log(A.multiply(C).display)
     })
 
-    test('multi', ()=>{
+    test('multi', () => {
         const A = new Matrix().fromString('((1,2,0),(3,4,5))')
         const B = new Matrix().fromString('((1,2,1,0),(3,2,0,1),(1,0,2,2))')
 
@@ -213,7 +213,7 @@ describe('Geometry Matrix', function () {
         console.log(C.display)
     })
 
-    test('t2', ()=>{
+    test('t2', () => {
         const A = new Matrix().fromString('((2,3,-1),(-1,4,2),(3,-2,5))')
         const B = new Matrix().fromString('((24,-13,10),(11,13,-3),(-10,13,11))')
 
@@ -280,7 +280,7 @@ describe('Matrix operations', () => {
     test.todo('divide by Matrix')
     test.todo('raise Matrix by integer')
 
-    test('invert a matrix', ()=>{
+    test('invert a matrix', () => {
         const A = new Matrix().fromString('((1,2),(3,4)')
         A.inverse()
 
@@ -288,24 +288,36 @@ describe('Matrix operations', () => {
     })
 })
 
-describe('temp', ()=>{
-    test('pow', ()=>{
-        const A  = new Matrix().fromValues([
+describe('temp', () => {
+    test('pow', () => {
+        const A = new Matrix().fromValues([
             [0.8, 0.2],
-            [0.6, 0.4]
+            [0.4, 0.6]
         ])
 
-        const values = A.pow(5).flat().map(x=>x.value)
+        const values = A.pow(2).flat().map(x => x.value)
         console.log(values)
     })
-    test('t1', ()=>{
+    test('markov', () => {
         const A = new Matrix().fromValues([
-            [3,2],
-            [5,7]
+            [0.3, 0.7],
+            [0.6, 0.4]
         ])
         const B = new Matrix().fromValues([
-            [9,3],
-            [1,0]
+            [150, 370]
+        ])
+
+        B.multiply(A)
+        console.log(B.display)
+    })
+    test('t1', () => {
+        const A = new Matrix().fromValues([
+            [3, 2],
+            [5, 7]
+        ])
+        const B = new Matrix().fromValues([
+            [9, 3],
+            [1, 0]
         ])
 
         console.log(A.determinant().display)
@@ -323,6 +335,18 @@ describe('temp', ()=>{
 
         const AB = A.clone().multiply(B)
         console.log(AB.display)
+    })
+
+    test('la jungle', () => {
+        const A = new Matrix().fromValues([
+            [0.9, 0, 0.1],
+            [0.8, 0.2, 0],
+            [0, 0.5, 0.5]
+        ])
+
+        A.pow(2)
+
+        console.log(A.toFixed(3).display)
     })
 })
 /*describe.skip('Matrix comparisons', () => {

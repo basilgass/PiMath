@@ -7,6 +7,7 @@ export type IMatrixValues = InputAlgebra<Polynom>[][]
 
 export class Matrix implements IPiMathObject<Matrix>,
     IExpressionMultiply<Matrix> {
+    #digits: number | null = null
     #matrix_parenthesis = true
     #values: Polynom[][] = []
 
@@ -49,11 +50,19 @@ export class Matrix implements IPiMathObject<Matrix>,
         const wrapper = this.#matrix_parenthesis ? 'pmatrix' : 'bmatrix'
 
 
-        return [
+        const output = [
             `\\begin{${wrapper}}`,
-            ...this.rows.map(row => '\t' + row.map(p => p.display).join(' & ') + '\\\\'),
+            ...this.rows
+                .map(row => '\t' + row
+                    .map(p => this.#digits !== null && p.value ? +p.value.toFixed(this.#digits):p.tex)
+                    .join(' & ') + '\\\\'
+                ),
             `\\end{${wrapper}}`
         ].join('\n')
+
+        this.#digits = null
+
+        return output
     }
 
     get display(): string {
@@ -63,11 +72,15 @@ export class Matrix implements IPiMathObject<Matrix>,
 
         const wrapper = this.#matrix_parenthesis ? ['(', ')'] : ['[', ']']
 
-        return wrapper[0] +
-            this.map(aij => aij.display)
+        const output = wrapper[0] +
+            this.map(aij => this.#digits !== null && aij.value ? +aij.value.toFixed(this.#digits): aij.display)
                 .map(row => `(${row.join(',')})`)
                 .join(',') +
             wrapper[1]
+
+        this.#digits = null
+
+        return output
     }
 
     public add(value: Matrix): this {
@@ -101,13 +114,13 @@ export class Matrix implements IPiMathObject<Matrix>,
         return rows === rows2 && cols === cols2
     }
 
-    public canBeInverted():boolean {
-        if(!this.isSquare()){
+    public canBeInverted(): boolean {
+        if (!this.isSquare()) {
             return false
         }
 
         const determinant = this.determinant()
-        if(determinant.isZero()){
+        if (determinant.isZero()) {
             return false
         }
 
@@ -273,12 +286,12 @@ export class Matrix implements IPiMathObject<Matrix>,
     }
 
     public inverse(): this {
-        if(!this.canBeInverted()){
+        if (!this.canBeInverted()) {
             throw new Error('The matrix cannot be inverted.')
         }
 
         const cofactors_matrix = new Matrix().fromDimensions(this.dimension.rows, this.dimension.cols)
-        cofactors_matrix.forEach((_, row, column)=>{
+        cofactors_matrix.forEach((_, row, column) => {
             cofactors_matrix.setValue(row, column, this.cofactor(row, column))
         })
 
@@ -286,7 +299,7 @@ export class Matrix implements IPiMathObject<Matrix>,
 
         // Copy the value to "this"
         const determinant = this.determinant()
-        cofactors_matrix.forEach((aij, i, j)=>this.setValue(i,j, aij.divide(determinant).reduce()))
+        cofactors_matrix.forEach((aij, i, j) => this.setValue(i, j, aij.divide(determinant).reduce()))
 
         return this
     }
@@ -435,10 +448,15 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
+    toFixed(value: number): this {
+        this.#digits = value
+        return this
+    }
+
     public transpose(): this {
         const temp = this.clone()
 
-        temp.forEach((aij, i, j)=>{
+        temp.forEach((aij, i, j) => {
             this.setValue(j, i, aij.clone())
         })
 

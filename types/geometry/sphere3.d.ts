@@ -1,7 +1,7 @@
-import { Point } from "./point";
-import { Fraction } from "../coefficients";
-import { Equation } from "../algebra";
-import type { InputValue } from "../pimath.interface";
+import { Point } from './point';
+import { Fraction } from '../coefficients';
+import { Equation } from '../algebra';
+import { InputValue } from '../pimath.interface';
 export declare enum SPHERE3_RELATIVE_POSITION {
     INTERIOR = 0,
     EXTERIOR = 1,
@@ -32,4 +32,3 @@ export declare class Sphere3 {
     relativePosition: (S: Sphere3) => SPHERE3_RELATIVE_POSITION;
     isPointOnSphere: (P: Point) => boolean;
 }
-//# sourceMappingURL=sphere3.d.ts.map
