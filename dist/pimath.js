@@ -97,7 +97,7 @@ class a {
         i.length === 2 ? i[1] === "0" ? (this.#i = NaN, this.#e = 1) : (this.#i = +i[0], this.#e = +i[1]) : (this.#i = NaN, this.#e = 1);
         break;
       case "number":
-        if (console.log("CHECK AS NUMBER", e), Number.isSafeInteger(e))
+        if (Number.isSafeInteger(e))
           this.#i = +e, t === void 0 || !Number.isSafeInteger(t) ? this.#e = 1 : this.#e = +t;
         else {
           const [, s] = e.toString().split("."), r = s ? s.length : 0, o = Math.pow(10, r);

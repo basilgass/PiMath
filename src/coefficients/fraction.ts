@@ -83,7 +83,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
                 }
                 break
             case "number":
-                console.log('CHECK AS NUMBER', value)
                 if (Number.isSafeInteger(value)) {
                     // The given value is an integer
                     this.#numerator = +value
