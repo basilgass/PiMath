@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Removed a console.log">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Automatic convert the 2. value to 2 number (avoid errors while typing in a dynamic interface).">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/monom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/monom.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/coefficients/fraction.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/coefficients/fraction.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -588,23 +585,7 @@
       <workItem from="1764246685561" duration="9000" />
       <workItem from="1764251690996" duration="491000" />
       <workItem from="1764252550672" duration="668000" />
-      <workItem from="1764253636645" duration="286000" />
-    </task>
-    <task id="LOCAL-00009" summary="Commit and build - but there are some strange problems about rollup...">
-      <option name="closed" value="true" />
-      <created>1727099368276</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1727099368276</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Commit and build - but there are some strange problems about rollup...">
-      <option name="closed" value="true" />
-      <created>1727099379781</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1727099379781</updated>
+      <workItem from="1764253636645" duration="504000" />
     </task>
     <task id="LOCAL-00011" summary="Phantmo import removed. Build ok,">
       <option name="closed" value="true" />
@@ -982,7 +963,23 @@
       <option name="project" value="LOCAL" />
       <updated>1764252634145</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="Automatic convert the 2. value to 2 number (avoid errors while typing in a dynamic interface).">
+      <option name="closed" value="true" />
+      <created>1764254011746</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1764254011746</updated>
+    </task>
+    <task id="LOCAL-00059" summary="Automatic convert the 2. value to 2 number (avoid errors while typing in a dynamic interface).">
+      <option name="closed" value="true" />
+      <created>1764254023176</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1764254023176</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -991,7 +988,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Removed splitFactors and refactored getter numerator and denominator to output a new PolyFactor" />
     <MESSAGE value="PolyFactor.add(...values) now supports PolyFactros with denominators." />
     <MESSAGE value="Tested and build" />
     <MESSAGE value="Updated getCoefficient to handle polynom with missing degrees." />
@@ -1016,7 +1012,8 @@
     <MESSAGE value="Decimal to Fraction parsing was not using the numberCorrection system to avoid float approximation." />
     <MESSAGE value="Build ok" />
     <MESSAGE value="Removed a console.log" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed a console.log" />
+    <MESSAGE value="Automatic convert the 2. value to 2 number (avoid errors while typing in a dynamic interface)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Automatic convert the 2. value to 2 number (avoid errors while typing in a dynamic interface)." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
