@@ -13,6 +13,14 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
      * Clone the current Monom.
      */
     clone: () => Monom;
+    /**
+     * Get the tex output of the monom
+     */
+    get tex(): string;
+    /**
+     * This display getter is to be used in the polynom display getter
+     */
+    get display(): string;
     static gcd: (...monoms: Monom[]) => Monom;
     /**
      * Multiply two monoms and return a NEW monom.
@@ -45,10 +53,6 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
      * @param letter
      */
     derivative: (letter?: string) => Monom;
-    /**
-     * This display getter is to be used in the polynom display getter
-     */
-    get display(): string;
     /**
      * Divide the current monoms by multiple monoms
      * @param M (Monom[])
@@ -151,10 +155,6 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
      * @param M (Monom[]) The monoms to subtract
      */
     subtract: (...M: InputAlgebra<Fraction>[]) => this;
-    /**
-     * Get the tex output of the monom
-     */
-    get tex(): string;
     /**
      * Get the variables letters
      */
