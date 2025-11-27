@@ -59,7 +59,7 @@ function qe(n, e) {
 function Te(n, e = 2) {
   return +`${Math.round(+`${n}e${e}`)}e-${e}`;
 }
-const N = {
+const E = {
   decompose: ve,
   dividers: ce,
   divideNumbersByGCD: be,
@@ -97,11 +97,11 @@ class a {
         i.length === 2 ? i[1] === "0" ? (this.#i = NaN, this.#e = 1) : (this.#i = +i[0], this.#e = +i[1]) : (this.#i = NaN, this.#e = 1);
         break;
       case "number":
-        if (Number.isSafeInteger(e))
+        if (console.log("CHECK AS NUMBER", e), Number.isSafeInteger(e))
           this.#i = +e, t === void 0 || !Number.isSafeInteger(t) ? this.#e = 1 : this.#e = +t;
         else {
           const [, s] = e.toString().split("."), r = s ? s.length : 0, o = Math.pow(10, r);
-          t === void 0 ? (this.#i = e * o, this.#e = o) : Number.isSafeInteger(t) && (this.#i = e * o - Math.floor(e * Math.pow(10, r - t)), this.denominator = o - Math.pow(10, r - t)), this.reduce();
+          t === void 0 ? (this.#i = e * o, this.#e = o) : Number.isSafeInteger(t) && (this.#i = e * o - Math.floor(e * Math.pow(10, r - t)), this.denominator = o - Math.pow(10, r - t)), this.#i = E.numberCorrection(this.#i), this.#e = E.numberCorrection(this.#e), this.reduce();
         }
         break;
       case "object":
@@ -265,7 +265,7 @@ class a {
   isOpposite = (e) => this.isEqual(e.clone().opposite());
   isPositive = () => this.sign() === 1;
   isRational = () => !this.isRelative();
-  isReduced = () => Math.abs(N.gcd(this.#i, this.#e)) === 1;
+  isReduced = () => Math.abs(E.gcd(this.#i, this.#e)) === 1;
   isRelative = () => this.clone().reduce().denominator === 1;
   isSquare = () => Math.sqrt(this.#i) % 1 === 0 && Math.sqrt(this.#e) % 1 === 0;
   isStrictlyNegative = () => this.value < 0;
@@ -294,7 +294,7 @@ class a {
   };
   // ------------------------------------------
   reduce = () => {
-    const e = N.gcd(this.#i, this.#e);
+    const e = E.gcd(this.#i, this.#e);
     return this.#i = this.#i / e, this.#e = this.#e / e, this.#e < 0 && (this.#e = -this.#e, this.#i = -this.#i), this;
   };
   // ------------------------------------------
@@ -446,8 +446,8 @@ class J {
       if (m === w)
         t.push(this.#s(m));
       else {
-        const E = this.#n(e, s, m, w);
-        E !== null && t.push(this.#i(E));
+        const N = this.#n(e, s, m, w);
+        N !== null && t.push(this.#i(N));
       }
     }), t;
   }
@@ -468,7 +468,7 @@ class J {
   #o(e, t, i) {
     const s = [], r = 2 * t / i;
     for (let o = -t; o <= t; o += r) {
-      const h = N.numberCorrection(o);
+      const h = E.numberCorrection(o);
       s.push(
         {
           x: h,
@@ -493,14 +493,14 @@ class J {
     const s = e.monomByDegree().coefficient, r = e.monomByDegree(0).coefficient;
     if (r.isZero()) {
       t.push(this.#s(0));
-      const m = e.monoms.reduce((E, A) => A.degree().value < E.degree().value ? A : E), w = m.coefficient;
+      const m = e.monoms.reduce((N, A) => A.degree().value < N.degree().value ? A : N), w = m.coefficient;
       m.clone().divide(w), e.divide(m);
     }
-    const o = N.dividers(s.value), h = N.dividers(r.value), l = [];
+    const o = E.dividers(s.value), h = E.dividers(r.value), l = [];
     for (const m of o)
       for (const w of h) {
-        const E = new a(w, m);
-        l.find((A) => A.value === E.value) || (l.push(E.clone()), l.push(E.opposite().clone()));
+        const N = new a(w, m);
+        l.find((A) => A.value === N.value) || (l.push(N.clone()), l.push(N.opposite().clone()));
       }
     l.forEach((m) => {
       e.evaluate(m).isZero() && t.push(this.#s(m));
@@ -524,19 +524,19 @@ class J {
     };
   }
   #c() {
-    const e = this.#t, t = e.monomByDegree(3).coefficient, i = e.monomByDegree(2).coefficient, s = e.monomByDegree(1).coefficient, r = e.monomByDegree(0).coefficient, o = i.clone().divide(t), h = s.clone().divide(t), l = r.clone().divide(t), c = h.clone().subtract(o.clone().pow(2).divide(3)), d = l.clone().subtract(o.clone().multiply(h).divide(3)).add(o.clone().pow(3).multiply(2).divide(27)), m = d.clone().opposite(), w = c.clone().opposite().pow(3).divide(27), E = m.clone().pow(2).subtract(w.clone().multiply(4)).opposite();
-    if (E.isNegative()) {
-      const A = d.clone().opposite().add(E.clone().opposite().sqrt()).divide(2).root(3), k = d.clone().opposite().subtract(E.clone().opposite().sqrt()).divide(2).root(3), z = A.clone().add(k).subtract(o.clone().divide(3));
+    const e = this.#t, t = e.monomByDegree(3).coefficient, i = e.monomByDegree(2).coefficient, s = e.monomByDegree(1).coefficient, r = e.monomByDegree(0).coefficient, o = i.clone().divide(t), h = s.clone().divide(t), l = r.clone().divide(t), c = h.clone().subtract(o.clone().pow(2).divide(3)), d = l.clone().subtract(o.clone().multiply(h).divide(3)).add(o.clone().pow(3).multiply(2).divide(27)), m = d.clone().opposite(), w = c.clone().opposite().pow(3).divide(27), N = m.clone().pow(2).subtract(w.clone().multiply(4)).opposite();
+    if (N.isNegative()) {
+      const A = d.clone().opposite().add(N.clone().opposite().sqrt()).divide(2).root(3), k = d.clone().opposite().subtract(N.clone().opposite().sqrt()).divide(2).root(3), z = A.clone().add(k).subtract(o.clone().divide(3));
       return [this.#s(z)];
     }
-    if (E.isZero()) {
+    if (N.isZero()) {
       const A = d.clone().opposite().divide(2).root(3), k = A.clone().opposite().subtract(o.clone().divide(3)), z = A.clone().multiply(2).subtract(o.clone().divide(3));
       return k.isEqual(z) ? [this.#s(k)] : [
         this.#s(z),
         this.#s(k)
       ].sort((M, $) => M.value - $.value);
     }
-    if (E.isPositive()) {
+    if (N.isPositive()) {
       const A = [], k = c.value, z = d.value, M = o.value;
       for (let $ = 0; $ < 3; $++)
         A.push(2 * Math.sqrt(-k / 3) * Math.cos(Math.acos(3 * z / (2 * k) * Math.sqrt(-3 / k)) / 3 + 2 * Math.PI * $ / 3) - M / 3);
@@ -566,11 +566,11 @@ class J {
     return this.#f(t, i, r);
   }
   #f(e, t, i) {
-    const s = N.dividers(i.value).filter((M) => Math.sqrt(M) % 1 === 0).map((M) => Math.sqrt(M)).pop() ?? 1, r = N.gcd(2 * e.value, t.value, s) * (e.isNegative() ? -1 : 1), o = t.clone().divide(r).opposite(), h = e.clone().divide(r).multiply(2), l = i.clone().divide(s ** 2), c = Math.abs(s / r), d = s === 1 ? "-" : `-${c} `, m = s === 1 ? "+" : `+${c} `;
+    const s = E.dividers(i.value).filter((M) => Math.sqrt(M) % 1 === 0).map((M) => Math.sqrt(M)).pop() ?? 1, r = E.gcd(2 * e.value, t.value, s) * (e.isNegative() ? -1 : 1), o = t.clone().divide(r).opposite(), h = e.clone().divide(r).multiply(2), l = i.clone().divide(s ** 2), c = Math.abs(s / r), d = s === 1 ? "-" : `-${c} `, m = s === 1 ? "+" : `+${c} `;
     function w(M, $, V, te) {
       return `\\frac{ ${$} ${V}\\sqrt{ ${te} } }{ ${M} }`;
     }
-    function E(M, $, V, te) {
+    function N(M, $, V, te) {
       return `(${$}${V}sqrt(${te}))/${M}`;
     }
     const A = i.value ** 0.5, k = (-t.value - A) / (2 * e.value), z = (-t.value + A) / (2 * e.value);
@@ -579,14 +579,14 @@ class J {
         k,
         {
           tex: w(h.tex, o.tex, d, l.tex),
-          display: E(h.display, o.display, d, l.display)
+          display: N(h.display, o.display, d, l.display)
         }
       ),
       this.#i(
         z,
         {
           tex: w(h.tex, o.tex, m, l.tex),
-          display: E(h.display, o.display, m, l.display)
+          display: N(h.display, o.display, m, l.display)
         }
       )
     ].sort((M, $) => M.value - $.value);
@@ -945,7 +945,7 @@ class p {
     for (const r of e)
       if (r.containsRationalPower())
         return new p().zero();
-    const t = new p(), i = N.gcd(...e.map((r) => r.coefficient.numerator)), s = N.lcm(...e.map((r) => r.coefficient.denominator));
+    const t = new p(), i = E.gcd(...e.map((r) => r.coefficient.numerator)), s = E.lcm(...e.map((r) => r.coefficient.denominator));
     t.coefficient = new a(i, s).reduce();
     for (const r of e) {
       for (const o in t.literal)
@@ -1038,7 +1038,7 @@ class p {
       return [this.clone()];
     if (this.coefficient.numerator > 1e6)
       return [this.clone()];
-    const e = N.dividers(Math.abs(this.coefficient.numerator));
+    const e = E.dividers(Math.abs(this.coefficient.numerator));
     let t = [];
     for (const s in this.literal)
       t = this._getLiteralDividers(t, s);
@@ -1553,8 +1553,8 @@ class u {
           else {
             const c = i.euclidean(l);
             t.push(l), i = c.quotient.clone(), h = h.filter((d) => {
-              const m = i.monoms[0], w = i.monoms[i.monoms.length - 1], E = d.monoms[0], A = d.monoms[d.monoms.length - 1];
-              return w.isDivisible(A) ? m.isDivisible(E) : !1;
+              const m = i.monoms[0], w = i.monoms[i.monoms.length - 1], N = d.monoms[0], A = d.monoms[d.monoms.length - 1];
+              return w.isDivisible(A) ? m.isDivisible(N) : !1;
             });
           }
         }
@@ -1569,8 +1569,8 @@ class u {
       r.coefficient = new a(i), r.setLetter(t, s), this.#i.push(r);
     }), this.reorder();
   }
-  gcdDenominator = () => N.gcd(...this.getDenominators());
-  gcdNumerator = () => N.gcd(...this.getNumerators());
+  gcdDenominator = () => E.gcd(...this.getDenominators());
+  gcdNumerator = () => E.gcd(...this.getNumerators());
   getCoefficients() {
     const e = this.clone().reorder(), t = this.degree().value + 1, i = new Array(t).fill(new a(0));
     return e.monoms.forEach((s) => {
@@ -1645,8 +1645,8 @@ class u {
   isZero() {
     return this.#i.length === 1 && this.#i[0].coefficient.isZero() || this.#i.length === 0;
   }
-  lcmDenominator = () => N.lcm(...this.getDenominators());
-  lcmNumerator = () => N.lcm(...this.getNumerators());
+  lcmDenominator = () => E.lcm(...this.getDenominators());
+  lcmNumerator = () => E.lcm(...this.getNumerators());
   get length() {
     return this.#i.length;
   }
@@ -1868,12 +1868,12 @@ class u {
         new u(e).subtract(c.display).multiply(c.denominator)
       ]) : [this.clone()];
     if (s = this.monomByDegree(2, e), r = this.monomByDegree(1, e), o = this.monomByDegree(0, e), s.isLiteralSquare() && o.isLiteralSquare() && r.clone().pow(2).isSameAs(s.clone().multiply(o))) {
-      const w = new u("x", s.coefficient, r.coefficient, o.coefficient).#c("x"), E = [];
+      const w = new u("x", s.coefficient, r.coefficient, o.coefficient).#c("x"), N = [];
       let A;
       if (w.length >= 2) {
         for (const k of w)
-          k.degree().isZero() ? E.push(k.clone()) : (A = k.clone(), A.monoms[0].literal = s.literalSqrt, A.monoms[1].literal = o.literalSqrt, E.push(A.clone()));
-        return E;
+          k.degree().isZero() ? N.push(k.clone()) : (A = k.clone(), A.monoms[0].literal = s.literalSqrt, A.monoms[1].literal = o.literalSqrt, N.push(A.clone()));
+        return N;
       }
     }
     return [this.clone()];
@@ -2155,7 +2155,7 @@ class y {
   /**
    * Multiply by the lcm denominator and divide by the gcm numerators.
    */
-  simplify = () => (this.multiply(N.lcm(...this.#t.getDenominators(), ...this.#e.getDenominators())), this.divide(N.gcd(...this.#t.getNumerators(), ...this.#e.getNumerators())), this);
+  simplify = () => (this.multiply(E.lcm(...this.#t.getDenominators(), ...this.#e.getDenominators())), this.divide(E.gcd(...this.#t.getNumerators(), ...this.#e.getNumerators())), this);
   // -----------------------------------------------
   solve = () => new J(this.clone()).solve();
   split() {
@@ -3416,9 +3416,9 @@ class g {
   };
   divideByScalar = (e) => this.multiplyByScalar(new a(e).inverse());
   simplify = () => this.multiplyByScalar(
-    N.lcm(...this.array.map((e) => e.denominator))
+    E.lcm(...this.array.map((e) => e.denominator))
   ).divideByScalar(
-    N.gcd(...this.array.map((e) => e.numerator))
+    E.gcd(...this.array.map((e) => e.numerator))
   ).multiplyByScalar(
     this.x.isNegative() ? -1 : 1
   );
@@ -3462,7 +3462,7 @@ function q(n, e) {
   return e === !1 ? pe() ? B(1, n) : -B(1, n) : B(-n, n);
 }
 function Ve(n) {
-  let e = N.primes();
+  let e = E.primes();
   return n !== void 0 && (e = e.filter((t) => t < n)), he(e);
 }
 function je(n, e) {
@@ -3790,7 +3790,7 @@ class b {
     this.#h = e;
   }
   simplify = () => {
-    const e = N.lcm(this.#e.denominator, this.#i.denominator, this.#s.denominator), t = N.gcd(this.#e.numerator, this.#i.numerator, this.#s.numerator);
+    const e = E.lcm(this.#e.denominator, this.#i.denominator, this.#s.denominator), t = E.gcd(this.#e.numerator, this.#i.numerator, this.#s.numerator);
     return this.fromCoefficient(
       this.#e.clone().multiply(e).divide(t),
       this.#i.clone().multiply(e).divide(t),
@@ -3868,7 +3868,7 @@ class W {
   tangents = (e) => e instanceof a ? this.#n(e) : this.isPointOnCircle(e) ? this.#s(e) : this.#t !== void 0 && this.#t.distanceTo(e).value > this.radius.value ? this.#r(e) : (console.log("No tangents as the point is inside !"), []);
   isPointOnCircle = (e) => this.#i?.test({ x: e.x, y: e.y }) ?? !1;
   getPointsOnCircle = (e) => {
-    const t = N.pythagoreanTripletsWithTarget(this.squareRadius.value, !0), i = [];
+    const t = E.pythagoreanTripletsWithTarget(this.squareRadius.value, !0), i = [];
     return t.forEach((s) => {
       for (const r of [[1, 1], [-1, 1], [-1, -1], [1, -1]])
         i.push(
@@ -4638,7 +4638,7 @@ const Qe = {
   },
   circle: (n) => We(n)
 }, Ke = {
-  Numeric: N,
+  Numeric: E,
   Fraction: a,
   Root: X,
   Monom: p,
@@ -4678,7 +4678,7 @@ export {
   p as Monom,
   X as NthRoot,
   Re as NumExp,
-  N as Numeric,
+  E as Numeric,
   ae as Plane3,
   v as Point,
   T as PolyFactor,
