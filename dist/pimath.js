@@ -594,7 +594,7 @@ class J {
 }
 var Ce = Object.defineProperty, ue = (n) => {
   throw TypeError(n);
-}, ke = (n, e, t) => e in n ? Ce(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t, ie = (n, e, t) => ke(n, typeof e != "symbol" ? e + "" : e, t), fe = (n, e, t) => e.has(n) || ue("Cannot " + t), O = (n, e, t) => (fe(n, e, "read from private field"), t ? t.call(n) : e.get(n)), j = (n, e, t) => e.has(n) ? ue("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(n) : e.set(n, t), I = (n, e, t, i) => (fe(n, e, "write to private field"), e.set(n, t), t);
+}, ke = (n, e, t) => e in n ? Ce(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t, ie = (n, e, t) => ke(n, typeof e != "symbol" ? e + "" : e, t), fe = (n, e, t) => e.has(n) || ue("Cannot " + t), O = (n, e, t) => (fe(n, e, "read from private field"), t ? t.call(n) : e.get(n)), j = (n, e, t) => e.has(n) ? ue("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(n) : e.set(n, t), S = (n, e, t, i) => (fe(n, e, "write to private field"), e.set(n, t), t);
 const oe = {
   pi: Math.PI,
   e: Math.exp(1)
@@ -655,7 +655,7 @@ const Me = {
   "/": { precedence: 3, associative: "left", type: f.OPERATION },
   "+": { precedence: 2, associative: "left", type: f.OPERATION },
   "-": { precedence: 2, associative: "left", type: f.OPERATION }
-}, Se = {
+}, Ie = {
   "^": { precedence: 4, associative: "right", type: f.OPERATION },
   "*": { precedence: 3, associative: "left", type: f.OPERATION },
   "/": { precedence: 3, associative: "left", type: f.OPERATION },
@@ -668,7 +668,7 @@ const Me = {
   sqrt: { precedence: 4, associative: "right", type: f.FUNCTION },
   nthrt: { precedence: 4, associative: "right", type: f.FUNCTION },
   ",": { precedence: 2, associative: "left", type: f.FUNCTION_ARGUMENT }
-}, Ie = {
+}, Se = {
   "^": { precedence: 4, associative: "right", type: f.OPERATION },
   "*": { precedence: 3, associative: "left", type: f.OPERATION },
   "/": { precedence: 3, associative: "left", type: f.OPERATION },
@@ -691,7 +691,7 @@ const Me = {
 var L, F, C, Y, R;
 class _ {
   constructor(e) {
-    j(this, L), j(this, F, []), j(this, C, {}), j(this, Y, []), j(this, R), I(this, L, typeof e > "u" ? D.POLYNOM : e), this.tokenConfigInitialization();
+    j(this, L), j(this, F, []), j(this, C, {}), j(this, Y, []), j(this, R), S(this, L, typeof e > "u" ? D.POLYNOM : e), this.tokenConfigInitialization();
   }
   // Getter
   get rpn() {
@@ -701,7 +701,7 @@ class _ {
     return O(this, F).map((e) => e.token);
   }
   tokenConfigInitialization() {
-    return O(this, L) === D.SET ? (I(this, C, ze), I(this, R, !1)) : O(this, L) === D.NUMERIC ? (I(this, C, Ie), I(this, R, !0)) : O(this, L) === D.EXPRESSION ? (I(this, C, Se), I(this, R, !0)) : (I(this, C, Me), I(this, R, !0)), I(this, Y, Object.keys(O(this, C)).sort((e, t) => t.length - e.length)), O(this, C);
+    return O(this, L) === D.SET ? (S(this, C, ze), S(this, R, !1)) : O(this, L) === D.NUMERIC ? (S(this, C, Se), S(this, R, !0)) : O(this, L) === D.EXPRESSION ? (S(this, C, Ie), S(this, R, !0)) : (S(this, C, Me), S(this, R, !0)), S(this, Y, Object.keys(O(this, C)).sort((e, t) => t.length - e.length)), O(this, C);
   }
   /**
    * Get the next token to analyse.
@@ -813,7 +813,7 @@ class _ {
           throw new Error(`Token type ${r} is not handled`);
       }
     }
-    return I(this, F, i.concat(s.reverse())), this;
+    return S(this, F, i.concat(s.reverse())), this;
   }
 }
 L = /* @__PURE__ */ new WeakMap(), F = /* @__PURE__ */ new WeakMap(), C = /* @__PURE__ */ new WeakMap(), Y = /* @__PURE__ */ new WeakMap(), R = /* @__PURE__ */ new WeakMap();
@@ -929,7 +929,7 @@ class p {
    * @param inputStr
    */
   parse(e) {
-    return this.#t = new a(), this.#e = {}, typeof e == "string" ? this.#r(e) : typeof e == "number" ? this.#t = new a(e) : e instanceof a ? this.#t = e.clone() : e instanceof p && (this.#t = e.#t.clone(), this.#i(e)), this;
+    return this.#t = new a(), this.#e = {}, typeof e == "string" ? isNaN(Number(e)) ? this.#r(e) : this.#t = new a(Number(e)) : typeof e == "number" ? this.#t = new a(e) : e instanceof a ? this.#t = e.clone() : e instanceof p && (this.#t = e.#t.clone(), this.#i(e)), this;
   }
   /**
    * Clone the current Monom.
@@ -941,6 +941,27 @@ class p {
       e.setLetter(t, this.#e[t].clone());
     return e;
   };
+  /**
+   * Get the tex output of the monom
+   */
+  get tex() {
+    let e = "";
+    const t = Object.keys(this.#e).sort();
+    for (const i of t)
+      this.#e[i].isNotZero() && (e += i, this.#e[i].isNotEqual(1) && (e += `^{ ${this.#e[i].tfrac.tex} }`));
+    return e === "" ? this.#t.value != 0 ? this.#t.frac.tex : "0" : this.#t.value === 1 ? e : this.#t.value === -1 ? `-${e}` : this.#t.value === 0 ? "0" : `${this.#t.frac.tex}${e}`;
+  }
+  // Display getter
+  /**
+   * This display getter is to be used in the polynom display getter
+   */
+  get display() {
+    let e = "";
+    const t = Object.keys(this.#e).sort();
+    for (const i of t)
+      this.#e[i].isNotZero() && (e += i, this.#e[i].isNotEqual(1) && (e += `^(${this.#e[i].display})`));
+    return e === "" ? this.#t.value != 0 ? this.#t.display : "" : this.#t.value === 1 ? e : this.#t.value === -1 ? `-${e}` : this.#t.value === 0 ? "0" : `${this.#t.display}${e}`;
+  }
   static gcd = (...e) => {
     for (const r of e)
       if (r.containsRationalPower())
@@ -1007,17 +1028,6 @@ class p {
     } else
       return new p().zero();
   };
-  // Display getter
-  /**
-   * This display getter is to be used in the polynom display getter
-   */
-  get display() {
-    let e = "";
-    const t = Object.keys(this.#e).sort();
-    for (const i of t)
-      this.#e[i].isNotZero() && (e += i, this.#e[i].isNotEqual(1) && (e += `^(${this.#e[i].display})`));
-    return e === "" ? this.#t.value != 0 ? this.#t.display : "" : this.#t.value === 1 ? e : this.#t.value === -1 ? `-${e}` : this.#t.value === 0 ? "0" : `${this.#t.display}${e}`;
-  }
   /**
    * Divide the current monoms by multiple monoms
    * @param M (Monom[])
@@ -1284,16 +1294,6 @@ class p {
     }
     return this;
   };
-  /**
-   * Get the tex output of the monom
-   */
-  get tex() {
-    let e = "";
-    const t = Object.keys(this.#e).sort();
-    for (const i of t)
-      this.#e[i].isNotZero() && (e += i, this.#e[i].isNotEqual(1) && (e += `^{ ${this.#e[i].tfrac.tex} }`));
-    return e === "" ? this.#t.value != 0 ? this.#t.frac.tex : "0" : this.#t.value === 1 ? e : this.#t.value === -1 ? `-${e}` : this.#t.value === 0 ? "0" : `${this.#t.frac.tex}${e}`;
-  }
   // Getter helpers.
   /**
    * Get the variables letters
@@ -1336,21 +1336,6 @@ class p {
     }
     return t;
   };
-  _getLiteralDividers(e, t) {
-    const i = [];
-    for (let s = 0; s <= this.literal[t].value; s++)
-      if (e.length === 0) {
-        const r = {};
-        r[t] = new a(s), i.push(r);
-      } else
-        for (const r of e) {
-          const o = {};
-          for (const h in r)
-            o[h] = r[h];
-          o[t] = new a(s), i.push(o);
-        }
-    return i;
-  }
   #r = (e) => {
     const i = new _().parse(e).rpn, s = [];
     if (i.length === 0)
@@ -1387,6 +1372,21 @@ class p {
         }
       }
   };
+  _getLiteralDividers(e, t) {
+    const i = [];
+    for (let s = 0; s <= this.literal[t].value; s++)
+      if (e.length === 0) {
+        const r = {};
+        r[t] = new a(s), i.push(r);
+      } else
+        for (const r of e) {
+          const o = {};
+          for (const h in r)
+            o[h] = r[h];
+          o[t] = new a(s), i.push(o);
+        }
+    return i;
+  }
 }
 function le(n, e = !0) {
   return e ? `\\left( ${n} \\right)` : `(${n})`;
@@ -1916,9 +1916,9 @@ class u {
   };
   #g(e, ...t) {
     if (t.length === 0) {
-      if (e !== "" && !isNaN(Number(e))) {
+      if (console.log(e, Number(e)), e !== "" && !isNaN(Number(e))) {
         this.empty();
-        const i = new p(e);
+        const i = new p(Number(e));
         return this.add(i), this;
       }
       return this.#w(e);
@@ -3440,7 +3440,7 @@ class g {
     };
   }
 }
-var S = /* @__PURE__ */ ((n) => (n.None = "none", n.Parallel = "parallel", n.Perpendicular = "perpendicular", n.Tangent = "tangent", n))(S || {}), se = /* @__PURE__ */ ((n) => (n.None = "none", n.Parallel = "parallel", n.Perpendicular = "perpendicular", n.Tangent = "tangent", n))(se || {});
+var I = /* @__PURE__ */ ((n) => (n.None = "none", n.Parallel = "parallel", n.Perpendicular = "perpendicular", n.Tangent = "tangent", n))(I || {}), se = /* @__PURE__ */ ((n) => (n.None = "none", n.Parallel = "parallel", n.Perpendicular = "perpendicular", n.Tangent = "tangent", n))(se || {});
 function pe(n = 0.5) {
   return Math.random() < n;
 }
@@ -3506,9 +3506,9 @@ class v extends g {
   }
 }
 class b {
-  static PARALLEL = S.Parallel;
+  static PARALLEL = I.Parallel;
   // A line is defined as the canonical form
-  static PERPENDICULAR = S.Perpendicular;
+  static PERPENDICULAR = I.Perpendicular;
   #t;
   // ax + by + c = 0
   #e;
@@ -3557,12 +3557,12 @@ class b {
     }
     if (e.length === 3) {
       if (e[0] instanceof g && e[1] instanceof g) {
-        if (e[2] === S.Perpendicular)
+        if (e[2] === I.Perpendicular)
           return this.fromPointAndNormal(e[0], e[1]);
-        if (e[2] === S.Parallel)
+        if (e[2] === I.Parallel)
           return this.fromPointAndDirection(e[0], e[1]);
       }
-      return e[0] instanceof g && e[1] instanceof b ? e[2] === S.Parallel || e[2] === null ? this.fromPointAndLine(e[0], e[1], S.Parallel) : this.fromPointAndLine(e[0], e[1], S.Perpendicular) : this.fromCoefficient(
+      return e[0] instanceof g && e[1] instanceof b ? e[2] === I.Parallel || e[2] === null ? this.fromPointAndLine(e[0], e[1], I.Parallel) : this.fromPointAndLine(e[0], e[1], I.Perpendicular) : this.fromCoefficient(
         e[0],
         e[1],
         e[2]
@@ -3707,7 +3707,7 @@ class b {
     t.x.clone().opposite(),
     e.x.clone().multiply(t.y).subtract(e.y.clone().multiply(t.x)).opposite()
   ), this.#t = e.clone(), this.#r = t.clone(), this.#n = this.#r.clone().normal(), this);
-  fromPointAndLine = (e, t, i) => (i === void 0 && (i = S.Parallel), i === S.Parallel ? this.fromPointAndNormal(e, t.normal) : i === S.Perpendicular ? this.fromPointAndNormal(e, t.director) : this);
+  fromPointAndLine = (e, t, i) => (i === void 0 && (i = I.Parallel), i === I.Parallel ? this.fromPointAndNormal(e, t.normal) : i === I.Perpendicular ? this.fromPointAndNormal(e, t.director) : this);
   fromPointAndNormal = (e, t) => this.fromCoefficient(
     t.x,
     t.y,
@@ -3891,7 +3891,7 @@ class W {
   }
   #s = (e) => {
     const t = new g(this.center, e);
-    return [new b(e, t, S.Perpendicular)];
+    return [new b(e, t, I.Perpendicular)];
   };
   #r = (e) => {
     const t = this.center.x.clone().subtract(e.x), i = this.center.y.clone().subtract(e.y), s = new u("x"), r = new u("x^2+1");

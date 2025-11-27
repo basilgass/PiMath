@@ -1224,11 +1224,12 @@ export class Polynom implements IPiMathObject<Polynom>,
     #parseString(inputStr: string, ...values: unknown[]): this {
         if (values.length === 0) {
 
+            console.log(inputStr, Number(inputStr))
             // Parse the polynom using the shutting yard algorithm
             if (inputStr !== '' && !isNaN(Number(inputStr))) {
                 this.empty()
                 // It's a simple number.
-                const m = new Monom(inputStr)
+                const m = new Monom(Number(inputStr))
                 // m.coefficient = new Fraction(inputStr);
                 // m.literalStr = '';
                 this.add(m)

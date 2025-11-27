@@ -1,7 +1,5 @@
 import {describe, expect, it, test} from "vitest"
-import {Polynom} from "../../src"
-import {Fraction} from "../../src"
-import {Monom} from "../../src"
+import {Fraction, Monom, Polynom} from "../../src"
 
 describe('Polynom creation', () => {
     test('create Polynom', () => {
@@ -52,6 +50,15 @@ describe('Polynom creation', () => {
         const P = new Polynom('ax')
         expect(P.display).toBe('ax')
     })
+    test('parse trivial polynom (degree 0)', ()=>{
+        const P = new Polynom('2.3')
+        expect(P.display).toBe('23/10')
+    })
+    test('parse trivial polynom (degree 0) with incomplete decimal value', ()=>{
+        const P = new Polynom('2.')
+        expect(P.display).toBe('2')
+    })
+
     test('create Polynom from [x] and numbers', () => {
         const P = new Polynom('x', 2, 3, -4, 5)
 

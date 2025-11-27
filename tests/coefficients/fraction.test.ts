@@ -61,6 +61,13 @@ describe('Fraction creation', () => {
         expect(F.denominator).toBe(100)
     })
 
+    test('parse string with decimal (uncomplete)', () => {
+        const F = new Fraction('2.')
+
+        expect(F.numerator).toBe(2)
+        expect(F.denominator).toBe(1)
+    })
+
     test.todo('parse string with periodic decimal', () => {
         const F = new Fraction('3.(142857)')
 

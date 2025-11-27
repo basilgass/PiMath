@@ -10,11 +10,11 @@ import type {
     IPiMathObject,
     literalType
 } from "../pimath.interface"
-import { Fraction } from "../coefficients/fraction"
-import { NthRoot } from "../coefficients/nthRoot"
-import { Numeric } from "../numeric"
+import {Fraction} from "../coefficients/fraction"
+import {NthRoot} from "../coefficients/nthRoot"
+import {Numeric} from "../numeric"
 
-import { ShutingYard, ShutingyardType, type Token } from "piexpression"
+import {ShutingYard, ShutingyardType, type Token} from "piexpression"
 
 export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra<Monom> {
     #coefficient: Fraction
@@ -45,7 +45,11 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         this.#literal = {}
 
         if (typeof inputStr === 'string') {
-            this.#shutingYardToReducedMonom(inputStr)
+            if(!isNaN(Number(inputStr))){
+                this.#coefficient = new Fraction(Number(inputStr))
+            }else {
+                this.#shutingYardToReducedMonom(inputStr)
+            }
         } else if (typeof inputStr === 'number') {
             this.#coefficient = new Fraction(inputStr)
         } else if (inputStr instanceof Fraction) {
@@ -73,6 +77,80 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             F.setLetter(k, this.#literal[k].clone())
         }
         return F
+    }
+
+    /**
+     * Get the tex output of the monom
+     */
+    public get tex(): string {
+        // TODO: display with square root !
+        // TODO: Refactor to make it more readable
+        let L = ''
+        const letters = Object.keys(this.#literal).sort()
+
+        for (const letter of letters) {
+            if (this.#literal[letter].isNotZero()) {
+                L += letter
+                if (this.#literal[letter].isNotEqual(1)) {
+                    L += `^{ ${this.#literal[letter].tfrac.tex } }`
+                }
+            }
+        }
+
+        if (L === '') {
+            // No setLetter - means it's only a number !
+            if (this.#coefficient.value != 0) {
+                return this.#coefficient.frac.tex
+            } else {
+                return '0'
+            }
+        } else {
+            if (this.#coefficient.value === 1) {
+                return L
+            } else if (this.#coefficient.value === -1) {
+                return `-${L}`
+            } else if (this.#coefficient.value === 0) {
+                return '0'
+            } else {
+                return `${this.#coefficient.frac.tex}${L}`
+            }
+        }
+    }
+
+    // Display getter
+    /**
+     * This display getter is to be used in the polynom display getter
+     */
+    public get display(): string {
+        let L = ''
+        const letters = Object.keys(this.#literal).sort()
+        for (const letter of letters) {
+            if (this.#literal[letter].isNotZero()) {
+                L += letter
+                if (this.#literal[letter].isNotEqual(1)) {
+                    L += `^(${this.#literal[letter].display})`
+                }
+            }
+        }
+
+        if (L === '') {
+            // No setLetter - means it's only a number !
+            if (this.#coefficient.value != 0) {
+                return this.#coefficient.display
+            } else {
+                return ''
+            }
+        } else {
+            if (this.#coefficient.value === 1) {
+                return L
+            } else if (this.#coefficient.value === -1) {
+                return `-${L}`
+            } else if (this.#coefficient.value === 0) {
+                return '0'
+            } else {
+                return `${this.#coefficient.display}${L}`
+            }
+        }
     }
 
     public static gcd = (...monoms: Monom[]): Monom => {
@@ -205,42 +283,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             return dM
         } else {
             return new Monom().zero()
-        }
-    }
-
-    // Display getter
-    /**
-     * This display getter is to be used in the polynom display getter
-     */
-    public get display(): string {
-        let L = ''
-        const letters = Object.keys(this.#literal).sort()
-        for (const letter of letters) {
-            if (this.#literal[letter].isNotZero()) {
-                L += letter
-                if (this.#literal[letter].isNotEqual(1)) {
-                    L += `^(${this.#literal[letter].display})`
-                }
-            }
-        }
-
-        if (L === '') {
-            // No setLetter - means it's only a number !
-            if (this.#coefficient.value != 0) {
-                return this.#coefficient.display
-            } else {
-                return ''
-            }
-        } else {
-            if (this.#coefficient.value === 1) {
-                return L
-            } else if (this.#coefficient.value === -1) {
-                return `-${L}`
-            } else if (this.#coefficient.value === 0) {
-                return '0'
-            } else {
-                return `${this.#coefficient.display}${L}`
-            }
         }
     }
 
@@ -787,44 +829,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return this
     }
 
-    /**
-     * Get the tex output of the monom
-     */
-    public get tex(): string {
-        // TODO: display with square root !
-        // TODO: Refactor to make it more readable
-        let L = ''
-        const letters = Object.keys(this.#literal).sort()
-
-        for (const letter of letters) {
-            if (this.#literal[letter].isNotZero()) {
-                L += letter
-                if (this.#literal[letter].isNotEqual(1)) {
-                    L += `^{ ${this.#literal[letter].tfrac.tex } }`
-                }
-            }
-        }
-
-        if (L === '') {
-            // No setLetter - means it's only a number !
-            if (this.#coefficient.value != 0) {
-                return this.#coefficient.frac.tex
-            } else {
-                return '0'
-            }
-        } else {
-            if (this.#coefficient.value === 1) {
-                return L
-            } else if (this.#coefficient.value === -1) {
-                return `-${L}`
-            } else if (this.#coefficient.value === 0) {
-                return '0'
-            } else {
-                return `${this.#coefficient.frac.tex}${L}`
-            }
-        }
-    }
-
     // Getter helpers.
     /**
      * Get the variables letters
@@ -897,29 +901,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         }
 
         return r
-    }
-
-    private _getLiteralDividers(arr: literalType<Fraction>[], letter: string): literalType<Fraction>[] {
-        const tmpList: Record<string, Fraction>[] = []
-
-        // Be default, this.literal[letter] should be a rational number.
-        for (let d = 0; d <= this.literal[letter].value; d++) {
-            if (arr.length === 0) {
-                const litt: literalType<Fraction> = {}
-                litt[letter] = new Fraction(d)
-                tmpList.push(litt)
-            } else {
-                for (const item of arr) {
-                    const litt: literalType<Fraction> = {}
-                    for (const currentLetter in item) {
-                        litt[currentLetter] = item[currentLetter]
-                    }
-                    litt[letter] = new Fraction(d)
-                    tmpList.push(litt)
-                }
-            }
-        }
-        return tmpList
     }
 
     #shutingYardToReducedMonom = (inputStr: string): this => {
@@ -1007,5 +988,28 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
                 }
             }
         }
+    }
+
+    private _getLiteralDividers(arr: literalType<Fraction>[], letter: string): literalType<Fraction>[] {
+        const tmpList: Record<string, Fraction>[] = []
+
+        // Be default, this.literal[letter] should be a rational number.
+        for (let d = 0; d <= this.literal[letter].value; d++) {
+            if (arr.length === 0) {
+                const litt: literalType<Fraction> = {}
+                litt[letter] = new Fraction(d)
+                tmpList.push(litt)
+            } else {
+                for (const item of arr) {
+                    const litt: literalType<Fraction> = {}
+                    for (const currentLetter in item) {
+                        litt[currentLetter] = item[currentLetter]
+                    }
+                    litt[letter] = new Fraction(d)
+                    tmpList.push(litt)
+                }
+            }
+        }
+        return tmpList
     }
 }
