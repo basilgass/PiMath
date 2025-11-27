@@ -337,16 +337,46 @@ describe('temp', () => {
         console.log(AB.display)
     })
 
-    test('la jungle', () => {
+    test('test 0', ()=>{
         const A = new Matrix().fromValues([
-            [0.9, 0, 0.1],
-            [0.8, 0.2, 0],
-            [0, 0.5, 0.5]
+            [3,-1,4],
+            [2, 1, -1]
+        ])
+        const B = new Matrix().fromValues([
+            [1,2],[3,4]
         ])
 
-        A.pow(2)
+        const C = new Matrix().fromValues([
+            [2],[-4],[6]
+        ])
 
-        console.log(A.toFixed(3).display)
+        console.log(A.clone().multiply(C).display)
+
+        console.log(B.clone().multiply(B).display)
+    })
+
+    test('la jungle', () => {
+        const A = new Matrix().fromValues([
+            [0.6,0.3,0.1],
+            [0.2,0.5, 0.3],
+            [0.1, 0.4, 0.5]
+        ])
+
+        console.log(A.pow(3).toFixed(3).display)
+
+        // const A = new Matrix().fromValues([
+        //     [0.4, 0.3, 0.3],
+        //     [0.2, 0.5, 0.3],
+        //     [0.5, 0.2, 0.3]
+        // ])
+        // A.pow(2)
+
+        // const V = new Matrix().fromValues([
+        //     [0.3, 0.4, 0.3]
+        // ])
+
+        // V.multiply(A)
+        // console.log(V.toFixed(3).display)
     })
 })
 /*describe.skip('Matrix comparisons', () => {

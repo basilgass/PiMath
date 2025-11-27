@@ -83,6 +83,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
                 }
                 break
             case "number":
+                console.log('CHECK AS NUMBER', value)
                 if (Number.isSafeInteger(value)) {
                     // The given value is an integer
                     this.#numerator = +value
@@ -100,7 +101,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
                     const power = Math.pow(10, p)
 
                     // Detect if the decimal part is periodic or not...
-
                     if (denominatorOrPeriodic === undefined) {
                         // Transform the float number in two integer
                         // 0.123 = 0.123*10^3 / 10^3
@@ -110,6 +110,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
                         this.#numerator = value * power - Math.floor(value * Math.pow(10, p - denominatorOrPeriodic))
                         this.denominator = power - Math.pow(10, p - denominatorOrPeriodic)
                     }
+
+                    this.#numerator = Numeric.numberCorrection(this.#numerator)
+                    this.#denominator = Numeric.numberCorrection(this.#denominator)
 
                     this.reduce()
                 }

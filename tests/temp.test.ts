@@ -3,6 +3,7 @@ import {Random} from "../src/randomization/random"
 import {PolyFactor} from "../src/algebra/polyFactor"
 import {Vector} from "../src/geometry/vector"
 import {determinantFromVectors} from "../src/geometry/geomMath"
+import {Matrix} from "../src"
 
 describe('Debug tests', ()=>{
     test('polynom randomisation', ()=>{
@@ -79,5 +80,37 @@ describe('Debug tests', ()=>{
         const v3 = new Vector(6,32,3)
 
         console.log(determinantFromVectors(v1, v2, v3).display)
+    })
+
+    test('4d6 * 6', ()=>{
+        const results: number[] = []
+
+        for(let i=0; i<6; i++){
+            const d6:number[] = []
+            for(let d=0; d<4;d++){
+                d6.push( Random.number(1,6))
+            }
+
+            d6.sort()
+            d6.shift()
+            results.push( d6.reduce((a,b)=>a+b, 0) )
+        }
+
+        console.log(results)
+    })
+
+    test('ex supp', ()=>{
+        const CI = new Matrix().fromValues([
+            [345, 31, 42, 8]
+        ])
+        const P = new Matrix().fromValues([
+            [0.74, 0.15, 0.08, 0.03],
+            [0.47, 0.29, 0.18, 0.06],
+            [0.25, 0.36, 0, 0.39],
+            [0.03, 0.42, 0, 0.55]
+        ])
+
+        const X = CI.clone().multiply(P)
+        console.log(X.toFixed(2).display)
     })
 })
