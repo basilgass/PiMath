@@ -397,7 +397,7 @@ export class EquationSolver {
 
         // The monom with greatest degree must be positive.
         const left = this.#leftPolynom
-        if(left.monomByDegree().coefficient.isNegative()){
+        if (left.monomByDegree().coefficient.isNegative()) {
             left.opposite()
         }
 
@@ -460,17 +460,33 @@ export class EquationSolver {
         // Calculate the various values and transforming
         const b2 = b.clone().divide(gcd).opposite()
         const a2 = a.clone().divide(gcd).multiply(2)
-        const delta2 = delta.clone().divide(deltaFactor ** 2)
         const deltaGcd = Math.abs(deltaFactor / gcd)
-        const deltaK1 = deltaFactor === 1 ? '-' : `-${deltaGcd} `
-        const deltaK2 = deltaFactor === 1 ? '+' : `+${deltaGcd} `
+        const deltaTex = `${deltaFactor === 1 ? '' : deltaGcd + ' '}\\sqrt{ ${delta.clone().divide(deltaFactor ** 2).tex} }`
+        const deltaDisplay = `${deltaFactor === 1 ? '' : deltaGcd}sqrt(${delta.clone().divide(deltaFactor ** 2).display})`
+        // const deltaK1 = deltaFactor === 1 ? '-' : `-${deltaGcd} `
+        // const deltaK2 = deltaFactor === 1 ? '+' : `+${deltaGcd} `
 
-        function texOutput(a: string, b: string, k: string, delta: string) {
-            return `\\frac{ ${b} ${k}\\sqrt{ ${delta} } }{ ${a} }`
+        function texOutput(a: string, b: string, sign: string, delta: string) {
+            // (B+D)/A
+            const B = b==='0'?'':b
+            const S = (sign==='-' || B!=='') ? ` ${sign} ` : ''
+
+            if(a==="1") {
+                return `${B}${S}${delta}`
+            }
+            return `\\frac{ ${S}${S}${delta} }{ ${a} }`
         }
 
-        function displayOutput(a: string, b: string, k: string, delta: string) {
-            return `(${b}${k}sqrt(${delta}))/${a}`
+        function displayOutput(a: string, b: string, sign: string, delta: string) {
+            // (B+D)/A
+            const B = b==='0'?'':b
+            const S = (sign==='-' || B!=='') ? sign : ''
+
+
+            if(a==="1") {
+                return `${B}${S}${delta}`
+            }
+            return `(${B}${S}${delta})/${a}`
         }
 
         const d = delta.value ** 0.5
@@ -480,14 +496,14 @@ export class EquationSolver {
         return [
             this.#makeApproximativeSolution(f1,
                 {
-                    tex: texOutput(a2.tex, b2.tex, deltaK1, delta2.tex),
-                    display: displayOutput(a2.display, b2.display, deltaK1, delta2.display),
+                    tex: texOutput(a2.tex, b2.tex, '-', deltaTex),
+                    display: displayOutput(a2.display, b2.display, '-', deltaDisplay),
                 }
             ),
             this.#makeApproximativeSolution(f2,
                 {
-                    tex: texOutput(a2.tex, b2.tex, deltaK2, delta2.tex),
-                    display: displayOutput(a2.display, b2.display, deltaK2, delta2.display),
+                    tex: texOutput(a2.tex, b2.tex, '+', deltaTex),
+                    display: displayOutput(a2.display, b2.display, '+', deltaDisplay),
                 }
             )
         ].sort((a, b) => a.value - b.value)

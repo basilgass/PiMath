@@ -1,6 +1,5 @@
-import { describe, expect, test } from "vitest"
-import {PolyFactor} from "../../src"
-import { Factor } from "../../src"
+import {describe, expect, test} from "vitest"
+import {Factor, PolyFactor} from "../../src"
 
 describe("PolyFactor creation", () => {
     test('should create a PolyFactor', () => {
@@ -583,6 +582,14 @@ describe('PolyFactor: Table of signs', ()=>{
             't', '-', 'z',
             '+', 't', '+'
         ])
+    })
+    test('solve polynom without bx', ()=>{
+        const PF = new PolyFactor().fromPolynom('8-x^2')
+        const tos = PF.tableOfSigns()
+
+        expect(tos.roots).toHaveLength(2)
+        expect(tos.roots[0].display).toBe('-2sqrt(2)')
+        expect(tos.roots[1].display).toBe('2sqrt(2)')
     })
 })
 

@@ -19,15 +19,15 @@
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M176.5,-404C176.5,-404 690,-404 690,-404 696,-404 702,-410 702,-416 702,-416 702,-588 702,-588 702,-594 696,-600 690,-600 690,-600 176.5,-600 176.5,-600 170.5,-600 164.5,-594 164.5,-588 164.5,-588 164.5,-416 164.5,-416 164.5,-410 170.5,-404 176.5,-404"/>
 <text text-anchor="middle" x="433.25" y="-588.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">algebra</text>
 </g>
-<g id="clust3" class="cluster">
-<title>cluster_src/coefficients</title>
-<path fill="#ffffff" stroke="black" stroke-width="2" d="M635.5,-314C635.5,-314 772.5,-314 772.5,-314 778.5,-314 784.5,-320 784.5,-326 784.5,-326 784.5,-384 784.5,-384 784.5,-390 778.5,-396 772.5,-396 772.5,-396 635.5,-396 635.5,-396 629.5,-396 623.5,-390 623.5,-384 623.5,-384 623.5,-326 623.5,-326 623.5,-320 629.5,-314 635.5,-314"/>
-<text text-anchor="middle" x="704" y="-384.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">coefficients</text>
-</g>
 <g id="clust4" class="cluster">
 <title>cluster_src/geometry</title>
 <path fill="#ffffff" stroke="black" stroke-width="2" d="M176.5,-712C176.5,-712 689.5,-712 689.5,-712 695.5,-712 701.5,-718 701.5,-724 701.5,-724 701.5,-938 701.5,-938 701.5,-944 695.5,-950 689.5,-950 689.5,-950 176.5,-950 176.5,-950 170.5,-950 164.5,-944 164.5,-938 164.5,-938 164.5,-724 164.5,-724 164.5,-718 170.5,-712 176.5,-712"/>
 <text text-anchor="middle" x="433" y="-938.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">geometry</text>
+</g>
+<g id="clust3" class="cluster">
+<title>cluster_src/coefficients</title>
+<path fill="#ffffff" stroke="black" stroke-width="2" d="M635.5,-314C635.5,-314 772.5,-314 772.5,-314 778.5,-314 784.5,-320 784.5,-326 784.5,-326 784.5,-384 784.5,-384 784.5,-390 778.5,-396 772.5,-396 772.5,-396 635.5,-396 635.5,-396 629.5,-396 623.5,-390 623.5,-384 623.5,-384 623.5,-326 623.5,-326 623.5,-320 629.5,-314 635.5,-314"/>
+<text text-anchor="middle" x="704" y="-384.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="9.00">coefficients</text>
 </g>
 <g id="clust5" class="cluster">
 <title>cluster_src/randomization</title>

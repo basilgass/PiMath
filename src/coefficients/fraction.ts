@@ -179,7 +179,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
     public static isFraction(value: InputValue<Fraction>) {
         if (value instanceof Fraction ||
-            (typeof value === "number" && !isNaN(value))
+            (typeof value === "number" && !isNaN(+value))
         ) {
             return true
         }
@@ -187,7 +187,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         if(typeof value === "string"){
             const [num, den] = value.split('/')
 
-            return !isNaN(+num) && (den===undefined || !isNaN(+den))
+            return !isNaN(+num) && !isNaN(+den)
         }
 
         return false
