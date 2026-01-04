@@ -238,8 +238,8 @@ class a {
   infinite = () => (this.#t = 1 / 0, this.#e = 1, this);
   invalid = () => (this.#t = NaN, this.#e = 1, this);
   inverse = () => {
-    const e = +this.#t;
-    return this.#t = +this.#e, this.#e = e, this;
+    const e = this.sign(), t = Math.abs(this.#t);
+    return this.#t = Math.abs(this.#e) * e, this.#e = t, this;
   };
   isApproximative = () => this.#i || this.#t.toString().length >= 15 && this.#e.toString().length >= 15;
   isEqual = (e) => this.compare(e, "=");

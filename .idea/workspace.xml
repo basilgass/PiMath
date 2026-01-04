@@ -4,17 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Remove a console.log">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Update package.json&#10;Migrate from eslintjs to eslint&#10;build ok&#10;dependencies ok">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pimath.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pimath.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/equationSolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equationSolver.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/coefficients/fraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/fraction.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/equationSolver.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/equationSolver.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/matrix.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/matrix.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -346,15 +339,15 @@
   </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
-      <command value="npm run dependency-cruise" />
       <command value="npm install" />
       <command value="npm run test" />
       <command value="vitest" />
       <command value="npm run dev" />
+      <command value="npm run dependency-cruise" />
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.PolyFactor: Table of signs.solve polynom without bx">
+  <component name="RunManager" selected="Vitest.temp.la jungle">
     <configuration name="All Tests" type="JavaScriptTestRunnerVitest" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -374,6 +367,20 @@
       <test-names>
         <test-name value="PolyFactor: Table of signs" />
         <test-name value="solve polynom without bx" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="temp.la jungle" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/matrix.test.ts" />
+      <test-names>
+        <test-name value="temp" />
+        <test-name value="la jungle" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -407,42 +414,29 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="test" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="test" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <EXTENSION ID="com.intellij.javascript.debugger.execution.StartBrowserRunConfigurationExtension">
-        <browser with-js-debugger="true" />
-      </EXTENSION>
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="npm.dependency-cruise" />
       <item itemvalue="npm.build" />
       <item itemvalue="npm.dev" />
-      <item itemvalue="npm.test" />
       <item itemvalue="Vitest.All Tests" />
+      <item itemvalue="Vitest.temp.la jungle" />
       <item itemvalue="Vitest.PolyFactor: Table of signs.solve polynom without bx" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.dependency-cruise" />
         <item itemvalue="npm.build" />
+        <item itemvalue="Vitest.temp.la jungle" />
+        <item itemvalue="npm.dependency-cruise" />
         <item itemvalue="npm.dev" />
         <item itemvalue="Vitest.PolyFactor: Table of signs.solve polynom without bx" />
-        <item itemvalue="npm.test" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-c7e53b3be11b-JavaScript-PS-253.28294.257" />
-        <option value="bundled-php-predefined-a98d8de5180a-09080813851e-com.jetbrains.php.sharedIndexes-PS-253.28294.257" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PS-253.29346.151" />
+        <option value="bundled-php-predefined-a98d8de5180a-0e0d91225499-com.jetbrains.php.sharedIndexes-PS-253.29346.151" />
       </set>
     </attachedChunks>
   </component>
@@ -622,14 +616,16 @@
       <workItem from="1765015029001" duration="119000" />
       <workItem from="1765015485163" duration="368000" />
       <workItem from="1765260796940" duration="4345000" />
-    </task>
-    <task id="LOCAL-00012" summary="Phantmo import removed. Build ok,">
-      <option name="closed" value="true" />
-      <created>1727251504996</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1727251504996</updated>
+      <workItem from="1765271967892" duration="112000" />
+      <workItem from="1765448433656" duration="2657000" />
+      <workItem from="1765461041430" duration="5334000" />
+      <workItem from="1765523682622" duration="11000" />
+      <workItem from="1765783950658" duration="2328000" />
+      <workItem from="1765813670867" duration="1228000" />
+      <workItem from="1765881506389" duration="613000" />
+      <workItem from="1765902827626" duration="13000" />
+      <workItem from="1766135990035" duration="41000" />
+      <workItem from="1767541049827" duration="77000" />
     </task>
     <task id="LOCAL-00013" summary="Adding factors to PolyFactor.TableOfSigns() to list all factors tos.&#10;Adding TABLE_OF_SIGNS type.">
       <option name="closed" value="true" />
@@ -1015,7 +1011,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764254172925</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="Update package.json&#10;Migrate from eslintjs to eslint&#10;build ok&#10;dependencies ok">
+      <option name="closed" value="true" />
+      <created>1765272058028</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1765272058028</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1024,7 +1028,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Tested and build" />
     <MESSAGE value="Updated getCoefficient to handle polynom with missing degrees." />
     <MESSAGE value="Update of Table of signs" />
     <MESSAGE value="Cleaning TODOs" />
@@ -1049,7 +1052,8 @@
     <MESSAGE value="Removed a console.log" />
     <MESSAGE value="Automatic convert the 2. value to 2 number (avoid errors while typing in a dynamic interface)." />
     <MESSAGE value="Remove a console.log" />
-    <option name="LAST_COMMIT_MESSAGE" value="Remove a console.log" />
+    <MESSAGE value="Update package.json&#10;Migrate from eslintjs to eslint&#10;build ok&#10;dependencies ok" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update package.json&#10;Migrate from eslintjs to eslint&#10;build ok&#10;dependencies ok" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

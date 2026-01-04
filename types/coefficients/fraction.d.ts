@@ -87,7 +87,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     pow: (p: number | Fraction) => Fraction;
     reduce: () => this;
     root: (p: number) => this;
-    sign: () => number;
+    sign: () => 1 | -1;
     sqrt: () => this;
     subtract: (F: Fraction | number) => Fraction;
     get texWithSign(): string;

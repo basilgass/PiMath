@@ -357,12 +357,22 @@ describe('temp', () => {
 
     test('la jungle', () => {
         const A = new Matrix().fromValues([
-            [0.6,0.3,0.1],
-            [0.2,0.5, 0.3],
-            [0.1, 0.4, 0.5]
+            [0.6,0.4],
+            [0.3,0.7]
+        ])
+        const P = new Matrix().fromValues([
+            [250, 300]
         ])
 
-        console.log(A.pow(3).toFixed(3).display)
+        console.log(A.clone().pow(6).toFixed(6).display)
+
+        console.log(P.clone().multiply(A.clone()).toFixed(2).display )
+
+        console.log(P.clone().multiply(A.clone().pow(2)).toFixed(2).display )
+        console.log(A.clone().pow(2).toFixed(3).display)
+
+        console.log(A.pow(3).toFixed(5).display)
+        console.log(P.multiply(A).toFixed(3).display)
 
         // const A = new Matrix().fromValues([
         //     [0.4, 0.3, 0.3],
@@ -377,6 +387,16 @@ describe('temp', () => {
 
         // V.multiply(A)
         // console.log(V.toFixed(3).display)
+    })
+
+    test('TE', ()=>{
+        const A = new Matrix().fromValues([
+            [0.8,0.3,0.1],
+            [0.2,0.5, 0.3],
+            [0.1, 0.4, 0.5]
+        ])
+
+        console.log(A.pow(3).toFixed(3).display)
     })
 })
 /*describe.skip('Matrix comparisons', () => {
