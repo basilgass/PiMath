@@ -387,8 +387,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     public inverse = (): this => {
-        const n = +this.#numerator
-        this.#numerator = +this.#denominator
+        const sign = this.sign()
+        const n = Math.abs(this.#numerator)
+        this.#numerator = Math.abs(this.#denominator) * sign
         this.#denominator = n
 
         return this
@@ -639,7 +640,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    public sign = (): number => {
+    public sign = (): 1 | -1 => {
         return (this.#numerator * this.#denominator >= 0) ? 1 : -1
     }
 
