@@ -162,6 +162,27 @@ function round(value: number, decimals = 2): number {
     return Number(`${exp}e-${decimals}`)
 }
 
+function greatestPower(value: number, index: number): number {
+    let search_value = Math.floor(Math.pow(value, 1 / index))
+
+    let radical = value
+    let factor = 1
+
+    while (search_value > 1) {
+        const pow = Math.pow(search_value, index)
+        if (radical % pow) {
+            factor *= search_value
+            radical = radical / pow
+
+            search_value = Math.floor(Math.pow(radical, 1 / index))
+        }else{
+            search_value--
+        }
+    }
+
+    return factor
+}
+
 
 export const Numeric = {
     decompose,
@@ -173,5 +194,6 @@ export const Numeric = {
     periodic,
     primes,
     pythagoreanTripletsWithTarget,
-    round
+    round,
+    greatestPower
 }

@@ -1,5 +1,5 @@
 import { Fraction, NthRoot } from './coefficients';
-import { Monom, Factor, Equation } from './algebra';
+import { Equation, Factor, Monom } from './algebra';
 import { Line, Point, Vector } from './geometry';
 export type InputValue<T> = T | string | number | Fraction | NthRoot;
 export type InputAlgebra<T> = InputValue<T> | Monom;
@@ -11,31 +11,31 @@ export declare enum PARTICULAR_SOLUTION {
     varnothing = "\\varnothing"
 }
 export interface IPiMathObject<T> {
-    readonly tex: string;
     readonly display: string;
-    clone(): T;
+    readonly tex: string;
     parse(...value: unknown[]): T;
+    clone(): T;
 }
 export interface IExpressionBase<T> {
-    isEqual(value: InputValue<T>): boolean;
-    zero(): T;
-    one(): T;
-    isZero(): boolean;
-    isOne(): boolean;
     add(value: InputValue<T>): T;
-    subtract(value: InputValue<T>): T;
+    isEqual(value: InputValue<T>): boolean;
+    isOne(): boolean;
+    isZero(): boolean;
+    one(): T;
     opposite(): T;
     reduce(): T;
+    subtract(value: InputValue<T>): T;
+    zero(): T;
 }
 export interface IExpressionMultiply<T> extends IExpressionBase<T> {
     multiply(value: InputValue<T>): T;
     pow(value: number): T;
 }
 export interface IExpression<T> extends IExpressionMultiply<T> {
-    inverse(): T | undefined;
     divide(value: InputValue<T>): T | null;
-    sqrt(): T | undefined;
+    inverse(): T | undefined;
     root(value: number): T | undefined;
+    sqrt(): T | undefined;
 }
 export interface IEquation<T> {
     reduce(): T;
@@ -43,21 +43,21 @@ export interface IEquation<T> {
 }
 export interface IAlgebra<T> {
     readonly variables: string[];
-    hasVariable(letter: string): boolean;
     degree(letter?: string): Fraction;
     evaluate(values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number | boolean;
+    hasVariable(letter: string): boolean;
 }
 export interface IAnalyse<T> {
     derivative(): T | T[];
-    primitive(): T;
     integrate(a: InputValue<Fraction>, b: InputValue<T>, letter?: string): Fraction;
+    primitive(): T;
 }
 export interface ISolution {
-    variable: string;
     display: string;
     exact: Fraction | boolean;
     tex: string;
     value: number;
+    variable: string;
 }
 export type TABLE_OF_SIGNS_VALUES = '-' | '+' | 'h' | 'z' | 't' | 'd' | 'u' | 'n' | '';
 export interface TABLE_OF_SIGNS {
@@ -83,32 +83,14 @@ export declare enum Line3Propriety {
     Tangent = "tangent"
 }
 export interface Plane3Config {
-    point?: Point;
-    normal?: Vector;
+    coefficients?: number[];
     directions?: Vector[];
     equation?: Equation;
+    normal?: Vector;
+    point?: Point;
     points?: Point[];
-    coefficients?: number[];
 }
 export interface remarquableLines {
-    'medians': {
-        'A': Line;
-        'B': Line;
-        'C': Line;
-        'intersection': Vector | null;
-    };
-    'mediators': {
-        'AB': Line;
-        'AC': Line;
-        'BC': Line;
-        'intersection': Vector | null;
-    };
-    'heights': {
-        'A': Line;
-        'B': Line;
-        'C': Line;
-        'intersection': Vector | null;
-    };
     'bisectors': {
         'A': Line;
         'B': Line;
@@ -119,6 +101,24 @@ export interface remarquableLines {
         'A': Line;
         'B': Line;
         'C': Line;
+        'intersection': Vector | null;
+    };
+    'heights': {
+        'A': Line;
+        'B': Line;
+        'C': Line;
+        'intersection': Vector | null;
+    };
+    'medians': {
+        'A': Line;
+        'B': Line;
+        'C': Line;
+        'intersection': Vector | null;
+    };
+    'mediators': {
+        'AB': Line;
+        'AC': Line;
+        'BC': Line;
         'intersection': Vector | null;
     };
 }

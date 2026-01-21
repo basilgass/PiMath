@@ -2,6 +2,18 @@ export function wrapParenthesis(str: string, tex = true): string {
     return tex ? `\\left( ${str} \\right)` : `(${str})`
 }
 
+export function stripParenthesis(str: string): string {
+    if(str.startsWith('(')){
+        str = str.substring(1)
+    }
+
+    if(str.endsWith(')')){
+        str = str.substring(0, str.length-1)
+    }
+
+    return str
+}
+
 export function wrapVert(str: string, tex = true): string {
     return tex ? `\\left\\vert ${str} \\right\\vert` : `|${str}|`
 }

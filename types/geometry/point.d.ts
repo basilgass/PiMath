@@ -1,4 +1,4 @@
-import { Fraction } from '../coefficients/fraction';
+import { Fraction } from '../coefficients';
 import { InputValue } from '../pimath.interface';
 import { Vector } from './vector';
 export declare class Point extends Vector {

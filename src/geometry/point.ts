@@ -3,9 +3,9 @@
  * @module Point
  */
 
-import { Fraction } from "../coefficients/fraction"
-import type { InputValue } from "../pimath.interface"
-import { Vector } from "./vector"
+import {Fraction} from "../coefficients"
+import type {InputValue} from "../pimath.interface"
+import {Vector} from "./vector"
 
 export class Point extends Vector {
 
@@ -16,6 +16,8 @@ export class Point extends Vector {
     constructor(...values: Vector[] | InputValue<Fraction>[]) {
         super()
 
+        this.asPoint = true
+
         // Initialize the vector
         if (values.length > 0) {
             this.parse(...values)
@@ -23,8 +25,6 @@ export class Point extends Vector {
     };
 
     public override parse(...values: Vector[] | InputValue<Fraction>[]): this {
-        this.asPoint = true
-
         if (values.length === 1) {
             if (values[0] instanceof Vector) {
                 this.array = values[0].copy()

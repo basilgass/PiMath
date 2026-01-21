@@ -23,6 +23,7 @@ declare const PiMath: {
         primes: (nb?: number) => number[];
         pythagoreanTripletsWithTarget: (target: number, targetIsSquare?: boolean) => number[][];
         round: (value: number, decimals?: number) => number;
+        greatestPower: (value: number, index: number) => number;
     };
     Fraction: typeof Fraction;
     Root: typeof NthRoot;

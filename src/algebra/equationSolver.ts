@@ -5,11 +5,15 @@ import {Numeric} from "../numeric"
 import type {Equation} from "./equation"
 
 export class EquationSolver {
+    #bissectionCompexityCounter: number
+    #bissectionDeltaX: number
     readonly #leftPolynom: Polynom
     readonly #variable: string
 
     constructor(left: Polynom | Equation, right?: Polynom, variable = "x") {
         this.#variable = variable
+        this.#bissectionDeltaX = 1e-4
+        this.#bissectionCompexityCounter = 0
 
         if (Object.hasOwn(left, 'moveLeft')) {
             const equ = left as Equation
@@ -17,6 +21,18 @@ export class EquationSolver {
         } else {
             this.#leftPolynom = (left as Polynom).clone().subtract(right ?? 0)
         }
+    }
+
+    get bissectionCompexityCounter(){
+        return this.#bissectionCompexityCounter
+    }
+
+    get bissectionDeltaX() {
+        return this.#bissectionDeltaX
+    }
+
+    set bissectionDeltaX(value: number) {
+        this.#bissectionDeltaX = value
     }
 
     public solve(): ISolution[] {
@@ -34,7 +50,6 @@ export class EquationSolver {
             return this.#solveQuadratic()
         }
 
-        // TODO: doit gérer le fait que si on a trouvé des solutions, on peut réduire avant de faire la bissection
         // Try to solve by factorization -> exact solutions.
         const {solutions, polynom} = this.#solveByFactorization()
 
@@ -43,7 +58,16 @@ export class EquationSolver {
             return solutions
         }
 
+        // The remaining polyno is of degree one or two, but cannot be solved by factorization (!).
+        if (polynom.degree().value <= 2) {
+            return solutions.concat(
+                new EquationSolver(polynom.clone()).solve()
+            )
+        }
+
         // Use approximative solutions, using bissection algorithm.
+        // TODO: doit gérer le fait que si on a trouvé des solutions, on peut réduire avant de faire la bissection
+        this.#bissectionCompexityCounter = 0
         return solutions.concat(
             this.#solveByBissection(polynom)
         ).sort((a, b) => a.value - b.value)
@@ -81,18 +105,18 @@ export class EquationSolver {
         }
     }
 
+    // Solve using bissection algorithm (approximative solution)
     #solveByBissection(polynom: Polynom): ISolution[] {
         const solutions: ISolution[] = []
         const degree = polynom.degree().value
-        const coeffs = polynom.getCoefficients().map(x => x.value)
 
         // Calculate the Cauchy Bounds.
         const [a, ...values] = polynom.getCoefficients()
         const B = 2 + Math.max(...values.map(x => x.value / a.value))
 
-        // Cut the [-B;B] interval in *n* parts
+        // Cut the [-B;B] interval in *n* parts : n = 100
 
-        // Calculate the value at each points
+        // Calculate the f(x) value at each points
         const evaluatedPoints = this.#solveByBissection_evaluatePoints(polynom, B, 100)
 
         // Check if there is a least n opposite couples
@@ -106,17 +130,19 @@ export class EquationSolver {
                 // Exact solution
                 solutions.push(this.#makeSolution(a))
             } else {
-                const bissection = this.#solveByBissection_algorithm(polynom, coeffs, a, b)
+                const bissection = this.#solveByBissection_algorithm(polynom, a, b)
+
                 if (bissection !== null) {
                     solutions.push(this.#makeApproximativeSolution(bissection))
                 }
             }
         })
 
+        console.log('COMPLEXITY: ', this.#bissectionCompexityCounter)
         return solutions
     }
 
-    #solveByBissection_algorithm(polynom: Polynom, coeffs: number[], a: number, b: number, tol = 1e-10): number | null {
+    #solveByBissection_algorithm(polynom: Polynom, a: number, b: number): number | null {
         let fa = polynom.evaluate(a, true) as number
         let fb = polynom.evaluate(b, true) as number
 
@@ -126,7 +152,9 @@ export class EquationSolver {
         }
 
         let mid: number
-        while ((b - a) / 2 > tol) {
+        while ((b - a) / 2 > this.#bissectionDeltaX) {
+            this.#bissectionCompexityCounter++
+
             mid = (a + b) / 2
             const fmid = polynom.evaluate(mid, true) as number
 
@@ -468,10 +496,10 @@ export class EquationSolver {
 
         function texOutput(a: string, b: string, sign: string, delta: string) {
             // (B+D)/A
-            const B = b==='0'?'':b
-            const S = (sign==='-' || B!=='') ? ` ${sign} ` : ''
+            const B = b === '0' ? '' : b
+            const S = (sign === '-' || B !== '') ? ` ${sign} ` : ''
 
-            if(a==="1") {
+            if (a === "1") {
                 return `${B}${S}${delta}`
             }
             return `\\frac{ ${S}${S}${delta} }{ ${a} }`
@@ -479,11 +507,11 @@ export class EquationSolver {
 
         function displayOutput(a: string, b: string, sign: string, delta: string) {
             // (B+D)/A
-            const B = b==='0'?'':b
-            const S = (sign==='-' || B!=='') ? sign : ''
+            const B = b === '0' ? '' : b
+            const S = (sign === '-' || B !== '') ? sign : ''
 
 
-            if(a==="1") {
+            if (a === "1") {
                 return `${B}${S}${delta}`
             }
             return `(${B}${S}${delta})/${a}`

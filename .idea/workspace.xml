@@ -4,10 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Update package.json&#10;Migrate from eslintjs to eslint&#10;build ok&#10;dependencies ok">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Update Fraction.inverse to correctly handle negative fraction.">
+      <change afterPath="$PROJECT_DIR$/src/analyze/solution.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/analyze/tableOfSigns.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/coefficients/root.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/coefficients/root.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/coefficients/fraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/fraction.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/matrix.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/matrix.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/equationSolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equationSolver.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/point.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/point.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/numeric.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/numeric.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pimath.interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pimath.interface.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +32,11 @@
   </component>
   <component name="ComposerSettings">
     <execution />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/websites/PiMath" value="2lv02LnbvB9DMnP4CMMjgXODMcH" />
+    </persistenceIdMap>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -190,6 +206,7 @@
     &quot;Vitest.PolyFactor: algebra operations.should get the derivative of a PolyFactor with three factors.executor&quot;: &quot;Run&quot;,
     &quot;Vitest.PolyFactor: algebra operations.should get the derivative of the PolyFactor.executor&quot;: &quot;Run&quot;,
     &quot;Vitest.PolyFactor: operations.should divide two PolyFactors.executor&quot;: &quot;Run&quot;,
+    &quot;Vitest.PolyFactor: operations.should reduce a PolyFactors with constant factors.executor&quot;: &quot;Run&quot;,
     &quot;Vitest.PolyFactor: output functions.should output as LaTex and do not add parenthesis on power if not needed..executor&quot;: &quot;Run&quot;,
     &quot;Vitest.Polynom comparisons.equal Polynom.executor&quot;: &quot;Run&quot;,
     &quot;Vitest.Polynom comparisons.executor&quot;: &quot;Run&quot;,
@@ -291,6 +308,12 @@
     &quot;Vitest.monom.test.ts.executor&quot;: &quot;Run&quot;,
     &quot;Vitest.polyfactor.test.ts.executor&quot;: &quot;Run&quot;,
     &quot;Vitest.polynom.test.ts.executor&quot;: &quot;Run&quot;,
+    &quot;Vitest.root creation.create \&quot;7root(3)(15)\&quot;.executor&quot;: &quot;Run&quot;,
+    &quot;Vitest.root creation.create \&quot;7sqrt(15)\&quot;.executor&quot;: &quot;Run&quot;,
+    &quot;Vitest.root creation.create \&quot;root(3)(15)\&quot;.executor&quot;: &quot;Run&quot;,
+    &quot;Vitest.root creation.create \&quot;sqrt(15)\&quot;.executor&quot;: &quot;Run&quot;,
+    &quot;Vitest.root creation.create from defined values.executor&quot;: &quot;Run&quot;,
+    &quot;Vitest.root creation.create root.executor&quot;: &quot;Run&quot;,
     &quot;Vitest.temp.la jungle.executor&quot;: &quot;Run&quot;,
     &quot;Vitest.temp.markov.executor&quot;: &quot;Run&quot;,
     &quot;Vitest.temp.pow.executor&quot;: &quot;Run&quot;,
@@ -314,7 +337,7 @@
     &quot;npm.install.executor&quot;: &quot;Run&quot;,
     &quot;npm.test.executor&quot;: &quot;Run&quot;,
     &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.notifications&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;fileTemplates&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\websites\\PiMath\\node_modules\\typescript\\lib&quot;,
     &quot;ts.rename.search.for.js.occurrences&quot;: &quot;false&quot;,
     &quot;typescript.add.unambiguous.imports.on.the.fly&quot;: &quot;true&quot;,
@@ -347,7 +370,7 @@
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.temp.la jungle">
+  <component name="RunManager" selected="Vitest.PolyFactor: operations.should reduce a PolyFactors with constant factors">
     <configuration name="All Tests" type="JavaScriptTestRunnerVitest" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -356,7 +379,7 @@
       <scope-kind value="ALL" />
       <method v="2" />
     </configuration>
-    <configuration name="PolyFactor: Table of signs.solve polynom without bx" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="PolyFactor: operations.should reduce a PolyFactors with constant factors" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
@@ -365,22 +388,50 @@
       <scope-kind value="TEST" />
       <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
       <test-names>
-        <test-name value="PolyFactor: Table of signs" />
-        <test-name value="solve polynom without bx" />
+        <test-name value="PolyFactor: operations" />
+        <test-name value="should reduce a PolyFactors with constant factors" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="temp.la jungle" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="root creation.create &quot;7root(3)(15)&quot;" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/matrix.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
       <test-names>
-        <test-name value="temp" />
-        <test-name value="la jungle" />
+        <test-name value="root creation" />
+        <test-name value="create &quot;7root(3)(15)&quot;" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="root creation.create &quot;root(3)(15)&quot;" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
+      <test-names>
+        <test-name value="root creation" />
+        <test-name value="create &quot;root(3)(15)&quot;" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="root creation.create from defined values" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
+      <test-names>
+        <test-name value="root creation" />
+        <test-name value="create from defined values" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -394,49 +445,29 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="dependency-cruise" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dependency-cruise" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dev" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <list>
-      <item itemvalue="npm.dependency-cruise" />
       <item itemvalue="npm.build" />
-      <item itemvalue="npm.dev" />
       <item itemvalue="Vitest.All Tests" />
-      <item itemvalue="Vitest.temp.la jungle" />
-      <item itemvalue="Vitest.PolyFactor: Table of signs.solve polynom without bx" />
+      <item itemvalue="Vitest.PolyFactor: operations.should reduce a PolyFactors with constant factors" />
+      <item itemvalue="Vitest.root creation.create &quot;7root(3)(15)&quot;" />
+      <item itemvalue="Vitest.root creation.create &quot;root(3)(15)&quot;" />
+      <item itemvalue="Vitest.root creation.create from defined values" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="npm.build" />
-        <item itemvalue="Vitest.temp.la jungle" />
-        <item itemvalue="npm.dependency-cruise" />
-        <item itemvalue="npm.dev" />
-        <item itemvalue="Vitest.PolyFactor: Table of signs.solve polynom without bx" />
+        <item itemvalue="Vitest.PolyFactor: operations.should reduce a PolyFactors with constant factors" />
+        <item itemvalue="Vitest.root creation.create from defined values" />
+        <item itemvalue="Vitest.root creation.create &quot;7root(3)(15)&quot;" />
+        <item itemvalue="Vitest.root creation.create &quot;root(3)(15)&quot;" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PS-253.29346.151" />
-        <option value="bundled-php-predefined-a98d8de5180a-0e0d91225499-com.jetbrains.php.sharedIndexes-PS-253.29346.151" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PS-253.30387.30" />
+        <option value="bundled-php-predefined-a98d8de5180a-0e0d91225499-com.jetbrains.php.sharedIndexes-PS-253.30387.30" />
       </set>
     </attachedChunks>
   </component>
@@ -625,23 +656,16 @@
       <workItem from="1765881506389" duration="613000" />
       <workItem from="1765902827626" duration="13000" />
       <workItem from="1766135990035" duration="41000" />
-      <workItem from="1767541049827" duration="77000" />
-    </task>
-    <task id="LOCAL-00013" summary="Adding factors to PolyFactor.TableOfSigns() to list all factors tos.&#10;Adding TABLE_OF_SIGNS type.">
-      <option name="closed" value="true" />
-      <created>1727273967171</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1727273967171</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Set export type in index.ts">
-      <option name="closed" value="true" />
-      <created>1727275166532</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1727275166532</updated>
+      <workItem from="1767541049827" duration="217000" />
+      <workItem from="1767861331490" duration="1044000" />
+      <workItem from="1768311591584" duration="1930000" />
+      <workItem from="1768383160968" duration="8565000" />
+      <workItem from="1768467520469" duration="5285000" />
+      <workItem from="1768818019986" duration="336000" />
+      <workItem from="1768827903426" duration="617000" />
+      <workItem from="1768920116659" duration="1689000" />
+      <workItem from="1769001870715" duration="9000" />
+      <workItem from="1769001952522" duration="343000" />
     </task>
     <task id="LOCAL-00015" summary="Adding exports type to index.ts">
       <option name="closed" value="true" />
@@ -1019,7 +1043,23 @@
       <option name="project" value="LOCAL" />
       <updated>1765272058028</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="Update Fraction.inverse to correctly handle negative fraction.">
+      <option name="closed" value="true" />
+      <created>1767541171821</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1767541171821</updated>
+    </task>
+    <task id="LOCAL-00063" summary="Update Fraction.inverse to correctly handle negative fraction.">
+      <option name="closed" value="true" />
+      <created>1767541201506</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1767541201506</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1028,7 +1068,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Updated getCoefficient to handle polynom with missing degrees." />
     <MESSAGE value="Update of Table of signs" />
     <MESSAGE value="Cleaning TODOs" />
     <MESSAGE value="Tests -&gt; ok&#10;Dependency check -&gt; ok&#10;Build -&gt; ok" />
@@ -1053,7 +1092,8 @@
     <MESSAGE value="Automatic convert the 2. value to 2 number (avoid errors while typing in a dynamic interface)." />
     <MESSAGE value="Remove a console.log" />
     <MESSAGE value="Update package.json&#10;Migrate from eslintjs to eslint&#10;build ok&#10;dependencies ok" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update package.json&#10;Migrate from eslintjs to eslint&#10;build ok&#10;dependencies ok" />
+    <MESSAGE value="Update Fraction.inverse to correctly handle negative fraction." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update Fraction.inverse to correctly handle negative fraction." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

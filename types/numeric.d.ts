@@ -24,6 +24,7 @@ declare function periodic(value: number): number;
 declare function primes(nb?: number): number[];
 declare function pythagoreanTripletsWithTarget(target: number, targetIsSquare?: boolean): number[][];
 declare function round(value: number, decimals?: number): number;
+declare function greatestPower(value: number, index: number): number;
 export declare const Numeric: {
     decompose: typeof decompose;
     dividers: typeof dividers;
@@ -35,5 +36,6 @@ export declare const Numeric: {
     primes: typeof primes;
     pythagoreanTripletsWithTarget: typeof pythagoreanTripletsWithTarget;
     round: typeof round;
+    greatestPower: typeof greatestPower;
 };
 export {};

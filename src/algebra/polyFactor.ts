@@ -13,6 +13,7 @@ import type {
 import {Fraction} from "../coefficients"
 import {Factor, FACTOR_DISPLAY} from "./factor"
 import {Polynom} from "./polynom"
+import type {Solution} from "../analyze/solution"
 
 
 // PolyFactor is a class that represents a polynomial in factored form.
@@ -353,6 +354,13 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         // }
 
         return this
+    }
+
+    /**
+     * Get the roots of the PolyFactor.
+     */
+    public getRoots(): Solution[] {
+        return []
     }
 
     public getZeroes(): ISolution[] {

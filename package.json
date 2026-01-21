@@ -13,9 +13,11 @@
       "require": "./dist/pimath.js"
     }
   },
+  "./types/index.d.ts": "./types/index.d.ts",
   "files": [
     "dist",
-    "types"
+    "types",
+    "src"
   ],
   "scripts": {
     "dev": "vite serve",

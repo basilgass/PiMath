@@ -177,6 +177,6 @@ describe("Equation Solver", () => {
     test('should solve complex equation', ()=>{
         const equation = new Equation('x^5-5x^4+3x^2+3=0')
         const solutions = new EquationSolver(equation).solve()
-        console.log(solutions)
+        console.log(solutions.map(sol=>sol.value))
     })
 })

@@ -59,6 +59,14 @@ function me(r, e) {
 function ge(r, e = 2) {
   return +`${Math.round(+`${r}e${e}`)}e-${e}`;
 }
+function we(r, e) {
+  let t = Math.floor(Math.pow(r, 1 / e)), i = r, s = 1;
+  for (; t > 1; ) {
+    const n = Math.pow(t, e);
+    i % n ? (s *= t, i = i / n, t = Math.floor(Math.pow(i, 1 / e))) : t--;
+  }
+  return s;
+}
 const E = {
   decompose: le,
   dividers: ie,
@@ -69,9 +77,10 @@ const E = {
   periodic: de,
   primes: pe,
   pythagoreanTripletsWithTarget: me,
-  round: ge
+  round: ge,
+  greatestPower: we
 };
-var we = /* @__PURE__ */ ((r) => (r.frac = "frac", r.dfrac = "dfrac", r.tfrac = "tfrac", r))(we || {});
+var ye = /* @__PURE__ */ ((r) => (r.frac = "frac", r.dfrac = "dfrac", r.tfrac = "tfrac", r))(ye || {});
 class a {
   #i = !1;
   #e = 1;
@@ -326,7 +335,7 @@ class a {
   }
   zero = () => (this.#t = 0, this.#e = 1, this);
 }
-class j {
+class U {
   #i;
   #e;
   #t;
@@ -390,82 +399,96 @@ class j {
   // ------------------------------------------
   hasRadical = () => !(this.#i === 1 || this.#i === 0 || !this.#s);
 }
-class W {
+class V {
   #i;
   #e;
+  #t;
+  #s;
   constructor(e, t, i = "x") {
-    if (this.#e = i, Object.hasOwn(e, "moveLeft")) {
+    if (this.#s = i, this.#e = 1e-4, this.#i = 0, Object.hasOwn(e, "moveLeft")) {
       const s = e;
-      this.#i = s.left.clone().subtract(s.right);
+      this.#t = s.left.clone().subtract(s.right);
     } else
-      this.#i = e.clone().subtract(t ?? 0);
+      this.#t = e.clone().subtract(t ?? 0);
+  }
+  get bissectionCompexityCounter() {
+    return this.#i;
+  }
+  get bissectionDeltaX() {
+    return this.#e;
+  }
+  set bissectionDeltaX(e) {
+    this.#e = e;
   }
   solve() {
-    const e = this.#i.degree().value;
+    const e = this.#t.degree().value;
     if (e === 0)
       return [];
     if (e === 1)
-      return this.#l();
+      return this.#f();
     if (e === 2)
-      return this.#u();
-    const { solutions: t, polynom: i } = this.#a();
-    return i.degree().isZero() ? t : t.concat(
-      this.#n(i)
-    ).sort((s, n) => s.value - n.value);
+      return this.#d();
+    const { solutions: t, polynom: i } = this.#l();
+    return i.degree().isZero() ? t : i.degree().value <= 2 ? t.concat(
+      new V(i.clone()).solve()
+    ) : (this.#i = 0, t.concat(
+      this.#o(i)
+    ).sort((s, n) => s.value - n.value));
   }
   solveAsCardan() {
-    if (this.#i.degree().value !== 3)
+    if (this.#t.degree().value !== 3)
       throw new Error("The equation is not cubic.");
-    return this.#c();
+    return this.#u();
   }
-  #t(e, t) {
+  #n(e, t) {
     return {
-      variable: this.#e,
+      variable: this.#s,
       exact: !1,
       value: +e.toFixed(10),
       tex: t?.tex ?? "",
       display: t?.display ?? ""
     };
   }
-  #s(e) {
+  #r(e) {
     if (e instanceof a && e.isApproximative())
-      return this.#t(e.value);
+      return this.#n(e.value);
     const t = new a(e);
     return {
-      variable: this.#e,
+      variable: this.#s,
       exact: t,
       value: t.value,
       tex: t.tex,
       display: t.display
     };
   }
-  #n(e) {
-    const t = [], i = e.degree().value, s = e.getCoefficients().map((d) => d.value), [n, ...o] = e.getCoefficients(), h = 2 + Math.max(...o.map((d) => d.value / n.value)), l = this.#o(e, h, 100);
-    return this.#h(l, i).forEach((d) => {
-      const [m, w] = d;
-      if (m === w)
-        t.push(this.#s(m));
+  // Solve using bissection algorithm (approximative solution)
+  #o(e) {
+    const t = [], i = e.degree().value, [s, ...n] = e.getCoefficients(), o = 2 + Math.max(...n.map((c) => c.value / s.value)), h = this.#a(e, o, 100);
+    return this.#c(h, i).forEach((c) => {
+      const [d, m] = c;
+      if (d === m)
+        t.push(this.#r(d));
       else {
-        const N = this.#r(e, s, m, w);
-        N !== null && t.push(this.#t(N));
+        const w = this.#h(e, d, m);
+        w !== null && t.push(this.#n(w));
       }
-    }), t;
+    }), console.log("COMPLEXITY: ", this.#i), t;
   }
-  #r(e, t, i, s, n = 1e-10) {
-    let o = e.evaluate(i, !0), h = e.evaluate(s, !0);
-    if (o * h > 0)
+  #h(e, t, i) {
+    let s = e.evaluate(t, !0), n = e.evaluate(i, !0);
+    if (s * n > 0)
       return console.log("Pas de racine dans l'intervalle donné"), null;
-    let l;
-    for (; (s - i) / 2 > n; ) {
-      l = (i + s) / 2;
-      const c = e.evaluate(l, !0);
-      if (c === 0)
-        return l;
-      o * c < 0 ? (s = l, h = c) : (i = l, o = c);
+    let o;
+    for (; (i - t) / 2 > this.#e; ) {
+      this.#i++, o = (t + i) / 2;
+      const h = e.evaluate(o, !0);
+      if (h === 0)
+        return o;
+      s * h < 0 ? (i = o, n = h) : (t = o, s = h);
     }
-    return (i + s) / 2;
+    return (t + i) / 2;
   }
-  #o(e, t, i) {
+  #a(e, t, i) {
     const s = [], n = 2 * t / i;
     for (let o = -t; o <= t; o += n) {
       const h = E.numberCorrection(o);
@@ -478,7 +501,7 @@ class W {
     }
     return s;
   }
-  #h(e, t) {
+  #c(e, t) {
     const i = [];
     for (let s = 1; s < e.length; s++) {
       const n = e[s], o = e[s - 1];
@@ -487,12 +510,12 @@ class W {
     }
     return i;
   }
-  #a() {
-    const e = this.#i.clone(), t = [], i = e.lcmDenominator();
+  #l() {
+    const e = this.#t.clone(), t = [], i = e.lcmDenominator();
     i !== 1 && e.multiply(i);
     const s = e.monomByDegree().coefficient, n = e.monomByDegree(0).coefficient;
     if (n.isZero()) {
-      t.push(this.#s(0));
+      t.push(this.#r(0));
       const m = e.monoms.reduce((N, A) => A.degree().value < N.degree().value ? A : N), w = m.coefficient;
       m.clone().divide(w), e.divide(m);
     }
@@ -503,7 +526,7 @@ class W {
         l.find((A) => A.value === N.value) || (l.push(N.clone()), l.push(N.opposite().clone()));
       }
     l.forEach((m) => {
-      e.evaluate(m).isZero() && t.push(this.#s(m));
+      e.evaluate(m).isZero() && t.push(this.#r(m));
     });
     for (const m of t) {
       if (m.exact.isZero())
@@ -517,74 +540,74 @@ class W {
     }
     if (e.degree().isZero() || e.degree().value > 3)
       return t.sort((m, w) => m.value - w.value), { solutions: t, polynom: e };
-    const c = e.clone().zero(), d = new W(e, c, this.#e);
+    const c = e.clone().zero(), d = new V(e, c, this.#s);
     return {
       solutions: t.concat(d.solve()).sort((m, w) => m.value - w.value),
       polynom: c
     };
   }
-  #c() {
-    const e = this.#i, t = e.monomByDegree(3).coefficient, i = e.monomByDegree(2).coefficient, s = e.monomByDegree(1).coefficient, n = e.monomByDegree(0).coefficient, o = i.clone().divide(t), h = s.clone().divide(t), l = n.clone().divide(t), c = h.clone().subtract(o.clone().pow(2).divide(3)), d = l.clone().subtract(o.clone().multiply(h).divide(3)).add(o.clone().pow(3).multiply(2).divide(27)), m = d.clone().opposite(), w = c.clone().opposite().pow(3).divide(27), N = m.clone().pow(2).subtract(w.clone().multiply(4)).opposite();
+  #u() {
+    const e = this.#t, t = e.monomByDegree(3).coefficient, i = e.monomByDegree(2).coefficient, s = e.monomByDegree(1).coefficient, n = e.monomByDegree(0).coefficient, o = i.clone().divide(t), h = s.clone().divide(t), l = n.clone().divide(t), c = h.clone().subtract(o.clone().pow(2).divide(3)), d = l.clone().subtract(o.clone().multiply(h).divide(3)).add(o.clone().pow(3).multiply(2).divide(27)), m = d.clone().opposite(), w = c.clone().opposite().pow(3).divide(27), N = m.clone().pow(2).subtract(w.clone().multiply(4)).opposite();
     if (N.isNegative()) {
       const A = d.clone().opposite().add(N.clone().opposite().sqrt()).divide(2).root(3), C = d.clone().opposite().subtract(N.clone().opposite().sqrt()).divide(2).root(3), O = A.clone().add(C).subtract(o.clone().divide(3));
-      return [this.#s(O)];
+      return [this.#r(O)];
     }
     if (N.isZero()) {
       const A = d.clone().opposite().divide(2).root(3), C = A.clone().opposite().subtract(o.clone().divide(3)), O = A.clone().multiply(2).subtract(o.clone().divide(3));
-      return C.isEqual(O) ? [this.#s(C)] : [
-        this.#s(O),
-        this.#s(C)
+      return C.isEqual(O) ? [this.#r(C)] : [
+        this.#r(O),
+        this.#r(C)
       ].sort((M, $) => M.value - $.value);
     }
     if (N.isPositive()) {
       const A = [], C = c.value, O = d.value, M = o.value;
       for (let $ = 0; $ < 3; $++)
         A.push(2 * Math.sqrt(-C / 3) * Math.cos(Math.acos(3 * O / (2 * C) * Math.sqrt(-3 / C)) / 3 + 2 * Math.PI * $ / 3) - M / 3);
-      return A.map(($) => this.#t($)).sort(($, S) => $.value - S.value);
+      return A.map(($) => this.#n($)).sort(($, I) => $.value - I.value);
     }
     return [];
   }
-  #l() {
-    const [e, t] = this.#i.getCoefficients(), i = t.opposite().divide(e);
+  #f() {
+    const [e, t] = this.#t.getCoefficients(), i = t.opposite().divide(e);
     return [
-      this.#s(i)
+      this.#r(i)
     ];
   }
-  #u() {
-    const e = this.#i;
+  #d() {
+    const e = this.#t;
     e.monomByDegree().coefficient.isNegative() && e.opposite();
     const [t, i, s] = e.getCoefficients(), n = i.clone().pow(2).subtract(t.clone().multiply(s).multiply(4));
     if (n.isNegative())
       return [];
     if (n.isSquare()) {
       const o = n.sqrt(), h = i.clone().opposite().subtract(o).divide(t.clone().multiply(2)), l = i.clone().opposite().add(o).divide(t.clone().multiply(2));
-      return o.isZero() ? [this.#s(h)] : [
-        this.#s(h),
-        this.#s(l)
+      return o.isZero() ? [this.#r(h)] : [
+        this.#r(h),
+        this.#r(l)
       ].sort((c, d) => c.value - d.value);
     }
-    return this.#f(t, i, n);
+    return this.#p(t, i, n);
   }
-  #f(e, t, i) {
+  #p(e, t, i) {
     const s = E.dividers(i.value).filter((O) => Math.sqrt(O) % 1 === 0).map((O) => Math.sqrt(O)).pop() ?? 1, n = E.gcd(2 * e.value, t.value, s) * (e.isNegative() ? -1 : 1), o = t.clone().divide(n).opposite(), h = e.clone().divide(n).multiply(2), l = Math.abs(s / n), c = `${s === 1 ? "" : l + " "}\\sqrt{ ${i.clone().divide(s ** 2).tex} }`, d = `${s === 1 ? "" : l}sqrt(${i.clone().divide(s ** 2).display})`;
-    function m(O, M, $, S) {
+    function m(O, M, $, I) {
       const R = M === "0" ? "" : M, P = $ === "-" || R !== "" ? ` ${$} ` : "";
-      return O === "1" ? `${R}${P}${S}` : `\\frac{ ${P}${P}${S} }{ ${O} }`;
+      return O === "1" ? `${R}${P}${I}` : `\\frac{ ${P}${P}${I} }{ ${O} }`;
     }
-    function w(O, M, $, S) {
+    function w(O, M, $, I) {
       const R = M === "0" ? "" : M, P = $ === "-" || R !== "" ? $ : "";
-      return O === "1" ? `${R}${P}${S}` : `(${R}${P}${S})/${O}`;
+      return O === "1" ? `${R}${P}${I}` : `(${R}${P}${I})/${O}`;
     }
     const N = i.value ** 0.5, A = (-t.value - N) / (2 * e.value), C = (-t.value + N) / (2 * e.value);
     return [
-      this.#t(
+      this.#n(
         A,
         {
           tex: m(h.tex, o.tex, "-", c),
           display: w(h.display, o.display, "-", d)
         }
       ),
-      this.#t(
+      this.#n(
         C,
         {
           tex: m(h.tex, o.tex, "+", c),
@@ -599,7 +622,7 @@ const J = {
   e: Math.exp(1)
 };
 var f = /* @__PURE__ */ ((r) => (r.VARIABLE = "variable", r.COEFFICIENT = "coefficient", r.OPERATION = "operation", r.CONSTANT = "constant", r.FUNCTION = "function", r.FUNCTION_ARGUMENT = "function-argument", r.MONOM = "monom", r.LEFT_PARENTHESIS = "(", r.RIGHT_PARENTHESIS = ")", r))(f || {}), z = /* @__PURE__ */ ((r) => (r.EXPRESSION = "expression", r.POLYNOM = "polynom", r.SET = "set", r.NUMERIC = "numeric", r))(z || {});
-function ye(r, e) {
+function ve(r, e) {
   if (r.length <= 1)
     return r;
   const t = Object.keys(e).filter((m) => e[m].type === f.FUNCTION).map((m) => m);
@@ -646,20 +669,20 @@ function ye(r, e) {
       }
     if (d === void 0 || c === void 0)
       throw new Error("The token is undefined");
-    h += ve(l, c), h += d;
+    h += be(l, c), h += d;
   }
   return h;
 }
-function ve(r, e) {
+function be(r, e) {
   return r === void 0 || r === f.OPERATION || e === f.OPERATION || r === f.LEFT_PARENTHESIS || r === f.FUNCTION || r === f.FUNCTION_ARGUMENT || e === f.RIGHT_PARENTHESIS || e === f.FUNCTION_ARGUMENT ? "" : "*";
 }
-const be = {
+const xe = {
   "^": { precedence: 4, associative: "right", type: f.OPERATION },
   "*": { precedence: 3, associative: "left", type: f.OPERATION },
   "/": { precedence: 3, associative: "left", type: f.OPERATION },
   "+": { precedence: 2, associative: "left", type: f.OPERATION },
   "-": { precedence: 2, associative: "left", type: f.OPERATION }
-}, xe = {
+}, Ee = {
   "^": { precedence: 4, associative: "right", type: f.OPERATION },
   "*": { precedence: 3, associative: "left", type: f.OPERATION },
   "/": { precedence: 3, associative: "left", type: f.OPERATION },
@@ -672,7 +695,7 @@ const be = {
   sqrt: { precedence: 4, associative: "right", type: f.FUNCTION },
   nthrt: { precedence: 4, associative: "right", type: f.FUNCTION },
   ",": { precedence: 2, associative: "left", type: f.FUNCTION_ARGUMENT }
-}, Ee = {
+}, Ne = {
   "^": { precedence: 4, associative: "right", type: f.OPERATION },
   "*": { precedence: 3, associative: "left", type: f.OPERATION },
   "/": { precedence: 3, associative: "left", type: f.OPERATION },
@@ -686,13 +709,13 @@ const be = {
   nthrt: { precedence: 4, associative: "right", type: f.FUNCTION },
   ln: { precedence: 4, associative: "right", type: f.FUNCTION },
   log: { precedence: 4, associative: "right", type: f.FUNCTION }
-}, Ne = {
+}, Ae = {
   "&": { precedence: 3, associative: "left", type: f.OPERATION },
   "|": { precedence: 3, associative: "left", type: f.OPERATION },
   "!": { precedence: 4, associative: "right", type: f.OPERATION },
   "-": { precedence: 2, associative: "left", type: f.OPERATION }
 };
-class X {
+class W {
   #i;
   #e = [];
   #t = {};
@@ -709,7 +732,7 @@ class X {
     return this.#e.map((e) => e.token);
   }
   tokenConfigInitialization() {
-    return this.#i === z.SET ? (this.#t = Ne, this.#n = !1) : this.#i === z.NUMERIC ? (this.#t = Ee, this.#n = !0) : this.#i === z.EXPRESSION ? (this.#t = xe, this.#n = !0) : (this.#t = be, this.#n = !0), this.#s = Object.keys(this.#t).sort((e, t) => t.length - e.length), this.#t;
+    return this.#i === z.SET ? (this.#t = Ae, this.#n = !1) : this.#i === z.NUMERIC ? (this.#t = Ne, this.#n = !0) : this.#i === z.EXPRESSION ? (this.#t = Ee, this.#n = !0) : (this.#t = xe, this.#n = !0), this.#s = Object.keys(this.#t).sort((e, t) => t.length - e.length), this.#t;
   }
   /**
    * Get the next token to analyse.
@@ -758,7 +781,7 @@ class X {
   parse(e, t) {
     const i = [], s = [];
     let n = "", o = 0, h;
-    (t ?? this.#n) && (e = ye(e, this.#t));
+    (t ?? this.#n) && (e = ve(e, this.#t));
     let l = 50, c;
     for (; o < e.length; ) {
       if (l--, l === 0) {
@@ -824,14 +847,14 @@ class X {
     return this.#e = i.concat(s.reverse()), this;
   }
 }
-class Ae {
+class qe {
   _rpn;
   _expression;
   _isValid;
   constructor(e, t) {
     this._expression = e;
     try {
-      this._rpn = new X(z.NUMERIC).parse(e, t).rpn;
+      this._rpn = new W(z.NUMERIC).parse(e, t).rpn;
     } catch (i) {
       throw this._rpn = null, this._isValid = !1, console.warn(i), new Error(`There was a problem parsing: ${e}`);
     }
@@ -1090,7 +1113,7 @@ class p {
     if (t === !0) {
       if (e instanceof a)
         return this.#s(e.value);
-      if (e instanceof j)
+      if (e instanceof U)
         return new a().invalid();
       if (typeof e == "number")
         return this.#s(e);
@@ -1106,7 +1129,7 @@ class p {
       const s = {};
       return s[this.variables[0]] = new a(e), this.evaluate(s);
     }
-    if (e instanceof j)
+    if (e instanceof U)
       return new a().invalid();
     if (typeof e == "object") {
       if (this.variables.length === 0)
@@ -1334,7 +1357,7 @@ class p {
       const i = {};
       return i[this.variables[0]] = new a(e).value, this.#s(i);
     }
-    if (e instanceof j)
+    if (e instanceof U)
       return NaN;
     if (typeof e == "object") {
       if (this.variables.length === 0)
@@ -1347,7 +1370,7 @@ class p {
     return t;
   };
   #n = (e) => {
-    const i = new X().parse(e).rpn, s = [];
+    const i = new W().parse(e).rpn, s = [];
     if (i.length === 0)
       return this.zero(), this;
     if (i.length === 1) {
@@ -1401,7 +1424,7 @@ class p {
 function te(r, e = !0) {
   return e ? `\\left( ${r} \\right)` : `(${r})`;
 }
-function U(r, e, t, i, s) {
+function F(r, e, t, i, s) {
   return r.map((n, o) => n === e ? t : n);
 }
 function se(r, e) {
@@ -1601,7 +1624,7 @@ class u {
       e.push(t.coefficient.numerator);
     return e;
   };
-  getZeroes = () => this.degree().isZero() ? [] : (this.roots = new W(this.clone()).solve(), this.roots);
+  getZeroes = () => this.degree().isZero() ? [] : (this.roots = new V(this.clone()).solve(), this.roots);
   hasVariable(e) {
     return this.variables.includes(e);
   }
@@ -1805,7 +1828,7 @@ class u {
     let t = new Array(2 * e.length + 1).fill("").map((i, s) => s % 2 === 0 ? "" : "z");
     if (t.length === 1) {
       const [i] = this.getCoefficients().map((s) => s.value);
-      t = U(t, "", i > 0 ? "+" : "-");
+      t = F(t, "", i > 0 ? "+" : "-");
     } else if (this.degree().isOne()) {
       const [i] = this.getCoefficients().map((s) => s.value);
       t[0] = i > 0 ? "-" : "+", t[1] = "z", t[2] = i > 0 ? "+" : "-";
@@ -1960,7 +1983,7 @@ class u {
    * @param inputStr
    */
   #w = (e) => {
-    const i = new X().parse(e).rpn;
+    const i = new W().parse(e).rpn;
     this.zero();
     const s = [];
     for (const n of i)
@@ -2167,7 +2190,7 @@ class y {
    */
   simplify = () => (this.multiply(E.lcm(...this.#i.getDenominators(), ...this.#e.getDenominators())), this.divide(E.gcd(...this.#i.getNumerators(), ...this.#e.getNumerators())), this);
   // -----------------------------------------------
-  solve = () => new W(this.clone()).solve();
+  solve = () => new V(this.clone()).solve();
   split() {
     return [this.#i.clone(), this.#e.clone()];
   }
@@ -2372,7 +2395,7 @@ class x {
   }
   tableOfSigns() {
     const e = this.power.clone().reduce(), t = this.polynom.tableOfSigns();
-    return e.isStrictlyNegative() && (t.signs = U(t.signs, "z", "d")), e.denominator % 2 === 0 ? t.signs = U(t.signs, "-", "h") : e.numerator % 2 === 0 && (t.signs = U(t.signs, "-", "+")), { roots: t.roots, signs: t.signs };
+    return e.isStrictlyNegative() && (t.signs = F(t.signs, "z", "d")), e.denominator % 2 === 0 ? t.signs = F(t.signs, "-", "h") : e.numerator % 2 === 0 && (t.signs = F(t.signs, "-", "+")), { roots: t.roots, signs: t.signs };
   }
   get variables() {
     return this.polynom.variables;
@@ -2565,7 +2588,7 @@ class D {
     return [e, t];
   };
 }
-class qe {
+class Te {
   #i;
   /**
    *
@@ -2574,7 +2597,7 @@ class qe {
   constructor(e) {
     return this.#i = [], e !== void 0 && this.parse(e), this;
   }
-  parse = (e) => (this.#i = new X(z.SET).parse(e).rpn, this);
+  parse = (e) => (this.#i = new W(z.SET).parse(e).rpn, this);
   evaluate(e) {
     this.variables.forEach((i) => {
       Object.hasOwn(e, i) || (e[i] = !1);
@@ -2861,6 +2884,12 @@ class T {
     }
     return this;
   }
+  /**
+   * Get the roots of the PolyFactor.
+   */
+  getRoots() {
+    return [];
+  }
   getZeroes() {
     const e = [].concat(...this.#e.map((t) => t.polynom.getZeroes()));
     return e.sort((t, i) => t.value - i.value), e.filter(
@@ -2991,7 +3020,7 @@ function L(r) {
   }, {}), { numerator: s, denominator: n } = e.divide(t).reduce();
   return s !== 1 && (i[s.toString()] = [new x(s, 1)]), n !== 1 && (i[n.toString()] = [new x(n, -1)]), i;
 }
-class I {
+class S {
   #i = null;
   #e = !0;
   #t = [];
@@ -3008,7 +3037,7 @@ class I {
       t.forEach((s) => {
         i.push(s.clone());
       }), e.push(i);
-    }), new I().fromValues(e);
+    }), new S().fromValues(e);
   }
   get tex() {
     if (this.#t.length === 0)
@@ -3054,7 +3083,7 @@ class I {
   }
   characteristic_polynom(e) {
     return e ??= "k", this.clone().subtract(
-      new I(this.dimension.rows).one().multiply(new u(e))
+      new S(this.dimension.rows).one().multiply(new u(e))
     ).determinant();
   }
   cofactor(e, t) {
@@ -3131,7 +3160,7 @@ class I {
   inverse() {
     if (!this.canBeInverted())
       throw new Error("The matrix cannot be inverted.");
-    const e = new I().fromDimensions(this.dimension.rows, this.dimension.cols);
+    const e = new S().fromDimensions(this.dimension.rows, this.dimension.cols);
     e.forEach((i, s, n) => {
       e.setValue(s, n, this.cofactor(s, n));
     }), e.transpose();
@@ -3169,10 +3198,10 @@ class I {
     }), s;
   }
   multiply(e) {
-    if (e instanceof I) {
+    if (e instanceof S) {
       if (!this.canBeMultiplied(e))
         throw new Error("Cannot multiply a matrix with incompatibles dimensions");
-      const t = new I(this.dimension.rows, e.dimension.cols);
+      const t = new S(this.dimension.rows, e.dimension.cols);
       return t.forEach((i, s, n) => {
         const o = this.rows[s], h = e.cols[n], l = new u();
         o.forEach((c, d) => {
@@ -3234,12 +3263,12 @@ class I {
     return this.forEach((e) => e.zero()), this;
   }
 }
-function Te(r, e) {
+function Oe(r, e) {
   return r.dimension === e.dimension && r.array.every(
     (t, i) => e.array[i].isEqual(t)
   );
 }
-function Oe(r, e) {
+function Ce(r, e) {
   if (r.dimension !== e.dimension)
     return !1;
   const t = e.array[0].value / r.array[0].value;
@@ -3247,13 +3276,13 @@ function Oe(r, e) {
     (i, s) => e.array[s].value === i.value * t
   );
 }
-function Ce(r, e) {
+function $e(r, e) {
   return r.dimension !== e.dimension ? new a().invalid() : r.array.reduce(
     (t, i, s) => t.add(i.clone().multiply(e.array[s])),
     new a(0)
   );
 }
-function De(...r) {
+function Le(...r) {
   if (r.some((e) => e.dimension !== r[0].dimension))
     throw new Error("All vectors must have the same dimension");
   if (r[0].dimension !== r.length)
@@ -3395,7 +3424,7 @@ class g {
   translate(...e) {
     return this.array.forEach((t, i) => t.add(e[i])), this;
   }
-  dot = (e) => Ce(this, e);
+  dot = (e) => $e(this, e);
   cross(e) {
     if (this.dimension !== 3 || e.dimension !== 3)
       throw new Error("Cross product can only be determined in 3D");
@@ -3417,8 +3446,8 @@ class g {
   isOne() {
     return this.array.every((e, t) => t === 0 ? e.isOne() : e.isZero());
   }
-  isEqual = (e) => Te(this, e);
-  isColinearTo = (e) => Oe(this, e);
+  isEqual = (e) => Oe(this, e);
+  isColinearTo = (e) => Ce(this, e);
   isNormalTo = (e) => this.dot(e).isZero();
   multiplyByScalar = (e) => {
     const t = new a(e);
@@ -3471,11 +3500,11 @@ function k(r, e, t) {
 function q(r, e) {
   return e === !1 ? ne() ? k(1, r) : -k(1, r) : k(-r, r);
 }
-function $e(r) {
+function ke(r) {
   let e = E.primes();
   return r !== void 0 && (e = e.filter((t) => t < r)), _(e);
 }
-function ke(r, e) {
+function Be(r, e) {
   return e === void 0 && (e = 1), r.length <= 0 ? Object.values(r) : re(r).slice(0, e);
 }
 function _(r) {
@@ -3491,10 +3520,10 @@ function re(r) {
 }
 class v extends g {
   constructor(...e) {
-    super(), e.length > 0 && this.parse(...e);
+    super(), this.asPoint = !0, e.length > 0 && this.parse(...e);
   }
   parse(...e) {
-    if (this.asPoint = !0, e.length === 1) {
+    if (e.length === 1) {
       if (e[0] instanceof g)
         return this.array = e[0].copy(), this;
       if (typeof e[0] == "string")
@@ -3817,7 +3846,7 @@ class b {
     return this.#o = "system", this;
   }
 }
-class V {
+class j {
   #i = void 0;
   #e = void 0;
   #t = void 0;
@@ -3890,7 +3919,7 @@ class V {
     }), i;
   };
   clone() {
-    return new V(
+    return new j(
       this.center.clone(),
       this.squareRadius.clone(),
       !0
@@ -3919,7 +3948,7 @@ class V {
     return this.#i = void 0, this.#e = void 0, this.#t = void 0, this;
   }
   parse(...e) {
-    return this.#o(), typeof e[0] == "string" ? this.#u(new y(e[0])) : e[0] instanceof y ? this.#u(e[0]) : e[0] instanceof V ? this.#a(e[0]) : e[0] instanceof v && e.length > 1 && (e[1] instanceof v ? e[2] instanceof v || this.#l(e[0], e[1]) : (e[1] instanceof a || typeof e[1] == "number") && this.#c(e[0], e[1], typeof e[2] == "boolean" ? e[2] : !1)), this.#h(), this;
+    return this.#o(), typeof e[0] == "string" ? this.#u(new y(e[0])) : e[0] instanceof y ? this.#u(e[0]) : e[0] instanceof j ? this.#a(e[0]) : e[0] instanceof v && e.length > 1 && (e[1] instanceof v ? e[2] instanceof v || this.#l(e[0], e[1]) : (e[1] instanceof a || typeof e[1] == "number") && this.#c(e[0], e[1], typeof e[2] == "boolean" ? e[2] : !1)), this.#h(), this;
   }
   #h() {
     this.#t = new y(
@@ -4155,7 +4184,7 @@ class ee {
     return this.normal.dot(e).add(this.d).isZero();
   }
 }
-class F {
+class G {
   #i = new v();
   #e = new v();
   #t = new v();
@@ -4263,14 +4292,14 @@ class F {
         BC: new b(this.#e, this.#t),
         AC: new b(this.#i, this.#t)
       });
-    } else if (e.length === 1 && e[0] instanceof F)
+    } else if (e.length === 1 && e[0] instanceof G)
       return e[0].clone();
     return this.#o(), this;
   };
   /**
    * Clone the Triangle class
    */
-  clone = () => new F(
+  clone = () => new G(
     this.#i.clone(),
     this.#e.clone(),
     this.#t.clone()
@@ -4357,7 +4386,7 @@ class F {
   };
 }
 var oe = /* @__PURE__ */ ((r) => (r[r.INTERIOR = 0] = "INTERIOR", r[r.EXTERIOR = 1] = "EXTERIOR", r[r.SECANT = 2] = "SECANT", r[r.TANGENT_INSIDE = 3] = "TANGENT_INSIDE", r[r.TANGENT_OUTSIDE = 4] = "TANGENT_OUTSIDE", r[r.SUPERPOSED = 5] = "SUPERPOSED", r[r.CONCENTRIC = 6] = "CONCENTRIC", r))(oe || {});
-class Be {
+class Me {
   #i = void 0;
   #e = void 0;
   #t = void 0;
@@ -4457,7 +4486,7 @@ class Be {
     z: e.z
   }) ?? !1;
 }
-function G(r) {
+function X(r) {
   const e = Object.assign(
     {
       negative: !0,
@@ -4487,7 +4516,7 @@ function he(r) {
     },
     r
   ), t = new p();
-  if (t.coefficient = G({
+  if (t.coefficient = X({
     zero: e.zero,
     reduced: !0,
     natural: !e.fraction
@@ -4502,7 +4531,7 @@ function he(r) {
     t.setLetter(e.letters, e.degree);
   return t;
 }
-const Me = {
+const Ie = {
   letters: "x",
   degree: 2,
   fraction: !1,
@@ -4515,7 +4544,7 @@ const Me = {
 };
 function ae(r) {
   const e = Object.assign(
-    Me,
+    Ie,
     r
   ), t = new u().empty();
   let i;
@@ -4575,10 +4604,10 @@ function H(r) {
       quadrant: null
     },
     r
-  ), t = e.axis === "x", i = e.axis === "y", s = e.fraction ? G({ max: e.max, zero: t }) : new a(q(e.max, t)), n = e.fraction ? G({ max: e.max, zero: i }) : new a(q(e.max, i));
+  ), t = e.axis === "x", i = e.axis === "y", s = e.fraction ? X({ max: e.max, zero: t }) : new a(q(e.max, t)), n = e.fraction ? X({ max: e.max, zero: i }) : new a(q(e.max, i));
   return Number(e.quadrant) === 1 && (s.abs(), n.abs()), Number(e.quadrant) === 2 && (s.isPositive() && s.opposite(), n.isNegative() && n.opposite()), Number(e.quadrant) === 3 && (s.isPositive() && s.opposite(), n.isPositive() && n.opposite()), Number(e.quadrant) === 4 && (s.isNegative() && s.opposite(), n.isPositive() && n.opposite()), new v(s, n);
 }
-function Ie(r) {
+function ze(r) {
   const e = Object.assign(
     {
       center: {
@@ -4590,9 +4619,9 @@ function Ie(r) {
     r
   ), t = H(e.center);
   let i, s;
-  return e.pointsOnCircle === 8 ? (i = k(1, 3), s = i ** 2 + (i + 1) ** 2) : s = k(1, 20), new V(t, s, !0);
+  return e.pointsOnCircle === 8 ? (i = k(1, 3), s = i ** 2 + (i + 1) ** 2) : s = k(1, 20), new j(t, s, !0);
 }
-function ze(r) {
+function Re(r) {
   const e = Object.assign(
     {
       A: {
@@ -4609,7 +4638,7 @@ function ze(r) {
     t.x = q(10), t.y = q(10);
   return e.slope === 1 ? t.x.sign() !== t.y.sign() && t.y.opposite() : e.slope === -1 && t.x.sign() !== t.y.sign() && t.y.opposite(), new b().fromPointAndDirection(new g(e.A.x, e.A.y), t);
 }
-function Re(r) {
+function Pe(r) {
   const e = Object.assign(
     {
       A: {
@@ -4627,81 +4656,81 @@ function Re(r) {
   ), t = new v(e.A.x, e.A.y, e.A.z), i = new g(e.direction.x, e.direction.y, e.direction.z);
   return new Y(t, i);
 }
-const Pe = {
+const De = {
   equation: (r) => Se(r),
   polynom: (r) => ae(r),
   monom: (r) => he(r),
-  fraction: (r) => G(r),
+  fraction: (r) => X(r),
   number: (r, e, t) => k(r, e, t),
   numberSym: (r, e) => q(r, e),
-  prime: (r) => $e(r),
+  prime: (r) => ke(r),
   bool: (r) => ne(r),
-  array: (r, e) => ke(r, e),
+  array: (r, e) => Be(r, e),
   item: (r) => _(r),
   shuffle: (r) => re(r),
-  line: (r) => ze(r),
-  line3: (r) => Re(r),
+  line: (r) => Re(r),
+  line3: (r) => Pe(r),
   vector: (r) => H(r),
   point: (r) => {
     const e = H(r);
     return e.asPoint = !0, e;
   },
-  circle: (r) => Ie(r)
-}, Le = {
+  circle: (r) => ze(r)
+}, Ze = {
   Numeric: E,
   Fraction: a,
-  Root: j,
+  Root: U,
   Monom: p,
   Polynom: u,
   Equation: y,
-  Matrix: I,
+  Matrix: S,
   LinearSystem: D,
   Factor: x,
   PolyFactor: T,
-  LogicalSet: qe,
-  Random: Pe,
+  LogicalSet: Te,
+  Random: De,
   Geometry: {
     Vector: g,
     Point: v,
     Line: b,
-    Triangle: F,
-    Circle: V,
+    Triangle: G,
+    Circle: j,
     Line3: Y,
     Plane3: ee,
-    Sphere3: Be
+    Sphere3: Me
   },
-  NumExp: Ae
+  NumExp: qe
 };
 export {
-  V as Circle,
+  j as Circle,
   y as Equation,
-  W as EquationSolver,
+  V as EquationSolver,
   Z as FACTOR_DISPLAY,
-  we as FRAC_TYPE,
+  ye as FRAC_TYPE,
   x as Factor,
   a as Fraction,
   b as Line,
   Y as Line3,
   D as LinearSystem,
-  qe as LogicalSet,
-  I as Matrix,
+  Te as LogicalSet,
+  S as Matrix,
   p as Monom,
-  j as NthRoot,
-  Ae as NumExp,
+  U as NthRoot,
+  qe as NumExp,
   E as Numeric,
   ee as Plane3,
   v as Point,
   T as PolyFactor,
   u as Polynom,
-  Pe as Random,
+  De as Random,
   oe as SPHERE3_RELATIVE_POSITION,
-  Be as Sphere3,
-  F as Triangle,
+  Me as Sphere3,
+  G as Triangle,
   g as Vector,
-  Oe as areVectorsColinears,
-  Te as areVectorsEquals,
-  Le as default,
-  De as determinantFromVectors,
-  Ce as dotProduct
+  Ce as areVectorsColinears,
+  Oe as areVectorsEquals,
+  Ze as default,
+  Le as determinantFromVectors,
+  $e as dotProduct
 };
 //# sourceMappingURL=pimath.js.map
