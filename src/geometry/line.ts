@@ -3,10 +3,8 @@
  */
 
 import {Numeric} from "../numeric"
-import {Fraction} from "../coefficients/fraction"
-import {Equation} from "../algebra/equation"
-import {Polynom} from "../algebra/polynom"
-import {Monom} from "../algebra/monom"
+import {Fraction} from "../coefficients"
+import {Equation, Monom, Polynom} from "../algebra"
 import {Vector} from "./vector"
 import {type InputValue, type IPiMathObject, LinePropriety} from "../pimath.interface"
 import {randomIntSym} from "../randomization/rndHelpers"
@@ -21,15 +19,16 @@ export interface LineConfig {
 
 export class Line implements IPiMathObject<Line> {
     static PARALLEL = LinePropriety.Parallel
-    // A line is defined as the canonical form
     static PERPENDICULAR = LinePropriety.Perpendicular
     #OA: Vector
+
+    // A line is defined as the canonical form
     // ax + by + c = 0
     #a: Fraction
     #b: Fraction
     #c: Fraction
-    #d: Vector
-    #n: Vector
+
+    // output mode.
     #outputMode: 'canonical' | 'equation' | 'mxh' | 'parametric' | 'system' = "canonical"
     #reduceBeforeDisplay: boolean
 
@@ -43,8 +42,6 @@ export class Line implements IPiMathObject<Line> {
         this.#b = new Fraction().zero()
         this.#c = new Fraction().zero()
         this.#OA = new Vector()
-        this.#d = new Vector()
-        this.#n = new Vector()
 
         this.#reduceBeforeDisplay = true
 
@@ -81,6 +78,7 @@ export class Line implements IPiMathObject<Line> {
                     const E = new Equation(values[0])
                     return this.parse(E)
                 } catch (e) {
+                    console.warn(e)
                     return this
                 }
             }
@@ -139,10 +137,7 @@ export class Line implements IPiMathObject<Line> {
         this.#b = this.#b.clone()
         this.#c = this.#c.clone()
 
-        this.#d = this.#d.clone()
         this.#OA = this.#OA.clone()
-        this.#n = this.#n.clone()
-
         return this
     }
 
@@ -162,7 +157,7 @@ export class Line implements IPiMathObject<Line> {
                     'y=' + new Polynom().parse('x', this.slope, this.height).tex
             case 'parametric':
             case 'system': {
-                const d = this.#d.clone()
+                const d = this.d.clone()
                 if (this.#reduceBeforeDisplay) {
                     d.simplify()
                 }
@@ -172,11 +167,11 @@ export class Line implements IPiMathObject<Line> {
                 } else {
                     return `\\left\\{\\begin{aligned}
             x &= ${(new Polynom(this.#OA.x)
-                            .add(new Monom(this.#d.x).multiply(new Monom('k'))))
+                            .add(new Monom(this.d.x).multiply(new Monom('k'))))
                             .reorder('k', true)
                             .tex}\\\\ 
             y &= ${(new Polynom(this.#OA.y)
-                            .add(new Monom(this.#d.y).multiply(new Monom('k'))))
+                            .add(new Monom(this.d.y).multiply(new Monom('k'))))
                             .reorder('k', true)
                             .tex}
             \\end{aligned}\\right.`
@@ -209,7 +204,7 @@ export class Line implements IPiMathObject<Line> {
                     'x=' + this.OA.x.display :
                     'y=' + new Polynom().parse('x', this.slope, this.height).display
             case 'parametric': {
-                const d = this.#d.clone()
+                const d = this.d.clone()
                 if (this.#reduceBeforeDisplay) {
                     d.simplify()
                 }
@@ -260,32 +255,13 @@ export class Line implements IPiMathObject<Line> {
         this.#c = value
     }
 
-    // get system(): { x: Equation, y: Equation } {
-    //     const e1 = new Equation(
-    //         new Polynom('x'),
-    //         new Polynom(this.#OA.x)
-    //             .add(new Monom('k').multiply(this.#d.x))
-    //     ),
-    //         e2 = new Equation(
-    //             new Polynom('y'),
-    //             new Polynom(this.#OA.y)
-    //                 .add(new Monom('k').multiply(this.#d.y))
-    //         )
-
-    //     return { x: e1, y: e2 }
-    // }
-
     get canonical(): this {
         this.#outputMode = 'canonical'
         return this
     }
 
     // ------------------------------------------
-    canonicalAsFloatCoefficient(decimals?: number): string {
-        if (decimals === undefined) {
-            decimals = 2
-        }
-
+    canonicalAsFloatCoefficient(decimals = 2): string {
         let canonical = ''
 
         if (!this.#a.isZero()) {
@@ -317,15 +293,15 @@ export class Line implements IPiMathObject<Line> {
     }
 
     get d(): Vector {
-        return this.#d
+        return new Vector(this.#b.clone(), this.#a.clone().opposite())
     }
 
     set d(value: Vector) {
-        this.#d = value
+        this.fromPointAndDirection(this.OA, value)
     }
 
     get director(): Vector {
-        return this.#d.clone()
+        return this.d
     }
 
     distanceTo(pt: Point): { value: number, fraction: Fraction, tex: string } {
@@ -372,9 +348,9 @@ export class Line implements IPiMathObject<Line> {
         this.#b = new Fraction(b)
         this.#c = new Fraction(c)
 
-        this.#d = new Vector(this.#b.clone(), this.#a.clone().opposite())
+        // BUG : does not give a point on the line.
+        // ax+by+c=0 => x=0 => y = -c/b
         this.#OA = new Vector(new Fraction().zero(), this.#c.clone())
-        this.#n = this.#d.clone().normal()
 
         return this
     }
@@ -428,18 +404,13 @@ export class Line implements IPiMathObject<Line> {
 
         // Choose the current values as point and direction vector instead of the automatic version.
         this.#OA = P.clone()
-        this.#d = d.clone()
-        this.#n = this.#d.clone().normal()
+        // this.#d = d.clone()
+        // this.#n = this.#d.clone().normal()
 
         return this
     }
 
-    fromPointAndLine = (P: Vector, L: Line, orientation?: LinePropriety): this => {
-
-        if (orientation === undefined) {
-            orientation = LinePropriety.Parallel
-        }
-
+    fromPointAndLine = (P: Vector, L: Line, orientation: LinePropriety = LinePropriety.Parallel): this => {
         if (orientation === LinePropriety.Parallel) {
             return this.fromPointAndNormal(P, L.normal)
         } else if (orientation === LinePropriety.Perpendicular) {
@@ -599,7 +570,7 @@ export class Line implements IPiMathObject<Line> {
     }
 
     get n(): Vector {
-        return this.#n
+        return this.d.normal()
     }
 
     get normal(): Vector {
@@ -627,7 +598,7 @@ export class Line implements IPiMathObject<Line> {
 
     randomPoint = (k?: number): Point => {
         // Return a random point on the line.
-        const pt = this.#d
+        const pt = this.d
             .clone()
             .multiplyByScalar(randomIntSym((k === undefined || k <= 1) ? 3 : k, false))
             .add(this.#OA)
@@ -659,7 +630,8 @@ export class Line implements IPiMathObject<Line> {
     }
 
     simplifyDirection = (): this => {
-        this.#d.simplify()
+        // TODO: no more usefull...
+        this.d.simplify()
         return this
     }
 

@@ -1,5 +1,6 @@
 /**
- * Vector2D module contains everything necessary to handle 2d vectors.
+ * POint module contains everything necessary to handle 2d Points
+ * It's a "wrapper" of the Vector class.
  * @module Point
  */
 

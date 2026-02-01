@@ -46,7 +46,7 @@ describe('Linear System creation', () => {
     test.todo('set to zero Linear System')
     test.todo('set to one Linear System')
 })
-describe.todo('Linear System output', () => {
+describe('Linear System output', () => {
     test.todo('output as LaTeX')
     test.todo('output as ASCII')
 })
@@ -81,16 +81,16 @@ describe('Linear System operations', () => {
     test.todo('divide by Linear System')
     test.todo('raise Linear System by integer')
 })
-describe.todo('Linear System comparisons', () => {
-    test.todo('same Linear System')
-    test.todo('equal Linear System')
-    test.todo('is one Linear System')
-    test.todo('is zero Linear System')
-})
-describe.todo('Linear System static functions')
-describe.todo('Linear System evaluation', () => {
-    test.todo('evaluate Linear System')
-})
+// describe.todo('Linear System comparisons', () => {
+//     test.todo('same Linear System')
+//     test.todo('equal Linear System')
+//     test.todo('is one Linear System')
+//     test.todo('is zero Linear System')
+// })
+// describe.todo('Linear System static functions')
+// describe.todo('Linear System evaluation', () => {
+//     test.todo('evaluate Linear System')
+// })
 
 describe('Linear System algebra', () => {
     test('has variable', () => {
@@ -179,6 +179,16 @@ describe('Linear System algebra', () => {
 
         expect(LS.solveMatrix().map(x => x.display))
             .to.be.deep.equal(['3/5', '-3/25', '3/25'])
+    })
+
+    test('linear system solve output', ()=>{
+        const LS = new LinearSystem(
+            '3x+2y-5z=3',
+            '5x-3y+z=-2',
+            '9x+2y+5z=9'
+        )
+
+        LS.solve()
     })
 })
 

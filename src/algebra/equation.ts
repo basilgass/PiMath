@@ -8,11 +8,11 @@ import type {
     ISolution,
     literalType
 } from "../pimath.interface"
-import { Fraction } from "../coefficients/fraction"
-import { Numeric } from "../numeric"
-import { EquationSolver } from "./equationSolver"
-import { Monom } from "./monom"
-import { Polynom } from "./polynom"
+import {Fraction} from "../coefficients/fraction"
+import {Numeric} from "../numeric"
+import {EquationSolver} from "./equationSolver"
+import {Monom} from "./monom"
+import {Polynom} from "./polynom"
 
 export class Equation implements
     IPiMathObject<Equation>,
@@ -72,15 +72,45 @@ export class Equation implements
         return this.create(new Polynom(pStr[0]), new Polynom(pStr[1]), this.#formatSign(strSign))
     }
 
-    public create = (left: Polynom, right: Polynom, sign?: string): this => {
-        this.#left = left
-        this.#right = right
-        this.#sign = this.#formatSign(sign ?? "=")
-        return this
-    }
-
     public clone = (): Equation => {
         return new Equation(this.#left.clone(), this.#right.clone(), this.#sign)
+    }
+
+    public get tex(): string {
+        return `${this.#left.tex}${this.signAsTex}${this.#right.tex}`
+    }
+
+    public get display(): string {
+        return `${this.#left.display}${this.signAsTex}${this.#right.display}`
+    }
+
+    public static isEquationString(equationString: string): boolean {
+        // The equation sign can be one of the following:
+        // =, <, >, <=, >=
+
+        return equationString.includes('=') ||
+            equationString.includes('<') ||
+            equationString.includes('>') ||
+            equationString.includes('<=') ||
+            equationString.includes('>=')
+    }
+
+    public static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean): ISolution[] {
+        const solutionAsTex: string[] = [],
+            uniqueSolutions = solutions.filter(sol => {
+                if (!solutionAsTex.includes(sol.tex)) {
+                    solutionAsTex.push(sol.tex)
+                    return true
+                } else {
+                    return false
+                }
+            })
+
+        if (sorted === true) {
+            uniqueSolutions.sort((a, b) => a.value - b.value)
+        }
+
+        return uniqueSolutions
     }
 
     /**
@@ -92,6 +122,7 @@ export class Equation implements
      * @param value | Polynom | Monom | Fraction | string | monom
      */
     public add(value: InputValue<Equation | Polynom>): this {
+
         if (value instanceof Equation) {
             // add the left part of the equation
             this.#left.add(value.left)
@@ -111,6 +142,13 @@ export class Equation implements
         this.#left.add(p)
         this.#right.add(p)
 
+        return this
+    }
+
+    public create = (left: Polynom, right: Polynom, sign?: string): this => {
+        this.#left = left
+        this.#right = right
+        this.#sign = this.#formatSign(sign ?? "=")
         return this
     }
 
@@ -169,6 +207,8 @@ export class Equation implements
         return (left as Fraction).isEqual(right as Fraction)
     }
 
+    // -----------------------------------------------
+
     /**
      * Determine if the equation contains a variable.
      * @param letter
@@ -177,10 +217,21 @@ export class Equation implements
         return this.variables.includes(letter)
     }
 
-
     public isEqual(value: InputValue<Equation>): boolean {
         const equ = new Equation(value)
         return equ.left.isEqual(this.#left) && equ.right.isEqual(this.#right)
+    }
+
+    // -----------------------------------------------
+    // Equations operations
+
+    // Equations helpers
+    public isEqualTo = (equ: Equation): boolean => {
+        const p1 = equ.clone().moveLeft().left,
+            p2 = this.clone().moveLeft().left
+
+        // They are the same.
+        return p1.isEqual(p2) || p1.isOppositeAt(p2)
     }
 
     public isLinearTo = (equ: Equation): boolean => {
@@ -197,16 +248,6 @@ export class Equation implements
      */
     public isMultiVariable = (): boolean => {
         return this.#left.isMultiVariable || this.#right.isMultiVariable
-    }
-
-    // -----------------------------------------------
-    // Equations helpers
-    public isEqualTo = (equ: Equation): boolean => {
-        const p1 = equ.clone().moveLeft().left,
-            p2 = this.clone().moveLeft().left
-
-        // They are the same.
-        return p1.isEqual(p2) || p1.isOppositeAt(p2)
     }
 
     /**
@@ -251,8 +292,14 @@ export class Equation implements
         return this
     }
 
-    // -----------------------------------------------
-    // Equations operations
+    // Getter and setter
+    public get left(): Polynom {
+        return this.#left
+    }
+
+    public set left(value: Polynom) {
+        this.#left = value
+    }
 
     // -----------------------------------------------
     public letters = (): string[] => {
@@ -289,14 +336,19 @@ export class Equation implements
         return this
     }
 
-    public pow(value: number): this {
-        this.#left.pow(value)
-        this.#right.pow(value)
-        return this
+    public get numberOfVars(): number {
+        return this.variables.length
     }
+
     public opposite = (): this => {
         this.#left = this.#left.opposite()
         this.#right = this.#right.opposite()
+        return this
+    }
+
+    public pow(value: number): this {
+        this.#left.pow(value)
+        this.#right.pow(value)
         return this
     }
 
@@ -358,6 +410,36 @@ export class Equation implements
         return this
     }
 
+    public get right(): Polynom {
+        return this.#right
+    }
+
+    public set right(value: Polynom) {
+        this.#right = value
+    }
+
+    // ------------------------------------------
+    public get sign(): string {
+        return this.#sign
+    }
+
+    public set sign(value: string) {
+        // Set the sign value as formatted.
+        this.#sign = this.#formatSign(value)
+    }
+
+    public get signAsTex(): string {
+        if (this.#sign === '>=') {
+            return '\\geq'
+        }
+
+        if (this.#sign === '<=') {
+            return '\\leq'
+        }
+
+        return this.#sign
+    }
+
     /**
      * Multiply by the lcm denominator and divide by the gcm numerators.
      */
@@ -399,86 +481,6 @@ export class Equation implements
 
     public test = (values: literalType<Fraction>): boolean => {
         return (this.left.evaluate(values) as Fraction).isEqual(this.right.evaluate(values))
-    }
-
-    public static isEquationString(equationString: string): boolean {
-        // The equation sign can be one of the following:
-        // =, <, >, <=, >=
-
-        return equationString.includes('=') ||
-            equationString.includes('<') ||
-            equationString.includes('>') ||
-            equationString.includes('<=') ||
-            equationString.includes('>=')
-    }
-
-    public static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean): ISolution[] {
-        const solutionAsTex: string[] = [],
-            uniqueSolutions = solutions.filter(sol => {
-                if (!solutionAsTex.includes(sol.tex)) {
-                    solutionAsTex.push(sol.tex)
-                    return true
-                } else {
-                    return false
-                }
-            })
-
-        if (sorted === true) {
-            uniqueSolutions.sort((a, b) => a.value - b.value)
-        }
-
-        return uniqueSolutions
-    }
-
-    public get display(): string {
-        return `${this.#left.display}${this.signAsTex}${this.#right.display}`
-    }
-
-    // Getter and setter
-    public get left(): Polynom {
-        return this.#left
-    }
-
-    public set left(value: Polynom) {
-        this.#left = value
-    }
-
-    public get numberOfVars(): number {
-        return this.variables.length
-    }
-
-    public get right(): Polynom {
-        return this.#right
-    }
-
-    public set right(value: Polynom) {
-        this.#right = value
-    }
-
-    // ------------------------------------------
-    public get sign(): string {
-        return this.#sign
-    }
-
-    public set sign(value: string) {
-        // Set the sign value as formatted.
-        this.#sign = this.#formatSign(value)
-    }
-
-    public get signAsTex(): string {
-        if (this.#sign === '>=') {
-            return '\\geq'
-        }
-
-        if (this.#sign === '<=') {
-            return '\\leq'
-        }
-
-        return this.#sign
-    }
-
-    public get tex(): string {
-        return `${this.#left.tex}${this.signAsTex}${this.#right.tex}`
     }
 
     public get variables(): string[] {

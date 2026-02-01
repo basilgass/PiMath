@@ -3,13 +3,15 @@ import {Fraction} from "../coefficients"
 import {Equation} from "./equation"
 import {Monom} from "./monom"
 import {Polynom} from "./polynom"
+import {Numeric} from "../numeric"
 
 export class LinearSystem implements IPiMathObject<LinearSystem>,
     IEquation<LinearSystem>,
     IAlgebra<LinearSystem> {
 
     #equations: Equation[]
-
+    // Solve steps for TeX output.
+    #steps: string[]
     // Determine the letters in the linear system, usually ['x', 'y']
     #variables: string[]
 
@@ -36,6 +38,21 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
     public clone = (): LinearSystem => {
         return new LinearSystem()
             .parse(...this.#equations.map(equ => equ.clone()))
+    }
+
+    public get tex(): string {
+        // Build the array of values.
+        // Reorder
+        // This clone the system :!!!
+        //TODO: Avoid cloning this linear system
+        const LS = this.clone().reorder()
+
+        return this.buildTex(LS.equations)
+    }
+
+    get display() {
+        // TODO : LinearSystem - display: implement the display of the linear system
+        return this.tex + 'as display'
     }
 
     public static fromMatrix(
@@ -141,11 +158,6 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return Fraction.max(...this.#equations.map(equ => equ.degree(letter)))
     }
 
-    get display() {
-        // TODO : LinearSystem - display: implement the display of the linear system
-        return this.tex + 'as display'
-    }
-
     // ------------------------------------------
     public get equations(): Equation[] {
         return this.#equations
@@ -153,6 +165,9 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
     public set equations(value) {
         this.#equations = value
+
+        // update the variables.
+        this.#findLetters()
     }
 
     public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction {
@@ -185,17 +200,16 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this.#makeMatrix()
     }
 
-    public mergeEquations = (eq1: Equation, eq2: Equation, factor1: Fraction, factor2: Fraction): Equation => {
+    public mergeEquations(equation1: { id: number, factor: InputValue<Fraction> }, equation2: {
+        id: number,
+        factor: number
+    }): Equation {
         // Set and clone the equations.
-
-        const eq1multiplied = eq1.clone().multiply(new Fraction(factor1)),
-            eq2multiplied = eq2.clone().multiply(new Fraction(factor2))
+        const eq1multiplied = this.equations[equation1.id].clone().multiply(equation1.factor)
+        const eq2multiplied = this.equations[equation2.id].clone().multiply(equation2.factor)
 
         // Add both equations together.
-        eq1multiplied.left.add(eq2multiplied.left)
-        eq1multiplied.right.add(eq2multiplied.right)
-
-        return eq1multiplied
+        return eq1multiplied.add(eq2multiplied)
     }
 
     public multiply(value: InputValue<Fraction> | InputValue<Fraction>[], index?: number): this {
@@ -222,8 +236,10 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    public reduce(): LinearSystem {
-        throw new Error("Method not implemented.")
+    public reduce(): this {
+        // reduce all equations at once.
+        this.equations.forEach(equ=>equ.reduce())
+        return this
     }
 
     // ------------------------------------------
@@ -236,15 +252,42 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
     }
 
     solve(): ISolution[] {
+        // TODO : à retravailler, car ce n'est ni l'endroit, ni l'intérêt de l'avoir ici.
+        // 1. search in the equations if a variable has two same or opposite value = candidate for merging
+        // 2. if 1 is false, search for a variable that has coefficient one
+        // 3. if 2 is false, search for a variable that has a coefficient multiple of another.
+        // 4. if 3 is false, multiply both lines.
+        // => merge the equations and cycle.
+        const output: string[] = [this.tex]
+
+        const LS = this.clone()
+
+        while (LS.variables.length>1){
+            const letter = LS.variables[LS.variables.length-1]
+            const emptyLS = new LinearSystem()
+            const factors = LS.solve_compute_factors(letter).slice(0, LS.variables.length-1)
+            factors.forEach(factor=> {
+                emptyLS.equations.push(LS.mergeEquations(...factor))
+            })
+
+            LS.equations = emptyLS.equations
+
+            output.push(LS.tex)
+
+            // add the same but with a reduced value.
+            LS.reduce()
+            output.push(LS.tex)
+        }
+
+
+        console.log('\\begin{aligned}' + output.join('\\\\[2em]') + '\\end{aligned}')
+
         return []
     }
 
     public solveMatrix = (): Fraction[] => {
         const [matrix, vector] = this.matrix
         // Solve the matrix
-
-        // console.log(matrix.map(row=>row.map(x=>x.display)))
-        // console.log(vector.map(x=>x.display))
 
         // Make the augmented matrix (matrix + vector)
         const augmentedMatrix: Fraction[][] = matrix.map((row, index) => [...row, vector[index]])
@@ -303,6 +346,34 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return augmentedMatrix.map(x => x[x.length - 1])
     }
 
+    solve_compute_factors(letter: string):
+        [{ id: number, factor: number }, { id: number, factor: number }][] {
+        // when solving, every monoms with a variable is on the left !
+        // and every coefficient are relative numbers.
+        const result: [{ id: number, factor: number }, { id: number, factor: number }][] = []
+        const coefficients = this.equations.map(equ => equ.left.monomByLetter(letter).coefficient.value)
+
+        // search for a factor
+        coefficients.forEach((reference, index) => {
+            for (let i = index + 1; i < coefficients.length; i++) {
+                const lcm = Numeric.lcm(reference, coefficients[i])
+
+                const sign = reference < 0 ? -1 : 1
+                result.push([
+                    {
+                        id: index, factor: sign * lcm / reference
+                    }, {
+                        id: i, factor: -sign * lcm / coefficients[i]
+                    }])
+            }
+        })
+
+        // Sort the value: prefer the smallest absolute values (1/-1, 2/-2, ...)
+        return result.sort((a, b) => {
+            return (Math.abs(a[0].factor) + Math.abs(a[1].factor)) - (Math.abs(b[0].factor) + Math.abs(b[1].factor))
+        })
+    }
+
     public subtract(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this {
         if (value instanceof LinearSystem) {
             const length = value.equations.length
@@ -324,16 +395,6 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    public get tex(): string {
-        // Build the array of values.
-        // Reorder
-        // This clone the system :!!!
-        //TODO: Avoid cloning this linear system
-        const LS = this.clone().reorder()
-
-        return this.buildTex(LS.equations)
-    }
-
     public get variables(): string[] {
         return this.#variables
     }
@@ -348,15 +409,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         this.#variables = this.#equations.reduce((acc: string[], equ) => {
             return [...new Set([...acc, ...equ.variables])]
         }, [])
-        //
-        // // Find all letters used.
-        // let variables = new Set<string>()
-        //
-        // for (const equ of this.#equations) {
-        //     variables = new Set([...variables, ...equ.variables])
-        // }
-        //
-        // this.#variables = [...variables]
+
         this.#variables.sort()
         return this
     }

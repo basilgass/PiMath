@@ -1,8 +1,5 @@
-import { describe, expect, it, test } from "vitest"
-import { Line } from "../../src/geometry/line"
-import { Point } from "../../src/geometry/point"
-import {Vector} from "../../src/geometry/vector"
-import {Random} from "../../src"
+import {describe, expect, it, test} from "vitest"
+import {Line, Point, Random, Vector} from "../../src"
 
 
 describe('Line creation', () => {
