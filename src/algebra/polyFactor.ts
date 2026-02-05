@@ -24,12 +24,12 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     #displayMode: FACTOR_DISPLAY = FACTOR_DISPLAY.POWER
     #factors: Factor[] = []
 
-    constructor(...values: (Factor | PolyFactor)[]) {
+    constructor(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]) {
         this.parse(...values)
         return this
     }
 
-    public parse(...values: (Factor | PolyFactor)[]): this {
+    public parse(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]): this {
         // Init the factors list
         this.#factors = []
 

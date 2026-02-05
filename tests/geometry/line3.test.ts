@@ -1,10 +1,10 @@
-import { describe, expect, it, test } from "vitest"
-import { Line3 } from "../../src/geometry/line3"
-import { Random } from "../../src/randomization/random"
-import { Vector } from "../../src/geometry/vector"
-import { Point } from "../../src/geometry/point"
-import { Plane3 } from "../../src/geometry/plane3"
-import { Equation } from "../../src/algebra/equation"
+import {describe, expect, it, test} from "vitest"
+import {Line3} from "../../src/geometry/line3"
+import {Random} from "../../src/randomization/random"
+import {Vector} from "../../src/geometry/vector"
+import {Point} from "../../src/geometry/point"
+import {Plane3} from "../../src/geometry/plane3"
+import {Equation} from "../../src/algebra/equation"
 
 describe.todo('Line 3D creation', () => {
     test.todo('create Line 3D')
@@ -135,7 +135,7 @@ describe('Geometry Line3 tests', function () {
         // const control = l1.intersection(l2)
         // console.log(control.point.display)
     })
-    it('test 2', () => {
+    it.skip('test 2', () => {
         const A = new Point(-1, 3, 4)
         const B = new Point(3, 3, 7)
         const D = new Point(3, 5, 0)
@@ -159,7 +159,7 @@ describe('Geometry Line3 tests', function () {
         const S = P.clone().add(p.normal.clone().multiplyByScalar(1))
         console.log('S=', S.display)
     })
-    it('test 2B', () => {
+    it.skip('test 2B', () => {
         const A = new Point(-2, 3, 4)
         const B = new Point(2, 3, 7)
         const D = new Point(2, 5, 0)

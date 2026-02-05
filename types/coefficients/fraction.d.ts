@@ -28,14 +28,14 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     static max: (...fractions: InputValue<Fraction>[]) => Fraction;
     static min: (...fractions: (InputValue<Fraction>)[]) => Fraction;
     static sort: (fractions: (InputValue<Fraction>)[], reverse?: boolean) => Fraction[];
+    static toSameDenominateur(...fractions: InputValue<Fraction>[]): Fraction[];
     static unique: (fractions: (InputValue<Fraction>)[]) => Fraction[];
     static xMultiply: (...values: (InputValue<Fraction>)[]) => Fraction;
     abs: () => this;
     add: (F: InputValue<Fraction>) => Fraction;
     amplify: (k: number) => this;
-    /**
-     * Simple function to determine if it's a fraction
-     */
+    get approximative(): boolean;
+    set approximative(value: boolean);
     areEquals: (...F: Fraction[]) => boolean;
     /**
      * Compare the current coefficient with another coefficient
@@ -46,6 +46,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     get denominator(): number;
     set denominator(value: number);
     get dfrac(): this;
+    digits(value: number): this;
     divide: (F: Fraction | number) => Fraction;
     get frac(): this;
     infinite: () => this;
@@ -59,18 +60,15 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     isGeq: (than: Fraction | number) => boolean;
     isGreater: (than: Fraction | number) => boolean;
     isInfinity: () => boolean;
-    isInverted: (p: Fraction) => boolean;
     isLeq: (than: Fraction | number) => boolean;
     isLesser: (than: Fraction | number) => boolean;
     isNaN: () => boolean;
     isNatural: () => boolean;
     isNegative: () => boolean;
-    isNegativeOne: () => boolean;
     isNotEqual: (than: Fraction | number) => boolean;
     isNotZero: () => boolean;
     isOdd: () => boolean;
     isOne: () => boolean;
-    isOpposite: (p: Fraction) => boolean;
     isPositive: () => boolean;
     isRational: () => boolean;
     isReduced: () => boolean;
@@ -78,6 +76,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     isSquare: () => boolean;
     isStrictlyNegative: () => boolean;
     isStrictlyPositive: () => boolean;
+    isUnit(): boolean;
     isZero: () => boolean;
     multiply: (F: Fraction | number) => this;
     get numerator(): number;
@@ -93,5 +92,6 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     get texWithSign(): string;
     get tfrac(): this;
     get value(): number;
+    withSign(value?: boolean): this;
     zero: () => this;
 }

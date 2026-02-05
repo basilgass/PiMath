@@ -5,8 +5,8 @@ import { Polynom } from './polynom';
 import { Solution } from '../analyze/solution';
 export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpression<PolyFactor>, IAlgebra<PolyFactor> {
     #private;
-    constructor(...values: (Factor | PolyFactor)[]);
-    parse(...values: (Factor | PolyFactor)[]): this;
+    constructor(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]);
+    parse(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]): this;
     clone(): PolyFactor;
     get tex(): string;
     get display(): string;

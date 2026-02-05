@@ -1,11 +1,10 @@
-import { Equation } from "../algebra/equation"
-import { Polynom } from "../algebra/polynom"
-import { Fraction } from "../coefficients/fraction"
-import { Line3 } from "./line3"
-import { Point } from "./point"
-import { Vector } from "./vector"
+import {Equation} from "../algebra/equation"
+import {Polynom} from "../algebra/polynom"
+import {Fraction} from "../coefficients/fraction"
+import {Line3} from "./line3"
+import {Point} from "./point"
+import {Vector} from "./vector"
 import type {Plane3Config} from "../pimath.interface"
-
 
 
 export class Plane3 {
@@ -18,50 +17,6 @@ export class Plane3 {
         }
 
         return this
-    }
-
-    get normal(): Vector {
-        return this.#normal
-    }
-    set normal(value: Vector) {
-        this.#normal = value
-        this.#normal.asPoint = false
-    }
-    get point(): Point {
-        return this.#point
-    }
-    set point(value: Point) {
-        this.#point = value
-        this.#point.asPoint = true
-    }
-
-    get a(): Fraction {
-        return this.#normal.x
-    }
-    get b(): Fraction {
-        return this.#normal.y
-    }
-    get c(): Fraction {
-        return this.#normal.z
-    }
-    get d(): Fraction {
-        return this.#normal.dot(this.#point).opposite()
-    }
-
-    get tex(): string {
-        // return the cartesian equation of the plane
-        return new Equation(
-            new Polynom('xyz', this.a, this.b, this.c, this.d),
-            new Polynom(0)
-        ).reduce().tex
-    }
-
-    get display(): string {
-        // return the cartesian equation of the plane
-        return new Equation(
-            new Polynom('xyz', this.a, this.b, this.c, this.d),
-            new Polynom(0)
-        ).reduce().display
     }
 
     parse(config: Plane3Config) {
@@ -121,9 +76,32 @@ export class Plane3 {
         }
     }
 
+    get tex(): string {
+        // return the cartesian equation of the plane
+        return new Equation(
+            new Polynom('xyz', this.a, this.b, this.c, this.d),
+            new Polynom(0)
+        ).reduce().tex
+    }
+
+    get display(): string {
+        // return the cartesian equation of the plane
+        return new Equation(
+            new Polynom('xyz', this.a, this.b, this.c, this.d),
+            new Polynom(0)
+        ).reduce().display
+    }
+
+    get a(): Fraction {
+        return this.#normal.x
+    }
+
     angle(vector: Vector, sharp?: boolean, radian?: boolean): number
+
     angle(line: Line3, sharp?: boolean, radian?: boolean): number
+
     angle(plane: Plane3, sharp?: boolean, radian?: boolean): number
+
     angle(value: Plane3 | Line3 | Vector, sharp?: boolean, radian?: boolean): number {
         if (value instanceof Plane3) {
             return this.normal.angle(value.normal, sharp, radian)
@@ -144,20 +122,35 @@ export class Plane3 {
         return a90 - this.normal.angle(direction, true, radian)
     }
 
+    get b(): Fraction {
+        return this.#normal.y
+    }
+
+    get c(): Fraction {
+        return this.#normal.z
+    }
+
+    get d(): Fraction {
+        return this.#normal.dot(this.#point).opposite()
+    }
+
     distanceTo(point: Vector): number {
         return this.normal.dot(point).add(this.d).abs().value / this.normal.norm
     }
 
     intersectWithLine(line: Line3): Point {
-        const { point, direction } = line
+        const {point, direction} = line
         const t = this.normal.dot(point).add(this.d).divide(this.normal.dot(direction).opposite())
-        return point.clone().add(direction.clone().multiplyByScalar(t))
+        return new Point(
+            new Vector(point)
+                .add(direction.clone().multiplyByScalar(t))
+        )
     }
 
     intersectWithPlane(plane: Plane3): Line3 {
         const direction = this.normal.cross(plane.normal)
 
-        // Solve the system:
+        // Solve the asSystem:
         // p1 // p2 // z=0
         const pt = new Point(0, 0, 0)
         throw new Error('Intersection with plane  not yet implemented !')
@@ -166,5 +159,21 @@ export class Plane3 {
 
     isPointOnPlane(pt: Point): boolean {
         return this.normal.dot(pt).add(this.d).isZero()
+    }
+
+    get normal(): Vector {
+        return this.#normal
+    }
+
+    set normal(value: Vector | Point) {
+        this.#normal = new Vector(value)
+    }
+
+    get point(): Point {
+        return this.#point
+    }
+
+    set point(value: Point | Vector) {
+        this.#point = new Point(value)
     }
 }

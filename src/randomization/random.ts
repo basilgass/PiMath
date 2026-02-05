@@ -9,15 +9,16 @@ import type {
     randomPolynomConfig
 } from "./rndTypes"
 
-import { randomArray, randomBool, randomInt, randomIntSym, randomItem, randomPrime, shuffleArray } from "./rndHelpers"
-import { rndFraction } from "./coefficient/rndFraction"
-import { rndMonom } from "./algebra/rndMonom"
-import { rndPolynom } from "./algebra/rndPolynom"
-import { rndEquation } from "./algebra/rndEquation"
-import { rndCircle } from "./geometry/rndCircle"
-import { rndLine } from "./geometry/rndLine"
-import { rndLine3 } from "./geometry/rndLine3"
-import { rndVector } from "./geometry/rndVector"
+import {randomArray, randomBool, randomInt, randomIntSym, randomItem, randomPrime, shuffleArray} from "./rndHelpers"
+import {rndFraction} from "./coefficient/rndFraction"
+import {rndMonom} from "./algebra/rndMonom"
+import {rndPolynom} from "./algebra/rndPolynom"
+import {rndEquation} from "./algebra/rndEquation"
+import {rndCircle} from "./geometry/rndCircle"
+import {rndLine} from "./geometry/rndLine"
+import {rndLine3} from "./geometry/rndLine3"
+import {rndVector} from "./geometry/rndVector"
+import {Point} from "../geometry"
 
 export type * from "./rndTypes"
 
@@ -79,10 +80,7 @@ export const Random = {
     },
 
     point: (config?: randomGeometryPointConfig) => {
-        const vector = rndVector(config)
-        vector.asPoint = true
-
-        return vector
+        return new Point(rndVector(config))
     },
 
     circle: (config?: randomGeometryCircleConfig) => {

@@ -541,7 +541,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
 
 
-        // TODO: Not sure the reduced system checking is working properly !
+        // TODO: Not sure the reduced asSystem checking is working properly !
         for (const m of P.monoms) {
             if (!m.coefficient.isReduced()) {
                 return false

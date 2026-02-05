@@ -1,8 +1,8 @@
-import type {Fraction, NthRoot} from "./coefficients"
+import type {Fraction} from "./coefficients"
 import type {Equation, Factor, Monom} from "./algebra"
 import type {Line, Point, Vector} from "./geometry"
 
-export type InputValue<T> = T | string | number | Fraction | NthRoot;
+export type InputValue<T> = T | string | number | Fraction // | Root;
 export type InputAlgebra<T> = InputValue<T> | Monom
 export type literalType<T> = Record<string, T>;
 
@@ -26,7 +26,8 @@ export interface IPiMathObject<T> {
 
     clone(): T;
 }
-export interface IExpressionBase<T>{
+
+export interface IExpressionBase<T> {
     add(value: InputValue<T>): T;
 
     isEqual(value: InputValue<T>): boolean;
@@ -46,12 +47,13 @@ export interface IExpressionBase<T>{
     zero(): T;
 }
 
-export interface IExpressionMultiply<T> extends IExpressionBase<T>{
+export interface IExpressionMultiply<T> extends IExpressionBase<T> {
     multiply(value: InputValue<T>): T;
 
     pow(value: number): T;
 }
-export interface IExpression<T> extends IExpressionMultiply<T>{
+
+export interface IExpression<T> extends IExpressionMultiply<T> {
     divide(value: InputValue<T>): T | null;
 
     inverse(): T | undefined;
@@ -94,10 +96,17 @@ export interface ISolution {
     variable: string,
 }
 
-export type TABLE_OF_SIGNS_VALUES = '-'|'+'|'h'|'z'|'t'|'d'|'u'|'n'|''
+export type TABLE_OF_SIGNS_VALUES = '-' | '+' | 'h' | 'z' | 't' | 'd' | 'u' | 'n' | ''
 
-export interface TABLE_OF_SIGNS {roots: ISolution[], signs: TABLE_OF_SIGNS_VALUES[]}
-export interface FACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {factor: Factor}
+export interface TABLE_OF_SIGNS {
+    roots: ISolution[],
+    signs: TABLE_OF_SIGNS_VALUES[]
+}
+
+export interface FACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {
+    factor: Factor
+}
+
 export interface POLYFACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {
     factors: FACTOR_TABLE_OF_SIGNS[]
 }
@@ -131,30 +140,30 @@ export interface remarquableLines {
         'A': Line,
         'B': Line,
         'C': Line,
-        'intersection': Vector | null
+        'intersection': Point | null
     },
     externalBisectors: {
         'A': Line,
         'B': Line,
         'C': Line,
-        'intersection': Vector | null
+        'intersection': Point | null
     }
     'heights': {
         'A': Line,
         'B': Line,
         'C': Line,
-        'intersection': Vector | null
+        'intersection': Point | null
     },
     'medians': {
         'A': Line,
         'B': Line,
         'C': Line,
-        'intersection': Vector | null
+        'intersection': Point | null
     },
     'mediators': {
         'AB': Line,
         'AC': Line,
         'BC': Line,
-        'intersection': Vector | null
+        'intersection': Point | null
     },
 }

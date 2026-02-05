@@ -3,25 +3,25 @@ import {Line, Point, Random, Vector} from "../../src"
 
 
 describe('Line creation', () => {
-    test('create Line', ()=>{
+    test('create Line', () => {
         const line = new Line()
 
         expect(line).toBeDefined()
     })
-    test('create Line through two points', ()=>{
+    test('create Line through two points', () => {
         const line = new Line().fromPoints(
-            new Point(3,4),
-            new Point(1,2)
+            new Point(3, 4),
+            new Point(1, 2)
         )
 
         expect(line).toBeDefined()
-        expect(line.director.isColinearTo(new Vector(1,1))).toBeTruthy()
+        expect(line.director.isColinearTo(new Vector(1, 1))).toBeTruthy()
     })
 
-    test('random', ()=>{
+    test('random', () => {
         const line = Random.line()
 
-        console.log(line.canonical.tex)
+        console.log(line.asCanonical().tex)
     })
     test.todo('clone Line')
     test.todo('set to zero Line')
@@ -63,20 +63,20 @@ describe.skip('Geometry Line', function () {
         const L = new Line('9x-8y-96=0')
 
         expect(L.tex).to.be.equal('9x-8y-96=0')
-        expect(L.equation.tex).to.be.equal('9x-8y=96')
-        expect(L.mxh.tex).to.be.equal('y=\\frac{ 9 }{ 8 }x-12')
-        expect(L.parametric.tex).to.be.equal('\\begin{pmatrix} x \\\\ y \\end{pmatrix} = \\begin{pmatrix} 0 \\\\ -96 \\end{pmatrix} + k\\cdot \\begin{pmatrix} 8 \\\\ 9 \\end{pmatrix}')
-        // console.log(tex.system)
+        expect(L.asCartesian().tex).to.be.equal('9x-8y=96')
+        expect(L.asMxh().tex).to.be.equal('y=\\frac{ 9 }{ 8 }x-12')
+        expect(L.asParametric().tex).to.be.equal('\\begin{pmatrix} x \\\\ y \\end{pmatrix} = \\begin{pmatrix} 0 \\\\ -96 \\end{pmatrix} + k\\cdot \\begin{pmatrix} 8 \\\\ 9 \\end{pmatrix}')
+        // console.log(tex.asSystem)
     })
 
     it('should output nice ASCII', function () {
         const L = new Line('9x-8y-96=0')
 
         expect(L.display).to.be.equal('9x-8y-96=0')
-        expect(L.equation.display).to.be.equal('9x-8y=96')
-        expect(L.mxh.display).to.be.equal('y=9/8x-12')
-        expect(L.parametric.display).to.be.equal('((x,y))=((0,-96))+k((8,9))')
-        // console.log(tex.system)
+        expect(L.asCartesian().display).to.be.equal('9x-8y=96')
+        expect(L.asMxh().display).to.be.equal('y=9/8x-12')
+        expect(L.asParametric().display).to.be.equal('((x,y))=((0,-96))+k((8,9))')
+        // console.log(tex.asSystem)
     })
 
     it('should parse line from canonical coefficient', function () {
@@ -84,10 +84,11 @@ describe.skip('Geometry Line', function () {
         // a=3, b=2, c=1
         const L = new Line(3, 2, 1)
 
-        const P1 = new Point(-2, 3),
-            P2 = new Point(-3, 4)
-        expect(L.isOnLine(P1)).to.be.false
-        expect(L.isOnLine(P2)).to.be.true
+        const P1 = new Point(-2, 3)
+        const P2 = new Point(-3, 4)
+
+        expect(L.isOnLine(P1)).toBe(false)
+        expect(L.isOnLine(P2)).toBe(true)
     })
 
 })

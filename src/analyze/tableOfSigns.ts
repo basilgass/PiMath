@@ -1,5 +1,5 @@
 
-// TODO: move the TableOfSigns system to a custom class.
+// TODO: move the TableOfSigns asSystem to a custom class.
 
 import {Factor, PolyFactor, Polynom} from "../algebra"
 import type {InputAlgebra} from "../pimath.interface"

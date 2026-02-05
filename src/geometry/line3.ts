@@ -2,19 +2,19 @@
  * This class works for 2d line in a plane.
  */
 
-import { Fraction } from "../coefficients/fraction"
-import { Polynom } from "../algebra/polynom"
-import { Monom } from "../algebra/monom"
-import { randomIntSym } from "../randomization/rndHelpers"
-import { Vector } from "./vector"
-import { Point } from "./point"
+import {Fraction} from "../coefficients/fraction"
+import {Polynom} from "../algebra/polynom"
+import {Monom} from "../algebra/monom"
+import {randomIntSym} from "../randomization/rndHelpers"
+import {Vector} from "./vector"
+import {Point} from "./point"
 import {Line3Propriety} from "../pimath.interface"
 
 
 export class Line3 {
+    static PARALLEL = Line3Propriety.Parallel
     // A line is defined as the canonical form
     static PERPENDICULAR = Line3Propriety.Perpendicular
-    static PARALLEL = Line3Propriety.Parallel
     // ax + by + c = 0
     #OA: Point = new Point()
     #d: Vector = new Vector()
@@ -28,27 +28,15 @@ export class Line3 {
     constructor(A: Point, d: Vector)
     constructor(A: Point, d: Vector | Point) {
         this.#OA = A.clone()
-        this.#d = d.asPoint ? new Vector(A, d) : d.clone()
+        this.#d = (d instanceof Point) ? new Vector(A, d) : d.clone()
         return this
     }
 
-    get OA(): Point {
-        return this.#OA
-    }
+    clone = (): this => {
+        this.#d = this.#d.clone()
+        this.#OA = this.#OA.clone()
 
-    set OA(value: Point) {
-        this.#OA = value
-    }
-    get point(): Point {
-        return this.#OA.clone()
-    }
-
-    get d(): Vector {
-        return this.#d
-    }
-
-    set d(value: Vector) {
-        this.#d = value
+        return this
     }
 
     get tex(): { parametric: string, system: string, cartesian: string } {
@@ -88,53 +76,24 @@ export class Line3 {
         }
     }
 
+    get OA(): Point {
+        return this.#OA
+    }
+
+    set OA(value: Point) {
+        this.#OA = value
+    }
+
+    get d(): Vector {
+        return this.#d
+    }
+
+    set d(value: Vector) {
+        this.#d = value
+    }
+
     get direction(): Vector {
         return this.#d.clone()
-    }
-
-    clone = (): this => {
-        this.#d = this.#d.clone()
-        this.#OA = this.#OA.clone()
-
-        return this
-    }
-    // ------------------------------------------
-    // Mathematical operations
-    // ------------------------------------------
-    isOnLine = (pt: Point): boolean => {
-        return false
-    }
-
-    isParallelTo = (line: Line3): boolean => {
-        // Do they have the isSame direction ?
-        throw new Error('Method not implemented.')
-    }
-    isSameAs = (line: Line3): boolean => {
-        throw new Error('Method not implemented.')
-    }
-    isPerpendicularTo = (line: Line3): boolean => {
-        throw new Error('Method not implemented.')
-    }
-    isVertical = (): boolean => {
-        throw new Error('Method not implemented.')
-    }
-    simplify = (): this => {
-        throw new Error('Method not implemented.')
-        // const lcm = Numeric.lcm(this.#a.denominator, this.#b.denominator, this.#c.denominator),
-        //     gcd = Numeric.gcd(this.#a.numerator, this.#b.numerator, this.#c.numerator)
-
-        // this.fromCoefficient(
-        //     this.#a.clone().multiply(lcm).divide(gcd),
-        //     this.#b.clone().multiply(lcm).divide(gcd),
-        //     this.#c.clone().multiply(lcm).divide(gcd),
-        // )
-
-        // return this
-    }
-
-    intersection = (line: Line3): { point: Vector, hasIntersection: boolean, isParallel: boolean, isSame: boolean } => {
-
-        throw new Error('Method not implemented.')
     }
 
     distanceTo(pt: Point): { value: number, fraction: Fraction, tex: string } {
@@ -154,6 +113,8 @@ export class Line3 {
             tex: dnum.isExact() ? dnum.tex : `\\sqrt{${num2d2.tex}}`
         }
     }
+    // ------------------------------------------
+    // Mathematical operations
 
     hitSegment(A: Point, B: Point): boolean {
         const iPt = this.intersection(
@@ -170,6 +131,48 @@ export class Line3 {
                 && iPt.point.z.value <= Math.max(A.z.value, B.z.value)
         }
         return false
+    }
+
+    intersection = (line: Line3): { point: Vector, hasIntersection: boolean, isParallel: boolean, isSame: boolean } => {
+
+        throw new Error('Method not implemented.')
+    }
+
+    // ------------------------------------------
+    isOnLine = (pt: Point): boolean => {
+        return false
+    }
+
+    isParallelTo = (line: Line3): boolean => {
+        // Do they have the isSame direction ?
+        throw new Error('Method not implemented.')
+    }
+
+    isPerpendicularTo = (line: Line3): boolean => {
+        throw new Error('Method not implemented.')
+    }
+
+    isSameAs = (line: Line3): boolean => {
+        throw new Error('Method not implemented.')
+    }
+
+    isVertical = (): boolean => {
+        throw new Error('Method not implemented.')
+    }
+
+    get point(): Point {
+        return this.#OA.clone()
+    }
+
+    randomPoint = (max = 5): Point => {
+        const A = this.#OA.clone(),
+            k = new Fraction(randomIntSym(max, false))
+
+        return new Point(
+            A.x.clone().add(this.#d.x.clone().multiply(k)),
+            A.y.clone().add(this.#d.y.clone().multiply(k)),
+            A.z.clone().add(this.#d.z.clone().multiply(k))
+        )
     }
 
     // getValueAtX = (value: Fraction | number): Fraction => {
@@ -193,14 +196,17 @@ export class Line3 {
     //     return new Fraction().invalid()
     // }
 
-    randomPoint = (max = 5): Point => {
-        const A = this.#OA.clone(),
-            k = new Fraction(randomIntSym(max, false))
+    simplify = (): this => {
+        throw new Error('Method not implemented.')
+        // const lcm = Numeric.lcm(this.#a.denominator, this.#b.denominator, this.#c.denominator),
+        //     gcd = Numeric.gcd(this.#a.numerator, this.#b.numerator, this.#c.numerator)
 
-        return new Point(
-            A.x.clone().add(this.#d.x.clone().multiply(k)),
-            A.y.clone().add(this.#d.y.clone().multiply(k)),
-            A.z.clone().add(this.#d.z.clone().multiply(k))
-        )
+        // this.fromCoefficient(
+        //     this.#a.clone().multiply(lcm).divide(gcd),
+        //     this.#b.clone().multiply(lcm).divide(gcd),
+        //     this.#c.clone().multiply(lcm).divide(gcd),
+        // )
+
+        // return this
     }
 }

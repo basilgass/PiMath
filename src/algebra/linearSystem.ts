@@ -11,8 +11,8 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
     #equations: Equation[]
     // Solve steps for TeX output.
-    #steps: string[]
-    // Determine the letters in the linear system, usually ['x', 'y']
+    #steps: string[] = []
+    // Determine the letters in the linear asSystem, usually ['x', 'y']
     #variables: string[]
 
     constructor(...values: (string | Equation)[]) {
@@ -43,15 +43,15 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
     public get tex(): string {
         // Build the array of values.
         // Reorder
-        // This clone the system :!!!
-        //TODO: Avoid cloning this linear system
+        // This clone the asSystem :!!!
+        //TODO: Avoid cloning this linear asSystem
         const LS = this.clone().reorder()
 
         return this.buildTex(LS.equations)
     }
 
     get display() {
-        // TODO : LinearSystem - display: implement the display of the linear system
+        // TODO : LinearSystem - display: implement the display of the linear asSystem
         return this.tex + 'as display'
     }
 
@@ -105,7 +105,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         let letters: string[] = []
         const equArray: string[] = []
 
-        // Get the letters from the linear system
+        // Get the letters from the linear asSystem
         for (const equ of equations) {
             letters = letters.concat(equ.letters())
         }
@@ -213,7 +213,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
     }
 
     public multiply(value: InputValue<Fraction> | InputValue<Fraction>[], index?: number): this {
-        // Multiply the system by a number
+        // Multiply the asSystem by a number
         // the value can be an array of numbers
         // the value can be a number and the index of the equation to multiply
         if (Array.isArray(value)) {
@@ -329,10 +329,10 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
                     augmentedMatrix[j][k].add(augmentedMatrix[i][k].clone().multiply(factor))
                 }
 
-                // Check if the system is undetermined (no solution or infinite solutions)
+                // Check if the asSystem is undetermined (no solution or infinite solutions)
                 // the j line must not be all zeros
-                // the last element must be zero => the system is undetermined
-                // the last element must not be zero => the system is impossible
+                // the last element must be zero => the asSystem is undetermined
+                // the last element must not be zero => the asSystem is impossible
                 if (augmentedMatrix[j].slice(0, augmentedMatrix[j].length - 1).every(x => x.isZero())) {
                     if (augmentedMatrix[j][augmentedMatrix[j].length - 1].isZero()) {
                         return [new Fraction().infinite()]

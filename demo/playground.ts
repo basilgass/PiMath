@@ -11,8 +11,8 @@ const L1 = new Line(A, B).simplifyDirection(),
     L2 = new Line(C, D).simplifyDirection()
 
 const app = document.getElementById('app') ?? document.createElement('DIV')
-app.innerHTML = `<p>\\( ${L1.parametric.tex} \\)</p>`
-app.innerHTML += `<p>\\( ${L2.parametric.tex} \\)</p>`
+app.innerHTML = `<p>\\( ${L1.asParametric.tex} \\)</p>`
+app.innerHTML += `<p>\\( ${L2.asParametric.tex} \\)</p>`
 
 const I = L1.intersection(L2)
 if (I.hasIntersection) {

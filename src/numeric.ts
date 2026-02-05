@@ -165,19 +165,16 @@ function round(value: number, decimals = 2): number {
 function greatestPower(value: number, index: number): number {
     let search_value = Math.floor(Math.pow(value, 1 / index))
 
-    let radical = value
-    let factor = 1
+    const radical = value
+    const factor = 1
 
     while (search_value > 1) {
         const pow = Math.pow(search_value, index)
-        if (radical % pow) {
-            factor *= search_value
-            radical = radical / pow
-
-            search_value = Math.floor(Math.pow(radical, 1 / index))
-        }else{
-            search_value--
+        if (radical % pow === 0) {
+            return pow
         }
+
+        search_value--
     }
 
     return factor

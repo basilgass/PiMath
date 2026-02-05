@@ -4,8 +4,8 @@ import { Point } from './point';
 import { Line3Propriety } from '../pimath.interface';
 export declare class Line3 {
     #private;
-    static PERPENDICULAR: Line3Propriety;
     static PARALLEL: Line3Propriety;
+    static PERPENDICULAR: Line3Propriety;
     /**
      * Value can be a mix of:
      *
@@ -13,11 +13,7 @@ export declare class Line3 {
      */
     constructor(A: Point, B: Point);
     constructor(A: Point, d: Vector);
-    get OA(): Point;
-    set OA(value: Point);
-    get point(): Point;
-    get d(): Vector;
-    set d(value: Vector);
+    clone: () => this;
     get tex(): {
         parametric: string;
         system: string;
@@ -28,25 +24,29 @@ export declare class Line3 {
         system: string;
         cartesian: string;
     };
+    get OA(): Point;
+    set OA(value: Point);
+    get d(): Vector;
+    set d(value: Vector);
     get direction(): Vector;
-    clone: () => this;
-    isOnLine: (pt: Point) => boolean;
-    isParallelTo: (line: Line3) => boolean;
-    isSameAs: (line: Line3) => boolean;
-    isPerpendicularTo: (line: Line3) => boolean;
-    isVertical: () => boolean;
-    simplify: () => this;
-    intersection: (line: Line3) => {
-        point: Vector;
-        hasIntersection: boolean;
-        isParallel: boolean;
-        isSame: boolean;
-    };
     distanceTo(pt: Point): {
         value: number;
         fraction: Fraction;
         tex: string;
     };
     hitSegment(A: Point, B: Point): boolean;
+    intersection: (line: Line3) => {
+        point: Vector;
+        hasIntersection: boolean;
+        isParallel: boolean;
+        isSame: boolean;
+    };
+    isOnLine: (pt: Point) => boolean;
+    isParallelTo: (line: Line3) => boolean;
+    isPerpendicularTo: (line: Line3) => boolean;
+    isSameAs: (line: Line3) => boolean;
+    isVertical: () => boolean;
+    get point(): Point;
     randomPoint: (max?: number) => Point;
+    simplify: () => this;
 }

@@ -99,6 +99,28 @@ describe('Fraction output', () => {
 
         expect(F.display).toBe('2/3')
     })
+
+    test('force the plus sign', ()=>{
+        const F = new Fraction('2/3')
+
+        expect(F.withSign().display).toBe('+2/3')
+        expect(F.withSign().tex).toBe('+\\frac{ 2 }{ 3 }')
+
+        const Fm = new Fraction('-2/3')
+
+        expect(Fm.withSign().display).toBe('-2/3')
+        expect(Fm.withSign().tex).toBe('-\\frac{ 2 }{ 3 }')
+    })
+
+    test('approximative value display', ()=>{
+        const F = new Fraction(2)
+        F.sqrt()
+
+        expect(F.display).toBe('1.414')
+        expect(F.tex).toBe('1.414')
+        expect(F.digits(5).display).toBe('1.41421')
+        expect(F.digits(5).tex).toBe('1.41421')
+    })
 })
 
 describe('Fraction operations', () => {

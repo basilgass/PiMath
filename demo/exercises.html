@@ -3,28 +3,28 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
     <title>Getting Started</title>
 
     <script src="../../dist/pimath.js"></script>
 
     <!-- Alpine -->
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <script defer src="//unpkg.com/alpinejs"></script>
 
 
     <!-- KaTeX -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
-        integrity="sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs" crossorigin="anonymous">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
+        integrity="sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs" rel="stylesheet">
 
     <!-- The loading of KaTeX is deferred to speed up page rendering -->
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"
+    <script crossorigin="anonymous"
         integrity="sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx"
-        crossorigin="anonymous"></script>
+        src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
 
     <!-- To automatically render math in text elements, include the auto-render extension: -->
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js"
-        integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
-        onload="renderMathInElement(document.body);"></script>
+    <script crossorigin="anonymous"
+        integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" onload="renderMathInElement(document.body);"
+        src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js"></script>
 
     <link href="../demo.css" rel="stylesheet">
 </head>
@@ -32,13 +32,13 @@
 <body>
 
     <div x-data="dev()">
-        <template x-for="(item, index) of output" :key="index">
+        <template :key="index" x-for="(item, index) of output">
             <div class="katex-left" x-html="`\\[${item}\\]`"></div>
         </template>
     </div>
 
     <div x-data="triplets">
-        <template x-for="(item, index) of tripletsPytha" :key="index">
+        <template :key="index" x-for="(item, index) of tripletsPytha">
             <div x-text="item.join(',')"></div>
         </template>
     </div>

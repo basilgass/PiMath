@@ -14,7 +14,7 @@ export default tseslint.config(
 		},
 		rules: {
 			semi: ['error', 'never'],
-			curly: ['error'],
+			curly: ['error', 'multi-line'],
 			"prefer-const": ["error", {
 				"destructuring": "all",
 				"ignoreReadBeforeAssign": false

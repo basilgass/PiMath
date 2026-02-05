@@ -1,4 +1,5 @@
 import { randomCoefficientConfig, randomEquationConfig, randomGeometryCircleConfig, randomGeometryLine3Config, randomGeometryLineConfig, randomGeometryPointConfig, randomMonomConfig, randomPolynomConfig } from './rndTypes';
+import { Point } from '../geometry';
 export type * from './rndTypes';
 export declare const Random: {
     equation: (config?: randomEquationConfig) => import('..').Equation;
@@ -14,7 +15,7 @@ export declare const Random: {
     shuffle: <T>(arr: T[]) => T[];
     line: (config?: randomGeometryLineConfig) => import('..').Line;
     line3: (config?: randomGeometryLine3Config) => import('..').Line3;
-    vector: (config?: randomGeometryPointConfig) => import('..').Point;
-    point: (config?: randomGeometryPointConfig) => import('..').Point;
+    vector: (config?: randomGeometryPointConfig) => Point;
+    point: (config?: randomGeometryPointConfig) => Point;
     circle: (config?: randomGeometryCircleConfig) => import('..').Circle;
 };

@@ -6,18 +6,13 @@
 
 import {Fraction} from "../coefficients"
 import type {InputValue} from "../pimath.interface"
-import {Vector} from "./vector"
+import {Root} from "../coefficients/root"
+import {TupleN} from "./TupleN"
+import type {Vector} from "./vector"
 
-export class Point extends Vector {
-
-    constructor()
-    constructor(value: Vector)
-    constructor(start: Vector, end: Vector)
-    constructor(...values: InputValue<Fraction>[])
-    constructor(...values: Vector[] | InputValue<Fraction>[]) {
+export class Point extends TupleN {
+    constructor(...values: (Point|Vector)[] | InputValue<Fraction>[]) {
         super()
-
-        this.asPoint = true
 
         // Initialize the vector
         if (values.length > 0) {
@@ -25,9 +20,9 @@ export class Point extends Vector {
         }
     };
 
-    public override parse(...values: Vector[] | InputValue<Fraction>[]): this {
+    public parse(...values: (Point|Vector)[] | InputValue<Fraction>[]): this {
         if (values.length === 1) {
-            if (values[0] instanceof Vector) {
+            if (values[0] instanceof TupleN) {
                 this.array = values[0].copy()
                 return this
             }
@@ -40,14 +35,14 @@ export class Point extends Vector {
 
 
         if (values.length > 1) {
-            if (values.some(x => x instanceof Vector)) {
+            if (values.some(x => x instanceof Point)) {
                 throw new Error('Creating a point with  multiple argument requires an input fraction')
             }
 
             const nbs: Fraction[] = values.map(x => new Fraction(x as InputValue<Fraction>))
 
             if (nbs.some(x => x.isNaN())) {
-                throw new Error('The value is not a valid point sting (a,b): ' + values.join(','))
+                throw new Error('The given values are not a valid point string (a,b): ')
             }
 
             this.array = nbs
@@ -56,12 +51,47 @@ export class Point extends Vector {
         return this
     }
 
-
-    public override clone(): Point {
-        const V = new Point()
-        V.array = this.copy()
-        V.asPoint = true
-        return V
+    public clone(): Point {
+        return new Point(...this.copy())
     }
+
+    get tex(): string {
+        return `\\left(${this.array.map(x => x.tex).join(';')}\\right)`
+    }
+
+    get display(): string {
+        return `(${this.array.map(x => x.display).join(';')})`
+    }
+
+    distanceTo(B: Point): Root {
+        if (this.dimension !== B.dimension) {
+            throw new Error('The two points must have the same dimensions.')
+        }
+
+        const AB = this.array
+            .map((x, index) => B.array[index].clone().subtract(x))
+
+        const distance2 = AB
+            .reduce(
+                (acc, x) =>
+                    acc.add(x.clone().pow(2)), new Fraction(0)
+            )
+
+        return new Root().from(2, distance2).reduce()
+    }
+
+    middleOf(V1: Point, V2: Point): this {
+        if (V1.dimension !== V2.dimension) {
+            throw new Error('Vectors must be the same dimension')
+        }
+
+        this.array = []
+        V1.array.forEach((x, index) => {
+            this.array.push(x.clone().add(V2.array[index]).divide(2))
+        })
+
+        return this
+    }
+
 
 }

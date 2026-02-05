@@ -10,8 +10,7 @@ import type {
     IPiMathObject,
     literalType
 } from "../pimath.interface"
-import {Fraction} from "../coefficients/fraction"
-import {NthRoot} from "../coefficients/nthRoot"
+import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 
 import {ShutingYard, ShutingyardType, type Token} from "piexpression"
@@ -44,23 +43,30 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         this.#coefficient = new Fraction()
         this.#literal = {}
 
-        if (typeof inputStr === 'string') {
-            if(!isNaN(Number(inputStr))){
-                this.#coefficient = new Fraction(Number(inputStr))
-            }else {
-                this.#shutingYardToReducedMonom(inputStr)
-            }
-        } else if (typeof inputStr === 'number') {
-            this.#coefficient = new Fraction(inputStr)
-        } else if (inputStr instanceof Fraction) {
-            this.#coefficient = inputStr.clone()
-        } else if (inputStr instanceof Monom) {
+        if (inputStr instanceof Monom) {
             this.#coefficient = inputStr.#coefficient.clone()
 
             // Copy the literal parts
             this.#cloneLiteral(inputStr)
+            return this
         }
 
+        if (inputStr instanceof Fraction) {
+            this.#coefficient = inputStr.clone()
+            return this
+        }
+
+        if (typeof inputStr === 'number') {
+            this.#coefficient = new Fraction(inputStr)
+            return this
+        }
+
+
+        if (!isNaN(Number(inputStr))) {
+            this.#coefficient = new Fraction(Number(inputStr))
+        } else {
+            this.#shutingYardToReducedMonom(inputStr)
+        }
         return this
     }
 
@@ -83,8 +89,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      * Get the tex output of the monom
      */
     public get tex(): string {
-        // TODO: display with square root !
-        // TODO: Refactor to make it more readable
         let L = ''
         const letters = Object.keys(this.#literal).sort()
 
@@ -92,7 +96,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             if (this.#literal[letter].isNotZero()) {
                 L += letter
                 if (this.#literal[letter].isNotEqual(1)) {
-                    L += `^{ ${this.#literal[letter].tfrac.tex } }`
+                    L += `^{ ${this.#literal[letter].tfrac.tex} }`
                 }
             }
         }
@@ -265,12 +269,8 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      * Derivative the monom
      * @param letter
      */
-    public derivative = (letter?: string): Monom => {
+    public derivative = (letter = 'x'): Monom => {
         // No setLetter given - assume it's the setLetter 'x'
-        if (letter === undefined) {
-            letter = 'x'
-        }
-
         if (this.hasVariable(letter)) {
             const d = this.#literal[letter].clone(),
                 dM = this.clone()
@@ -383,11 +383,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
                 return this.#evaluateAsNumeric(values.value)
             }
 
-            // If the value is a NthRoot, return undefined
-            if (values instanceof NthRoot) {
-                return new Fraction().invalid()
-            }
-
             // If the value is a number, return the numeric value
             if (typeof values === 'number') {
                 return this.#evaluateAsNumeric(values)
@@ -412,10 +407,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             const tmpValues: literalType<Fraction> = {}
             tmpValues[this.variables[0]] = new Fraction(values)
             return this.evaluate(tmpValues)
-        }
-
-        if (values instanceof NthRoot) {
-            return new Fraction().invalid()
         }
 
         if (typeof values === 'object') {
@@ -443,7 +434,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return Object.hasOwn(this.#literal, letter ?? 'x')
     }
 
-    public integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string  ): Fraction {
+    public integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string): Fraction {
         const primitive = this.primitive(letter)
 
         return (primitive.evaluate(b) as Fraction)
@@ -719,11 +710,8 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return this
     }
 
-    public primitive = (letter?: string): Monom => {
-        // TODO: derivative including the ln value => implies creating different monom system ?
-        if (letter === undefined) {
-            letter = 'x'
-        }
+    public primitive = (letter = 'x'): Monom => {
+        // TODO: derivative including the ln value => implies creating different monom asSystem ?
 
         // Zero monom
         const M = this.clone()
@@ -878,10 +866,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             const tmpValues: literalType<number> = {}
             tmpValues[this.variables[0]] = new Fraction(values).value
             return this.#evaluateAsNumeric(tmpValues)
-        }
-
-        if (values instanceof NthRoot) {
-            return NaN
         }
 
         if (typeof values === 'object') {

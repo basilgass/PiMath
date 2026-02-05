@@ -1,5 +1,5 @@
 import { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType } from '../pimath.interface';
-import { Fraction } from '../coefficients/fraction';
+import { Fraction } from '../coefficients';
 export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra<Monom> {
     #private;
     constructor(value?: InputValue<Fraction>);

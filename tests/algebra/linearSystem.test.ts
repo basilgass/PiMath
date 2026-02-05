@@ -181,7 +181,7 @@ describe('Linear System algebra', () => {
             .to.be.deep.equal(['3/5', '-3/25', '3/25'])
     })
 
-    test('linear system solve output', ()=>{
+    test('linear asSystem solve output', ()=>{
         const LS = new LinearSystem(
             '3x+2y-5z=3',
             '5x-3y+z=-2',

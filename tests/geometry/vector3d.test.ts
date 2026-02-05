@@ -2,6 +2,7 @@ import {describe, expect, it, test} from "vitest"
 import {determinantFromVectors} from "../../src/geometry/geomMath"
 import {Vector} from "../../src/geometry/vector"
 import {Numeric} from "../../src/numeric"
+import {Point} from "../../src"
 
 describe('Vector 3D creation', () => {
 
@@ -15,8 +16,8 @@ describe('Vector 3D creation', () => {
     })
 
     test('create Vector 3D from 2 other vectors', () => {
-        const A = new Vector(1, 2, -3)
-        const B = new Vector(3, 5, 4)
+        const A = new Point(1, 2, -3)
+        const B = new Point(3, 5, 4)
 
         const v = new Vector(A, B)
 

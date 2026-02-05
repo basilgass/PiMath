@@ -7,10 +7,11 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
     #factor: Fraction
     #index: number
     #radical: Fraction
+    #withSign = false
 
     constructor(value?: InputValue<Root | Fraction>) {
         this.#index = 2
-        this.#factor = new Fraction().one()
+        this.#factor = new Fraction().zero()
         this.#radical = new Fraction().zero()
 
         if (value) {
@@ -35,6 +36,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
 
             return this
         }
+
         if (value instanceof Fraction) {
             this.index = 2
             this.factor = value.clone()
@@ -65,28 +67,51 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
     }
 
     get tex(): string {
-        const output =
-            this.factor.isOne()
-                ? ''
-                : this.factor.isNegative()
-                    ? '-'
-                    : this.factor.tex
+        // b \sqrt{}
+        // b
+        // \sqrt{}
+        // -\sqrt{}
 
-        if (this.index === 1) {
+        // Force the plus sign.
+        const plus = this.#withSign && this.factor.isPositive() ? '+' : ''
 
-            return output
+        // There is no radical - output the factor
+        if (this.#radical.isZero()) return `${plus}${this.#factor.tex}`
+
+        // The radical has an index of 1 - no radical.
+        if(this.index===1) return `${plus}${this.factor.clone().multiply(this.radical).tex}`
+
+        // Make the root part
+        const rad = this.index === 2
+                ? `\\sqrt{ ${this.#radical.tex} }`
+                : `\\sqrt[ ${this.index} ]{ ${this.#radical.tex} }`
+
+        if(this.#factor.isUnit()){
+            return this.#withSign
+                ? `${this.#factor.isOne()?plus:'-'} ${rad}`
+                : `${this.#factor.isOne()?'':'-'}${rad}`
         }
 
-        if (this.index === 2) {
-
-            return output
-        }
-
-        return output
+        return `${plus}${this.#factor.tex} ${rad}`
     }
 
     get display(): string {
-        return this.factor.display
+        const plus = this.#withSign && this.factor.isPositive() ? '+' : ''
+
+        // There is no radical - output the factor
+        if (this.#radical.isZero()) return `${plus}${this.#factor.display}`
+
+        // The radical has an index of 1 - no radical.
+        if(this.index===1) return `${plus}${this.factor.clone().multiply(this.radical).display}`
+
+        // Make the root part
+        const rad = this.index === 2
+            ? `sqrt(${this.#radical.tex})`
+            : `root(${this.index})(${this.#radical.display})`
+
+        if(this.#factor.isUnit()) return `${this.#factor.isOne()?plus:'-'}${rad}`
+
+        return `${plus}${this.#factor.display}${rad}`
     }
 
     add(value: InputValue<Root>): this {
@@ -133,7 +158,6 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
      * convert to root(index)(radical), without factor
      */
     group(): this {
-
         this.radical.multiply(this.factor.pow(this.index))
         this.factor.one()
 
@@ -238,8 +262,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
 
         // Extract the greatest root from.
         const greatest = Numeric.greatestPower(this.radical.value, this.index)
-        this.factor = this.factor.multiply(Math.pow(greatest, 1 / this.index))
-        this.radical = this.radical.divide(greatest)
+
+        this.factor.multiply(Math.pow(greatest, 1 / this.index))
+        this.radical.divide(greatest)
 
         return this
     }
@@ -262,6 +287,11 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
 
     public get value(): number {
         return Numeric.numberCorrection(this.factor.value * Math.pow(this.radical.value, 1 / this.index))
+    }
+
+    withSign(value = true): this {
+        this.#withSign = value
+        return this
     }
 
     zero(): this {

@@ -11,7 +11,7 @@ describe('Circle creation', () => {
         expect(C).toBeDefined()
         expect(C.center.x.value).toBe(8)
         expect(C.center.y.value).toBe(6)
-        expect(C.radius.value).toBe(Math.sqrt(20))
+        expect(C.radius.value).toBe(+Math.sqrt(20).toFixed(3))
     })
 
     test('parse string', () => {
@@ -41,7 +41,7 @@ describe('Circle creation', () => {
         expect(D.center.x.value).toBe(8)
         expect(D.center.y.value).toBe(6)
         expect(D.radius.value).toBe(5)
-        expect(C.radius.value).toBe(Math.sqrt(20))
+        expect(C.radius.value).toBe(+Math.sqrt(20).toFixed(3))
     })
 })
 
@@ -71,6 +71,7 @@ describe('Circle operations', () => {
             25,
             true
         )
+
         const P = new Point(-5, 7)
 
         expect(C.tangents(P).map(x => x.display))
@@ -142,7 +143,7 @@ describe.skip('Circle', function () {
             true
         ), P = new Point(-5, 7)
 
-        expect(C.tangents(P).map(x => x.canonical.tex)).to.have.all.members(['3x-4y+43=0'])
+        expect(C.tangents(P).map(x => x.asCanonical.tex)).to.have.all.members(['3x-4y+43=0'])
 
         // With a slope
         const D = new Circle('x^2+y^2+10x=2y-6'),

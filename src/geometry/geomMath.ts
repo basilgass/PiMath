@@ -1,7 +1,8 @@
-import { Fraction } from "../coefficients"
-import type { Vector } from "./vector"
+import {Fraction} from "../coefficients"
+import type {Vector} from "./vector"
+import type {Point} from "./point"
 
-type V = Vector
+type V = Vector | Point
 export function areVectorsEquals(v1: V, v2: V): boolean {
     return v1.dimension === v2.dimension &&
         v1.array.every(

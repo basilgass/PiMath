@@ -3,7 +3,7 @@ import {Random} from "../src/randomization/random"
 import {PolyFactor} from "../src/algebra/polyFactor"
 import {Vector} from "../src/geometry/vector"
 import {determinantFromVectors} from "../src/geometry/geomMath"
-import {Matrix} from "../src"
+import {Matrix, Point} from "../src"
 
 describe('Debug tests', ()=>{
     test('polynom randomisation', ()=>{
@@ -51,11 +51,11 @@ describe('Debug tests', ()=>{
     })
 
     test('ba', ()=>{
-        const A= new Vector(1,3,2)
-        const B = new Vector(-2,1,-2)
-        // const I = new Vector(-1,7, 0)
-        // const I = new Vector(58,0,0)
-        const I = new Vector(-3,-12,-2)
+        const A= new Point(1,3,2)
+        const B = new Point(-2,1,-2)
+        // const I = new Point(-1,7, 0)
+        // const I = new Point(58,0,0)
+        const I = new Point(-3,-12,-2)
 
         const AB = new Vector(A, B)
         // AB.x = 1

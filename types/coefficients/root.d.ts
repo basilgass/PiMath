@@ -34,5 +34,6 @@ export declare class Root implements IPiMathObject<Root>, IExpression<Root> {
     sqrt(): this;
     subtract(value: InputValue<Root>): this;
     get value(): number;
+    withSign(value?: boolean): this;
     zero(): this;
 }

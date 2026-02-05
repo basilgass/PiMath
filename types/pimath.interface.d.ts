@@ -1,7 +1,7 @@
-import { Fraction, NthRoot } from './coefficients';
+import { Fraction } from './coefficients';
 import { Equation, Factor, Monom } from './algebra';
 import { Line, Point, Vector } from './geometry';
-export type InputValue<T> = T | string | number | Fraction | NthRoot;
+export type InputValue<T> = T | string | number | Fraction;
 export type InputAlgebra<T> = InputValue<T> | Monom;
 export type literalType<T> = Record<string, T>;
 export type compareSign = '>' | ">=" | "=>" | "geq" | '<' | "<=" | "=<" | "leq" | '=' | "<>" | "neq" | "same";
@@ -95,30 +95,30 @@ export interface remarquableLines {
         'A': Line;
         'B': Line;
         'C': Line;
-        'intersection': Vector | null;
+        'intersection': Point | null;
     };
     externalBisectors: {
         'A': Line;
         'B': Line;
         'C': Line;
-        'intersection': Vector | null;
+        'intersection': Point | null;
     };
     'heights': {
         'A': Line;
         'B': Line;
         'C': Line;
-        'intersection': Vector | null;
+        'intersection': Point | null;
     };
     'medians': {
         'A': Line;
         'B': Line;
         'C': Line;
-        'intersection': Vector | null;
+        'intersection': Point | null;
     };
     'mediators': {
         'AB': Line;
         'AC': Line;
         'BC': Line;
-        'intersection': Vector | null;
+        'intersection': Point | null;
     };
 }

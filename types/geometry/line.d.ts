@@ -1,14 +1,9 @@
-import { Fraction } from '../coefficients/fraction';
-import { Equation } from '../algebra/equation';
+import { Fraction } from '../coefficients';
+import { Equation } from '../algebra';
 import { Vector } from './vector';
 import { InputValue, IPiMathObject, LinePropriety } from '../pimath.interface';
 import { Point } from './point';
-export interface LineConfig {
-    direction?: Vector;
-    normal?: Vector;
-    point?: Point;
-    points?: Point[];
-}
+import { Root } from '../coefficients/root';
 export declare class Line implements IPiMathObject<Line> {
     #private;
     static PARALLEL: LinePropriety;
@@ -29,30 +24,29 @@ export declare class Line implements IPiMathObject<Line> {
     get tex(): string;
     get display(): string;
     get OA(): Vector;
-    set OA(value: Vector);
+    set OA(value: Vector | Point);
     get a(): Fraction;
     set a(value: Fraction);
+    asCanonical(): this;
+    asCartesian(): this;
+    asMxh(): this;
+    asParametric(): this;
+    asSystem(): this;
     get b(): Fraction;
     set b(value: Fraction);
     get c(): Fraction;
     set c(value: Fraction);
-    get canonical(): this;
     canonicalAsFloatCoefficient(decimals?: number): string;
     get d(): Vector;
     set d(value: Vector);
     get director(): Vector;
-    distanceTo(pt: Point): {
-        value: number;
-        fraction: Fraction;
-        tex: string;
-    };
-    get equation(): this;
+    distanceTo(pt: Point): Root;
     fromCoefficient: (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>) => this;
     fromEquation: (equ: Equation) => this;
-    fromPointAndDirection: (P: Point, d: Vector) => this;
+    fromPointAndDirection: (P: Point | Vector, d: Vector) => this;
     fromPointAndLine: (P: Vector, L: Line, orientation?: LinePropriety) => this;
-    fromPointAndNormal: (P: Point, n: Vector) => this;
-    fromPoints(pt1: Point, pt2: Point): this;
+    fromPointAndNormal: (P: Point | Vector, n: Vector) => this;
+    fromPoints(A: Point, B: Point): this;
     getEquation(): Equation;
     getValueAtX: (value: Fraction | number) => Fraction;
     getValueAtY: (value: Fraction | number) => Fraction;
@@ -64,21 +58,15 @@ export declare class Line implements IPiMathObject<Line> {
         isParallel: boolean;
         isSame: boolean;
     };
-    isOnLine: (pt: Vector) => boolean;
+    isOnLine(pt: Point): boolean;
     isParallelTo: (line: Line) => boolean;
     isPerpendicularTo: (line: Line) => boolean;
     isSameAs: (line: Line) => boolean;
     isVertical: () => boolean;
-    get mxh(): this;
     get n(): Vector;
     get normal(): Vector;
-    get parametric(): this;
     randomNearPoint: (k?: number) => Point;
     randomPoint: (k?: number) => Point;
-    get reduceBeforeDisplay(): boolean;
-    set reduceBeforeDisplay(value: boolean);
     simplify: () => this;
-    simplifyDirection: () => this;
     get slope(): Fraction;
-    get system(): this;
 }

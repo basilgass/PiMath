@@ -15,8 +15,10 @@ export enum FRAC_TYPE {
 export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> {
     #approximative = false
     #denominator = 1
+    #digits = 3
     #numerator = 1
     #type: FRAC_TYPE = FRAC_TYPE.frac
+    #withSign = false
 
     constructor()
     constructor(value: InputValue<Fraction>)
@@ -128,40 +130,49 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
     public clone = (): Fraction => {
         const F = new Fraction()
-        F.numerator = +this.#numerator
-        F.denominator = +this.#denominator
+        F.numerator = this.#numerator
+        F.denominator = this.#denominator
+        F.approximative = this.approximative
         return F
     }
 
-    // Display getter
     public get tex(): string {
         if (this.isInfinity()) {
             return `${this.sign() === 1 ? '+' : '-'}\\infty`
         }
 
+        const plus = this.#withSign && this.isPositive() ? '+' : ''
 
+        // TODO: implement the withSign
+        // TODO: Transform all get mutation to method...
         if (this.isExact()) {
             if (this.#denominator === 1) {
-                return `${this.#numerator}`
+                return `${plus}${this.#numerator}`
             } else if (this.#numerator < 0) {
                 return `-\\${this.#type}{ ${-this.#numerator} }{ ${this.#denominator} }`
             } else {
-                return `\\${this.#type}{ ${this.#numerator} }{ ${this.#denominator} }`
+                return `${plus}\\${this.#type}{ ${this.#numerator} }{ ${this.#denominator} }`
             }
         } else {
-            return this.value.toFixed(3)
+            return plus + this.value.toFixed(this.#digits)
         }
     }
 
     public get display(): string {
+        if (this.isInfinity()) {
+            return `${this.sign() === 1 ? '+' : '-'}oo`
+        }
+
+        const plus = this.#withSign && this.isPositive() ? '+' : ''
+
         if (this.isExact()) {
             if (this.#denominator === 1) {
-                return `${this.#numerator}`
+                return `${plus}${this.#numerator}`
             } else {
-                return `${this.#numerator}/${this.#denominator}`
+                return `${plus}${this.#numerator}/${this.#denominator}`
             }
         } else {
-            return this.value.toFixed(3)
+            return plus + this.value.toFixed(this.#digits)
         }
     }
 
@@ -184,7 +195,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
             return true
         }
 
-        if(typeof value === "string"){
+        if (typeof value === "string") {
             const [num, den] = value.split('/')
 
             return !isNaN(+num) && !isNaN(+den)
@@ -206,9 +217,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
         return M
     }
-
-    // ------------------------------------------
-    // Compare functions
 
     public static min = (...fractions: (InputValue<Fraction>)[]): Fraction => {
         let M = new Fraction(fractions[0])
@@ -233,6 +241,15 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         }
 
         return sorted
+    }
+
+    public static toSameDenominateur(...fractions: InputValue<Fraction>[]): Fraction[] {
+        const F = fractions.map(x => new Fraction(x))
+        const lcm = Numeric.lcm(...F.map(x => x.denominator))
+
+        F.forEach(x => x.amplify(lcm / x.denominator))
+
+        return F
     }
 
     public static unique = (fractions: (InputValue<Fraction>)[]): Fraction[] => {
@@ -281,6 +298,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
             this.#numerator = N * F.denominator + F.numerator * D
             this.#denominator = D * F.denominator
+            this.approximative = this.approximative || F.approximative
         } else {
             return this.add(new Fraction(F))
         }
@@ -296,14 +314,18 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    /**
-     * Simple function to determine if it's a fraction
-     */
+    get approximative(): boolean {
+        return this.#approximative
+    }
+
+    set approximative(value: boolean) {
+        this.#approximative = value
+    }
+
     public areEquals = (...F: Fraction[]): boolean => {
         return F.every(f => f.isEqual(F[0]))
     }
 
-    // ------------------------------------------
     /**
      * Compare the current coefficient with another coefficient
      * @param F (Coefficient) The coefficient to _compare
@@ -354,6 +376,11 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
+    digits(value: number): this {
+        this.#digits = value
+        return this
+    }
+
     public divide = (F: Fraction | number): Fraction => {
         const Q = new Fraction(F)
 
@@ -366,6 +393,8 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
         this.#numerator = N * Q.denominator
         this.#denominator = D * Q.numerator
+
+        this.approximative = this.approximative || Q.approximative
         return this.reduce()
     }
 
@@ -377,12 +406,14 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     public infinite = (): this => {
         this.#numerator = Infinity
         this.#denominator = 1
+        this.approximative = false
         return this
     }
 
     public invalid = (): this => {
         this.#numerator = NaN
         this.#denominator = 1
+        this.approximative = false
         return this
     }
 
@@ -428,15 +459,10 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return Math.abs(this.#numerator) === Infinity
     }
 
-    public isInverted = (p: Fraction): boolean => {
-        return this.isEqual(new Fraction().one().divide(p.clone()))
-    }
-
     public isLeq = (than: Fraction | number): boolean => {
         return this.compare(than, '<=')
     }
 
-    /* Compare shortcuts */
     public isLesser = (than: Fraction | number): boolean => {
         return this.compare(than, '<')
     }
@@ -452,12 +478,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     public isNegative = (): boolean => {
         return this.sign() === -1
     }
-
-    public isNegativeOne = (): boolean => {
-        return this.#numerator === -1 && this.#denominator === 1
-    }
-
-    // ------------------------------------------
 
     public isNotEqual = (than: Fraction | number): boolean => {
         return this.compare(than, '<>')
@@ -475,16 +495,12 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this.#numerator === 1 && this.#denominator === 1
     }
 
-    public isOpposite = (p: Fraction): boolean => {
-        return this.isEqual(p.clone().opposite())
-    }
-
     public isPositive = (): boolean => {
         return this.sign() === 1
     }
 
     public isRational = (): boolean => {
-        return !this.isRelative()
+        return !this.isApproximative() && !this.isRelative()
     }
 
     public isReduced = (): boolean => {
@@ -492,7 +508,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     public isRelative = (): boolean => {
-        return this.clone().reduce().denominator === 1
+        return !this.isApproximative() && this.clone().reduce().denominator === 1
     }
 
     public isSquare = (): boolean => {
@@ -505,6 +521,10 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
     public isStrictlyPositive = (): boolean => {
         return this.value > 0
+    }
+
+    public isUnit(): boolean {
+        return Math.abs(this.#numerator) === 1 && this.#denominator === 1
     }
 
     // Mathematical operations specific to fractions
@@ -521,6 +541,8 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         this.#numerator = this.#numerator * Q.numerator
         this.#denominator = this.#denominator * Q.denominator
 
+        this.approximative = this.approximative || Q.approximative
+
         return this.reduce()
     }
 
@@ -534,6 +556,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     public one = (): this => {
+        this.#approximative = false
         this.#numerator = 1
         this.#denominator = 1
         return this
@@ -572,7 +595,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    // ------------------------------------------
     public reduce = (): this => {
         const g = Numeric.gcd(this.#numerator, this.#denominator)
         this.#numerator = this.#numerator / g
@@ -584,9 +606,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         }
         return this
     }
-
-    // ------------------------------------------
-    // Getter and setter
 
     public root = (p: number): this => {
 
@@ -670,7 +689,13 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return result === 0 ? 0 : result
     }
 
+    withSign(value = true): this {
+        this.#withSign = value
+        return this
+    }
+
     public zero = (): this => {
+        this.#approximative = false
         this.#numerator = 0
         this.#denominator = 1
         return this

@@ -6,8 +6,11 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
     constructor(equation: InputAlgebra<Polynom> | Equation);
     constructor(left: InputAlgebra<Polynom>, right: InputAlgebra<Polynom>, sign?: EQUATION_SIGN);
     parse: (equationString: string) => this;
-    create: (left: Polynom, right: Polynom, sign?: string) => this;
     clone: () => Equation;
+    get tex(): string;
+    get display(): string;
+    static isEquationString(equationString: string): boolean;
+    static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean): ISolution[];
     /**
      * Add a value to the equation
      * if value is an equation, add the left part to the left part of the equation
@@ -17,6 +20,7 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
      * @param value | Polynom | Monom | Fraction | string | monom
      */
     add(value: InputValue<Equation | Polynom>): this;
+    create: (left: Polynom, right: Polynom, sign?: string) => this;
     /**
      * Get the degree of the equation
      * @param letter
@@ -50,17 +54,19 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
      */
     hasVariable: (letter: string) => boolean;
     isEqual(value: InputValue<Equation>): boolean;
+    isEqualTo: (equ: Equation) => boolean;
     isLinearTo: (equ: Equation) => boolean;
     /**
      * Determine if the equation contains more than one letter/variable.
      */
     isMultiVariable: () => boolean;
-    isEqualTo: (equ: Equation) => boolean;
     /**
      * Reorder the polynom to have only one letter on the left, the rest on the right.
      * @param letter
      */
     isolate: (letter?: string) => this | false;
+    get left(): Polynom;
+    set left(value: Polynom);
     letters: () => string[];
     /**
      * Reorder will move all monoms containing a letter on the left, all the other on the right.
@@ -71,11 +77,17 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
      * @param value
      */
     multiply: (value: InputValue<Fraction>) => this;
-    pow(value: number): this;
+    get numberOfVars(): number;
     opposite: () => this;
+    pow(value: number): this;
     reduce(): this;
     reorder: (allLeft?: boolean) => this;
     replaceBy: (letter: string, P: Polynom) => this;
+    get right(): Polynom;
+    set right(value: Polynom);
+    get sign(): string;
+    set sign(value: string);
+    get signAsTex(): string;
     /**
      * Multiply by the lcm denominator and divide by the gcm numerators.
      */
@@ -84,17 +96,5 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
     split(): [Polynom, Polynom];
     subtract(value: InputValue<Equation | Polynom>): this;
     test: (values: literalType<Fraction>) => boolean;
-    static isEquationString(equationString: string): boolean;
-    static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean): ISolution[];
-    get display(): string;
-    get left(): Polynom;
-    set left(value: Polynom);
-    get numberOfVars(): number;
-    get right(): Polynom;
-    set right(value: Polynom);
-    get sign(): string;
-    set sign(value: string);
-    get signAsTex(): string;
-    get tex(): string;
     get variables(): string[];
 }

@@ -7,11 +7,12 @@ export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquat
     constructor(...values: (string | Equation)[]);
     parse: (...equations: (string | Equation)[]) => this;
     clone: () => LinearSystem;
+    get tex(): string;
+    get display(): string;
     static fromMatrix(matrix: InputValue<Fraction>[][], letters?: string): LinearSystem;
     add(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this;
     buildTex: (equations: Equation[], operators?: (string[])[]) => string;
     degree(letter?: string): Fraction;
-    get display(): string;
     get equations(): Equation[];
     set equations(value: Equation[]);
     evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction;
@@ -19,14 +20,29 @@ export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquat
     isEqual(value: LinearSystem): boolean;
     get isSolvable(): boolean;
     get matrix(): [Fraction[][], Fraction[]];
-    mergeEquations: (eq1: Equation, eq2: Equation, factor1: Fraction, factor2: Fraction) => Equation;
+    mergeEquations(equation1: {
+        id: number;
+        factor: InputValue<Fraction>;
+    }, equation2: {
+        id: number;
+        factor: number;
+    }): Equation;
     multiply(value: InputValue<Fraction> | InputValue<Fraction>[], index?: number): this;
-    reduce(): LinearSystem;
+    reduce(): this;
     reorder: () => this;
     solve(): ISolution[];
     solveMatrix: () => Fraction[];
+    solve_compute_factors(letter: string): [
+        {
+            id: number;
+            factor: number;
+        },
+        {
+            id: number;
+            factor: number;
+        }
+    ][];
     subtract(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this;
-    get tex(): string;
     get variables(): string[];
     set variables(value: string | string[]);
 }

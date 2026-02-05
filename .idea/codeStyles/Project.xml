@@ -175,6 +175,13 @@
           <section>
             <rule>
               <match>
+                <NAME>copy</NAME>
+              </match>
+            </rule>
+          </section>
+          <section>
+            <rule>
+              <match>
                 <NAME>tex</NAME>
               </match>
             </rule>

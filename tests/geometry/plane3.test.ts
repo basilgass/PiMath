@@ -59,7 +59,7 @@ describe('Geometry Plane', function () {
 
     it('should output nice Tex', function () {
         const P = new Point(1, 2, 3),
-            N = new Point(4, 5, 6),
+            N = new Vector(4, 5, 6),
             plane = new Plane3({point: P, normal: N})
 
         expect(plane.tex).to.be.equal('4x+5y+6z-32=0')
