@@ -79,17 +79,17 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         if (this.#radical.isZero()) return `${plus}${this.#factor.tex}`
 
         // The radical has an index of 1 - no radical.
-        if(this.index===1) return `${plus}${this.factor.clone().multiply(this.radical).tex}`
+        if (this.index === 1) return `${plus}${this.factor.clone().multiply(this.radical).tex}`
 
         // Make the root part
         const rad = this.index === 2
-                ? `\\sqrt{ ${this.#radical.tex} }`
-                : `\\sqrt[ ${this.index} ]{ ${this.#radical.tex} }`
+            ? `\\sqrt{ ${this.#radical.tex} }`
+            : `\\sqrt[ ${this.index} ]{ ${this.#radical.tex} }`
 
-        if(this.#factor.isUnit()){
+        if (this.#factor.isUnit()) {
             return this.#withSign
-                ? `${this.#factor.isOne()?plus:'-'} ${rad}`
-                : `${this.#factor.isOne()?'':'-'}${rad}`
+                ? `${this.#factor.isOne() ? plus : '-'} ${rad}`
+                : `${this.#factor.isOne() ? '' : '-'}${rad}`
         }
 
         return `${plus}${this.#factor.tex} ${rad}`
@@ -102,14 +102,14 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         if (this.#radical.isZero()) return `${plus}${this.#factor.display}`
 
         // The radical has an index of 1 - no radical.
-        if(this.index===1) return `${plus}${this.factor.clone().multiply(this.radical).display}`
+        if (this.index === 1) return `${plus}${this.factor.clone().multiply(this.radical).display}`
 
         // Make the root part
         const rad = this.index === 2
             ? `sqrt(${this.#radical.tex})`
             : `root(${this.index})(${this.#radical.display})`
 
-        if(this.#factor.isUnit()) return `${this.#factor.isOne()?plus:'-'}${rad}`
+        if (this.#factor.isUnit()) return `${this.#factor.isOne() ? plus : '-'}${rad}`
 
         return `${plus}${this.#factor.display}${rad}`
     }
@@ -289,8 +289,13 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return Numeric.numberCorrection(this.factor.value * Math.pow(this.radical.value, 1 / this.index))
     }
 
-    withSign(value = true): this {
-        this.#withSign = value
+    get withSign(): this {
+        this.#withSign = true
+        return this
+    }
+
+    get withoutSign(): this {
+        this.#withSign = false
         return this
     }
 

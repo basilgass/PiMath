@@ -527,31 +527,7 @@ export class Polynom implements IPiMathObject<Polynom>,
     public isOppositeAt = (P: Polynom): boolean => {
         return this.#compare(P.clone().opposite(), '=')
     }
-
-    public isReduced = (polynomString: string): boolean => {
-        // The polynom must be developed to be reduced.
-        if (!this.isDeveloped(polynomString)) {
-            return false
-        }
-
-
-        const P = new Polynom(polynomString)
-        if (P.monoms.length > this.monoms.length) {
-            return false
-        }
-
-
-        // TODO: Not sure the reduced asSystem checking is working properly !
-        for (const m of P.monoms) {
-            if (!m.coefficient.isReduced()) {
-                return false
-            }
-        }
-
-
-        return false
-    }
-
+    
     public isSameAs = (P: Polynom): boolean => {
         return this.#compare(P, 'same')
     }
@@ -1028,110 +1004,6 @@ export class Polynom implements IPiMathObject<Polynom>,
         })
 
         return r
-    }
-
-    #factorize2ndDegree = (letter: string): Polynom[] => {
-        let P1: Polynom, P2: Polynom,
-            a, b, c, delta, x1, x2, factor
-
-        // One variable only
-        if (this.numberOfVars === 1) {
-            a = this.monomByDegree(2, letter).coefficient
-            b = this.monomByDegree(1, letter).coefficient
-            c = this.monomByDegree(0, letter).coefficient
-            delta = b.clone().pow(2).subtract(a.clone().multiply(c).multiply(4))
-
-            if (delta.isZero()) {
-                x1 = b.clone().opposite().divide(a.clone().multiply(2))
-                P1 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator)
-                P2 = new Polynom(letter).subtract(x1.display).multiply(x1.denominator)
-                factor = a.divide(x1.denominator).divide(x1.denominator)
-
-                if (!factor.isOne()) {
-                    return [new Polynom(factor.display), P1, P2]
-                } else {
-                    return [P1, P2]
-                }
-
-            } else if (delta.isPositive() && delta.isSquare()) {
-                x1 = b.clone().opposite()
-                    .add(delta.clone().sqrt())
-                    .divide(a.clone().multiply(2))
-                x2 = b.clone().opposite()
-                    .subtract(delta.clone().sqrt())
-                    .divide(a.clone().multiply(2))
-
-                // (2x+5)(3x-2)
-                // 6x^2+11x-10
-                // a = 6, b = 11, c = -10
-                // delta = 121-4*6*(-10) = 361= 19^2
-                // x1 = (-11 + 19)  / 12 = 8/12 = 2/3
-                // x2 = (-11 - 19)  / 12 = -30/12 = -5/2
-                factor = a.divide(x1.denominator).divide(x2.denominator)
-                if (factor.isOne()) {
-                    return [
-                        new Polynom(letter).subtract(x1.display).multiply(x1.denominator),
-                        new Polynom(letter).subtract(x2.display).multiply(x2.denominator),
-                    ]
-                } else {
-                    return [
-                        new Polynom(factor.display),
-                        new Polynom(letter).subtract(x1.display).multiply(x1.denominator),
-                        new Polynom(letter).subtract(x2.display).multiply(x2.denominator),
-                    ]
-                }
-
-
-            } else
-                // No solution possible - return the complete value.
-            {
-                return [this.clone()]
-            }
-
-        } else {
-            // If multiple variables, only handle perfect squares...
-            a = this.monomByDegree(2, letter)
-            b = this.monomByDegree(1, letter)
-            c = this.monomByDegree(0, letter)
-
-            if (a.isLiteralSquare() && c.isLiteralSquare())
-                // Check the middle item is same as...
-
-
-            {
-                if (b.clone().pow(2).isSameAs(a.clone().multiply(c))) {
-                    // Determine if the coefficient values matches.
-
-                    // Search 4 values (r, s, t, u) that matches:
-                    // (r X + s Y)(t X + u Y) = rt X^2 + (ru + st) XY + su Y^2
-
-                    const xPolynom = new Polynom('x', a.coefficient, b.coefficient, c.coefficient)
-                    const xFactors = xPolynom.#factorize2ndDegree('x')
-
-                    const factors = []
-                    let xyzPolynom: Polynom
-
-                    if (xFactors.length >= 2) {
-                        for (const p of xFactors) {
-                            if (p.degree().isZero()) {
-                                factors.push(p.clone())
-                            } else {
-                                xyzPolynom = p.clone()
-                                xyzPolynom.monoms[0].literal = a.literalSqrt
-                                xyzPolynom.monoms[1].literal = c.literalSqrt
-                                factors.push(xyzPolynom.clone())
-                            }
-                        }
-
-
-                        return factors
-                    }
-                }
-            }
-
-
-            return [this.clone()]
-        }
     }
 
     #genDisplay = (output?: string, forceSign?: boolean, wrapParentheses?: boolean, withAllMultiplicationSign?: boolean): string => {

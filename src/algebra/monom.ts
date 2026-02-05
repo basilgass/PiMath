@@ -575,29 +575,10 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
     }
 
     /**
-     * Get the literal square roots of the Monom.
-     * @returns {literalType<Fraction>}
-     */
-    public get literalSqrt(): literalType<Fraction> {
-        // TODO: used in Polynom._factorize2ndDegree : remove it from here ?
-        if (this.isLiteralSquare()) {
-            const L: literalType<Fraction> = {}
-            for (const key in this.#literal) {
-                L[key] = this.#literal[key].clone().sqrt()
-            }
-            return L
-        } else {
-            return this.#literal
-        }
-    }
-
-    /**
      * Set the literal part of the monom from a string
      * @param inputStr  String like x^2y^3
      */
     public set literalStr(inputStr: string) {
-        // TODO : parse using ShutingYard tree !
-
         // Match all x^n
         for (const v of [...inputStr.matchAll(/([a-z])\^([+-]?[0-9]+)/g)]) {
             // Create the default letter entry if necessary.
@@ -606,7 +587,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             }
 
             // Add the new value.
-            // TODO: actually, it adds only numeric value
             this.#literal[v[1]].add(+v[2])
         }
 
@@ -711,8 +691,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
     }
 
     public primitive = (letter = 'x'): Monom => {
-        // TODO: derivative including the ln value => implies creating different monom asSystem ?
-
         // Zero monom
         const M = this.clone()
         let degree: Fraction

@@ -92,6 +92,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     get texWithSign(): string;
     get tfrac(): this;
     get value(): number;
-    withSign(value?: boolean): this;
+    get withSign(): this;
+    get withoutSign(): this;
     zero: () => this;
 }

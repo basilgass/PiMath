@@ -1,6 +1,6 @@
-import { Fraction, NthRoot } from './coefficients';
-import { Equation, Factor, LinearSystem, LogicalSet, Monom, PolyFactor, Polynom, Matrix } from './algebra';
-import { Circle, Line, Line3, Plane3, Point, Triangle, Vector, Sphere3 } from './geometry';
+import { Fraction, Root } from './coefficients';
+import { Equation, Factor, LinearSystem, LogicalSet, Matrix, Monom, PolyFactor, Polynom } from './algebra';
+import { Circle, Line, Line3, Plane3, Point, Sphere3, Triangle, Vector } from './geometry';
 import { Numeric } from './numeric';
 import { NumExp } from 'piexpression';
 import { Random } from './randomization/random';
@@ -26,7 +26,7 @@ declare const PiMath: {
         greatestPower: (value: number, index: number) => number;
     };
     Fraction: typeof Fraction;
-    Root: typeof NthRoot;
+    Root: typeof Root;
     Monom: typeof Monom;
     Polynom: typeof Polynom;
     Equation: typeof Equation;

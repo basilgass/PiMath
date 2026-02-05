@@ -1,4 +1,4 @@
-import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, POLYFACTOR_TABLE_OF_SIGNS } from '../pimath.interface';
+import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType, POLYFACTOR_TABLE_OF_SIGNS } from '../pimath.interface';
 import { Fraction } from '../coefficients';
 import { Factor } from './factor';
 import { Polynom } from './polynom';
@@ -29,7 +29,7 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
      * Get the roots of the PolyFactor.
      */
     getRoots(): Solution[];
-    getZeroes(): ISolution[];
+    getZeroes(): Solution[];
     hasVariable(letter: string): boolean;
     inverse(): this;
     isEqual(value: PolyFactor): boolean;

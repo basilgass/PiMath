@@ -143,8 +143,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
         const plus = this.#withSign && this.isPositive() ? '+' : ''
 
-        // TODO: implement the withSign
-        // TODO: Transform all get mutation to method...
         if (this.isExact()) {
             if (this.#denominator === 1) {
                 return `${plus}${this.#numerator}`
@@ -689,8 +687,12 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return result === 0 ? 0 : result
     }
 
-    withSign(value = true): this {
-        this.#withSign = value
+    get withSign(): this {
+        this.#withSign = true
+        return this
+    }
+    get withoutSign(): this {
+        this.#withSign = false
         return this
     }
 

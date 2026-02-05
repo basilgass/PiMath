@@ -1,2 +1,2 @@
 export * from './fraction';
-export * from './nthRoot';
+export * from './root';

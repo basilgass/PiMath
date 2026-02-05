@@ -1,27 +1,27 @@
 import { Fraction } from '../coefficients/fraction';
 export interface randomCoefficientConfig {
-    negative?: boolean;
     max?: number;
+    natural?: boolean;
+    negative?: boolean;
     reduced?: boolean;
     zero?: boolean;
-    natural?: boolean;
 }
 export interface randomMonomConfig {
-    letters?: string;
     degree?: number;
     fraction?: boolean | randomCoefficientConfig;
+    letters?: string;
     zero?: boolean;
 }
 export interface randomPolynomConfig {
-    letters?: string;
-    degree?: number;
-    fraction?: boolean | randomCoefficientConfig;
-    zero?: boolean;
-    unit?: boolean;
-    factorable?: boolean;
     allowNullMonom?: boolean;
+    degree?: number;
+    factorable?: boolean;
+    fraction?: boolean | randomCoefficientConfig;
+    letters?: string;
     numberOfMonoms?: number;
     positive?: boolean;
+    unit?: boolean;
+    zero?: boolean;
 }
 export interface randomEquationConfig extends randomPolynomConfig {
     solution?: {
@@ -35,6 +35,10 @@ export interface randomGeometryLineConfig {
     A: {
         x: number | Fraction;
         y: number | Fraction;
+    };
+    allow?: {
+        vertical?: boolean;
+        horizontal?: boolean;
     };
     slope?: Fraction | string | number;
 }
@@ -51,13 +55,13 @@ export interface randomGeometryLine3Config {
     };
 }
 export interface randomGeometryPointConfig {
-    quadrant?: number | null;
     axis?: 'x' | 'y' | 'z' | null;
     fraction?: boolean;
     max?: number;
+    quadrant?: number | null;
 }
 export interface randomGeometryCircleConfig {
     center?: randomGeometryPointConfig;
-    radius?: number;
     pointsOnCircle?: number;
+    radius?: number;
 }

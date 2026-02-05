@@ -31,7 +31,7 @@ export class Solution {
         const [f] = Fraction.toSameDenominateur(this.#fraction, this.#root.factor)
 
         const R = this.#root.clone().multiply(f.denominator).reduce()
-        const num = `${f.numerator} ${R.withSign().tex}`
+        const num = `${f.numerator} ${R.withSign.tex}`
 
         if (f.denominator === 1) return num
 
@@ -52,7 +52,7 @@ export class Solution {
         const [f] = Fraction.toSameDenominateur(this.#fraction, this.#root.factor)
 
         const R = this.#root.clone().multiply(f.denominator).reduce()
-        const num = `${f.numerator} ${R.withSign().display}`
+        const num = `${f.numerator} ${R.withSign.display}`
 
         if (f.denominator === 1) return num
 

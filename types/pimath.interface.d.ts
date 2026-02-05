@@ -1,6 +1,7 @@
 import { Fraction } from './coefficients';
 import { Equation, Factor, Monom } from './algebra';
 import { Line, Point, Vector } from './geometry';
+import { Solution } from './analyze/solution';
 export type InputValue<T> = T | string | number | Fraction;
 export type InputAlgebra<T> = InputValue<T> | Monom;
 export type literalType<T> = Record<string, T>;
@@ -39,7 +40,7 @@ export interface IExpression<T> extends IExpressionMultiply<T> {
 }
 export interface IEquation<T> {
     reduce(): T;
-    solve(): ISolution[];
+    solve(): Solution[];
 }
 export interface IAlgebra<T> {
     readonly variables: string[];
@@ -52,16 +53,9 @@ export interface IAnalyse<T> {
     integrate(a: InputValue<Fraction>, b: InputValue<T>, letter?: string): Fraction;
     primitive(): T;
 }
-export interface ISolution {
-    display: string;
-    exact: Fraction | boolean;
-    tex: string;
-    value: number;
-    variable: string;
-}
 export type TABLE_OF_SIGNS_VALUES = '-' | '+' | 'h' | 'z' | 't' | 'd' | 'u' | 'n' | '';
 export interface TABLE_OF_SIGNS {
-    roots: ISolution[];
+    roots: Solution[];
     signs: TABLE_OF_SIGNS_VALUES[];
 }
 export interface FACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {

@@ -23,7 +23,6 @@ export class Triangle {
 
     constructor(...values: unknown[]) {
 
-
         if (values.length > 0) {
             this.parse(...values)
         }
@@ -179,21 +178,21 @@ export class Triangle {
         if (intersect.hasIntersection) {
             this.#B = intersect.point
         } else {
-            throw new Error('Lines do not intersect !')
+            this.#isValid = false
         }
 
         intersect = BC.intersection(AC)
         if (intersect.hasIntersection) {
             this.#C = intersect.point
         } else {
-            throw new Error('Lines do not intersect !')
+            this.#isValid = false
         }
 
         intersect = AC.intersection(AB)
         if (intersect.hasIntersection) {
             this.#A = intersect.point
         } else {
-            throw new Error('Lines do not intersect !')
+            this.#isValid = false
         }
 
         this.#updateTriangle()

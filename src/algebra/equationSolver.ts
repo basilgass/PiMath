@@ -67,7 +67,6 @@ export class EquationSolver {
         }
 
         // Use approximative solutions, using bissection algorithm.
-        // TODO: doit gérer le fait que si on a trouvé des solutions, on peut réduire avant de faire la bissection
         this.#bissectionCompexityCounter = 0
         return solutions.concat(
             this.#solveByBissection(polynom)

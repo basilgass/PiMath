@@ -1,29 +1,29 @@
 // Expose as global
+// Coefficients
+import {Fraction, Root} from "./coefficients"
+
+// Algebra
+import {Equation, Factor, LinearSystem, LogicalSet, Matrix, Monom, PolyFactor, Polynom} from "./algebra"
+
+// Geometry
+import {Circle, Line, Line3, Plane3, Point, Sphere3, Triangle, Vector} from "./geometry"
+
+// Numeric
+import {Numeric} from "./numeric"
+// NumExp
+import {NumExp} from "piexpression"
+// randomization
+import {Random} from "./randomization/random"
+
 export * from "./coefficients"
 export * from "./algebra"
 export * from "./geometry"
 
 // Import items individually to make a global object
-
-// Coefficients
-import {Fraction, NthRoot} from "./coefficients"
-
-// Algebra
-import {Equation, Factor, LinearSystem, LogicalSet, Monom, PolyFactor, Polynom, Matrix} from "./algebra"
-
-// Geometry
-import {Circle, Line, Line3, Plane3, Point, Triangle, Vector, Sphere3} from "./geometry"
-
-// Numeric
-import {Numeric} from "./numeric"
 export {Numeric}
 
-// NumExp
-import {NumExp} from "piexpression"
 export {NumExp}
 
-// randomization
-import {Random} from "./randomization/random"
 export {Random}
 
 // Typesetting
@@ -33,7 +33,7 @@ export type * from "./pimath.interface"
 const PiMath = {
     Numeric,
     Fraction,
-    Root: NthRoot,
+    Root,
     Monom,
     Polynom,
     Equation,

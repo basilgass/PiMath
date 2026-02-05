@@ -103,13 +103,13 @@ describe('Fraction output', () => {
     test('force the plus sign', ()=>{
         const F = new Fraction('2/3')
 
-        expect(F.withSign().display).toBe('+2/3')
-        expect(F.withSign().tex).toBe('+\\frac{ 2 }{ 3 }')
+        expect(F.withSign.display).toBe('+2/3')
+        expect(F.withSign.tex).toBe('+\\frac{ 2 }{ 3 }')
 
         const Fm = new Fraction('-2/3')
 
-        expect(Fm.withSign().display).toBe('-2/3')
-        expect(Fm.withSign().tex).toBe('-\\frac{ 2 }{ 3 }')
+        expect(Fm.withSign.display).toBe('-2/3')
+        expect(Fm.withSign.tex).toBe('-\\frac{ 2 }{ 3 }')
     })
 
     test('approximative value display', ()=>{

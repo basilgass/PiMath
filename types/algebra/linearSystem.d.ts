@@ -1,7 +1,8 @@
-import { IAlgebra, IEquation, InputValue, IPiMathObject, ISolution, literalType } from '../pimath.interface';
+import { IAlgebra, IEquation, InputValue, IPiMathObject, literalType } from '../pimath.interface';
 import { Fraction } from '../coefficients';
 import { Equation } from './equation';
 import { Polynom } from './polynom';
+import { Solution } from '../analyze/solution';
 export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquation<LinearSystem>, IAlgebra<LinearSystem> {
     #private;
     constructor(...values: (string | Equation)[]);
@@ -30,7 +31,7 @@ export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquat
     multiply(value: InputValue<Fraction> | InputValue<Fraction>[], index?: number): this;
     reduce(): this;
     reorder: () => this;
-    solve(): ISolution[];
+    solve(): Solution[];
     solveMatrix: () => Fraction[];
     solve_compute_factors(letter: string): [
         {

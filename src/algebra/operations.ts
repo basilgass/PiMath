@@ -2,7 +2,6 @@ import type {IExpressionMultiply, IPiMathObject} from "../pimath.interface"
 
 // TODO: create other operation_** to make things more generic !
 export function operation_pow<T extends IPiMathObject<T> & IExpressionMultiply<T>>(item: T, value: number): T {
-    // TODO: Implement the operation_pow to other classes
     if (!Number.isSafeInteger(value)) {
         throw new Error('Can only raise item by an integer')
     }

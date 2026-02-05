@@ -1,7 +1,7 @@
-import { Line } from "../../geometry/line"
-import { Vector } from "../../geometry/vector"
-import { randomIntSym } from "../rndHelpers"
-import type { randomGeometryLineConfig } from "../rndTypes"
+import {Line} from "../../geometry/line"
+import {Vector} from "../../geometry/vector"
+import {randomIntSym} from "../rndHelpers"
+import type {randomGeometryLineConfig} from "../rndTypes"
 
 export function rndLine(userConfig?: randomGeometryLineConfig): Line {
     const config = Object.assign(
@@ -13,16 +13,14 @@ export function rndLine(userConfig?: randomGeometryLineConfig): Line {
         }, userConfig)
 
     // The A point exists.
-    const d = new Vector(
-        randomIntSym(10),
-        randomIntSym(10)
-    )
+    const d = new Vector(0, 0)
 
     while (d.isNull) {
-        d.x = randomIntSym(10)
-        d.y = randomIntSym(10)
+        d.x = randomIntSym(10, config.allow?.vertical ?? true)
+        d.y = randomIntSym(10, config.allow?.horizontal ?? true)
     }
 
+    // slope === 1 => slope must be positive
     if (config.slope === 1) {
         if (d.x.sign() !== d.y.sign()) {
             d.y.opposite()

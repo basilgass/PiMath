@@ -21,7 +21,7 @@ describe('Line creation', () => {
     test('random', () => {
         const line = Random.line()
 
-        console.log(line.asCanonical().tex)
+        console.log(line.asCanonical.tex)
     })
     test.todo('clone Line')
     test.todo('set to zero Line')
@@ -63,9 +63,9 @@ describe.skip('Geometry Line', function () {
         const L = new Line('9x-8y-96=0')
 
         expect(L.tex).to.be.equal('9x-8y-96=0')
-        expect(L.asCartesian().tex).to.be.equal('9x-8y=96')
-        expect(L.asMxh().tex).to.be.equal('y=\\frac{ 9 }{ 8 }x-12')
-        expect(L.asParametric().tex).to.be.equal('\\begin{pmatrix} x \\\\ y \\end{pmatrix} = \\begin{pmatrix} 0 \\\\ -96 \\end{pmatrix} + k\\cdot \\begin{pmatrix} 8 \\\\ 9 \\end{pmatrix}')
+        expect(L.asCartesian.tex).to.be.equal('9x-8y=96')
+        expect(L.asMxh.tex).to.be.equal('y=\\frac{ 9 }{ 8 }x-12')
+        expect(L.asParametric.tex).to.be.equal('\\begin{pmatrix} x \\\\ y \\end{pmatrix} = \\begin{pmatrix} 0 \\\\ -96 \\end{pmatrix} + k\\cdot \\begin{pmatrix} 8 \\\\ 9 \\end{pmatrix}')
         // console.log(tex.asSystem)
     })
 
@@ -73,9 +73,9 @@ describe.skip('Geometry Line', function () {
         const L = new Line('9x-8y-96=0')
 
         expect(L.display).to.be.equal('9x-8y-96=0')
-        expect(L.asCartesian().display).to.be.equal('9x-8y=96')
-        expect(L.asMxh().display).to.be.equal('y=9/8x-12')
-        expect(L.asParametric().display).to.be.equal('((x,y))=((0,-96))+k((8,9))')
+        expect(L.asCartesian.display).to.be.equal('9x-8y=96')
+        expect(L.asMxh.display).to.be.equal('y=9/8x-12')
+        expect(L.asParametric.display).to.be.equal('((x,y))=((0,-96))+k((8,9))')
         // console.log(tex.asSystem)
     })
 

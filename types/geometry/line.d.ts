@@ -27,11 +27,11 @@ export declare class Line implements IPiMathObject<Line> {
     set OA(value: Vector | Point);
     get a(): Fraction;
     set a(value: Fraction);
-    asCanonical(): this;
-    asCartesian(): this;
-    asMxh(): this;
-    asParametric(): this;
-    asSystem(): this;
+    get asCanonical(): this;
+    get asCartesian(): this;
+    get asMxh(): this;
+    get asParametric(): this;
+    get asSystem(): this;
     get b(): Fraction;
     set b(value: Fraction);
     get c(): Fraction;

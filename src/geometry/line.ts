@@ -219,27 +219,27 @@ export class Line implements IPiMathObject<Line> {
         this.#a = value
     }
 
-    asCanonical(): this {
+    get asCanonical(): this {
         this.#outputMode = LINE_DISPLAY.CANONICAL
         return this
     }
 
-    asCartesian(): this {
+    get asCartesian(): this {
         this.#outputMode = LINE_DISPLAY.CARTESIAN
         return this
     }
 
-    asMxh(): this {
+    get asMxh(): this {
         this.#outputMode = LINE_DISPLAY.MXH
         return this
     }
 
-    asParametric(): this {
+   get asParametric(): this {
         this.#outputMode = LINE_DISPLAY.PARAMETRIC
         return this
     }
 
-    asSystem(): this {
+    get asSystem(): this {
         this.#outputMode = LINE_DISPLAY.SYSTEM
         return this
     }

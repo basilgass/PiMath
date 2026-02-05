@@ -1,6 +1,7 @@
-import { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType, TABLE_OF_SIGNS } from '../pimath.interface';
+import { IAlgebra, IAnalyse, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType, TABLE_OF_SIGNS } from '../pimath.interface';
 import { Fraction } from '../coefficients';
 import { Monom } from './monom';
+import { Solution } from '../analyze/solution';
 export type PolynomParsingType = InputValue<Polynom> | Monom;
 export interface IEuclidean {
     quotient: Polynom;
@@ -56,7 +57,7 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     getCoefficients(): Fraction[];
     getDenominators: () => number[];
     getNumerators: () => number[];
-    getZeroes: () => ISolution[];
+    getZeroes: () => Solution[];
     hasVariable(letter: string): boolean;
     integrate: (a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string) => Fraction;
     inverse(): Polynom | undefined;
@@ -66,7 +67,6 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     get isMultiVariable(): boolean;
     isOne(): boolean;
     isOppositeAt: (P: Polynom) => boolean;
-    isReduced: (polynomString: string) => boolean;
     isSameAs: (P: Polynom) => boolean;
     isZero(): boolean;
     lcmDenominator: () => number;
@@ -96,8 +96,8 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
      */
     replaceBy: (letter: string, P: Polynom) => this;
     root(): Polynom;
-    get roots(): ISolution[];
-    set roots(value: ISolution[]);
+    get roots(): Solution[];
+    set roots(value: Solution[]);
     setVariable(value: string): this;
     sqrt(): Polynom;
     subtract: (...values: InputAlgebra<Polynom>[]) => Polynom;
@@ -109,5 +109,5 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
      * @returns {this}
      */
     zero: () => this;
-    get zeroes(): ISolution[];
+    get zeroes(): Solution[];
 }

@@ -104,11 +104,6 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
      */
     set literal(L: literalType<Fraction>);
     /**
-     * Get the literal square roots of the Monom.
-     * @returns {literalType<Fraction>}
-     */
-    get literalSqrt(): literalType<Fraction>;
-    /**
      * Set the literal part of the monom from a string
      * @param inputStr  String like x^2y^3
      */

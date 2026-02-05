@@ -1,6 +1,7 @@
-import { EQUATION_SIGN, IAlgebra, IEquation, InputAlgebra, InputValue, IPiMathObject, ISolution, literalType } from '../pimath.interface';
+import { EQUATION_SIGN, IAlgebra, IEquation, InputAlgebra, InputValue, IPiMathObject, literalType } from '../pimath.interface';
 import { Fraction } from '../coefficients/fraction';
 import { Polynom } from './polynom';
+import { Solution } from '../analyze/solution';
 export declare class Equation implements IPiMathObject<Equation>, IEquation<Equation>, IAlgebra<Equation> {
     #private;
     constructor(equation: InputAlgebra<Polynom> | Equation);
@@ -10,7 +11,7 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
     get tex(): string;
     get display(): string;
     static isEquationString(equationString: string): boolean;
-    static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean): ISolution[];
+    static makeSolutionsUnique(solutions: Solution[], sorted?: boolean): Solution[];
     /**
      * Add a value to the equation
      * if value is an equation, add the left part to the left part of the equation
@@ -92,7 +93,7 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
      * Multiply by the lcm denominator and divide by the gcm numerators.
      */
     simplify: () => this;
-    solve: () => ISolution[];
+    solve: () => Solution[];
     split(): [Polynom, Polynom];
     subtract(value: InputValue<Equation | Polynom>): this;
     test: (values: literalType<Fraction>) => boolean;
