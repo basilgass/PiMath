@@ -1,31 +1,29 @@
-// TODO: remplacer ISolution par Solution, qui sera plus robuste et extensible
-
 import type {InputValue} from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Root} from "../coefficients/root"
 
 export class Solution {
-    #display: string
+    #display: string | null
     #exact: boolean
     #fraction: Fraction
-    #isZero: boolean
     #root: Root
-    #tex: string
+    #tex: string | null
     #variable: string
 
     constructor() {
         this.#variable = 'x'
         this.#exact = false
-        this.#isZero = true
 
-        this.#display = '?'
-        this.#tex = '?'
+        this.#display = null
+        this.#tex = null
 
         this.#fraction = new Fraction().zero()
         this.#root = new Root()
     }
 
     get tex(): string {
+        if (this.#tex) return this.#tex
+
         if (this.#root.isZero()) return this.#fraction.tex
 
         if (this.#fraction.isZero()) return this.#root.tex
@@ -40,15 +38,28 @@ export class Solution {
         return `\\frac{ ${num} }{ ${f.denominator} }`
     }
 
-    set tex(value: string) {
+    set tex(value: string | null) {
         this.#tex = value
     }
 
-    get display(): string {
-        return this.#display
+    get display(): string | null {
+        if(this.#display) return this.#display
+
+        if (this.#root.isZero()) return this.#fraction.display
+
+        if (this.#fraction.isZero()) return this.#root.display
+
+        const [f] = Fraction.toSameDenominateur(this.#fraction, this.#root.factor)
+
+        const R = this.#root.clone().multiply(f.denominator).reduce()
+        const num = `${f.numerator} ${R.withSign().display}`
+
+        if (f.denominator === 1) return num
+
+        return `${num}/${f.denominator}`
     }
 
-    set display(value: string) {
+    set display(value: string | null) {
         this.#display = value
     }
 
@@ -114,17 +125,8 @@ export class Solution {
         this.#fraction = value
     }
 
-    isAZero(value = true): this {
-        this.#isZero = value
-        return this
-    }
-
-    get isZero(): boolean {
-        return this.#isZero
-    }
-
-    set isZero(value: boolean) {
-        this.#isZero = value
+    isZero(): boolean {
+        return this.#fraction.isZero() && this.#root.isZero()
     }
 
     reduce(): this {
@@ -149,7 +151,7 @@ export class Solution {
     }
 
     get value(): number {
-        throw new Error("To be implemented")
+        return this.fraction.value + this.root.value
     }
 
     get variable(): string {

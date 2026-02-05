@@ -1,8 +1,9 @@
-import type {InputValue, ISolution} from "../pimath.interface"
+import type {InputValue} from "../pimath.interface"
 import type {Polynom} from "./polynom"
 import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 import type {Equation} from "./equation"
+import {Solution} from "../analyze/solution"
 
 export class EquationSolver {
     #bissectionCompexityCounter: number
@@ -23,7 +24,7 @@ export class EquationSolver {
         }
     }
 
-    get bissectionCompexityCounter(){
+    get bissectionCompexityCounter() {
         return this.#bissectionCompexityCounter
     }
 
@@ -35,7 +36,7 @@ export class EquationSolver {
         this.#bissectionDeltaX = value
     }
 
-    public solve(): ISolution[] {
+    public solve(): Solution[] {
         const degree = this.#leftPolynom.degree().value
 
         if (degree === 0) {
@@ -73,41 +74,37 @@ export class EquationSolver {
         ).sort((a, b) => a.value - b.value)
     }
 
-    public solveAsCardan(): ISolution[] {
+    public solveAsCardan(): Solution[] {
         if (this.#leftPolynom.degree().value !== 3) {
             throw new Error("The equation is not cubic.")
         }
         return this.#solveCubic_CardanFormula()
     }
 
-    #makeApproximativeSolution(value: number, output?: { tex: string, display: string }): ISolution {
-        return {
-            variable: this.#variable,
-            exact: false,
-            value: +value.toFixed(10),
-            tex: output?.tex ?? '',
-            display: output?.display ?? ''
-        }
+    #makeApproximativeSolution(value: number, output?: { tex: string, display: string }): Solution {
+        const sol = new Solution()
+
+        sol.exact = false
+        sol.tex = output?.tex ?? null
+        sol.display = output?.display ?? null
+        sol.fraction = new Fraction(value)
+        sol.fraction.approximative = false
+        sol.variable = this.#variable
+
+        return sol
     }
 
-    #makeSolution(value: InputValue<Fraction>): ISolution {
+    #makeSolution(value: InputValue<Fraction>): Solution {
         if (value instanceof Fraction && value.isApproximative()) {
             return this.#makeApproximativeSolution(value.value)
         }
 
-        const fraction = new Fraction(value)
-        return {
-            variable: this.#variable,
-            exact: fraction,
-            value: fraction.value,
-            tex: fraction.tex,
-            display: fraction.display
-        }
+        return Solution.fromFraction(value)
     }
 
     // Solve using bissection algorithm (approximative solution)
-    #solveByBissection(polynom: Polynom): ISolution[] {
-        const solutions: ISolution[] = []
+    #solveByBissection(polynom: Polynom): Solution[] {
+        const solutions: Solution[] = []
         const degree = polynom.degree().value
 
         // Calculate the Cauchy Bounds.
@@ -216,14 +213,14 @@ export class EquationSolver {
         return couples
     }
 
-    #solveByFactorization(): { solutions: ISolution[], polynom: Polynom } {
+    #solveByFactorization(): { solutions: Solution[], polynom: Polynom } {
         // Move everything to the left.
 
         // Get the polynom on the left (on the right, it's zero)
         const left = this.#leftPolynom.clone()
 
         // The solutions of the equation
-        const solutions: ISolution[] = []
+        const solutions: Solution[] = []
 
         // multiply by the lcm of the denominators
         // to get rid of the fractions
@@ -275,19 +272,12 @@ export class EquationSolver {
         for (const s of solutions) {
             // all solutions are exact solutions.
             // skip the zero solutions if it exists.
-            if ((s.exact as Fraction).isZero()) {
+            if (s.isZero()) {
                 continue
             }
 
-            // // if the solution is exact and is zero, it's already divided: skip it !
-            // if (s.exact !== false && (s.exact as Fraction).isZero()) {
-            //     continue
-            // }
-
-            const p = left.clone().fromCoefficients(
-                (s.exact as Fraction).denominator,
-                -(s.exact as Fraction).numerator
-            )
+            const p = left.clone()
+                .fromCoefficients(s.fraction.denominator, -s.fraction.numerator)
 
             // const p = this.#equation.clone().parse('x', (s.exact as Fraction).denominator, -(s.exact as Fraction).numerator)
 
@@ -316,7 +306,7 @@ export class EquationSolver {
         }
     }
 
-    #solveCubic_CardanFormula(): ISolution[] {
+    #solveCubic_CardanFormula(): Solution[] {
         // get the coefficients of the equation
         const left = this.#leftPolynom
 
@@ -406,7 +396,7 @@ export class EquationSolver {
         return []
     }
 
-    #solveLinear(): ISolution[] {
+    #solveLinear(): Solution[] {
         // The equation is linear.
         const [a, b] = this.#leftPolynom.getCoefficients()
 
@@ -418,7 +408,7 @@ export class EquationSolver {
         ]
     }
 
-    #solveQuadratic(): ISolution[] {
+    #solveQuadratic(): Solution[] {
 
         // The equation is quadratic.
         // We can solve it by isolating the variable.
@@ -472,7 +462,7 @@ export class EquationSolver {
         return this.#solveQuadratic_Output(a, b, delta2)
     }
 
-    #solveQuadratic_Output(a: Fraction, b: Fraction, delta: Fraction): ISolution[] {
+    #solveQuadratic_Output(a: Fraction, b: Fraction, delta: Fraction): Solution[] {
         // -b +/- sqrt(delta) / 2a
         // reduce the sqrt - extract pow.
 
@@ -489,7 +479,7 @@ export class EquationSolver {
         const b2 = b.clone().divide(gcd).opposite()
         const a2 = a.clone().divide(gcd).multiply(2)
         const deltaGcd = Math.abs(deltaFactor / gcd)
-        const deltaTex = `${deltaFactor === 1 ? '' : deltaGcd + ' '}\\sqrt{ ${delta.clone().divide(deltaFactor ** 2).tex} }`
+        const deltaTex = `${deltaFactor === 1 ? '' : deltaGcd.toFixed() + ' '}\\sqrt{ ${delta.clone().divide(deltaFactor ** 2).tex} }`
         const deltaDisplay = `${deltaFactor === 1 ? '' : deltaGcd}sqrt(${delta.clone().divide(deltaFactor ** 2).display})`
         // const deltaK1 = deltaFactor === 1 ? '-' : `-${deltaGcd} `
         // const deltaK2 = deltaFactor === 1 ? '+' : `+${deltaGcd} `

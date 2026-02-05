@@ -5,7 +5,6 @@ import type {
     InputAlgebra,
     InputValue,
     IPiMathObject,
-    ISolution,
     literalType,
     POLYFACTOR_TABLE_OF_SIGNS,
     TABLE_OF_SIGNS_VALUES
@@ -363,9 +362,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return []
     }
 
-    public getZeroes(): ISolution[] {
+    public getZeroes(): Solution[] {
         // Calculate the list of roots (ordered, unique)
-        const roots: ISolution[] = ([] as ISolution[])
+        const roots: Solution[] = ([] as Solution[])
             .concat(...this.#factors.map(x => x.polynom.getZeroes()))
         // .concat(...tos.map(x => x.roots))
 

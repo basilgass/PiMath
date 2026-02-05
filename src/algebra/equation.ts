@@ -5,7 +5,6 @@ import type {
     InputAlgebra,
     InputValue,
     IPiMathObject,
-    ISolution,
     literalType
 } from "../pimath.interface"
 import {Fraction} from "../coefficients/fraction"
@@ -13,6 +12,7 @@ import {Numeric} from "../numeric"
 import {EquationSolver} from "./equationSolver"
 import {Monom} from "./monom"
 import {Polynom} from "./polynom"
+import type {Solution} from "../analyze/solution"
 
 export class Equation implements
     IPiMathObject<Equation>,
@@ -95,7 +95,7 @@ export class Equation implements
             equationString.includes('>=')
     }
 
-    public static makeSolutionsUnique(solutions: ISolution[], sorted?: boolean): ISolution[] {
+    public static makeSolutionsUnique(solutions: Solution[], sorted?: boolean): Solution[] {
         const solutionAsTex: string[] = [],
             uniqueSolutions = solutions.filter(sol => {
                 if (!solutionAsTex.includes(sol.tex)) {
@@ -450,7 +450,7 @@ export class Equation implements
     }
 
     // -----------------------------------------------
-    public solve = (): ISolution[] => {
+    public solve = (): Solution[] => {
         const solver = new EquationSolver(this.clone())
         return solver.solve()
     }

@@ -91,6 +91,7 @@ describe('Circle operations', () => {
 
         // Point is outside
         const P2 = new Point(6, -2)
+
         expect(E.tangents(P2).map(x => x.display))
             .to.have.all.members(['2x+y-10=0', '2x+11y+10=0'])
 

@@ -358,11 +358,9 @@ export class Circle
         }
 
         if (this.#center !== null && this.#center.distanceTo(P).value > this.radius.value) {
-            //TODO:  Must check it's outside the circle
             return this.#tangentsThroughOnePointOutsideTheCircle(P)
         }
 
-        console.log('No tangents as the point is inside !')
         return []
     }
 
@@ -392,13 +390,16 @@ export class Circle
         // (m.cx - cy -m.px + py)^2 = r^2  * (m^2  + 1)
         // (m(cx-py) - (cy - py))^2 = r^2  * (m^2  + 1)
 
-        const cx_px = this.center.x.clone().subtract(P.x), cy_py = this.center.y.clone().subtract(P.y),
-            polyLeft = new Polynom('x'), polyRight = new Polynom('x^2+1')
+        const cx_px = this.center.x.clone().subtract(P.x)
+        const cy_py = this.center.y.clone().subtract(P.y)
+        const polyLeft = new Polynom('x')
+        const polyRight = new Polynom('x^2+1')
 
         polyLeft.multiply(cx_px).subtract(cy_py).pow(2)
         polyRight.multiply(this.squareRadius)
 
         const equ = new Equation(polyLeft, polyRight)
+
         const solutions = equ.solve()
 
         return solutions.map(sol => {
@@ -406,9 +407,9 @@ export class Circle
             let h: Fraction
             const equ = new Equation('y', 'x')
 
-            if (sol.exact instanceof Fraction) {
-                h = P.x.clone().opposite().multiply(sol.exact).add(P.y)
-                equ.right.multiply(sol.exact).add(h)
+            if (sol.exact) {
+                h = P.x.clone().opposite().multiply(sol.fraction).add(P.y)
+                equ.right.multiply(sol.fraction).add(h)
             } else {
                 h = P.x.clone().opposite().multiply(sol.value).add(P.y)
                 equ.right.multiply(sol.value).add(h)

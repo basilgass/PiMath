@@ -1,7 +1,6 @@
 import {describe, expect, test} from "vitest"
 import {Equation} from "../../src/algebra/equation"
 import {EquationSolver} from "../../src/algebra/equationSolver"
-import type {Fraction} from "../../src/coefficients/fraction"
 
 
 describe("Equation Solver", () => {
@@ -74,10 +73,10 @@ describe("Equation Solver", () => {
 
         expect(result.length).to.eq(2)
         expect(result[0].variable).to.eq("x")
-        expect((result[0].exact as Fraction).display).to.be.eq('-5/3')
+        expect(result[0].fraction.display).to.be.eq('-5/3')
         expect(result[0].value).to.be.approximately(-5 / 3, 0.0001)
         expect(result[0].exact).not.toBeFalsy()
-        expect((result[1].exact as Fraction).display).to.eq('2')
+        expect(result[1].fraction.display).to.eq('2')
     })
 
     test('should solve the cubic equation (unique triple solution)', () => {

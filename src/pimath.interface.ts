@@ -1,6 +1,7 @@
 import type {Fraction} from "./coefficients"
 import type {Equation, Factor, Monom} from "./algebra"
 import type {Line, Point, Vector} from "./geometry"
+import type {Solution} from "./analyze/solution"
 
 export type InputValue<T> = T | string | number | Fraction // | Root;
 export type InputAlgebra<T> = InputValue<T> | Monom
@@ -67,7 +68,7 @@ export interface IEquation<T> {
 
     reduce(): T;
 
-    solve(): ISolution[]
+    solve(): Solution[]
 }
 
 export interface IAlgebra<T> {
@@ -88,18 +89,10 @@ export interface IAnalyse<T> {
     primitive(): T;
 }
 
-export interface ISolution {
-    display: string,
-    exact: Fraction | boolean
-    tex: string,
-    value: number,
-    variable: string,
-}
-
 export type TABLE_OF_SIGNS_VALUES = '-' | '+' | 'h' | 'z' | 't' | 'd' | 'u' | 'n' | ''
 
 export interface TABLE_OF_SIGNS {
-    roots: ISolution[],
+    roots: Solution[],
     signs: TABLE_OF_SIGNS_VALUES[]
 }
 

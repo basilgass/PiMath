@@ -1,9 +1,10 @@
-import type {IAlgebra, IEquation, InputValue, IPiMathObject, ISolution, literalType} from "../pimath.interface"
+import type {IAlgebra, IEquation, InputValue, IPiMathObject, literalType} from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Equation} from "./equation"
 import {Monom} from "./monom"
 import {Polynom} from "./polynom"
 import {Numeric} from "../numeric"
+import type {Solution} from "../analyze/solution"
 
 export class LinearSystem implements IPiMathObject<LinearSystem>,
     IEquation<LinearSystem>,
@@ -251,7 +252,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    solve(): ISolution[] {
+    solve(): Solution[] {
         // TODO : à retravailler, car ce n'est ni l'endroit, ni l'intérêt de l'avoir ici.
         // 1. search in the equations if a variable has two same or opposite value = candidate for merging
         // 2. if 1 is false, search for a variable that has coefficient one
@@ -278,7 +279,6 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
             LS.reduce()
             output.push(LS.tex)
         }
-
 
         console.log('\\begin{aligned}' + output.join('\\\\[2em]') + '\\end{aligned}')
 

@@ -4,7 +4,6 @@ import type {
     InputAlgebra,
     InputValue,
     IPiMathObject,
-    ISolution,
     literalType,
     TABLE_OF_SIGNS
 } from "../pimath.interface"
@@ -51,11 +50,6 @@ export class Factor implements IPiMathObject<Factor>,
         return new Factor(this)
     }
 
-    public fromPolynom(polynom: InputValue<Polynom>): this {
-        this.#polynom = new Polynom(polynom)
-        this.#power = new Fraction(1)
-        return this
-    }
     public get tex(): string {
         const num = this.power.numerator
         const den = this.power.denominator
@@ -176,6 +170,12 @@ export class Factor implements IPiMathObject<Factor>,
 
 
         return (this.polynom.evaluate(values) as Fraction).pow(this.power)
+    }
+
+    public fromPolynom(polynom: InputValue<Polynom>): this {
+        this.#polynom = new Polynom(polynom)
+        this.#power = new Fraction(1)
+        return this
     }
 
     public hasVariable(letter: string): boolean {

@@ -9,7 +9,6 @@ import type {
     InputAlgebra,
     InputValue,
     IPiMathObject,
-    ISolution,
     literalType,
     TABLE_OF_SIGNS,
     TABLE_OF_SIGNS_VALUES
@@ -20,6 +19,7 @@ import {EquationSolver} from './equationSolver'
 import {Monom} from './monom'
 import {replace_in_array} from "../helpers"
 import {operation_pow} from "./operations"
+import {Solution} from "../analyze/solution"
 
 
 export type PolynomParsingType = InputValue<Polynom> | Monom
@@ -43,7 +43,7 @@ export class Polynom implements IPiMathObject<Polynom>,
     #defaultVariable = 'x'
     #factors: Polynom[]
     #monoms: Monom[]
-    #roots: ISolution[]
+    #roots: Solution[]
     #rootsCache = false
 
     constructor(value: InputValue<Fraction>)
@@ -435,7 +435,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return numerators
     }
 
-    public getZeroes = (): ISolution[] => {
+    public getZeroes = (): Solution[] => {
         if (this.degree().isZero()) {
             return []
         }
@@ -499,8 +499,8 @@ export class Polynom implements IPiMathObject<Polynom>,
         if (div.degree().isOne()) {
             const zero = div.getZeroes()[0]
 
-            if (zero.exact instanceof Fraction) {
-                return (this.evaluate(zero.exact) as Fraction).isZero()
+            if (zero.exact) {
+                return (this.evaluate(zero.fraction) as Fraction).isZero()
             } else {
                 return false
             }
@@ -684,26 +684,31 @@ export class Polynom implements IPiMathObject<Polynom>,
 
         if (value instanceof Polynom) {
             return this.#multiplyByPolynom(value)
-        } else if (value instanceof Fraction) {
+        }
+
+        if (value instanceof Fraction) {
             return this.#multiplyByFraction(value)
-        } else if (value instanceof Monom) {
+        }
+
+        if (value instanceof Monom) {
             return this.#multiplyByMonom(value)
-        } else if (Number.isSafeInteger(value) && typeof value === 'number') {
+        }
+
+        if (Number.isSafeInteger(value) && typeof value === 'number') {
             return this.#multiplyByInteger(value)
-        } else if (typeof value === 'string') {
+        }
+
+        if (typeof value === 'string') {
             try {
                 const k = new Fraction(value)
                 return this.#multiplyByFraction(k)
             } catch {
                 throw new Error('Cannot multiply by this value.')
             }
-
-
         }
 
-
         // Something went wrong...
-        throw new Error('Cannot multiply by this value.')
+        throw new Error(`Cannot multiply by this value: ${value as unknown as string}`)
     }
 
     public get numberOfVars(): number {
@@ -850,11 +855,11 @@ export class Polynom implements IPiMathObject<Polynom>,
         throw new Error('Cannot take the root from a polynom')
     }
 
-    get roots(): ISolution[] {
+    get roots(): Solution[] {
         return this.#rootsCache ? this.#roots : this.getZeroes()
     }
 
-    set roots(value: ISolution[]) {
+    set roots(value: Solution[]) {
         this.#rootsCache = true
         this.#roots = value
     }
@@ -888,7 +893,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         // returns ['+-', 'd|t|z', '+-']...
 
         // global roots from eventually Polyfactor. Allows to add "extra column".
-        const roots: ISolution[] = this.roots
+        const roots: Solution[] = this.roots
 
         // Build the table os sign length and default values
         // The signs looks like: ['+', 't', '+', 't', '+', 't', '+']
@@ -962,7 +967,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this
     }
 
-    public get zeroes(): ISolution[] {
+    public get zeroes(): Solution[] {
         return this.getZeroes()
     }
 

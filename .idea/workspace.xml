@@ -4,108 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Update line.ts : set n and set g now set and update the line class. These values are no more stored directly inside.">
-      <change afterPath="$PROJECT_DIR$/src/geometry/TupleN.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/analyse/solution.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Minor update : changed some behavior (asCanonical(), as...), added Solution class, add Root class, removed NthRoot class.&#10;Many bug fixes (maybe some new), lots of improvement.&#10;&#10;Still work in progress.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/exercises.html" beforeDir="false" afterPath="$PROJECT_DIR$/demo/exercises.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/playground.ts" beforeDir="false" afterPath="$PROJECT_DIR$/demo/playground.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependencies.svg" beforeDir="false" afterPath="$PROJECT_DIR$/dependencies.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pimath.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pimath.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eslint.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/eslint.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/equation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/equationSolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equationSolver.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/factor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/factor.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/linearSystem.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/linearSystem.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/monom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/monom.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/analyze/solution.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/analyze/solution.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/analyze/tableOfSigns.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/analyze/tableOfSigns.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/coefficients/fraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/fraction.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/coefficients/root.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/root.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/geometry/circle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/circle.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/geomMath.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/geomMath.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/line3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line3.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/plane3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/plane3.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/point.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/point.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/triangle.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/vector.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/vector.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/numeric.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/numeric.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pimath.interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pimath.interface.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/randomization/random.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/random.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/coefficients/fraction.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/coefficients/fraction.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/coefficients/root.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/coefficients/root.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/geometry/circle.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/circle.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/line.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/line.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/line3.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/line3.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/plane3.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/plane3.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/vector3d.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/numeric.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/numeric.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/temp.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/temp.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/equation.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/equation.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/equation.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/equation.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/equationSolver.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/equationSolver.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/factor.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/factor.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/linearSystem.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/linearSystem.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/linearSystem.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/linearSystem.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/logicalset.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/logicalset.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/matrix.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/matrix.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/monom.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/monom.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/operations.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/operations.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/polyFactor.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/polyFactor.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/polyFactor.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/polyFactor.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/polynom.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/polynom.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/analyze/solution.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/analyze/solution.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/analyze/solution.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/analyze/solution.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/analyze/tableOfSigns.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/analyze/tableOfSigns.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/coefficients/fraction.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/coefficients/fraction.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/coefficients/fraction.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/coefficients/fraction.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/coefficients/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/coefficients/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/coefficients/nthRoot.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/coefficients/nthRoot.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/coefficients/root.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/coefficients/root.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/coefficients/root.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/coefficients/root.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/circle.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/circle.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/circle.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/circle.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/geomMath.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/geomMath.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/geomMath.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/geomMath.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/index.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/index.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/line.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/line.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/line.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/line.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/line3.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/line3.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/line3.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/line3.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/plane3.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/plane3.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/plane3.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/plane3.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/point.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/point.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/point.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/point.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/sphere3.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/sphere3.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/triangle.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/triangle.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/triangle.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/triangle.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/vector.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/vector.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/vector.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/vector.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/helpers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/helpers.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/numeric.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/numeric.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/numeric.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/numeric.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/pimath.interface.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/pimath.interface.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/pimath.interface.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/pimath.interface.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/algebra/rndEquation.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/algebra/rndEquation.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/algebra/rndMonom.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/algebra/rndMonom.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/algebra/rndPolynom.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/algebra/rndPolynom.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/coefficient/rndFraction.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/coefficient/rndFraction.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndCircle.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/geometry/rndCircle.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndLine.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/geometry/rndLine.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndLine3.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/geometry/rndLine3.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/geometry/rndVector.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/geometry/rndVector.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/random.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/random.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/random.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/random.d.ts.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/rndHelpers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/rndHelpers.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/randomization/rndTypes.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/randomization/rndTypes.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -472,8 +383,8 @@
       <command value="npm install" />
       <command value="vitest" />
       <command value="npm run dev" />
-      <command value="npm run dependency-cruise" />
       <command value="npm run build" />
+      <command value="npm run dependency-cruise" />
       <command value="npm run test" />
     </option>
   </component>
@@ -486,17 +397,31 @@
       <scope-kind value="ALL" />
       <method v="2" />
     </configuration>
-    <configuration name="Solution creation.create Solution from Quadratic" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Circle operations.tangents through an external Point on a Circle" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/analyse/solution.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/geometry/circle.test.ts" />
       <test-names>
-        <test-name value="Solution creation" />
-        <test-name value="create Solution from Quadratic" />
+        <test-name value="Circle operations" />
+        <test-name value="tangents through an external Point on a Circle" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Equation Solver.should solve the cubic equation (one double solution)" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" />
+      <test-names>
+        <test-name value="Equation Solver" />
+        <test-name value="should solve the cubic equation (one double solution)" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -510,26 +435,6 @@
       <test-directory value="$PROJECT_DIR$/tests" />
       <method v="2" />
     </configuration>
-    <configuration name="line.test.ts" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST_FILE" />
-      <test-file value="$PROJECT_DIR$/tests/geometry/line.test.ts" />
-      <method v="2" />
-    </configuration>
-    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <configuration name="dependency-cruise" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -540,21 +445,31 @@
       <envs />
       <method v="2" />
     </configuration>
+    <configuration name="test" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="test" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <list>
+      <item itemvalue="npm.test" />
       <item itemvalue="npm.dependency-cruise" />
-      <item itemvalue="npm.build" />
       <item itemvalue="Vitest.All Tests" />
-      <item itemvalue="Vitest.Solution creation.create Solution from Quadratic" />
-      <item itemvalue="Vitest.line.test.ts" />
+      <item itemvalue="Vitest.Circle operations.tangents through an external Point on a Circle" />
+      <item itemvalue="Vitest.Equation Solver.should solve the cubic equation (one double solution)" />
       <item itemvalue="Vitest.Tests in tests\" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.dependency-cruise" />
-        <item itemvalue="npm.build" />
         <item itemvalue="Vitest.Tests in tests\" />
-        <item itemvalue="Vitest.line.test.ts" />
-        <item itemvalue="Vitest.Solution creation.create Solution from Quadratic" />
+        <item itemvalue="Vitest.Circle operations.tangents through an external Point on a Circle" />
+        <item itemvalue="Vitest.Equation Solver.should solve the cubic equation (one double solution)" />
+        <item itemvalue="npm.test" />
+        <item itemvalue="npm.dependency-cruise" />
       </list>
     </recent_temporary>
   </component>
@@ -769,15 +684,7 @@
       <workItem from="1769771696824" duration="2195000" />
       <workItem from="1769975787669" duration="29077000" />
       <workItem from="1770125877958" duration="2592000" />
-      <workItem from="1770215238617" duration="8045000" />
-    </task>
-    <task id="LOCAL-00016" summary="Changing output of PolyFactor.tableOfSigns()">
-      <option name="closed" value="true" />
-      <created>1727279376590</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1727279376590</updated>
+      <workItem from="1770215238617" duration="9805000" />
     </task>
     <task id="LOCAL-00017" summary="Testing to change # to private keyword">
       <option name="closed" value="true" />
@@ -1163,7 +1070,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769002332262</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="Minor update : changed some behavior (asCanonical(), as...), added Solution class, add Root class, removed NthRoot class.&#10;Many bug fixes (maybe some new), lots of improvement.&#10;&#10;Still work in progress.">
+      <option name="closed" value="true" />
+      <created>1770308925630</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1770308925630</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1195,7 +1110,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Update of Table of signs" />
     <MESSAGE value="Cleaning TODOs" />
     <MESSAGE value="Tests -&gt; ok&#10;Dependency check -&gt; ok&#10;Build -&gt; ok" />
     <MESSAGE value="Should work on the readme file..." />
@@ -1220,7 +1134,8 @@
     <MESSAGE value="Remove a console.log" />
     <MESSAGE value="Update package.json&#10;Migrate from eslintjs to eslint&#10;build ok&#10;dependencies ok" />
     <MESSAGE value="Update Fraction.inverse to correctly handle negative fraction." />
-    <option name="LAST_COMMIT_MESSAGE" value="Update Fraction.inverse to correctly handle negative fraction." />
+    <MESSAGE value="Minor update : changed some behavior (asCanonical(), as...), added Solution class, add Root class, removed NthRoot class.&#10;Many bug fixes (maybe some new), lots of improvement.&#10;&#10;Still work in progress." />
+    <option name="LAST_COMMIT_MESSAGE" value="Minor update : changed some behavior (asCanonical(), as...), added Solution class, add Root class, removed NthRoot class.&#10;Many bug fixes (maybe some new), lots of improvement.&#10;&#10;Still work in progress." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
