@@ -20,7 +20,6 @@ describe('Line creation', () => {
 
     test('random', () => {
         const line = Random.line()
-
         console.log(line.asCanonical.tex)
     })
     test.todo('clone Line')

@@ -4833,7 +4833,21 @@ const Ve = {
   vector: (n) => _(n),
   point: (n) => new w(_(n)),
   circle: (n) => Ze(n)
-}, je = {
+};
+class je {
+  #t;
+  #e;
+  constructor(e) {
+    e instanceof N || e instanceof E ? this.#t = new N(e) : this.#t = new N().fromPolynom(e), this.#e = this.#t.getRoots();
+  }
+  get fx() {
+    return this.#t;
+  }
+  get roots() {
+    return this.#e;
+  }
+}
+const Fe = {
   Numeric: x,
   Fraction: a,
   Root: $,
@@ -4881,12 +4895,14 @@ export {
   Ve as Random,
   $ as Root,
   ce as SPHERE3_RELATIVE_POSITION,
+  S as Solution,
   ze as Sphere3,
+  je as TableOfSigns,
   G as Triangle,
   g as Vector,
   Be as areVectorsColinears,
   ke as areVectorsEquals,
-  je as default,
+  Fe as default,
   Ue as determinantFromVectors,
   Me as dotProduct
 };

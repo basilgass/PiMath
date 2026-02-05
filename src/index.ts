@@ -10,20 +10,21 @@ import {Circle, Line, Line3, Plane3, Point, Sphere3, Triangle, Vector} from "./g
 
 // Numeric
 import {Numeric} from "./numeric"
+
 // NumExp
 import {NumExp} from "piexpression"
+
 // randomization
 import {Random} from "./randomization/random"
 
+// export everything to make them available as module
 export * from "./coefficients"
 export * from "./algebra"
 export * from "./geometry"
+export * from "./analyze"
 
-// Import items individually to make a global object
 export {Numeric}
-
 export {NumExp}
-
 export {Random}
 
 // Typesetting

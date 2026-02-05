@@ -4,24 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Removed the old ISolution by the new class solution.ts">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Code cleanup, remove unused methods....">
+      <change afterPath="$PROJECT_DIR$/src/analyze/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/equationSolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equationSolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/monom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/monom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/operations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/operations.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/analyze/solution.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/analyze/solution.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/coefficients/fraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/fraction.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/coefficients/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/coefficients/nthRoot.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/coefficients/root.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/root.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/triangle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependencies.svg" beforeDir="false" afterPath="$PROJECT_DIR$/dependencies.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/pimath.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/pimath.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/randomization/geometry/rndLine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/geometry/rndLine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/randomization/rndTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/rndTypes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/coefficients/fraction.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/coefficients/fraction.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/geometry/line.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/line.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/index.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/index.d.ts.map" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -344,7 +337,7 @@
     "Vitest.vector3d.test.ts.executor": "Run",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/websites/PiMath/src/geometry",
+    "last_opened_file_path": "C:/websites/PiMath/src/analyze",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.standard": "true",
     "node.js.detected.package.tslint": "true",
@@ -373,6 +366,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\websites\PiMath\src\analyze" />
       <recent name="C:\websites\PiMath\src\geometry" />
       <recent name="C:\websites\PiMath\src" />
       <recent name="C:\websites\PiMath\tests" />
@@ -388,9 +382,9 @@
       <command value="npm install" />
       <command value="vitest" />
       <command value="npm run dev" />
-      <command value="npm run build" />
-      <command value="npm run dependency-cruise" />
       <command value="npm run test" />
+      <command value="npm run dependency-cruise" />
+      <command value="npm run build" />
     </option>
   </component>
   <component name="RunManager" selected="Vitest.Tests in tests\">
@@ -450,18 +444,18 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="test" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+    <configuration name="dependency-cruise" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
       <scripts>
-        <script value="test" />
+        <script value="dependency-cruise" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="npm.test" />
+      <item itemvalue="npm.dependency-cruise" />
       <item itemvalue="npm.build" />
       <item itemvalue="Vitest.All Tests" />
       <item itemvalue="Vitest.Circle operations.tangents through an external Point on a Circle" />
@@ -470,11 +464,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Vitest.Tests in tests\" />
         <item itemvalue="npm.build" />
+        <item itemvalue="npm.dependency-cruise" />
+        <item itemvalue="Vitest.Tests in tests\" />
         <item itemvalue="Vitest.Circle operations.tangents through an external Point on a Circle" />
         <item itemvalue="Vitest.Equation Solver.should solve the cubic equation (one double solution)" />
-        <item itemvalue="npm.test" />
       </list>
     </recent_temporary>
   </component>
@@ -689,15 +683,7 @@
       <workItem from="1769771696824" duration="2195000" />
       <workItem from="1769975787669" duration="29077000" />
       <workItem from="1770125877958" duration="2592000" />
-      <workItem from="1770215238617" duration="11540000" />
-    </task>
-    <task id="LOCAL-00018" summary="Back to # private fields.&#10;Removes extra (old) region grouping (from VS Code).&#10;&#10;Removed export type from index.ts">
-      <option name="closed" value="true" />
-      <created>1727285499567</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1727285499567</updated>
+      <workItem from="1770215238617" duration="11851000" />
     </task>
     <task id="LOCAL-00019" summary="bug: Random.Polynom wasn't reducing the polynom">
       <option name="closed" value="true" />
@@ -1083,7 +1069,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770310617493</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="Code cleanup, remove unused methods....">
+      <option name="closed" value="true" />
+      <created>1770312392960</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1770312392960</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1115,7 +1109,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Tests -&gt; ok&#10;Dependency check -&gt; ok&#10;Build -&gt; ok" />
     <MESSAGE value="Should work on the readme file..." />
     <MESSAGE value="PolyFactor.reduce() was not working correctly with a constant factor at the denominator.&#10;&#10;Tested and builded" />
     <MESSAGE value="Bug: rndLine was still using &quot;parse&quot; instead of &quot;fromPointAndDirection&quot; helper function." />
@@ -1140,7 +1133,8 @@
     <MESSAGE value="Update Fraction.inverse to correctly handle negative fraction." />
     <MESSAGE value="Minor update : changed some behavior (asCanonical(), as...), added Solution class, add Root class, removed NthRoot class.&#10;Many bug fixes (maybe some new), lots of improvement.&#10;&#10;Still work in progress." />
     <MESSAGE value="Removed the old ISolution by the new class solution.ts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed the old ISolution by the new class solution.ts" />
+    <MESSAGE value="Code cleanup, remove unused methods...." />
+    <option name="LAST_COMMIT_MESSAGE" value="Code cleanup, remove unused methods...." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -7,6 +7,7 @@ import { Random } from './randomization/random';
 export * from './coefficients';
 export * from './algebra';
 export * from './geometry';
+export * from './analyze';
 export { Numeric };
 export { NumExp };
 export { Random };
