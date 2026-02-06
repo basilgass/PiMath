@@ -124,7 +124,7 @@ export class Polynom implements IPiMathObject<Polynom>,
     static xMultiply(...polynoms: InputValue<Polynom>[]): Polynom {
         const result = new Polynom().one()
 
-        polynoms.forEach(P=>{
+        polynoms.forEach(P => {
             result.multiply(P)
         })
 
@@ -294,8 +294,7 @@ export class Polynom implements IPiMathObject<Polynom>,
      * @param letter
      * TODO: Handle other letter than 'x'.
      */
-    public factorize = (letter?: string): Polynom[] => {
-
+    public factorize(letter?: string): Polynom[] {
         this.#factors = []
 
         let P = this.clone().reorder()
@@ -305,7 +304,6 @@ export class Polynom implements IPiMathObject<Polynom>,
         const M = P.commonMonom()
 
         // If the polynom starts with a negative monom, factorize it.
-        // CHECK :  a common monom is always strictly positive : M.coefficient.isStrictlyPositive()
         if (P.monomByDegree().coefficient.isStrictlyNegative()) M.opposite()
 
         if (!M.isOne()) {

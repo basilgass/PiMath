@@ -113,13 +113,8 @@ export class Line implements IPiMathObject<Line> {
     // ------------------------------------------
     // Getter and setter
 
-    clone = (): this => {
-        this.#a = this.#a.clone()
-        this.#b = this.#b.clone()
-        this.#c = this.#c.clone()
-
-        this.#OA = this.#OA.clone()
-        return this
+    clone = (): Line => {
+        return new Line().fromCoefficient(this.#a, this.#b, this.#c)
     }
 
     get tex(): string {
@@ -146,16 +141,13 @@ export class Line implements IPiMathObject<Line> {
                 if (output === LINE_DISPLAY.PARAMETRIC) {
                     return `${Vector.asTex('x', 'y')} = ${Vector.asTex(this.#OA.x.tex, this.#OA.y.tex)} + k\\cdot ${Vector.asTex(d.x.tex, d.y.tex)}`
                 } else {
-                    return `\\left\\{\\begin{aligned}
-            x &= ${(new Polynom(this.#OA.x)
+                    return `\\left\\{\\begin{aligned}\n\tx &= ${(new Polynom(this.#OA.x)
                         .add(new Monom(this.d.x).multiply(new Monom('k'))))
                         .reorder('k', true)
-                        .tex}\\\\ 
-            y &= ${(new Polynom(this.#OA.y)
+                        .tex}\\\\\n\ty &= ${(new Polynom(this.#OA.y)
                         .add(new Monom(this.d.y).multiply(new Monom('k'))))
                         .reorder('k', true)
-                        .tex}
-            \\end{aligned}\\right.`
+                        .tex}\n\\end{aligned}\\right.`
                 }
             }
             default: {
@@ -188,8 +180,15 @@ export class Line implements IPiMathObject<Line> {
                 return `((x,y))=((${this.#OA.x.display},${this.#OA.y.display}))+k((${d.x.display},${d.y.display}))`
             }
             case LINE_DISPLAY.SYSTEM: {
+                const d = this.d.clone().simplify()
                 // TODO: line as system in ascii math
-                return ''
+                // {(2x,+,17y,=,23),(x,-,y,=,5):}
+                const px = (new Polynom(this.#OA.x).add(new Monom(this.d.x).multiply(new Monom('k'))))
+                    .reorder('k', true)
+                const py = (new Polynom(this.#OA.y).add(new Monom(this.d.y).multiply(new Monom('k'))))
+                    .reorder('k', true)
+
+                return `{(x,=,${px.display}),(y,=,${py.display}):}`
             }
             default: {
                 const canonical = this.getEquation()
@@ -234,7 +233,7 @@ export class Line implements IPiMathObject<Line> {
         return this
     }
 
-   get asParametric(): this {
+    get asParametric(): this {
         this.#outputMode = LINE_DISPLAY.PARAMETRIC
         return this
     }
@@ -338,7 +337,7 @@ export class Line implements IPiMathObject<Line> {
         // }
     }
 
-    fromCoefficient = (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>): this => {
+    fromCoefficient  (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>): this  {
         this.#a = new Fraction(a)
         this.#b = new Fraction(b)
         this.#c = new Fraction(c)
@@ -378,7 +377,7 @@ export class Line implements IPiMathObject<Line> {
         return this
     }
 
-    fromEquation = (equ: Equation): this => {
+    fromEquation (equ: Equation): this  {
         // Reorder the equation
         equ.reorder(true)
 
@@ -409,11 +408,19 @@ export class Line implements IPiMathObject<Line> {
         )
     }
 
-    fromPointAndDirection = (P: Point | Vector, d: Vector): this => {
+    fromParallel(parallel: Line, point: Point): this {
+        return  this.fromPointAndNormal(point, parallel.n)
+    }
+
+    fromPerpendicular(perpendicular: Line, point: Point): this {
+        return this.fromPointAndNormal(point, perpendicular.d)
+    }
+
+    fromPointAndDirection (P: Point | Vector, d: Vector): this  {
         return this.fromPointAndNormal(P, d.clone().normal())
     }
 
-    fromPointAndLine = (P: Vector, L: Line, orientation: LinePropriety = LinePropriety.Parallel): this => {
+    fromPointAndLine (P: Vector, L: Line, orientation: LinePropriety = LinePropriety.Parallel): this  {
 
         if (orientation === LinePropriety.Perpendicular) {
             return this.fromPointAndNormal(P, L.director)
@@ -534,6 +541,10 @@ export class Line implements IPiMathObject<Line> {
             isParallel,
             isSame
         }
+    }
+
+    isHorizontal(): boolean {
+        return this.slope.value===0
     }
 
     // ------------------------------------------

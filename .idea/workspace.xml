@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Optimization, code reduction of factorization in polynom.ts.&#10;Created test for polynom factorization.">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Make the rndPolynom.ts accept factorable (and now it works). A new option `commonConstant` to multiply by an integer.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/randomization/algebra/rndPolynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/algebra/rndPolynom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/randomization/rndTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/rndTypes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/coefficients/fraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/fraction.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/coefficients/root.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/root.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/coefficients/root.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/coefficients/root.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/geometry/line.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/line.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,6 +137,8 @@
     "Vitest.Fraction output.executor": "Run",
     "Vitest.Fraction output.force the plus sign.executor": "Run",
     "Vitest.Fraction output.output as dfrac in LaTeX.executor": "Run",
+    "Vitest.Geometry Line.should output nice ASCII.executor": "Run",
+    "Vitest.Geometry Line.should output nice Tex.executor": "Run",
     "Vitest.Geometry Matrix.executor": "Run",
     "Vitest.Geometry Matrix.multi.executor": "Run",
     "Vitest.Geometry Matrix.should create a matrix from 2 vectors.executor": "Run",
@@ -152,9 +157,15 @@
     "Vitest.Geometry Vector.custom tests.executor": "Run",
     "Vitest.Geometry Vector.custom.executor": "Run",
     "Vitest.Geometry Vector.deter test.executor": "Run",
+    "Vitest.Line comparisons.executor": "Run",
+    "Vitest.Line comparisons.is parallel to.executor": "Run",
+    "Vitest.Line comparisons.same Line.executor": "Run",
+    "Vitest.Line creation.clone Line.executor": "Run",
     "Vitest.Line creation.create Line through two points.executor": "Run",
     "Vitest.Line creation.create Line.executor": "Run",
+    "Vitest.Line creation.create from a perpendicular.executor": "Run",
     "Vitest.Line creation.random.executor": "Run",
+    "Vitest.Line operations.parallel Line.executor": "Run",
     "Vitest.Linear System algebra.degree of Linear System.executor": "Run",
     "Vitest.Linear System algebra.has variable.executor": "Run",
     "Vitest.Linear System algebra.linear system solve output.executor": "Run",
@@ -188,6 +199,10 @@
     "Vitest.Matrix output.output as LaTeX.executor": "Run",
     "Vitest.Monom creation.executor": "Run",
     "Vitest.Monom creation.set coefficient.executor": "Run",
+    "Vitest.Operation with Lines.executor": "Run",
+    "Vitest.Operation with Lines.should check if line hits a segment.executor": "Run",
+    "Vitest.Operation with Lines.should evaluate coordinates at y.executor": "Run",
+    "Vitest.Operation with Lines.should get the intersection point with another line.executor": "Run",
     "Vitest.PolyFactor creation.create a PolyFactor from a Polynom.executor": "Run",
     "Vitest.PolyFactor creation.create a PolyFactor from a numerator and denominator.executor": "Run",
     "Vitest.PolyFactor creation.create a PolyfFactor from a numerator and denominator.executor": "Run",
@@ -331,6 +346,7 @@
     "Vitest.monom.test.ts.executor": "Run",
     "Vitest.polyfactor.test.ts.executor": "Run",
     "Vitest.polynom.test.ts.executor": "Run",
+    "Vitest.root creation.clone root.executor": "Run",
     "Vitest.root creation.create \"7root(3)(15)\".executor": "Run",
     "Vitest.root creation.create \"7sqrt(15)\".executor": "Run",
     "Vitest.root creation.create \"root(3)(15)\".executor": "Run",
@@ -338,6 +354,13 @@
     "Vitest.root creation.create from defined values.executor": "Run",
     "Vitest.root creation.create root.executor": "Run",
     "Vitest.root creation.reduce root.executor": "Run",
+    "Vitest.root operations.add two roots with same radical / index.executor": "Run",
+    "Vitest.root operations.get opposite of root.executor": "Run",
+    "Vitest.root operations.multiply two roots with same radical or index.executor": "Run",
+    "Vitest.root operations.raise root to pow.executor": "Run",
+    "Vitest.root operations.reduce roots.executor": "Run",
+    "Vitest.root operations.subtract two roots with same radical / index.executor": "Run",
+    "Vitest.root operations.take root from root.executor": "Run",
     "Vitest.root string ouput.output as TeX.executor": "Run",
     "Vitest.root string ouput.output as asciiMath.executor": "Run",
     "Vitest.root.test.ts.executor": "Run",
@@ -402,7 +425,7 @@
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.Polynom generators.should create factorable polynom of degree 2 with a common constant">
+  <component name="RunManager" selected="Vitest.root operations.take root from root">
     <configuration name="All Tests" type="JavaScriptTestRunnerVitest" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -411,83 +434,91 @@
       <scope-kind value="ALL" />
       <method v="2" />
     </configuration>
-    <configuration name="PolyFactor: Table of signs.compile table of signs from two polynoms" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="root operations.get opposite of root" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
       <test-names>
-        <test-name value="PolyFactor: Table of signs" />
-        <test-name value="compile table of signs from two polynoms" />
+        <test-name value="root operations" />
+        <test-name value="get opposite of root" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Polynom generators.should create factorable polynom of degree 2 with a common constant" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="root operations.multiply two roots with same radical or index" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/polynom.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
       <test-names>
-        <test-name value="Polynom generators" />
-        <test-name value="should create factorable polynom of degree 2 with a common constant" />
+        <test-name value="root operations" />
+        <test-name value="multiply two roots with same radical or index" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Polynom generators.should create factorable polynom of degree 2" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="root operations.raise root to pow" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/polynom.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
       <test-names>
-        <test-name value="Polynom generators" />
-        <test-name value="should create factorable polynom of degree 2" />
+        <test-name value="root operations" />
+        <test-name value="raise root to pow" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Tests in tests\" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="root operations.subtract two roots with same radical / index" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
-      <scope-kind value="DIRECTORY" />
-      <test-directory value="$PROJECT_DIR$/tests" />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
+      <test-names>
+        <test-name value="root operations" />
+        <test-name value="subtract two roots with same radical / index" />
+      </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build" />
-      </scripts>
+    <configuration name="root operations.take root from root" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
       <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
+      <test-names>
+        <test-name value="root operations" />
+        <test-name value="take root from root" />
+      </test-names>
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="npm.build" />
       <item itemvalue="Vitest.All Tests" />
-      <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs from two polynoms" />
-      <item itemvalue="Vitest.Polynom generators.should create factorable polynom of degree 2" />
-      <item itemvalue="Vitest.Polynom generators.should create factorable polynom of degree 2 with a common constant" />
-      <item itemvalue="Vitest.Tests in tests\" />
+      <item itemvalue="Vitest.root operations.get opposite of root" />
+      <item itemvalue="Vitest.root operations.multiply two roots with same radical or index" />
+      <item itemvalue="Vitest.root operations.raise root to pow" />
+      <item itemvalue="Vitest.root operations.subtract two roots with same radical / index" />
+      <item itemvalue="Vitest.root operations.take root from root" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Vitest.Polynom generators.should create factorable polynom of degree 2 with a common constant" />
-        <item itemvalue="Vitest.Polynom generators.should create factorable polynom of degree 2" />
-        <item itemvalue="npm.build" />
-        <item itemvalue="Vitest.Tests in tests\" />
-        <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs from two polynoms" />
+        <item itemvalue="Vitest.root operations.take root from root" />
+        <item itemvalue="Vitest.root operations.raise root to pow" />
+        <item itemvalue="Vitest.root operations.multiply two roots with same radical or index" />
+        <item itemvalue="Vitest.root operations.subtract two roots with same radical / index" />
+        <item itemvalue="Vitest.root operations.get opposite of root" />
       </list>
     </recent_temporary>
   </component>
@@ -703,15 +734,7 @@
       <workItem from="1769975787669" duration="29077000" />
       <workItem from="1770125877958" duration="2592000" />
       <workItem from="1770215238617" duration="11882000" />
-      <workItem from="1770370783313" duration="10830000" />
-    </task>
-    <task id="LOCAL-00022" summary="Build and tests successes">
-      <option name="closed" value="true" />
-      <created>1727703906233</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1727703906233</updated>
+      <workItem from="1770370783313" duration="15366000" />
     </task>
     <task id="LOCAL-00023" summary="Update of config files... and new build">
       <option name="closed" value="true" />
@@ -1097,7 +1120,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770383147405</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="Make the rndPolynom.ts accept factorable (and now it works). A new option `commonConstant` to multiply by an integer.">
+      <option name="closed" value="true" />
+      <created>1770384566534</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1770384566534</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1129,7 +1160,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Bug: rndLine was still using &quot;parse&quot; instead of &quot;fromPointAndDirection&quot; helper function." />
     <MESSAGE value="Test: success&#10;Dependency graph: success&#10;Build: success" />
     <MESSAGE value="Update LinearSystem to solve equation with an wquation startiing with a 0 value." />
     <MESSAGE value="Build: Ok&#10;Tests: OK&#10;Dependency: OK" />
@@ -1154,7 +1184,8 @@
     <MESSAGE value="Code cleanup, remove unused methods...." />
     <MESSAGE value="Removed the ambigoues &quot;isApproximative&quot; from fraction.ts. Added the getter and setter &quot;exact&quot;, as for other items (Solutions, Root, ...)" />
     <MESSAGE value="Optimization, code reduction of factorization in polynom.ts.&#10;Created test for polynom factorization." />
-    <option name="LAST_COMMIT_MESSAGE" value="Optimization, code reduction of factorization in polynom.ts.&#10;Created test for polynom factorization." />
+    <MESSAGE value="Make the rndPolynom.ts accept factorable (and now it works). A new option `commonConstant` to multiply by an integer." />
+    <option name="LAST_COMMIT_MESSAGE" value="Make the rndPolynom.ts accept factorable (and now it works). A new option `commonConstant` to multiply by an integer." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

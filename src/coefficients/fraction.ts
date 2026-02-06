@@ -379,12 +379,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
         return this.fromNumber(numerator / denominator)
     }
-    public fromPeriodic(value: string | number, length?: number): this {
-        if (length === undefined) {
-            // TODO: get the length automatically, finding the repeating length...}
-            return this.fromPeriodic(value, 2)
-        }
-
+    public fromPeriodic(value: string | number, length: number): this {
         const [, decimal] = (value.toString()).split(/[.,]/)
         const p: number = decimal ? decimal.length : 0
         const power = Math.pow(10, p)

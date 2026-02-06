@@ -115,10 +115,12 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
     }
 
     add(value: InputValue<Root>): this {
-        const rt = new Root(value)
+        // start by reducing
+        this.reduce()
+        const rt = new Root(value).reduce()
 
         if (
-            this.index !== rt.index &&
+            this.index !== rt.index ||
             !this.radical.isEqual(rt.radical)
         ) {
             throw new Error("Add can only be done with two same index and radical")
