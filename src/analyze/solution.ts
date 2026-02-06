@@ -3,6 +3,7 @@ import {Fraction} from "../coefficients"
 import {Root} from "../coefficients/root"
 
 export class Solution {
+    #count: number
     #display: string | null
     #exact: boolean
     #fraction: Fraction
@@ -19,6 +20,7 @@ export class Solution {
 
         this.#fraction = new Fraction().zero()
         this.#root = new Root()
+        this.#count = 1
     }
 
     get tex(): string {
@@ -52,11 +54,11 @@ export class Solution {
         const [f] = Fraction.toSameDenominateur(this.#fraction, this.#root.factor)
 
         const R = this.#root.clone().multiply(f.denominator).reduce()
-        const num = `${f.numerator} ${R.withSign.display}`
+        const num = `${f.numerator}${R.withSign.display}`
 
         if (f.denominator === 1) return num
 
-        return `${num}/${f.denominator}`
+        return `(${num})/${f.denominator}`
     }
 
     set display(value: string | null) {
@@ -107,6 +109,14 @@ export class Solution {
         sol2.setExact(false)
 
         return [sol1, sol2]
+    }
+
+    get count(): number {
+        return this.#count
+    }
+
+    set count(value: number) {
+        this.#count = value
     }
 
     get exact(): boolean {

@@ -63,6 +63,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this
     }
 
+
     /**
      * Parse a string to a polynom.
      * @param inputStr
@@ -118,6 +119,16 @@ export class Polynom implements IPiMathObject<Polynom>,
 
     public get display(): string {
         return this.#genDisplay()
+    }
+
+    static xMultiply(...polynoms: InputValue<Polynom>[]): Polynom {
+        const result = new Polynom().one()
+
+        polynoms.forEach(P=>{
+            result.multiply(P)
+        })
+
+        return result
     }
 
     public add = (...values: InputAlgebra<Polynom>[]): Polynom => {
@@ -281,98 +292,64 @@ export class Polynom implements IPiMathObject<Polynom>,
     /**
      * Factorize a polynom and store the best results in factors.
      * @param letter
+     * TODO: Handle other letter than 'x'.
      */
-
-        // REFACTOR: duplicate code with equationSolver.
     public factorize = (letter?: string): Polynom[] => {
-        let factors: Polynom[] = []
+
+        this.#factors = []
+
         let P = this.clone().reorder()
 
         // Extract the common monom
         // 2x^3+6x^2 => 2x^2
         const M = P.commonMonom()
-        // If the polynom starts with a negative monom, factorize it.
-        if (P.monomByDegree().coefficient.isStrictlyNegative() && M.coefficient.isStrictlyPositive() && !M.isOne()) {
-            M.opposite()
-        }
 
+        // If the polynom starts with a negative monom, factorize it.
+        // CHECK :  a common monom is always strictly positive : M.coefficient.isStrictlyPositive()
+        if (P.monomByDegree().coefficient.isStrictlyNegative()) M.opposite()
 
         if (!M.isOne()) {
-            const tempPolynom: Polynom = new Polynom(M)
-            factors = [tempPolynom.clone()]
-            P = P.euclidean(tempPolynom).quotient
+            this.#factors.push(new Polynom(M))
+            P = P.euclidean(this.#factors[0]).quotient
         }
 
-        // Main loop
-        let securityLoop = P.degree().clone().multiply(2).value,
-            maxDegree = 1
-        while (securityLoop >= 0) {
-            securityLoop--
-            if (P.monoms.length < 2) {
-                // The polynom has only one monom => 7x^2
-                // No need to continue.
-                if (!P.isOne()) {
-                    factors.push(P.clone())
-                    P.one()
-                }
-                break
-            } else if (P.degree(letter).isOne()) {
-                // The polynom is a first degree polynom => 3x-5
-                // No need to continue
-                factors.push(P.clone())
-                P.one()
-                break
-            } else {
-                // Create the list of all "potential" polynom dividers.
-                let allDividers: Polynom[] = this.#getAllPotentialFactors(P, maxDegree, letter ?? 'x')
-                maxDegree = P.degree(letter).value
+        const solutions = new EquationSolver(P).solve()
 
-                // Actually: 100ms
-                while (allDividers.length > 0) {
-                    const div = allDividers[0]
+        if (solutions.length === 0) {
+            this.#factors = [this.clone()]
+            return this.#factors
+        }
 
-                    if (!P.isDividableBy(div))
-                        // Not dividable. Remove it from the list
-                    {
-                        allDividers.shift()
+        solutions.forEach(sol => {
+            if (sol.exact && sol.root.isZero()) {
+                for (let i = 0; i < sol.count; i++) {
+                    if (sol.fraction.isRational()) {
+                        this.#factors.push(new Polynom().fromCoefficients(sol.fraction.denominator, -sol.fraction.numerator))
                     } else {
-                        // It's dividable - so make the division
-                        const result = P.euclidean(div)
-
-                        // Add the factor
-                        factors.push(div)
-
-                        // As it's dividable, get the quotient.
-                        P = result.quotient.clone()
-
-                        // filter all dividers that are no more suitable.
-                        allDividers = allDividers.filter(x => {
-                            const pX = P.monoms[0],
-                                pC = P.monoms[P.monoms.length - 1],
-                                dX = x.monoms[0],
-                                dC = x.monoms[x.monoms.length - 1]
-
-                            // Check last item (degree zero)
-                            if (!pC.isDivisible(dC)) {
-                                return false
-                            }
-
-                            // Check the first item (degree max)
-                            return pX.isDivisible(dX)
-                        })
+                        this.#factors.push(new Polynom().fromCoefficients(1, sol.fraction.clone().opposite()))
                     }
                 }
             }
+        })
+
+        // Check if we have all factors.
+        const fDegrees = this.#factors
+            .map(f => f.degree().value)
+            .reduce((a, b) => a + b, 0)
+
+        if (fDegrees < this.degree().value) {
+            // missing polynom.
+            const fPolynom = Polynom.xMultiply(...this.#factors)
+            this.#factors.push(this.clone().divide(fPolynom))
         }
 
-        // Maybe there is still something in the Polynom (not everything was possible to factorize)
-        if (!P.isOne()) {
-            factors.push(P.clone())
+        return this.#factors
+    }
+
+    get factors(): Polynom[] {
+        if (this.#factors.length === 0 && !this.isZero()) {
+            return this.factorize()
         }
-
-
-        // Save the factors
-        this.#factors = factors
 
         return this.#factors
     }
@@ -527,7 +504,7 @@ export class Polynom implements IPiMathObject<Polynom>,
     public isOppositeAt = (P: Polynom): boolean => {
         return this.#compare(P.clone().opposite(), '=')
     }
-    
+
     public isSameAs = (P: Polynom): boolean => {
         return this.#compare(P, 'same')
     }
@@ -1267,5 +1244,6 @@ export class Polynom implements IPiMathObject<Polynom>,
 
 
     }
+
 
 }

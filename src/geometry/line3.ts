@@ -106,11 +106,10 @@ export class Line3 {
             num2d2 = num2.clone().divide(d2),
             dnum = num2d2.clone().sqrt()
 
-        console.log('CROSS', AP.cross(d).display)
         return {
             value: Math.sqrt(num2d2.value),
             fraction: num2d2.clone().sqrt(),
-            tex: dnum.isExact() ? dnum.tex : `\\sqrt{${num2d2.tex}}`
+            tex: dnum.exact ? dnum.tex : `\\sqrt{${num2d2.tex}}`
         }
     }
     // ------------------------------------------

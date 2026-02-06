@@ -58,8 +58,8 @@ describe("Equation Solver", () => {
 
         expect(result.length).to.eq(2)
         expect(result[0].variable).to.eq("x")
-        expect(result[0].exact).toBeFalsy()
-        expect(result[1].exact).toBeFalsy()
+        expect(result[0].exact).toBeTruthy()
+        expect(result[1].exact).toBeTruthy()
 
         expect(result[0].display).to.eq("(-1-sqrt(41))/2")
         expect(result[1].display).to.eq("(-1+sqrt(41))/2")

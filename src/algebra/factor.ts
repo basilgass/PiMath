@@ -21,7 +21,6 @@ export class Factor implements IPiMathObject<Factor>,
 
     constructor(value?: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>) {
 
-
         if (value instanceof Factor) {
             this.#polynom = value.polynom.clone()
             this.#power = value.power.clone()

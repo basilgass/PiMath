@@ -4,11 +4,33 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Code cleanup, remove unused methods....">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Removed the ambigoues &quot;isApproximative&quot; from fraction.ts. Added the getter and setter &quot;exact&quot;, as for other items (Solutions, Root, ...)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/equationSolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equationSolver.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/factor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/factor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analyze/solution.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/analyze/solution.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/coefficients/fraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/fraction.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/coefficients/root.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/root.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/line3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line3.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/coefficients/fraction.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/coefficients/fraction.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/equationSolver.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/equationSolver.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/equationSolver.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/equationSolver.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/factor.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/factor.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/polyFactor.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/polyFactor.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/polynom.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/polynom.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/algebra/polynom.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/polynom.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/analyze/solution.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/analyze/solution.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/analyze/solution.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/analyze/solution.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/coefficients/fraction.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/coefficients/fraction.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/coefficients/fraction.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/coefficients/fraction.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/coefficients/root.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/coefficients/root.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/coefficients/root.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/coefficients/root.d.ts.map" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -234,6 +256,17 @@
     "Vitest.Polynom creation.set to zero Polynom.executor": "Run",
     "Vitest.Polynom creation.should parse with rational powers.executor": "Run",
     "Vitest.Polynom evaluation.evaluate Polynom.executor": "Run",
+    "Vitest.Polynom factorisation.executor": "Run",
+    "Vitest.Polynom factorisation.factorize with a not reducable polynom.executor": "Run",
+    "Vitest.Polynom factorisation.factorize with common monom.executor": "Run",
+    "Vitest.Polynom factorisation.factorize with constant, linear and not factorable.executor": "Run",
+    "Vitest.Polynom factorisation.factorize with constant.executor": "Run",
+    "Vitest.Polynom factorisation.factorize with multiple linear factors.executor": "Run",
+    "Vitest.Polynom factorisation.factorize with multiple time the same 2.executor": "Run",
+    "Vitest.Polynom factorisation.factorize with multiple time the same.executor": "Run",
+    "Vitest.Polynom factorisation.factorize with negative first monomial.executor": "Run",
+    "Vitest.Polynom factorisation.factorize with not unit factors.executor": "Run",
+    "Vitest.Polynom factorisation.factorize with roots.executor": "Run",
     "Vitest.Polynom operations.add two Polynoms.executor": "Run",
     "Vitest.Polynom operations.derivative of a Polynom.executor": "Run",
     "Vitest.Polynom operations.divide by Fraction.executor": "Run",
@@ -398,31 +431,31 @@
       <scope-kind value="ALL" />
       <method v="2" />
     </configuration>
-    <configuration name="Circle operations.tangents through an external Point on a Circle" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="PolyFactor: Table of signs.compile table of signs from two polynoms" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/geometry/circle.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" />
       <test-names>
-        <test-name value="Circle operations" />
-        <test-name value="tangents through an external Point on a Circle" />
+        <test-name value="PolyFactor: Table of signs" />
+        <test-name value="compile table of signs from two polynoms" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Equation Solver.should solve the cubic equation (one double solution)" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Polynom factorisation.factorize with roots" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/polynom.test.ts" />
       <test-names>
-        <test-name value="Equation Solver" />
-        <test-name value="should solve the cubic equation (one double solution)" />
+        <test-name value="Polynom factorisation" />
+        <test-name value="factorize with roots" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -436,6 +469,16 @@
       <test-directory value="$PROJECT_DIR$/tests" />
       <method v="2" />
     </configuration>
+    <configuration name="equationSolver.test.ts" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST_FILE" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" />
+      <method v="2" />
+    </configuration>
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -446,31 +489,21 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="dependency-cruise" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dependency-cruise" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <list>
-      <item itemvalue="npm.dependency-cruise" />
       <item itemvalue="npm.build" />
       <item itemvalue="Vitest.All Tests" />
-      <item itemvalue="Vitest.Circle operations.tangents through an external Point on a Circle" />
-      <item itemvalue="Vitest.Equation Solver.should solve the cubic equation (one double solution)" />
+      <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs from two polynoms" />
+      <item itemvalue="Vitest.Polynom factorisation.factorize with roots" />
+      <item itemvalue="Vitest.equationSolver.test.ts" />
       <item itemvalue="Vitest.Tests in tests\" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Vitest.Tests in tests\" />
         <item itemvalue="npm.build" />
-        <item itemvalue="npm.dependency-cruise" />
-        <item itemvalue="Vitest.Circle operations.tangents through an external Point on a Circle" />
-        <item itemvalue="Vitest.Equation Solver.should solve the cubic equation (one double solution)" />
+        <item itemvalue="Vitest.Tests in tests\" />
+        <item itemvalue="Vitest.PolyFactor: Table of signs.compile table of signs from two polynoms" />
+        <item itemvalue="Vitest.Polynom factorisation.factorize with roots" />
+        <item itemvalue="Vitest.equationSolver.test.ts" />
       </list>
     </recent_temporary>
   </component>
@@ -686,15 +719,7 @@
       <workItem from="1769975787669" duration="29077000" />
       <workItem from="1770125877958" duration="2592000" />
       <workItem from="1770215238617" duration="11882000" />
-      <workItem from="1770370783313" duration="2115000" />
-    </task>
-    <task id="LOCAL-00020" summary="Bug where ()^-1 was not rendering the -1.">
-      <option name="closed" value="true" />
-      <created>1727703276702</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1727703276702</updated>
+      <workItem from="1770370783313" duration="9354000" />
     </task>
     <task id="LOCAL-00021" summary="Initialize triangle.ts">
       <option name="closed" value="true" />
@@ -1080,7 +1105,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770312647672</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="Removed the ambigoues &quot;isApproximative&quot; from fraction.ts. Added the getter and setter &quot;exact&quot;, as for other items (Solutions, Root, ...)">
+      <option name="closed" value="true" />
+      <created>1770373473869</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1770373473870</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1112,7 +1145,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Should work on the readme file..." />
     <MESSAGE value="PolyFactor.reduce() was not working correctly with a constant factor at the denominator.&#10;&#10;Tested and builded" />
     <MESSAGE value="Bug: rndLine was still using &quot;parse&quot; instead of &quot;fromPointAndDirection&quot; helper function." />
     <MESSAGE value="Test: success&#10;Dependency graph: success&#10;Build: success" />
@@ -1137,7 +1169,8 @@
     <MESSAGE value="Minor update : changed some behavior (asCanonical(), as...), added Solution class, add Root class, removed NthRoot class.&#10;Many bug fixes (maybe some new), lots of improvement.&#10;&#10;Still work in progress." />
     <MESSAGE value="Removed the old ISolution by the new class solution.ts" />
     <MESSAGE value="Code cleanup, remove unused methods...." />
-    <option name="LAST_COMMIT_MESSAGE" value="Code cleanup, remove unused methods...." />
+    <MESSAGE value="Removed the ambigoues &quot;isApproximative&quot; from fraction.ts. Added the getter and setter &quot;exact&quot;, as for other items (Solutions, Root, ...)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed the ambigoues &quot;isApproximative&quot; from fraction.ts. Added the getter and setter &quot;exact&quot;, as for other items (Solutions, Root, ...)" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

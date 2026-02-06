@@ -1,6 +1,5 @@
 import {describe, expect, it, test} from "vitest"
-import {Fraction} from "../../src/coefficients/fraction"
-import {Random} from "../../src/randomization/random"
+import {Fraction, Random} from "../../src"
 
 describe('Fraction creation', () => {
     test('create Fraction', () => {
@@ -192,15 +191,15 @@ describe('Fraction comparisons', () => {
         const G = new Fraction(4, 5) // 0.8
         const H = new Fraction(4, 6) // 0.666
 
-        expect(F.isEqual(G)).to.be.false
-        expect(F.isGreater(G)).to.be.false
-        expect(F.isLesser(G)).to.be.true
+        expect(F.isEqual(G)).toBe(false)
+        expect(F.isGreater(G)).toBe(false)
+        expect(F.isLesser(G)).toBe(true)
 
-        expect(F.isGreater(H)).to.be.false
-        expect(F.isLesser(H)).to.be.false
-        expect(F.isEqual(H)).to.be.true
-        expect(F.isGeq(H)).to.be.true
-        expect(F.isLeq(H)).to.be.true
+        expect(F.isGreater(H)).toBe(false)
+        expect(F.isLesser(H)).toBe(false)
+        expect(F.isEqual(H)).toBe(true)
+        expect(F.isGeq(H)).toBe(true)
+        expect(F.isLeq(H)).toBe(true)
     })
 })
 
@@ -279,6 +278,6 @@ describe('Fraction generators', () => {
             }
         }
 
-        expect(F.isNatural()).to.be.false
+        expect(F.isNatural()).toBe(false)
     })
 })

@@ -249,10 +249,10 @@ describe("PolyFactor: operations", () => {
     test('should reduce a PolyFactors with constant factors', ()=>{
         const PF = new PolyFactor().fromPolynom('18(x+6)(x+3)','27x+243')
         const PFF = PF.factorize()
-        expect(PFF.asRoot.display).toBe('((18)(x+3)(x+6))/((27)(x+9))')
+        expect(PFF.asRoot.display).toBe('((18)(x+6)(x+3))/((27)(x+9))')
 
         PFF.reduce()
-        expect(PFF.asRoot.display).toBe('((2)(x+3)(x+6))/((3)(x+9))')
+        expect(PFF.asRoot.display).toBe('((2)(x+6)(x+3))/((3)(x+9))')
     })
 
     test('should get the gcd of two PolyFactors', () => {
@@ -577,19 +577,27 @@ describe('PolyFactor: Table of signs', ()=>{
         const PF = new PolyFactor().fromPolynom('(x^2-16)(x+3)', '(x+5)')
 
         const tos = PF.tableOfSigns()
-        expect(tos.factors[0].signs).toEqual([
-            '-', 't', '-',
-            't', '-', 'z',
-            '+', 't', '+'
-        ])
+
+        expect(tos.factors[0].factor.polynom.display).toBe('x+4')
+        expect(tos.factors[0].signs.join("")).toBe('-t-z+t+t+')
+
+        expect(tos.factors[1].factor.polynom.display).toBe('x+3')
+        expect(tos.factors[1].signs.join("")).toBe('-t-t-z+t+')
+
+        expect(tos.factors[2].factor.polynom.display).toBe('x-4')
+        expect(tos.factors[2].signs.join("")).toBe('-t-t-t-z+')
+
+        expect(tos.factors[3].factor.polynom.display).toBe('x+5')
+        expect(tos.factors[3].signs.join("")).toBe('-d+t+t+t+')
+
     })
     test('solve polynom without bx', ()=>{
         const PF = new PolyFactor().fromPolynom('8-x^2')
         const tos = PF.tableOfSigns()
 
         expect(tos.roots).toHaveLength(2)
-        expect(tos.roots[0].display).toBe('-2sqrt(2)')
-        expect(tos.roots[1].display).toBe('2sqrt(2)')
+        expect(tos.roots[0].reduce().display).toBe('-2sqrt(2)')
+        expect(tos.roots[1].reduce().display).toBe('2sqrt(2)')
     })
 })
 

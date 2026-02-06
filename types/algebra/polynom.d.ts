@@ -33,6 +33,7 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     clone: () => Polynom;
     get tex(): string;
     get display(): string;
+    static xMultiply(...polynoms: InputValue<Polynom>[]): Polynom;
     add: (...values: InputAlgebra<Polynom>[]) => Polynom;
     commonMonom: () => Monom;
     degree: (letter?: string) => Fraction;
@@ -49,8 +50,10 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     /**
      * Factorize a polynom and store the best results in factors.
      * @param letter
+     * TODO: Handle other letter than 'x'.
      */
     factorize: (letter?: string) => Polynom[];
+    get factors(): Polynom[];
     fromCoefficients(...values: InputValue<Fraction>[]): this;
     gcdDenominator: () => number;
     gcdNumerator: () => number;

@@ -13,14 +13,13 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     constructor();
     constructor(value: InputValue<Fraction>);
     constructor(numerator: number, denominator: number);
-    constructor(decimal: number, periodLength: number);
     /**
      * Parse the value to get the numerator and denominator
      * @param value : number or string to parse to get the fraction
-     * @param denominatorOrPeriodic (optional|number) : length of the periodic part: 2.333333 => 1 or denominator value
      */
-    parse: (value: InputValue<Fraction>, denominatorOrPeriodic?: number) => Fraction;
+    parse: (value: InputValue<Fraction>, denominator?: number) => this;
     clone: () => Fraction;
+    copy(value: Fraction): this;
     get tex(): string;
     get display(): string;
     static average: (...fractions: (InputValue<Fraction>)[]) => Fraction;
@@ -34,8 +33,6 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     abs: () => this;
     add: (F: InputValue<Fraction>) => Fraction;
     amplify: (k: number) => this;
-    get approximative(): boolean;
-    set approximative(value: boolean);
     areEquals: (...F: Fraction[]) => boolean;
     /**
      * Compare the current coefficient with another coefficient
@@ -48,14 +45,18 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     get dfrac(): this;
     digits(value: number): this;
     divide: (F: Fraction | number) => Fraction;
+    get exact(): boolean;
+    set exact(value: boolean);
     get frac(): this;
+    fromNumber(value: number): this;
+    fromNumbers(numerator: number, denominator: number): this;
+    fromPeriodic(value: string | number, length?: number): this;
+    fromString(value: string): this;
     infinite: () => this;
     invalid: () => this;
     inverse: () => this;
-    isApproximative: () => boolean;
     isEqual: (than: Fraction | number) => boolean;
     isEven: () => boolean;
-    isExact: () => boolean;
     isFinite: () => boolean;
     isGeq: (than: Fraction | number) => boolean;
     isGreater: (than: Fraction | number) => boolean;
@@ -78,7 +79,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     isStrictlyPositive: () => boolean;
     isUnit(): boolean;
     isZero: () => boolean;
-    multiply: (F: Fraction | number) => this;
+    multiply: (F: InputValue<Fraction>, reduce?: boolean) => this;
     get numerator(): number;
     set numerator(value: number);
     one: () => this;

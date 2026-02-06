@@ -529,6 +529,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
                 return {factor: new Factor(factor), ...factor.tableOfSigns()}
             })
 
+        
         // Build the table of signs with extra roots for each factors.
         factors.forEach(item => {
             // Create the new signs row

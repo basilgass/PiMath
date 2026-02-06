@@ -193,6 +193,16 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this.factor.isOne() && this.radical.isOne()
     }
 
+    isRational(): boolean {
+        const reduced = this.clone().reduce()
+
+        if(reduced.radical.isOne()) return reduced.factor.exact
+
+        if(reduced.index===1) return reduced.factor.exact && reduced.radical.exact
+
+        return false
+    }
+
     isZero(): boolean {
         return this.factor.isZero() || this.radical.isZero()
     }

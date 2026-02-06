@@ -22,6 +22,7 @@ export declare class Root implements IPiMathObject<Root>, IExpression<Root> {
     inverse(): this;
     isEqual(root: Root): boolean;
     isOne(): boolean;
+    isRational(): boolean;
     isZero(): boolean;
     multiply(value: InputValue<Root>): this;
     one(): this;

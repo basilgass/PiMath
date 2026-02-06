@@ -215,15 +215,8 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
     public static xMultiply = (...values: (InputValue<Fraction>)[]): Fraction => {
         const R = new Fraction()
-        // Parse the value.
-        // If it's a fraction, return a clone of it
-        // If it's an integer, return the fraction F/1
-        for (const value of values) {
 
-            const F = new Fraction(value)
-            R.numerator = R.numerator * F.numerator
-            R.denominator = R.denominator * F.denominator
-        }
+        values.forEach(f=> R.multiply(f, false))
 
         return R
     }
@@ -560,7 +553,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this.#numerator === 0
     }
 
-    public multiply = (F: Fraction | number): this => {
+    public multiply = (F: InputValue<Fraction>, reduce = true): this => {
         // Parse the value.
         // If it's a fraction, return a clone of it
         // If it's an integer, return the fraction F/1
@@ -571,7 +564,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
         this.exact = this.exact && Q.exact
 
-        return this.reduce()
+        return reduce ? this.reduce() : this
     }
 
     // ------------------------------------------

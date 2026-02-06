@@ -3,10 +3,10 @@ import type {Polynom} from "./polynom"
 import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 import type {Equation} from "./equation"
-import {Solution} from "../analyze/solution"
+import {Solution} from "../analyze"
 
 export class EquationSolver {
-    #bissectionCompexityCounter: number
+    _: number
     #bissectionDeltaX: number
     readonly #leftPolynom: Polynom
     readonly #variable: string
@@ -14,18 +14,21 @@ export class EquationSolver {
     constructor(left: Polynom | Equation, right?: Polynom, variable = "x") {
         this.#variable = variable
         this.#bissectionDeltaX = 1e-4
-        this.#bissectionCompexityCounter = 0
+        this._ = 0
 
+        // do this to avoid importing Polynom or Equation
         if (Object.hasOwn(left, 'moveLeft')) {
             const equ = left as Equation
             this.#leftPolynom = equ.left.clone().subtract(equ.right)
         } else {
             this.#leftPolynom = (left as Polynom).clone().subtract(right ?? 0)
         }
+
+        return this
     }
 
-    get bissectionCompexityCounter() {
-        return this.#bissectionCompexityCounter
+    get bissectionComplexityCounter() {
+        return this._
     }
 
     get bissectionDeltaX() {
@@ -52,24 +55,24 @@ export class EquationSolver {
         }
 
         // Try to solve by factorization -> exact solutions.
-        const {solutions, polynom} = this.#solveByFactorization()
+        const {solutions, reminder} = this.#solveByFactorization()
 
         // The remaining polynom is of degree zero. No more solutions available.
-        if (polynom.degree().isZero()) {
+        if (reminder.degree().isZero()) {
             return solutions
         }
 
         // The remaining polyno is of degree one or two, but cannot be solved by factorization (!).
-        if (polynom.degree().value <= 2) {
+        if (reminder.degree().value <= 2) {
             return solutions.concat(
-                new EquationSolver(polynom.clone()).solve()
+                new EquationSolver(reminder.clone()).solve()
             )
         }
 
         // Use approximative solutions, using bissection algorithm.
-        this.#bissectionCompexityCounter = 0
+        this._ = 0
         return solutions.concat(
-            this.#solveByBissection(polynom)
+            this.#solveByBissection(reminder)
         ).sort((a, b) => a.value - b.value)
     }
 
@@ -87,7 +90,7 @@ export class EquationSolver {
         sol.tex = output?.tex ?? null
         sol.display = output?.display ?? null
         sol.fraction = new Fraction(value)
-        sol.fraction.approximative = false
+        sol.fraction.exact = false
         sol.variable = this.#variable
 
         return sol
@@ -134,7 +137,6 @@ export class EquationSolver {
             }
         })
 
-        console.log('COMPLEXITY: ', this.#bissectionCompexityCounter)
         return solutions
     }
 
@@ -149,7 +151,7 @@ export class EquationSolver {
 
         let mid: number
         while ((b - a) / 2 > this.#bissectionDeltaX) {
-            this.#bissectionCompexityCounter++
+            this._++
 
             mid = (a + b) / 2
             const fmid = polynom.evaluate(mid, true) as number
@@ -212,7 +214,7 @@ export class EquationSolver {
         return couples
     }
 
-    #solveByFactorization(): { solutions: Solution[], polynom: Polynom } {
+    #solveByFactorization(): { solutions: Solution[], reminder: Polynom } {
         // Move everything to the left.
 
         // Get the polynom on the left (on the right, it's zero)
@@ -275,13 +277,17 @@ export class EquationSolver {
                 continue
             }
 
+            // The divider polynom
             const p = left.clone()
                 .fromCoefficients(s.fraction.denominator, -s.fraction.numerator)
 
-            // const p = this.#equation.clone().parse('x', (s.exact as Fraction).denominator, -(s.exact as Fraction).numerator)
+            // Reset the count
+            s.count = 0
 
+            // Divide as long it's dividable.
             while (left.isDividableBy(p)) {
                 left.divide(p)
+                s.count++
             }
         }
 
@@ -290,7 +296,7 @@ export class EquationSolver {
         if (left.degree().isZero() || left.degree().value > 3) {
             // Tri des réponses
             solutions.sort((a, b) => a.value - b.value)
-            return {solutions, polynom: left}
+            return {solutions, reminder: left}
         }
 
         // if the reduced polynom is of degree 1 or 2, we can solve it
@@ -301,7 +307,7 @@ export class EquationSolver {
             solutions: solutions
                 .concat(solver.solve())
                 .sort((a, b) => a.value - b.value),
-            polynom: zeroPolynom
+            reminder: zeroPolynom
         }
     }
 
@@ -342,10 +348,6 @@ export class EquationSolver {
         // delta = 0 : 2 real solutions
         // delta > 0 : 3 real solutions
         const delta = S.clone().pow(2).subtract(P.clone().multiply(4)).opposite()
-        // console.log('an=', an.display, 'bn=', bn.display, 'cn=', cn.display)
-        // console.log('p=', p.display, 'q=', q.display)
-        // console.log('S=', S.display, 'P=', P.display)
-        // console.log('delta=', delta.display)
 
         // if delta is negative, there is one real solution
         if (delta.isNegative()) {
@@ -442,7 +444,9 @@ export class EquationSolver {
 
             // Delta is zero, there is only one solution
             if (delta.isZero()) {
-                return [this.#makeSolution(f1)]
+                const sol = this.#makeSolution(f1)
+                sol.count = 2
+                return [sol]
             }
 
             // delta is positive, there are two solutions
@@ -464,65 +468,21 @@ export class EquationSolver {
     #solveQuadratic_Output(a: Fraction, b: Fraction, delta: Fraction): Solution[] {
         // -b +/- sqrt(delta) / 2a
         // reduce the sqrt - extract pow.
+        const a2 = a.clone().multiply(2)
 
-        // Get the greatest square factor
-        const deltaFactor: number = Numeric
-            .dividers(delta.value)
-            .filter(x => Math.sqrt(x) % 1 === 0)
-            .map(x => Math.sqrt(x)).pop() ?? 1
+        const sol1 = new Solution()
+        sol1.fraction = b.clone().opposite().divide(a2.clone())
+        sol1.root.radical = delta.clone()
+        sol1.root.factor = new Fraction().one().divide(a2.clone())
+        sol1.exact = true
 
-        // Get the GCD of a, b, and the greatest delta factor.
-        const gcd = Numeric.gcd(2 * a.value, b.value, deltaFactor) * (a.isNegative() ? -1 : 1)
+        const sol2 = new Solution()
+        sol2.fraction = b.clone().opposite().divide(a2.clone())
+        sol2.root.radical = delta.clone()
+        sol2.root.factor = new Fraction().one().divide(a2.clone()).opposite()
+        sol2.exact = true
 
-        // Calculate the various values and transforming
-        const b2 = b.clone().divide(gcd).opposite()
-        const a2 = a.clone().divide(gcd).multiply(2)
-        const deltaGcd = Math.abs(deltaFactor / gcd)
-        const deltaTex = `${deltaFactor === 1 ? '' : deltaGcd.toFixed() + ' '}\\sqrt{ ${delta.clone().divide(deltaFactor ** 2).tex} }`
-        const deltaDisplay = `${deltaFactor === 1 ? '' : deltaGcd}sqrt(${delta.clone().divide(deltaFactor ** 2).display})`
-        // const deltaK1 = deltaFactor === 1 ? '-' : `-${deltaGcd} `
-        // const deltaK2 = deltaFactor === 1 ? '+' : `+${deltaGcd} `
-
-        function texOutput(a: string, b: string, sign: string, delta: string) {
-            // (B+D)/A
-            const B = b === '0' ? '' : b
-            const S = (sign === '-' || B !== '') ? ` ${sign} ` : ''
-
-            if (a === "1") {
-                return `${B}${S}${delta}`
-            }
-            return `\\frac{ ${S}${S}${delta} }{ ${a} }`
-        }
-
-        function displayOutput(a: string, b: string, sign: string, delta: string) {
-            // (B+D)/A
-            const B = b === '0' ? '' : b
-            const S = (sign === '-' || B !== '') ? sign : ''
-
-
-            if (a === "1") {
-                return `${B}${S}${delta}`
-            }
-            return `(${B}${S}${delta})/${a}`
-        }
-
-        const d = delta.value ** 0.5
-        const f1 = (-b.value - d) / (2 * a.value)
-        const f2 = (-b.value + d) / (2 * a.value)
-
-        return [
-            this.#makeApproximativeSolution(f1,
-                {
-                    tex: texOutput(a2.tex, b2.tex, '-', deltaTex),
-                    display: displayOutput(a2.display, b2.display, '-', deltaDisplay),
-                }
-            ),
-            this.#makeApproximativeSolution(f2,
-                {
-                    tex: texOutput(a2.tex, b2.tex, '+', deltaTex),
-                    display: displayOutput(a2.display, b2.display, '+', deltaDisplay),
-                }
-            )
-        ].sort((a, b) => a.value - b.value)
+        return [sol1, sol2]
+            .sort((a, b) => a.value - b.value)
     }
 }

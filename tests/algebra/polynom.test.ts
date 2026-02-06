@@ -50,11 +50,11 @@ describe('Polynom creation', () => {
         const P = new Polynom('ax')
         expect(P.display).toBe('ax')
     })
-    test('parse trivial polynom (degree 0)', ()=>{
+    test('parse trivial polynom (degree 0)', () => {
         const P = new Polynom('2.3')
         expect(P.display).toBe('23/10')
     })
-    test('parse trivial polynom (degree 0) with incomplete decimal value', ()=>{
+    test('parse trivial polynom (degree 0) with incomplete decimal value', () => {
         const P = new Polynom('2.')
         expect(P.display).toBe('2')
     })
@@ -322,6 +322,95 @@ describe('Table of signs of a Polynom', () => {
         expect(tos.roots).toHaveLength(3)
         expect(tos.roots.map(x => x.value)).toEqual(expect.arrayContaining([0, 2, -3]))
     })
+
+})
+
+describe('Polynom factorisation', () => {
+    test('factorize with constant', () => {
+        const P = new Polynom('3x+6')
+
+        expect(P.factors).toHaveLength(2)
+        expect(P.factors[0].display).toBe('3')
+        expect(P.factors[1].display).toBe('x+2')
+    })
+
+
+    test('factorize with not unit factors', () => {
+        const P = new Polynom('(2x+3)(3x-5)')
+
+        expect(P.factors).toHaveLength(2)
+        expect(P.factors[0].display).toBe('2x+3')
+        expect(P.factors[1].display).toBe('3x-5')
+    })
+
+    test('factorize with common monom', () => {
+        const P = new Polynom('3x^3+6x^2')
+
+        expect(P.factors).toHaveLength(2)
+        expect(P.factors[0].display).toBe('3x^(2)')
+        expect(P.factors[1].display).toBe('x+2')
+    })
+
+    test('factorize with negative first monomial', () => {
+        const P = new Polynom('-3x^3+6x^2')
+
+        expect(P.factors).toHaveLength(2)
+        expect(P.factors[0].display).toBe('-3x^(2)')
+        expect(P.factors[1].display).toBe('x-2')
+    })
+
+    test('factorize with multiple linear factors', () => {
+        const P = new Polynom('(x-2)(x+3)(x+7)')
+
+        expect(P.factors).toHaveLength(3)
+        expect(P.factors[0].display).toBe('x+7')
+        expect(P.factors[1].display).toBe('x+3')
+        expect(P.factors[2].display).toBe('x-2')
+    })
+
+    test('factorize with a not reduceable polynom', () => {
+        const P = new Polynom('x^2+4')
+
+        expect(P.factors).toHaveLength(1)
+        expect(P.factors[0].display).toBe('x^(2)+4')
+    })
+
+    test('factorize with multiple time the same', () => {
+        const P = new Polynom('(x+1)^2')
+
+        expect(P.factors).toHaveLength(2)
+        expect(P.factors[0].display).toBe('x+1')
+        expect(P.factors[1].display).toBe('x+1')
+    })
+
+    test('factorize with multiple time the same (more complex)', () => {
+        const P = new Polynom('(x+1)^2(x-2)^3')
+
+        expect(P.factors).toHaveLength(5)
+        expect(P.factors[0].display).toBe('x+1')
+        expect(P.factors[1].display).toBe('x+1')
+        expect(P.factors[2].display).toBe('x-2')
+        expect(P.factors[3].display).toBe('x-2')
+        expect(P.factors[4].display).toBe('x-2')
+    })
+
+    test('factorize with constant, linear and not factorable', () => {
+        const P = new Polynom('3x(x+2)^2(x^2+4)')
+
+        expect(P.factors).toHaveLength(4)
+        expect(P.factors[0].display).toBe('3x')
+        expect(P.factors[1].display).toBe('x+2')
+        expect(P.factors[2].display).toBe('x+2')
+        expect(P.factors[3].display).toBe('x^(2)+4')
+    })
+
+    test('factorize with roots', () => {
+        const P = new Polynom('x^2+4x-2')
+
+        expect(P.factors).toHaveLength(1)
+        expect(P.factors[0].display).toBe('x^(2)+4x-2')
+    })
+
 
 })
 describe.todo('Polynom generators')
