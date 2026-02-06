@@ -1,5 +1,7 @@
 import {describe, expect, it, test} from "vitest"
 import {Fraction, Monom, Polynom} from "../../src"
+import {rndPolynom} from "../../src/randomization/algebra/rndPolynom"
+import type {randomPolynomConfig} from "../../src/randomization/rndTypes"
 
 describe('Polynom creation', () => {
     test('create Polynom', () => {
@@ -413,4 +415,31 @@ describe('Polynom factorisation', () => {
 
 
 })
-describe.todo('Polynom generators')
+describe('Polynom generators', () => {
+    test('should create factorable polynom of degree 2', () => {
+        const config = {
+            factorable: true,
+            degree: 2,
+            unit: true
+        }
+
+        for (let i = 0; i < 10; i++) {
+            const P = rndPolynom(config)
+            expect(P.factors.length).toBe(2)
+        }
+    })
+
+    test('should create factorable polynom of degree 2 with a common constant', () => {
+        const config: randomPolynomConfig = {
+            factorable: true,
+            commonConstant: true,
+            degree: 2,
+            unit: false
+        }
+
+        for (let i = 0; i < 10; i++) {
+            const P = rndPolynom(config)
+            expect(P.factors.length).toBe(3)
+        }
+    })
+})

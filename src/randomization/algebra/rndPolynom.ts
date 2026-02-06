@@ -1,9 +1,9 @@
-import type { randomPolynomConfig } from "../rndTypes"
-import { rndMonom } from "./rndMonom"
-import { Polynom, Monom } from "../../algebra"
-import { randomInt } from "../rndHelpers"
+import type {randomPolynomConfig} from "../rndTypes"
+import {rndMonom} from "./rndMonom"
+import {Monom, Polynom} from "../../algebra"
+import {randomInt, randomIntSym} from "../rndHelpers"
 
-const factorableConfig = {
+const factorableConfig: randomPolynomConfig = {
     letters: 'x',
     degree: 2,
     fraction: false,
@@ -12,6 +12,7 @@ const factorableConfig = {
     factorable: false,
     allowNullMonom: true,
     numberOfMonoms: 0,
+    commonConstant: false,
     positive: true
 }
 
@@ -21,24 +22,25 @@ export function rndPolynom(userConfig?: randomPolynomConfig): Polynom {
         userConfig
     )
 
-    // TODO: Create a factorable polynom does not work !!!!!
+    if (config.factorable) return rndFactorablePolynom(factorableConfig)
 
     // Create the polynom
     const P = new Polynom().empty()
 
     let M: Monom
+    const targetDegree = config.degree ?? 2
 
-    for (let i = config.degree; i >= 0; i--) {
+    for (let i = targetDegree; i >= 0; i--) {
         // Create monom of corresponding degree.
         M = rndMonom({
             letters: config.letters,
             degree: i,
             fraction: config.fraction,
-            zero: (i === config.degree) ? false : config.allowNullMonom
+            zero: (i === targetDegree) ? false : config.allowNullMonom
         })
 
         // If degree is the greatest and unit is true, set the monom value to one.
-        if (config.unit && config.degree === i) {
+        if (config.unit && targetDegree === i) {
             M.coefficient.one()
         }
 
@@ -72,15 +74,27 @@ export function rndFactorablePolynom(userConfig?: randomPolynomConfig): Polynom 
         userConfig
     )
 
-    const P = new Polynom().one()
-
-    const _factorableConfig = { ...config }
+    const _factorableConfig = {...config}
     _factorableConfig.degree = 1
     _factorableConfig.factorable = false
 
-    for (let i = 0; i < config.degree; i++) {
-        P.multiply(rndPolynom(_factorableConfig))
+    const factors: Polynom[] = []
+    const targetDegree = config.degree ?? 2
+
+    while (factors.length < targetDegree) {
+        factors.push(rndPolynom(_factorableConfig))
     }
 
-    return P.reduce()
+    // Add a common constant if necessary.
+    if (userConfig?.commonConstant !== false) {
+        let k = randomIntSym(10, false)
+
+        if (userConfig?.commonConstant === true && (k === 1 || k === -1)) {
+            k *= randomInt(2, 5)
+        }
+
+        if (k !== 1 && k !== -1) factors.unshift(new Polynom(k))
+    }
+
+    return Polynom.xMultiply(...factors)
 }
