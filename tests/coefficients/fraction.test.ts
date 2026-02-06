@@ -258,15 +258,13 @@ describe("Fraction static functions", () => {
 describe("Fraction evaluation", () => {
     test('evaluate a Fraction', function () {
         const G = new Fraction('1/7') // 0.142857
-        expect(G.isApproximative()).to.be.false
-        expect(G.isExact()).to.be.true
+        expect(G.exact).toBe(true)
     })
 
     test('approximate a Fraction', function () {
         const F = new Fraction(Math.sqrt(2))
 
-        expect(F.isApproximative()).to.be.true
-        expect(F.isExact()).to.be.false
+        expect(F.exact).toBe(false)
     })
 })
 

@@ -94,7 +94,7 @@ export class EquationSolver {
     }
 
     #makeSolution(value: InputValue<Fraction>): Solution {
-        if (value instanceof Fraction && value.isApproximative()) {
+        if (value instanceof Fraction && !value.exact) {
             return this.#makeApproximativeSolution(value.value)
         }
 

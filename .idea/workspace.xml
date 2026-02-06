@@ -5,16 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Code cleanup, remove unused methods....">
-      <change afterPath="$PROJECT_DIR$/src/analyze/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependencies.svg" beforeDir="false" afterPath="$PROJECT_DIR$/dependencies.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pimath.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pimath.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/geometry/line.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/line.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/index.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/index.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/equationSolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equationSolver.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/coefficients/fraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/fraction.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/coefficients/fraction.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/coefficients/fraction.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +27,13 @@
     <persistenceIdMap>
       <entry key="_C:/websites/PiMath" value="2lv02LnbvB9DMnP4CMMjgXODMcH" />
     </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="chat-panel" value="GPT-5 mini" />
+      <entry key="agent-panel" value="GPT-5 mini" />
+      <entry key="edit-panel" value="GPT-5 mini" />
+    </selectedModels>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -69,7 +70,7 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\xampp\php\php.exe" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -351,6 +352,7 @@
     "npm.install.executor": "Run",
     "npm.test.executor": "Run",
     "rearrange.code.on.save": "true",
+    "run.code.analysis.last.selected.profile": "pProject Default",
     "settings.editor.selected.configurable": "editing.templates",
     "ts.external.directory.path": "C:\\websites\\PiMath\\node_modules\\typescript\\lib",
     "ts.rename.search.for.dynamic.occurrences": "true",
@@ -464,9 +466,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Vitest.Tests in tests\" />
         <item itemvalue="npm.build" />
         <item itemvalue="npm.dependency-cruise" />
-        <item itemvalue="Vitest.Tests in tests\" />
         <item itemvalue="Vitest.Circle operations.tangents through an external Point on a Circle" />
         <item itemvalue="Vitest.Equation Solver.should solve the cubic equation (one double solution)" />
       </list>
@@ -475,8 +477,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-66ae2896e9e0-JavaScript-PS-261.19799.22" />
-        <option value="bundled-php-predefined-a98d8de5180a-8800fe215d2b-com.jetbrains.php.sharedIndexes-PS-261.19799.22" />
+        <option value="bundled-js-predefined-d6986cc7102b-66ae2896e9e0-JavaScript-PS-261.20362.17" />
+        <option value="bundled-php-predefined-a98d8de5180a-8800fe215d2b-com.jetbrains.php.sharedIndexes-PS-261.20362.17" />
       </set>
     </attachedChunks>
   </component>
@@ -683,15 +685,8 @@
       <workItem from="1769771696824" duration="2195000" />
       <workItem from="1769975787669" duration="29077000" />
       <workItem from="1770125877958" duration="2592000" />
-      <workItem from="1770215238617" duration="11851000" />
-    </task>
-    <task id="LOCAL-00019" summary="bug: Random.Polynom wasn't reducing the polynom">
-      <option name="closed" value="true" />
-      <created>1727684891820</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1727684891820</updated>
+      <workItem from="1770215238617" duration="11882000" />
+      <workItem from="1770370783313" duration="2115000" />
     </task>
     <task id="LOCAL-00020" summary="Bug where ()^-1 was not rendering the -1.">
       <option name="closed" value="true" />
@@ -1077,7 +1072,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770312392960</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="Code cleanup, remove unused methods....">
+      <option name="closed" value="true" />
+      <created>1770312647672</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1770312647672</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
