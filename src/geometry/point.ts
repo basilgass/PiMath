@@ -80,6 +80,14 @@ export class Point extends TupleN {
         return new Root().from(2, distance2).reduce()
     }
 
+    public isEqual(pt: Point): boolean {
+        return this.x.value===pt.x.value && this.y.value===pt.y.value
+    }
+
+    public isEqualXY(x: InputValue<Fraction>, y: InputValue<Fraction>): boolean {
+        return this.isEqual(new Point(x, y))
+    }
+
     middleOf(V1: Point, V2: Point): this {
         if (V1.dimension !== V2.dimension) {
             throw new Error('Vectors must be the same dimension')
@@ -92,6 +100,4 @@ export class Point extends TupleN {
 
         return this
     }
-
-
 }

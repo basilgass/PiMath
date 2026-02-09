@@ -19,7 +19,7 @@ export class Triangle {
         'BC': new Line()
     }
     #radians = true
-    #remarquables: remarquableLines | null  = null
+    #remarquables: remarquableLines | null = null
 
     constructor(...values: unknown[]) {
 
@@ -271,46 +271,60 @@ export class Triangle {
     }
 
     #calculateBisectors = (pt: string): { internal: Line, external: Line } => {
-        // TODO: there should be an easier way to get the internal point (and the intersection).
         const tlines = this.lines
-        let d1, d2
+        let d1: Line = new Line()
+        let d2: Line = new Line()
+        let P: Point = new Point()
 
         if (pt === 'A') {
-            d1 = tlines.AB
-            d2 = tlines.AC
+            P = this.A.clone()
+            d1 = tlines.AB.clone()
+            d2 = tlines.AC.clone()
         } else if (pt === 'B') {
-            d1 = tlines.AB
-            d2 = tlines.BC
+            P = this.B.clone()
+            d1 = tlines.AB.clone()
+            d2 = tlines.BC.clone()
         } else if (pt === 'C') {
-            d1 = tlines.BC
-            d2 = tlines.AC
+            P = this.C.clone()
+            d1 = tlines.BC.clone()
+            d2 = tlines.AC.clone()
         }
 
         if (d1 === undefined || d2 === undefined) {
             throw new Error(`The point ${pt} does not exist`)
         }
 
-        const d1n = d1.n.simplify().norm
-        const d2n = d2.n.simplify().norm
-        const d1Equ = d1.getEquation().multiply(d2n)
-        const d2Equ = d2.getEquation().multiply(d1n)
+        const b1_d = d1.d.unit().add(d2.d.unit())
+        const b2_d = d1.d.unit().subtract(d2.d.unit())
 
-        const b1: Line = new Line(d1Equ.clone().subtract(d2Equ).simplify())
-        const b2: Line = new Line(d2Equ.clone().subtract(d1Equ).simplify())
+        return {
+            internal: new Line().fromPointAndDirection(P, b1_d),
+            external: new Line().fromPointAndDirection(P, b2_d),
+        }
 
-        // Must determine which bisectors is in the triangle
-        if (pt === 'A') {
-            return b1.hitSegment(this.B, this.C) ? {internal: b1, external: b2} : {internal: b2, external: b1}
-        }
-        if (pt === 'B') {
-            return b1.hitSegment(this.A, this.C) ? {internal: b1, external: b2} : {internal: b2, external: b1}
-        }
-        if (pt === 'C') {
-            return b1.hitSegment(this.B, this.A) ? {internal: b1, external: b2} : {internal: b2, external: b1}
-        }
+        //
+        //
+        // const d1n = d1.n.simplify().norm
+        // const d2n = d2.n.simplify().norm
+        // const d1Equ = d1.getEquation().multiply(d2n)
+        // const d2Equ = d2.getEquation().multiply(d1n)
+        //
+        // const b1: Line = new Line(d1Equ.clone().subtract(d2Equ).simplify())
+        // const b2: Line = new Line(d2Equ.clone().subtract(d1Equ).simplify())
+        //
+        // // Must determine which bisectors is in the triangle
+        // if (pt === 'A') {
+        //     return b1.hitSegment(this.B, this.C) ? {internal: b1, external: b2} : {internal: b2, external: b1}
+        // }
+        // if (pt === 'B') {
+        //     return b1.hitSegment(this.A, this.C) ? {internal: b1, external: b2} : {internal: b2, external: b1}
+        // }
+        // if (pt === 'C') {
+        //     return b1.hitSegment(this.B, this.A) ? {internal: b1, external: b2} : {internal: b2, external: b1}
+        // }
 
         // Default returns the first bisector
-        return {internal: b1, external: b2}
+        // return {internal: b1, external: b2}
     }
 
     #calculateRemarquableLines = (): remarquableLines => {
@@ -328,22 +342,22 @@ export class Triangle {
         }
 
         const mediators = {
-            'AB': new Line().fromPointAndNormal(middles.AB, new Vector(this.#A, this.#B).normal()),
-            'AC': new Line().fromPointAndNormal(middles.AC, new Vector(this.#A, this.#C).normal()),
-            'BC': new Line().fromPointAndNormal(middles.BC, new Vector(this.#B, this.#C).normal()),
+            'AB': new Line().fromPointAndNormal(middles.AB, new Vector(this.#A, this.#B)),
+            'AC': new Line().fromPointAndNormal(middles.AC, new Vector(this.#A, this.#C)),
+            'BC': new Line().fromPointAndNormal(middles.BC, new Vector(this.#B, this.#C)),
             'intersection': null
         }
 
         const heights = {
-            'A': new Line().fromPointAndNormal(this.#A, new Vector(this.#B, this.#C).normal()),
-            'B': new Line().fromPointAndNormal(this.#B, new Vector(this.#A, this.#C).normal()),
-            'C': new Line().fromPointAndNormal(this.#C, new Vector(this.#A, this.#B).normal()),
+            'A': new Line().fromPointAndNormal(this.#A, new Vector(this.#B, this.#C)),
+            'B': new Line().fromPointAndNormal(this.#B, new Vector(this.#A, this.#C)),
+            'C': new Line().fromPointAndNormal(this.#C, new Vector(this.#A, this.#B)),
             'intersection': null
         }
 
-        const bA = this.#calculateBisectors('A'),
-            bB = this.#calculateBisectors('B'),
-            bC = this.#calculateBisectors('C')
+        const bA = this.#calculateBisectors('A')
+        const bB = this.#calculateBisectors('B')
+        const bC = this.#calculateBisectors('C')
 
         const bisectors = {
             'A': bA.internal,
@@ -419,6 +433,7 @@ export class Triangle {
      * Generate the Line object for the three segments of the triangle
      */
     #updateTriangle(): this {
+        // TODO: updateTriangle should not be used, instead calculated "on the fly"
         // Create the lines
         this.#lines = {
             'AB': new Line(this.#A, this.#B),

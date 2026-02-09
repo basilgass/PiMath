@@ -1,13 +1,12 @@
 import {Line} from "./line"
 import {Vector} from "./vector"
 import {Numeric} from "../numeric"
-import {Fraction} from "../coefficients"
+import {Fraction, Root} from "../coefficients"
 import {Equation, Monom, Polynom} from "../algebra"
 import {type IPiMathObject} from "../pimath.interface"
 import {Point} from "./point"
-import {Root} from "../coefficients/root"
 import {Triangle} from "./triangle"
-import {Solution} from "../analyze/solution"
+import {Solution} from "../analyze"
 
 enum CIRCLE_DISPLAY {
     CANONICAL,
@@ -209,6 +208,7 @@ export class Circle
 
     fromPoints(A: Point, B: Point, C: Point): this {
         const T = new Triangle(A, B, C)
+
         if (!T.isValid || !T.remarquables) {
             this.#reset()
             return this
@@ -216,9 +216,11 @@ export class Circle
 
         const mAB = T.remarquables.mediators.AB.clone()
         const mAC = T.remarquables.mediators.AC.clone()
-        this.parse(mAB.intersection(mAC).point, A)
 
-        return this
+        return this.fromCenterPoint(
+            mAB.intersection(mAC).point,
+            A
+        )
     }
 
     fromString(str: string): this {
@@ -236,13 +238,15 @@ export class Circle
             // Allow positive / negative values
             // x-a = t  => x = a + t
             // x-a = -t => x = a - t
-
             for (const k of [[1, 1], [-1, 1], [-1, -1], [1, -1]]) {
-                points.push(new Point(
-                        this.center.x.clone().add(k[0] * triplet[0]),
-                        this.center.y.clone().add(k[1] * triplet[1])
-                    )
-                )
+                // check if the point is not already here.
+                const x = this.center.x.clone().add(k[0] * triplet[0])
+                const y = this.center.y.clone().add(k[1] * triplet[1])
+
+                if (points.every(pt => !pt.isEqualXY(x, y))) {
+                    points.push(new Point(x, y))
+                }
+
             }
         })
         return points
@@ -252,10 +256,18 @@ export class Circle
         return this.#equation?.test({x: P.x, y: P.y}) ?? false
     }
 
+    public isSame(circ: Circle): boolean {
+        return circ.center.isEqual(this.center)
+            && circ.radius.isEqual(this.radius)
+    }
+
+    /**
+     * Find the intersection points between the circle and a line. It can be 0, 1 or 2 points.
+     * The points are sorted depending on the direction vector of the line.
+     * @param L
+     */
     lineIntersection(L: Line): Point[] {
-        if (this.#equation === null) {
-            return []
-        }
+        if (this.#equation === null) return []
 
         const center = this.center
         const d = L.d
@@ -263,10 +275,12 @@ export class Circle
 
         // A = dx^2+dy^2
         const A = d.normSquare
+
         // B = 2 ( dx (x0-cx) + dy(y0-cy) )
         const B = OP.x.clone().subtract(center.x).multiply(d.x)
             .add(OP.y.clone().subtract(center.y).multiply(d.y))
             .multiply(2)
+
         // C = (x0-cx)^2 + (y0-cy)^2 - r^2
         const C = OP.x.clone().subtract(center.x).pow(2)
             .add(OP.y.clone().subtract(center.y).pow(2))
@@ -274,9 +288,7 @@ export class Circle
 
         const sol = Solution.fromQuadratic(A, B, C)
 
-        if (sol.length === 0) {
-            return []
-        }
+        if (sol.length === 0) return []
 
         // One intersection point
         if (sol.length === 1) { // means exact answer
@@ -287,22 +299,30 @@ export class Circle
         }
 
         // Two intersection points
-        if (sol[0].exact && sol[1].exact) {
-            // Exact solutions (delta is a perfect square)
-            const OX1 = OP.add(d.clone().multiplyByScalar(sol[0].fraction))
-            const OX2 = OP.add(d.clone().multiplyByScalar(sol[1].fraction))
-            return [
-                new Point(OX1.x, OX1.y),
-                new Point(OX2.x, OX2.y),
-            ]
-        }
+        const OX1 = sol[0].exact
+            ? OP.clone().add(d.clone().multiplyByScalar(sol[0].fraction))
+            : OP.clone().add(d.clone().multiplyByScalar(sol[0].value))
 
-        const OX1 = OP.add(d.clone().multiplyByScalar(sol[0].value))
-        const OX2 = OP.add(d.clone().multiplyByScalar(sol[1].value))
+        const OX2 = sol[1].exact
+            ? OP.clone().add(d.clone().multiplyByScalar(sol[1].fraction))
+            : OP.clone().add(d.clone().multiplyByScalar(sol[1].value))
+
+        // sort the points depending on the direction vector.
         return [
             new Point(OX1.x, OX1.y),
             new Point(OX2.x, OX2.y),
-        ]
+        ].sort((a, b) => {
+            // <0 => a before
+            if (d.x.isZero()) {
+                return d.y.isPositive()
+                    ? a.y.value - b.y.value
+                    : b.y.value - a.y.value
+            }
+
+            return d.x.isPositive()
+                ? a.x.value - b.x.value
+                : b.x.value - a.x.value
+        })
     }
 
     get radius(): Root {
@@ -433,5 +453,4 @@ export class Circle
 
         return [new Line(a, b, x1), new Line(a, b, x2)]
     }
-
 }

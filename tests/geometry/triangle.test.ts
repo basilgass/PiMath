@@ -1,6 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Triangle} from "../../src/geometry/triangle"
-import {Point} from "../../src/geometry/point"
+import {Point, Triangle} from "../../src"
 
 describe('triangle creation', () => {
     test('create triangle', () => {

@@ -19,17 +19,22 @@ enum LINE_DISPLAY {
     SYSTEM
 }
 
+enum LINE_DIRECTION {
+    LEFT_TO_RIGHT = 'lr',
+    RIGHT_TO_LEFT = 'rl'
+}
+
 export class Line implements IPiMathObject<Line> {
     static PARALLEL = LinePropriety.Parallel
     static PERPENDICULAR = LinePropriety.Perpendicular
     #OA: Vector
-
-    // A line is defined as the canonical form
     // ax + by + c = 0
     #a: Fraction
+
+    // A line is defined as the canonical form
     #b: Fraction
     #c: Fraction
-
+    #orientation: LINE_DIRECTION
     // output mode.
     #outputMode: LINE_DISPLAY = LINE_DISPLAY.CANONICAL
 
@@ -43,6 +48,7 @@ export class Line implements IPiMathObject<Line> {
         this.#b = new Fraction().zero()
         this.#c = new Fraction().zero()
         this.#OA = new Vector()
+        this.#orientation = LINE_DIRECTION.LEFT_TO_RIGHT
 
         if (values.length > 0) {
             this.parse(...values)
@@ -292,7 +298,16 @@ export class Line implements IPiMathObject<Line> {
     }
 
     get d(): Vector {
-        return new Vector(this.#b.clone(), this.#a.clone().opposite())
+        const director = new Vector(this.#b.clone(), this.#a.clone().opposite())
+
+        if (
+            this.#orientation === LINE_DIRECTION.LEFT_TO_RIGHT && director.x.isNegative() ||
+            this.#orientation === LINE_DIRECTION.RIGHT_TO_LEFT && director.x.isPositive()
+        ) {
+            director.opposite()
+        }
+
+        return director
     }
 
     set d(value: Vector) {
@@ -337,13 +352,16 @@ export class Line implements IPiMathObject<Line> {
         // }
     }
 
-    fromCoefficient  (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>): this  {
+    fromCoefficient(a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>): this {
         this.#a = new Fraction(a)
         this.#b = new Fraction(b)
         this.#c = new Fraction(c)
 
         // make sure the coefficients are relative...
-        const lcm = Numeric.lcm(this.#a.denominator, this.#b.denominator, this.#c.denominator)
+        const lcm = [this.#a, this.#b, this.#c].every(k => k.exact)
+            ? Numeric.lcm(this.#a.denominator, this.#b.denominator, this.#c.denominator)
+            : 1
+
         if (lcm > 1) {
             this.#a.multiply(lcm).reduce()
             this.#b.multiply(lcm).reduce()
@@ -377,7 +395,7 @@ export class Line implements IPiMathObject<Line> {
         return this
     }
 
-    fromEquation (equ: Equation): this  {
+    fromEquation(equ: Equation): this {
         // Reorder the equation
         equ.reorder(true)
 
@@ -409,18 +427,22 @@ export class Line implements IPiMathObject<Line> {
     }
 
     fromParallel(parallel: Line, point: Point): this {
-        return  this.fromPointAndNormal(point, parallel.n)
+        return this.fromPointAndNormal(point, parallel.n)
     }
 
     fromPerpendicular(perpendicular: Line, point: Point): this {
         return this.fromPointAndNormal(point, perpendicular.d)
     }
 
-    fromPointAndDirection (P: Point | Vector, d: Vector): this  {
+    fromPointAndDirection(P: Point | Vector, d: Vector): this {
+        this.#orientation = d.x.isPositive()
+            ? LINE_DIRECTION.LEFT_TO_RIGHT
+            : LINE_DIRECTION.RIGHT_TO_LEFT
+
         return this.fromPointAndNormal(P, d.clone().normal())
     }
 
-    fromPointAndLine (P: Vector, L: Line, orientation: LinePropriety = LinePropriety.Parallel): this  {
+    fromPointAndLine(P: Vector, L: Line, orientation: LinePropriety = LinePropriety.Parallel): this {
 
         if (orientation === LinePropriety.Perpendicular) {
             return this.fromPointAndNormal(P, L.director)
@@ -430,6 +452,11 @@ export class Line implements IPiMathObject<Line> {
     }
 
     fromPointAndNormal = (P: Point | Vector, n: Vector): this => {
+        if (n.isZero()) {
+            console.log('Normal vector is null.')
+            return this
+        }
+
         this.fromCoefficient(
             n.x,
             n.y,
@@ -544,7 +571,7 @@ export class Line implements IPiMathObject<Line> {
     }
 
     isHorizontal(): boolean {
-        return this.slope.value===0
+        return this.slope.value === 0
     }
 
     // ------------------------------------------
