@@ -77,10 +77,8 @@ describe('Linear System operations', () => {
         expect(LS3.equations[0].display).to.be.equal('2x+2y=6')
 
     })
-    test.todo('multiply two Linear Systems')
-    test.todo('divide by Linear System')
-    test.todo('raise Linear System by integer')
 })
+
 // describe.todo('Linear System comparisons', () => {
 //     test.todo('same Linear System')
 //     test.todo('equal Linear System')
@@ -92,6 +90,7 @@ describe('Linear System operations', () => {
 //     test.todo('evaluate Linear System')
 // })
 
+
 describe('Linear System algebra', () => {
     test('has variable', () => {
         const LS = new LinearSystem(
@@ -99,9 +98,9 @@ describe('Linear System algebra', () => {
             '7y-24=3x'
         )
 
-        expect(LS.hasVariable('x')).to.be.true
-        expect(LS.hasVariable('y')).to.be.true
-        expect(LS.hasVariable('z')).to.be.false
+        expect(LS.hasVariable('x')).toBe(true)
+        expect(LS.hasVariable('y')).toBe(true)
+        expect(LS.hasVariable('z')).toBe(false)
     })
 
     test('degree of Linear System', () => {

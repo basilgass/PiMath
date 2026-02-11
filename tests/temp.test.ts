@@ -1,6 +1,4 @@
-import {describe, test} from "vitest"
-import {determinantFromVectors, Matrix, Point, PolyFactor, Random, Vector} from "../src"
-
+/**
 describe.skip('Debug tests', ()=>{
     test('polynom randomisation', ()=>{
         let question="", answer=""
@@ -110,3 +108,4 @@ describe.skip('Debug tests', ()=>{
         console.log(X.toFixed(2).display)
     })
 })
+ */

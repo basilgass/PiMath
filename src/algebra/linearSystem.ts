@@ -280,8 +280,6 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
             output.push(LS.tex)
         }
 
-        console.log('\\begin{aligned}' + output.join('\\\\[2em]') + '\\end{aligned}')
-
         return []
     }
 

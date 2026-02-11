@@ -1,7 +1,6 @@
 import {createMemoryHistory, createRouter} from 'vue-router'
 import {routePages} from "./routePages"
 
-console.log(routePages)
 const routes = [
     ...routePages,
     { path: '/', component: ()=>import('./Pages/index.vue') },

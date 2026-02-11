@@ -163,7 +163,6 @@ describe("Equation Solver", () => {
         const equation = new Equation("x^5(x^2+x-1)^3=0")
         const solutions = new EquationSolver(equation).solve()
 
-        console.log('SOLUTIONS', solutions.map(x=>`${x.display} = ${x.value}`))
         expect(solutions).toHaveLength(3)
         expect(solutions[0].exact).toBeFalsy()
         expect(solutions[0].value).toBeCloseTo(-1.618, 3)
@@ -176,6 +175,9 @@ describe("Equation Solver", () => {
     test('should solve complex equation', ()=>{
         const equation = new Equation('x^5-5x^4+3x^2+3=0')
         const solutions = new EquationSolver(equation).solve()
-        console.log(solutions.map(sol=>sol.value))
+
+        expect(solutions[0].value).toBe(-1)
+        expect(solutions[1].value).toBeCloseTo(1.166, 3)
+        expect(solutions[2].value).toBeCloseTo(4.868, 3)
     })
 })

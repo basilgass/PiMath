@@ -4,9 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Update triangle to be reactive on T.A.x change.">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Update triangle to be reactive on T.A.x change.&#10;&#10;reset() calculate autoamtically the validity of the triangle depending on points.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/triangle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo/router.ts" beforeDir="false" afterPath="$PROJECT_DIR$/demo/router.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/linearSystem.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/linearSystem.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/logicalset.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/logicalset.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/equation.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/equation.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/equationSolver.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/logicalSet.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/logicalSet.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/matrix.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/matrix.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/temp.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/temp.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,6 +151,7 @@
     "Vitest.Geometry Line.should output nice Tex.executor": "Run",
     "Vitest.Geometry Matrix.executor": "Run",
     "Vitest.Geometry Matrix.multi.executor": "Run",
+    "Vitest.Geometry Matrix.multiply two matrix.executor": "Run",
     "Vitest.Geometry Matrix.should create a matrix from 2 vectors.executor": "Run",
     "Vitest.Geometry Matrix.should get the caracteristic polynom from a 3x3 matrix.executor": "Run",
     "Vitest.Geometry Matrix.should get the cofactor.executor": "Run",
@@ -194,6 +205,7 @@
     "Vitest.Matrix operations.multiply matrix by scalar.executor": "Run",
     "Vitest.Matrix operations.multiply two Matrix must be compatible.executor": "Run",
     "Vitest.Matrix operations.multiply two Matrix.executor": "Run",
+    "Vitest.Matrix operations.raise Matrix by integer.executor": "Run",
     "Vitest.Matrix operations.subtract two Matrix.executor": "Run",
     "Vitest.Matrix output.output as ASCII.executor": "Run",
     "Vitest.Matrix output.output as LaTeX.executor": "Run",
@@ -311,6 +323,7 @@
     "Vitest.Table of signs of a Polynom.first degree.executor": "Run",
     "Vitest.Table of signs.executor": "Run",
     "Vitest.Table of signs.of a Polynom as a constant.executor": "Run",
+    "Vitest.Tests in algebra\\.executor": "Run",
     "Vitest.Tests in geometry\\.executor": "Run",
     "Vitest.Tests in tests\\.executor": "Run",
     "Vitest.Vector 3D comparisons.colinear Vector 3D.executor": "Run",
@@ -445,7 +458,7 @@
       <command value="npm run dev" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.temp.test.ts">
+  <component name="RunManager" selected="Vitest.matrix.test.ts">
     <configuration name="All Tests" type="JavaScriptTestRunnerVitest" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -454,82 +467,87 @@
       <scope-kind value="ALL" />
       <method v="2" />
     </configuration>
-    <configuration name="Polynom generators.should create factorable polynom of degree 2 with a common constant" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Geometry Matrix.multiply two matrix" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/polynom.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/matrix.test.ts" />
       <test-names>
-        <test-name value="Polynom generators" />
-        <test-name value="should create factorable polynom of degree 2 with a common constant" />
+        <test-name value="Geometry Matrix" />
+        <test-name value="multiply two matrix" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Tests in tests\" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Geometry Matrix.should get the cofactor" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
-      <scope-kind value="DIRECTORY" />
-      <test-directory value="$PROJECT_DIR$/tests" />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/matrix.test.ts" />
+      <test-names>
+        <test-name value="Geometry Matrix" />
+        <test-name value="should get the cofactor" />
+      </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="temp.test.ts" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Geometry Matrix.should get the determinant of a 3x3 matrix" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/matrix.test.ts" />
+      <test-names>
+        <test-name value="Geometry Matrix" />
+        <test-name value="should get the determinant of a 3x3 matrix" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Matrix operations.raise Matrix by integer" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/matrix.test.ts" />
+      <test-names>
+        <test-name value="Matrix operations" />
+        <test-name value="raise Matrix by integer" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="matrix.test.ts" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST_FILE" />
-      <test-file value="$PROJECT_DIR$/tests/temp.test.ts" />
-      <method v="2" />
-    </configuration>
-    <configuration name="triangle remarquable lines" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="SUITE" />
-      <test-file value="$PROJECT_DIR$/tests/geometry/triangle.test.ts" />
-      <test-names>
-        <test-name value="triangle remarquable lines" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="triangle remarquable lines.get bissectors" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/geometry/triangle.test.ts" />
-      <test-names>
-        <test-name value="triangle remarquable lines" />
-        <test-name value="get bissectors" />
-      </test-names>
+      <test-file value="$PROJECT_DIR$/tests/algebra/matrix.test.ts" />
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Vitest.All Tests" />
-      <item itemvalue="Vitest.Polynom generators.should create factorable polynom of degree 2 with a common constant" />
-      <item itemvalue="Vitest.Tests in tests\" />
-      <item itemvalue="Vitest.temp.test.ts" />
-      <item itemvalue="Vitest.triangle remarquable lines" />
-      <item itemvalue="Vitest.triangle remarquable lines.get bissectors" />
+      <item itemvalue="Vitest.Geometry Matrix.multiply two matrix" />
+      <item itemvalue="Vitest.Geometry Matrix.should get the cofactor" />
+      <item itemvalue="Vitest.Geometry Matrix.should get the determinant of a 3x3 matrix" />
+      <item itemvalue="Vitest.Matrix operations.raise Matrix by integer" />
+      <item itemvalue="Vitest.matrix.test.ts" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Vitest.temp.test.ts" />
-        <item itemvalue="Vitest.Tests in tests\" />
-        <item itemvalue="Vitest.Polynom generators.should create factorable polynom of degree 2 with a common constant" />
-        <item itemvalue="Vitest.triangle remarquable lines" />
-        <item itemvalue="Vitest.triangle remarquable lines.get bissectors" />
+        <item itemvalue="Vitest.matrix.test.ts" />
+        <item itemvalue="Vitest.Matrix operations.raise Matrix by integer" />
+        <item itemvalue="Vitest.Geometry Matrix.multiply two matrix" />
+        <item itemvalue="Vitest.Geometry Matrix.should get the cofactor" />
+        <item itemvalue="Vitest.Geometry Matrix.should get the determinant of a 3x3 matrix" />
       </list>
     </recent_temporary>
   </component>
@@ -753,15 +771,7 @@
       <workItem from="1770655195411" duration="1275000" />
       <workItem from="1770701270776" duration="3194000" />
       <workItem from="1770734084348" duration="3513000" />
-      <workItem from="1770797146526" duration="2290000" />
-    </task>
-    <task id="LOCAL-00027" summary="polyFactor.ts: added splitFactors(): {numerator: PolyFactor, denominator: PolyFactor}">
-      <option name="closed" value="true" />
-      <created>1727940378116</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1727940378116</updated>
+      <workItem from="1770797146526" duration="3573000" />
     </task>
     <task id="LOCAL-00028" summary="Tested and build">
       <option name="closed" value="true" />
@@ -1147,7 +1157,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770799255518</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="Update triangle to be reactive on T.A.x change.&#10;&#10;reset() calculate autoamtically the validity of the triangle depending on points.">
+      <option name="closed" value="true" />
+      <created>1770799451036</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1770799451036</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1179,7 +1197,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Rename fromPolynom to fromEquation in Sphere3 class; update related test case" />
     <MESSAGE value="Build OK" />
     <MESSAGE value="Solved a bug in TableOfSigns that was setting a defence in any factor if there is one with a defence." />
     <MESSAGE value="Removes files from package.json&#10;Package.json update" />
@@ -1204,7 +1221,8 @@
     <MESSAGE value="Updated circle.ts and circle.test.ts&#10;Updated triangle.ts to work properly. Next step: tests for triangle" />
     <MESSAGE value="Finished the tests for the triangle.ts" />
     <MESSAGE value="Update triangle to be reactive on T.A.x change." />
-    <option name="LAST_COMMIT_MESSAGE" value="Update triangle to be reactive on T.A.x change." />
+    <MESSAGE value="Update triangle to be reactive on T.A.x change.&#10;&#10;reset() calculate autoamtically the validity of the triangle depending on points." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update triangle to be reactive on T.A.x change.&#10;&#10;reset() calculate autoamtically the validity of the triangle depending on points." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

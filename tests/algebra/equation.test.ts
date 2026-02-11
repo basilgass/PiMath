@@ -1,7 +1,7 @@
-import { describe, expect, it, test } from "vitest"
-import { Equation } from "../../src/algebra/equation"
-import { Polynom } from "../../src/algebra/polynom"
-import { Random } from "../../src/randomization/random"
+import {describe, expect, it, test} from "vitest"
+import {Equation} from "../../src/algebra/equation"
+import {Polynom} from "../../src/algebra/polynom"
+import {Random} from "../../src/randomization/random"
 
 describe('Equation creation', () => {
     test('create Equation', () => {
@@ -103,25 +103,25 @@ describe('Equation operations', () => {
 describe('Equation comparisons', () => {
     test('equal Equation', () => {
         const E = new Equation('3x+5=0')
-        expect(E.isEqualTo(E)).to.be.true
+        expect(E.isEqualTo(E)).toBe(true)
 
         const F = new Equation('3x=-5')
-        expect(E.isEqualTo(F)).to.be.true
-        expect(F.isEqualTo(E)).to.be.true
+        expect(E.isEqualTo(F)).toBe(true)
+        expect(F.isEqualTo(E)).toBe(true)
 
         const G = new Equation('6x+10=0')
-        expect(E.isEqualTo(G)).to.be.false
+        expect(E.isEqualTo(G)).toBe(false)
     })
     test('same Equation', () => {
         const E = new Equation('3x+5=0')
-        expect(E.isLinearTo(E)).to.be.true
+        expect(E.isLinearTo(E)).toBe(true)
 
         const F = new Equation('3x=-5')
-        expect(E.isLinearTo(F)).to.be.true
-        expect(F.isLinearTo(E)).to.be.true
+        expect(E.isLinearTo(F)).toBe(true)
+        expect(F.isLinearTo(E)).toBe(true)
 
         const G = new Equation('6x+10=0')
-        expect(E.isLinearTo(G)).to.be.true
+        expect(E.isLinearTo(G)).toBe(true)
     })
 })
 
@@ -249,10 +249,10 @@ describe.skip('Equations tests', () => {
             Q = new Equation('5-3x=2y'),
             R = new Equation('6x+4y-10=0')
 
-        expect(P.isEqualTo(P)).to.be.true
-        expect(P.isEqualTo(Q)).to.be.true
-        expect(P.isEqualTo(R)).to.be.false
-        expect(P.isLinearTo(Q)).to.be.true
-        expect(P.isLinearTo(R)).to.be.true
+        expect(P.isEqualTo(P)).toBe(true)
+        expect(P.isEqualTo(Q)).toBe(true)
+        expect(P.isEqualTo(R)).toBe(false)
+        expect(P.isLinearTo(Q)).toBe(true)
+        expect(P.isLinearTo(R)).toBe(true)
     })
 })

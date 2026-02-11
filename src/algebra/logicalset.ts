@@ -33,58 +33,6 @@ export class LogicalSet {
         return this
     }
 
-    evaluate(values: Record<string, boolean>): boolean {
-        // Add missing key(s) and set them as false by default.
-        this.variables.forEach(key => {
-            if (!Object.hasOwn(values, key)) {
-                values[key] = false
-            }
-        })
-
-        const stack: boolean[] = []
-        for (const token of this.#rpn) {
-            console.log(token)
-            if (token.tokenType === 'variable') {
-                stack.push(values[token.token])
-            } else if (token.tokenType === 'operation') {
-                if (token.token === '!') {
-                    // need only one item from stack
-                    if (stack.length >= 1) {
-                        const a = stack.pop()
-                        stack.push(!a)
-                    } else {
-                        return false
-                    }
-                } else {
-                    // All other operations needs two items from stack
-                    const a = stack.pop()
-                    const b = stack.pop()
-                    if (a !== undefined && b !== undefined) {
-                        switch (token.token) {
-                            case "&":
-                                stack.push(a && b)
-                                break
-                            case "|":
-                                stack.push(a || b)
-                                break
-                            case "-":
-                                return false
-                        }
-
-                    } else {
-                        return false
-                    }
-                }
-            }
-        }
-
-        return stack.length === 1 && stack[0]
-    }
-
-    get rpn(): { token: string, tokenType: string }[] {
-        return this.#rpn
-    }
-
     get tex(): string {
         const varStack: { token: string, tokenType: string }[] = []
 
@@ -155,6 +103,57 @@ export class LogicalSet {
         }
 
         return varStack[0].token
+    }
+
+    evaluate(values: Record<string, boolean>): boolean {
+        // Add missing key(s) and set them as false by default.
+        this.variables.forEach(key => {
+            if (!Object.hasOwn(values, key)) {
+                values[key] = false
+            }
+        })
+
+        const stack: boolean[] = []
+        for (const token of this.#rpn) {
+            if (token.tokenType === 'variable') {
+                stack.push(values[token.token])
+            } else if (token.tokenType === 'operation') {
+                if (token.token === '!') {
+                    // need only one item from stack
+                    if (stack.length >= 1) {
+                        const a = stack.pop()
+                        stack.push(!a)
+                    } else {
+                        return false
+                    }
+                } else {
+                    // All other operations needs two items from stack
+                    const a = stack.pop()
+                    const b = stack.pop()
+                    if (a !== undefined && b !== undefined) {
+                        switch (token.token) {
+                            case "&":
+                                stack.push(a && b)
+                                break
+                            case "|":
+                                stack.push(a || b)
+                                break
+                            case "-":
+                                return false
+                        }
+
+                    } else {
+                        return false
+                    }
+                }
+            }
+        }
+
+        return stack.length === 1 && stack[0]
+    }
+
+    get rpn(): { token: string, tokenType: string }[] {
+        return this.#rpn
     }
 
     get variables(): string[] {

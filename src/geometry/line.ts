@@ -111,8 +111,8 @@ export class Line implements IPiMathObject<Line> {
             )
         }
 
-        console.log('Something wrong happened while creating the line')
-        console.log(values)
+        console.warn('Something wrong happened while creating the line')
+        console.warn(values)
         return this
     }
 
@@ -452,7 +452,7 @@ export class Line implements IPiMathObject<Line> {
 
     fromPointAndNormal = (P: Point | Vector, n: Vector): this => {
         if (n.isZero()) {
-            console.log('Normal vector is null.')
+            console.warn('Normal vector is null.')
             return this
         }
 

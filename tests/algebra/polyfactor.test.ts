@@ -80,16 +80,7 @@ describe("PolyFactor creation", () => {
         expect(PF.isOne()).toBeTruthy()
     })
 
-    test.skip('should parse a string', () => {
-        // const PF = new PolyFactor(
-        //     new Factor('3x+2', '1/2'),
-        //     new Factor('4x-3', '-2/3')
-        // )
-        //
-        // // (3x+2)^(1/2)(4x-3)^(-2/3)
-        // const PF2 = new PolyFactor(PF.display)
-        // expect(PF.isEqual(PF2)).toBeTruthy()
-    })
+    test.todo('should parse a string')
 })
 
 describe("PolyFactor: output functions", () => {
@@ -601,21 +592,21 @@ describe('PolyFactor: Table of signs', ()=>{
     })
 })
 
-describe.skip('PolyFactor temporary tests', ()=>{
-    test('test 1', ()=>{
-        const PF = new PolyFactor().fromPolynom('(x-3)(x+2)', '(2x-4)')
-
-        console.log(PF.display)
-        const PFF = PF.factorize()
-
-        console.log(PFF.asRoot.display)
-    })
-    test('test 2', ()=>{
-       const PF = new PolyFactor().fromPolynom('18(x+6)(x+3)','27x+243')
-        const PFF = PF.factorize()
-        expect(PFF.asRoot.display).toBe('((18)(x+3)(x+6))/((27)(x+9))')
-
-        PFF.reduce()
-        expect(PFF.asRoot.display).toBe('((2)(x+3)(x+6))/((3)(x+9))')
-    })
-})
+// describe.skip('PolyFactor temporary tests', ()=>{
+//     test('test 1', ()=>{
+//         const PF = new PolyFactor().fromPolynom('(x-3)(x+2)', '(2x-4)')
+//
+//         console.log(PF.display)
+//         const PFF = PF.factorize()
+//
+//         console.log(PFF.asRoot.display)
+//     })
+//     test('test 2', ()=>{
+//        const PF = new PolyFactor().fromPolynom('18(x+6)(x+3)','27x+243')
+//         const PFF = PF.factorize()
+//         expect(PFF.asRoot.display).toBe('((18)(x+3)(x+6))/((27)(x+9))')
+//
+//         PFF.reduce()
+//         expect(PFF.asRoot.display).toBe('((2)(x+3)(x+6))/((3)(x+9))')
+//     })
+// })

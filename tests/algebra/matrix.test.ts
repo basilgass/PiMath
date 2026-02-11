@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Fraction, Matrix, Vector} from "../../src"
+import {Matrix, Vector} from "../../src"
 
 describe('Matrix creation', () => {
     test('create Matrix', () => {
@@ -107,7 +107,6 @@ describe('Geometry Matrix', function () {
 
         expect(M).toBeDefined()
         expect(M.values.length).to.be.equal(2)
-        console.log(M.values.map(x => x.map(y => y.display)))
         expect(M.rows[1][1].display).to.be.equal('4')
 
 
@@ -140,7 +139,7 @@ describe('Geometry Matrix', function () {
         const v3 = new Vector(5, 6, 3)
         const M = new Matrix().fromVectors(v1, v2, v3)
 
-        console.log(M.display)
+        expect(M.determinant().value).toBe(-12)
     })
 
     test('should get the determinant of a 4x4 matrix', function () {
@@ -156,7 +155,8 @@ describe('Geometry Matrix', function () {
 
         const C = M.cofactor(0, 1)
 
-        console.log(C.display)
+
+        expect(C.value).toBe(6)
     })
 
     test('should get the determinant 2x2', () => {
@@ -192,41 +192,10 @@ describe('Geometry Matrix', function () {
         expect(M.characteristic_polynom('x').display).toBe('-x^(3)+6x^(2)-22x+32')
     })
 
-    test('test', () => {
-        const A = new Matrix().fromString('((-1,3),(5,1))')
-        const B = new Matrix().fromString('((-1,3),(1,5))')
-        const C = new Matrix().fromString('((5,-3),(2,-1))')
-
-        console.log(A.multiply(B).display)
-        A.setValue(1, 1, -41)
-        console.log(A.display)
-        console.log(A.multiply(C).display)
-    })
-
-    test('multi', () => {
-        const A = new Matrix().fromString('((1,2,0),(3,4,5))')
-        const B = new Matrix().fromString('((1,2,1,0),(3,2,0,1),(1,0,2,2))')
-
-        console.log(A.display)
-        console.log(B.display)
-        const C = A.clone().multiply(B)
-        console.log(C.display)
-    })
-
-    test('t2', () => {
-        const A = new Matrix().fromString('((2,3,-1),(-1,4,2),(3,-2,5))')
-        const B = new Matrix().fromString('((24,-13,10),(11,13,-3),(-10,13,11))')
-
-        console.log(B.display)
-        const I = A.clone().multiply(B)
-        console.log(I.display)
-    })
-
 })
 
 
 describe('Matrix operations', () => {
-    test.todo('reduce Matrix')
     test('add two Matrix must have same dimnesion', () => {
         const A = new Matrix(2, 3)
         const B = new Matrix(3, 2)
@@ -277,8 +246,13 @@ describe('Matrix operations', () => {
 
         expect(A.display).toBe('((3,6),(9,12))')
     })
-    test.todo('divide by Matrix')
-    test.todo('raise Matrix by integer')
+
+    test('raise Matrix by integer',()=>{
+        const A = new Matrix().fromString('((1,2),(3,4)')
+        A.pow(3)
+
+        expect(A.display).toBe('((37,54),(81,118))')
+    })
 
     test('invert a matrix', () => {
         const A = new Matrix().fromString('((1,2),(3,4)')
@@ -287,127 +261,3 @@ describe('Matrix operations', () => {
         expect(A.display).toBe('((-2,1),(3/2,-1/2))')
     })
 })
-
-describe('temp', () => {
-    test('pow', () => {
-        const A = new Matrix().fromValues([
-            [0.8, 0.2],
-            [0.4, 0.6]
-        ])
-
-        const values = A.pow(2).flat().map(x => x.value)
-        console.log(values)
-    })
-    test('markov', () => {
-        const A = new Matrix().fromValues([
-            [0.3, 0.7],
-            [0.6, 0.4]
-        ])
-        const B = new Matrix().fromValues([
-            [150, 370]
-        ])
-
-        B.multiply(A)
-        console.log(B.display)
-    })
-    test('t1', () => {
-        const A = new Matrix().fromValues([
-            [3, 2],
-            [5, 7]
-        ])
-        const B = new Matrix().fromValues([
-            [9, 3],
-            [1, 0]
-        ])
-
-        console.log(A.determinant().display)
-
-        const X = A.clone().add(B.clone().multiply(2)).multiply(new Fraction(1, 3))
-        console.log(X.display)
-
-        const C = new Matrix().fromValues([
-            [3, 5, -1],
-            [0, 0, 2],
-            [5, 1, 4]
-        ])
-
-        console.log(C.determinant().display)
-
-        const AB = A.clone().multiply(B)
-        console.log(AB.display)
-    })
-
-    test('test 0', ()=>{
-        const A = new Matrix().fromValues([
-            [3,-1,4],
-            [2, 1, -1]
-        ])
-        const B = new Matrix().fromValues([
-            [1,2],[3,4]
-        ])
-
-        const C = new Matrix().fromValues([
-            [2],[-4],[6]
-        ])
-
-        console.log(A.clone().multiply(C).display)
-
-        console.log(B.clone().multiply(B).display)
-    })
-
-    test('la jungle', () => {
-        const A = new Matrix().fromValues([
-            [0.6,0.4],
-            [0.3,0.7]
-        ])
-        const P = new Matrix().fromValues([
-            [250, 300]
-        ])
-
-        console.log(A.clone().pow(6).toFixed(6).display)
-
-        console.log(P.clone().multiply(A.clone()).toFixed(2).display )
-
-        console.log(P.clone().multiply(A.clone().pow(2)).toFixed(2).display )
-        console.log(A.clone().pow(2).toFixed(3).display)
-
-        console.log(A.pow(3).toFixed(5).display)
-        console.log(P.multiply(A).toFixed(3).display)
-
-        // const A = new Matrix().fromValues([
-        //     [0.4, 0.3, 0.3],
-        //     [0.2, 0.5, 0.3],
-        //     [0.5, 0.2, 0.3]
-        // ])
-        // A.pow(2)
-
-        // const V = new Matrix().fromValues([
-        //     [0.3, 0.4, 0.3]
-        // ])
-
-        // V.multiply(A)
-        // console.log(V.toFixed(3).display)
-    })
-
-    test('TE', ()=>{
-        const A = new Matrix().fromValues([
-            [0.8,0.3,0.1],
-            [0.2,0.5, 0.3],
-            [0.1, 0.4, 0.5]
-        ])
-
-        console.log(A.pow(3).toFixed(3).display)
-    })
-})
-/*describe.skip('Matrix comparisons', () => {
-    // test.todo('same Matrix')
-    // test.todo('equal Matrix')
-    // test.todo('is one Matrix')
-    // test.todo('is zero Matrix')
-})
-describe.skip('Matrix static functions')
-describe.skip('Matrix evaluation', () => {
-    // test.todo('evaluate Matrix')
-})
-describe.skip('Matrix generators')
-*/
