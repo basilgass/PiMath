@@ -154,9 +154,9 @@ export interface remarquableLines {
         'intersection': Point | null
     } | null,
     'mediators': {
-        'AB': Line,
-        'AC': Line,
-        'BC': Line,
+        'a': Line,
+        'b': Line,
+        'c': Line,
         'intersection': Point | null
     } | null
 }

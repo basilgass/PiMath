@@ -9,10 +9,10 @@ import type {InputValue} from "../pimath.interface"
 
 export abstract class TupleN {
     #array: Fraction[] = []
-    #onChange?: ()=>void
+    #onChange?: () => void
 
     constructor(...values: InputValue<Fraction>[]) {
-        this.#array = values.map(x=>new Fraction(x))
+        this.#array = values.map(x => new Fraction(x))
     };
 
     public abstract clone(): void
@@ -37,8 +37,6 @@ export abstract class TupleN {
         return this.array.length
     }
 
-
-
     public fromString(value: string): this {
         // Remove the first letter if it's a parenthesis.
         if (value.startsWith('(')) {
@@ -62,6 +60,14 @@ export abstract class TupleN {
         // Validate the fraction values.
         this.#array = components.map(x => new Fraction(x))
         return this
+    }
+
+    get onChange(): undefined | (() => void) {
+        return this.#onChange
+    }
+
+    set onChange(value: undefined | (() => void)) {
+        this.#onChange = value
     }
 
     setDimension(value = 2): this {

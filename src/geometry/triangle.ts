@@ -44,7 +44,8 @@ export class Triangle {
             // - Three lines as text.
             if (values.every((x: unknown) => typeof x === 'string')) {
                 // Three lines as text.
-                return this.fromLines(...values)
+                const [a, b, c] = values
+                return this.fromLines(a, b, c)
             }
 
             if (values.every((x: unknown) => x instanceof Line)) {
@@ -98,8 +99,9 @@ export class Triangle {
     }
 
     set A(value: Point) {
-        this.reset(false)
+        this.reset()
         this.#A = value
+        this.#A.onChange = () => this.reset()
     }
 
     get AB(): Vector {
@@ -115,8 +117,9 @@ export class Triangle {
     }
 
     set B(value: Point) {
-        this.reset(false)
+        this.reset()
         this.#B = value
+        this.#B.onChange = () => this.reset()
     }
 
     get BA(): Vector {
@@ -132,8 +135,9 @@ export class Triangle {
     }
 
     set C(value: Point) {
-        this.reset(false)
+        this.reset()
         this.#C = value
+        this.#C.onChange = () => this.reset()
     }
 
     get CA(): Vector {
@@ -241,7 +245,7 @@ export class Triangle {
 
     getBisectors(internal = true): { 'A': Line, 'B': Line, 'C': Line, 'intersection': Point | null } {
 
-        if(!this.#remarquables.bisectors) {
+        if (!this.#remarquables.bisectors) {
             const A = this.#calculateBisectors('A', internal)
             const B = this.#calculateBisectors('B', internal)
             const C = this.#calculateBisectors('C', internal)
@@ -255,7 +259,7 @@ export class Triangle {
 
     getHeights(): { 'A': Line, 'B': Line, 'C': Line, 'intersection': Point | null } {
 
-        if(!this.#remarquables.heights) {
+        if (!this.#remarquables.heights) {
             const A = new Line().fromPointAndNormal(this.#A, new Vector(this.#B, this.#C))
             const B = new Line().fromPointAndNormal(this.#B, new Vector(this.#A, this.#C))
             const C = new Line().fromPointAndNormal(this.#C, new Vector(this.#A, this.#B))
@@ -270,7 +274,7 @@ export class Triangle {
     getMedians(): { 'A': Line, 'B': Line, 'C': Line, 'intersection': Point | null } {
         const middles = this.getMiddles()
 
-        if(!this.#remarquables.medians){
+        if (!this.#remarquables.medians) {
             const A = new Line().fromPoints(this.#A, middles.BC)
             const B = new Line().fromPoints(this.#B, middles.AC)
             const C = new Line().fromPoints(this.#C, middles.AB)
@@ -285,10 +289,10 @@ export class Triangle {
     getMediators(): { 'a': Line, 'b': Line, 'c': Line, 'intersection': Point | null } {
         const middles = this.getMiddles()
 
-        if(!this.#remarquables.mediators) {
-            const c = new Line().fromPointAndNormal(middles.AB, new Vector(this.#A, this.#B))
-            const b = new Line().fromPointAndNormal(middles.AC, new Vector(this.#A, this.#C))
+        if (!this.#remarquables.mediators) {
             const a = new Line().fromPointAndNormal(middles.BC, new Vector(this.#B, this.#C))
+            const b = new Line().fromPointAndNormal(middles.AC, new Vector(this.#A, this.#C))
+            const c = new Line().fromPointAndNormal(middles.AB, new Vector(this.#A, this.#B))
 
             const intersection = a.intersection(b).point
             this.#remarquables.mediators = {a, b, c, intersection}
@@ -394,12 +398,7 @@ export class Triangle {
         return this.#remarquables
     }
 
-    public reset(alsoPoints = true): this {
-        if (alsoPoints) {
-            this.#A = new Point()
-            this.#B = new Point()
-            this.#C = new Point()
-        }
+    public reset(): this {
 
         this.#isValid = true
         this.#lines = null
