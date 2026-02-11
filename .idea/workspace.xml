@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Finished the tests for the triangle.ts">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Update triangle to be reactive on T.A.x change.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/TupleN.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/TupleN.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/geometry/triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/triangle.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pimath.interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pimath.interface.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -755,15 +753,7 @@
       <workItem from="1770655195411" duration="1275000" />
       <workItem from="1770701270776" duration="3194000" />
       <workItem from="1770734084348" duration="3513000" />
-      <workItem from="1770797146526" duration="2083000" />
-    </task>
-    <task id="LOCAL-00026" summary="Added u and n in TABLE_OF_SIGNS_VALUES for concave/convex">
-      <option name="closed" value="true" />
-      <created>1727939830929</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1727939830929</updated>
+      <workItem from="1770797146526" duration="2290000" />
     </task>
     <task id="LOCAL-00027" summary="polyFactor.ts: added splitFactors(): {numerator: PolyFactor, denominator: PolyFactor}">
       <option name="closed" value="true" />
@@ -1149,7 +1139,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770798895167</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="Update triangle to be reactive on T.A.x change.">
+      <option name="closed" value="true" />
+      <created>1770799255518</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1770799255518</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1181,7 +1179,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Added Spheres&#10;Minor changes&#10;Build OK." />
     <MESSAGE value="Rename fromPolynom to fromEquation in Sphere3 class; update related test case" />
     <MESSAGE value="Build OK" />
     <MESSAGE value="Solved a bug in TableOfSigns that was setting a defence in any factor if there is one with a defence." />
@@ -1206,7 +1203,8 @@
     <MESSAGE value="completed root.test.ts" />
     <MESSAGE value="Updated circle.ts and circle.test.ts&#10;Updated triangle.ts to work properly. Next step: tests for triangle" />
     <MESSAGE value="Finished the tests for the triangle.ts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finished the tests for the triangle.ts" />
+    <MESSAGE value="Update triangle to be reactive on T.A.x change." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update triangle to be reactive on T.A.x change." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

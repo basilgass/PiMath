@@ -99,9 +99,9 @@ export class Triangle {
     }
 
     set A(value: Point) {
-        this.reset()
         this.#A = value
         this.#A.onChange = () => this.reset()
+        this.reset()
     }
 
     get AB(): Vector {
@@ -117,9 +117,9 @@ export class Triangle {
     }
 
     set B(value: Point) {
-        this.reset()
         this.#B = value
         this.#B.onChange = () => this.reset()
+        this.reset()
     }
 
     get BA(): Vector {
@@ -135,9 +135,9 @@ export class Triangle {
     }
 
     set C(value: Point) {
-        this.reset()
         this.#C = value
         this.#C.onChange = () => this.reset()
+        this.reset()
     }
 
     get CA(): Vector {
@@ -163,8 +163,6 @@ export class Triangle {
         x2: InputValue<Fraction>, y2: InputValue<Fraction>,
         x3: InputValue<Fraction>, y3: InputValue<Fraction>): this {
 
-        this.reset()
-
         return this.fromPoints(
             new Point(x1, y1),
             new Point(x2, y2),
@@ -173,9 +171,6 @@ export class Triangle {
     }
 
     fromLines(line1: Line | string, line2: Line | string, line3: Line | string): this {
-        // reset the remarquables lines.
-        this.reset()
-
         const AB: Line = new Line(line1).clone()
         const BC: Line = new Line(line2).clone()
         const AC: Line = new Line(line3).clone()
@@ -205,23 +200,23 @@ export class Triangle {
             return this
         }
 
+        // reset the remarquables lines.
+        this.reset()
+
         // Force the use of the given lines.
         this.#lines = {AB, AC, BC}
-        this.#isValid = true
 
         return this
 
     }
 
     fromPoints(A: Point, B: Point, C: Point): this {
-        this.reset()
-
         // We have three points.
         this.#A = A.clone()
         this.#B = B.clone()
         this.#C = C.clone()
 
-        this.#isValid = true
+        this.reset()
 
         return this
     }
@@ -399,8 +394,10 @@ export class Triangle {
     }
 
     public reset(): this {
+        // Check if the triangle is valid
+        // the three points must NOT be aligned.
+        this.#isValid = !this.AB.isColinearTo(this.AC)
 
-        this.#isValid = true
         this.#lines = null
         this.#remarquables = {
             mediators: null,
