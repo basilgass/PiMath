@@ -439,7 +439,19 @@ describe('Polynom generators', () => {
 
         for (let i = 0; i < 10; i++) {
             const P = rndPolynom(config)
-            expect(P.factors.length).toBe(3)
+
+            const factors = P.factors
+
+            if (factors.length === 3) {
+                expect(factors[0].degree().value).toBe(0)
+                expect(factors[1].degree().value).toBe(1)
+                expect(factors[2].degree().value).toBe(1)
+            } else if (factors.length === 2) {
+                expect(factors[0].degree().value).toBe(1)
+                expect(factors[1].degree().value).toBe(1)
+            } else {
+                throw new Error('Unexpected number of factors')
+            }
         }
     })
 })

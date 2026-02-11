@@ -9,6 +9,7 @@ import type {InputValue} from "../pimath.interface"
 
 export abstract class TupleN {
     #array: Fraction[] = []
+    #onChange?: ()=>void
 
     constructor(...values: InputValue<Fraction>[]) {
         this.#array = values.map(x=>new Fraction(x))
@@ -53,7 +54,7 @@ export abstract class TupleN {
         const components = value.split(/[,;\s]/g)
             .filter((v) => v.trim() !== '')
 
-        // there must be at least two components.
+        // there must be at least two Pages.
         if (components.length < 2) {
             return this
         }
@@ -85,6 +86,7 @@ export abstract class TupleN {
 
     set x(value: Fraction | number | string) {
         this.#array[0] = new Fraction(value)
+        this.#onChange?.()
     }
 
     get y(): Fraction {
@@ -93,6 +95,7 @@ export abstract class TupleN {
 
     set y(value: Fraction | number | string) {
         this.#array[1] = new Fraction(value)
+        this.#onChange?.()
     }
 
     get z(): Fraction {
@@ -107,10 +110,12 @@ export abstract class TupleN {
             throw new Error('Vector is not 3D')
         }
         this.#array[2] = new Fraction(value)
+        this.#onChange?.()
     }
 
     zero = (): this => {
         this.#array.forEach(x => x.zero())
+        this.#onChange?.()
         return this
     }
 

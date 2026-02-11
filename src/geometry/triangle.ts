@@ -3,26 +3,25 @@ import {Line} from "./line"
 import {Vector} from "./vector"
 import {Point} from "./point"
 import type {InputValue, remarquableLines} from "../pimath.interface"
+import {Numeric} from "../numeric"
 
 type TRIANGLE_SIDES = 'AB' | 'AC' | 'BC'
 
+// TODO: add a check if it's a triangle or not.
 export class Triangle {
     // This defines the triangle
     #A: Point = new Point()
     #B: Point = new Point()
     #C: Point = new Point()
-    #isValid = true    // TODO: add a check if it's a triangle or not.
+    #isValid = false
 // This is calculated
-    #lines: Record<TRIANGLE_SIDES, Line> = {
-        'AB': new Line(),
-        'AC': new Line(),
-        'BC': new Line()
-    }
+    #lines: Record<TRIANGLE_SIDES, Line> | null = null
     #radians = true
-    #remarquables: remarquableLines | null = null
+    #remarquables: remarquableLines = {
+        mediators: null, medians: null, heights: null, externalBisectors: null, bisectors: null
+    }
 
     constructor(...values: unknown[]) {
-
         if (values.length > 0) {
             this.parse(...values)
         }
@@ -45,11 +44,7 @@ export class Triangle {
             // - Three lines as text.
             if (values.every((x: unknown) => typeof x === 'string')) {
                 // Three lines as text.
-                return this.parse(
-                    ...values.map((x) => {
-                        return new Line(x)
-                    })
-                )
+                return this.fromLines(...values)
             }
 
             if (values.every((x: unknown) => x instanceof Line)) {
@@ -95,11 +90,16 @@ export class Triangle {
         this.#B = value.B.clone()
         this.#C = value.C.clone()
 
-        return this.#updateTriangle()
+        return this
     }
 
     get A(): Point {
         return this.#A
+    }
+
+    set A(value: Point) {
+        this.reset(false)
+        this.#A = value
     }
 
     get AB(): Vector {
@@ -114,6 +114,11 @@ export class Triangle {
         return this.#B
     }
 
+    set B(value: Point) {
+        this.reset(false)
+        this.#B = value
+    }
+
     get BA(): Vector {
         return this.#getSegment('B', 'A')
     }
@@ -126,24 +131,17 @@ export class Triangle {
         return this.#C
     }
 
+    set C(value: Point) {
+        this.reset(false)
+        this.#C = value
+    }
+
     get CA(): Vector {
         return this.#getSegment('C', 'A')
     }
 
     get CB(): Vector {
         return this.#getSegment('C', 'B')
-    }
-
-    get angleABC(): number {
-        return this.getAngle('ABC')
-    }
-
-    get angleBCA(): number {
-        return this.getAngle('BCA')
-    }
-
-    get angleCAB(): number {
-        return this.getAngle('CAB')
     }
 
     get asDegree(): this {
@@ -161,6 +159,8 @@ export class Triangle {
         x2: InputValue<Fraction>, y2: InputValue<Fraction>,
         x3: InputValue<Fraction>, y3: InputValue<Fraction>): this {
 
+        this.reset()
+
         return this.fromPoints(
             new Point(x1, y1),
             new Point(x2, y2),
@@ -169,6 +169,9 @@ export class Triangle {
     }
 
     fromLines(line1: Line | string, line2: Line | string, line3: Line | string): this {
+        // reset the remarquables lines.
+        this.reset()
+
         const AB: Line = new Line(line1).clone()
         const BC: Line = new Line(line2).clone()
         const AC: Line = new Line(line3).clone()
@@ -179,6 +182,7 @@ export class Triangle {
             this.#B = intersect.point
         } else {
             this.#isValid = false
+            return this
         }
 
         intersect = BC.intersection(AC)
@@ -186,6 +190,7 @@ export class Triangle {
             this.#C = intersect.point
         } else {
             this.#isValid = false
+            return this
         }
 
         intersect = AC.intersection(AB)
@@ -193,44 +198,139 @@ export class Triangle {
             this.#A = intersect.point
         } else {
             this.#isValid = false
+            return this
         }
-
-        this.#updateTriangle()
 
         // Force the use of the given lines.
         this.#lines = {AB, AC, BC}
+        this.#isValid = true
 
         return this
 
     }
 
     fromPoints(A: Point, B: Point, C: Point): this {
+        this.reset()
+
         // We have three points.
         this.#A = A.clone()
         this.#B = B.clone()
         this.#C = C.clone()
 
-        this.#updateTriangle()
+        this.#isValid = true
+
         return this
     }
 
-    getAngle(name: 'CAB' | 'ABC' | 'BCA'): number {
+    getAngle(name: 'A' | 'B' | 'C'): number {
         const a = this.BC.norm
         const b = this.AC.norm
         const c = this.AB.norm
 
-        if (name === 'CAB') {
+        if (name === 'A') {
             return this.#cosThm(a, b, c)
         }
 
-        if (name === 'BCA') {
+        if (name === 'C') {
             return this.#cosThm(c, b, a)
         }
 
         return this.#cosThm(b, a, c)
     }
 
-    get isEquilateral(): boolean {
+
+    getBisectors(internal = true): { 'A': Line, 'B': Line, 'C': Line, 'intersection': Point | null } {
+
+        if(!this.#remarquables.bisectors) {
+            const A = this.#calculateBisectors('A', internal)
+            const B = this.#calculateBisectors('B', internal)
+            const C = this.#calculateBisectors('C', internal)
+
+            const intersection = A.intersection(B).point
+            this.#remarquables.bisectors = {A, B, C, intersection}
+        }
+
+        return this.#remarquables.bisectors
+    }
+
+    getHeights(): { 'A': Line, 'B': Line, 'C': Line, 'intersection': Point | null } {
+
+        if(!this.#remarquables.heights) {
+            const A = new Line().fromPointAndNormal(this.#A, new Vector(this.#B, this.#C))
+            const B = new Line().fromPointAndNormal(this.#B, new Vector(this.#A, this.#C))
+            const C = new Line().fromPointAndNormal(this.#C, new Vector(this.#A, this.#B))
+
+            const intersection = A.intersection(B).point
+            this.#remarquables.heights = {A, B, C, intersection}
+        }
+
+        return this.#remarquables.heights
+    }
+
+    getMedians(): { 'A': Line, 'B': Line, 'C': Line, 'intersection': Point | null } {
+        const middles = this.getMiddles()
+
+        if(!this.#remarquables.medians){
+            const A = new Line().fromPoints(this.#A, middles.BC)
+            const B = new Line().fromPoints(this.#B, middles.AC)
+            const C = new Line().fromPoints(this.#C, middles.AB)
+
+            const intersection = A.intersection(B).point
+            this.#remarquables.medians = {A, B, C, intersection}
+        }
+
+        return this.#remarquables.medians
+    }
+
+    getMediators(): { 'a': Line, 'b': Line, 'c': Line, 'intersection': Point | null } {
+        const middles = this.getMiddles()
+
+        if(!this.#remarquables.mediators) {
+            const c = new Line().fromPointAndNormal(middles.AB, new Vector(this.#A, this.#B))
+            const b = new Line().fromPointAndNormal(middles.AC, new Vector(this.#A, this.#C))
+            const a = new Line().fromPointAndNormal(middles.BC, new Vector(this.#B, this.#C))
+
+            const intersection = a.intersection(b).point
+            this.#remarquables.mediators = {a, b, c, intersection}
+        }
+
+        return this.#remarquables.mediators
+    }
+
+    getMiddles() {
+        return {
+            'AB': new Point().middleOf(this.#A, this.#B),
+            'AC': new Point().middleOf(this.#A, this.#C),
+            'BC': new Point().middleOf(this.#B, this.#C)
+        }
+    }
+
+    getPoints(): Point[] {
+        return [this.A, this.B, this.C]
+    }
+
+    getSortedPoints(): Point[] {
+        return this.getPoints().sort((a, b) => {
+            return a.x.value === b.x.value
+                ? a.y.value - b.y.value
+                : a.x.value - b.x.value
+        })
+    }
+
+    isEqual(T: Triangle): boolean {
+        if (!this.#isValid || !T.isValid) return false
+
+        // TODO: compare points in a particular order.
+        const tri1 = this.getSortedPoints()
+        const tri2 = T.getSortedPoints()
+
+        return tri1.every((_, index) => tri1[index].isEqual(tri2[index]))
+
+    }
+
+    isEquilateral(): boolean {
+        if (!this.#isValid) return false
+
         const dAB = this.AB.normSquare.value
         const dBC = this.BC.normSquare.value
         const dAC = this.AC.normSquare.value
@@ -238,7 +338,9 @@ export class Triangle {
         return (dAB === dBC) && (dAB === dAC)
     }
 
-    get isIsocele(): boolean {
+    isIsocele(): boolean {
+        if (!this.#isValid) return false
+
         const dAB = this.AB.normSquare.value
         const dBC = this.BC.normSquare.value
         const dAC = this.AC.normSquare.value
@@ -248,7 +350,9 @@ export class Triangle {
             dBC === dAC
     }
 
-    get isRectangle(): boolean {
+    isRectangle(): boolean {
+        if (!this.#isValid) return false
+
         return this.AB.isNormalTo(this.BC) ||
             this.AB.isNormalTo(this.AC) ||
             this.BC.isNormalTo(this.AC)
@@ -263,140 +367,90 @@ export class Triangle {
     }
 
     get lines(): Record<TRIANGLE_SIDES, Line> {
+        if (this.#lines === null) {
+            this.#lines = {
+                'AB': new Line(this.#A, this.#B),
+                'BC': new Line(this.#B, this.#C),
+                'AC': new Line(this.#A, this.#C)
+            }
+        }
+
         return this.#lines
+    }
+
+    medianA(): Line {
+        return this.getMedians().A
+    }
+
+    medianB(): Line {
+        return this.getMedians().B
+    }
+
+    medianC(): Line {
+        return this.getMedians().C
     }
 
     get remarquables(): remarquableLines | null {
         return this.#remarquables
     }
 
-    #calculateBisectors = (pt: string): { internal: Line, external: Line } => {
+    public reset(alsoPoints = true): this {
+        if (alsoPoints) {
+            this.#A = new Point()
+            this.#B = new Point()
+            this.#C = new Point()
+        }
+
+        this.#isValid = true
+        this.#lines = null
+        this.#remarquables = {
+            mediators: null,
+            medians: null,
+            heights: null,
+            externalBisectors: null,
+            bisectors: null
+        }
+
+        return this
+    }
+
+    #calculateBisectors(pt: string, internal = true): Line {
         const tlines = this.lines
-        let d1: Line = new Line()
-        let d2: Line = new Line()
+        let d1: Vector = new Vector()
+        let d2: Vector = new Vector()
         let P: Point = new Point()
 
         if (pt === 'A') {
             P = this.A.clone()
-            d1 = tlines.AB.clone()
-            d2 = tlines.AC.clone()
+            d1 = tlines.AB.clone().d
+            d2 = tlines.AC.clone().d
         } else if (pt === 'B') {
             P = this.B.clone()
-            d1 = tlines.AB.clone()
-            d2 = tlines.BC.clone()
+            d1 = tlines.AB.clone().d.opposite()
+            d2 = tlines.BC.clone().d
         } else if (pt === 'C') {
             P = this.C.clone()
-            d1 = tlines.BC.clone()
-            d2 = tlines.AC.clone()
+            d1 = tlines.BC.clone().d.opposite()
+            d2 = tlines.AC.clone().d.opposite()
         }
 
         if (d1 === undefined || d2 === undefined) {
             throw new Error(`The point ${pt} does not exist`)
         }
 
-        const b1_d = d1.d.unit().add(d2.d.unit())
-        const b2_d = d1.d.unit().subtract(d2.d.unit())
+        const director = internal
+            ? d1.unit().add(d2.unit())
+            : d1.unit().subtract(d2.unit())
 
-        return {
-            internal: new Line().fromPointAndDirection(P, b1_d),
-            external: new Line().fromPointAndDirection(P, b2_d),
-        }
-
-        //
-        //
-        // const d1n = d1.n.simplify().norm
-        // const d2n = d2.n.simplify().norm
-        // const d1Equ = d1.getEquation().multiply(d2n)
-        // const d2Equ = d2.getEquation().multiply(d1n)
-        //
-        // const b1: Line = new Line(d1Equ.clone().subtract(d2Equ).simplify())
-        // const b2: Line = new Line(d2Equ.clone().subtract(d1Equ).simplify())
-        //
-        // // Must determine which bisectors is in the triangle
-        // if (pt === 'A') {
-        //     return b1.hitSegment(this.B, this.C) ? {internal: b1, external: b2} : {internal: b2, external: b1}
-        // }
-        // if (pt === 'B') {
-        //     return b1.hitSegment(this.A, this.C) ? {internal: b1, external: b2} : {internal: b2, external: b1}
-        // }
-        // if (pt === 'C') {
-        //     return b1.hitSegment(this.B, this.A) ? {internal: b1, external: b2} : {internal: b2, external: b1}
-        // }
-
-        // Default returns the first bisector
-        // return {internal: b1, external: b2}
-    }
-
-    #calculateRemarquableLines = (): remarquableLines => {
-        const middles = {
-            'AB': new Point().middleOf(this.#A, this.#B),
-            'AC': new Point().middleOf(this.#A, this.#C),
-            'BC': new Point().middleOf(this.#B, this.#C)
-        }
-
-        const medians = {
-            'A': new Line().fromPoints(this.#A, middles.BC),
-            'B': new Line().fromPoints(this.#B, middles.AC),
-            'C': new Line().fromPoints(this.#C, middles.AB),
-            'intersection': null
-        }
-
-        const mediators = {
-            'AB': new Line().fromPointAndNormal(middles.AB, new Vector(this.#A, this.#B)),
-            'AC': new Line().fromPointAndNormal(middles.AC, new Vector(this.#A, this.#C)),
-            'BC': new Line().fromPointAndNormal(middles.BC, new Vector(this.#B, this.#C)),
-            'intersection': null
-        }
-
-        const heights = {
-            'A': new Line().fromPointAndNormal(this.#A, new Vector(this.#B, this.#C)),
-            'B': new Line().fromPointAndNormal(this.#B, new Vector(this.#A, this.#C)),
-            'C': new Line().fromPointAndNormal(this.#C, new Vector(this.#A, this.#B)),
-            'intersection': null
-        }
-
-        const bA = this.#calculateBisectors('A')
-        const bB = this.#calculateBisectors('B')
-        const bC = this.#calculateBisectors('C')
-
-        const bisectors = {
-            'A': bA.internal,
-            'B': bB.internal,
-            'C': bB.internal,
-            'intersection': null
-        }
-
-        const externalBisectors = {
-            'A': bA.external,
-            'B': bB.external,
-            'C': bC.external,
-            'intersection': null
-        }
-
-        const remarquables: remarquableLines = {
-            medians,
-            mediators,
-            heights,
-            bisectors,
-            externalBisectors
-        }
-
-        // As it's a triangle, we assume the lines are intersecting and aren't parallel or superposed.
-        remarquables.medians.intersection = remarquables.medians.A.intersection(remarquables.medians.B).point
-        remarquables.mediators.intersection = remarquables.mediators.AB.intersection(remarquables.mediators.BC).point
-        remarquables.heights.intersection = remarquables.heights.A.intersection(remarquables.heights.B).point
-        remarquables.bisectors.intersection = remarquables.bisectors.A.intersection(remarquables.bisectors.B).point
-
-        // Everything was calculated for the remarquable lines.
-        return remarquables
+        return new Line().fromPointAndDirection(P, director)
     }
 
     #cosThm(opposite: number, adjacent1: number, adjacent2: number): number {
-        const ratio = ((adjacent1 ** 2 * adjacent2 ** 2) - opposite ** 2) / (2 * adjacent1 * adjacent2)
+        const ratio = ((adjacent1 ** 2 + adjacent2 ** 2) - opposite ** 2) / (2 * adjacent1 * adjacent2)
 
         return this.#radians
             ? Math.acos(ratio)
-            : Math.acos(ratio) * 180 / Math.PI
+            : Numeric.numberCorrection(Math.acos(ratio) * 180 / Math.PI)
     }
 
     /**
@@ -429,20 +483,4 @@ export class Triangle {
         )
     }
 
-    /**
-     * Generate the Line object for the three segments of the triangle
-     */
-    #updateTriangle(): this {
-        // TODO: updateTriangle should not be used, instead calculated "on the fly"
-        // Create the lines
-        this.#lines = {
-            'AB': new Line(this.#A, this.#B),
-            'BC': new Line(this.#B, this.#C),
-            'AC': new Line(this.#A, this.#C)
-        }
-
-        this.#remarquables = this.#calculateRemarquableLines()
-
-        return this
-    }
 }

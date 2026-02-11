@@ -134,29 +134,29 @@ export interface remarquableLines {
         'B': Line,
         'C': Line,
         'intersection': Point | null
-    },
+    } | null,
     externalBisectors: {
         'A': Line,
         'B': Line,
         'C': Line,
         'intersection': Point | null
-    }
+    } | null,
     'heights': {
         'A': Line,
         'B': Line,
         'C': Line,
         'intersection': Point | null
-    },
+    } | null,
     'medians': {
         'A': Line,
         'B': Line,
         'C': Line,
         'intersection': Point | null
-    },
+    } | null,
     'mediators': {
         'AB': Line,
         'AC': Line,
         'BC': Line,
         'intersection': Point | null
-    },
+    } | null
 }

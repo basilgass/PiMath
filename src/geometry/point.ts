@@ -10,6 +10,7 @@ import {Root} from "../coefficients/root"
 import {TupleN} from "./TupleN"
 import type {Vector} from "./vector"
 
+
 export class Point extends TupleN {
     constructor(...values: (Point|Vector)[] | InputValue<Fraction>[]) {
         super()

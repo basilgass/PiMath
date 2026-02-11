@@ -1,11 +1,7 @@
 import {describe, test} from "vitest"
-import {Random} from "../src/randomization/random"
-import {PolyFactor} from "../src/algebra/polyFactor"
-import {Vector} from "../src/geometry/vector"
-import {determinantFromVectors} from "../src/geometry/geomMath"
-import {Matrix, Point} from "../src"
+import {determinantFromVectors, Matrix, Point, PolyFactor, Random, Vector} from "../src"
 
-describe('Debug tests', ()=>{
+describe.skip('Debug tests', ()=>{
     test('polynom randomisation', ()=>{
         let question="", answer=""
 

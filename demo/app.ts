@@ -1,19 +1,9 @@
-import {Point, Triangle} from "../src"
+import "./app.css"
 
-const { createApp, ref } = Vue
+import {createApp} from "vue"
+import App from "./app.vue"
+import router from "./router"
 
-createApp({
-	setup() {
-		const message = ref('Hello vue!')
-
-        const A = new Point(4,4)
-        const B = new Point(6, 10)
-        const C = new Point(10,2)
-
-        const T = new Triangle().fromPoints(A, B, C)
-        
-		return {
-			message
-		}
-	}
-}).mount('#app')
+const app = createApp(App)
+app.use(router)
+app.mount('#app')

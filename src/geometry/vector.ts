@@ -194,16 +194,14 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
     }
 
     simplify = (): this => {
-        // Multiply by the lcm of denominators.
+        const lcm = Numeric.lcm(...this.array.map(x => x.denominator))
+        const gcd = Numeric.gcd(...this.array.map(x => x.numerator))
+
+        this.multiplyByScalar(new Fraction(lcm, gcd))
+
+        if(this.x.isNegative()) this.opposite()
+
         return this
-            .multiplyByScalar(
-                Numeric.lcm(...this.array.map(x => x.denominator))
-            )
-            .divideByScalar(
-                Numeric.gcd(...this.array.map(x => x.numerator))
-            ).multiplyByScalar(
-                this.x.isNegative() ? -1 : 1
-            )
     }
 
     subtract = (V: Vector): this => {

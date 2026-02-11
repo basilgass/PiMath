@@ -66,8 +66,8 @@ describe('Line output', () => {
         expect(L.asMxh.tex).toBe('y=\\frac{ 9 }{ 8 }x-12')
         expect(L.asParametric.tex).toBe('\\begin{pmatrix} x \\\\ y \\end{pmatrix} = \\begin{pmatrix} 0 \\\\ -12 \\end{pmatrix} + k\\cdot \\begin{pmatrix} 8 \\\\ 9 \\end{pmatrix}')
         expect(L.asSystem.tex).toBe(`\\left\\{\\begin{aligned}
-\tx &= -8k\\\\
-\ty &= -12-9k
+\tx &= 8k\\\\
+\ty &= -12+9k
 \\end{aligned}\\right.`)
     })
     test('output as ASCII', () => {
@@ -75,7 +75,7 @@ describe('Line output', () => {
         expect(L.asCartesian.display).toBe('9x-8y=96')
         expect(L.asMxh.display).toBe('y=9/8x-12')
         expect(L.asParametric.display).toBe('((x,y))=((0,-12))+k((8,9))')
-        expect(L.asSystem.display).toBe('{(x,=,-8k),(y,=,-12-9k):}')
+        expect(L.asSystem.display).toBe('{(x,=,8k),(y,=,-12+9k):}')
     })
 })
 

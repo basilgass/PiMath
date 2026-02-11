@@ -148,17 +148,17 @@ export class Line implements IPiMathObject<Line> {
                     return `${Vector.asTex('x', 'y')} = ${Vector.asTex(this.#OA.x.tex, this.#OA.y.tex)} + k\\cdot ${Vector.asTex(d.x.tex, d.y.tex)}`
                 } else {
                     return `\\left\\{\\begin{aligned}\n\tx &= ${(new Polynom(this.#OA.x)
-                        .add(new Monom(this.d.x).multiply(new Monom('k'))))
+                        .add(new Monom(d.x).multiply(new Monom('k'))))
                         .reorder('k', true)
                         .tex}\\\\\n\ty &= ${(new Polynom(this.#OA.y)
-                        .add(new Monom(this.d.y).multiply(new Monom('k'))))
+                        .add(new Monom(d.y).multiply(new Monom('k'))))
                         .reorder('k', true)
                         .tex}\n\\end{aligned}\\right.`
                 }
             }
             default: {
                 const canonical = this.getEquation()
-                if (this.#a.isNegative()) {
+                if (canonical.left.monoms[0].coefficient.isNegative()) {
                     canonical.multiply(-1)
                 }
                 return canonical.tex
@@ -187,11 +187,10 @@ export class Line implements IPiMathObject<Line> {
             }
             case LINE_DISPLAY.SYSTEM: {
                 const d = this.d.clone().simplify()
-                // TODO: line as system in ascii math
                 // {(2x,+,17y,=,23),(x,-,y,=,5):}
-                const px = (new Polynom(this.#OA.x).add(new Monom(this.d.x).multiply(new Monom('k'))))
+                const px = (new Polynom(this.#OA.x).add(new Monom(d.x).multiply(new Monom('k'))))
                     .reorder('k', true)
-                const py = (new Polynom(this.#OA.y).add(new Monom(this.d.y).multiply(new Monom('k'))))
+                const py = (new Polynom(this.#OA.y).add(new Monom(d.y).multiply(new Monom('k'))))
                     .reorder('k', true)
 
                 return `{(x,=,${px.display}),(y,=,${py.display}):}`
@@ -199,7 +198,7 @@ export class Line implements IPiMathObject<Line> {
             default: {
                 const canonical = this.getEquation()
                 // Make sur the first item is positive.
-                if (this.#a.isNegative()) {
+                if (canonical.left.monoms[0].coefficient.isNegative()) {
                     canonical.multiply(-1)
                 }
                 return canonical.display

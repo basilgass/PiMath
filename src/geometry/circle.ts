@@ -214,8 +214,8 @@ export class Circle
             return this
         }
 
-        const mAB = T.remarquables.mediators.AB.clone()
-        const mAC = T.remarquables.mediators.AC.clone()
+        const mAB = T.getMediators().c.clone()
+        const mAC = T.getMediators().b.clone()
 
         return this.fromCenterPoint(
             mAB.intersection(mAC).point,
