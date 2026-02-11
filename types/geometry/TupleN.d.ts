@@ -11,6 +11,8 @@ export declare abstract class TupleN {
     set array(value: Fraction[]);
     get dimension(): number;
     fromString(value: string): this;
+    get onChange(): undefined | (() => void);
+    set onChange(value: undefined | (() => void));
     setDimension(value?: number): this;
     get x(): Fraction;
     set x(value: Fraction | number | string);

@@ -52,7 +52,7 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
      * @param letter
      * TODO: Handle other letter than 'x'.
      */
-    factorize: (letter?: string) => Polynom[];
+    factorize(letter?: string): Polynom[];
     get factors(): Polynom[];
     fromCoefficients(...values: InputValue<Fraction>[]): this;
     gcdDenominator: () => number;

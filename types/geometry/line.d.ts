@@ -20,7 +20,7 @@ export declare class Line implements IPiMathObject<Line> {
      * @returns {Line}
      */
     parse: (...values: unknown[]) => this;
-    clone: () => this;
+    clone: () => Line;
     get tex(): string;
     get display(): string;
     get OA(): Vector;
@@ -41,10 +41,12 @@ export declare class Line implements IPiMathObject<Line> {
     set d(value: Vector);
     get director(): Vector;
     distanceTo(pt: Point): Root;
-    fromCoefficient: (a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>) => this;
-    fromEquation: (equ: Equation) => this;
-    fromPointAndDirection: (P: Point | Vector, d: Vector) => this;
-    fromPointAndLine: (P: Vector, L: Line, orientation?: LinePropriety) => this;
+    fromCoefficient(a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>): this;
+    fromEquation(equ: Equation): this;
+    fromParallel(parallel: Line, point: Point): this;
+    fromPerpendicular(perpendicular: Line, point: Point): this;
+    fromPointAndDirection(P: Point | Vector, d: Vector): this;
+    fromPointAndLine(P: Vector, L: Line, orientation?: LinePropriety): this;
     fromPointAndNormal: (P: Point | Vector, n: Vector) => this;
     fromPoints(A: Point, B: Point): this;
     getEquation(): Equation;
@@ -58,6 +60,7 @@ export declare class Line implements IPiMathObject<Line> {
         isParallel: boolean;
         isSame: boolean;
     };
+    isHorizontal(): boolean;
     isOnLine(pt: Point): boolean;
     isParallelTo: (line: Line) => boolean;
     isPerpendicularTo: (line: Line) => boolean;

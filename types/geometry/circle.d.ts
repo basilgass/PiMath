@@ -1,9 +1,8 @@
 import { Line } from './line';
-import { Fraction } from '../coefficients';
+import { Fraction, Root } from '../coefficients';
 import { Equation } from '../algebra';
 import { IPiMathObject } from '../pimath.interface';
 import { Point } from './point';
-import { Root } from '../coefficients/root';
 export declare class Circle implements IPiMathObject<Circle> {
     #private;
     constructor();
@@ -28,6 +27,12 @@ export declare class Circle implements IPiMathObject<Circle> {
     fromString(str: string): this;
     getPointsOnCircle(): Point[];
     isPointOnCircle: (P: Point) => boolean;
+    isSame(circ: Circle): boolean;
+    /**
+     * Find the intersection points between the circle and a line. It can be 0, 1 or 2 points.
+     * The points are sorted depending on the direction vector of the line.
+     * @param L
+     */
     lineIntersection(L: Line): Point[];
     get radius(): Root;
     /**

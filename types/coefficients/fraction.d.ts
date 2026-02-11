@@ -50,7 +50,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     get frac(): this;
     fromNumber(value: number): this;
     fromNumbers(numerator: number, denominator: number): this;
-    fromPeriodic(value: string | number, length?: number): this;
+    fromPeriodic(value: string | number, length: number): this;
     fromString(value: string): this;
     infinite: () => this;
     invalid: () => this;

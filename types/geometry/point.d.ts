@@ -10,5 +10,7 @@ export declare class Point extends TupleN {
     get tex(): string;
     get display(): string;
     distanceTo(B: Point): Root;
+    isEqual(pt: Point): boolean;
+    isEqualXY(x: InputValue<Fraction>, y: InputValue<Fraction>): boolean;
     middleOf(V1: Point, V2: Point): this;
 }

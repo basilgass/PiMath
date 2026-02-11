@@ -90,29 +90,29 @@ export interface remarquableLines {
         'B': Line;
         'C': Line;
         'intersection': Point | null;
-    };
+    } | null;
     externalBisectors: {
         'A': Line;
         'B': Line;
         'C': Line;
         'intersection': Point | null;
-    };
+    } | null;
     'heights': {
         'A': Line;
         'B': Line;
         'C': Line;
         'intersection': Point | null;
-    };
+    } | null;
     'medians': {
         'A': Line;
         'B': Line;
         'C': Line;
         'intersection': Point | null;
-    };
+    } | null;
     'mediators': {
-        'AB': Line;
-        'AC': Line;
-        'BC': Line;
+        'a': Line;
+        'b': Line;
+        'c': Line;
         'intersection': Point | null;
-    };
+    } | null;
 }
