@@ -16,7 +16,7 @@ export declare class Plane3 {
     get b(): Fraction;
     get c(): Fraction;
     get d(): Fraction;
-    distanceTo(point: Vector): number;
+    distanceTo(point: Point): number;
     intersectWithLine(line: Line3): Point;
     intersectWithPlane(plane: Plane3): Line3;
     isPointOnPlane(pt: Point): boolean;

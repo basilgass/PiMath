@@ -134,7 +134,7 @@ export class Plane3 {
         return this.#normal.dot(this.#point).opposite()
     }
 
-    distanceTo(point: Vector): number {
+    distanceTo(point: Point): number {
         return this.normal.dot(point).add(this.d).abs().value / this.normal.norm
     }
 
