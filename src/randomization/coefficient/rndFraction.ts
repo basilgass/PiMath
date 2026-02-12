@@ -1,6 +1,6 @@
-import type { randomCoefficientConfig } from "../rndTypes"
-import { Fraction } from "../../coefficients/fraction"
-import { randomInt, randomIntSym } from "../rndHelpers"
+import type {randomCoefficientConfig} from "../rndTypes"
+import {Fraction} from "../../coefficients"
+import {randomInt, randomIntSym} from "../rndHelpers"
 
 export function rndFraction(userConfig?: randomCoefficientConfig): Fraction {
     const config = Object.assign(
