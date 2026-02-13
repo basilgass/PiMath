@@ -49,9 +49,7 @@ export function rndPolynom(userConfig?: randomPolynomConfig): Polynom {
     }
 
     // Make sure the first monom is positive.
-    if (config.positive && P.monomByDegree().coefficient.isNegative()) {
-        P.monomByDegree().coefficient.opposite()
-    }
+    if (config.positive && P.monomByDegree().coefficient.isNegative()) P.opposite()
 
     // If the number of monoms is greater than the allowed value, remove some of them... except the first one !
     if (config.numberOfMonoms

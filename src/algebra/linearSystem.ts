@@ -4,15 +4,14 @@ import {Equation} from "./equation"
 import {Monom} from "./monom"
 import {Polynom} from "./polynom"
 import {Numeric} from "../numeric"
-import type {Solution} from "../analyze/solution"
+import {Solution} from "../analyze"
 
 export class LinearSystem implements IPiMathObject<LinearSystem>,
     IEquation<LinearSystem>,
     IAlgebra<LinearSystem> {
 
     #equations: Equation[]
-    // Solve steps for TeX output.
-    #steps: string[] = []
+
     // Determine the letters in the linear asSystem, usually ['x', 'y']
     #variables: string[]
 
@@ -79,6 +78,12 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
     }
 
+    public static solutionAsDisplay(value: Solution[]): string {
+        return `(${value.map(x=>x.display).join(";")})`
+    }
+    public static solutionAsTex(value: Solution[]): string {
+        return `\\left( ${value.map(x=>x.tex).join(" ; ")} \\right)`
+    }
     public add(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this {
         if (value instanceof LinearSystem) {
             const length = value.equations.length
@@ -239,7 +244,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
     public reduce(): this {
         // reduce all equations at once.
-        this.equations.forEach(equ=>equ.reduce())
+        this.equations.forEach(equ => equ.reduce())
         return this
     }
 
@@ -252,38 +257,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    solve(): Solution[] {
-        // TODO : à retravailler, car ce n'est ni l'endroit, ni l'intérêt de l'avoir ici.
-        // 1. search in the equations if a variable has two same or opposite value = candidate for merging
-        // 2. if 1 is false, search for a variable that has coefficient one
-        // 3. if 2 is false, search for a variable that has a coefficient multiple of another.
-        // 4. if 3 is false, multiply both lines.
-        // => merge the equations and cycle.
-        const output: string[] = [this.tex]
-
-        const LS = this.clone()
-
-        while (LS.variables.length>1){
-            const letter = LS.variables[LS.variables.length-1]
-            const emptyLS = new LinearSystem()
-            const factors = LS.solve_compute_factors(letter).slice(0, LS.variables.length-1)
-            factors.forEach(factor=> {
-                emptyLS.equations.push(LS.mergeEquations(...factor))
-            })
-
-            LS.equations = emptyLS.equations
-
-            output.push(LS.tex)
-
-            // add the same but with a reduced value.
-            LS.reduce()
-            output.push(LS.tex)
-        }
-
-        return []
-    }
-
-    public solveMatrix = (): Fraction[] => {
+    public solve(): Solution[] {
         const [matrix, vector] = this.matrix
         // Solve the matrix
 
@@ -333,15 +307,18 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
                 // the last element must not be zero => the asSystem is impossible
                 if (augmentedMatrix[j].slice(0, augmentedMatrix[j].length - 1).every(x => x.isZero())) {
                     if (augmentedMatrix[j][augmentedMatrix[j].length - 1].isZero()) {
-                        return [new Fraction().infinite()]
+                        // Infinite solution
+                        return this.#mapMatrixSolutions()
                     } else {
+                        // No solution
                         return []
                     }
                 }
             }
         }
 
-        return augmentedMatrix.map(x => x[x.length - 1])
+        return this.#mapMatrixSolutions(augmentedMatrix)
+
     }
 
     solve_compute_factors(letter: string):
@@ -434,6 +411,31 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         }
 
         return [matrix, vector]
+    }
+
+    #mapMatrixSolutions(matrix?: Fraction[][]): Solution[] {
+        const result: Solution[] = []
+
+        if(!matrix){
+            // infinite solutions
+            this.variables.forEach(letter=>{
+                const sol = Solution.fromFraction(Infinity)
+                sol.variable = letter
+                result.push(sol)
+            })
+
+            return result
+        }
+
+        matrix.forEach((x, index) => {
+
+            const sol = Solution.fromFraction(x[x.length - 1])
+            sol.variable = this.variables[index]
+
+            result.push(sol)
+        })
+
+        return result
     }
 
 }

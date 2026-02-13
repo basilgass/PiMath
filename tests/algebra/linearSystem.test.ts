@@ -1,6 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Equation} from "../../src/algebra/equation"
-import {LinearSystem} from "../../src/algebra/linearSystem"
+import {Equation, LinearSystem} from "../../src"
 
 
 describe('Linear System creation', () => {
@@ -131,7 +130,7 @@ describe('Linear System algebra', () => {
             '2x+5y=11',
             '7y-29=4x'
         )
-        expect(LS.solveMatrix().map(x => x.value)).to.be.deep.equal([-2, 3])
+        expect(LS.solve().map(x => x.value)).to.be.deep.equal([-2, 3])
         /**
          * 2x+5y=11     *2
          * 4x-7y=-29    *-1
@@ -150,23 +149,25 @@ describe('Linear System algebra', () => {
             '-3x+2y+3z=12',
             '-5x-3y+2z=5'
         )
-        expect(LS.solveMatrix().map(x => x.value)).to.be.deep.equal([1, 0, 5])
+        expect(LS.solve().map(x => x.value)).to.be.deep.equal([1, 0, 5])
     })
 
-    test('unsolvable 2x2 Linear System', () => {
+    test('unsolvable (inifinte) 2x2 Linear System', () => {
         const LS_infinite = new LinearSystem(
             '2x+5y=11',
             '4x+10y=22'
         )
-
+        const sols_infinite = LS_infinite.solve()
+        expect(sols_infinite).to.have.length(2)
+        expect(sols_infinite[0].value).to.be.equal(Infinity)
+    })
+    test('unsolvable 2x2 (impossible) Linear System', () => {
         const LS_unsolvable = new LinearSystem(
             '2x+5y=11',
             '4x+10y=23'
         )
-
-        expect(LS_infinite.solveMatrix()).to.have.length(1)
-        expect(LS_infinite.solveMatrix()[0].value).to.be.equal(Infinity)
-        expect(LS_unsolvable.solveMatrix()).to.have.length(0)
+        const sols_unsolvable = LS_unsolvable.solve()
+        expect(sols_unsolvable).to.have.length(0)
     })
 
     test('starting equation with zero', () => {
@@ -176,7 +177,7 @@ describe('Linear System algebra', () => {
             '3a-6b+4c=3'
         )
 
-        expect(LS.solveMatrix().map(x => x.display))
+        expect(LS.solve().map(x => x.display))
             .to.be.deep.equal(['3/5', '-3/25', '3/25'])
     })
 
@@ -189,6 +190,21 @@ describe('Linear System algebra', () => {
 
         LS.solve()
     })
+
+    test('solve with equations trivial', ()=>{
+        // block 807: ne sait pas résoudre si x+3=0 et 2x+5y-34=0
+        const LS = new LinearSystem('x+3=0', '2x+5y-34=0')
+
+        const M = LS.solve()
+
+        expect(M[0].value).toBe(-3)
+        expect(M[0].variable).toBe('x')
+        expect(M[1].value).toBe(8)
+        expect(M[1].variable).toBe('y')
+
+        expect(LinearSystem.solutionAsDisplay(M)).toBe('(-3;8)')
+    })
+
 })
 
 describe.todo('Linear System generators')
