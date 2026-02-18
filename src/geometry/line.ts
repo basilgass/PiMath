@@ -328,7 +328,7 @@ export class Line implements IPiMathObject<Line> {
             return new Root(0)
         }
 
-        return new Root().from(2, d2.inverse(), numerator)
+        return new Root().from(2, d2.inverse(), numerator).reduce()
 
         // The denominator is a perfect square - simplify the tex result
         // const value = numerator.value / Math.sqrt(d2.value)

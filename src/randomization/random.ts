@@ -9,7 +9,16 @@ import type {
     randomPolynomConfig
 } from "./rndTypes"
 
-import {randomArray, randomBool, randomInt, randomIntSym, randomItem, randomPrime, shuffleArray} from "./rndHelpers"
+import {
+    randomArray,
+    randomBool,
+    randomInt,
+    randomIntSym,
+    randomItem,
+    randomPrime,
+    randomTriplet,
+    shuffleArray
+} from "./rndHelpers"
 import {rndFraction} from "./coefficient/rndFraction"
 import {rndMonom} from "./algebra/rndMonom"
 import {rndPolynom} from "./algebra/rndPolynom"
@@ -49,6 +58,10 @@ export const Random = {
 
     prime: (max: number): number => {
         return randomPrime(max)
+    },
+
+    triplet: (target: number, allowZero?: boolean): [number, number, number] | null => {
+        return randomTriplet(target, allowZero)
     },
 
     bool: (percent?: number): boolean => {

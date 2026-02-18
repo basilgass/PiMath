@@ -1,7 +1,7 @@
 /**
  * Random helpers
  */
-import { Numeric } from "../numeric"
+import {Numeric} from "../numeric"
 
 
 /**
@@ -61,6 +61,15 @@ export function randomIntSym(max: number, zero?: boolean): number {
     }
 }
 
+export function randomTriplet(target: number, allowZero?: boolean): [number, number, number] | null {
+    const triplets = Numeric.pythagoreanTripletsWithTarget(target)
+        .filter(x => allowZero === true || !x.includes(0))
+
+    if (triplets.length === 0) return null
+
+    return randomItem(triplets)
+}
+
 export function randomPrime(max?: number): number {
     let primes = Numeric.primes()
     if (max !== undefined) {
@@ -84,7 +93,9 @@ export function randomArray<T>(arr: T[], number?: number): T[] {
 }
 
 export function randomItem<T>(arr: T[]): T {
-    if (arr.length === 0) { return null as T }
+    if (arr.length === 0) {
+        return null as T
+    }
     return arr[randomInt(0, arr.length - 1)]
 }
 

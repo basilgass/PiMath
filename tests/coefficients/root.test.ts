@@ -1,6 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Root} from "../../src/coefficients/root"
-import {Fraction} from "../../src"
+import {Fraction, Root} from "../../src"
 
 describe("root creation", () => {
     test('create root', () => {
@@ -104,6 +103,64 @@ describe('root string output', ()=>{
         expect(R2.tex).toBe('5 \\sqrt{ 3 }')
         expect(R3.tex).toBe('\\sqrt[ 3 ]{ 5 }')
         expect(R4.tex).toBe('7 \\sqrt[ 3 ]{ 5 }')
+    })
+
+    test('output as asciiMath with fraction', ()=>{
+        const R1 = new Root().from(2, 3, '2/5')
+        expect(R1.display).toBe('(2sqrt(3))/5')
+
+        const R2 = new Root().from(2, '3/7', '2/5')
+        expect(R2.display).toBe('(2sqrt(3))/(5sqrt(7))')
+
+        const R3 = new Root().from(4, 3, '2/5')
+        expect(R3.display).toBe('(2root(4)(3))/5')
+
+        const R4 = new Root().from(4, '3/7', '2/5')
+        expect(R4.display).toBe('(2root(4)(3))/(5root(4)(7))')
+
+        const R5 = new Root().from(4, '1/7', '1/5')
+        expect(R5.display).toBe('1/(5root(4)(7))')
+
+        const R6 = new Root().from(4, '2/7', '1/5')
+        expect(R6.display).toBe('root(4)(2)/(5root(4)(7))')
+
+        const R7 = new Root().from(4, '1/7', '2/5')
+        expect(R7.display).toBe('2/(5root(4)(7))')
+
+        const R01 = new Root().from(4, '0/7', '2/5')
+        expect(R01.display).toBe('0')
+
+        const R02 = new Root().from(4, '2/7', '0/5')
+        expect(R02.display).toBe('0')
+    })
+
+    test('output as TeX with fraction', ()=>{
+        const R1 = new Root().from(2, 3, '2/5')
+        expect(R1.tex).toBe('\\frac{ 2 \\sqrt{ 3 } }{ 5 }')
+
+        const R2 = new Root().from(2, '3/7', '2/5')
+        expect(R2.tex).toBe('\\frac{ 2 \\sqrt{ 3 } }{ 5 \\sqrt{ 7 } }')
+
+        const R3 = new Root().from(4, 3, '2/5')
+        expect(R3.tex).toBe('\\frac{ 2 \\sqrt[ 4 ]{ 3 } }{ 5 }')
+
+        const R4 = new Root().from(4, '3/7', '2/5')
+        expect(R4.tex).toBe('\\frac{ 2 \\sqrt[ 4 ]{ 3 } }{ 5 \\sqrt[ 4 ]{ 7 } }')
+
+        const R5 = new Root().from(4, '1/7', '1/5')
+        expect(R5.tex).toBe('\\frac{ 1 }{ 5 \\sqrt[ 4 ]{ 7 } }')
+
+        const R6 = new Root().from(4, '2/7', '1/5')
+        expect(R6.tex).toBe('\\frac{ \\sqrt[ 4 ]{ 2 } }{ 5 \\sqrt[ 4 ]{ 7 } }')
+
+        const R7 = new Root().from(4, '1/7', '2/5')
+        expect(R7.tex).toBe('\\frac{ 2 }{ 5 \\sqrt[ 4 ]{ 7 } }')
+
+        const R01 = new Root().from(4, '0/7', '2/5')
+        expect(R01.tex).toBe('0')
+
+        const R02 = new Root().from(4, '2/7', '0/5')
+        expect(R02.tex).toBe('0')
     })
 })
 

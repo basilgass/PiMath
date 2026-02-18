@@ -32,11 +32,11 @@ describe('Line creation', () => {
         const L = new Line().fromCoefficient(2, 3, 4)
         const cloned = L.clone()
 
-        cloned.OA = new Point(0,0)
+        cloned.OA = new Point(0, 0)
         expect(L.asCanonical.display).toBe('2x+3y+4=0')
         expect(cloned.asCanonical.display).toBe('2x+3y=0')
     })
-    test('create from a parallel', ()=>{
+    test('create from a parallel', () => {
         const L = new Line().fromCoefficient(2, 3, 4)
 
         const P = new Point(7, -2)
@@ -46,7 +46,7 @@ describe('Line creation', () => {
         expect(parallel.OA.display).toBe('((7,-2))')
 
     })
-    test('create from a perpendicular', ()=>{
+    test('create from a perpendicular', () => {
         const L = new Line().fromCoefficient(2, 3, 4)
 
         const P = new Point(7, -2)
@@ -80,44 +80,44 @@ describe('Line output', () => {
 })
 
 describe('Line comparisons', () => {
-    test('same Line', ()=>{
-        const L1 = new Line().fromCoefficient(1,2,3)
-        const L2 = new Line().fromCoefficient(2,4,6)
+    test('same Line', () => {
+        const L1 = new Line().fromCoefficient(1, 2, 3)
+        const L2 = new Line().fromCoefficient(2, 4, 6)
 
         expect(L1.isSameAs(L2)).toBe(true)
         expect(L2.isSameAs(L1)).toBe(true)
     })
 
-    test('is parallel to', ()=>{
-        const L1 = new Line().fromCoefficient(1,2,3)
-        const L2 = new Line().fromParallel(L1, new Point(0,0))
+    test('is parallel to', () => {
+        const L1 = new Line().fromCoefficient(1, 2, 3)
+        const L2 = new Line().fromParallel(L1, new Point(0, 0))
 
         expect(L1.isParallelTo(L2)).toBe(true)
         expect(L2.isParallelTo(L1)).toBe(true)
     })
 
-    test('is perpendicular to', ()=>{
-        const L1 = new Line().fromCoefficient(1,2,3)
-        const L2 = new Line().fromPerpendicular(L1, new Point(0,0))
+    test('is perpendicular to', () => {
+        const L1 = new Line().fromCoefficient(1, 2, 3)
+        const L2 = new Line().fromPerpendicular(L1, new Point(0, 0))
 
         expect(L1.isPerpendicularTo(L2)).toBe(true)
         expect(L2.isPerpendicularTo(L1)).toBe(true)
     })
 
-    test('is vertical', ()=>{
+    test('is vertical', () => {
         const L1 = new Line().fromPointAndDirection(
-            new Point(1,0),
-            new Vector(0,1)
+            new Point(1, 0),
+            new Vector(0, 1)
         )
 
         expect(L1.isVertical()).toBe(true)
         expect(L1.isHorizontal()).toBe(false)
     })
 
-    test('is horizontal', ()=>{
+    test('is horizontal', () => {
         const L1 = new Line().fromPointAndDirection(
-            new Point(1,0),
-            new Vector(1,0)
+            new Point(1, 0),
+            new Vector(1, 0)
         )
 
         expect(L1.isVertical()).toBe(false)
@@ -144,51 +144,60 @@ describe('Operation with Lines', function () {
         expect(y.display).toBe('-5/3')
     })
 
-    test('should get the intersection point with another line', ()=>{
+    test('should get the intersection point with another line', () => {
         const L1 = new Line().fromPointAndDirection(
-            new Point(0,0),
-            new Vector(3,2)
+            new Point(0, 0),
+            new Vector(3, 2)
         )
 
         const L2 = new Line().fromPointAndDirection(
-            new Point(5,6),
-            new Vector(-1,2)
+            new Point(5, 6),
+            new Vector(-1, 2)
         )
         const P = L1.intersection(L2)
         expect(P.hasIntersection).toBe(true)
         expect(P.point.display).toBe('(6;4)')
     })
 
-    test('should fail on intersection with parallel lnies', ()=>{
+    test('should fail on intersection with parallel lnies', () => {
         const L1 = new Line().fromPointAndDirection(
-            new Point(0,0),
-            new Vector(3,2)
+            new Point(0, 0),
+            new Vector(3, 2)
         )
 
         const L2 = new Line().fromPointAndDirection(
-            new Point(5,6),
-            new Vector(3,2)
+            new Point(5, 6),
+            new Vector(3, 2)
         )
         const P = L1.intersection(L2)
 
         expect(P.hasIntersection).toBe(false)
     })
 
-    test('should check if line hits a segment', ()=>{
+    test('should check if line hits a segment', () => {
         const L = new Line().fromPointAndDirection(
-            new Point(0,0),
-            new Vector(3,2)
+            new Point(0, 0),
+            new Vector(3, 2)
         )
 
-        const A = new Point(6,0)
-        const B = new Point(6,1)
-        const C = new Point(6,10)
+        const A = new Point(6, 0)
+        const B = new Point(6, 1)
+        const C = new Point(6, 10)
 
         expect(L.hitSegment(A, B)).toBe(false)
         expect(L.hitSegment(A, C)).toBe(true)
     })
 
 
+    test('example', () => {
+        const d = new Line().fromPoints(
+            new Point(3,5),
+            new Point(-1,2)
+        )
+        const P = new Point(11,-3)
+
+        console.log(d.distanceTo(P).display)
+    })
 
 
 })

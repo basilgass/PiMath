@@ -4,11 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="plane3.distanceTo bug corrected.">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="linearSystem.ts: removed the 'solve' to show the resolution details.&#10;Changed the solve method to use matrix.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/linearSystem.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/linearSystem.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/randomization/algebra/rndPolynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/algebra/rndPolynom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/coefficients/root.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/root.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/numeric.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/numeric.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/randomization/random.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/random.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/randomization/rndHelpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/rndHelpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/coefficients/root.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/coefficients/root.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/geometry/line.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/geometry/line.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/numeric.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/numeric.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,6 +100,7 @@
     "Node.js.point.ts.executor": "Run",
     "Node.js.polyFactor.ts.executor": "Run",
     "Node.js.polynom.ts.executor": "Run",
+    "Node.js.root.ts.executor": "Run",
     "Node.js.triangle.ts.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -205,6 +211,8 @@
     "Vitest.Matrix output.output as LaTeX.executor": "Run",
     "Vitest.Monom creation.executor": "Run",
     "Vitest.Monom creation.set coefficient.executor": "Run",
+    "Vitest.Numeric.get pythagorician triplets.executor": "Run",
+    "Vitest.Operation with Lines.example.executor": "Run",
     "Vitest.Operation with Lines.executor": "Run",
     "Vitest.Operation with Lines.should check if line hits a segment.executor": "Run",
     "Vitest.Operation with Lines.should evaluate coordinates at y.executor": "Run",
@@ -370,6 +378,10 @@
     "Vitest.root operations.take root from root.executor": "Run",
     "Vitest.root string ouput.output as TeX.executor": "Run",
     "Vitest.root string ouput.output as asciiMath.executor": "Run",
+    "Vitest.root string output.output as TeX with fraction.executor": "Run",
+    "Vitest.root string output.output as TeX.executor": "Run",
+    "Vitest.root string output.output as asciiMath with fraction.executor": "Run",
+    "Vitest.root string output.output as asciiMath.executor": "Run",
     "Vitest.root.test.ts.executor": "Run",
     "Vitest.temp.la jungle.executor": "Run",
     "Vitest.temp.markov.executor": "Run",
@@ -452,7 +464,7 @@
       <command value="npm run build" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.Linear System algebra.solve with equations trivial">
+  <component name="RunManager" selected="Vitest.root.test.ts">
     <configuration name="All Tests" type="JavaScriptTestRunnerVitest" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -461,91 +473,95 @@
       <scope-kind value="ALL" />
       <method v="2" />
     </configuration>
-    <configuration name="Linear System algebra.solve with equations trivial" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="root string output.output as TeX with fraction" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
       <test-names>
-        <test-name value="Linear System algebra" />
-        <test-name value="solve with equations trivial" />
+        <test-name value="root string output" />
+        <test-name value="output as TeX with fraction" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Linear System algebra.unsolvable 2x2 Linear System" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="root string output.output as TeX" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
       <test-names>
-        <test-name value="Linear System algebra" />
-        <test-name value="unsolvable 2x2 Linear System" />
+        <test-name value="root string output" />
+        <test-name value="output as TeX" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Linear System algebra.unsolvable 2x2 (impossible) Linear System" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="root string output.output as asciiMath with fraction" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
       <test-names>
-        <test-name value="Linear System algebra" />
-        <test-name value="unsolvable 2x2 (impossible) Linear System" />
+        <test-name value="root string output" />
+        <test-name value="output as asciiMath with fraction" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="linearSystem.test.ts" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="root string output.output as asciiMath" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
+      <test-names>
+        <test-name value="root string output" />
+        <test-name value="output as asciiMath" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="root.test.ts" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST_FILE" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/linearSystem.test.ts" />
-      <method v="2" />
-    </configuration>
-    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="npm.build" />
       <item itemvalue="Vitest.All Tests" />
-      <item itemvalue="Vitest.Linear System algebra.solve with equations trivial" />
-      <item itemvalue="Vitest.Linear System algebra.unsolvable 2x2 (impossible) Linear System" />
-      <item itemvalue="Vitest.Linear System algebra.unsolvable 2x2 Linear System" />
-      <item itemvalue="Vitest.linearSystem.test.ts" />
+      <item itemvalue="Vitest.root string output.output as TeX" />
+      <item itemvalue="Vitest.root string output.output as TeX with fraction" />
+      <item itemvalue="Vitest.root string output.output as asciiMath" />
+      <item itemvalue="Vitest.root string output.output as asciiMath with fraction" />
+      <item itemvalue="Vitest.root.test.ts" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Vitest.Linear System algebra.solve with equations trivial" />
-        <item itemvalue="Vitest.Linear System algebra.unsolvable 2x2 (impossible) Linear System" />
-        <item itemvalue="Vitest.Linear System algebra.unsolvable 2x2 Linear System" />
-        <item itemvalue="Vitest.linearSystem.test.ts" />
-        <item itemvalue="npm.build" />
+        <item itemvalue="Vitest.root.test.ts" />
+        <item itemvalue="Vitest.root string output.output as TeX with fraction" />
+        <item itemvalue="Vitest.root string output.output as TeX" />
+        <item itemvalue="Vitest.root string output.output as asciiMath with fraction" />
+        <item itemvalue="Vitest.root string output.output as asciiMath" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-66ae2896e9e0-JavaScript-PS-261.20362.17" />
-        <option value="bundled-php-predefined-a98d8de5180a-8800fe215d2b-com.jetbrains.php.sharedIndexes-PS-261.20362.17" />
+        <option value="bundled-js-predefined-d6986cc7102b-123751820ffe-JavaScript-PS-261.20869.47" />
+        <option value="bundled-php-predefined-a98d8de5180a-9fc747308a18-com.jetbrains.php.sharedIndexes-PS-261.20869.47" />
       </set>
     </attachedChunks>
   </component>
@@ -767,15 +783,10 @@
       <workItem from="1770815515100" duration="41000" />
       <workItem from="1770918346129" duration="139000" />
       <workItem from="1770919303197" duration="135000" />
-      <workItem from="1770971722986" duration="5014000" />
-    </task>
-    <task id="LOCAL-00032" summary="Updated getCoefficient to handle polynom with missing degrees.">
-      <option name="closed" value="true" />
-      <created>1728395619654</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1728395619654</updated>
+      <workItem from="1770971722986" duration="5057000" />
+      <workItem from="1771312080573" duration="215000" />
+      <workItem from="1771321214662" duration="2112000" />
+      <workItem from="1771400642037" duration="9610000" />
     </task>
     <task id="LOCAL-00033" summary="Update of Table of signs">
       <option name="closed" value="true" />
@@ -1161,7 +1172,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770919401796</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="linearSystem.ts: removed the 'solve' to show the resolution details.&#10;Changed the solve method to use matrix.">
+      <option name="closed" value="true" />
+      <created>1770998622344</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1770998622346</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1193,7 +1212,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Added a nice version of Matrix :)&#10;Dependencies and Build oK" />
     <MESSAGE value="Add transpose, inverse and aij to matrix" />
     <MESSAGE value="Consolidate equationSolver to be more robust and more optimize. Still many things to do." />
     <MESSAGE value="Ajout  de toFixed à Matrix to display values as float.&#10;&#10;Build OK" />
@@ -1218,7 +1236,8 @@
     <MESSAGE value="Tests cleanup" />
     <MESSAGE value="Build OK&#10;Dependencies tree OK" />
     <MESSAGE value="plane3.distanceTo bug corrected." />
-    <option name="LAST_COMMIT_MESSAGE" value="plane3.distanceTo bug corrected." />
+    <MESSAGE value="linearSystem.ts: removed the 'solve' to show the resolution details.&#10;Changed the solve method to use matrix." />
+    <option name="LAST_COMMIT_MESSAGE" value="linearSystem.ts: removed the 'solve' to show the resolution details.&#10;Changed the solve method to use matrix." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

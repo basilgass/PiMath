@@ -141,9 +141,9 @@ function primes(nb?: number): number[] {
     }
 }
 
-function pythagoreanTripletsWithTarget(target: number, targetIsSquare?: boolean): number[][] {
+function pythagoreanTripletsWithTarget(target: number, targetIsSquare?: boolean): [number,number,number][] {
     // méthode inverse, à partir du triplet.
-    const triplets = [],
+    const triplets:[number, number, number][] = [],
         targetValue = targetIsSquare === true ? +target : target ** 2
     for (let u = 0; u <= target; u++) {
         for (let v = 0; v <= target; v++) {

@@ -75,43 +75,28 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         // Force the plus sign.
         const plus = this.#withSign && this.factor.isPositive() ? '+' : ''
 
-        // There is no radical - output the factor
-        if (this.#radical.isZero()) return `${plus}${this.#factor.tex}`
+        if (this.value === 0) return `${plus}0`
 
-        // The radical has an index of 1 - no radical.
-        if (this.index === 1) return `${plus}${this.factor.clone().multiply(this.radical).tex}`
+        const den = this.#makeTeXLine(this.#factor.denominator, this.#radical.denominator)
+        const num = this.#makeTeXLine(this.#factor.numerator, this.#radical.numerator) ?? '1'
 
-        // Make the root part
-        const rad = this.index === 2
-            ? `\\sqrt{ ${this.#radical.tex} }`
-            : `\\sqrt[ ${this.index} ]{ ${this.#radical.tex} }`
+        if (den === null) return `${plus}${num}`
 
-        if (this.#factor.isUnit()) {
-            return this.#withSign
-                ? `${this.#factor.isOne() ? plus : '-'} ${rad}`
-                : `${this.#factor.isOne() ? '' : '-'}${rad}`
-        }
-
-        return `${plus}${this.#factor.tex} ${rad}`
+        return `${plus}\\frac{ ${num} }{ ${den} }`
     }
 
     get display(): string {
+        // force the '+' sign if asked
         const plus = this.#withSign && this.factor.isPositive() ? '+' : ''
 
-        // There is no radical - output the factor
-        if (this.#radical.isZero()) return `${plus}${this.#factor.display}`
+        if (this.value === 0) return `${plus}0`
 
-        // The radical has an index of 1 - no radical.
-        if (this.index === 1) return `${plus}${this.factor.clone().multiply(this.radical).display}`
+        const den = this.#makeDisplayLine(this.#factor.denominator, this.#radical.denominator, true)
+        const num = this.#makeDisplayLine(this.#factor.numerator, this.#radical.numerator, den !== null) ?? '1'
 
-        // Make the root part
-        const rad = this.index === 2
-            ? `sqrt(${this.#radical.tex})`
-            : `root(${this.index})(${this.#radical.display})`
+        if (den === null) return `${plus}${num}`
 
-        if (this.#factor.isUnit()) return `${this.#factor.isOne() ? plus : '-'}${rad}`
-
-        return `${plus}${this.#factor.display}${rad}`
+        return `${plus}${num}/${den}`
     }
 
     add(value: InputValue<Root>): this {
@@ -198,9 +183,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
     isRational(): boolean {
         const reduced = this.clone().reduce()
 
-        if(reduced.radical.isOne()) return reduced.factor.exact
+        if (reduced.radical.isOne()) return reduced.factor.exact
 
-        if(reduced.index===1) return reduced.factor.exact && reduced.radical.exact
+        if (reduced.index === 1) return reduced.factor.exact && reduced.radical.exact
 
         return false
     }
@@ -315,6 +300,34 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         this.radical.zero()
         this.factor.zero()
         return this
+    }
+
+    #makeDisplayLine(a: number, b: number, wrap: boolean): string | null {
+        const rad = this.#index === 2 ? `sqrt` : `root(${this.#index})`
+
+        const formatted: string[] = [
+            (a !== 1 && a !== 0) ? a.toString() : null,
+            (b !== 1 && b !== 0) ? `${rad}(${b})` : null,
+        ].filter(x => x !== null)
+
+        if (formatted.length === 0) return null
+
+        if (wrap && formatted.length===2) return `(${formatted.join("")})`
+
+        return formatted.join("")
+    }
+
+    #makeTeXLine(a: number, b: number): string | null {
+        const rad = this.#index === 2 ? `\\sqrt` : `\\sqrt[ ${this.#index} ]`
+
+        const formatted: string[] = [
+            (a !== 1 && a !== 0) ? a.toString() : null,
+            (b !== 1 && b !== 0) ? `${rad}{ ${b} }` : null,
+        ].filter(x => x !== null)
+
+        if (formatted.length === 0) return null
+
+        return formatted.join(" ")
     }
 
     #parse_root(value: string): this {

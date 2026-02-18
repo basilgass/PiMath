@@ -1,5 +1,5 @@
 import {Numeric} from "../src"
-import {describe, expect, it} from "vitest"
+import {describe, expect, it, test} from "vitest"
 
 describe('Numeric', () => { // the tests container
     it('Correct number', () => {
@@ -23,4 +23,17 @@ describe('Numeric', () => { // the tests container
         expect(Numeric.decompose(6).map(x => x.join(','))).to.have.all.members(['1,6', '2,3'])
     })
 
+    test('get pythagorician triplets', ()=>{
+        const triples: number[] = []
+
+        for(let i=1; i<100; i++){
+            const t = Numeric.pythagoreanTripletsWithTarget(i).filter(x=>!x.includes(0))
+            if(t.length>0){
+                triples.push(i)
+            }
+        }
+
+        console.log(triples.join(','))
+
+    })
 })
