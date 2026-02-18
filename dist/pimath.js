@@ -4127,11 +4127,10 @@ class V {
     return t === "A" ? this.#a(e, i, s) : t === "C" ? this.#a(s, i, e) : this.#a(i, e, s);
   }
   getBisectors(t = !0) {
-    if (!this.#o.bisectors) {
-      const e = this.#h("A", t), i = this.#h("B", t), s = this.#h("C", t), r = e.intersection(i).point;
-      this.#o.bisectors = { A: e, B: i, C: s, intersection: r };
-    }
-    return this.#o.bisectors;
+    if (t && this.#o.bisectors) return this.#o.bisectors;
+    if (!t && this.#o.externalBisectors) return this.#o.externalBisectors;
+    const e = this.#h("A", t), i = this.#h("B", t), s = this.#h("C", t), r = e.intersection(i).point;
+    return t ? this.#o.bisectors = { A: e, B: i, C: s, intersection: r } : this.#o.externalBisectors = { A: e, B: i, C: s, intersection: r }, { A: e, B: i, C: s, intersection: r };
   }
   getHeights() {
     if (!this.#o.heights) {

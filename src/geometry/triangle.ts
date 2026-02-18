@@ -240,16 +240,21 @@ export class Triangle {
 
     getBisectors(internal = true): { 'A': Line, 'B': Line, 'C': Line, 'intersection': Point | null } {
 
-        if (!this.#remarquables.bisectors) {
-            const A = this.#calculateBisectors('A', internal)
-            const B = this.#calculateBisectors('B', internal)
-            const C = this.#calculateBisectors('C', internal)
+        if (internal && this.#remarquables.bisectors) return this.#remarquables.bisectors
+        if (!internal && this.#remarquables.externalBisectors) return this.#remarquables.externalBisectors
 
-            const intersection = A.intersection(B).point
+        const A = this.#calculateBisectors('A', internal)
+        const B = this.#calculateBisectors('B', internal)
+        const C = this.#calculateBisectors('C', internal)
+
+        const intersection = A.intersection(B).point
+        if (internal) {
             this.#remarquables.bisectors = {A, B, C, intersection}
+        } else {
+            this.#remarquables.externalBisectors = {A, B, C, intersection}
         }
 
-        return this.#remarquables.bisectors
+        return {A, B, C, intersection}
     }
 
     getHeights(): { 'A': Line, 'B': Line, 'C': Line, 'intersection': Point | null } {
