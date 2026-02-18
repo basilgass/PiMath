@@ -2,7 +2,7 @@ import { IAlgebra, IEquation, InputValue, IPiMathObject, literalType } from '../
 import { Fraction } from '../coefficients';
 import { Equation } from './equation';
 import { Polynom } from './polynom';
-import { Solution } from '../analyze/solution';
+import { Solution } from '../analyze';
 export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquation<LinearSystem>, IAlgebra<LinearSystem> {
     #private;
     constructor(...values: (string | Equation)[]);
@@ -11,6 +11,8 @@ export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquat
     get tex(): string;
     get display(): string;
     static fromMatrix(matrix: InputValue<Fraction>[][], letters?: string): LinearSystem;
+    static solutionAsDisplay(value: Solution[]): string;
+    static solutionAsTex(value: Solution[]): string;
     add(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this;
     buildTex: (equations: Equation[], operators?: (string[])[]) => string;
     degree(letter?: string): Fraction;
@@ -32,7 +34,6 @@ export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquat
     reduce(): this;
     reorder: () => this;
     solve(): Solution[];
-    solveMatrix: () => Fraction[];
     solve_compute_factors(letter: string): [
         {
             id: number;

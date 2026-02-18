@@ -22,7 +22,7 @@ declare function periodic(value: number): number;
  * @param nb : number of primes to choose from
  */
 declare function primes(nb?: number): number[];
-declare function pythagoreanTripletsWithTarget(target: number, targetIsSquare?: boolean): number[][];
+declare function pythagoreanTripletsWithTarget(target: number, targetIsSquare?: boolean): [number, number, number][];
 declare function round(value: number, decimals?: number): number;
 declare function greatestPower(value: number, index: number): number;
 export declare const Numeric: {

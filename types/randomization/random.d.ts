@@ -9,6 +9,7 @@ export declare const Random: {
     number: (from: number, to: number, exclude?: number[]) => number;
     numberSym: (max: number, allowZero?: boolean) => number;
     prime: (max: number) => number;
+    triplet: (target: number, allowZero?: boolean) => [number, number, number] | null;
     bool: (percent?: number) => boolean;
     array: <T>(arr: T[], number?: number) => T[];
     item: <T>(arr: T[]) => T;

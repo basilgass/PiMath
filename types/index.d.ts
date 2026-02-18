@@ -22,7 +22,7 @@ declare const PiMath: {
         numberCorrection: (value: number, number_of_digits?: number) => number;
         periodic: (value: number) => number;
         primes: (nb?: number) => number[];
-        pythagoreanTripletsWithTarget: (target: number, targetIsSquare?: boolean) => number[][];
+        pythagoreanTripletsWithTarget: (target: number, targetIsSquare?: boolean) => [number, number, number][];
         round: (value: number, decimals?: number) => number;
         greatestPower: (value: number, index: number) => number;
     };
@@ -44,6 +44,7 @@ declare const PiMath: {
         number: (from: number, to: number, exclude?: number[]) => number;
         numberSym: (max: number, allowZero?: boolean) => number;
         prime: (max: number) => number;
+        triplet: (target: number, allowZero?: boolean) => [number, number, number] | null;
         bool: (percent?: number) => boolean;
         array: <T>(arr: T[], number?: number) => T[];
         item: <T>(arr: T[]) => T;
