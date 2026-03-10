@@ -74,15 +74,16 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
 
         // Force the plus sign.
         const plus = this.#withSign && this.factor.isPositive() ? '+' : ''
+        const space = (plus && this.#factor.numerator===1) ? ' ' : ''
 
         if (this.value === 0) return `${plus}0`
 
         const den = this.#makeTeXLine(this.#factor.denominator, this.#radical.denominator)
         const num = this.#makeTeXLine(this.#factor.numerator, this.#radical.numerator) ?? '1'
 
-        if (den === null) return `${plus}${num}`
+        if (den === null) return `${plus}${space}${num}`
 
-        return `${plus}\\frac{ ${num} }{ ${den} }`
+        return `${plus}${space}\\frac{ ${num} }{ ${den} }`
     }
 
     get display(): string {
@@ -306,7 +307,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         const rad = this.#index === 2 ? `sqrt` : `root(${this.#index})`
 
         const formatted: string[] = [
-            (a !== 1 && a !== 0) ? a.toString() : null,
+            (a === 1 || a === 0) ? null : a===-1 ? '-' : a.toString(),
             (b !== 1 && b !== 0) ? `${rad}(${b})` : null,
         ].filter(x => x !== null)
 
@@ -321,7 +322,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         const rad = this.#index === 2 ? `\\sqrt` : `\\sqrt[ ${this.#index} ]`
 
         const formatted: string[] = [
-            (a !== 1 && a !== 0) ? a.toString() : null,
+            (a === 1 || a === 0) ? null : a===-1 ? '-' : a.toString(),
             (b !== 1 && b !== 0) ? `${rad}{ ${b} }` : null,
         ].filter(x => x !== null)
 

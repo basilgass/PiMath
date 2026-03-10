@@ -89,36 +89,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      * Get the tex output of the monom
      */
     public get tex(): string {
-        let L = ''
-        const letters = Object.keys(this.#literal).sort()
-
-        for (const letter of letters) {
-            if (this.#literal[letter].isNotZero()) {
-                L += letter
-                if (this.#literal[letter].isNotEqual(1)) {
-                    L += `^{ ${this.#literal[letter].tfrac.tex} }`
-                }
-            }
-        }
-
-        if (L === '') {
-            // No setLetter - means it's only a number !
-            if (this.#coefficient.value != 0) {
-                return this.#coefficient.frac.tex
-            } else {
-                return '0'
-            }
-        } else {
-            if (this.#coefficient.value === 1) {
-                return L
-            } else if (this.#coefficient.value === -1) {
-                return `-${L}`
-            } else if (this.#coefficient.value === 0) {
-                return '0'
-            } else {
-                return `${this.#coefficient.frac.tex}${L}`
-            }
-        }
+        return this.#format('tex')
     }
 
     // Display getter
@@ -126,35 +97,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      * This display getter is to be used in the polynom display getter
      */
     public get display(): string {
-        let L = ''
-        const letters = Object.keys(this.#literal).sort()
-        for (const letter of letters) {
-            if (this.#literal[letter].isNotZero()) {
-                L += letter
-                if (this.#literal[letter].isNotEqual(1)) {
-                    L += `^(${this.#literal[letter].display})`
-                }
-            }
-        }
-
-        if (L === '') {
-            // No setLetter - means it's only a number !
-            if (this.#coefficient.value != 0) {
-                return this.#coefficient.display
-            } else {
-                return ''
-            }
-        } else {
-            if (this.#coefficient.value === 1) {
-                return L
-            } else if (this.#coefficient.value === -1) {
-                return `-${L}`
-            } else if (this.#coefficient.value === 0) {
-                return '0'
-            } else {
-                return `${this.#coefficient.display}${L}`
-            }
-        }
+        return this.#format('display')
     }
 
     public static gcd = (...monoms: Monom[]): Monom => {
@@ -177,7 +120,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             // Remove the inexistant letters from the resulting monom
             for (const letter in M.literal) {
                 if (!(letter in m.literal)) {
-                    M.literal[letter].zero()
+                    M.removeVariable(letter)
                 }
             }
             for (const letter in m.literal) {
@@ -222,7 +165,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
 
                 this.#coefficient.add(mAsMonom.coefficient)
             } else {
-                console.log('Add monom: ' + this.display + ' is not similar with ', mAsMonom.display)
+                throw new Error('Add monom: ' + this.display + ' is not similar with ' +  mAsMonom.display)
             }
         }
         return this
@@ -338,7 +281,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         let literals: literalType<Fraction>[] = []
         for (const L in this.literal) {
             // L is the letter.
-            literals = this._getLiteralDividers(literals, L)
+            literals = this.#getLiteralDividers(literals, L)
         }
 
         const monomDividers: Monom[] = []
@@ -437,12 +380,12 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
     public integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string): Fraction {
         const primitive = this.primitive(letter)
 
-        return (primitive.evaluate(b) as Fraction)
-            .subtract(primitive.evaluate(a) as Fraction)
+        return (primitive.evaluate(b, false) as Fraction)
+            .subtract(primitive.evaluate(a, false) as Fraction)
     }
 
     public inverse = (): this => {
-        this.#coefficient.opposite()
+        this.#coefficient.inverse()
         for (const letter in this.#literal) {
             this.#literal[letter].opposite()
         }
@@ -482,8 +425,8 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
                 return false
             }
 
-            // The natural power must be be even
-            if (this.literal[letter].isEven()) {
+            // The natural power must be even - if it's odd, the monom is not a square.
+            if (this.literal[letter].isOdd()) {
                 return false
             }
         }
@@ -645,37 +588,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
     }
 
     public get plotFunction(): string {
-        let L = ''
-        const letters = Object.keys(this.#literal).sort()
-
-        for (const letter of letters) {
-            if (this.#literal[letter].isNotZero()) {
-                L += (L === '' ? "" : "*") + letter
-                if (this.#literal[letter].isNotEqual(1)) {
-                    L += `^(${this.#literal[letter].display})`
-                }
-            }
-        }
-
-        // No literal part
-        if (L === '') {
-            // No setLetter - means it's only a number !
-            if (this.#coefficient.value != 0) {
-                return this.#coefficient.display
-            } else {
-                return ''
-            }
-        } else {
-            if (this.#coefficient.value === 1) {
-                return L
-            } else if (this.#coefficient.value === -1) {
-                return `-${L}`
-            } else if (this.#coefficient.value === 0) {
-                return '0'
-            } else {
-                return `${this.#coefficient.display}*${L}`
-            }
-        }
+        return this.#format('plot')
     }
 
     /**
@@ -733,8 +646,10 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
 
     /**
      * Get the nth-root of the monom
+     * @todo Not yet implemented
      */
     public root = (): this => {
+        // TODO: implement nth-root for monoms
         throw new Error('Method not implemented.')
     }
 
@@ -751,6 +666,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         // Set the power of the letter to zero => remove it
         if (this.hasVariable(letter) && pow.isZero()) {
             this.removeVariable(letter)
+            return this
         }
 
 
@@ -766,10 +682,11 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         if (this.isSquare()) {
             this.#coefficient.sqrt()
             for (const letter in this.#literal) {
-                this.#literal[letter].clone().divide(2)
+                this.#literal[letter].divide(2)
             }
         }
 
+        // TODO: throw an error if the monom is not a square ? Or allow the result to be a monom with rational powers ?
         return this
     }
 
@@ -789,7 +706,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
 
                 this.#coefficient.add(mAsMonom.clone().coefficient.opposite())
             } else {
-                console.log('Subtract: Is not similar: ', mAsMonom.display)
+                throw new Error('Subtract: Is not similar: ' + mAsMonom.display)
             }
         }
         return this
@@ -865,39 +782,58 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return r
     }
 
-    #shutingYardToReducedMonom = (inputStr: string): this => {
-        // Get the RPN array of the current expression
-        const SY: ShutingYard = new ShutingYard().parse(inputStr)
-        const rpn: { token: string, tokenType: ShutingyardType }[] = SY.rpn
+    #format = (type: 'tex' | 'display' | 'plot'): string => {
+        let L = ''
+        const letters = Object.keys(this.#literal).sort()
 
-        const stack: Monom[] = []
-
-        if (rpn.length === 0) {
-            this.zero()
-            return this
-        } else if (rpn.length === 1) {
-            const element = rpn[0]
-
-            this.one()
-            if (element.tokenType === ShutingyardType.COEFFICIENT) {
-                this.coefficient = new Fraction(element.token)
-            } else if (element.tokenType === ShutingyardType.VARIABLE) {
-                this.setLetter(element.token, 1)
-            }
-            return this
-        } else {
-            // Reset the monom
-            for (const element of rpn) {
-                this.#shutingYard_AddToken(stack, element)
+        for (const letter of letters) {
+            if (this.#literal[letter].isNotZero()) {
+                if (type === 'plot' && L !== '') { L += '*' }
+                L += letter
+                if (this.#literal[letter].isNotEqual(1)) {
+                    L += type === 'tex'
+                        ? `^{ ${this.#literal[letter].tfrac.tex} }`
+                        : `^(${this.#literal[letter].display})`
+                }
             }
         }
 
-        this.one()
-        this.multiply(stack[0])
-        return this
+        const coeffStr = type === 'tex' ? this.#coefficient.frac.tex : this.#coefficient.display
+
+        if (L === '') {
+            return this.#coefficient.value !== 0 ? coeffStr : '0'
+        }
+
+        if (this.#coefficient.value === 1) { return L }
+        if (this.#coefficient.value === -1) { return `-${L}` }
+        if (this.#coefficient.value === 0) { return '0' }
+        return type === 'plot' ? `${coeffStr}*${L}` : `${coeffStr}${L}`
     }
 
-    #shutingYard_AddToken = (stack: Monom[], element: Token): void => {
+    #getLiteralDividers(arr: literalType<Fraction>[], letter: string): literalType<Fraction>[] {
+        const tmpList: Record<string, Fraction>[] = []
+
+        // Be default, this.literal[letter] should be a rational number.
+        for (let d = 0; d <= this.literal[letter].value; d++) {
+            if (arr.length === 0) {
+                const litt: literalType<Fraction> = {}
+                litt[letter] = new Fraction(d)
+                tmpList.push(litt)
+            } else {
+                for (const item of arr) {
+                    const litt: literalType<Fraction> = {}
+                    for (const currentLetter in item) {
+                        litt[currentLetter] = item[currentLetter]
+                    }
+                    litt[letter] = new Fraction(d)
+                    tmpList.push(litt)
+                }
+            }
+        }
+        return tmpList
+    }
+
+    #shutingYardAddToken = (stack: Monom[], element: Token): void => {
         let q1: Monom, q2: Monom, m: Monom, letter: string, pow: Fraction
 
         if (element.tokenType === ShutingyardType.COEFFICIENT) {
@@ -952,26 +888,35 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         }
     }
 
-    private _getLiteralDividers(arr: literalType<Fraction>[], letter: string): literalType<Fraction>[] {
-        const tmpList: Record<string, Fraction>[] = []
+    #shutingYardToReducedMonom = (inputStr: string): this => {
+        // Get the RPN array of the current expression
+        const SY: ShutingYard = new ShutingYard().parse(inputStr)
+        const rpn: { token: string, tokenType: ShutingyardType }[] = SY.rpn
 
-        // Be default, this.literal[letter] should be a rational number.
-        for (let d = 0; d <= this.literal[letter].value; d++) {
-            if (arr.length === 0) {
-                const litt: literalType<Fraction> = {}
-                litt[letter] = new Fraction(d)
-                tmpList.push(litt)
-            } else {
-                for (const item of arr) {
-                    const litt: literalType<Fraction> = {}
-                    for (const currentLetter in item) {
-                        litt[currentLetter] = item[currentLetter]
-                    }
-                    litt[letter] = new Fraction(d)
-                    tmpList.push(litt)
-                }
+        const stack: Monom[] = []
+
+        if (rpn.length === 0) {
+            this.zero()
+            return this
+        } else if (rpn.length === 1) {
+            const element = rpn[0]
+
+            this.one()
+            if (element.tokenType === ShutingyardType.COEFFICIENT) {
+                this.coefficient = new Fraction(element.token)
+            } else if (element.tokenType === ShutingyardType.VARIABLE) {
+                this.setLetter(element.token, 1)
+            }
+            return this
+        } else {
+            // Reset the monom
+            for (const element of rpn) {
+                this.#shutingYardAddToken(stack, element)
             }
         }
-        return tmpList
+
+        this.one()
+        this.multiply(stack[0])
+        return this
     }
 }

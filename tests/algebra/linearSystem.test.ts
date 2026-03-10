@@ -158,6 +158,7 @@ describe('Linear System algebra', () => {
             '4x+10y=22'
         )
         const sols_infinite = LS_infinite.solve()
+        
         expect(sols_infinite).to.have.length(2)
         expect(sols_infinite[0].value).to.be.equal(Infinity)
     })

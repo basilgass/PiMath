@@ -29,6 +29,7 @@ export {Random}
 
 // Typesetting
 export type * from "./pimath.interface"
+export type * from "./randomization/rndTypes"
 
 // Make a global object
 const PiMath = {

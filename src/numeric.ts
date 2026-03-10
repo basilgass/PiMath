@@ -54,8 +54,14 @@ function dividers(value: number): number[] {
 function greatestCommonDivisor(...values: number[]): number {
     // Define the gcd for two number
     const gcd2 = function (a: number, b: number): number {
+        if(isNaN(a) || isNaN(b)) {
+            return NaN
+        }
         if (b === 0) {
             return a
+        }
+        if(a === 0) {
+            return b
         }
         return gcd2(b, a % b)
     }
