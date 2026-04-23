@@ -69,13 +69,14 @@ export class Polynom implements IPiMathObject<Polynom>,
      * @param inputStr
      * @param values
      */
-    public parse = (inputStr: PolynomParsingType, ...values: InputAlgebra<Monom>[]): this => {
+    public parse(inputStr: PolynomParsingType, ...values: InputAlgebra<Monom>[]): this {
         // Reset the main variables.
         this.#monoms = []
         this.#factors = []
+        this.#invalidateCache()
 
         if (typeof inputStr === 'string') {
-            return this.#parseString(inputStr, ...values)
+            return this.#parseString(inputStr, ...values as InputValue<Fraction>[])
         } else if (
             (typeof inputStr === 'number' || inputStr instanceof Fraction || inputStr instanceof Monom)
             && (values.length === 0)
@@ -99,14 +100,14 @@ export class Polynom implements IPiMathObject<Polynom>,
     /**
      * Clone the polynom
      */
-    public clone = (): Polynom => {
+    public clone(): Polynom {
         const P = new Polynom()
         const M: Monom[] = []
+        P.#defaultVariable = this.#defaultVariable
 
         for (const m of this.#monoms) {
             M.push(m.clone())
         }
-
 
         P.monoms = M
 
@@ -131,11 +132,11 @@ export class Polynom implements IPiMathObject<Polynom>,
         return result
     }
 
-    public add = (...values: InputAlgebra<Polynom>[]): Polynom => {
+    public add(...values: InputAlgebra<Polynom>[]): this {
 
         for (const value of values) {
             if (value instanceof Polynom) {
-                this.#monoms = this.#monoms.concat(value.monoms)
+                this.#monoms = this.#monoms.concat(value.monoms.map(m=>m.clone()))
             } else if (value instanceof Monom) {
                 this.#monoms.push(value.clone())
             } else if (typeof value === "number" && Number.isSafeInteger(value)) {
@@ -149,16 +150,15 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.reduce()
     }
 
-    public commonMonom = (): Monom => {
+    public commonMonom(): Monom {
         const M = new Monom().one()
         const numerator: number = this.gcdNumerator()
         const denominator: number = this.gcdDenominator()
-        const degree = this.degree()
 
         M.coefficient = new Fraction(numerator, denominator)
         for (const L of this.variables) {
             // Initialize the setLetter with the max degree
-            M.setLetter(L, degree)
+            M.setLetter(L, this.degree(L))
             for (const m of this.#monoms) {
                 M.setLetter(L, Fraction.min(m.degree(L), M.degree(L)))
                 if (M.degree(L).isZero()) {
@@ -170,7 +170,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return M
     }
 
-    public degree = (letter?: string): Fraction => {
+    public degree(letter?: string): Fraction {
         let d: Fraction = new Fraction().zero()
         for (const m of this.#monoms) {
             d = Fraction.max(m.degree(letter).value, d)
@@ -179,7 +179,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return d
     }
 
-    public derivative = (letter?: string): Polynom => {
+    public derivative(letter?: string): Polynom {
         const dP = new Polynom()
 
         for (const m of this.#monoms) {
@@ -189,7 +189,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return dP.reduce()
     }
 
-    public divide = (value: InputAlgebra<Polynom>): Polynom => {
+    public divide(value: InputAlgebra<Polynom>): this {
 
         if (value instanceof Fraction) {
             return this.#divideByFraction(value)
@@ -204,6 +204,7 @@ export class Polynom implements IPiMathObject<Polynom>,
                 const {quotient, reminder} = this.euclidean(value)
                 if (reminder.isZero()) {
                     this.#monoms = quotient.monoms
+                    this.#invalidateCache()
                     return this
                 }
             }
@@ -214,8 +215,9 @@ export class Polynom implements IPiMathObject<Polynom>,
         throw new Error(`Cannot divide by ${value as unknown as string}`)
     }
 
-    public empty = (): this => {
+    public empty(): this {
         this.#monoms = []
+        this.#invalidateCache()
         return this
     }
 
@@ -224,8 +226,8 @@ export class Polynom implements IPiMathObject<Polynom>,
      * @param P
      * returns {quotient: Polynom, reminder: Polynom}
      */
-    public euclidean = (P: Polynom): IEuclidean => {
-        const letter: string = P.variables[0]
+    public euclidean(P: Polynom): IEuclidean {
+        const letter: string | undefined = P.variables[0]
         const quotient: Polynom = new Polynom().zero()
         const reminder: Polynom = this.clone().reorder(letter)
 
@@ -239,6 +241,10 @@ export class Polynom implements IPiMathObject<Polynom>,
             }
         }
 
+        if (!this.degree(letter).isNatural() || !P.degree(letter).isNatural()) {
+            throw new Error('Euclidean division requires integer degrees')
+        }
+
         // Get at least a letter
         const maxMP: Monom = P.monomByDegree(undefined, letter)
         const degreeP: Fraction = P.degree(letter)
@@ -246,7 +252,8 @@ export class Polynom implements IPiMathObject<Polynom>,
         let newM: Monom
 
         // Make the Euclidean division of the two polynoms.
-        let MaxIteration = this.degree(letter).value * 2
+        let MaxIteration = this.degree(letter).value - degreeP.value + 1
+
         while (reminder.degree(letter).isGeq(degreeP) && MaxIteration > 0) {
             MaxIteration--
 
@@ -272,7 +279,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return {quotient, reminder}
     }
 
-    public evaluate = (values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number => {
+    public evaluate(values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number {
         // Return the numeric value, without using Fraction
         if (asNumeric) {
             return this.#evaluateAsNumeric(values)
@@ -281,7 +288,6 @@ export class Polynom implements IPiMathObject<Polynom>,
         // Build the evaluated fraction
         const r = new Fraction().zero()
         this.#monoms.forEach(monom => {
-            //console.log('Evaluate polynom: ', monom.display, values, monom.evaluate(values).display);
             r.add(monom.evaluate(values, asNumeric))
         })
 
@@ -291,10 +297,10 @@ export class Polynom implements IPiMathObject<Polynom>,
     // -------------------------------------
     /**
      * Factorize a polynom and store the best results in factors.
-     * @param letter
+     * @param _letter
      * TODO: Handle other letter than 'x'.
      */
-    public factorize(letter?: string): Polynom[] {
+    public factorize(_letter?: string): Polynom[] {
         this.#factors = []
 
         let P = this.clone().reorder()
@@ -314,7 +320,13 @@ export class Polynom implements IPiMathObject<Polynom>,
         const solutions = new EquationSolver(P).solve()
 
         if (solutions.length === 0) {
-            this.#factors = [this.clone()]
+            if (this.#factors.length === 0) {
+                // No common monom was extracted: the whole polynomial is irreducible
+                this.#factors = [this.clone()]
+            } else {
+                // Common monom was extracted: P is the irreducible remaining part
+                this.#factors.push(P)
+            }
             return this.#factors
         }
 
@@ -352,7 +364,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.#factors
     }
 
-    public fromCoefficients(...values: InputValue<Fraction>[]) {
+    public fromCoefficients(...values: InputValue<Fraction>[]): this {
 
         this.#monoms = []
         const letter = this.#defaultVariable ?? 'x'
@@ -364,35 +376,39 @@ export class Polynom implements IPiMathObject<Polynom>,
             this.#monoms.push(monom)
         })
 
+        this.#invalidateCache()
         return this.reorder()
     }
 
-    public gcdDenominator = (): number => {
+    public gcdDenominator(): number {
         return Numeric.gcd(...this.getDenominators())
     }
 
-    public gcdNumerator = (): number => {
+    public gcdNumerator(): number {
         return Numeric.gcd(...this.getNumerators())
     }
 
     public getCoefficients(): Fraction[] {
+        if (!this.degree().isNatural()) {
+            throw new Error('getCoefficients() requires a polynomial with integer degrees')
+        }
+
         // Assume there is only one letter.
         const orderedPolynom = this.clone().reorder()
 
         const length = this.degree().value + 1
-        const coeffs = new Array(length).fill(new Fraction(0)) as unknown as Fraction[]
+        const coeffs = Array.from({length}, ()=>new Fraction(0))
 
         orderedPolynom.monoms.forEach(monom => {
             const index = length - monom.degree().value - 1
             coeffs[index] = monom.coefficient.clone()
         })
 
-        // return orderedPolynom.monoms.map(x=>x.coefficient)
         return coeffs
     }
 
     // Next functions are used for for commonMonom, which is used in the factorize method.
-    public getDenominators = (): number[] => {
+    public getDenominators(): number[] {
         const denominators: number[] = []
         for (const m of this.#monoms) {
             denominators.push(m.coefficient.denominator)
@@ -401,7 +417,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return denominators
     }
 
-    public getNumerators = (): number[] => {
+    public getNumerators(): number[] {
         const numerators: number[] = []
         for (const m of this.#monoms) {
             numerators.push(m.coefficient.numerator)
@@ -410,7 +426,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return numerators
     }
 
-    public getZeroes = (): Solution[] => {
+    public getZeroes(): Solution[] {
         if (this.degree().isZero()) {
             return []
         }
@@ -423,7 +439,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.variables.includes(letter)
     }
 
-    public integrate = (a: InputValue<Fraction>, b: InputValue<Fraction>, letter = 'x'): Fraction => {
+    public integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter = 'x'): Fraction {
         const primitive = this.primitive(letter)
 
         const valuesA: literalType<Fraction> = {},
@@ -439,7 +455,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return undefined
     }
 
-    public isDeveloped = (polynomString: string): boolean => {
+    public isDeveloped(polynomString: string): boolean {
         let P: Polynom
 
         // Start by removing the parenthesis after a "power"
@@ -469,7 +485,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return true
     }
 
-    public isDividableBy = (div: Polynom): boolean => {
+    public isDividableBy(div: Polynom): boolean {
         // Quick evaluation.
         if (div.degree().isOne()) {
             const zero = div.getZeroes()[0]
@@ -486,7 +502,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
     }
 
-    public isEqual = (P: Polynom): boolean => {
+    public isEqual(P: Polynom): boolean {
         return this.#compare(P, '=')
     }
 
@@ -499,11 +515,11 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.#monoms.length === 1 && this.#monoms[0].coefficient.isOne() && this.degree().isZero()
     }
 
-    public isOppositeAt = (P: Polynom): boolean => {
+    public isOppositeAt(P: Polynom): boolean {
         return this.#compare(P.clone().opposite(), '=')
     }
 
-    public isSameAs = (P: Polynom): boolean => {
+    public isSameAs(P: Polynom): boolean {
         return this.#compare(P, 'same')
     }
 
@@ -511,11 +527,11 @@ export class Polynom implements IPiMathObject<Polynom>,
         return (this.#monoms.length === 1 && this.#monoms[0].coefficient.isZero()) || this.#monoms.length === 0
     }
 
-    public lcmDenominator = (): number => {
+    public lcmDenominator(): number {
         return Numeric.lcm(...this.getDenominators())
     }
 
-    public lcmNumerator = (): number => {
+    public lcmNumerator(): number {
         return Numeric.lcm(...this.getNumerators())
     }
 
@@ -523,56 +539,48 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.#monoms.length
     }
 
-    public letters = (): string[] => {
-        let S = new Set<string>()
+    public limitTo(value: InputValue<Fraction>, letter?: string): Fraction {
+        const f = new Fraction(value)
 
-        for (const m of this.#monoms) {
-            S = new Set([...S, ...m.variables])
+        // Finite value: evaluate directly
+        if (f.isFinite()) {
+            const l = letter ?? this.variables[0] ?? 'x'
+            return this.evaluate({[l]: f}) as Fraction
         }
 
+        const M = this.monomByDegree(undefined, letter)
+        const sign = M.coefficient.sign()
+        const degree = M.degree(letter)
 
-        return [...S]
-    }
-
-    public limitToInfinity = (letter?: string): Fraction => {
-        const M = this.monomByDegree(undefined, letter),
-            sign = M.coefficient.sign(),
-            degree = M.degree(letter)
-
-        if (degree.isStrictlyPositive()) {
-            return sign === 1 ? (new Fraction()).infinite() : (new Fraction()).infinite().opposite()
-        } else if (degree.isZero()) {
-            return M.coefficient
+        // Constant polynomial
+        if (degree.isZero()) {
+            return M.coefficient.clone()
         }
 
-
-        // Any other cases
-        return (new Fraction()).zero()
-    }
-
-    public limitToNegativeInfinity = (letter?: string): Fraction => {
-        const M = this.monomByDegree(undefined, letter),
-            sign = M.coefficient.sign(),
-            degree = M.degree(letter)
-
-        if (degree.isStrictlyPositive()) {
-            return sign === -1 ? (new Fraction()).infinite() : (new Fraction()).infinite().opposite()
-        } else if (degree.isZero()) {
-            return M.coefficient
+        if (!degree.isStrictlyPositive()) {
+            return new Fraction().zero()
         }
 
+        // Limit at +∞: determined by the leading coefficient sign
+        if (f.isPositive()) {
+            return sign === 1
+                ? new Fraction().infinite()
+                : new Fraction().infinite().opposite()
+        }
 
-        // Any other cases
-        return (new Fraction()).zero()
+        // Limit at -∞: accounts for the parity of the degree
+        const degreeIsEven = degree.value % 2 === 0
+        const limitSign = degreeIsEven ? sign : -sign
+        return limitSign === 1
+            ? new Fraction().infinite()
+            : new Fraction().infinite().opposite()
     }
 
-    public monomByDegree = (degree?: Fraction | number, letter?: string): Monom => {
-        if (degree === undefined)
-            // return the highest degree monom.
-        {
+    public monomByDegree(degree?: Fraction | number, letter?: string): Monom {
+        // return the highest degree monom.
+        if (degree === undefined) {
             return this.monomByDegree(this.degree(letter), letter)
         }
-
 
         // Reduce the polynom.
         const M = this.clone().reduce()
@@ -582,20 +590,18 @@ export class Polynom implements IPiMathObject<Polynom>,
             }
         }
 
-
         // Nothing was found - return the null monom.
         return new Monom().zero()
     }
 
     // Used in LinearSystem.tex
-    public monomByLetter = (letter: string): Monom => {
+    public monomByLetter(letter: string): Monom {
         const M = this.clone().reduce()
         for (const m of M.#monoms) {
             if (m.hasVariable(letter)) {
                 return m.clone()
             }
         }
-
 
         return new Monom().zero()
     }
@@ -607,13 +613,13 @@ export class Polynom implements IPiMathObject<Polynom>,
 
     public set monoms(M: Monom[]) {
         this.#monoms = M
+        this.#invalidateCache()
     }
 
-    public monomsByDegree = (degree?: number | Fraction, letter?: string): Monom[] => {
-        if (degree === undefined)
-            // return the highest degree monom.
-        {
-            return this.monomsByDegree(this.degree(letter))
+    public monomsByDegree(degree?: number | Fraction, letter?: string): Monom[] {
+        // return the highest degree monom.
+        if (degree === undefined) {
+            return this.monomsByDegree(this.degree(letter), letter)
         }
 
         // Reduce the polynom.
@@ -626,12 +632,10 @@ export class Polynom implements IPiMathObject<Polynom>,
             }
         }
 
-
         return Ms
-        // Nothing was found - return
     }
 
-    public multiply = (value: InputAlgebra<Polynom>): Polynom => {
+    public multiply(value: InputAlgebra<Polynom>): this {
 
         if (value instanceof Polynom) {
             return this.#multiplyByPolynom(value)
@@ -666,15 +670,17 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.variables.length
     }
 
-    public one = (): this => {
+    public one(): this {
         this.#monoms = []
         this.#monoms.push(new Monom().one())
+        this.#invalidateCache()
         return this
     }
 
     // ------------------------------------------
-    public opposite = (): this => {
+    public opposite(): this {
         this.#monoms = this.#monoms.map(m => m.opposite())
+        this.#invalidateCache()
         return this
     }
 
@@ -682,11 +688,11 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.#genDisplay('tex', false, false, true)
     }
 
-    public pow = (nb: number): Polynom => {
+    public pow(nb: number): Polynom {
         return operation_pow(this as Polynom, nb).reduce()
     }
 
-    public primitive = (letter?: string): Polynom => {
+    public primitive(letter?: string): Polynom {
         const dP = new Polynom()
 
         for (const m of this.#monoms) {
@@ -696,7 +702,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return dP
     }
 
-    public reduce = (): Polynom => {
+    public reduce(): this {
         // Reduce the polynom
 
         // Group the monoms by similarity
@@ -714,7 +720,6 @@ export class Polynom implements IPiMathObject<Polynom>,
                 }
             }
 
-
             i++
         }
 
@@ -728,16 +733,15 @@ export class Polynom implements IPiMathObject<Polynom>,
             m.coefficient.reduce()
         }
 
-
         if (this.length === 0) {
-            return new Polynom().zero()
+            return this.zero()
         }
 
-
+        this.#invalidateCache()
         return this.reorder()
     }
 
-    public reorder = (letter = 'x', revert = false): this => {
+    public reorder(letter = 'x', revert = false): this {
         const otherLetters = this.variables.filter(x => x !== letter)
         this.#monoms.sort(function (a, b) {
             const da = a.degree(letter).value,
@@ -773,7 +777,7 @@ export class Polynom implements IPiMathObject<Polynom>,
      * @param letter
      * @param P
      */
-    public replaceBy = (letter: string, P: Polynom): this => {
+    public replaceBy(letter: string, P: Polynom): this {
         let pow: Fraction
         const resultPolynom: Polynom = new Polynom().zero()
 
@@ -790,13 +794,17 @@ export class Polynom implements IPiMathObject<Polynom>,
                 m.removeVariable(letter)
 
                 // Add the new monom to the result polynom
-                resultPolynom.add(P.clone().pow(Math.abs(pow.numerator)).multiply(m))
+                if (pow.isStrictlyNegative()) {
+                    throw new Error(`Cannot replace variable "${letter}" with negative power in a Polynom`)
+                }
+                resultPolynom.add(P.clone().pow(pow.numerator).multiply(m))
             }
         }
 
 
         // Reduce the monoms
         this.#monoms = resultPolynom.reduce().monoms
+        this.#invalidateCache()
         return this
     }
 
@@ -825,7 +833,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         throw new Error('Cannot take the square root from a polynom')
     }
 
-    public subtract = (...values: InputAlgebra<Polynom>[]): Polynom => {
+    public subtract(...values: InputAlgebra<Polynom>[]): this {
         for (const value of values) {
             if (value instanceof Polynom) {
                 this.add(value.clone().opposite())
@@ -878,7 +886,7 @@ export class Polynom implements IPiMathObject<Polynom>,
             ]
 
             testingRoots.forEach((test, index) => {
-                const sign = this.evaluate({x: test}, true) as number
+                const sign = this.evaluate({[this.variables[0] ?? 'x']: test}, true) as number
                 signs[index * 2] = sign > 0 ? '+' : '-'
             })
         }
@@ -895,26 +903,17 @@ export class Polynom implements IPiMathObject<Polynom>,
     }
 
     public get variables(): string[] {
-        let V: string[] = []
-
-        for (const m of this.#monoms) {
-            V = V.concat(m.variables)
-        }
-
-
-        // Remove duplicates.
-        V = [...new Set(V)]
-        V.sort()
-        return V
+        return [...new Set(this.#monoms.flatMap(m => m.variables))].sort()
     }
 
     /**
      * Set the polynom to zero.
      * @returns {this}
      */
-    public zero = (): this => {
+    public zero(): this {
         this.#monoms = []
         this.#monoms.push(new Monom().zero())
+        this.#invalidateCache()
         return this
     }
 
@@ -922,7 +921,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.getZeroes()
     }
 
-    #compare = (P: Polynom, sign?: string): boolean => {
+    #compare(P: Polynom, sign?: string): boolean {
         sign ??= '='
 
         // Create clone version to reduce them without altering the original polynoms.
@@ -954,25 +953,26 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
     }
 
-
-    #divideByFraction = (F: Fraction): this => {
+    #divideByFraction(F: Fraction): this {
         for (const m of this.#monoms) {
             m.coefficient.divide(F)
         }
 
+        this.#invalidateCache()
         return this
     }
 
-    #divideByInteger = (nb: number): this => {
+    #divideByInteger(nb: number): this {
         const nbF = new Fraction(nb)
         for (const m of this.#monoms) {
             m.coefficient.divide(nbF)
         }
 
+        this.#invalidateCache()
         return this
     }
 
-    #evaluateAsNumeric = (values: literalType<number | Fraction> | InputValue<Fraction>): number => {
+    #evaluateAsNumeric(values: literalType<number | Fraction> | InputValue<Fraction>): number {
         let r = 0
         this.#monoms.forEach(monom => {
             r += monom.evaluate(values, true) as number
@@ -981,14 +981,13 @@ export class Polynom implements IPiMathObject<Polynom>,
         return r
     }
 
-    #genDisplay = (output?: string, forceSign?: boolean, wrapParentheses?: boolean, withAllMultiplicationSign?: boolean): string => {
+    #genDisplay(output?: string, forceSign?: boolean, wrapParentheses?: boolean, withAllMultiplicationSign?: boolean): string {
         let P = ''
 
         for (const k of this.#monoms) {
             if (k.coefficient.value === 0) {
                 continue
             }
-
 
             // The monom to be displayed
             let m
@@ -1017,42 +1016,24 @@ export class Polynom implements IPiMathObject<Polynom>,
         return P
     }
 
-    #getAllPotentialFactors = (P: Polynom, maxDegree: number, letter: string): Polynom[] => {
-        const m1 = P.monoms[0].dividers,
-            m2 = P.monoms[P.monoms.length - 1].dividers
-
-        const allDividers: Polynom[] = []
-        m1.forEach(m1d => {
-            // Get only polynom that has a degree less than a specific value
-            if (m1d.degree(letter).isLeq(maxDegree)) {
-                m2.forEach(m2d => {
-                    if (m1d.degree(letter).isNotEqual(m2d.degree(letter))) {
-                        allDividers.push(new Polynom(m1d, m2d))
-                        allDividers.push(new Polynom(m1d, m2d.clone().opposite()))
-                    }
-                })
-            }
-
-
-        })
-
-        return allDividers
+    #invalidateCache(): void {
+        this.#rootsCache = false
+        this.#factors = []
     }
 
-    #multiplyByFraction = (F: Fraction): Polynom => {
+    #multiplyByFraction(F: Fraction): this {
         for (const m of this.#monoms) {
             m.coefficient.multiply(F)
         }
 
-
         return this.reduce()
     }
 
-    #multiplyByInteger = (nb: number): Polynom => {
+    #multiplyByInteger(nb: number): this {
         return this.#multiplyByFraction(new Fraction(nb))
     }
 
-    #multiplyByMonom = (M: Monom): Polynom => {
+    #multiplyByMonom(M: Monom): this {
         for (const m of this.#monoms) {
             m.multiply(M)
         }
@@ -1060,7 +1041,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.reduce()
     }
 
-    #multiplyByPolynom = (P: Polynom): Polynom => {
+    #multiplyByPolynom(P: Polynom): this {
         const M: Monom[] = []
         for (const m1 of this.#monoms) {
             for (const m2 of P.monoms) {
@@ -1068,12 +1049,11 @@ export class Polynom implements IPiMathObject<Polynom>,
             }
         }
 
-
         this.#monoms = M
         return this.reduce()
     }
 
-    #parseString(inputStr: string, ...values: unknown[]): this {
+    #parseString(inputStr: string, ...values: InputValue<Fraction>[]): this {
         if (values.length === 0) {
             // Parse the polynom using the shutting yard algorithm
             if (inputStr !== '' && !isNaN(Number(inputStr))) {
@@ -1088,18 +1068,18 @@ export class Polynom implements IPiMathObject<Polynom>,
 
             // Parse the string.
             return this.#shutingYardToReducedPolynom(inputStr)
-        } else if (/^[a-z]+/.test(inputStr)) {
+        } else if (/^[a-z]+$/.test(inputStr)) {
             // We assume the inputStr contains only letters.
             this.empty()
 
-            const fractions = values.map(x => new Fraction(x as InputValue<Fraction>))
+            const fractions = values.map(x => new Fraction(x))
 
             // Multiple setLetter version
             if (inputStr.length > 1) {
                 const letters = inputStr.split('')
 
-                if (letters.length < values.length - 2) {
-                    throw new Error('Too many factors for too few variables !')
+                if (fractions.length > letters.length + 1) {
+                    throw new Error(`Too many values: ${letters.length} letters but ${fractions.length} values provided`)
                 }
 
                 let i = 0
@@ -1107,7 +1087,7 @@ export class Polynom implements IPiMathObject<Polynom>,
                 for (const F of fractions) {
                     const m = new Monom()
                     m.coefficient = F.clone()
-                    m.literalStr = letters[i] || ''
+                    m.literalStr = letters[i] ?? ''
                     this.add(m)
                     i++
                 }
@@ -1130,35 +1110,7 @@ export class Polynom implements IPiMathObject<Polynom>,
 
     }
 
-    /**
-     * Main parse using a shutting yard class
-     * @param inputStr
-     */
-    #shutingYardToReducedPolynom = (inputStr: string): this => {
-        // Get the RPN array of the current expression
-        const SY: ShutingYard = new ShutingYard().parse(inputStr)
-        const rpn: { token: string, tokenType: ShutingyardType }[] = SY.rpn
-
-        // New version for reducing shuting yard.
-        this.zero()
-
-        const stack: Polynom[] = []
-
-        // Loop through the each element of the RPN
-        for (const element of rpn) {
-            this.#shutingYard_addToken(stack, element)
-        }
-
-
-        if (stack.length === 1) {
-            this.add(stack[0])
-        }
-
-
-        return this.reorder()
-    }
-
-    #shutingYard_addToken = (stack: Polynom[], element: Token): void => {
+    #shutingYardAddToken(stack: Polynom[], element: Token): void {
         switch (element.tokenType) {
             case ShutingyardType.COEFFICIENT:
                 stack.push(new Polynom(element.token))
@@ -1169,9 +1121,7 @@ export class Polynom implements IPiMathObject<Polynom>,
                 break
 
             case ShutingyardType.CONSTANT:
-                // TODO: add constant support to Polynom parsing.
-                console.log('Actually, not supported - will be added later !')
-                break
+                throw new Error('Unsupported CONSTANT token in Polynom parser')
 
             case ShutingyardType.OPERATION:
                 if (stack.length >= 2) {
@@ -1180,7 +1130,7 @@ export class Polynom implements IPiMathObject<Polynom>,
 
                     // Check if the polynoms are not undefined.
                     if (a === undefined || b === undefined) {
-                        break
+                        throw new Error('Unexpected undefined operand in Polynom parser stack')
                     }
 
                     if (element.token === '+') {
@@ -1191,7 +1141,7 @@ export class Polynom implements IPiMathObject<Polynom>,
                         stack.push(a.multiply(b))
                     } else if (element.token === '/') {
                         if (b.degree().isStrictlyPositive()) {
-                            console.log('divide by a polynom -> should create a rational polynom !')
+                            throw new Error('Cannot divide a Polynom by another Polynom of degree > 0')
                         } else {
                             // a.divide(b.monoms[0].coefficient)
                             stack.push(a.divide(b.monoms[0].coefficient))
@@ -1212,7 +1162,7 @@ export class Polynom implements IPiMathObject<Polynom>,
 
                                 stack.push(a)
                             } else {
-                                console.error('Cannot have power with fraction')
+                                throw new Error('Cannot raise a multi-monom Polynom to a fractional power')
                             }
                         }
                     }
@@ -1231,16 +1181,42 @@ export class Polynom implements IPiMathObject<Polynom>,
 
             case ShutingyardType.MONOM:
                 // Should never appear.
-                console.error('The monom token should not appear here')
-                break
+                throw new Error('Unexpected MONOM token in polynom parser')
 
             case ShutingyardType.FUNCTION:
                 // Should never appear.
-                console.error('The function token should not appear here - might be introduced later.')
-                break
+                throw new Error(`Unsupported function token "${element.token}" in polynom parser`)
         }
 
 
+    }
+
+    /**
+     * Main parse using a shutting yard class
+     * @param inputStr
+     */
+    #shutingYardToReducedPolynom(inputStr: string): this {
+        // Get the RPN array of the current expression
+        const SY: ShutingYard = new ShutingYard().parse(inputStr)
+        const rpn: { token: string, tokenType: ShutingyardType }[] = SY.rpn
+
+        // New version for reducing shuting yard.
+        this.zero()
+
+        const stack: Polynom[] = []
+
+        // Loop through the each element of the RPN
+        for (const element of rpn) {
+            this.#shutingYardAddToken(stack, element)
+        }
+
+
+        if (stack.length === 1) {
+            this.add(stack[0])
+        }
+
+
+        return this.reorder()
     }
 
 

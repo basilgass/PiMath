@@ -22,6 +22,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     copy(value: Fraction): this;
     get tex(): string;
     get display(): string;
+    static areEquals: (...F: Fraction[]) => boolean;
     static average: (...fractions: (InputValue<Fraction>)[]) => Fraction;
     static isFraction(value: InputValue<Fraction>): boolean;
     static max: (...fractions: InputValue<Fraction>[]) => Fraction;
@@ -31,9 +32,8 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     static unique: (fractions: (InputValue<Fraction>)[]) => Fraction[];
     static xMultiply: (...values: (InputValue<Fraction>)[]) => Fraction;
     abs: () => this;
-    add: (F: InputValue<Fraction>) => Fraction;
+    add: (F: InputValue<Fraction>) => this;
     amplify: (k: number) => this;
-    areEquals: (...F: Fraction[]) => boolean;
     /**
      * Compare the current coefficient with another coefficient
      * @param F (Coefficient) The coefficient to _compare
@@ -44,7 +44,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     set denominator(value: number);
     get dfrac(): this;
     digits(value: number): this;
-    divide: (F: Fraction | number) => Fraction;
+    divide: (F: Fraction | number) => this;
     get exact(): boolean;
     set exact(value: boolean);
     get frac(): this;
@@ -84,13 +84,12 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     set numerator(value: number);
     one: () => this;
     opposite: () => this;
-    pow: (p: number | Fraction) => Fraction;
+    pow: (p: number | Fraction) => this;
     reduce: () => this;
     root: (p: number) => this;
     sign: () => 1 | -1;
     sqrt: () => this;
-    subtract: (F: Fraction | number) => Fraction;
-    get texWithSign(): string;
+    subtract: (F: Fraction | number) => this;
     get tfrac(): this;
     get value(): number;
     get withSign(): this;

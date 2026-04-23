@@ -26,84 +26,82 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
      * @param inputStr
      * @param values
      */
-    parse: (inputStr: PolynomParsingType, ...values: InputAlgebra<Monom>[]) => this;
+    parse(inputStr: PolynomParsingType, ...values: InputAlgebra<Monom>[]): this;
     /**
      * Clone the polynom
      */
-    clone: () => Polynom;
+    clone(): Polynom;
     get tex(): string;
     get display(): string;
     static xMultiply(...polynoms: InputValue<Polynom>[]): Polynom;
-    add: (...values: InputAlgebra<Polynom>[]) => Polynom;
-    commonMonom: () => Monom;
-    degree: (letter?: string) => Fraction;
-    derivative: (letter?: string) => Polynom;
-    divide: (value: InputAlgebra<Polynom>) => Polynom;
-    empty: () => this;
+    add(...values: InputAlgebra<Polynom>[]): this;
+    commonMonom(): Monom;
+    degree(letter?: string): Fraction;
+    derivative(letter?: string): Polynom;
+    divide(value: InputAlgebra<Polynom>): this;
+    empty(): this;
     /**
      * Divide the current polynom by another polynom.
      * @param P
      * returns {quotient: Polynom, reminder: Polynom}
      */
-    euclidean: (P: Polynom) => IEuclidean;
-    evaluate: (values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean) => Fraction | number;
+    euclidean(P: Polynom): IEuclidean;
+    evaluate(values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number;
     /**
      * Factorize a polynom and store the best results in factors.
-     * @param letter
+     * @param _letter
      * TODO: Handle other letter than 'x'.
      */
-    factorize(letter?: string): Polynom[];
+    factorize(_letter?: string): Polynom[];
     get factors(): Polynom[];
     fromCoefficients(...values: InputValue<Fraction>[]): this;
-    gcdDenominator: () => number;
-    gcdNumerator: () => number;
+    gcdDenominator(): number;
+    gcdNumerator(): number;
     getCoefficients(): Fraction[];
-    getDenominators: () => number[];
-    getNumerators: () => number[];
-    getZeroes: () => Solution[];
+    getDenominators(): number[];
+    getNumerators(): number[];
+    getZeroes(): Solution[];
     hasVariable(letter: string): boolean;
-    integrate: (a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string) => Fraction;
+    integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string): Fraction;
     inverse(): Polynom | undefined;
-    isDeveloped: (polynomString: string) => boolean;
-    isDividableBy: (div: Polynom) => boolean;
-    isEqual: (P: Polynom) => boolean;
+    isDeveloped(polynomString: string): boolean;
+    isDividableBy(div: Polynom): boolean;
+    isEqual(P: Polynom): boolean;
     get isMultiVariable(): boolean;
     isOne(): boolean;
-    isOppositeAt: (P: Polynom) => boolean;
-    isSameAs: (P: Polynom) => boolean;
+    isOppositeAt(P: Polynom): boolean;
+    isSameAs(P: Polynom): boolean;
     isZero(): boolean;
-    lcmDenominator: () => number;
-    lcmNumerator: () => number;
+    lcmDenominator(): number;
+    lcmNumerator(): number;
     get length(): number;
-    letters: () => string[];
-    limitToInfinity: (letter?: string) => Fraction;
-    limitToNegativeInfinity: (letter?: string) => Fraction;
-    monomByDegree: (degree?: Fraction | number, letter?: string) => Monom;
-    monomByLetter: (letter: string) => Monom;
+    limitTo(value: InputValue<Fraction>, letter?: string): Fraction;
+    monomByDegree(degree?: Fraction | number, letter?: string): Monom;
+    monomByLetter(letter: string): Monom;
     get monoms(): Monom[];
     set monoms(M: Monom[]);
-    monomsByDegree: (degree?: number | Fraction, letter?: string) => Monom[];
-    multiply: (value: InputAlgebra<Polynom>) => Polynom;
+    monomsByDegree(degree?: number | Fraction, letter?: string): Monom[];
+    multiply(value: InputAlgebra<Polynom>): this;
     get numberOfVars(): number;
-    one: () => this;
-    opposite: () => this;
+    one(): this;
+    opposite(): this;
     get plotFunction(): string;
-    pow: (nb: number) => Polynom;
-    primitive: (letter?: string) => Polynom;
-    reduce: () => Polynom;
-    reorder: (letter?: string, revert?: boolean) => this;
+    pow(nb: number): Polynom;
+    primitive(letter?: string): Polynom;
+    reduce(): this;
+    reorder(letter?: string, revert?: boolean): this;
     /**
      * Replace a variable (letter) by a polynom.
      * @param letter
      * @param P
      */
-    replaceBy: (letter: string, P: Polynom) => this;
+    replaceBy(letter: string, P: Polynom): this;
     root(): Polynom;
     get roots(): Solution[];
     set roots(value: Solution[]);
     setVariable(value: string): this;
     sqrt(): Polynom;
-    subtract: (...values: InputAlgebra<Polynom>[]) => Polynom;
+    subtract(...values: InputAlgebra<Polynom>[]): this;
     tableOfSigns(): TABLE_OF_SIGNS;
     get value(): number | undefined;
     get variables(): string[];
@@ -111,6 +109,6 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
      * Set the polynom to zero.
      * @returns {this}
      */
-    zero: () => this;
+    zero(): this;
     get zeroes(): Solution[];
 }

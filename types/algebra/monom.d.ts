@@ -133,6 +133,7 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
     removeVariable(letter: string): void;
     /**
      * Get the nth-root of the monom
+     * @todo Not yet implemented
      */
     root: () => this;
     /**
@@ -158,5 +159,4 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
      * Create a zero value monom
      */
     zero: () => this;
-    private _getLiteralDividers;
 }

@@ -303,7 +303,7 @@ export class Equation implements
 
     // -----------------------------------------------
     public letters = (): string[] => {
-        return [...new Set([...this.#left.letters(), ...this.#right.letters()])]
+        return [...new Set([...this.#left.variables, ...this.#right.variables])]
     }
 
     // -----------------------------------------------

@@ -3,7 +3,7 @@ import {rndMonom} from "./rndMonom"
 import {Monom, Polynom} from "../../algebra"
 import {randomInt, randomIntSym} from "../rndHelpers"
 
-const factorableConfig: randomPolynomConfig = {
+const defaultPolynomConfig: randomPolynomConfig = {
     letters: 'x',
     degree: 2,
     fraction: false,
@@ -17,12 +17,15 @@ const factorableConfig: randomPolynomConfig = {
 }
 
 export function rndPolynom(userConfig?: randomPolynomConfig): Polynom {
+    console.log(userConfig)
     const config = Object.assign(
-        factorableConfig,
+        defaultPolynomConfig,
         userConfig
     )
+    console.log('>>>>')
+    console.log(config)
 
-    if (config.factorable) return rndFactorablePolynom(factorableConfig)
+    if (config.factorable) return rndFactorablePolynom(config)
 
     // Create the polynom
     const P = new Polynom().empty()
@@ -68,7 +71,7 @@ export function rndPolynom(userConfig?: randomPolynomConfig): Polynom {
 
 export function rndFactorablePolynom(userConfig?: randomPolynomConfig): Polynom {
     const config = Object.assign(
-        factorableConfig,
+        defaultPolynomConfig,
         userConfig
     )
 

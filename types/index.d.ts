@@ -12,6 +12,7 @@ export { Numeric };
 export { NumExp };
 export { Random };
 export type * from './pimath.interface';
+export type * from './randomization/rndTypes';
 declare const PiMath: {
     Numeric: {
         decompose: (value: number) => number[][];
@@ -37,10 +38,10 @@ declare const PiMath: {
     PolyFactor: typeof PolyFactor;
     LogicalSet: typeof LogicalSet;
     Random: {
-        equation: (config?: import('./randomization/rndTypes').randomEquationConfig) => Equation;
-        polynom: (config?: import('./randomization/rndTypes').randomPolynomConfig) => Polynom;
-        monom: (config?: import('./randomization/rndTypes').randomMonomConfig) => Monom;
-        fraction: (config?: import('./randomization/rndTypes').randomCoefficientConfig) => Fraction;
+        equation: (config?: import('.').randomEquationConfig) => Equation;
+        polynom: (config?: import('.').randomPolynomConfig) => Polynom;
+        monom: (config?: import('.').randomMonomConfig) => Monom;
+        fraction: (config?: import('.').randomCoefficientConfig) => Fraction;
         number: (from: number, to: number, exclude?: number[]) => number;
         numberSym: (max: number, allowZero?: boolean) => number;
         prime: (max: number) => number;
@@ -49,11 +50,11 @@ declare const PiMath: {
         array: <T>(arr: T[], number?: number) => T[];
         item: <T>(arr: T[]) => T;
         shuffle: <T>(arr: T[]) => T[];
-        line: (config?: import('./randomization/rndTypes').randomGeometryLineConfig) => Line;
-        line3: (config?: import('./randomization/rndTypes').randomGeometryLine3Config) => Line3;
-        vector: (config?: import('./randomization/rndTypes').randomGeometryPointConfig) => Point;
-        point: (config?: import('./randomization/rndTypes').randomGeometryPointConfig) => Point;
-        circle: (config?: import('./randomization/rndTypes').randomGeometryCircleConfig) => Circle;
+        line: (config?: import('.').randomGeometryLineConfig) => Line;
+        line3: (config?: import('.').randomGeometryLine3Config) => Line3;
+        vector: (config?: import('.').randomGeometryPointConfig) => Point;
+        point: (config?: import('.').randomGeometryPointConfig) => Point;
+        circle: (config?: import('.').randomGeometryCircleConfig) => Circle;
     };
     Geometry: {
         Vector: typeof Vector;
