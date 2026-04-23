@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Various corrections">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="OVerride random config bug analyse.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/equation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/randomization/algebra/rndPolynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/algebra/rndPolynom.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -466,9 +464,9 @@
       <command value="vitest" />
       <command value="npm run dev" />
       <command value="npm run dependency-cruise" />
-      <command value="npm run build" />
       <command value="npm run test --polynom" />
       <command value="npm run test" />
+      <command value="npm run build" />
     </option>
   </component>
   <component name="RunManager" selected="Vitest.Tests in tests\">
@@ -801,14 +799,7 @@
       <workItem from="1774878472173" duration="8000" />
       <workItem from="1774984151379" duration="1014000" />
       <workItem from="1776951910657" duration="1113000" />
-    </task>
-    <task id="LOCAL-00038" summary="Bug: rndLine was still using &quot;parse&quot; instead of &quot;fromPointAndDirection&quot; helper function.">
-      <option name="closed" value="true" />
-      <created>1736760400000</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1736760400000</updated>
+      <workItem from="1776958313094" duration="979000" />
     </task>
     <task id="LOCAL-00039" summary="Test: success&#10;Dependency graph: success&#10;Build: success">
       <option name="closed" value="true" />
@@ -1194,7 +1185,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773132564381</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="OVerride random config bug analyse.">
+      <option name="closed" value="true" />
+      <created>1776958407521</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1776958407522</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1226,7 +1225,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Decimal to Fraction parsing was not using the numberCorrection system to avoid float approximation." />
     <MESSAGE value="Build ok" />
     <MESSAGE value="Removed a console.log" />
     <MESSAGE value="Automatic convert the 2. value to 2 number (avoid errors while typing in a dynamic interface)." />
@@ -1251,7 +1249,8 @@
     <MESSAGE value="Reworked the display and tex output of root.ts" />
     <MESSAGE value="Corrected a bug in triangle.ts concerning the externalBisectors." />
     <MESSAGE value="Various corrections" />
-    <option name="LAST_COMMIT_MESSAGE" value="Various corrections" />
+    <MESSAGE value="OVerride random config bug analyse." />
+    <option name="LAST_COMMIT_MESSAGE" value="OVerride random config bug analyse." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

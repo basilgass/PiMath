@@ -4815,12 +4815,12 @@ const ct = {
   positive: !0
 };
 function et(n) {
-  console.log(n);
   const t = Object.assign(
+    {},
     ct,
     n
   );
-  if (console.log(">>>>"), console.log(t), t.factorable) return Pt(t);
+  if (t.factorable) return Pt(t);
   const e = new u().empty();
   let i;
   const s = t.degree ?? 2;

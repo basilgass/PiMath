@@ -17,13 +17,11 @@ const defaultPolynomConfig: randomPolynomConfig = {
 }
 
 export function rndPolynom(userConfig?: randomPolynomConfig): Polynom {
-    console.log(userConfig)
     const config = Object.assign(
+        {},
         defaultPolynomConfig,
         userConfig
     )
-    console.log('>>>>')
-    console.log(config)
 
     if (config.factorable) return rndFactorablePolynom(config)
 
