@@ -40,6 +40,8 @@ export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor
     get withPower(): this;
     get withRoot(): this;
     zero(): this;
+    static checkParseAsFactors(str: string): boolean;
+    static factorsFromString(value: string, isNumerator?: boolean): Factor[];
 }
 export declare enum FACTOR_DISPLAY {
     ROOT = 0,

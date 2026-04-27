@@ -80,7 +80,64 @@ describe("PolyFactor creation", () => {
         expect(PF.isOne()).toBeTruthy()
     })
 
-    test.todo('should parse a string')
+    describe('should parse a string with fromString', ()=>{
+        test('simple factorized string: constant and factors', () => {
+            const PF = new PolyFactor().fromString('3(x+1)^2(x-3)')
+            expect(PF.factors).toHaveLength(3)
+            expect(PF.factors[0].polynom.display).toBe('3')
+            expect(PF.factors[0].power.value).toBe(1)
+            expect(PF.factors[1].polynom.display).toBe('x+1')
+            expect(PF.factors[1].power.value).toBe(2)
+            expect(PF.factors[2].polynom.display).toBe('x-3')
+            expect(PF.factors[2].power.value).toBe(1)
+        })
+
+        test('factorized string: rational power in parentheses', () => {
+            const PF = new PolyFactor().fromString('(3x-5)^(4/3)(2x+25)')
+            expect(PF.factors).toHaveLength(2)
+            expect(PF.factors[0].polynom.display).toBe('3x-5')
+            expect(PF.factors[0].power.display).toBe('4/3')
+            expect(PF.factors[1].polynom.display).toBe('2x+25')
+            expect(PF.factors[1].power.value).toBe(1)
+        })
+
+        test('non-factorized string: creates a single Factor', () => {
+            const PF = new PolyFactor().fromString('x^2+3x+2')
+            expect(PF.factors).toHaveLength(1)
+            expect(PF.factors[0].polynom.display).toBe('x^(2)+3x+2')
+            expect(PF.factors[0].power.value).toBe(1)
+        })
+
+        test('string with leading negative sign', () => {
+            const PF = new PolyFactor().fromString('-3(x+1)^2')
+            expect(PF.factors).toHaveLength(2)
+            expect(PF.factors[0].polynom.display).toBe('-3')
+            expect(PF.factors[1].polynom.display).toBe('x+1')
+            expect(PF.factors[1].power.value).toBe(2)
+        })
+
+        test('string with factorized numerator and denominator', () => {
+            const PF = new PolyFactor().fromString('3(x+1)^2/(x-3)(2x+1)')
+            expect(PF.numerator.factors).toHaveLength(2)
+            expect(PF.denominator.factors).toHaveLength(2)
+            expect(PF.factors[0].power.value).toBe(1)   // 3, num
+            expect(PF.factors[1].power.value).toBe(2)   // (x+1)^2, num
+            expect(PF.factors[2].power.value).toBe(-1)  // (x-3), den
+            expect(PF.factors[3].power.value).toBe(-1)  // (2x+1), den
+        })
+
+        test('string with non-factorized numerator and denominator', () => {
+            const PF = new PolyFactor().fromString('x^2+3x+2/x+1')
+            expect(PF.numerator.factors).toHaveLength(1)
+            expect(PF.denominator.factors).toHaveLength(1)
+            expect(PF.numerator.factors[0].polynom.display).toBe('x^(2)+3x+2')
+            expect(PF.denominator.factors[0].polynom.display).toBe('x+1')
+        })
+
+        test('string with multiple "/" should throw', () => {
+            expect(() => new PolyFactor().fromString('(x+1)/(x-3)/(x+2)')).toThrow()
+        })
+    })
 })
 
 describe("PolyFactor: output functions", () => {
@@ -591,6 +648,7 @@ describe('PolyFactor: Table of signs', ()=>{
         expect(tos.roots[1].reduce().display).toBe('2sqrt(2)')
     })
 })
+
 
 // describe.skip('PolyFactor temporary tests', ()=>{
 //     test('test 1', ()=>{

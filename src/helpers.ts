@@ -33,3 +33,30 @@ export function replace_in_array<T>(haystack: string[], search: string, target: 
         return x === search ? target : x
     }) as T
 }
+
+export function splitIfOutsideParentheses(
+    value: string,
+    splitChar: string,
+): string[] {
+    if (splitChar.length !== 1) {
+        throw new Error(`splitChar must be a single character, got: "${splitChar}"`)
+    }
+
+    let depth = 0,
+        lastIndex = 0
+    const result: string[] = []
+
+    for (let i = 0; i < value.length; i++) {
+        const ch = value[i]
+        if (ch === "(") depth++
+        else if (ch === ")") depth--
+        else if (ch === splitChar && depth === 0) {
+            result.push(value.substring(lastIndex, i))
+            lastIndex = i + 1
+        }
+    }
+
+    result.push(value.substring(lastIndex))
+
+    return result
+}

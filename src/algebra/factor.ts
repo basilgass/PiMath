@@ -9,7 +9,7 @@ import type {
 } from "../pimath.interface"
 import {Fraction} from "../coefficients/fraction"
 import {Polynom} from "./polynom"
-import {replace_in_array, wrapParenthesis} from "../helpers"
+import {replace_in_array, splitIfOutsideParentheses, wrapParenthesis} from "../helpers"
 
 export class Factor implements IPiMathObject<Factor>,
     IExpression<Factor>,
@@ -25,13 +25,13 @@ export class Factor implements IPiMathObject<Factor>,
             this.#polynom = value.polynom.clone()
             this.#power = value.power.clone()
 
-            if(power !== undefined){
+            if (power !== undefined) {
                 this.#power.multiply(new Fraction(power))
             }
-        } else if(value !== undefined) {
+        } else if (value !== undefined) {
             this.#polynom = new Polynom(value)
             this.#power = new Fraction(power ?? 1)
-        }else{
+        } else {
             this.#polynom = new Polynom()
             this.#power = new Fraction(1)
         }
@@ -329,6 +329,48 @@ export class Factor implements IPiMathObject<Factor>,
         return this
     }
 
+    static checkParseAsFactors(str: string): boolean {
+        const splitPlus = splitIfOutsideParentheses(str, "+")
+        if(splitPlus[0]==='') splitPlus.shift()
+        if(splitPlus.length>1) return false
+
+        const splitMinus = splitIfOutsideParentheses(str, "-")
+        if(splitMinus[0]==='') splitMinus.shift()
+        if(splitMinus.length>1) return false
+
+        return true
+    }
+
+    static factorsFromString(value: string, isNumerator = true): Factor[] {
+        if (!Factor.checkParseAsFactors(value)) {
+            return [new Factor(value, isNumerator ? 1 : -1)]
+        }
+
+        const sign = isNumerator ? 1 : -1
+        const factors: Factor[] = []
+
+        // Alternance : facteur parenthésé avec puissance optionnelle | séquence non-parenthésée
+        const regex =
+            /\(([^)]+)\)(?:\^(-?[0-9]+(?:\/[0-9]+)?|\(-?[0-9]+(?:\/[0-9]+)?\)))?|([^(]+)/g
+
+        for (const match of value.matchAll(regex)) {
+            if (match[1] !== undefined) {
+                // Cas : (expr)^puissance
+                const powStr = (match[2] ?? '1')
+                    .replace(/[()]/g, '')
+
+                factors.push(new Factor(
+                    new Polynom(match[1]),
+                    new Fraction(powStr).multiply(sign))
+                )
+            } else if (match[3]?.trim()) {
+                // Cas : monôme ou constante hors parenthèses (ex: 3x^2, 3)
+                factors.push(new Factor(new Polynom(match[3].trim()), new Fraction(sign)))
+            }
+        }
+
+        return factors
+    }
 }
 
 export enum FACTOR_DISPLAY {

@@ -12,7 +12,8 @@ import type {
 import {Fraction} from "../coefficients"
 import {Factor, FACTOR_DISPLAY} from "./factor"
 import {Polynom} from "./polynom"
-import type {Solution} from "../analyze/solution"
+import type {Solution} from "../analyze"
+import {splitIfOutsideParentheses} from "../helpers"
 
 
 // PolyFactor is a class that represents a polynomial in factored form.
@@ -91,6 +92,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return `(${numTeX})/(${denTeX})`
 
     }
+
+
+
 
     static #gcdWith(PF1: PolyFactor, PF2: PolyFactor): PolyFactor {
         // Get all factors of the two polynomials
@@ -328,29 +332,40 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
 
     public fromPolynom(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>): this {
         // fromPolynom loads the numerator and denominator as is, without factorizing !
+        // TODO: fromPolynom should parse the string if it's factorized: 3x(...)^3(..)^2(12x)
         this.#factors = [new Factor(new Polynom(numerator))]
 
         if (denominator) {
             const polynom = new Polynom(denominator)
 
-            if (polynom.isOne()) {
-                return this
-            }
-            if (polynom.isZero()) {
-                throw new Error("Cannot divide by zero")
-            }
+            if (polynom.isOne()) return this
+
+            if (polynom.isZero()) throw new Error("Cannot divide by zero")
+            
             this.#factors.push(new Factor(polynom, -1))
         }
-        // // Find all factors from a polynom
-        // this.#factors = new Polynom(numerator)
-        //     .factorize(letter)
-        //     .map(value => new Factor(value))
-        //
-        // if (denominator) {
-        //     new Polynom(denominator)
-        //         .factorize(letter)
-        //         .forEach(value => this.#factors.push(new Factor(value, -1)))
-        // }
+        return this
+    }
+
+    public fromString(value: string): this {
+        this.#factors = []
+
+        // Two cases :
+        // - either the string is given as a factorized string
+        // - or the string has something that prevents this => use fromPolynom
+
+        const [num, ...den] = splitIfOutsideParentheses(value, '/')
+        if(num==='') throw new Error('Parsing a PolyFactor from a string requires a numerator')
+        if(den.length>1) throw new Error('Parsing a PolyFactor from a string only allows max one signe "/"')
+
+        if(den.length===0) {
+            this.#factors = Factor.factorsFromString(num, true)
+        }else{
+            this.#factors = [
+                ...Factor.factorsFromString(num, true),
+                ...Factor.factorsFromString(den[0], false),
+            ]
+        }
 
         return this
     }
@@ -544,7 +559,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
                 }
 
                 // The sign for this indexed root is a t(ab)
-                if (root === undefined || root.value !== roots_key[(index - 1) / 2]) {
+                if (root?.value !== roots_key[(index - 1) / 2]) {
                     return 't'
                 }
 
@@ -666,3 +681,4 @@ function keyFactors(value: PolyFactor): Record<string, Factor[]> {
 
     return kF
 }
+

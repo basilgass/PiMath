@@ -2,7 +2,7 @@ import { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literal
 import { Fraction } from '../coefficients';
 import { Factor } from './factor';
 import { Polynom } from './polynom';
-import { Solution } from '../analyze/solution';
+import { Solution } from '../analyze';
 export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpression<PolyFactor>, IAlgebra<PolyFactor> {
     #private;
     constructor(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]);
@@ -25,6 +25,7 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     get factors(): Factor[];
     set factors(value: Factor[]);
     fromPolynom(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>): this;
+    fromString(value: string): this;
     /**
      * Get the roots of the PolyFactor.
      */
