@@ -328,6 +328,12 @@ describe('Table of signs of a Polynom', () => {
 })
 
 describe('Polynom factorisation', () => {
+    test('factorize single monom', ()=>{
+        const P = new Polynom('3x^2')
+
+        expect(P.factors).toHaveLength(1)
+        expect(P.factors[0].display).toBe('3x^(2)')
+    })
     test('factorize with constant', () => {
         const P = new Polynom('3x+6')
 

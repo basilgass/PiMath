@@ -332,21 +332,20 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
     }
 
     #parse_root(value: string): this {
-        // value = a root(n)b or a root(n)(b)
-        const [factor, index_radical] = value.split('root')
-        const [index, radical] = index_radical.split(')')
+        // Format: [factor]root([index])[radical] or [factor]root([index])([radical])
+        const match = /^(.*?)root\((\d+)\)\(?([^)]+)/.exec(value)
+        if (!match) throw new Error(`Invalid root format: "${value}"`)
 
-        this.index = +stripParenthesis(index)
-
-        this.radical = new Fraction(stripParenthesis(radical))
-
-        this.factor = factor === '' ? new Fraction().one() : new Fraction(factor)
+        const [, factor, index, radical] = match
+        this.index = +index
+        this.radical = new Fraction(radical)
+        this.factor = factor === '' ? new Fraction().one() : new Fraction(factor.trim())
 
         return this
     }
 
     #parse_sqrt(value: string): this {
-        // value = asqrtb
+        // value = asqrtb or a sqrt(b)
         const [factor, radical] = value.split('sqrt')
 
         this.index = 2

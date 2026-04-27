@@ -303,6 +303,9 @@ export class Polynom implements IPiMathObject<Polynom>,
     public factorize(_letter?: string): Polynom[] {
         this.#factors = []
 
+        // There is only one monom - it's already considered as factor.
+        if(this.monoms.length===1) return [this.clone()]
+
         let P = this.clone().reorder()
 
         // Extract the common monom

@@ -3,15 +3,16 @@ export function wrapParenthesis(str: string, tex = true): string {
 }
 
 export function stripParenthesis(str: string): string {
-    if(str.startsWith('(')){
-        str = str.substring(1)
+    if (!str.startsWith('(') || !str.endsWith(')')) return str
+
+    let depth = 0
+    for (let i = 0; i < str.length - 1; i++) {
+        if (str[i] === '(') depth++
+        else if (str[i] === ')') depth--
+        if (depth === 0) return str
     }
 
-    if(str.endsWith(')')){
-        str = str.substring(0, str.length-1)
-    }
-
-    return str
+    return str.slice(1, -1)
 }
 
 export function wrapVert(str: string, tex = true): string {

@@ -4,13 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Object.assign was used to merge properties and changed default values for some properties.">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Added fromString to polyFactor.ts : parse a string keeping the factorized state.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/factor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/factor.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/coefficients/root.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/root.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/helpers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/helpers.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/helpers.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -272,6 +273,7 @@
     "Vitest.Polynom creation.should parse with rational powers.executor": "Run",
     "Vitest.Polynom evaluation.evaluate Polynom.executor": "Run",
     "Vitest.Polynom factorisation.executor": "Run",
+    "Vitest.Polynom factorisation.factorize single monom.executor": "Run",
     "Vitest.Polynom factorisation.factorize with a not reducable polynom.executor": "Run",
     "Vitest.Polynom factorisation.factorize with common monom.executor": "Run",
     "Vitest.Polynom factorisation.factorize with constant, linear and not factorable.executor": "Run",
@@ -475,7 +477,7 @@
       <command value="npm run test" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.PolyFactor creation.should parse a string with fromString.string with leading negative sign">
+  <component name="RunManager" selected="Vitest.root creation.create &quot;root(3)(15)&quot;">
     <configuration name="All Tests" type="JavaScriptTestRunnerVitest" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -499,21 +501,32 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="split outside parenthesis.separator at the end" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+    <configuration name="Polynom factorisation.factorize single monom" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
       <working-dir value="$PROJECT_DIR$" />
       <vitest-options value="--run" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/helpers.test.ts" />
+      <test-file value="$PROJECT_DIR$/tests/algebra/polynom.test.ts" />
       <test-names>
-        <test-name value="split outside parenthesis" />
-        <test-name value="separator at the end" />
+        <test-name value="Polynom factorisation" />
+        <test-name value="factorize single monom" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="polyFactor.ts" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/algebra/polyFactor.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$/src/algebra">
+    <configuration name="root creation.create &quot;root(3)(15)&quot;" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <vitest-options value="--run" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/coefficients/root.test.ts" />
+      <test-names>
+        <test-name value="root creation" />
+        <test-name value="create &quot;root(3)(15)&quot;" />
+      </test-names>
       <method v="2" />
     </configuration>
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
@@ -537,20 +550,20 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Node.js.polyFactor.ts" />
       <item itemvalue="npm.build" />
       <item itemvalue="npm.test" />
       <item itemvalue="Vitest.All Tests" />
       <item itemvalue="Vitest.PolyFactor creation.should parse a string with fromString.string with leading negative sign" />
-      <item itemvalue="Vitest.split outside parenthesis.separator at the end" />
+      <item itemvalue="Vitest.Polynom factorisation.factorize single monom" />
+      <item itemvalue="Vitest.root creation.create &quot;root(3)(15)&quot;" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="npm.build" />
+        <item itemvalue="Vitest.root creation.create &quot;root(3)(15)&quot;" />
         <item itemvalue="npm.test" />
+        <item itemvalue="Vitest.Polynom factorisation.factorize single monom" />
         <item itemvalue="Vitest.PolyFactor creation.should parse a string with fromString.string with leading negative sign" />
-        <item itemvalue="Node.js.polyFactor.ts" />
-        <item itemvalue="Vitest.split outside parenthesis.separator at the end" />
       </list>
     </recent_temporary>
   </component>
@@ -800,15 +813,7 @@
       <workItem from="1774984151379" duration="1014000" />
       <workItem from="1776951910657" duration="1113000" />
       <workItem from="1776958313094" duration="1212000" />
-      <workItem from="1777290747293" duration="5411000" />
-    </task>
-    <task id="LOCAL-00040" summary="Update LinearSystem to solve equation with an wquation startiing with a 0 value.">
-      <option name="closed" value="true" />
-      <created>1737722836203</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1737722836203</updated>
+      <workItem from="1777290747293" duration="6679000" />
     </task>
     <task id="LOCAL-00041" summary="Build: Ok&#10;Tests: OK&#10;Dependency: OK">
       <option name="closed" value="true" />
@@ -1194,7 +1199,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776959374686</updated>
     </task>
-    <option name="localTasksCounter" value="89" />
+    <task id="LOCAL-00089" summary="Added fromString to polyFactor.ts : parse a string keeping the factorized state.">
+      <option name="closed" value="true" />
+      <created>1777308194681</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1777308194683</updated>
+    </task>
+    <option name="localTasksCounter" value="90" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1226,7 +1239,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Removed a console.log" />
     <MESSAGE value="Automatic convert the 2. value to 2 number (avoid errors while typing in a dynamic interface)." />
     <MESSAGE value="Remove a console.log" />
     <MESSAGE value="Update package.json&#10;Migrate from eslintjs to eslint&#10;build ok&#10;dependencies ok" />
@@ -1251,7 +1263,8 @@
     <MESSAGE value="Various corrections" />
     <MESSAGE value="OVerride random config bug analyse." />
     <MESSAGE value="Object.assign was used to merge properties and changed default values for some properties." />
-    <option name="LAST_COMMIT_MESSAGE" value="Object.assign was used to merge properties and changed default values for some properties." />
+    <MESSAGE value="Added fromString to polyFactor.ts : parse a string keeping the factorized state." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added fromString to polyFactor.ts : parse a string keeping the factorized state." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -137,6 +137,12 @@ describe("PolyFactor creation", () => {
         test('string with multiple "/" should throw', () => {
             expect(() => new PolyFactor().fromString('(x+1)/(x-3)/(x+2)')).toThrow()
         })
+
+        test('AsciiMath: strips extra outer parentheses from numerator and denominator', () => {
+            const PF = new PolyFactor().fromString('(3(x+1)^2)/((x-3)(2x+1))')
+            expect(PF.numerator.factors).toHaveLength(2)
+            expect(PF.denominator.factors).toHaveLength(2)
+        })
     })
 })
 

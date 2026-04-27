@@ -13,7 +13,7 @@ import {Fraction} from "../coefficients"
 import {Factor, FACTOR_DISPLAY} from "./factor"
 import {Polynom} from "./polynom"
 import type {Solution} from "../analyze"
-import {splitIfOutsideParentheses} from "../helpers"
+import {splitIfOutsideParentheses, stripParenthesis} from "../helpers"
 
 
 // PolyFactor is a class that represents a polynomial in factored form.
@@ -359,11 +359,11 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         if(den.length>1) throw new Error('Parsing a PolyFactor from a string only allows max one signe "/"')
 
         if(den.length===0) {
-            this.#factors = Factor.factorsFromString(num, true)
+            this.#factors = Factor.factorsFromString(stripParenthesis(num), true)
         }else{
             this.#factors = [
-                ...Factor.factorsFromString(num, true),
-                ...Factor.factorsFromString(den[0], false),
+                ...Factor.factorsFromString(stripParenthesis(num), true),
+                ...Factor.factorsFromString(stripParenthesis(den[0]), false),
             ]
         }
 

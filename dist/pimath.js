@@ -352,10 +352,14 @@ class h {
 function st(n, t = !0) {
   return t ? `\\left( ${n} \\right)` : `(${n})`;
 }
-function Q(n) {
-  return n.startsWith("(") && (n = n.substring(1)), n.endsWith(")") && (n = n.substring(0, n.length - 1)), n;
+function j(n) {
+  if (!n.startsWith("(") || !n.endsWith(")")) return n;
+  let t = 0;
+  for (let e = 0; e < n.length - 1; e++)
+    if (n[e] === "(" ? t++ : n[e] === ")" && t--, t === 0) return n;
+  return n.slice(1, -1);
 }
-function j(n, t, e, i, s) {
+function F(n, t, e, i, s) {
   return n.map((r, o) => r === t ? e : r);
 }
 function H(n, t) {
@@ -529,12 +533,14 @@ class T {
     return s.length === 0 ? null : s.join(" ");
   }
   #o(t) {
-    const [e, i] = t.split("root"), [s, r] = i.split(")");
-    return this.index = +Q(s), this.radical = new h(Q(r)), this.factor = e === "" ? new h().one() : new h(e), this;
+    const e = /^(.*?)root\((\d+)\)\(?([^)]+)/.exec(t);
+    if (!e) throw new Error(`Invalid root format: "${t}"`);
+    const [, i, s, r] = e;
+    return this.index = +s, this.radical = new h(r), this.factor = i === "" ? new h().one() : new h(i.trim()), this;
   }
   #a(t) {
     const [e, i] = t.split("sqrt");
-    return this.index = 2, this.radical = new h(Q(i)), this.factor = e === "" ? new h().one() : new h(e), this;
+    return this.index = 2, this.radical = new h(j(i)), this.factor = e === "" ? new h().one() : new h(e), this;
   }
 }
 class C {
@@ -785,12 +791,12 @@ class R {
       return k.isEqual(I) ? [this.#r(k)] : [
         this.#r(I),
         this.#r(k)
-      ].sort((Y, M) => Y.value - M.value);
+      ].sort((Q, M) => Q.value - M.value);
     }
     if (q.isPositive()) {
-      const $ = [], k = f.value, I = m.value, Y = o.value;
+      const $ = [], k = f.value, I = m.value, Q = o.value;
       for (let M = 0; M < 3; M++)
-        $.push(2 * Math.sqrt(-k / 3) * Math.cos(Math.acos(3 * I / (2 * k) * Math.sqrt(-3 / k)) / 3 + 2 * Math.PI * M / 3) - Y / 3);
+        $.push(2 * Math.sqrt(-k / 3) * Math.cos(Math.acos(3 * I / (2 * k) * Math.sqrt(-3 / k)) / 3 + 2 * Math.PI * M / 3) - Q / 3);
       return $.map((M) => this.#s(M)).sort((M, ut) => M.value - ut.value);
     }
     return [];
@@ -925,7 +931,7 @@ const At = {
   "!": { precedence: 4, associative: "right", type: u.OPERATION },
   "-": { precedence: 2, associative: "left", type: u.OPERATION }
 };
-class G {
+class W {
   #t;
   #e = [];
   #i = {};
@@ -1064,7 +1070,7 @@ class qt {
   constructor(t, e) {
     this._expression = t;
     try {
-      this._rpn = new G(S.NUMERIC).parse(t, e).rpn;
+      this._rpn = new W(S.NUMERIC).parse(t, e).rpn;
     } catch (i) {
       throw this._rpn = null, this._isValid = !1, console.warn(i), new Error(`There was a problem parsing: ${t}`);
     }
@@ -1602,7 +1608,7 @@ class p {
       }
   };
   #a = (t) => {
-    const i = new G().parse(t).rpn, s = [];
+    const i = new W().parse(t).rpn, s = [];
     if (i.length === 0)
       return this.zero(), this;
     if (i.length === 1) {
@@ -1761,7 +1767,7 @@ class l {
    * TODO: Handle other letter than 'x'.
    */
   factorize(t) {
-    this.#e = [];
+    if (this.#e = [], this.monoms.length === 1) return [this.clone()];
     let e = this.clone().reorder();
     const i = e.commonMonom();
     e.monomByDegree().coefficient.isStrictlyNegative() && i.opposite(), i.isOne() || (this.#e.push(new l(i)), e = e.euclidean(this.#e[0]).quotient);
@@ -2029,7 +2035,7 @@ class l {
     let e = new Array(2 * t.length + 1).fill("").map((i, s) => s % 2 === 0 ? "" : "z");
     if (e.length === 1) {
       const [i] = this.getCoefficients().map((s) => s.value);
-      e = j(e, "", i > 0 ? "+" : "-");
+      e = F(e, "", i > 0 ? "+" : "-");
     } else if (this.degree().isOne()) {
       const [i] = this.getCoefficients().map((s) => s.value);
       e[0] = i > 0 ? "-" : "+", e[1] = "z", e[2] = i > 0 ? "+" : "-";
@@ -2207,7 +2213,7 @@ class l {
    * @param inputStr
    */
   #w(t) {
-    const i = new G().parse(t).rpn;
+    const i = new W().parse(t).rpn;
     this.zero();
     const s = [];
     for (const r of i)
@@ -2569,7 +2575,7 @@ class y {
   }
   tableOfSigns() {
     const t = this.power.clone().reduce(), e = this.polynom.tableOfSigns();
-    return t.isStrictlyNegative() && (e.signs = j(e.signs, "z", "d")), t.denominator % 2 === 0 ? e.signs = j(e.signs, "-", "h") : t.numerator % 2 === 0 && (e.signs = j(e.signs, "-", "+")), { roots: e.roots, signs: e.signs };
+    return t.isStrictlyNegative() && (e.signs = F(e.signs, "z", "d")), t.denominator % 2 === 0 ? e.signs = F(e.signs, "-", "h") : t.numerator % 2 === 0 && (e.signs = F(e.signs, "-", "+")), { roots: e.roots, signs: e.signs };
   }
   get variables() {
     return this.polynom.variables;
@@ -2824,7 +2830,7 @@ class $t {
   constructor(t) {
     return this.#t = [], t !== void 0 && this.parse(t), this;
   }
-  parse = (t) => (this.#t = new G(S.SET).parse(t).rpn, this);
+  parse = (t) => (this.#t = new W(S.SET).parse(t).rpn, this);
   get tex() {
     const t = [];
     for (const e of this.#t)
@@ -3114,9 +3120,9 @@ class N {
     const [e, ...i] = H(t, "/");
     if (e === "") throw new Error("Parsing a PolyFactor from a string requires a numerator");
     if (i.length > 1) throw new Error('Parsing a PolyFactor from a string only allows max one signe "/"');
-    return i.length === 0 ? this.#e = y.factorsFromString(e, !0) : this.#e = [
-      ...y.factorsFromString(e, !0),
-      ...y.factorsFromString(i[0], !1)
+    return i.length === 0 ? this.#e = y.factorsFromString(j(e), !0) : this.#e = [
+      ...y.factorsFromString(j(e), !0),
+      ...y.factorsFromString(j(i[0]), !1)
     ], this;
   }
   /**
@@ -3775,16 +3781,16 @@ function A(n, t) {
 }
 function St(n, t) {
   const e = b.pythagoreanTripletsWithTarget(n).filter((i) => t === !0 || !i.includes(0));
-  return e.length === 0 ? null : W(e);
+  return e.length === 0 ? null : X(e);
 }
 function It(n) {
   let t = b.primes();
-  return n !== void 0 && (t = t.filter((e) => e < n)), W(t);
+  return n !== void 0 && (t = t.filter((e) => e < n)), X(t);
 }
 function Pt(n, t) {
   return t === void 0 && (t = 1), n.length <= 0 ? Object.values(n) : ht(n).slice(0, t);
 }
-function W(n) {
+function X(n) {
   return n.length === 0 ? null : n[O(0, n.length - 1)];
 }
 function ht(n) {
@@ -4491,7 +4497,7 @@ class U {
     return [new E(e, i, a), new E(e, i, c)];
   };
 }
-class X {
+class Y {
   static PARALLEL = K.Parallel;
   // A line is defined as the canonical form
   static PERPENDICULAR = K.Perpendicular;
@@ -4548,7 +4554,7 @@ class X {
   // Mathematical operations
   hitSegment(t, e) {
     const i = this.intersection(
-      new X(t, e)
+      new Y(t, e)
     );
     return i.hasIntersection ? i.point.x.value >= Math.min(t.x.value, e.x.value) && i.point.x.value <= Math.max(t.x.value, e.x.value) && i.point.y.value >= Math.min(t.y.value, e.y.value) && i.point.y.value <= Math.max(t.y.value, e.y.value) && i.point.z.value >= Math.min(t.z.value, e.z.value) && i.point.z.value <= Math.max(t.z.value, e.z.value) : !1;
   }
@@ -4798,7 +4804,7 @@ class zt {
     z: t.z
   }) ?? !1;
 }
-function F(n) {
+function G(n) {
   const t = Object.assign(
     {
       negative: !0,
@@ -4828,7 +4834,7 @@ function ct(n) {
     },
     n
   ), e = new p();
-  if (e.coefficient = F({
+  if (e.coefficient = G({
     zero: t.zero,
     reduced: !0,
     natural: !t.fraction
@@ -4836,7 +4842,7 @@ function ct(n) {
     for (const i of t.letters.split(""))
       e.setLetter(i, 0);
     for (let i = 0; i < t.degree; i++) {
-      const s = W(t.letters.split(""));
+      const s = X(t.letters.split(""));
       e.setLetter(s, e.degree(s).clone().add(1));
     }
   } else
@@ -4936,7 +4942,7 @@ function J(n) {
       quadrant: null
     },
     n
-  ), e = t.axis === "x", i = t.axis === "y", s = t.fraction ? F({ max: t.max, zero: e }) : new h(A(t.max, e)), r = t.fraction ? F({ max: t.max, zero: i }) : new h(A(t.max, i));
+  ), e = t.axis === "x", i = t.axis === "y", s = t.fraction ? G({ max: t.max, zero: e }) : new h(A(t.max, e)), r = t.fraction ? G({ max: t.max, zero: i }) : new h(A(t.max, i));
   return Number(t.quadrant) === 1 && (s.abs(), r.abs()), Number(t.quadrant) === 2 && (s.isPositive() && s.opposite(), r.isNegative() && r.opposite()), Number(t.quadrant) === 3 && (s.isPositive() && s.opposite(), r.isPositive() && r.opposite()), Number(t.quadrant) === 4 && (s.isNegative() && s.opposite(), r.isPositive() && r.opposite()), new w(s, r);
 }
 function Dt(n) {
@@ -4983,20 +4989,20 @@ function Lt(n) {
     },
     n
   ), e = new w(t.A.x, t.A.y, t.A.z), i = new g(t.direction.x, t.direction.y, t.direction.z);
-  return new X(e, i);
+  return new Y(e, i);
 }
 const Ut = {
   equation: (n) => Zt(n),
   polynom: (n) => it(n),
   monom: (n) => ct(n),
-  fraction: (n) => F(n),
+  fraction: (n) => G(n),
   number: (n, t, e) => O(n, t, e),
   numberSym: (n, t) => A(n, t),
   prime: (n) => It(n),
   triplet: (n, t) => St(n, t),
   bool: (n) => ot(n),
   array: (n, t) => Pt(n, t),
-  item: (n) => W(n),
+  item: (n) => X(n),
   shuffle: (n) => ht(n),
   line: (n) => Vt(n),
   line3: (n) => Lt(n),
@@ -5022,7 +5028,7 @@ const Ut = {
     Line: E,
     Triangle: L,
     Circle: U,
-    Line3: X,
+    Line3: Y,
     Plane3: et,
     Sphere3: zt
   },
@@ -5037,7 +5043,7 @@ export {
   y as Factor,
   h as Fraction,
   E as Line,
-  X as Line3,
+  Y as Line3,
   P as LinearSystem,
   $t as LogicalSet,
   B as Matrix,
