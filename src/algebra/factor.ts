@@ -216,6 +216,17 @@ export class Factor implements IPiMathObject<Factor>,
     }
 
     public multiply(value: InputAlgebra<Factor | Polynom>): this {
+        const F = new Factor(value)
+
+        // Case if this and value are monoms of degree one.
+        if(this.polynom.monoms.length===1 && this.power.isOne()
+            &&
+            F.polynom.monoms.length===1 && this.power.isOne()
+        ){
+            this.polynom.multiply(F.polynom)
+            return this
+        }
+
         if (value instanceof Factor) {
             if (this.isSameAs(value)) {
                 this.power.add(value.power)

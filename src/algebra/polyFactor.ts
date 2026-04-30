@@ -468,9 +468,28 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             .map(f => {
                 const base = f[0].polynom
                 const power = f.reduce((acc, f) => acc.add(f.power), new Fraction('0'))
+
                 return new Factor(base, power.reduce())
             })
             .filter(f => !f.power.isZero())
+
+        // Everything is reduced - merge all monomial factors together.
+        const numfactor = new Factor(1)
+        const denfactor = new Factor(1)
+        const monomials = this.#factors.filter(x=>x.polynom.monoms.length===1 && x.power.isRelative())
+        if(monomials.length>0){
+            monomials.forEach(m=> {
+                if(m.power.isPositive()){
+                    numfactor.multiply(new Factor(m.polynom.clone().pow(m.power.value)))
+                }else{
+                    denfactor.multiply(new Factor(m.polynom.clone().pow(-m.power.value)))
+                }
+            })
+
+            this.#factors = this.#factors.filter(x=>!(x.polynom.monoms.length===1 && x.power.isRelative()))
+            if (!denfactor.polynom.isOne()){this.#factors.push(denfactor.inverse())}
+            if (!numfactor.polynom.isOne()){this.#factors.push(numfactor)}
+        }
 
         return this
     }
@@ -487,6 +506,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
      * 3. power of polyfactor
      */
     public sort(letter?: string): this {
+        // Sort each polynom
+        this.#factors.forEach(f=>f.polynom.reorder(letter))
+
         this.#factors.sort((a, b) => {
             // If the compare powers are opposite, the negative power goes to the end.
             const aPower = a.power.value
@@ -494,7 +516,6 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             if (aPower * bPower < 0) {
                 return -aPower
             }
-
 
             // Monom length
             const aLength = a.polynom.monoms.length
@@ -513,6 +534,14 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             // The power of the PolyFactor
             if (aPower !== bPower) {
                 return aPower - bPower
+            }
+
+            // It the monoms length are two AND of degree one, sort by the zero.
+            if(a.polynom.degree(letter).isOne() && b.polynom.degree(letter).isOne()){
+                const aSol = a.polynom.monoms[1].coefficient.clone().opposite().divide(a.polynom.monoms[0].coefficient).value
+                const bSol = b.polynom.monoms[1].coefficient.clone().opposite().divide(b.polynom.monoms[0].coefficient).value
+
+                return aSol - bSol
             }
 
             return a.degree().isLeq(b.degree()) ? -1 : 1
@@ -648,12 +677,15 @@ function keyFactors(value: PolyFactor): Record<string, Factor[]> {
 
     const kF = value.factors
         .reduce((acc: Record<string, Factor[]>, f) => {
-            // It's only a value
-            if (f.polynom.degree().isZero()) {
+            // It's only a value (without roots
+            // TODO: implement reduce root numeric.
+            if (f.polynom.degree().isZero() && f.power.isRelative()) {
+                const value = f.polynom.monoms[0].coefficient.pow(f.power.clone().abs())
+
                 if (f.power.isPositive()) {
-                    k_numerator.multiply(f.polynom.monoms[0].coefficient)
+                    k_numerator.multiply(value)
                 } else {
-                    k_denominator.multiply(f.polynom.monoms[0].coefficient)
+                    k_denominator.multiply(value)
                 }
 
                 return acc
