@@ -281,3 +281,12 @@ describe('Fraction generators', () => {
         expect(F.isNatural()).toBe(false)
     })
 })
+
+describe('specific test', ()=>{
+    test('divide by zero', ()=>{
+        const F = new Fraction('2/0')
+
+        console.log(F.isNaN())
+        console.log(F.isInfinity())
+    })
+})

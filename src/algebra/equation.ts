@@ -7,15 +7,14 @@ import type {
     IPiMathObject,
     literalType
 } from "../pimath.interface"
-import {Fraction} from "../coefficients/fraction"
+import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 import {EquationSolver} from "./equationSolver"
 import {Monom} from "./monom"
 import {Polynom} from "./polynom"
-import type {Solution} from "../analyze/solution"
+import type {Solution} from "../analyze"
 
-export class Equation implements
-    IPiMathObject<Equation>,
+export class Equation implements IPiMathObject<Equation>,
     IEquation<Equation>,
     IAlgebra<Equation> {
 
@@ -96,15 +95,15 @@ export class Equation implements
     }
 
     public static makeSolutionsUnique(solutions: Solution[], sorted?: boolean): Solution[] {
-        const solutionAsTex: string[] = [],
-            uniqueSolutions = solutions.filter(sol => {
-                if (!solutionAsTex.includes(sol.tex)) {
-                    solutionAsTex.push(sol.tex)
-                    return true
-                } else {
-                    return false
-                }
-            })
+        const solutionAsTex: string[] = []
+        const uniqueSolutions = solutions.filter(sol => {
+            if (!solutionAsTex.includes(sol.tex)) {
+                solutionAsTex.push(sol.tex)
+                return true
+            } else {
+                return false
+            }
+        })
 
         if (sorted === true) {
             uniqueSolutions.sort((a, b) => a.value - b.value)
@@ -191,13 +190,13 @@ export class Equation implements
      * @param values
      * @param asNumeric
      */
-    public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean  ): boolean {
+    public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric: boolean): boolean {
         // Evaluate the left and right part of the equation.
         // compare the results.
 
         // Evaluate the left and right part of the equation.
-        const left = this.#left.evaluate(values, asNumeric),
-            right = this.#right.evaluate(values, asNumeric)
+        const left = this.#left.evaluate(values, asNumeric)
+        const right = this.#right.evaluate(values, asNumeric)
 
         // compare the results.
         if (asNumeric) {
@@ -227,8 +226,8 @@ export class Equation implements
 
     // Equations helpers
     public isEqualTo = (equ: Equation): boolean => {
-        const p1 = equ.clone().moveLeft().left,
-            p2 = this.clone().moveLeft().left
+        const p1 = equ.clone().moveLeft().left
+        const p2 = this.clone().moveLeft().left
 
         // They are the same.
         return p1.isEqual(p2) || p1.isOppositeAt(p2)
@@ -236,8 +235,8 @@ export class Equation implements
 
     public isLinearTo = (equ: Equation): boolean => {
         // Move all left.
-        const p1 = equ.clone().moveLeft().simplify().left,
-            p2 = this.clone().moveLeft().simplify().left
+        const p1 = equ.clone().moveLeft().simplify().left
+        const p2 = this.clone().moveLeft().simplify().left
 
         // They are the same.
         return p1.isEqual(p2) || p1.isOppositeAt(p2)
@@ -427,7 +426,7 @@ export class Equation implements
         // Set the sign value as formatted.
         this.#sign = this.#formatSign(value)
     }
-
+    
     public get signAsTex(): string {
         if (this.#sign === '>=') {
             return '\\geq'
@@ -480,7 +479,7 @@ export class Equation implements
     }
 
     public test = (values: literalType<Fraction>): boolean => {
-        return (this.left.evaluate(values) as Fraction).isEqual(this.right.evaluate(values))
+        return (this.left.evaluate(values)).isEqual(this.right.evaluate(values))
     }
 
     public get variables(): string[] {

@@ -1,7 +1,7 @@
-import { Fraction } from './coefficients';
-import { Equation, Factor, Monom } from './algebra';
-import { Line, Point, Vector } from './geometry';
-import { Solution } from './analyze/solution';
+import type { Fraction } from "./coefficients";
+import type { Equation, Factor, Monom } from "./algebra";
+import type { Line, Point, Vector } from "./geometry";
+import type { Solution } from "./analyze/solution";
 export type InputValue<T> = T | string | number | Fraction;
 export type InputAlgebra<T> = InputValue<T> | Monom;
 export type literalType<T> = Record<string, T>;
@@ -116,3 +116,4 @@ export interface remarquableLines {
         'intersection': Point | null;
     } | null;
 }
+//# sourceMappingURL=pimath.interface.d.ts.map

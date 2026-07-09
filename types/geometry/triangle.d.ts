@@ -1,21 +1,14 @@
-import { Fraction } from '../coefficients';
-import { Line } from './line';
-import { Vector } from './vector';
-import { Point } from './point';
-import { InputValue, remarquableLines } from '../pimath.interface';
+import { Fraction } from "../coefficients";
+import { Line } from "./line";
+import { Vector } from "./vector";
+import { Point } from "./point";
+import type { InputValue, remarquableLines } from "../pimath.interface";
 type TRIANGLE_SIDES = 'AB' | 'AC' | 'BC';
 export declare class Triangle {
     #private;
     constructor(...values: unknown[]);
     parse: (...values: unknown[]) => this;
-    /**
-     * Clone the Triangle class
-     */
     clone: () => Triangle;
-    /**
-     * Copy the values from another triangle
-     * @param value
-     */
     copy(value: Triangle): this;
     get A(): Point;
     set A(value: Point);
@@ -80,3 +73,4 @@ export declare class Triangle {
     reset(): this;
 }
 export {};
+//# sourceMappingURL=triangle.d.ts.map

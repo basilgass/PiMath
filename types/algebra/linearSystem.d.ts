@@ -1,8 +1,8 @@
-import { IAlgebra, IEquation, InputValue, IPiMathObject, literalType } from '../pimath.interface';
-import { Fraction } from '../coefficients';
-import { Equation } from './equation';
-import { Polynom } from './polynom';
-import { Solution } from '../analyze';
+import type { IAlgebra, IEquation, InputValue, IPiMathObject, literalType } from "../pimath.interface";
+import { Fraction } from "../coefficients";
+import { Equation } from "./equation";
+import { Polynom } from "./polynom";
+import { Solution } from "../analyze";
 export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquation<LinearSystem>, IAlgebra<LinearSystem> {
     #private;
     constructor(...values: (string | Equation)[]);
@@ -48,3 +48,4 @@ export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquat
     get variables(): string[];
     set variables(value: string | string[]);
 }
+//# sourceMappingURL=linearSystem.d.ts.map

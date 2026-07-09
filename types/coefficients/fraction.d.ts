@@ -1,22 +1,14 @@
-import { compareSign, IExpression, InputValue, IPiMathObject } from '../pimath.interface';
+import type { compareSign, IExpression, InputValue, IPiMathObject } from "../pimath.interface";
 export declare enum FRAC_TYPE {
     frac = "frac",
     dfrac = "dfrac",
     tfrac = "tfrac"
 }
-/**
- * The fraction class make possible to handle
- * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
- */
 export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> {
     #private;
     constructor();
     constructor(value: InputValue<Fraction>);
     constructor(numerator: number, denominator: number);
-    /**
-     * Parse the value to get the numerator and denominator
-     * @param value : number or string to parse to get the fraction
-     */
     parse: (value: InputValue<Fraction>, denominator?: number) => this;
     clone: () => Fraction;
     copy(value: Fraction): this;
@@ -34,11 +26,6 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     abs: () => this;
     add: (F: InputValue<Fraction>) => this;
     amplify: (k: number) => this;
-    /**
-     * Compare the current coefficient with another coefficient
-     * @param F (Coefficient) The coefficient to _compare
-     * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
-     */
     compare: (F: InputValue<Fraction>, sign?: compareSign) => boolean;
     get denominator(): number;
     set denominator(value: number);
@@ -96,3 +83,4 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     get withoutSign(): this;
     zero: () => this;
 }
+//# sourceMappingURL=fraction.d.ts.map

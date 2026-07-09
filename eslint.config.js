@@ -1,11 +1,14 @@
-import eslint from '@eslint/js'
-import tseslint from "typescript-eslint"
+import eslint from "@eslint/js"
+import typescriptEslint from "typescript-eslint"
 
-export default tseslint.config(
-	eslint.configs.recommended,
-	...tseslint.configs.strictTypeChecked,
-	...tseslint.configs.stylisticTypeChecked,
+export default typescriptEslint.config(
+	{ignores: ['*.d.ts', '**/coverage', '**/dist']},
 	{
+		extends: [
+			eslint.configs.recommended,
+			...typescriptEslint.configs.strictTypeChecked,
+			...typescriptEslint.configs.stylisticTypeChecked,
+		],
 		languageOptions: {
 			parserOptions: {
 				project: true,
@@ -19,6 +22,7 @@ export default tseslint.config(
 				"destructuring": "all",
 				"ignoreReadBeforeAssign": false
 			}],
+			"one-var": ["error", "never"],
 			"@typescript-eslint/unified-signatures": "off",
 			"@typescript-eslint/no-unnecessary-condition": "warn",
 			"@typescript-eslint/restrict-template-expressions": ["error", {

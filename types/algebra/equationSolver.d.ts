@@ -1,6 +1,6 @@
-import { Polynom } from './polynom';
-import { Equation } from './equation';
-import { Solution } from '../analyze';
+import type { Polynom } from "./polynom";
+import type { Equation } from "./equation";
+import { Solution } from "../analyze";
 export declare class EquationSolver {
     #private;
     _: number;
@@ -11,3 +11,4 @@ export declare class EquationSolver {
     solve(): Solution[];
     solveAsCardan(): Solution[];
 }
+//# sourceMappingURL=equationSolver.d.ts.map

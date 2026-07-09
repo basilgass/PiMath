@@ -7,3 +7,4 @@ export * from './point';
 export * from './triangle';
 export * from './vector';
 export * from './sphere3';
+//# sourceMappingURL=index.d.ts.map

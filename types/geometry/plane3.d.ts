@@ -1,8 +1,8 @@
-import { Fraction } from '../coefficients/fraction';
-import { Line3 } from './line3';
-import { Point } from './point';
-import { Vector } from './vector';
-import { Plane3Config } from '../pimath.interface';
+import { Fraction } from "../coefficients/fraction";
+import { Line3 } from "./line3";
+import { Point } from "./point";
+import { Vector } from "./vector";
+import type { Plane3Config } from "../pimath.interface";
 export declare class Plane3 {
     #private;
     constructor(config?: Plane3Config);
@@ -25,3 +25,4 @@ export declare class Plane3 {
     get point(): Point;
     set point(value: Point | Vector);
 }
+//# sourceMappingURL=plane3.d.ts.map

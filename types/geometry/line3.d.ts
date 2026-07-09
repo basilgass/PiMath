@@ -1,16 +1,11 @@
-import { Fraction } from '../coefficients/fraction';
-import { Vector } from './vector';
-import { Point } from './point';
-import { Line3Propriety } from '../pimath.interface';
+import { Fraction } from "../coefficients/fraction";
+import { Vector } from "./vector";
+import { Point } from "./point";
+import { Line3Propriety } from "../pimath.interface";
 export declare class Line3 {
     #private;
     static PARALLEL: Line3Propriety;
     static PERPENDICULAR: Line3Propriety;
-    /**
-     * Value can be a mix of:
-     *
-     * @param values
-     */
     constructor(A: Point, B: Point);
     constructor(A: Point, d: Vector);
     clone: () => this;
@@ -50,3 +45,4 @@ export declare class Line3 {
     randomPoint: (max?: number) => Point;
     simplify: () => this;
 }
+//# sourceMappingURL=line3.d.ts.map

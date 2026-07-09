@@ -1,5 +1,5 @@
-import { Fraction } from '../coefficients';
-import { InputValue } from '../pimath.interface';
+import { Fraction } from "../coefficients";
+import type { InputValue } from "../pimath.interface";
 export declare abstract class TupleN {
     #private;
     constructor(...values: InputValue<Fraction>[]);
@@ -22,3 +22,4 @@ export declare abstract class TupleN {
     set z(value: Fraction | number | string);
     zero: () => this;
 }
+//# sourceMappingURL=TupleN.d.ts.map

@@ -1,7 +1,7 @@
-import { InputValue, IPiMathObject } from '../pimath.interface';
-import { Fraction } from '../coefficients';
-import { TupleN } from './TupleN';
-import { Point } from './point';
+import type { InputValue, IPiMathObject } from "../pimath.interface";
+import { Fraction } from "../coefficients";
+import { TupleN } from "./TupleN";
+import { type Point } from "./point";
 export declare class Vector extends TupleN implements IPiMathObject<Vector> {
     constructor(...values: (Vector | Point)[] | InputValue<Fraction>[]);
     parse(...values: (Vector | Point)[] | InputValue<Fraction>[]): this;
@@ -33,3 +33,4 @@ export declare class Vector extends TupleN implements IPiMathObject<Vector> {
     translate(...values: Fraction[]): this;
     unit: () => this;
 }
+//# sourceMappingURL=vector.d.ts.map

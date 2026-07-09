@@ -1,5 +1,5 @@
-import { Fraction } from './fraction';
-import { IExpression, InputValue, IPiMathObject } from '../pimath.interface';
+import { Fraction } from "./fraction";
+import type { IExpression, InputValue, IPiMathObject } from "../pimath.interface";
 export declare class Root implements IPiMathObject<Root>, IExpression<Root> {
     #private;
     constructor(value?: InputValue<Root | Fraction>);
@@ -12,9 +12,6 @@ export declare class Root implements IPiMathObject<Root>, IExpression<Root> {
     get factor(): Fraction;
     set factor(value: Fraction);
     from(index: number, radical: InputValue<Fraction>, factor?: InputValue<Fraction>): this;
-    /**
-     * convert to root(index)(radical), without factor
-     */
     group(): this;
     get index(): number;
     set index(value: number);
@@ -39,3 +36,4 @@ export declare class Root implements IPiMathObject<Root>, IExpression<Root> {
     get withoutSign(): this;
     zero(): this;
 }
+//# sourceMappingURL=root.d.ts.map

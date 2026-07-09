@@ -1,6 +1,6 @@
-import { InputValue } from '../pimath.interface';
-import { Fraction } from '../coefficients';
-import { Root } from '../coefficients/root';
+import type { InputValue } from "../pimath.interface";
+import { Fraction } from "../coefficients";
+import { Root } from "../coefficients/root";
 export declare class Solution {
     #private;
     constructor();
@@ -25,3 +25,4 @@ export declare class Solution {
     get variable(): string;
     set variable(value: string | undefined);
 }
+//# sourceMappingURL=solution.d.ts.map

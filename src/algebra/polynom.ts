@@ -136,7 +136,7 @@ export class Polynom implements IPiMathObject<Polynom>,
 
         for (const value of values) {
             if (value instanceof Polynom) {
-                this.#monoms = this.#monoms.concat(value.monoms.map(m=>m.clone()))
+                this.#monoms = this.#monoms.concat(value.monoms.map(m => m.clone()))
             } else if (value instanceof Monom) {
                 this.#monoms.push(value.clone())
             } else if (typeof value === "number" && Number.isSafeInteger(value)) {
@@ -279,8 +279,11 @@ export class Polynom implements IPiMathObject<Polynom>,
         return {quotient, reminder}
     }
 
+    public evaluate(values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric: true): number
+    public evaluate(values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: false): Fraction
+    public evaluate(values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number
     public evaluate(values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number {
-        // Return the numeric value, without using Fraction
+        // Return the numeric value without using Fraction
         if (asNumeric) {
             return this.#evaluateAsNumeric(values)
         }
@@ -304,7 +307,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         this.#factors = []
 
         // There is only one monom - it's already considered as factor.
-        if(this.monoms.length===1) return [this.clone()]
+        if (this.monoms.length === 1) return [this.clone()]
 
         let P = this.clone().reorder()
 
@@ -400,7 +403,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         const orderedPolynom = this.clone().reorder()
 
         const length = this.degree().value + 1
-        const coeffs = Array.from({length}, ()=>new Fraction(0))
+        const coeffs = Array.from({length}, () => new Fraction(0))
 
         orderedPolynom.monoms.forEach(monom => {
             const index = length - monom.degree().value - 1
@@ -445,13 +448,13 @@ export class Polynom implements IPiMathObject<Polynom>,
     public integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter = 'x'): Fraction {
         const primitive = this.primitive(letter)
 
-        const valuesA: literalType<Fraction> = {},
-            valuesB: literalType<Fraction> = {}
+        const valuesA: literalType<Fraction> = {}
+        const valuesB: literalType<Fraction> = {}
 
         valuesA[letter] = new Fraction(a)
         valuesB[letter] = new Fraction(b)
 
-        return (primitive.evaluate(valuesB) as Fraction).subtract(primitive.evaluate(valuesA))
+        return (primitive.evaluate(valuesB)).subtract(primitive.evaluate(valuesA))
     }
 
     public inverse(): Polynom | undefined {
@@ -494,7 +497,7 @@ export class Polynom implements IPiMathObject<Polynom>,
             const zero = div.getZeroes()[0]
 
             if (zero.exact) {
-                return (this.evaluate(zero.fraction) as Fraction).isZero()
+                return (this.evaluate(zero.fraction)).isZero()
             } else {
                 return false
             }
@@ -548,7 +551,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         // Finite value: evaluate directly
         if (f.isFinite()) {
             const l = letter ?? this.variables[0] ?? 'x'
-            return this.evaluate({[l]: f}) as Fraction
+            return this.evaluate({[l]: f})
         }
 
         const M = this.monomByDegree(undefined, letter)
@@ -747,8 +750,8 @@ export class Polynom implements IPiMathObject<Polynom>,
     public reorder(letter = 'x', revert = false): this {
         const otherLetters = this.variables.filter(x => x !== letter)
         this.#monoms.sort(function (a, b) {
-            const da = a.degree(letter).value,
-                db = b.degree(letter).value
+            const da = a.degree(letter).value
+            const db = b.degree(letter).value
 
             // Values are different
             if (da !== db) {
@@ -758,8 +761,8 @@ export class Polynom implements IPiMathObject<Polynom>,
             // if values are equals, check other letters - it must be reverted in that case !
             if (otherLetters.length > 0) {
                 for (const L of otherLetters) {
-                    const da = a.degree(L).value,
-                        db = b.degree(L).value
+                    const da = a.degree(L).value
+                    const db = b.degree(L).value
 
                     // Values are different
                     if (da !== db) {
@@ -889,7 +892,7 @@ export class Polynom implements IPiMathObject<Polynom>,
             ]
 
             testingRoots.forEach((test, index) => {
-                const sign = this.evaluate({[this.variables[0] ?? 'x']: test}, true) as number
+                const sign = this.evaluate({[this.variables[0] ?? 'x']: test}, true)
                 signs[index * 2] = sign > 0 ? '+' : '-'
             })
         }
@@ -1128,8 +1131,8 @@ export class Polynom implements IPiMathObject<Polynom>,
 
             case ShutingyardType.OPERATION:
                 if (stack.length >= 2) {
-                    const b = stack.pop(),
-                        a = stack.pop()
+                    const b = stack.pop()
+                    const a = stack.pop()
 
                     // Check if the polynoms are not undefined.
                     if (a === undefined || b === undefined) {
