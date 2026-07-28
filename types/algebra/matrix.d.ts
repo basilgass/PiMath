@@ -8,10 +8,13 @@ export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultipl
     parse(values: IMatrixValues): this;
     clone(): Matrix;
     get tex(): string;
+    resolveWrapper(): [string, string];
+    resolveTeXwrapper(): string;
     get display(): string;
     add(value: Matrix): this;
     aij(i: number, j: number): Polynom | null;
     get bmatrix(): this;
+    get Bmatrix(): this;
     canBeAdded(matrix: Matrix): boolean;
     canBeInverted(): boolean;
     canBeMultiplied(matrix: Matrix): boolean;
@@ -39,6 +42,8 @@ export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultipl
     one(): this;
     opposite(): this;
     get pmatrix(): this;
+    get vmatrix(): this;
+    get Vmatrix(): this;
     pow(value: number): this;
     reduce(): Matrix;
     get rows(): Polynom[][];

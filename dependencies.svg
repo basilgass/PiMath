@@ -1584,18 +1584,18 @@
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M145.35,-203.5C145.35,-203.5 161.47,-203.5 161.47,-203.5"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="161.47,-205.6 167.47,-203.5 161.47,-201.4 161.47,-205.6"/>
 </g>
-<!-- src/randomization/geometry/rndVector.ts -->
+<!-- src/randomization/geometry/rndPoint.ts -->
 <g id="node41" class="node">
-<title>src/randomization/geometry/rndVector.ts</title>
-<g id="a_node41"><a xlink:href="src/randomization/geometry/rndVector.ts" xlink:title="rndVector.ts">
+<title>src/randomization/geometry/rndPoint.ts</title>
+<g id="a_node41"><a xlink:href="src/randomization/geometry/rndPoint.ts" xlink:title="rndPoint.ts">
 <path fill="#ddfeff" stroke="black" d="M315.5,-218C315.5,-218 262.5,-218 262.5,-218 259.5,-218 256.5,-215 256.5,-212 256.5,-212 256.5,-206 256.5,-206 256.5,-203 259.5,-200 262.5,-200 262.5,-200 315.5,-200 315.5,-200 318.5,-200 321.5,-203 321.5,-206 321.5,-206 321.5,-212 321.5,-212 321.5,-215 318.5,-218 315.5,-218"/>
-<text text-anchor="start" x="264.5" y="-206.8" font-family="Helvetica,sans-Serif" font-size="9.00">rndVector.ts</text>
+<text text-anchor="start" x="264.5" y="-206.8" font-family="Helvetica,sans-Serif" font-size="9.00">rndPoint.ts</text>
 </a>
 </g>
 </g>
-<!-- src/randomization/random.ts&#45;&gt;src/randomization/geometry/rndVector.ts -->
+<!-- src/randomization/random.ts&#45;&gt;src/randomization/geometry/rndPoint.ts -->
 <g id="edge189" class="edge">
-<title>src/randomization/random.ts&#45;&gt;src/randomization/geometry/rndVector.ts</title>
+<title>src/randomization/random.ts&#45;&gt;src/randomization/geometry/rndPoint.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M145.33,-198C194.93,-198 289,-198 289,-198 289,-198 289,-198.17 289,-198.17"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="286.9,-193.72 289,-199.72 291.1,-193.72 286.9,-193.72"/>
 </g>
@@ -1743,39 +1743,39 @@
 <path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M211,-199.92C211,-199.35 211,-199 211,-199 211,-199 432.77,-199 432.77,-199"/>
 <polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="432.77,-201.1 438.77,-199 432.77,-196.9 432.77,-201.1"/>
 </g>
-<!-- src/randomization/geometry/rndCircle.ts&#45;&gt;src/randomization/geometry/rndVector.ts -->
+<!-- src/randomization/geometry/rndCircle.ts&#45;&gt;src/randomization/geometry/rndPoint.ts -->
 <g id="edge166" class="edge">
-<title>src/randomization/geometry/rndCircle.ts&#45;&gt;src/randomization/geometry/rndVector.ts</title>
+<title>src/randomization/geometry/rndCircle.ts&#45;&gt;src/randomization/geometry/rndPoint.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M231.56,-206C231.56,-206 250.26,-206 250.26,-206"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="250.26,-208.1 256.26,-206 250.26,-203.9 250.26,-208.1"/>
 </g>
-<!-- src/randomization/geometry/rndVector.ts&#45;&gt;src/coefficients/fraction.ts -->
+<!-- src/randomization/geometry/rndPoint.ts&#45;&gt;src/coefficients/fraction.ts -->
 <g id="edge176" class="edge">
-<title>src/randomization/geometry/rndVector.ts&#45;&gt;src/coefficients/fraction.ts</title>
+<title>src/randomization/geometry/rndPoint.ts&#45;&gt;src/coefficients/fraction.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M321.59,-215.67C327.59,-215.67 332,-215.67 332,-215.67 332,-215.67 332,-1099.25 332,-1099.25 332,-1099.25 878.98,-1099.25 878.98,-1099.25"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="878.98,-1101.35 884.98,-1099.25 878.98,-1097.15 878.98,-1101.35"/>
 </g>
-<!-- src/randomization/geometry/rndVector.ts&#45;&gt;src/geometry/point.ts -->
+<!-- src/randomization/geometry/rndPoint.ts&#45;&gt;src/geometry/point.ts -->
 <g id="edge177" class="edge">
-<title>src/randomization/geometry/rndVector.ts&#45;&gt;src/geometry/point.ts</title>
+<title>src/randomization/geometry/rndPoint.ts&#45;&gt;src/geometry/point.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M273,-218.02C273,-262.27 273,-454.25 273,-454.25 273,-454.25 438.32,-454.25 438.32,-454.25"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="438.32,-456.35 444.32,-454.25 438.32,-452.15 438.32,-456.35"/>
 </g>
-<!-- src/randomization/geometry/rndVector.ts&#45;&gt;src/randomization/rndHelpers.ts -->
+<!-- src/randomization/geometry/rndPoint.ts&#45;&gt;src/randomization/rndHelpers.ts -->
 <g id="edge179" class="edge">
-<title>src/randomization/geometry/rndVector.ts&#45;&gt;src/randomization/rndHelpers.ts</title>
+<title>src/randomization/geometry/rndPoint.ts&#45;&gt;src/randomization/rndHelpers.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M321.9,-213.33C379.14,-213.33 491,-213.33 491,-213.33 491,-213.33 491,-295.99 491,-295.99"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="488.9,-295.99 491,-301.99 493.1,-295.99 488.9,-295.99"/>
 </g>
-<!-- src/randomization/geometry/rndVector.ts&#45;&gt;src/randomization/rndTypes.ts -->
+<!-- src/randomization/geometry/rndPoint.ts&#45;&gt;src/randomization/rndTypes.ts -->
 <g id="edge180" class="edge">
-<title>src/randomization/geometry/rndVector.ts&#45;&gt;src/randomization/rndTypes.ts</title>
+<title>src/randomization/geometry/rndPoint.ts&#45;&gt;src/randomization/rndTypes.ts</title>
 <path fill="none" stroke="#000000" stroke-opacity="0.200000" d="M321.63,-205.5C321.63,-205.5 432.85,-205.5 432.85,-205.5"/>
 <polygon fill="none" stroke="#000000" stroke-opacity="0.200000" points="432.85,-207.6 438.85,-205.5 432.85,-203.4 432.85,-207.6"/>
 </g>
-<!-- src/randomization/geometry/rndVector.ts&#45;&gt;src/randomization/coefficient/rndFraction.ts -->
+<!-- src/randomization/geometry/rndPoint.ts&#45;&gt;src/randomization/coefficient/rndFraction.ts -->
 <g id="edge178" class="edge">
-<title>src/randomization/geometry/rndVector.ts&#45;&gt;src/randomization/coefficient/rndFraction.ts</title>
+<title>src/randomization/geometry/rndPoint.ts&#45;&gt;src/randomization/coefficient/rndFraction.ts</title>
 <path fill="none" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" d="M306,-199.66C306,-188.7 306,-172 306,-172 306,-172 339.34,-172 339.34,-172"/>
 <polygon fill="#000000" fill-opacity="0.200000" stroke="#000000" stroke-width="2" stroke-opacity="0.200000" points="339.34,-174.1 345.34,-172 339.34,-169.9 339.34,-174.1"/>
 </g>

@@ -5,10 +5,17 @@ import {operation_pow} from "./operations"
 
 export type IMatrixValues = InputAlgebra<Polynom>[][]
 
+enum MATRIX_TYPE  {
+    pmatrix,
+    bmatrix,
+    Bmatrix,
+    vmatrix,
+    Vmatrix
+}
 export class Matrix implements IPiMathObject<Matrix>,
     IExpressionMultiply<Matrix> {
     #digits: number | null = null
-    #matrix_parenthesis = true
+    #matrix_parenthesis: MATRIX_TYPE = MATRIX_TYPE.pmatrix
     #values: Polynom[][] = []
 
     constructor(rowCount?: number, colCount?: number) {
@@ -22,8 +29,6 @@ export class Matrix implements IPiMathObject<Matrix>,
 
     public parse(values: IMatrixValues): this {
         return this.fromValues(values)
-
-        return this
     }
 
     public clone(): Matrix {
@@ -47,8 +52,7 @@ export class Matrix implements IPiMathObject<Matrix>,
             return ""
         }
 
-        const wrapper = this.#matrix_parenthesis ? 'pmatrix' : 'bmatrix'
-
+        const wrapper = this.resolveTeXwrapper()
 
         const output = [
             `\\begin{${wrapper}}`,
@@ -65,12 +69,30 @@ export class Matrix implements IPiMathObject<Matrix>,
         return output
     }
 
+    resolveWrapper(): [string, string]{
+        if(this.#matrix_parenthesis=== MATRIX_TYPE.vmatrix) return ['|', '|']
+        if(this.#matrix_parenthesis=== MATRIX_TYPE.Vmatrix) return ['||', '||']
+        if(this.#matrix_parenthesis=== MATRIX_TYPE.bmatrix) return ['[', ']']
+        if(this.#matrix_parenthesis=== MATRIX_TYPE.Bmatrix) return ['{', '}']
+
+        return ['(', ')']
+    }
+
+    resolveTeXwrapper(): string {
+        if(this.#matrix_parenthesis=== MATRIX_TYPE.vmatrix) return 'vmatrix'
+        if(this.#matrix_parenthesis=== MATRIX_TYPE.Vmatrix) return 'Vmatrix'
+        if(this.#matrix_parenthesis=== MATRIX_TYPE.bmatrix) return 'bmatrix'
+        if(this.#matrix_parenthesis=== MATRIX_TYPE.Bmatrix) return 'Bmatrix'
+
+        return 'pmatrix'
+    }
+
     get display(): string {
         if (this.#values.length === 0) {
             return ""
         }
 
-        const wrapper = this.#matrix_parenthesis ? ['(', ')'] : ['[', ']']
+        const wrapper = this.resolveWrapper()
 
         const output = wrapper[0] +
             this.map(aij => this.#digits !== null && aij.value ? +aij.value.toFixed(this.#digits): aij.display)
@@ -103,7 +125,12 @@ export class Matrix implements IPiMathObject<Matrix>,
     }
 
     get bmatrix(): this {
-        this.#matrix_parenthesis = false
+        this.#matrix_parenthesis = MATRIX_TYPE.bmatrix
+        return this
+    }
+
+    get Bmatrix(): this {
+        this.#matrix_parenthesis = MATRIX_TYPE.Bmatrix
         return this
     }
 
@@ -409,7 +436,17 @@ export class Matrix implements IPiMathObject<Matrix>,
     }
 
     get pmatrix(): this {
-        this.#matrix_parenthesis = true
+        this.#matrix_parenthesis = MATRIX_TYPE.pmatrix
+        return this
+    }
+
+    get vmatrix(): this {
+        this.#matrix_parenthesis = MATRIX_TYPE.vmatrix
+        return this
+    }
+
+    get Vmatrix(): this {
+        this.#matrix_parenthesis = MATRIX_TYPE.Vmatrix
         return this
     }
 

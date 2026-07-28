@@ -52,7 +52,7 @@ declare const PiMath: {
         shuffle: <T>(arr: T[]) => T[];
         line: (config?: import(".").randomGeometryLineConfig) => Line;
         line3: (config?: import(".").randomGeometryLine3Config) => Line3;
-        vector: (config?: import(".").randomGeometryPointConfig) => Point;
+        vector: (config?: import(".").randomGeometryPointConfig) => Vector;
         point: (config?: import(".").randomGeometryPointConfig) => Point;
         circle: (config?: import(".").randomGeometryCircleConfig) => Circle;
     };

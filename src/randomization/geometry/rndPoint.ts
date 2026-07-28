@@ -1,10 +1,10 @@
-import { Fraction } from "../../coefficients/fraction"
-import type { randomGeometryPointConfig } from "../rndTypes"
-import { rndFraction } from "../coefficient/rndFraction"
-import { randomIntSym } from "../rndHelpers"
-import { Point } from "../../geometry/point"
+import {Fraction} from "../../coefficients/fraction"
+import type {randomGeometryPointConfig} from "../rndTypes"
+import {rndFraction} from "../coefficient/rndFraction"
+import {randomIntSym} from "../rndHelpers"
+import {Point} from "../../geometry/point"
 
-export function rndVector(userConfig?: randomGeometryPointConfig): Point {
+export function rndPoint(userConfig?: randomGeometryPointConfig): Point {
     const config: {
         axis: 'x' | 'y' | 'z' | null,
         fraction: boolean,

@@ -1,7 +1,7 @@
-import type { randomMonomConfig } from "../rndTypes"
-import { Monom } from "../../algebra/monom"
-import { rndFraction } from "../coefficient/rndFraction"
-import { randomItem } from "../rndHelpers"
+import type {randomMonomConfig} from "../rndTypes"
+import {Monom} from "../../algebra/monom"
+import {rndFraction} from "../coefficient/rndFraction"
+import {randomItem} from "../rndHelpers"
 
 export function rndMonom(userConfig?: randomMonomConfig): Monom {
     const config = Object.assign(
@@ -9,18 +9,24 @@ export function rndMonom(userConfig?: randomMonomConfig): Monom {
             letters: 'x',
             degree: 2,
             fraction: true,
-            zero: false
+            zero: false,
         }, userConfig)
 
     // Create a monom instance
     const M = new Monom()
 
     // Generate the coefficient
-    M.coefficient = rndFraction({
-        zero: config.zero,
-        reduced: true,
-        natural: !config.fraction
-    })
+    M.coefficient = rndFraction(
+        Object.assign(
+            {},
+            {
+                zero: config.zero,
+                reduced: true,
+                natural: config.fraction===false,
+            },
+            typeof config.fraction === "boolean" ? {} : config.fraction
+        )
+    )
 
     if (config.letters.length > 1) {
         // Initialise each items...

@@ -4,24 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Resolving various bug with polyFactor.ts">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Package.json update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pimath.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eslint.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/eslint.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependencies.svg" beforeDir="false" afterPath="$PROJECT_DIR$/dependencies.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/equation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polyfactor.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/coefficients/fraction.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/coefficients/fraction.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig-build.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/geometry/line.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/line.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/helpers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/helpers.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/numeric.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/numeric.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/pimath.interface.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/pimath.interface.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/matrix.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/matrix.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/randomization/algebra/rndMonom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/algebra/rndMonom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/randomization/geometry/rndCircle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/geometry/rndCircle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/randomization/geometry/rndVector.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/geometry/rndPoint.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/randomization/random.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/random.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,61 +81,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0" />
-      <entry key="S5" value="1.0" />
-      <entry key="S10" value="1.0" />
-      <entry key="S30" value="1.000000062507224" />
-      <entry key="S60" value="1.0007060383401563" />
-      <entry key="M2" value="1.09272031339566" />
-      <entry key="M5" value="3.6467706801889905" />
-      <entry key="M10" value="11.21103595542272" />
-      <entry key="M15" value="18.320896541769994" />
-      <entry key="M30" value="32.90885572225983" />
-      <entry key="H1" value="47.20937608790073" />
-      <entry key="H2" value="60.41781193055325" />
-      <entry key="H4" value="71.64961341465593" />
-      <entry key="D1" value="86.2072341906905" />
-      <entry key="W1" value="89.43578827999553" />
+      <entry key="MS100" value="1.0002823945761488" />
+      <entry key="MS500" value="1.1950613700434258" />
+      <entry key="S2" value="1.6646042775179213" />
+      <entry key="S5" value="1.8704104738520657" />
+      <entry key="S10" value="2.1622219992361655" />
+      <entry key="S30" value="4.254835047352954" />
+      <entry key="S60" value="9.06089374461113" />
+      <entry key="M2" value="18.64437865054764" />
+      <entry key="M5" value="35.584859173842744" />
+      <entry key="M10" value="54.32103306053105" />
+      <entry key="M15" value="69.77894391264279" />
+      <entry key="M30" value="102.62987354531758" />
+      <entry key="H1" value="137.16685041214322" />
+      <entry key="H2" value="167.09680851267035" />
+      <entry key="H4" value="189.87474417985925" />
+      <entry key="D1" value="217.14007457523743" />
+      <entry key="W1" value="222.98397371311398" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="0.0" />
-      <entry key="S2" value="3.093781665594273E-120" />
-      <entry key="S5" value="1.5710711895565154E-48" />
-      <entry key="S10" value="1.2534237868959226E-24" />
-      <entry key="S30" value="1.078200468369082E-8" />
-      <entry key="S60" value="1.0392626619164511E-4" />
-      <entry key="M2" value="0.011028221924177878" />
-      <entry key="M5" value="0.4862565583062863" />
-      <entry key="M10" value="2.9845121593204937" />
-      <entry key="M15" value="5.793437832626807" />
-      <entry key="M30" value="11.595011201917128" />
-      <entry key="H1" value="16.74548248940316" />
-      <entry key="H2" value="20.601623369262732" />
-      <entry key="H4" value="23.281725386160872" />
-      <entry key="D1" value="26.276554577571655" />
-      <entry key="W1" value="26.893531874932062" />
+      <entry key="MS100" value="7.779472585648463E-88" />
+      <entry key="MS500" value="3.786082132025324E-18" />
+      <entry key="S2" value="4.411106138387786E-5" />
+      <entry key="S5" value="0.018105853653651974" />
+      <entry key="S10" value="0.13457498395401465" />
+      <entry key="S30" value="0.5745568361567314" />
+      <entry key="S60" value="1.3286708684207915" />
+      <entry key="M2" value="2.9822279684887736" />
+      <entry key="M5" value="6.0854709664247535" />
+      <entry key="M10" value="9.128150005746084" />
+      <entry key="M15" value="11.444358670483256" />
+      <entry key="M30" value="17.28259740226164" />
+      <entry key="H1" value="24.801763887217074" />
+      <entry key="H2" value="31.72678823005419" />
+      <entry key="H4" value="36.83970765184512" />
+      <entry key="D1" value="42.60862429518036" />
+      <entry key="W1" value="43.79534589176804" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.12074204111560566" />
-      <entry key="MS500" value="0.6551967019291817" />
-      <entry key="S2" value="0.8996900669382809" />
-      <entry key="S5" value="0.9585994384929766" />
-      <entry key="S10" value="0.9790809151918837" />
-      <entry key="S30" value="0.9929778459079902" />
-      <entry key="S60" value="0.9972715696717924" />
-      <entry key="M2" value="1.100406910558157" />
-      <entry key="M5" value="4.115434278977014" />
-      <entry key="M10" value="14.164356145486687" />
-      <entry key="M15" value="24.080665694405162" />
-      <entry key="M30" value="44.4753134313815" />
-      <entry key="H1" value="63.9356383454009" />
-      <entry key="H2" value="81.00789576623166" />
-      <entry key="H4" value="94.92484598628252" />
-      <entry key="D1" value="112.4825624615324" />
-      <entry key="W1" value="116.32914056416391" />
+      <entry key="MS100" value="3.420802206086721E-4" />
+      <entry key="MS500" value="0.3281864024417561" />
+      <entry key="S2" value="1.2677793408776994" />
+      <entry key="S5" value="1.702041842221413" />
+      <entry key="S10" value="2.1870801122518553" />
+      <entry key="S30" value="4.766383299527505" />
+      <entry key="S60" value="10.325122463646707" />
+      <entry key="M2" value="21.558866404600284" />
+      <entry key="M5" value="41.61825861435691" />
+      <entry key="M10" value="63.41150940546589" />
+      <entry key="M15" value="81.19107803368671" />
+      <entry key="M30" value="119.88568769307348" />
+      <entry key="H1" value="161.94792472976224" />
+      <entry key="H2" value="198.80978506993077" />
+      <entry key="H4" value="226.70621273129976" />
+      <entry key="D1" value="259.74706344647177" />
+      <entry key="W1" value="266.77907804366544" />
     </decayedShown>
   </component>
   <component name="OptimizeOnSaveOptions">
@@ -630,9 +622,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="npm.build" />
+        <item itemvalue="npm.test" />
         <item itemvalue="Vitest.PolyFactor temporary tests.parse polfactor" />
         <item itemvalue="Vitest.specific test.divide by zero" />
-        <item itemvalue="npm.test" />
         <item itemvalue="Vitest.helpers.test.ts" />
       </list>
     </recent_temporary>
@@ -640,8 +632,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-PS-261.26222.24" />
-        <option value="bundled-php-predefined-a98d8de5180a-6bbb74dbab74-com.jetbrains.php.sharedIndexes-PS-261.26222.24" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-PS-261.26222.71" />
+        <option value="bundled-php-predefined-a98d8de5180a-6bbb74dbab74-com.jetbrains.php.sharedIndexes-PS-261.26222.71" />
       </set>
     </attachedChunks>
   </component>
@@ -898,15 +890,10 @@
       <workItem from="1781269268700" duration="768000" />
       <workItem from="1782741867162" duration="654000" />
       <workItem from="1783517096943" duration="671000" />
-      <workItem from="1783589713687" duration="6307000" />
-    </task>
-    <task id="LOCAL-00043" summary="Rename fromPolynom to fromEquation in Sphere3 class; update related test case">
-      <option name="closed" value="true" />
-      <created>1741187543480</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1741187543480</updated>
+      <workItem from="1783589713687" duration="6422000" />
+      <workItem from="1783606374162" duration="1043000" />
+      <workItem from="1785235553785" duration="734000" />
+      <workItem from="1785242637899" duration="1907000" />
     </task>
     <task id="LOCAL-00044" summary="Build OK">
       <option name="closed" value="true" />
@@ -1292,7 +1279,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777537779188</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="Package.json update">
+      <option name="closed" value="true" />
+      <created>1783606259771</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1783606259771</updated>
+    </task>
+    <option name="localTasksCounter" value="93" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1324,7 +1319,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Update package.json&#10;Migrate from eslintjs to eslint&#10;build ok&#10;dependencies ok" />
     <MESSAGE value="Update Fraction.inverse to correctly handle negative fraction." />
     <MESSAGE value="Minor update : changed some behavior (asCanonical(), as...), added Solution class, add Root class, removed NthRoot class.&#10;Many bug fixes (maybe some new), lots of improvement.&#10;&#10;Still work in progress." />
     <MESSAGE value="Removed the old ISolution by the new class solution.ts" />
@@ -1349,7 +1343,8 @@
     <MESSAGE value="Added fromString to polyFactor.ts : parse a string keeping the factorized state." />
     <MESSAGE value="Handle fromString with extra parentheses as an asciiMath output." />
     <MESSAGE value="Resolving various bug with polyFactor.ts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Resolving various bug with polyFactor.ts" />
+    <MESSAGE value="Package.json update" />
+    <option name="LAST_COMMIT_MESSAGE" value="Package.json update" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

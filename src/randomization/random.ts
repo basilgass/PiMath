@@ -26,8 +26,8 @@ import {rndEquation} from "./algebra/rndEquation"
 import {rndCircle} from "./geometry/rndCircle"
 import {rndLine} from "./geometry/rndLine"
 import {rndLine3} from "./geometry/rndLine3"
-import {rndVector} from "./geometry/rndVector"
-import {Point} from "../geometry"
+import {rndPoint} from "./geometry/rndPoint"
+import {Vector} from "../geometry"
 
 export type * from "./rndTypes"
 
@@ -89,11 +89,11 @@ export const Random = {
     },
 
     vector: (config?: randomGeometryPointConfig) => {
-        return rndVector(config)
+        return new Vector(rndPoint(config))
     },
 
     point: (config?: randomGeometryPointConfig) => {
-        return new Point(rndVector(config))
+        return rndPoint(config)
     },
 
     circle: (config?: randomGeometryCircleConfig) => {

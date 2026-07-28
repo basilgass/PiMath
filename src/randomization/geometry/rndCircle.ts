@@ -1,7 +1,7 @@
-import { Circle } from "../../geometry/circle"
-import { randomInt } from "../rndHelpers"
-import type { randomGeometryCircleConfig } from "../rndTypes"
-import { rndVector } from "./rndVector"
+import {Circle} from "../../geometry/circle"
+import {randomInt} from "../rndHelpers"
+import type {randomGeometryCircleConfig} from "../rndTypes"
+import {rndPoint} from "./rndPoint"
 
 export function rndCircle(userConfig?: randomGeometryCircleConfig): Circle {
     const config = Object.assign(
@@ -13,7 +13,7 @@ export function rndCircle(userConfig?: randomGeometryCircleConfig): Circle {
             pointsOnCircle: 8
         }, userConfig)
 
-    const center = rndVector(config.center)
+    const center = rndPoint(config.center)
 
     let rv, r
     if (config.pointsOnCircle === 8) {

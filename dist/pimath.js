@@ -4076,7 +4076,7 @@ function N(e) {
 //#region src/algebra/matrix.ts
 var le = class e {
 	#e = null;
-	#t = !0;
+	#t = 0;
 	#n = [];
 	constructor(e, t) {
 		return e && (t ??= e, this.fromDimensions(e, t)), this;
@@ -4095,16 +4095,22 @@ var le = class e {
 	}
 	get tex() {
 		if (this.#n.length === 0) return "";
-		let e = this.#t ? "pmatrix" : "bmatrix", t = [
+		let e = this.resolveTeXwrapper(), t = [
 			`\\begin{${e}}`,
 			...this.rows.map((e) => "	" + e.map((e) => this.#e !== null && e.value ? +e.value.toFixed(this.#e) : e.tex).join(" & ") + "\\\\"),
 			`\\end{${e}}`
 		].join("\n");
 		return this.#e = null, t;
 	}
+	resolveWrapper() {
+		return this.#t === 3 ? ["|", "|"] : this.#t === 4 ? ["||", "||"] : this.#t === 1 ? ["[", "]"] : this.#t === 2 ? ["{", "}"] : ["(", ")"];
+	}
+	resolveTeXwrapper() {
+		return this.#t === 3 ? "vmatrix" : this.#t === 4 ? "Vmatrix" : this.#t === 1 ? "bmatrix" : this.#t === 2 ? "Bmatrix" : "pmatrix";
+	}
 	get display() {
 		if (this.#n.length === 0) return "";
-		let e = this.#t ? ["(", ")"] : ["[", "]"], t = e[0] + this.map((e) => this.#e !== null && e.value ? +e.value.toFixed(this.#e) : e.display).map((e) => `(${e.join(",")})`).join(",") + e[1];
+		let e = this.resolveWrapper(), t = e[0] + this.map((e) => this.#e !== null && e.value ? +e.value.toFixed(this.#e) : e.display).map((e) => `(${e.join(",")})`).join(",") + e[1];
 		return this.#e = null, t;
 	}
 	add(e) {
@@ -4117,7 +4123,10 @@ var le = class e {
 		return e < 0 || e > this.dimension.rows || t < 0 || t > this.dimension.cols ? null : this.#n[e][t];
 	}
 	get bmatrix() {
-		return this.#t = !1, this;
+		return this.#t = 1, this;
+	}
+	get Bmatrix() {
+		return this.#t = 2, this;
 	}
 	canBeAdded(e) {
 		let { rows: t, cols: n } = this.dimension, { rows: r, cols: i } = e.dimension;
@@ -4257,7 +4266,13 @@ var le = class e {
 		}), this;
 	}
 	get pmatrix() {
-		return this.#t = !0, this;
+		return this.#t = 0, this;
+	}
+	get vmatrix() {
+		return this.#t = 3, this;
+	}
+	get Vmatrix() {
+		return this.#t = 4, this;
 	}
 	pow(e) {
 		return D(this, e);
@@ -5428,11 +5443,11 @@ function ye(e) {
 		fraction: !0,
 		zero: !1
 	}, e), n = new E();
-	if (n.coefficient = Y({
+	if (n.coefficient = Y(Object.assign({}, {
 		zero: t.zero,
 		reduced: !0,
-		natural: !t.fraction
-	}), t.letters.length > 1) {
+		natural: t.fraction === !1
+	}, typeof t.fraction == "boolean" ? {} : t.fraction)), t.letters.length > 1) {
 		for (let e of t.letters.split("")) n.setLetter(e, 0);
 		for (let e = 0; e < t.degree; e++) {
 			let e = U(t.letters.split(""));
@@ -5515,7 +5530,7 @@ function xe(e) {
 	return new k(n, 0);
 }
 //#endregion
-//#region src/randomization/geometry/rndVector.ts
+//#region src/randomization/geometry/rndPoint.ts
 function Q(e) {
 	let t = Object.assign({
 		axis: !0,
@@ -5593,8 +5608,8 @@ var $ = {
 	shuffle: (e) => W(e),
 	line: (e) => Ce(e),
 	line3: (e) => we(e),
-	vector: (e) => Q(e),
-	point: (e) => new I(Q(e)),
+	vector: (e) => new L(Q(e)),
+	point: (e) => Q(e),
 	circle: (e) => Se(e)
 }, Te = {
 	Numeric: d,
