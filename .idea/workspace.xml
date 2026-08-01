@@ -630,10 +630,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.build" />
         <item itemvalue="npm.test" />
         <item itemvalue="Vitest.PolyFactor: operations.should multiply two PolyFactors as string" />
         <item itemvalue="Vitest.PolyFactor temporary tests.parse polfactor" />
-        <item itemvalue="npm.build" />
         <item itemvalue="Vitest.specific test.divide by zero" />
       </list>
     </recent_temporary>

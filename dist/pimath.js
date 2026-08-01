@@ -3836,6 +3836,7 @@ var O = class e {
 	}
 	parse(...t) {
 		return this.#t = [], t.length === 0 || t.forEach((t) => {
+			if (typeof t == "string") return this.fromString(t);
 			t instanceof e ? this.#t.push(...t.factors.map((e) => e.clone())) : this.#t.push(new A(t));
 		}), this;
 	}
