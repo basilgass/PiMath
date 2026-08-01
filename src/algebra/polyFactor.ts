@@ -39,7 +39,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         }
 
         values.forEach(value => {
-            if (value instanceof PolyFactor) {
+            if(typeof  value==="string"){
+                return this.fromString(value)
+            }else if (value instanceof PolyFactor) {
                 this.#factors.push(...value.factors.map(f => f.clone()))
             } else {
                 this.#factors.push(new Factor(value))
@@ -420,9 +422,10 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this.#factors.every(f => f.isZero())
     }
 
-    public multiply(...values: PolyFactor[]): this {
+    public multiply(...values: (InputAlgebra<Polynom> | Factor |PolyFactor)[]): this {
         values.forEach(value => {
-            this.#factors = this.#factors.concat(value.clone().factors)
+            const PF = new PolyFactor( value )
+            this.#factors = this.#factors.concat(PF.factors)
         })
 
         return this

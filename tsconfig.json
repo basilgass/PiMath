@@ -13,7 +13,6 @@
     "moduleResolution": "bundler",
     "lib": ["ESNext","dom"],
     "useDefineForClassFields": true,
-    "types": ["vite/client"],
   },
   "include": [
     "src",

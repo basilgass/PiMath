@@ -212,6 +212,20 @@ describe("PolyFactor: operations", () => {
         expect(PF3.factors[3].power.display).toBe('2/3')
     })
 
+    test('should multiply two PolyFactors as string', () => {
+        const PF = new PolyFactor(
+            new Factor('3x+2', '1/2'),
+            new Factor('4x-3', '2/3')
+        )
+
+        const PF3 = PF.multiply('(3x+2)^3(7x-5)^(5/3)').reduce()
+
+        expect(PF3.factors.length).toBe(3)
+        expect(PF3.factors[0].power.display).toBe('7/2')
+        expect(PF3.factors[1].power.display).toBe('2/3')
+        expect(PF3.factors[2].power.display).toBe('5/3')
+    })
+
     test('should divide two PolyFactors', () => {
         const PF = new PolyFactor(
             new Factor('3x+2', '1/2'),

@@ -33,7 +33,7 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     isEqual(value: PolyFactor): boolean;
     isOne(): boolean;
     isZero(): boolean;
-    multiply(...values: PolyFactor[]): this;
+    multiply(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]): this;
     get numerator(): PolyFactor;
     one(): this;
     opposite(): this;

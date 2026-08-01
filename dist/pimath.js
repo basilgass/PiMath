@@ -1816,7 +1816,7 @@ var v = class e {
 	#e;
 	#t;
 	constructor(e) {
-		e instanceof M || e instanceof A ? this.#e = new M(e) : this.#e = new M().fromPolynom(e), this.#t = this.#e.getRoots();
+		this.#e = e instanceof M || e instanceof A ? new M(e) : new M().fromPolynom(e), this.#t = this.#e.getRoots();
 	}
 	get fx() {
 		return this.#e;
@@ -1983,7 +1983,11 @@ var v = class e {
 }, x = {
 	pi: Math.PI,
 	e: Math.exp(1)
-}, S = /* @__PURE__ */ ((e) => (e.VARIABLE = "variable", e.COEFFICIENT = "coefficient", e.OPERATION = "operation", e.CONSTANT = "constant", e.FUNCTION = "function", e.FUNCTION_ARGUMENT = "function-argument", e.MONOM = "monom", e.LEFT_PARENTHESIS = "(", e.RIGHT_PARENTHESIS = ")", e))(S || {}), C = /* @__PURE__ */ ((e) => (e.EXPRESSION = "expression", e.POLYNOM = "polynom", e.SET = "set", e.NUMERIC = "numeric", e))(C || {});
+}, S = /* @__PURE__ */ function(e) {
+	return e.VARIABLE = "variable", e.COEFFICIENT = "coefficient", e.OPERATION = "operation", e.CONSTANT = "constant", e.FUNCTION = "function", e.FUNCTION_ARGUMENT = "function-argument", e.MONOM = "monom", e.LEFT_PARENTHESIS = "(", e.RIGHT_PARENTHESIS = ")", e;
+}({}), C = /* @__PURE__ */ function(e) {
+	return e.EXPRESSION = "expression", e.POLYNOM = "polynom", e.SET = "set", e.NUMERIC = "numeric", e;
+}({});
 function te(e, t) {
 	if (e.length <= 1) return e;
 	let n = Object.keys(t).filter((e) => t[e].type === S.FUNCTION).map((e) => e);
@@ -2115,6 +2119,11 @@ var re = {
 		associative: "right",
 		type: S.FUNCTION
 	},
+	logn: {
+		precedence: 4,
+		associative: "right",
+		type: S.FUNCTION
+	},
 	",": {
 		precedence: 2,
 		associative: "left",
@@ -2181,6 +2190,11 @@ var re = {
 		associative: "right",
 		type: S.FUNCTION
 	},
+	logn: {
+		precedence: 4,
+		associative: "right",
+		type: S.FUNCTION
+	},
 	log: {
 		precedence: 4,
 		associative: "right",
@@ -2214,7 +2228,7 @@ var re = {
 	#r = [];
 	#i;
 	constructor(e) {
-		this.#e = typeof e > "u" ? C.POLYNOM : e, this.tokenConfigInitialization();
+		this.#e = e === void 0 ? C.POLYNOM : e, this.tokenConfigInitialization();
 	}
 	get rpn() {
 		return this.#t;
@@ -2347,7 +2361,7 @@ var re = {
 		try {
 			this._rpn = new w(C.NUMERIC).parse(e, t).rpn;
 		} catch (t) {
-			throw this._rpn = null, this._isValid = !1, console.warn(t), /* @__PURE__ */ Error(`There was a problem parsing: ${e}`);
+			throw this._rpn = null, this._isValid = !1, console.warn(t), Error(`There was a problem parsing: ${e}`);
 		}
 	}
 	get rpn() {
@@ -2356,8 +2370,8 @@ var re = {
 	get isValid() {
 		if (this._isValid === void 0) try {
 			this.evaluate({ x: 2 });
-		} catch {
-			this._isValid = !1;
+		} catch (e) {
+			e instanceof Error, this._isValid = !1;
 		}
 		return this._isValid ?? !1;
 	}
@@ -2374,7 +2388,7 @@ var re = {
 		for (let n of this._rpn) if (n.tokenType === S.COEFFICIENT) if (!isNaN(+n.token)) t.push(+n.token);
 		else {
 			let e = n.token.split("/");
-			if (e.length !== 2) throw this._isValid = !1, /* @__PURE__ */ Error("This coefficient is not a fraction");
+			if (e.length !== 2) throw this._isValid = !1, Error("This coefficient is not a fraction");
 			t.push(e[0] / +e[1]);
 		}
 		else if (n.tokenType === S.VARIABLE && e !== void 0) Object.hasOwn(e, n.token) && t.push(+e[n.token]);
@@ -2382,37 +2396,43 @@ var re = {
 		else if (n.tokenType === S.OPERATION) {
 			if (n.token === "*") {
 				let e = t.pop(), n = t.pop();
-				if (n === void 0 || e === void 0) throw this._isValid = !1, /* @__PURE__ */ Error(`The multiplication factors ${n ?? "a"} or ${e ?? "b"} are not defined`);
+				if (n === void 0 || e === void 0) throw this._isValid = !1, Error(`The multiplication factors ${n ?? "a"} or ${e ?? "b"} are not defined`);
 				t.push(n * e);
 			} else if (n.token === "/") {
 				let e = t.pop(), n = t.pop();
-				if (n === void 0 || e === void 0) throw this._isValid = !1, /* @__PURE__ */ Error(`The division values ${n ?? "a"} or ${e ?? "b"} are not defined`);
+				if (n === void 0 || e === void 0) throw this._isValid = !1, Error(`The division values ${n ?? "a"} or ${e ?? "b"} are not defined`);
 				t.push(n / e);
 			} else if (n.token === "+") {
 				let e = t.pop(), n = t.pop();
-				if (n === void 0 || e === void 0) throw this._isValid = !1, /* @__PURE__ */ Error(`The addition values ${n ?? "a"} or ${e ?? "b"} are not defined`);
+				if (n === void 0 || e === void 0) throw this._isValid = !1, Error(`The addition values ${n ?? "a"} or ${e ?? "b"} are not defined`);
 				t.push(+n + +e);
 			} else if (n.token === "-") {
 				let e = t.pop(), n = t.pop() ?? 0;
-				if (e === void 0) throw this._isValid = !1, /* @__PURE__ */ Error("The subtraction value b is  not defined");
+				if (e === void 0) throw this._isValid = !1, Error("The subtraction value b is  not defined");
 				t.push(n - e);
 			} else if (n.token === "^") {
 				let e = t.pop(), n = t.pop();
-				if (n === void 0 || e === void 0) throw this._isValid = !1, /* @__PURE__ */ Error(`The base value ${n ?? "a"} or exponent ${e ?? "b"} are not defined`);
+				if (n === void 0 || e === void 0) throw this._isValid = !1, Error(`The base value ${n ?? "a"} or exponent ${e ?? "b"} are not defined`);
 				t.push(n ** +e);
 			}
 		} else if (n.tokenType === S.FUNCTION) {
 			let e = t.pop();
-			if (e === void 0) throw this._isValid = !1, /* @__PURE__ */ Error(`The parameters for ${n.token} is not defined`);
+			if (e === void 0) throw this._isValid = !1, Error(`The parameters for ${n.token} is not defined`);
 			if (n.token === "sin") t.push(Math.sin(e));
 			else if (n.token === "cos") t.push(Math.cos(e));
 			else if (n.token === "tan") t.push(Math.tan(e));
 			else if (n.token === "sqrt") t.push(Math.sqrt(e));
 			else if (n.token === "nthrt") {
 				let n = t.pop();
-				if (n === void 0) throw this._isValid = !1, /* @__PURE__ */ Error("The nthrt function requires two parameters");
+				if (n === void 0) throw this._isValid = !1, Error("The nthrt function requires two parameters");
 				e % 2 == 0 && n < 0 ? t.push(NaN) : t.push((n < 0 ? -1 : 1) * Math.abs(n) ** (1 / e));
-			} else n.token === "ln" ? t.push(Math.log(e)) : n.token === "log" && t.push(Math.log10(e));
+			} else if (n.token === "ln") t.push(Math.log(e));
+			else if (n.token === "log") t.push(Math.log10(e));
+			else if (n.token === "logn") {
+				let n = t.pop();
+				if (n === void 0) throw this._isValid = !1, Error("The logn function requires two parameters");
+				e <= 0 || e === 1 || n <= 0 ? t.push(NaN) : t.push(Math.log(n) / Math.log(e));
+			}
 		}
 		if (t.length === 1) return this._numberCorrection(t[0]);
 		throw Error(`There was a problem parsing: ${this._expression}`);
@@ -2476,7 +2496,8 @@ var re = {
 		if (this.hasVariable(t)) {
 			let e = this.#t[t].clone(), n = this.clone();
 			return n.#t[t].subtract(1), n.#e.multiply(new p(e.clone())), n;
-		} else return new e().zero();
+		}
+		return new e().zero();
 	};
 	divide = (...t) => {
 		for (let n of t) {
@@ -2684,9 +2705,7 @@ var re = {
 			case "/":
 				i = t.pop() ?? new e().one(), r = t.pop() ?? new e().one(), t.push(r.divide(i));
 				break;
-			case "^":
-				s = t.pop()?.coefficient ?? new p().one(), a = t.pop() ?? new e().one(), o = a.variables[0], o && a.setLetter(o, s), t.push(a);
-				break;
+			case "^": s = t.pop()?.coefficient ?? new p().one(), a = t.pop() ?? new e().one(), o = a.variables[0], o && a.setLetter(o, s), t.push(a);
 		}
 	};
 	#s = (e) => {
@@ -2695,7 +2714,8 @@ var re = {
 		if (t.length === 1) {
 			let e = t[0];
 			return this.one(), e.tokenType === S.COEFFICIENT ? this.coefficient = new p(e.token) : e.tokenType === S.VARIABLE && this.setLetter(e.token, 1), this;
-		} else for (let e of t) this.#o(n, e);
+		}
+		for (let e of t) this.#o(n, e);
 		return this.one(), this.multiply(n[0]), this;
 	};
 };
@@ -2881,7 +2901,8 @@ var O = class e {
 		if (e.degree().isOne()) {
 			let t = e.getZeroes()[0];
 			return t.exact ? this.evaluate(t.fraction).isZero() : !1;
-		} else {
+		}
+		{
 			let { reminder: t } = this.euclidean(e);
 			return t.isZero();
 		}
@@ -3117,7 +3138,8 @@ var O = class e {
 				return this.add(t), this;
 			}
 			return this.#_(e);
-		} else if (/^[a-z]+$/.test(e)) {
+		}
+		if (/^[a-z]+$/.test(e)) {
 			this.empty();
 			let n = t.map((e) => new p(e));
 			if (e.length > 1) {
@@ -3136,7 +3158,8 @@ var O = class e {
 				}
 			}
 			return this;
-		} else return this.zero();
+		}
+		return this.zero();
 	}
 	#g(t, n) {
 		switch (n.tokenType) {
@@ -3209,7 +3232,7 @@ var O = class e {
 		return e.includes("=") || e.includes("<") || e.includes(">") || e.includes("<=") || e.includes(">=");
 	}
 	static makeSolutionsUnique(e, t) {
-		let n = [], r = e.filter((e) => n.includes(e.tex) ? !1 : (n.push(e.tex), !0));
+		let n = [], r = e.filter((e) => !n.includes(e.tex) && (n.push(e.tex), !0));
 		return t === !0 && r.sort((e, t) => e.value - t.value), r;
 	}
 	add(t) {
@@ -3689,15 +3712,13 @@ var O = class e {
 					}));
 				}
 				break;
-			case "!":
-				if (e.length >= 1) {
-					let t = e.pop();
-					t && e.push({
-						token: `\\overline{ ${t.token} }`,
-						tokenType: "variable"
-					});
-				}
-				break;
+			case "!": if (e.length >= 1) {
+				let t = e.pop();
+				t && e.push({
+					token: `\\overline{ ${t.token} }`,
+					tokenType: "variable"
+				});
+			}
 		}
 		return e[0].token;
 	}
@@ -3800,12 +3821,10 @@ var O = class e {
 					t && e && n.push(new Set([...t].filter((t) => !e.has(t))));
 				}
 				break;
-			case "!":
-				if (n.length >= 1) {
-					let e = n.pop();
-					e && n.push(new Set([...r].filter((t) => !e.has(t))));
-				}
-				break;
+			case "!": if (n.length >= 1) {
+				let e = n.pop();
+				e && n.push(new Set([...r].filter((t) => !e.has(t))));
+			}
 		}
 		return [...n[0]].sort();
 	}
@@ -3937,7 +3956,7 @@ var O = class e {
 		let [t, ...n] = _(e, "/");
 		if (t === "") throw Error("Parsing a PolyFactor from a string requires a numerator");
 		if (n.length > 1) throw Error("Parsing a PolyFactor from a string only allows max one signe \"/\"");
-		return n.length === 0 ? this.#t = A.factorsFromString(h(t), !0) : this.#t = [...A.factorsFromString(h(t), !0), ...A.factorsFromString(h(n[0]), !1)], this;
+		return this.#t = n.length === 0 ? A.factorsFromString(h(t), !0) : [...A.factorsFromString(h(t), !0), ...A.factorsFromString(h(n[0]), !1)], this;
 	}
 	getRoots() {
 		return [];
@@ -3962,9 +3981,10 @@ var O = class e {
 	isZero() {
 		return this.#t.every((e) => e.isZero());
 	}
-	multiply(...e) {
-		return e.forEach((e) => {
-			this.#t = this.#t.concat(e.clone().factors);
+	multiply(...t) {
+		return t.forEach((t) => {
+			let n = new e(t);
+			this.#t = this.#t.concat(n.factors);
 		}), this;
 	}
 	get numerator() {
@@ -4038,9 +4058,7 @@ var O = class e {
 					case "h":
 						e[n] = "h";
 						break;
-					case "-":
-						e[n] = e[n] === "h" ? "h" : e[n] === "-" ? "+" : "-";
-						break;
+					case "-": e[n] = e[n] === "h" ? "h" : e[n] === "-" ? "+" : "-";
 				}
 			}), e), []),
 			roots: e,
@@ -5075,7 +5093,7 @@ var G = class e {
 		return this.#e = e.clone(), this.#r = new L(this.#e, t).normSquare, this.#i(), this;
 	}
 	fromCenterRadius(e, t, n) {
-		return this.#e = e.clone(), n ? this.#r = new p(t) : this.#r = new p(t).pow(2), this.#i(), this;
+		return this.#e = e.clone(), this.#r = n ? new p(t) : new p(t).pow(2), this.#i(), this;
 	}
 	fromEquation(e) {
 		if (e.moveLeft(), e.degree("x").value === 2 && e.degree("y").value === 2) {
@@ -5135,7 +5153,7 @@ var G = class e {
 		return t - n > 1e-10 ? 0 : Math.abs(t - n) < 1e-10 ? 1 : 2;
 	}
 	setRadius(e, t) {
-		return t ? this.#r = new p(e) : this.#r = new p(e).pow(2), this.#i(), this;
+		return this.#r = t ? new p(e) : new p(e).pow(2), this.#i(), this;
 	}
 	get squareRadius() {
 		return this.#r?.clone() ?? new p(-1);
@@ -5262,7 +5280,7 @@ var G = class e {
 		}
 		if (e.equation) {
 			let t = e.equation.moveLeft().reduce().left, n = t.monomByLetter("x").coefficient, r = t.monomByLetter("y").coefficient, i = t.monomByLetter("z").coefficient, a = t.monomByDegree(0).coefficient;
-			this.normal = new L(n, r, i), n.isNotZero() ? this.point = new I(a.clone().divide(n).opposite(), 0, 0) : r.isNotZero() ? this.point = new I(0, a.clone().divide(r).opposite(), 0) : this.point = new I(0, 0, a.clone().divide(i).opposite());
+			this.normal = new L(n, r, i), this.point = n.isNotZero() ? new I(a.clone().divide(n).opposite(), 0, 0) : r.isNotZero() ? new I(0, a.clone().divide(r).opposite(), 0) : new I(0, 0, a.clone().divide(i).opposite());
 			return;
 		}
 		if (e.points?.length === 3 && e.points.every((e) => e instanceof L)) {
@@ -5427,7 +5445,7 @@ function Y(e) {
 		zero: !0,
 		natural: !1
 	}, e), n = new p();
-	if (t.negative ? n.numerator = H(t.max, t.zero) : n.numerator = V(+!t.zero, t.max), t.natural) n.denominator = 1;
+	if (n.numerator = t.negative ? H(t.max, t.zero) : V(+!t.zero, t.max), t.natural) n.denominator = 1;
 	else {
 		let e = 0;
 		for (; n.isRelative() && e < 10;) n.denominator = V(1, t.max), e++;

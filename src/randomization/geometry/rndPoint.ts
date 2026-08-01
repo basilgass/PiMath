@@ -1,8 +1,8 @@
-import {Fraction} from "../../coefficients/fraction"
+import {Fraction} from "../../coefficients"
 import type {randomGeometryPointConfig} from "../rndTypes"
 import {rndFraction} from "../coefficient/rndFraction"
 import {randomIntSym} from "../rndHelpers"
-import {Point} from "../../geometry/point"
+import {Point} from "../../geometry"
 
 export function rndPoint(userConfig?: randomGeometryPointConfig): Point {
     const config: {

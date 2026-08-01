@@ -133,7 +133,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         // set the index
         this.index = index
 
-        // set the racial
+        // set the radical
         this.radical = new Fraction(radical)
 
         // set the factor if any
