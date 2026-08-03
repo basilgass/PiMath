@@ -2,6 +2,7 @@
  * Polynom module contains everything necessary to handle polynoms.*
  */
 import {ShutingYard, ShutingyardType, type Token} from "piexpression"
+import {MathError, ParseError} from "../errors"
 import type {
     IAlgebra,
     IAnalyse,
@@ -212,7 +213,7 @@ export class Polynom implements IPiMathObject<Polynom>,
             return this.divide(new Polynom(value))
         }
 
-        throw new Error(`Cannot divide by ${value as unknown as string}`)
+        throw new MathError(`Cannot divide by ${value as unknown as string}`)
     }
 
     public empty(): this {
@@ -242,7 +243,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
 
         if (!this.degree(letter).isNatural() || !P.degree(letter).isNatural()) {
-            throw new Error('Euclidean division requires integer degrees')
+            throw new MathError('Euclidean division requires integer degrees')
         }
 
         // Get at least a letter
@@ -396,7 +397,7 @@ export class Polynom implements IPiMathObject<Polynom>,
 
     public getCoefficients(): Fraction[] {
         if (!this.degree().isNatural()) {
-            throw new Error('getCoefficients() requires a polynomial with integer degrees')
+            throw new MathError('getCoefficients() requires a polynomial with integer degrees')
         }
 
         // Assume there is only one letter.
@@ -462,8 +463,6 @@ export class Polynom implements IPiMathObject<Polynom>,
     }
 
     public isDeveloped(polynomString: string): boolean {
-        let P: Polynom
-
         // Start by removing the parenthesis after a "power"
         const pString = polynomString.replaceAll(/\^\(([-0-9/]+)\)/g, '$1')
 
@@ -473,13 +472,9 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
 
 
-        // Try to build the polynom
-        try {
-            // Build the polynom
-            P = new Polynom(polynomString)
-        } catch {
-            return false
-        }
+        // Build the polynom. A malformed string throws (ParseError) instead of
+        // being silently treated as "not developed".
+        const P = new Polynom(polynomString)
 
         // Both polynom aren't the same (once developed and reduced => they cannot be equivalent)
         if (!this.isEqual(P)) {
@@ -663,13 +658,13 @@ export class Polynom implements IPiMathObject<Polynom>,
             try {
                 const k = new Fraction(value)
                 return this.#multiplyByFraction(k)
-            } catch {
-                throw new Error('Cannot multiply by this value.')
+            } catch (e) {
+                throw new MathError('Cannot multiply by this value.', {cause: e})
             }
         }
 
         // Something went wrong...
-        throw new Error(`Cannot multiply by this value: ${value as unknown as string}`)
+        throw new MathError(`Cannot multiply by this value: ${value as unknown as string}`)
     }
 
     public get numberOfVars(): number {
@@ -801,7 +796,7 @@ export class Polynom implements IPiMathObject<Polynom>,
 
                 // Add the new monom to the result polynom
                 if (pow.isStrictlyNegative()) {
-                    throw new Error(`Cannot replace variable "${letter}" with negative power in a Polynom`)
+                    throw new MathError(`Cannot replace variable "${letter}" with negative power in a Polynom`)
                 }
                 resultPolynom.add(P.clone().pow(pow.numerator).multiply(m))
             }
@@ -817,7 +812,7 @@ export class Polynom implements IPiMathObject<Polynom>,
     // ------------------------------------------
 
     public root(): Polynom {
-        throw new Error('Cannot take the root from a polynom')
+        throw new MathError('Cannot take the root from a polynom')
     }
 
     get roots(): Solution[] {
@@ -836,7 +831,7 @@ export class Polynom implements IPiMathObject<Polynom>,
     }
 
     public sqrt(): Polynom {
-        throw new Error('Cannot take the square root from a polynom')
+        throw new MathError('Cannot take the square root from a polynom')
     }
 
     public subtract(...values: InputAlgebra<Polynom>[]): this {
@@ -1127,7 +1122,7 @@ export class Polynom implements IPiMathObject<Polynom>,
                 break
 
             case ShutingyardType.CONSTANT:
-                throw new Error('Unsupported CONSTANT token in Polynom parser')
+                throw new ParseError('Unsupported CONSTANT token in Polynom parser')
 
             case ShutingyardType.OPERATION:
                 if (stack.length >= 2) {
@@ -1136,7 +1131,7 @@ export class Polynom implements IPiMathObject<Polynom>,
 
                     // Check if the polynoms are not undefined.
                     if (a === undefined || b === undefined) {
-                        throw new Error('Unexpected undefined operand in Polynom parser stack')
+                        throw new ParseError('Unexpected undefined operand in Polynom parser stack')
                     }
 
                     if (element.token === '+') {
@@ -1147,14 +1142,14 @@ export class Polynom implements IPiMathObject<Polynom>,
                         stack.push(a.multiply(b))
                     } else if (element.token === '/') {
                         if (b.degree().isStrictlyPositive()) {
-                            throw new Error('Cannot divide a Polynom by another Polynom of degree > 0')
+                            throw new MathError('Cannot divide a Polynom by another Polynom of degree > 0')
                         } else {
                             // a.divide(b.monoms[0].coefficient)
                             stack.push(a.divide(b.monoms[0].coefficient))
                         }
                     } else if (element.token === '^') {
                         if (b.degree().isStrictlyPositive()) {
-                            throw new Error('Cannot elevate a polynom with another polynom !')
+                            throw new MathError('Cannot elevate a polynom with another polynom !')
                         } else if (b.monoms[0].coefficient.isRelative())
                             // Integer power
                         {
@@ -1168,7 +1163,7 @@ export class Polynom implements IPiMathObject<Polynom>,
 
                                 stack.push(a)
                             } else {
-                                throw new Error('Cannot raise a multi-monom Polynom to a fractional power')
+                                throw new MathError('Cannot raise a multi-monom Polynom to a fractional power')
                             }
                         }
                     }
@@ -1179,7 +1174,7 @@ export class Polynom implements IPiMathObject<Polynom>,
                         stack.push(a.opposite())
                     }
                 } else {
-                    throw new Error("Error parsing the polynom")
+                    throw new ParseError("Error parsing the polynom")
                 }
 
 
@@ -1187,11 +1182,11 @@ export class Polynom implements IPiMathObject<Polynom>,
 
             case ShutingyardType.MONOM:
                 // Should never appear.
-                throw new Error('Unexpected MONOM token in polynom parser')
+                throw new ParseError('Unexpected MONOM token in polynom parser')
 
             case ShutingyardType.FUNCTION:
                 // Should never appear.
-                throw new Error(`Unsupported function token "${element.token}" in polynom parser`)
+                throw new ParseError(`Unsupported function token "${element.token}" in polynom parser`)
         }
 
 
@@ -1203,7 +1198,12 @@ export class Polynom implements IPiMathObject<Polynom>,
      */
     #shutingYardToReducedPolynom(inputStr: string): this {
         // Get the RPN array of the current expression
-        const SY: ShutingYard = new ShutingYard().parse(inputStr)
+        let SY: ShutingYard
+        try {
+            SY = new ShutingYard().parse(inputStr)
+        } catch (e) {
+            throw new ParseError(`Cannot parse "${inputStr}" as a Polynom`, {cause: e})
+        }
         const rpn: { token: string, tokenType: ShutingyardType }[] = SY.rpn
 
         // New version for reducing shuting yard.

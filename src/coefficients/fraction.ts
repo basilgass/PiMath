@@ -1,5 +1,6 @@
 import type {compareSign, IExpression, InputValue, IPiMathObject} from "../pimath.interface"
 import {Numeric} from "../numeric"
+import {MathError} from "../errors"
 
 export enum FRAC_TYPE {
     frac = 'frac',
@@ -672,7 +673,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
         // if the fraction is negative and the root is even, throw error
         if (this.isNegative() && p % 2 === 0) {
-            throw new Error("The root of a negative number must be odd.")
+            throw new MathError("The root of a negative number must be odd.")
         }
 
         // get the sign of the fraction and make it positive

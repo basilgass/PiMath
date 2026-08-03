@@ -2,6 +2,7 @@ import {Fraction} from "./fraction"
 import type {IExpression, InputValue, IPiMathObject} from "../pimath.interface"
 import {stripParenthesis} from "../helpers"
 import {Numeric} from "../numeric"
+import {MathError, ParseError} from "../errors"
 
 export class Root implements IPiMathObject<Root>, IExpression<Root> {
     #factor: Fraction
@@ -109,7 +110,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
             this.index !== rt.index ||
             !this.radical.isEqual(rt.radical)
         ) {
-            throw new Error("Add can only be done with two same index and radical")
+            throw new MathError("Add can only be done with two same index and radical")
         }
 
         this.factor.add(rt.factor)
@@ -212,7 +213,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
             return this
         }
 
-        throw new Error('Multiply can only be done if radical or index as equals.')
+        throw new MathError('Multiply can only be done if radical or index as equals.')
     }
 
     one(): this {
@@ -334,7 +335,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
     #parse_root(value: string): this {
         // Format: [factor]root([index])[radical] or [factor]root([index])([radical])
         const match = /^(.*?)root\((\d+)\)\(?([^)]+)/.exec(value)
-        if (!match) throw new Error(`Invalid root format: "${value}"`)
+        if (!match) throw new ParseError(`Invalid root format: "${value}"`)
 
         const [, factor, index, radical] = match
         this.index = +index

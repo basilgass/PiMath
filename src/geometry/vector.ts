@@ -6,6 +6,7 @@ import type {InputValue, IPiMathObject} from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 import {areVectorsColinears, areVectorsEquals, dotProduct} from "./geomMath"
+import {DimensionError} from "../errors"
 import {TupleN} from "./TupleN"
 import {type Point} from "./point"
 
@@ -48,7 +49,7 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
             // The two values are vectors
             if (A instanceof TupleN && B instanceof TupleN) {
                 if (A.dimension !== B.dimension) {
-                    throw new Error('Vectors must have the same dimension')
+                    throw new DimensionError('Vectors must have the same dimension')
                 }
 
                 this.array = B.array.map((x, index) => x.clone().subtract(A.array[index]))
@@ -100,7 +101,7 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
 
     cross(value: Vector): Vector {
         if (this.dimension !== 3 || value.dimension !== 3) {
-            throw new Error('Cross product can only be determined in 3D')
+            throw new DimensionError('Cross product can only be determined in 3D')
         }
 
         return new Vector(
@@ -171,7 +172,7 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
 
     normal = (): this => {
         if (this.dimension >= 3) {
-            throw new Error('Normal vector can only be determined in 2D')
+            throw new DimensionError('Normal vector can only be determined in 2D')
         }
 
         const x = this.x.clone().opposite()

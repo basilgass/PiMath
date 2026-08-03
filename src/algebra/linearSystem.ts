@@ -5,6 +5,7 @@ import {Monom} from "./monom"
 import {Polynom} from "./polynom"
 import {Numeric} from "../numeric"
 import {Solution} from "../analyze"
+import {DimensionError, MathError} from "../errors"
 
 export class LinearSystem implements IPiMathObject<LinearSystem>,
     IEquation<LinearSystem>,
@@ -61,7 +62,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         // Check that each row has the same number of columns
         const cols = matrix[0].length
         if (matrix.some(row => row.length !== cols)) {
-            throw new Error("All rows must have the same number of columns")
+            throw new DimensionError("All rows must have the same number of columns")
         }
 
         // Determine the default letters. The number of letters are cols-1
@@ -88,7 +89,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         if (value instanceof LinearSystem) {
             const length = value.equations.length
             if (length !== this.#equations.length) {
-                throw new Error("The number of equations must be the same")
+                throw new DimensionError("The number of equations must be the same")
             }
 
             for (let i = 0; i < length; i++) {
@@ -224,7 +225,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         // the value can be a number and the index of the equation to multiply
         if (Array.isArray(value)) {
             if (value.length !== this.#equations.length) {
-                throw new Error("The number of values must be the same as the number of equations")
+                throw new DimensionError("The number of values must be the same as the number of equations")
             }
 
             for (let i = 0; i < value.length; i++) {
@@ -280,7 +281,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
                     augmentedMatrix[i].forEach((value, index) => value.add(row_to_add[index]))
                     pivot = augmentedMatrix[i][i].clone()
                 } else {
-                    throw new Error('Unsolvable...')
+                    throw new MathError('Unsolvable...')
                 }
 
 
@@ -353,7 +354,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         if (value instanceof LinearSystem) {
             const length = value.equations.length
             if (length !== this.#equations.length) {
-                throw new Error("The number of equations must be the same")
+                throw new DimensionError("The number of equations must be the same")
             }
 
             for (let i = 0; i < length; i++) {

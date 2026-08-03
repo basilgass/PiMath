@@ -6,6 +6,7 @@
 
 import {Fraction} from "../coefficients"
 import type {InputValue} from "../pimath.interface"
+import {DimensionError, ParseError} from "../errors"
 import {Root} from "../coefficients/root"
 import {TupleN} from "./TupleN"
 import type {Vector} from "./vector"
@@ -37,13 +38,15 @@ export class Point extends TupleN {
 
         if (values.length > 1) {
             if (values.some(x => x instanceof Point)) {
+                // TODO: invalid argument (not a parsing issue) -> InvalidArgumentError
+                //       to be migrated in a later pass (phase 3), see .claude/specs/error_handling.md
                 throw new Error('Creating a point with  multiple argument requires an input fraction')
             }
 
             const nbs: Fraction[] = values.map(x => new Fraction(x as InputValue<Fraction>))
 
             if (nbs.some(x => x.isNaN())) {
-                throw new Error('The given values are not a valid point string (a,b): ')
+                throw new ParseError('The given values are not a valid point string (a,b): ')
             }
 
             this.array = nbs
@@ -66,7 +69,7 @@ export class Point extends TupleN {
 
     distanceTo(B: Point): Root {
         if (this.dimension !== B.dimension) {
-            throw new Error('The two points must have the same dimensions.')
+            throw new DimensionError('The two points must have the same dimensions.')
         }
 
         const AB = this.array
@@ -91,7 +94,7 @@ export class Point extends TupleN {
 
     middleOf(V1: Point, V2: Point): this {
         if (V1.dimension !== V2.dimension) {
-            throw new Error('Vectors must be the same dimension')
+            throw new DimensionError('Vectors must be the same dimension')
         }
 
         this.array = []

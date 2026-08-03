@@ -5,6 +5,7 @@ import {Line3} from "./line3"
 import {Point} from "./point"
 import {Vector} from "./vector"
 import type {Plane3Config} from "../pimath.interface"
+import {DimensionError} from "../errors"
 
 
 export class Plane3 {
@@ -110,7 +111,7 @@ export class Plane3 {
         let direction: Vector
         if (value instanceof Vector) {
             if (value.dimension !== 3) {
-                throw new Error('Vector is not 3D')
+                throw new DimensionError('Vector is not 3D')
             }
 
             direction = value

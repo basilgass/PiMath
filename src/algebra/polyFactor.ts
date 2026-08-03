@@ -10,6 +10,7 @@ import type {
     TABLE_OF_SIGNS_VALUES
 } from "../pimath.interface"
 import {Fraction} from "../coefficients"
+import {MathError, ParseError} from "../errors"
 import {Factor, FACTOR_DISPLAY} from "./factor"
 import {Polynom} from "./polynom"
 import type {Solution} from "../analyze"
@@ -342,7 +343,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
 
             if (polynom.isOne()) return this
 
-            if (polynom.isZero()) throw new Error("Cannot divide by zero")
+            if (polynom.isZero()) throw new MathError("Cannot divide by zero")
             
             this.#factors.push(new Factor(polynom, -1))
         }
@@ -357,8 +358,8 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         // - or the string has something that prevents this => use fromPolynom
 
         const [num, ...den] = splitIfOutsideParentheses(value, '/')
-        if(num==='') throw new Error('Parsing a PolyFactor from a string requires a numerator')
-        if(den.length>1) throw new Error('Parsing a PolyFactor from a string only allows max one signe "/"')
+        if(num==='') throw new ParseError('Parsing a PolyFactor from a string requires a numerator')
+        if(den.length>1) throw new ParseError('Parsing a PolyFactor from a string only allows max one signe "/"')
 
         if(den.length===0) {
             this.#factors = Factor.factorsFromString(stripParenthesis(num), true)

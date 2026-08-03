@@ -6,6 +6,7 @@
 
 import {Fraction} from "../coefficients"
 import type {InputValue} from "../pimath.interface"
+import {DimensionError} from "../errors"
 
 export abstract class TupleN {
     #array: Fraction[] = []
@@ -72,7 +73,7 @@ export abstract class TupleN {
 
     setDimension(value = 2): this {
         if (value < 2) {
-            throw new Error('Dimension must be at least 2')
+            throw new DimensionError('Dimension must be at least 2')
         }
 
         if (value < this.dimension) {
@@ -106,14 +107,14 @@ export abstract class TupleN {
 
     get z(): Fraction {
         if (this.dimension < 3) {
-            throw new Error('Vector is not 3D')
+            throw new DimensionError('Vector is not 3D')
         }
         return this.#array[2]
     }
 
     set z(value: Fraction | number | string) {
         if (this.dimension < 3) {
-            throw new Error('Vector is not 3D')
+            throw new DimensionError('Vector is not 3D')
         }
         this.#array[2] = new Fraction(value)
         this.#onChange?.()

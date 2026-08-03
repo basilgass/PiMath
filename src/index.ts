@@ -17,11 +17,23 @@ import {NumExp} from "piexpression"
 // randomization
 import {Random} from "./randomization/random"
 
+// Errors
+import {
+    PiMathError,
+    ParseError,
+    DimensionError,
+    MathError,
+    InvalidArgumentError,
+    NotImplementedError,
+    IndexError
+} from "./errors"
+
 // export everything to make them available as module
 export * from "./coefficients"
 export * from "./algebra"
 export * from "./geometry"
 export * from "./analyze"
+export * from "./errors"
 
 export {Numeric}
 export {NumExp}
@@ -54,6 +66,15 @@ const PiMath = {
         Line3,
         Plane3,
         Sphere3
+    },
+    Errors: {
+        PiMathError,
+        ParseError,
+        DimensionError,
+        MathError,
+        InvalidArgumentError,
+        NotImplementedError,
+        IndexError
     },
     NumExp
 }

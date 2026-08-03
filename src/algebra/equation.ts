@@ -9,6 +9,7 @@ import type {
 } from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
+import {ParseError} from "../errors"
 import {EquationSolver} from "./equationSolver"
 import {Monom} from "./monom"
 import {Polynom} from "./polynom"
@@ -62,7 +63,7 @@ export class Equation implements IPiMathObject<Equation>,
         const strSign: string | false = this.#findSign(equationString)
 
         if (strSign === false) {
-            throw new Error('The equation is not valid (no sign found)')
+            throw new ParseError('The equation is not valid (no sign found)')
         }
 
         // The StrSign is found
@@ -507,7 +508,7 @@ export class Equation implements IPiMathObject<Equation>,
             return '='
         }
 
-        throw new Error('The equation is not valid (no sign found)')
+        throw new ParseError('The equation is not valid (no sign found)')
     }
 
     // -----------------------------------------------

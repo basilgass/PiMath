@@ -14,6 +14,7 @@ import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 
 import {ShutingYard, ShutingyardType, type Token} from "piexpression"
+import {MathError, ParseError} from "../errors"
 
 export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra<Monom> {
     #coefficient: Fraction
@@ -165,7 +166,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
 
                 this.#coefficient.add(mAsMonom.coefficient)
             } else {
-                throw new Error('Add monom: ' + this.display + ' is not similar with ' +  mAsMonom.display)
+                throw new MathError('Add monom: ' + this.display + ' is not similar with ' +  mAsMonom.display)
             }
         }
         return this
@@ -706,7 +707,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
 
                 this.#coefficient.add(mAsMonom.clone().coefficient.opposite())
             } else {
-                throw new Error('Subtract: Is not similar: ' + mAsMonom.display)
+                throw new MathError('Subtract: Is not similar: ' + mAsMonom.display)
             }
         }
         return this
@@ -890,7 +891,12 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
 
     #shutingYardToReducedMonom = (inputStr: string): this => {
         // Get the RPN array of the current expression
-        const SY: ShutingYard = new ShutingYard().parse(inputStr)
+        let SY: ShutingYard
+        try {
+            SY = new ShutingYard().parse(inputStr)
+        } catch (e) {
+            throw new ParseError(`Cannot parse "${inputStr}" as a Monom`, {cause: e})
+        }
         const rpn: { token: string, tokenType: ShutingyardType }[] = SY.rpn
 
         const stack: Monom[] = []

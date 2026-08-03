@@ -10,6 +10,7 @@ import {type InputValue, type IPiMathObject, LinePropriety} from "../pimath.inte
 import {randomIntSym} from "../randomization/rndHelpers"
 import {Point} from "./point"
 import {Root} from "../coefficients/root"
+import {ParseError} from "../errors"
 
 enum LINE_DISPLAY {
     CARTESIAN,
@@ -83,12 +84,13 @@ export class Line implements IPiMathObject<Line> {
 
             if (typeof values[0] === "string") {
                 // It's a string - create an Equation from it.
+                // A malformed string throws (ParseError) instead of silently
+                // returning a half-built Line.
                 try {
                     const E = new Equation(values[0])
                     return this.parse(E)
                 } catch (e) {
-                    console.warn(e)
-                    return this
+                    throw new ParseError(`Cannot parse "${values[0]}" as a Line`, {cause: e})
                 }
             }
         }

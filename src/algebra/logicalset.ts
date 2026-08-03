@@ -3,6 +3,7 @@
  * @module Logicalset
  */
 import {ShutingYard, ShutingyardMode} from "piexpression"
+import {ParseError} from "../errors"
 
 /**
  * Polynom class can handle polynoms, reorder, resolve, ...
@@ -26,9 +27,13 @@ export class LogicalSet {
 
     parse = (value: string): this => {
         // Parse the updated value to the shutingyard algorithm
-        this.#rpn = new ShutingYard(ShutingyardMode.SET)
-            .parse(value)
-            .rpn
+        try {
+            this.#rpn = new ShutingYard(ShutingyardMode.SET)
+                .parse(value)
+                .rpn
+        } catch (e) {
+            throw new ParseError(`Cannot parse "${value}" as a LogicalSet`, {cause: e})
+        }
 
         return this
     }

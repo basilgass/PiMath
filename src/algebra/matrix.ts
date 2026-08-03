@@ -2,6 +2,7 @@ import type {IExpressionMultiply, InputAlgebra, InputValue, IPiMathObject} from 
 import {Polynom} from "./polynom"
 import type {Vector} from "../geometry"
 import {operation_pow} from "./operations"
+import {DimensionError, MathError} from "../errors"
 
 export type IMatrixValues = InputAlgebra<Polynom>[][]
 
@@ -107,7 +108,7 @@ export class Matrix implements IPiMathObject<Matrix>,
 
     public add(value: Matrix): this {
         if (!this.canBeAdded(value)) {
-            throw new Error("Cannot add a matrix with different dimensions.")
+            throw new DimensionError("Cannot add a matrix with different dimensions.")
         }
         this.forEach((aij, i, j) => {
             aij.add(value.values[i][j])
@@ -195,7 +196,7 @@ export class Matrix implements IPiMathObject<Matrix>,
 
     public determinant(): Polynom {
         if (!this.isSquare()) {
-            throw new Error('Matrix is not square')
+            throw new DimensionError('Matrix is not square')
         }
 
         // Use the first line.
@@ -276,7 +277,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         // Check dimensions of each rows.
         const L = values[0].length
         if (values.some(row => row.length !== L)) {
-            throw new Error("Each line must be the same length")
+            throw new DimensionError("Each line must be the same length")
         }
 
         values.forEach(row => {
@@ -298,7 +299,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         // Each vectors must be the same dimension
         const L = vectors[0].dimension
         if (vectors.some(v => v.dimension !== L)) {
-            throw new Error("Each vectors must be the same dimension")
+            throw new DimensionError("Each vectors must be the same dimension")
         }
 
         this.fromDimensions(vectors[0].dimension, vectors.length)
@@ -314,7 +315,7 @@ export class Matrix implements IPiMathObject<Matrix>,
 
     public inverse(): this {
         if (!this.canBeInverted()) {
-            throw new Error('The matrix cannot be inverted.')
+            throw new MathError('The matrix cannot be inverted.')
         }
 
         const cofactors_matrix = new Matrix().fromDimensions(this.dimension.rows, this.dimension.cols)
@@ -387,7 +388,7 @@ export class Matrix implements IPiMathObject<Matrix>,
     public multiply(value: InputValue<Polynom> | Matrix): this {
         if (value instanceof Matrix) {
             if (!this.canBeMultiplied(value)) {
-                throw new Error(`Cannot multiply a matrix with incompatibles dimensions`)
+                throw new DimensionError(`Cannot multiply a matrix with incompatibles dimensions`)
             }
 
             // Multiply two matrix
@@ -475,7 +476,7 @@ export class Matrix implements IPiMathObject<Matrix>,
 
     public subtract(value: Matrix): this {
         if (!this.canBeAdded(value)) {
-            throw new Error("Cannot subtract a matrix with different dimensions.")
+            throw new DimensionError("Cannot subtract a matrix with different dimensions.")
         }
 
         this.forEach((aij, i, j) => {

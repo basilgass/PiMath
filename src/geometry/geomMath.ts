@@ -1,6 +1,7 @@
 import {Fraction} from "../coefficients"
 import type {Vector} from "./vector"
 import type {Point} from "./point"
+import {DimensionError} from "../errors"
 
 type V = Vector | Point
 export function areVectorsEquals(v1: V, v2: V): boolean {
@@ -39,12 +40,12 @@ export function determinantFromVectors(...values: V[]): Fraction {
     // TODO: Make it work for vectors of dimension n
     // Check if the vectors are in the same dimension
     if (values.some((value) => value.dimension !== values[0].dimension)) {
-        throw new Error('All vectors must have the same dimension')
+        throw new DimensionError('All vectors must have the same dimension')
     }
 
     // Check if the vectors are in dimension 2 or 3 and that the number of values is correct
     if (values[0].dimension !== values.length ) {
-        throw new Error(`The determinant of dimension ${values[0].dimension} must have the same number of vectors (${values.length} given)`)
+        throw new DimensionError(`The determinant of dimension ${values[0].dimension} must have the same number of vectors (${values.length} given)`)
     }
 
     // Calculate the determinant 2x2

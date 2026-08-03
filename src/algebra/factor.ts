@@ -10,6 +10,7 @@ import type {
 import {Fraction} from "../coefficients/fraction"
 import {Polynom} from "./polynom"
 import {replace_in_array, splitIfOutsideParentheses, wrapParenthesis} from "../helpers"
+import {MathError} from "../errors"
 
 export class Factor implements IPiMathObject<Factor>,
     IExpression<Factor>,
@@ -104,7 +105,7 @@ export class Factor implements IPiMathObject<Factor>,
     }
 
     public add(): Factor {
-        throw new Error("Adding two factors is not possible")
+        throw new MathError("Adding two factors is not possible")
     }
 
     public get asSingle(): this {
@@ -141,7 +142,7 @@ export class Factor implements IPiMathObject<Factor>,
             return this.polynom.clone().pow(this.power.value)
         }
 
-        throw new Error("The power must be a natural number")
+        throw new MathError("The power must be a natural number")
     }
 
     public divide(value: InputAlgebra<Factor | Polynom>): this {
@@ -159,7 +160,7 @@ export class Factor implements IPiMathObject<Factor>,
             return this
         }
 
-        throw new Error("The two factors must be the same")
+        throw new MathError("The two factors must be the same")
     }
 
     public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction {
@@ -241,7 +242,7 @@ export class Factor implements IPiMathObject<Factor>,
             return this
         }
 
-        throw new Error("The two factors must be the same")
+        throw new MathError("The two factors must be the same")
     }
 
     public one(): this {
@@ -293,7 +294,7 @@ export class Factor implements IPiMathObject<Factor>,
     }
 
     public subtract(): Factor {
-        throw new Error("Subtracting two factors is not possible")
+        throw new MathError("Subtracting two factors is not possible")
     }
 
     public tableOfSigns(): TABLE_OF_SIGNS {

@@ -4,6 +4,7 @@ import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 import type {Equation} from "./equation"
 import {Solution} from "../analyze"
+import {MathError} from "../errors"
 
 export class EquationSolver {
     _: number
@@ -78,7 +79,7 @@ export class EquationSolver {
 
     public solveAsCardan(): Solution[] {
         if (this.#leftPolynom.degree().value !== 3) {
-            throw new Error("The equation is not cubic.")
+            throw new MathError("The equation is not cubic.")
         }
         return this.#solveCubic_CardanFormula()
     }
