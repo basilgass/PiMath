@@ -2,7 +2,7 @@ import type {IExpressionMultiply, InputAlgebra, InputValue, IPiMathObject} from 
 import {Polynom} from "./polynom"
 import type {Vector} from "../geometry"
 import {operation_pow} from "./operations"
-import {DimensionError, MathError} from "../errors"
+import {DimensionError, IndexError, MathError, NotImplementedError} from "../errors"
 
 export type IMatrixValues = InputAlgebra<Polynom>[][]
 
@@ -456,7 +456,7 @@ export class Matrix implements IPiMathObject<Matrix>,
     }
 
     public reduce(): Matrix {
-        throw new Error('Not yet implemented')
+        throw new NotImplementedError('Not yet implemented')
     }
 
     get rows(): Polynom[][] {
@@ -467,7 +467,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         const {rows, cols} = this.dimension
         if ((row < 0 || row >= rows) ||
             column < 0 || column >= cols) {
-            throw new Error(`${row}x${column} is out of range (${rows}x${cols})`)
+            throw new IndexError(`${row}x${column} is out of range (${rows}x${cols})`)
         }
 
         this.#values[row][column] = new Polynom(value)

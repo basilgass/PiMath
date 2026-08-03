@@ -2,7 +2,7 @@ import {Fraction} from "./fraction"
 import type {IExpression, InputValue, IPiMathObject} from "../pimath.interface"
 import {stripParenthesis} from "../helpers"
 import {Numeric} from "../numeric"
-import {MathError, ParseError} from "../errors"
+import {InvalidArgumentError, MathError, ParseError} from "../errors"
 
 export class Root implements IPiMathObject<Root>, IExpression<Root> {
     #factor: Fraction
@@ -159,7 +159,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
 
     set index(value: number) {
         if (!Number.isSafeInteger(value) || value <= 0) {
-            throw new Error("Index must be a strictly positive integer.")
+            throw new InvalidArgumentError("Index must be a strictly positive integer.")
         }
         this.#index = value
     }

@@ -14,7 +14,7 @@ import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 
 import {ShutingYard, ShutingyardType, type Token} from "piexpression"
-import {MathError, ParseError} from "../errors"
+import {MathError, NotImplementedError, ParseError} from "../errors"
 
 export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra<Monom> {
     #coefficient: Fraction
@@ -651,7 +651,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      */
     public root = (): this => {
         // TODO: implement nth-root for monoms
-        throw new Error('Method not implemented.')
+        throw new NotImplementedError('Method not implemented.')
     }
 
     /**

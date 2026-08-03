@@ -5,7 +5,7 @@ import {Monom} from "./monom"
 import {Polynom} from "./polynom"
 import {Numeric} from "../numeric"
 import {Solution} from "../analyze"
-import {DimensionError, MathError} from "../errors"
+import {DimensionError, IndexError, MathError, NotImplementedError} from "../errors"
 
 export class LinearSystem implements IPiMathObject<LinearSystem>,
     IEquation<LinearSystem>,
@@ -97,7 +97,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
             }
         } else {
             if (index === undefined || index < 0 || index >= this.#equations.length) {
-                throw new Error("Index out of range")
+                throw new IndexError("Index out of range")
             }
             const equ = new Equation(value)
             this.#equations[index].add(equ)
@@ -178,7 +178,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
     }
 
     public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction {
-        throw new Error("Method not implemented.")
+        throw new NotImplementedError("Method not implemented.")
     }
 
     public hasVariable(letter: string): boolean {
@@ -235,7 +235,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         }
 
         if (index === undefined || index < 0 || index >= this.#equations.length) {
-            throw new Error("Index out of range")
+            throw new IndexError("Index out of range")
         }
 
         this.#equations[index].multiply(value)
@@ -362,7 +362,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
             }
         } else {
             if (index === undefined || index < 0 || index >= this.#equations.length) {
-                throw new Error("Index out of range")
+                throw new IndexError("Index out of range")
             }
             const equ = new Equation(value)
             this.#equations[index].subtract(equ)

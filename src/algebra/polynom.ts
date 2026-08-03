@@ -2,7 +2,7 @@
  * Polynom module contains everything necessary to handle polynoms.*
  */
 import {ShutingYard, ShutingyardType, type Token} from "piexpression"
-import {MathError, ParseError} from "../errors"
+import {InvalidArgumentError, MathError, ParseError} from "../errors"
 import type {
     IAlgebra,
     IAnalyse,
@@ -1080,7 +1080,7 @@ export class Polynom implements IPiMathObject<Polynom>,
                 const letters = inputStr.split('')
 
                 if (fractions.length > letters.length + 1) {
-                    throw new Error(`Too many values: ${letters.length} letters but ${fractions.length} values provided`)
+                    throw new InvalidArgumentError(`Too many values: ${letters.length} letters but ${fractions.length} values provided`)
                 }
 
                 let i = 0

@@ -10,7 +10,7 @@ import type {
     TABLE_OF_SIGNS_VALUES
 } from "../pimath.interface"
 import {Fraction} from "../coefficients"
-import {MathError, ParseError} from "../errors"
+import {MathError, NotImplementedError, ParseError} from "../errors"
 import {Factor, FACTOR_DISPLAY} from "./factor"
 import {Polynom} from "./polynom"
 import type {Solution} from "../analyze"
@@ -460,7 +460,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     public primitive(): PolyFactor {
-        throw new Error("Method not implemented.")
+        throw new NotImplementedError("Method not implemented.")
     }
 
     public reduce(): this {

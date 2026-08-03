@@ -10,7 +10,7 @@ import type {
 import {Fraction} from "../coefficients/fraction"
 import {Polynom} from "./polynom"
 import {replace_in_array, splitIfOutsideParentheses, wrapParenthesis} from "../helpers"
-import {MathError} from "../errors"
+import {MathError, NotImplementedError} from "../errors"
 
 export class Factor implements IPiMathObject<Factor>,
     IExpression<Factor>,
@@ -43,7 +43,7 @@ export class Factor implements IPiMathObject<Factor>,
     }
 
     public parse(/*value: InputValue<Factor>*/): Factor {
-        throw new Error("Method not implemented.")
+        throw new NotImplementedError("Method not implemented.")
     }
 
     public clone(): Factor {
@@ -252,7 +252,7 @@ export class Factor implements IPiMathObject<Factor>,
     }
 
     public opposite(): Factor {
-        throw new Error("Method not implemented.")
+        throw new NotImplementedError("Method not implemented.")
     }
 
     public get polynom(): Polynom {
@@ -277,11 +277,11 @@ export class Factor implements IPiMathObject<Factor>,
     }
 
     public primitive(): Factor {
-        throw new Error("Method not implemented.")
+        throw new NotImplementedError("Method not implemented.")
     }
 
     public reduce(): Factor {
-        throw new Error("Method not implemented.")
+        throw new NotImplementedError("Method not implemented.")
     }
 
     public root(value: number): this {

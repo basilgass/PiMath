@@ -6,6 +6,7 @@ import {Fraction} from "../coefficients/fraction"
 import {Polynom} from "../algebra/polynom"
 import {Monom} from "../algebra/monom"
 import {randomIntSym} from "../randomization/rndHelpers"
+import {NotImplementedError} from "../errors"
 import {Vector} from "./vector"
 import {Point} from "./point"
 import {Line3Propriety} from "../pimath.interface"
@@ -134,7 +135,7 @@ export class Line3 {
 
     intersection = (line: Line3): { point: Vector, hasIntersection: boolean, isParallel: boolean, isSame: boolean } => {
 
-        throw new Error('Method not implemented.')
+        throw new NotImplementedError('Method not implemented.')
     }
 
     // ------------------------------------------
@@ -144,19 +145,19 @@ export class Line3 {
 
     isParallelTo = (line: Line3): boolean => {
         // Do they have the isSame direction ?
-        throw new Error('Method not implemented.')
+        throw new NotImplementedError('Method not implemented.')
     }
 
     isPerpendicularTo = (line: Line3): boolean => {
-        throw new Error('Method not implemented.')
+        throw new NotImplementedError('Method not implemented.')
     }
 
     isSameAs = (line: Line3): boolean => {
-        throw new Error('Method not implemented.')
+        throw new NotImplementedError('Method not implemented.')
     }
 
     isVertical = (): boolean => {
-        throw new Error('Method not implemented.')
+        throw new NotImplementedError('Method not implemented.')
     }
 
     get point(): Point {
@@ -196,7 +197,7 @@ export class Line3 {
     // }
 
     simplify = (): this => {
-        throw new Error('Method not implemented.')
+        throw new NotImplementedError('Method not implemented.')
         // const lcm = Numeric.lcm(this.#a.denominator, this.#b.denominator, this.#c.denominator),
         //     gcd = Numeric.gcd(this.#a.numerator, this.#b.numerator, this.#c.numerator)
 

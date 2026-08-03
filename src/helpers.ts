@@ -1,3 +1,5 @@
+import {InvalidArgumentError} from "./errors"
+
 export function wrapParenthesis(str: string, tex = true): string {
     return tex ? `\\left( ${str} \\right)` : `(${str})`
 }
@@ -40,7 +42,7 @@ export function splitIfOutsideParentheses(
     splitChar: string,
 ): string[] {
     if (splitChar.length !== 1) {
-        throw new Error(`splitChar must be a single character, got: "${splitChar}"`)
+        throw new InvalidArgumentError(`splitChar must be a single character, got: "${splitChar}"`)
     }
 
     let depth = 0,

@@ -15,4 +15,6 @@ export declare class NotImplementedError extends PiMathError {
 }
 export declare class IndexError extends PiMathError {
 }
+export declare class StateError extends PiMathError {
+}
 //# sourceMappingURL=errors.d.ts.map

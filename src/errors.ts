@@ -39,3 +39,7 @@ export class NotImplementedError extends PiMathError {
 /** An index is out of range. */
 export class IndexError extends PiMathError {
 }
+
+/** An operation was attempted on an object in an invalid/uninitialized state. */
+export class StateError extends PiMathError {
+}

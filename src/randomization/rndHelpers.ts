@@ -2,6 +2,7 @@
  * Random helpers
  */
 import {Numeric} from "../numeric"
+import {InvalidArgumentError} from "../errors"
 
 
 /**
@@ -38,7 +39,7 @@ export function randomInt(a: number, b?: number, exclude?: number[]): number {
 
     // With exclusion
     if (Math.abs(b - a) <= exclude.length) {
-        throw new Error('The number of excluded values is too high.')
+        throw new InvalidArgumentError('The number of excluded values is too high.')
     }
 
     let r = randomInt(a, b)

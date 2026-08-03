@@ -1,21 +1,28 @@
+//#region src/errors.ts
+var e = class extends Error {
+	constructor(e, t) {
+		super(e, t), this.name = new.target.name;
+	}
+}, t = class extends e {}, n = class extends e {}, r = class extends e {}, i = class extends e {}, a = class extends e {}, o = class extends e {}, s = class extends e {};
+//#endregion
 //#region src/numeric.ts
-function e(e) {
-	let t = n(e), r = [], i, a;
-	for (; t.length > 0;) i = t.shift() ?? 1, a = (t.length > 0 ? t.pop() : +i) ?? 1, r.push([i, a]);
-	return r;
+function c(e) {
+	let t = u(e), n = [], r, i;
+	for (; t.length > 0;) r = t.shift() ?? 1, i = (t.length > 0 ? t.pop() : +r) ?? 1, n.push([r, i]);
+	return n;
 }
-function t(...e) {
-	let t = r(...e);
+function l(...e) {
+	let t = d(...e);
 	return e.map((e) => e / t);
 }
-function n(e) {
+function u(e) {
 	let t = Math.abs(e), n = Math.sqrt(t), r = [];
 	for (let i = 1; i <= n; i++) e % i === 0 && (r.push(i), r.push(t / i));
 	return r.sort(function(e, t) {
 		return e - t;
 	}), [...new Set(r)];
 }
-function r(...e) {
+function d(...e) {
 	let t = function(e, n) {
 		return isNaN(e) || isNaN(n) ? NaN : n === 0 ? e : e === 0 ? n : t(n, e % n);
 	}, n = 1, r = 2;
@@ -25,19 +32,19 @@ function r(...e) {
 	for (r = 2; r < e.length && (n = t(n, e[r]), n !== 1); r++);
 	return Math.abs(n);
 }
-function i(...e) {
+function f(...e) {
 	return e.reduce(function(e, t) {
-		return Math.abs(e * t / r(e, t));
+		return Math.abs(e * t / d(e, t));
 	});
 }
-function a(e, t = 3) {
+function ee(e, t = 3) {
 	return +e.toFixed(t);
 }
-function o(e) {
+function te(e) {
 	if (Number.isSafeInteger(e) || e.toString().split(".")[0].length < 10) return 0;
-	throw Error("Periodic value: Not implemented yet");
+	throw new a("Periodic value: Not implemented yet");
 }
-function s(e) {
+function ne(e) {
 	let t = [
 		2,
 		3,
@@ -1271,7 +1278,7 @@ function s(e) {
 	];
 	return e === void 0 ? t : t.slice(0, Math.min(t.length, e));
 }
-function c(e, t) {
+function re(e, t) {
 	let n = [], r = t === !0 ? +e : e ** 2;
 	for (let t = 0; t <= e; t++) for (let i = 0; i <= e; i++) t ** 2 + i ** 2 === r && n.push([
 		t,
@@ -1280,11 +1287,11 @@ function c(e, t) {
 	]);
 	return n;
 }
-function l(e, t = 2) {
+function ie(e, t = 2) {
 	let n = Math.round(Number(`${e}e${t}`));
 	return Number(`${n}e-${t}`);
 }
-function u(e, t) {
+function ae(e, t) {
 	let n = Math.floor(e ** (1 / t)), r = e;
 	for (; n > 1;) {
 		let e = n ** +t;
@@ -1293,25 +1300,21 @@ function u(e, t) {
 	}
 	return 1;
 }
-var d = {
-	decompose: e,
-	dividers: n,
-	divideNumbersByGCD: t,
-	gcd: r,
-	lcm: i,
-	numberCorrection: a,
-	periodic: o,
-	primes: s,
-	pythagoreanTripletsWithTarget: c,
-	round: l,
-	greatestPower: u
-}, f = class extends Error {
-	constructor(e, t) {
-		super(e, t), this.name = new.target.name;
-	}
-}, p = class extends f {}, m = class extends f {}, h = class extends f {}, ee = class extends f {}, te = class extends f {}, ne = class extends f {}, re = /* @__PURE__ */ function(e) {
+var p = {
+	decompose: c,
+	dividers: u,
+	divideNumbersByGCD: l,
+	gcd: d,
+	lcm: f,
+	numberCorrection: ee,
+	periodic: te,
+	primes: ne,
+	pythagoreanTripletsWithTarget: re,
+	round: ie,
+	greatestPower: ae
+}, oe = /* @__PURE__ */ function(e) {
 	return e.frac = "frac", e.dfrac = "dfrac", e.tfrac = "tfrac", e;
-}({}), g = class e {
+}({}), m = class e {
 	#e = 1;
 	#t = 3;
 	#n = !0;
@@ -1374,7 +1377,7 @@ var d = {
 		return n && r.reverse(), r;
 	};
 	static toSameDenominateur(...t) {
-		let n = t.map((t) => new e(t)), r = d.lcm(...n.map((e) => e.denominator));
+		let n = t.map((t) => new e(t)), r = p.lcm(...n.map((e) => e.denominator));
 		return n.forEach((e) => e.amplify(r / e.denominator)), n;
 	}
 	static unique = (t) => {
@@ -1396,7 +1399,7 @@ var d = {
 		return this.reduce();
 	};
 	amplify = (e) => {
-		if (!Number.isSafeInteger(e)) throw Error("The amplification factor must be a safe integer.");
+		if (!Number.isSafeInteger(e)) throw new i("The amplification factor must be a safe integer.");
 		return this.#r *= e, this.#e *= e, this;
 	};
 	compare = (t, n) => {
@@ -1446,17 +1449,17 @@ var d = {
 	fromNumber(e) {
 		if (Number.isSafeInteger(e)) return this.#r = e, this.#e = 1, this.#n = !0, this;
 		let [, t] = e.toString().split("."), n = t ? t.length : 0, r = 10 ** n;
-		return this.#r = e * r, this.#e = r, this.#r = d.numberCorrection(this.#r), this.#e = d.numberCorrection(this.#e), this.reduce(), this.#n = n < 10, this;
+		return this.#r = e * r, this.#e = r, this.#r = p.numberCorrection(this.#r), this.#e = p.numberCorrection(this.#e), this.reduce(), this.#n = n < 10, this;
 	}
 	fromNumbers(e, t) {
 		return Number.isSafeInteger(e) && Number.isSafeInteger(t) ? (this.#r = e, this.#e = t, this.#n = !0, this) : this.fromNumber(e / t);
 	}
 	fromPeriodic(e, t) {
 		let [, n] = e.toString().split(/[.,]/), r = n ? n.length : 0;
-		if (!Number.isSafeInteger(t) || t <= 0) throw Error("The periodic length must be a positive integer.");
-		if (t > r) throw Error(`The periodic length (${t}) cannot exceed the number of decimal digits (${r}).`);
-		let i = 10 ** r;
-		return this.#r = +e * i - Math.floor(e * 10 ** (r - t)), this.#e = i - 10 ** (r - t), this.#n = !0, this;
+		if (!Number.isSafeInteger(t) || t <= 0) throw new i("The periodic length must be a positive integer.");
+		if (t > r) throw new i(`The periodic length (${t}) cannot exceed the number of decimal digits (${r}).`);
+		let a = 10 ** r;
+		return this.#r = +e * a - Math.floor(e * 10 ** (r - t)), this.#e = a - 10 ** (r - t), this.#n = !0, this;
 	}
 	fromString(e) {
 		let t = e.split("/").map(Number);
@@ -1485,7 +1488,7 @@ var d = {
 	isOne = () => this.#r === 1 && this.#e === 1;
 	isPositive = () => this.sign() === 1;
 	isRational = () => this.exact && !this.isRelative();
-	isReduced = () => Math.abs(d.gcd(this.#r, this.#e)) === 1;
+	isReduced = () => Math.abs(p.gcd(this.#r, this.#e)) === 1;
 	isRelative = () => this.exact && this.clone().reduce().denominator === 1;
 	isSquare = () => Math.sqrt(this.#r) % 1 == 0 && Math.sqrt(this.#e) % 1 == 0;
 	isStrictlyNegative = () => this.value < 0;
@@ -1513,17 +1516,17 @@ var d = {
 		return a === r && o === i ? (this.#r = a, this.#e = o) : (this.#r = r / i, this.#e = 1, this.exact = !1), this;
 	};
 	reduce = () => {
-		let e = d.gcd(this.#r, this.#e);
+		let e = p.gcd(this.#r, this.#e);
 		return this.#r /= e, this.#e /= e, this.#e < 0 && (this.#e = -this.#e, this.#r = -this.#r), this;
 	};
 	root = (e) => {
 		if (e === 0) return this;
-		if (!Number.isSafeInteger(e)) throw Error("The root must be an integer.");
-		if (e < 0 && this.inverse(), this.isNegative() && e % 2 == 0) throw new h("The root of a negative number must be odd.");
+		if (!Number.isSafeInteger(e)) throw new i("The root must be an integer.");
+		if (e < 0 && this.inverse(), this.isNegative() && e % 2 == 0) throw new r("The root of a negative number must be odd.");
 		let t = this.sign();
 		this.abs(), this.reduce();
-		let n = Math.floor(this.#r ** +Math.abs(1 / e)), r = Math.floor(this.#e ** +Math.abs(1 / e));
-		return this.#r **= +Math.abs(1 / e), this.#e **= +Math.abs(1 / e), (n !== this.#r || r !== this.#e) && (this.#r /= this.#e, this.#e = 1, this.exact = !1), this.multiply(t), this;
+		let n = Math.floor(this.#r ** +Math.abs(1 / e)), a = Math.floor(this.#e ** +Math.abs(1 / e));
+		return this.#r **= +Math.abs(1 / e), this.#e **= +Math.abs(1 / e), (n !== this.#r || a !== this.#e) && (this.#r /= this.#e, this.#e = 1, this.exact = !1), this.multiply(t), this;
 	};
 	sign = () => this.#r * this.#e >= 0 ? 1 : -1;
 	sqrt = () => this.root(2);
@@ -1545,45 +1548,45 @@ var d = {
 };
 //#endregion
 //#region src/helpers.ts
-function ie(e, t = !0) {
+function se(e, t = !0) {
 	return t ? `\\left( ${e} \\right)` : `(${e})`;
 }
-function _(e) {
+function h(e) {
 	if (!e.startsWith("(") || !e.endsWith(")")) return e;
 	let t = 0;
 	for (let n = 0; n < e.length - 1; n++) if (e[n] === "(" ? t++ : e[n] === ")" && t--, t === 0) return e;
 	return e.slice(1, -1);
 }
-function v(e, t, n, r, i) {
+function g(e, t, n, r, i) {
 	return e.map((e, a) => r !== void 0 && a < r || i !== void 0 && a > i ? e : e === t ? n : e);
 }
-function y(e, t) {
-	if (t.length !== 1) throw Error(`splitChar must be a single character, got: "${t}"`);
-	let n = 0, r = 0, i = [];
-	for (let a = 0; a < e.length; a++) {
-		let o = e[a];
-		o === "(" ? n++ : o === ")" ? n-- : o === t && n === 0 && (i.push(e.substring(r, a)), r = a + 1);
+function _(e, t) {
+	if (t.length !== 1) throw new i(`splitChar must be a single character, got: "${t}"`);
+	let n = 0, r = 0, a = [];
+	for (let i = 0; i < e.length; i++) {
+		let o = e[i];
+		o === "(" ? n++ : o === ")" ? n-- : o === t && n === 0 && (a.push(e.substring(r, i)), r = i + 1);
 	}
-	return i.push(e.substring(r)), i;
+	return a.push(e.substring(r)), a;
 }
 //#endregion
 //#region src/coefficients/root.ts
-var b = class e {
+var v = class e {
 	#e;
 	#t;
 	#n;
 	#r = !1;
 	constructor(e) {
-		return this.#t = 2, this.#e = new g().zero(), this.#n = new g().zero(), e && this.parse(e), this;
+		return this.#t = 2, this.#e = new m().zero(), this.#n = new m().zero(), e && this.parse(e), this;
 	}
 	parse(t) {
 		if (t instanceof e) return this.index = t.index, this.radical = t.radical.clone(), this.factor = t.factor.clone(), this;
-		if (t instanceof g) return this.index = 2, this.factor = t.clone(), this.radical.one(), this;
+		if (t instanceof m) return this.index = 2, this.factor = t.clone(), this.radical.one(), this;
 		if (typeof t == "string") {
 			if (t.includes("sqrt")) return this.#s(t);
 			if (t.includes("root")) return this.#o(t);
 		}
-		return this.index = 2, this.factor = new g(t), this.radical.one(), this;
+		return this.index = 2, this.factor = new m(t), this.radical.one(), this;
 	}
 	clone() {
 		return new e().from(this.index, this.radical, this.factor);
@@ -1603,7 +1606,7 @@ var b = class e {
 	add(t) {
 		this.reduce();
 		let n = new e(t).reduce();
-		if (this.index !== n.index || !this.radical.isEqual(n.radical)) throw new h("Add can only be done with two same index and radical");
+		if (this.index !== n.index || !this.radical.isEqual(n.radical)) throw new r("Add can only be done with two same index and radical");
 		return this.factor.add(n.factor), this;
 	}
 	divide(t) {
@@ -1616,7 +1619,7 @@ var b = class e {
 		this.#e = e;
 	}
 	from(e, t, n) {
-		return this.index = e, this.radical = new g(t), this.factor = n ? new g(n) : new g().one(), this;
+		return this.index = e, this.radical = new m(t), this.factor = n ? new m(n) : new m().one(), this;
 	}
 	group() {
 		return this.radical.multiply(this.factor.pow(this.index)), this.factor.one(), this;
@@ -1625,11 +1628,11 @@ var b = class e {
 		return this.#t;
 	}
 	set index(e) {
-		if (!Number.isSafeInteger(e) || e <= 0) throw Error("Index must be a strictly positive integer.");
+		if (!Number.isSafeInteger(e) || e <= 0) throw new i("Index must be a strictly positive integer.");
 		this.#t = e;
 	}
 	get indexAsPow() {
-		return new g(this.index).inverse();
+		return new m(this.index).inverse();
 	}
 	inverse() {
 		return this.factor.inverse(), this.radical.inverse(), this;
@@ -1654,7 +1657,7 @@ var b = class e {
 			let e = this.indexAsPow.add(n.indexAsPow).reduce();
 			return this.index = e.denominator, this.radical = this.radical.pow(e.numerator), this;
 		}
-		throw new h("Multiply can only be done if radical or index as equals.");
+		throw new r("Multiply can only be done if radical or index as equals.");
 	}
 	one() {
 		return this.radical.one(), this.factor.one(), this;
@@ -1664,7 +1667,7 @@ var b = class e {
 	}
 	pow(e) {
 		this.factor.pow(e);
-		let t = d.gcd(this.index, e);
+		let t = p.gcd(this.index, e);
 		return this.index /= t, this.radical.pow(e / t), this;
 	}
 	get radical() {
@@ -1678,7 +1681,7 @@ var b = class e {
 			let e = this.radical.denominator;
 			this.radical.denominator = 1, this.radical.numerator *= e, this.factor.divide(e);
 		}
-		let e = d.greatestPower(this.radical.value, this.index);
+		let e = p.greatestPower(this.radical.value, this.index);
 		return this.factor.multiply(e ** (1 / this.index)), this.radical.divide(e), this;
 	}
 	root(e) {
@@ -1692,7 +1695,7 @@ var b = class e {
 		return this.add(n.opposite());
 	}
 	get value() {
-		return d.numberCorrection(this.factor.value * this.radical.value ** (1 / this.index));
+		return p.numberCorrection(this.factor.value * this.radical.value ** (1 / this.index));
 	}
 	get withSign() {
 		return this.#r = !0, this;
@@ -1712,16 +1715,16 @@ var b = class e {
 		return r.length === 0 ? null : r.join(" ");
 	}
 	#o(e) {
-		let t = /^(.*?)root\((\d+)\)\(?([^)]+)/.exec(e);
-		if (!t) throw new p(`Invalid root format: "${e}"`);
-		let [, n, r, i] = t;
-		return this.index = +r, this.radical = new g(i), this.factor = n === "" ? new g().one() : new g(n.trim()), this;
+		let n = /^(.*?)root\((\d+)\)\(?([^)]+)/.exec(e);
+		if (!n) throw new t(`Invalid root format: "${e}"`);
+		let [, r, i, a] = n;
+		return this.index = +i, this.radical = new m(a), this.factor = r === "" ? new m().one() : new m(r.trim()), this;
 	}
 	#s(e) {
 		let [t, n] = e.split("sqrt");
-		return this.index = 2, this.radical = new g(_(n)), this.factor = t === "" ? new g().one() : new g(t), this;
+		return this.index = 2, this.radical = new m(h(n)), this.factor = t === "" ? new m().one() : new m(t), this;
 	}
-}, x = class e {
+}, y = class e {
 	#e;
 	#t;
 	#n;
@@ -1730,13 +1733,13 @@ var b = class e {
 	#a;
 	#o;
 	constructor() {
-		this.#o = "x", this.#n = !1, this.#t = null, this.#a = null, this.#r = new g().zero(), this.#i = new b(), this.#e = 1;
+		this.#o = "x", this.#n = !1, this.#t = null, this.#a = null, this.#r = new m().zero(), this.#i = new v(), this.#e = 1;
 	}
 	get tex() {
 		if (this.#a) return this.#a;
 		if (this.#i.isZero()) return this.#r.tex;
 		if (this.#r.isZero()) return this.#i.tex;
-		let [e] = g.toSameDenominateur(this.#r, this.#i.factor), t = this.#i.clone().multiply(e.denominator).reduce(), n = `${e.numerator} ${t.withSign.tex}`;
+		let [e] = m.toSameDenominateur(this.#r, this.#i.factor), t = this.#i.clone().multiply(e.denominator).reduce(), n = `${e.numerator} ${t.withSign.tex}`;
 		return e.denominator === 1 ? n : `\\frac{ ${n} }{ ${e.denominator} }`;
 	}
 	set tex(e) {
@@ -1746,7 +1749,7 @@ var b = class e {
 		if (this.#t) return this.#t;
 		if (this.#i.isZero()) return this.#r.display;
 		if (this.#r.isZero()) return this.#i.display;
-		let [e] = g.toSameDenominateur(this.#r, this.#i.factor), t = this.#i.clone().multiply(e.denominator).reduce(), n = `${e.numerator}${t.withSign.display}`;
+		let [e] = m.toSameDenominateur(this.#r, this.#i.factor), t = this.#i.clone().multiply(e.denominator).reduce(), n = `${e.numerator}${t.withSign.display}`;
 		return e.denominator === 1 ? n : `(${n})/${e.denominator}`;
 	}
 	set display(e) {
@@ -1755,24 +1758,24 @@ var b = class e {
 	static fromFraction(t) {
 		let n = new e();
 		n.setExact();
-		let r = new g(t);
-		return n.display = r.display, n.tex = r.tex, n.fraction = r, n.root = new b(), n;
+		let r = new m(t);
+		return n.display = r.display, n.tex = r.tex, n.fraction = r, n.root = new v(), n;
 	}
 	static fromQuadratic(t, n, r) {
 		let [i, a, o] = [
 			t,
 			n,
 			r
-		].map((e) => new g(e)), s = a.clone().pow(2).subtract(i.clone().multiply(o).multiply(4));
+		].map((e) => new m(e)), s = a.clone().pow(2).subtract(i.clone().multiply(o).multiply(4));
 		if (s.isNegative()) return [];
 		if (s.isSquare()) {
 			let t = s.sqrt(), n = a.clone().opposite().subtract(t).divide(i.clone().multiply(2)), r = a.clone().opposite().add(t).divide(i.clone().multiply(2));
 			return t.isZero() ? [e.fromFraction(n)] : [e.fromFraction(n), e.fromFraction(r)];
 		}
 		let c = new e();
-		c.fraction = a.clone().opposite().divide(i).divide(2), c.root = new b().from(2, s, i.clone().multiply(2).inverse().opposite()), c.setExact(!1);
+		c.fraction = a.clone().opposite().divide(i).divide(2), c.root = new v().from(2, s, i.clone().multiply(2).inverse().opposite()), c.setExact(!1);
 		let l = new e();
-		return l.fraction = a.clone().opposite().divide(i).divide(2), l.root = new b().from(2, s, i.clone().multiply(2).inverse()), l.setExact(!1), [c, l];
+		return l.fraction = a.clone().opposite().divide(i).divide(2), l.root = new v().from(2, s, i.clone().multiply(2).inverse()), l.setExact(!1), [c, l];
 	}
 	get count() {
 		return this.#e;
@@ -1816,11 +1819,11 @@ var b = class e {
 	set variable(e) {
 		e !== void 0 && (this.#o = e);
 	}
-}, ae = class {
+}, ce = class {
 	#e;
 	#t;
 	constructor(e) {
-		this.#e = e instanceof L || e instanceof N ? new L(e) : new L().fromPolynom(e), this.#t = this.#e.getRoots();
+		this.#e = e instanceof R || e instanceof P ? new R(e) : new R().fromPolynom(e), this.#t = this.#e.getRoots();
 	}
 	get fx() {
 		return this.#e;
@@ -1828,7 +1831,7 @@ var b = class e {
 	get roots() {
 		return this.#t;
 	}
-}, S = class e {
+}, b = class e {
 	_;
 	#e;
 	#t;
@@ -1858,15 +1861,15 @@ var b = class e {
 		return r.degree().isZero() ? n : r.degree().value <= 2 ? n.concat(new e(r.clone()).solve()) : (this._ = 0, n.concat(this.#a(r)).sort((e, t) => e.value - t.value));
 	}
 	solveAsCardan() {
-		if (this.#t.degree().value !== 3) throw new h("The equation is not cubic.");
+		if (this.#t.degree().value !== 3) throw new r("The equation is not cubic.");
 		return this.#u();
 	}
 	#r(e, t) {
-		let n = new x();
-		return n.exact = !1, n.tex = t?.tex ?? null, n.display = t?.display ?? null, n.fraction = new g(e), n.fraction.exact = !1, n.variable = this.#n, n;
+		let n = new y();
+		return n.exact = !1, n.tex = t?.tex ?? null, n.display = t?.display ?? null, n.fraction = new m(e), n.fraction.exact = !1, n.variable = this.#n, n;
 	}
 	#i(e) {
-		return e instanceof g && !e.exact ? this.#r(e.value) : x.fromFraction(e);
+		return e instanceof m && !e.exact ? this.#r(e.value) : y.fromFraction(e);
 	}
 	#a(e) {
 		let t = [], n = e.degree().value, [r, ...i] = e.getCoefficients(), a = 2 + Math.max(...i.map((e) => e.value / r.value)), o = this.#s(e, a, 100);
@@ -1894,7 +1897,7 @@ var b = class e {
 	#s(e, t, n) {
 		let r = [], i = 2 * t / n;
 		for (let n = -t; n <= t; n += i) {
-			let t = d.numberCorrection(n);
+			let t = p.numberCorrection(n);
 			r.push({
 				x: t,
 				fx: e.evaluate(t, !0)
@@ -1919,9 +1922,9 @@ var b = class e {
 			let e = t.monoms.reduce((e, t) => t.degree().value < e.degree().value ? t : e), r = e.coefficient;
 			e.clone().divide(r), t.divide(e);
 		}
-		let o = d.dividers(i.value), s = d.dividers(a.value), c = [];
+		let o = p.dividers(i.value), s = p.dividers(a.value), c = [];
 		for (let e of o) for (let t of s) {
-			let n = new g(t, e);
+			let n = new m(t, e);
 			c.find((e) => e.value === n.value) || (c.push(n.clone()), c.push(n.opposite().clone()));
 		}
 		c.forEach((e) => {
@@ -1979,28 +1982,28 @@ var b = class e {
 		return this.#p(t, n, i);
 	}
 	#p(e, t, n) {
-		let r = e.clone().multiply(2), i = new x();
-		i.fraction = t.clone().opposite().divide(r.clone()), i.root.radical = n.clone(), i.root.factor = new g().one().divide(r.clone()), i.exact = !0;
-		let a = new x();
-		return a.fraction = t.clone().opposite().divide(r.clone()), a.root.radical = n.clone(), a.root.factor = new g().one().divide(r.clone()).opposite(), a.exact = !0, [i, a].sort((e, t) => e.value - t.value);
+		let r = e.clone().multiply(2), i = new y();
+		i.fraction = t.clone().opposite().divide(r.clone()), i.root.radical = n.clone(), i.root.factor = new m().one().divide(r.clone()), i.exact = !0;
+		let a = new y();
+		return a.fraction = t.clone().opposite().divide(r.clone()), a.root.radical = n.clone(), a.root.factor = new m().one().divide(r.clone()).opposite(), a.exact = !0, [i, a].sort((e, t) => e.value - t.value);
 	}
-}, oe = class extends Error {
+}, le = class extends Error {
 	constructor(e, t) {
 		super(e, t), this.name = new.target.name;
 	}
-}, C = class extends oe {}, w = class extends oe {}, se = class extends w {}, T = {
+}, x = class extends le {}, S = class extends le {}, ue = class extends S {}, C = {
 	pi: Math.PI,
 	e: Math.exp(1)
-}, E = /* @__PURE__ */ function(e) {
+}, w = /* @__PURE__ */ function(e) {
 	return e.VARIABLE = "variable", e.COEFFICIENT = "coefficient", e.OPERATION = "operation", e.CONSTANT = "constant", e.FUNCTION = "function", e.FUNCTION_ARGUMENT = "function-argument", e.MONOM = "monom", e.LEFT_PARENTHESIS = "(", e.RIGHT_PARENTHESIS = ")", e;
-}({}), D = /* @__PURE__ */ function(e) {
+}({}), T = /* @__PURE__ */ function(e) {
 	return e.EXPRESSION = "expression", e.POLYNOM = "polynom", e.SET = "set", e.NUMERIC = "numeric", e;
 }({});
-function ce(e, t) {
+function de(e, t) {
 	if (e = e.replace(/\s+/g, ""), e.length <= 1) return e;
-	let n = Object.keys(t).filter((e) => t[e].type === E.FUNCTION).map((e) => e);
+	let n = Object.keys(t).filter((e) => t[e].type === w.FUNCTION).map((e) => e);
 	n.sort((e, t) => t.length - e.length);
-	let r = RegExp(`^(${n.join("|")})\\(`), i = Object.keys(T);
+	let r = RegExp(`^(${n.join("|")})\\(`), i = Object.keys(C);
 	i.sort((e, t) => t.length - e.length);
 	let a = RegExp(`^(${i.join("|")})`), o = /^(\d+(\.\d+)?)/, s = "", c, l, u;
 	for (n.forEach((t) => {
@@ -2011,25 +2014,25 @@ function ce(e, t) {
 	}); e.length > 0;) {
 		c = l, u = void 0;
 		let t = n.find((t) => e.startsWith(t));
-		if (t !== void 0 && e[t.length] !== "(") throw new C(`Function "${t}" must be followed by parentheses`);
+		if (t !== void 0 && e[t.length] !== "(") throw new x(`Function "${t}" must be followed by parentheses`);
 		if (n.length > 0 && r.exec(e)) {
 			let t = n.find((t) => e.startsWith(t));
-			t && (u = t + "(", e = e.slice(t.length + 1), l = E.FUNCTION);
+			t && (u = t + "(", e = e.slice(t.length + 1), l = w.FUNCTION);
 		} else if (i.length > 0 && a.exec(e)) {
 			let t = i.find((t) => e.startsWith(t));
-			t && (u = t, e = e.slice(t.length), l = E.CONSTANT);
+			t && (u = t, e = e.slice(t.length), l = w.CONSTANT);
 		} else if (o.exec(e)) {
 			let t = o.exec(e);
-			t && (u = t[0], e = e.slice(t[0].length), l = E.COEFFICIENT);
+			t && (u = t[0], e = e.slice(t[0].length), l = w.COEFFICIENT);
 		} else switch (u = e[0], e = e.slice(1), u) {
 			case "(":
-				l = E.LEFT_PARENTHESIS;
+				l = w.LEFT_PARENTHESIS;
 				break;
 			case ")":
-				l = E.RIGHT_PARENTHESIS;
+				l = w.RIGHT_PARENTHESIS;
 				break;
 			case ",":
-				l = E.FUNCTION_ARGUMENT;
+				l = w.FUNCTION_ARGUMENT;
 				break;
 			case "+":
 			case "-":
@@ -2037,146 +2040,146 @@ function ce(e, t) {
 			case "/":
 			case "^":
 			case "%":
-				l = E.OPERATION;
+				l = w.OPERATION;
 				break;
-			default: l = E.VARIABLE;
+			default: l = w.VARIABLE;
 		}
 		if (u === void 0 || l === void 0) throw Error("The token is undefined");
-		s += le(c, l), s += u;
+		s += fe(c, l), s += u;
 	}
 	return s;
 }
-function le(e, t) {
-	return e === void 0 || e === E.OPERATION || t === E.OPERATION || e === E.LEFT_PARENTHESIS || e === E.FUNCTION || e === E.FUNCTION_ARGUMENT || t === E.RIGHT_PARENTHESIS || t === E.FUNCTION_ARGUMENT ? "" : "*";
+function fe(e, t) {
+	return e === void 0 || e === w.OPERATION || t === w.OPERATION || e === w.LEFT_PARENTHESIS || e === w.FUNCTION || e === w.FUNCTION_ARGUMENT || t === w.RIGHT_PARENTHESIS || t === w.FUNCTION_ARGUMENT ? "" : "*";
 }
-var ue = {
+var pe = {
 	"^": {
 		precedence: 4,
 		associative: "right",
-		type: E.OPERATION
+		type: w.OPERATION
 	},
 	"*": {
 		precedence: 3,
 		associative: "left",
-		type: E.OPERATION
+		type: w.OPERATION
 	},
 	"/": {
 		precedence: 3,
 		associative: "left",
-		type: E.OPERATION
+		type: w.OPERATION
 	},
 	"+": {
 		precedence: 2,
 		associative: "left",
-		type: E.OPERATION
+		type: w.OPERATION
 	},
 	"-": {
 		precedence: 2,
 		associative: "left",
-		type: E.OPERATION
+		type: w.OPERATION
 	},
 	"%": {
 		precedence: 3,
 		associative: "left",
-		type: E.OPERATION
+		type: w.OPERATION
 	},
 	"&": {
 		precedence: 3,
 		associative: "left",
-		type: E.OPERATION
+		type: w.OPERATION
 	},
 	"|": {
 		precedence: 3,
 		associative: "left",
-		type: E.OPERATION
+		type: w.OPERATION
 	},
 	"!": {
 		precedence: 4,
 		associative: "right",
-		type: E.OPERATION
+		type: w.OPERATION
 	},
 	sin: {
 		precedence: 4,
 		associative: "right",
-		type: E.FUNCTION,
+		type: w.FUNCTION,
 		arity: 1
 	},
 	cos: {
 		precedence: 4,
 		associative: "right",
-		type: E.FUNCTION,
+		type: w.FUNCTION,
 		arity: 1
 	},
 	tan: {
 		precedence: 4,
 		associative: "right",
-		type: E.FUNCTION,
+		type: w.FUNCTION,
 		arity: 1
 	},
 	asin: {
 		precedence: 4,
 		associative: "right",
-		type: E.FUNCTION,
+		type: w.FUNCTION,
 		arity: 1
 	},
 	acos: {
 		precedence: 4,
 		associative: "right",
-		type: E.FUNCTION,
+		type: w.FUNCTION,
 		arity: 1
 	},
 	atan: {
 		precedence: 4,
 		associative: "right",
-		type: E.FUNCTION,
+		type: w.FUNCTION,
 		arity: 1
 	},
 	sqrt: {
 		precedence: 4,
 		associative: "right",
-		type: E.FUNCTION,
+		type: w.FUNCTION,
 		arity: 1
 	},
 	nthrt: {
 		precedence: 4,
 		associative: "right",
-		type: E.FUNCTION,
+		type: w.FUNCTION,
 		arity: 2
 	},
 	ln: {
 		precedence: 4,
 		associative: "right",
-		type: E.FUNCTION,
+		type: w.FUNCTION,
 		arity: 1
 	},
 	log: {
 		precedence: 4,
 		associative: "right",
-		type: E.FUNCTION,
+		type: w.FUNCTION,
 		arity: 1
 	},
 	logn: {
 		precedence: 4,
 		associative: "right",
-		type: E.FUNCTION,
+		type: w.FUNCTION,
 		arity: 2
 	}
 };
-function O(...e) {
+function E(...e) {
 	let t = {};
-	for (let n of e) t[n] = ue[n];
+	for (let n of e) t[n] = pe[n];
 	return t;
 }
-var de = {};
-for (let [e, t] of Object.entries(ue)) t.type === E.FUNCTION && (de[e] = t.arity ?? 1);
-var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin", "cos", "tan", "asin", "acos", "atan", "sqrt", "nthrt", "ln", "log", "logn"), me = pe, he = O("&", "|", "!", "-"), k = class {
+var me = {};
+for (let [e, t] of Object.entries(pe)) t.type === w.FUNCTION && (me[e] = t.arity ?? 1);
+var he = E("^", "*", "/", "+", "-"), D = E("^", "*", "/", "+", "-", "%", "sin", "cos", "tan", "asin", "acos", "atan", "sqrt", "nthrt", "ln", "log", "logn"), ge = D, _e = E("&", "|", "!", "-"), O = class {
 	#e;
 	#t = [];
 	#n = {};
 	#r = [];
 	#i;
 	constructor(e) {
-		this.#e = e === void 0 ? D.POLYNOM : e, this.tokenConfigInitialization();
+		this.#e = e === void 0 ? T.POLYNOM : e, this.tokenConfigInitialization();
 	}
 	get rpn() {
 		return this.#t;
@@ -2185,31 +2188,31 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 		return this.#t.map((e) => e.token);
 	}
 	tokenConfigInitialization() {
-		return this.#e === D.SET ? (this.#n = he, this.#i = !1) : this.#e === D.NUMERIC ? (this.#n = pe, this.#i = !0) : this.#e === D.EXPRESSION ? (this.#n = me, this.#i = !0) : (this.#n = fe, this.#i = !0), this.#r = Object.keys(this.#n).sort((e, t) => t.length - e.length), this.#n;
+		return this.#e === T.SET ? (this.#n = _e, this.#i = !1) : this.#e === T.NUMERIC ? (this.#n = D, this.#i = !0) : this.#e === T.EXPRESSION ? (this.#n = ge, this.#i = !0) : (this.#n = he, this.#i = !0), this.#r = Object.keys(this.#n).sort((e, t) => t.length - e.length), this.#n;
 	}
 	NextToken(e, t) {
 		let n, r;
-		if (n = "", r = void 0, e[t] === "(") n = "(", r = E.LEFT_PARENTHESIS;
-		else if (e[t] === ")") n = ")", r = E.RIGHT_PARENTHESIS;
-		else if (e[t] === ",") n = ",", r = E.FUNCTION_ARGUMENT;
+		if (n = "", r = void 0, e[t] === "(") n = "(", r = w.LEFT_PARENTHESIS;
+		else if (e[t] === ")") n = ")", r = w.RIGHT_PARENTHESIS;
+		else if (e[t] === ",") n = ",", r = w.FUNCTION_ARGUMENT;
 		else {
 			for (let i of this.#r) if (e.substring(t, t + i.length) === i) {
 				n += i, r = this.#n[i].type;
 				break;
 			}
-			for (let i in T) if (e.substring(t, t + i.length) === i) {
-				n += i, r = E.CONSTANT;
+			for (let i in C) if (e.substring(t, t + i.length) === i) {
+				n += i, r = w.CONSTANT;
 				break;
 			}
 			if (n === "") if (/[0-9.]/.exec(e[t])) {
 				let i = /^([0-9.]+)/.exec(e.substring(t));
-				n = i ? i[0] : "", r = E.COEFFICIENT;
+				n = i ? i[0] : "", r = w.COEFFICIENT;
 			} else if (/[a-zA-Z]/.exec(e[t])) {
 				let i = /^([a-zA-Z])/.exec(e.substring(t));
-				n = i ? i[0] : "", r = E.VARIABLE;
-			} else throw new C(`Unknown token "${e[t]}" at position ${t} in "${e}"`);
+				n = i ? i[0] : "", r = w.VARIABLE;
+			} else throw new x(`Unknown token "${e[t]}" at position ${t} in "${e}"`);
 		}
-		if (r === void 0) throw new C(`Token type is undefined for token ${n}`);
+		if (r === void 0) throw new x(`Token type is undefined for token ${n}`);
 		return {
 			token: n,
 			nextPos: t + n.length,
@@ -2218,24 +2221,24 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 	}
 	parse(e, t) {
 		let n = [], r = [], i = 0;
-		for ((t ?? this.#i) && (e = ce(e, this.#n)); i < e.length;) {
+		for ((t ?? this.#i) && (e = de(e, this.#n)); i < e.length;) {
 			let t = i, { token: a, nextPos: o, type: s } = this.NextToken(e, i);
-			if (i = o, i <= t) throw new C(`Parser stalled at position ${t} in "${e}"`);
+			if (i = o, i <= t) throw new x(`Parser stalled at position ${t} in "${e}"`);
 			switch (s) {
-				case E.COEFFICIENT:
-				case E.VARIABLE:
-				case E.CONSTANT:
+				case w.COEFFICIENT:
+				case w.VARIABLE:
+				case w.CONSTANT:
 					n.push({
 						token: a,
 						tokenType: s
 					});
 					break;
-				case E.OPERATION:
+				case w.OPERATION:
 					if (r.length > 0) {
 						let e = r[r.length - 1];
 						for (; e.token in this.#n && (this.#n[a].associative === "left" && this.#n[a].precedence <= this.#n[e.token].precedence || this.#n[a].associative === "right" && this.#n[a].precedence < this.#n[e.token].precedence) && (n.push(r.pop() ?? {
 							token: "",
-							tokenType: E.OPERATION
+							tokenType: w.OPERATION
 						}), r.length !== 0);) e = r[r.length - 1];
 					}
 					r.push({
@@ -2243,51 +2246,51 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 						tokenType: s
 					});
 					break;
-				case E.FUNCTION_ARGUMENT:
+				case w.FUNCTION_ARGUMENT:
 					for (; r.length > 0 && r[r.length - 1].token !== "(";) n.push(r.pop() ?? {
 						token: a,
 						tokenType: s
 					});
-					if (r.length === 0) throw new C(`Misplaced argument separator ',' in "${e}"`);
+					if (r.length === 0) throw new x(`Misplaced argument separator ',' in "${e}"`);
 					break;
-				case E.LEFT_PARENTHESIS:
+				case w.LEFT_PARENTHESIS:
 					r.push({
 						token: a,
 						tokenType: s
 					}), e[i] === "-" && n.push({
 						token: "0",
-						tokenType: E.COEFFICIENT
+						tokenType: w.COEFFICIENT
 					});
 					break;
-				case E.RIGHT_PARENTHESIS:
+				case w.RIGHT_PARENTHESIS:
 					for (; r.length > 0 && r[r.length - 1].token !== "(";) n.push(r.pop() ?? {
 						token: a,
 						tokenType: s
 					});
-					if (r.length === 0) throw new C(`Mismatched parentheses (unexpected ')') in "${e}"`);
+					if (r.length === 0) throw new x(`Mismatched parentheses (unexpected ')') in "${e}"`);
 					r.pop();
 					break;
-				case E.FUNCTION:
+				case w.FUNCTION:
 					r.push({
 						token: a,
 						tokenType: s
 					});
 					break;
-				default: throw new C(`Token type ${a} is not handled`);
+				default: throw new x(`Token type ${a} is not handled`);
 			}
 		}
-		if (r.some((e) => e.token === "(")) throw new C(`Mismatched parentheses (unclosed '(') in "${e}"`);
+		if (r.some((e) => e.token === "(")) throw new x(`Mismatched parentheses (unclosed '(') in "${e}"`);
 		return this.#t = n.concat(r.reverse()), this;
 	}
-}, ge = class {
+}, k = class {
 	_rpn;
 	_expression;
 	constructor(e, t) {
 		this._expression = e;
 		try {
-			this._rpn = new k(D.NUMERIC).parse(e, t).rpn;
+			this._rpn = new O(T.NUMERIC).parse(e, t).rpn;
 		} catch (t) {
-			throw new C(`There was a problem parsing: ${e}`, { cause: t });
+			throw new x(`There was a problem parsing: ${e}`, { cause: t });
 		}
 	}
 	get rpn() {
@@ -2298,7 +2301,7 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 	}
 	get variables() {
 		let e = /* @__PURE__ */ new Set();
-		for (let t of this._rpn) t.tokenType === E.VARIABLE && e.add(t.token);
+		for (let t of this._rpn) t.tokenType === w.VARIABLE && e.add(t.token);
 		return [...e];
 	}
 	isValid(e) {
@@ -2307,17 +2310,17 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 	_isStructurallyValid() {
 		let e = 0;
 		for (let t of this._rpn) switch (t.tokenType) {
-			case E.COEFFICIENT:
-			case E.VARIABLE:
-			case E.CONSTANT:
+			case w.COEFFICIENT:
+			case w.VARIABLE:
+			case w.CONSTANT:
 				e += 1;
 				break;
-			case E.OPERATION:
+			case w.OPERATION:
 				if (e < 2) return !1;
 				--e;
 				break;
-			case E.FUNCTION: {
-				let n = de[t.token] ?? 1;
+			case w.FUNCTION: {
+				let n = me[t.token] ?? 1;
 				if (e < n) return !1;
 				e += 1 - n;
 				break;
@@ -2328,40 +2331,40 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 	}
 	evaluate(e) {
 		let t = [];
-		for (let n of this._rpn) if (n.tokenType === E.COEFFICIENT) t.push(+n.token);
-		else if (n.tokenType === E.VARIABLE) {
-			if (e === void 0 || !Object.hasOwn(e, n.token)) throw new se(`Missing value for variable "${n.token}"`);
+		for (let n of this._rpn) if (n.tokenType === w.COEFFICIENT) t.push(+n.token);
+		else if (n.tokenType === w.VARIABLE) {
+			if (e === void 0 || !Object.hasOwn(e, n.token)) throw new ue(`Missing value for variable "${n.token}"`);
 			t.push(e[n.token]);
-		} else if (n.tokenType === E.CONSTANT) t.push(T[n.token]);
-		else if (n.tokenType === E.OPERATION) {
+		} else if (n.tokenType === w.CONSTANT) t.push(C[n.token]);
+		else if (n.tokenType === w.OPERATION) {
 			if (n.token === "*") {
 				let e = t.pop(), n = t.pop();
-				if (n === void 0 || e === void 0) throw new w(`The multiplication factors ${n ?? "a"} or ${e ?? "b"} are not defined`);
+				if (n === void 0 || e === void 0) throw new S(`The multiplication factors ${n ?? "a"} or ${e ?? "b"} are not defined`);
 				t.push(n * e);
 			} else if (n.token === "/") {
 				let e = t.pop(), n = t.pop();
-				if (n === void 0 || e === void 0) throw new w(`The division values ${n ?? "a"} or ${e ?? "b"} are not defined`);
+				if (n === void 0 || e === void 0) throw new S(`The division values ${n ?? "a"} or ${e ?? "b"} are not defined`);
 				t.push(n / e);
 			} else if (n.token === "+") {
 				let e = t.pop(), n = t.pop();
-				if (n === void 0 || e === void 0) throw new w(`The addition values ${n ?? "a"} or ${e ?? "b"} are not defined`);
+				if (n === void 0 || e === void 0) throw new S(`The addition values ${n ?? "a"} or ${e ?? "b"} are not defined`);
 				t.push(n + e);
 			} else if (n.token === "-") {
 				let e = t.pop(), n = t.pop() ?? 0;
-				if (e === void 0) throw new w("The subtraction value b is  not defined");
+				if (e === void 0) throw new S("The subtraction value b is  not defined");
 				t.push(n - e);
 			} else if (n.token === "%") {
 				let e = t.pop(), n = t.pop();
-				if (n === void 0 || e === void 0) throw new w(`The modulo values ${n ?? "a"} or ${e ?? "b"} are not defined`);
+				if (n === void 0 || e === void 0) throw new S(`The modulo values ${n ?? "a"} or ${e ?? "b"} are not defined`);
 				t.push(n % e);
 			} else if (n.token === "^") {
 				let e = t.pop(), n = t.pop();
-				if (n === void 0 || e === void 0) throw new w(`The base value ${n ?? "a"} or exponent ${e ?? "b"} are not defined`);
+				if (n === void 0 || e === void 0) throw new S(`The base value ${n ?? "a"} or exponent ${e ?? "b"} are not defined`);
 				t.push(n ** +e);
 			}
-		} else if (n.tokenType === E.FUNCTION) {
+		} else if (n.tokenType === w.FUNCTION) {
 			let e = t.pop();
-			if (e === void 0) throw new w(`The parameters for ${n.token} is not defined`);
+			if (e === void 0) throw new S(`The parameters for ${n.token} is not defined`);
 			if (n.token === "sin") t.push(Math.sin(e));
 			else if (n.token === "cos") t.push(Math.cos(e));
 			else if (n.token === "tan") t.push(Math.tan(e));
@@ -2371,18 +2374,18 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 			else if (n.token === "sqrt") t.push(Math.sqrt(e));
 			else if (n.token === "nthrt") {
 				let n = t.pop();
-				if (n === void 0) throw new w("The nthrt function requires two parameters");
+				if (n === void 0) throw new S("The nthrt function requires two parameters");
 				e % 2 == 0 && n < 0 ? t.push(NaN) : t.push((n < 0 ? -1 : 1) * Math.abs(n) ** (1 / e));
 			} else if (n.token === "ln") t.push(Math.log(e));
 			else if (n.token === "log") t.push(Math.log10(e));
 			else if (n.token === "logn") {
 				let n = t.pop();
-				if (n === void 0) throw new w("The logn function requires two parameters");
+				if (n === void 0) throw new S("The logn function requires two parameters");
 				e <= 0 || e === 1 || n <= 0 ? t.push(NaN) : t.push(Math.log(n) / Math.log(e));
 			}
 		}
 		if (t.length === 1) return this._numberCorrection(t[0]);
-		throw new w(`There was a problem parsing: ${this._expression}`);
+		throw new S(`There was a problem parsing: ${this._expression}`);
 	}
 	_numberCorrection(e, t = 8) {
 		return +e.toFixed(t);
@@ -2391,10 +2394,10 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 	#e;
 	#t;
 	constructor(e) {
-		return this.#e = new g().zero(), this.#t = {}, e !== void 0 && this.parse(e), this;
+		return this.#e = new m().zero(), this.#t = {}, e !== void 0 && this.parse(e), this;
 	}
 	parse(t) {
-		return this.#e = new g(), this.#t = {}, t instanceof e ? (this.#e = t.#e.clone(), this.#n(t), this) : t instanceof g ? (this.#e = t.clone(), this) : typeof t == "number" ? (this.#e = new g(t), this) : (isNaN(Number(t)) ? this.#s(t) : this.#e = new g(Number(t)), this);
+		return this.#e = new m(), this.#t = {}, t instanceof e ? (this.#e = t.#e.clone(), this.#n(t), this) : t instanceof m ? (this.#e = t.clone(), this) : typeof t == "number" ? (this.#e = new m(t), this) : (isNaN(Number(t)) ? this.#s(t) : this.#e = new m(Number(t)), this);
 	}
 	clone = () => {
 		let t = new e();
@@ -2411,10 +2414,10 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 	static gcd = (...t) => {
 		for (let n of t) if (n.containsRationalPower()) return new e().zero();
 		let n = new e();
-		n.coefficient = new g(d.gcd(...t.map((e) => e.coefficient.numerator)), d.lcm(...t.map((e) => e.coefficient.denominator))).reduce();
+		n.coefficient = new m(p.gcd(...t.map((e) => e.coefficient.numerator)), p.lcm(...t.map((e) => e.coefficient.denominator))).reduce();
 		for (let e of t) {
 			for (let t in n.literal) t in e.literal || n.removeVariable(t);
-			for (let t in e.literal) !n.hasVariable(t) && e.literal[t].isStrictlyPositive() ? n.literal[t] = e.literal[t].clone() : n.literal[t] = new g(Math.min(e.literal[t].value, n.literal[t].value));
+			for (let t in e.literal) !n.hasVariable(t) && e.literal[t].isStrictlyPositive() ? n.literal[t] = e.literal[t].clone() : n.literal[t] = new m(Math.min(e.literal[t].value, n.literal[t].value));
 		}
 		return n;
 	};
@@ -2427,7 +2430,7 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 		for (let n of t) {
 			let t = n instanceof e ? n : new e(n);
 			if (this.isSameAs(t)) this.isZero() && this.#n(t), this.#e.add(t.coefficient);
-			else throw new h("Add monom: " + this.display + " is not similar with " + t.display);
+			else throw new r("Add monom: " + this.display + " is not similar with " + t.display);
 		}
 		return this;
 	};
@@ -2435,14 +2438,14 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 		return this.#e;
 	}
 	set coefficient(e) {
-		this.#e = new g(e);
+		this.#e = new m(e);
 	}
 	containsRationalPower = () => Object.values(this.#t).some((e) => e.isRational());
-	degree = (e) => this.variables.length === 0 ? new g().zero() : e === void 0 ? Object.values(this.#t).reduce((e, t) => e.clone().add(t)) : this.hasVariable(e) ? this.#t[e].clone() : new g().zero();
+	degree = (e) => this.variables.length === 0 ? new m().zero() : e === void 0 ? Object.values(this.#t).reduce((e, t) => e.clone().add(t)) : this.hasVariable(e) ? this.#t[e].clone() : new m().zero();
 	derivative = (t = "x") => {
 		if (this.hasVariable(t)) {
 			let e = this.#t[t].clone(), n = this.clone();
-			return n.#t[t].subtract(1), n.#e.multiply(new g(e.clone())), n;
+			return n.#t[t].subtract(1), n.#e.multiply(new m(e.clone())), n;
 		}
 		return new e().zero();
 	};
@@ -2456,42 +2459,42 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 	};
 	get dividers() {
 		if (!this.coefficient.isRelative() || this.containsRationalPower() || this.coefficient.numerator > 1e6) return [this.clone()];
-		let t = d.dividers(Math.abs(this.coefficient.numerator)), n = [];
+		let t = p.dividers(Math.abs(this.coefficient.numerator)), n = [];
 		for (let e in this.literal) n = this.#a(n, e);
 		let r = [];
 		if (n.length > 0 && t.length > 0) for (let i of t) for (let t of n) {
 			let n = new e();
-			n.coefficient = new g(i), n.literal = t, r.push(n);
+			n.coefficient = new m(i), n.literal = t, r.push(n);
 		}
 		else if (t.length === 0) for (let t of n) {
 			let n = new e();
-			n.coefficient = new g().one(), n.literal = t, r.push(n);
+			n.coefficient = new m().one(), n.literal = t, r.push(n);
 		}
 		else for (let n of t) {
 			let t = new e();
-			t.coefficient = new g(n), r.push(t);
+			t.coefficient = new m(n), r.push(t);
 		}
 		return r.length === 0 ? [new e().one()] : r;
 	}
 	evaluate = (e, t) => {
 		if (t === !0) {
-			if (e instanceof g) return this.#r(e.value);
+			if (e instanceof m) return this.#r(e.value);
 			if (typeof e == "number") return this.#r(e);
 			if (typeof e == "object") {
 				let t = {};
-				for (let n in e) t[n] = new g(e[n]).value;
+				for (let n in e) t[n] = new m(e[n]).value;
 				return this.#r(t);
 			}
 		}
 		let n = this.coefficient.clone();
-		if (typeof e == "number" || e instanceof g) {
+		if (typeof e == "number" || e instanceof m) {
 			let t = {};
-			return t[this.variables[0]] = new g(e), this.evaluate(t);
+			return t[this.variables[0]] = new m(e), this.evaluate(t);
 		}
 		if (typeof e == "object") {
 			if (this.variables.length === 0) return this.coefficient;
 			for (let t in this.#t) {
-				let r = new g(e[t]);
+				let r = new m(e[t]);
 				n.multiply(r.pow(this.#t[t]));
 			}
 		}
@@ -2537,8 +2540,8 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 		this.#t = e;
 	}
 	set literalStr(e) {
-		for (let t of [...e.matchAll(/([a-z])\^([+-]?[0-9]+)/g)]) t[1] in this.#t || (this.#t[t[1]] = new g().zero()), this.#t[t[1]].add(+t[2]);
-		for (let t of [...e.matchAll(/([a-z](?!\^))/g)]) t[1] in this.#t || (this.#t[t[1]] = new g().zero()), this.#t[t[1]].add(1);
+		for (let t of [...e.matchAll(/([a-z])\^([+-]?[0-9]+)/g)]) t[1] in this.#t || (this.#t[t[1]] = new m().zero()), this.#t[t[1]].add(+t[2]);
+		for (let t of [...e.matchAll(/([a-z](?!\^))/g)]) t[1] in this.#t || (this.#t[t[1]] = new m().zero()), this.#t[t[1]].add(1);
 	}
 	multiply = (...t) => {
 		for (let n of t) {
@@ -2548,7 +2551,7 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 		}
 		return this;
 	};
-	one = () => (this.#e = new g().one(), this.#t = {}, this);
+	one = () => (this.#e = new m().one(), this.#t = {}, this);
 	opposite = () => (this.#e.opposite(), this);
 	get plotFunction() {
 		return this.#i("plot");
@@ -2560,7 +2563,7 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 	};
 	primitive = (e = "x") => {
 		let t = this.clone(), n;
-		return t.hasVariable(e) ? (n = t.degree(e).clone().add(1), t.coefficient = t.coefficient.clone().divide(n), t.setLetter(e, n)) : (t.coefficient.isZero() && (t.coefficient = new g().one()), t.setLetter(e, 1)), t;
+		return t.hasVariable(e) ? (n = t.degree(e).clone().add(1), t.coefficient = t.coefficient.clone().divide(n), t.setLetter(e, n)) : (t.coefficient.isZero() && (t.coefficient = new m().one()), t.setLetter(e, 1)), t;
 	};
 	reduce = () => {
 		this.coefficient.reduce();
@@ -2571,9 +2574,9 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 		delete this.#t[e];
 	}
 	root = () => {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	};
-	setLetter = (e, t) => t instanceof g ? this.hasVariable(e) && t.isZero() ? (this.removeVariable(e), this) : (this.#t[e] = t.clone(), this) : this.setLetter(e, new g(t));
+	setLetter = (e, t) => t instanceof m ? this.hasVariable(e) && t.isZero() ? (this.removeVariable(e), this) : (this.#t[e] = t.clone(), this) : this.setLetter(e, new m(t));
 	sqrt = () => {
 		if (this.isSquare()) {
 			this.#e.sqrt();
@@ -2585,7 +2588,7 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 		for (let n of t) {
 			let t = n instanceof e ? n : new e(n);
 			if (this.isSameAs(t)) this.isZero() && this.#n(t), this.#e.add(t.clone().coefficient.opposite());
-			else throw new h("Subtract: Is not similar: " + t.display);
+			else throw new r("Subtract: Is not similar: " + t.display);
 		}
 		return this;
 	};
@@ -2595,7 +2598,7 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 			n.isZero() || e.push(t);
 		}), e.sort(), e;
 	}
-	zero = () => (this.#e = new g().zero(), this.#t = {}, this);
+	zero = () => (this.#e = new m().zero(), this.#t = {}, this);
 	#n(e) {
 		for (let t in e.literal) this.#t[t] = e.literal[t].clone();
 	}
@@ -2605,15 +2608,15 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 			let t = {}, n = this.variables[0];
 			return t[n] = e, this.#r(t);
 		}
-		if (e instanceof g) {
+		if (e instanceof m) {
 			let t = {};
-			return t[this.variables[0]] = new g(e).value, this.#r(t);
+			return t[this.variables[0]] = new m(e).value, this.#r(t);
 		}
 		if (typeof e == "object") {
 			if (this.variables.length === 0) return this.coefficient.value;
 			for (let n in this.#t) {
 				let r = e[n];
-				r instanceof g ? t *= r.value ** this.#t[n].value : t *= r ** this.#t[n].value;
+				r instanceof m ? t *= r.value ** this.#t[n].value : t *= r ** this.#t[n].value;
 			}
 		}
 		return t;
@@ -2628,21 +2631,21 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 		let n = [];
 		for (let r = 0; r <= this.literal[t].value; r++) if (e.length === 0) {
 			let e = {};
-			e[t] = new g(r), n.push(e);
+			e[t] = new m(r), n.push(e);
 		} else for (let i of e) {
 			let e = {};
 			for (let t in i) e[t] = i[t];
-			e[t] = new g(r), n.push(e);
+			e[t] = new m(r), n.push(e);
 		}
 		return n;
 	}
 	#o = (t, n) => {
 		let r, i, a, o, s;
-		if (n.tokenType === E.COEFFICIENT) t.push(new e(new g(n.token)));
-		else if (n.tokenType === E.VARIABLE) {
+		if (n.tokenType === w.COEFFICIENT) t.push(new e(new m(n.token)));
+		else if (n.tokenType === w.VARIABLE) {
 			let r = new e().one();
 			r.setLetter(n.token, 1), t.push(r.clone());
-		} else if (n.tokenType === E.OPERATION) switch (n.token) {
+		} else if (n.tokenType === w.OPERATION) switch (n.token) {
 			case "-":
 				i = t.pop() ?? new e().zero(), r = t.pop() ?? new e().zero(), t.push(r.subtract(i));
 				break;
@@ -2652,31 +2655,31 @@ var fe = O("^", "*", "/", "+", "-"), pe = O("^", "*", "/", "+", "-", "%", "sin",
 			case "/":
 				i = t.pop() ?? new e().one(), r = t.pop() ?? new e().one(), t.push(r.divide(i));
 				break;
-			case "^": s = t.pop()?.coefficient ?? new g().one(), a = t.pop() ?? new e().one(), o = a.variables[0], o && a.setLetter(o, s), t.push(a);
+			case "^": s = t.pop()?.coefficient ?? new m().one(), a = t.pop() ?? new e().one(), o = a.variables[0], o && a.setLetter(o, s), t.push(a);
 		}
 	};
 	#s = (e) => {
-		let t;
+		let n;
 		try {
-			t = new k().parse(e);
-		} catch (t) {
-			throw new p(`Cannot parse "${e}" as a Monom`, { cause: t });
+			n = new O().parse(e);
+		} catch (n) {
+			throw new t(`Cannot parse "${e}" as a Monom`, { cause: n });
 		}
-		let n = t.rpn, r = [];
-		if (n.length === 0) return this.zero(), this;
-		if (n.length === 1) {
-			let e = n[0];
-			return this.one(), e.tokenType === E.COEFFICIENT ? this.coefficient = new g(e.token) : e.tokenType === E.VARIABLE && this.setLetter(e.token, 1), this;
+		let r = n.rpn, i = [];
+		if (r.length === 0) return this.zero(), this;
+		if (r.length === 1) {
+			let e = r[0];
+			return this.one(), e.tokenType === w.COEFFICIENT ? this.coefficient = new m(e.token) : e.tokenType === w.VARIABLE && this.setLetter(e.token, 1), this;
 		}
-		for (let e of n) this.#o(r, e);
-		return this.one(), this.multiply(r[0]), this;
+		for (let e of r) this.#o(i, e);
+		return this.one(), this.multiply(i[0]), this;
 	};
 };
 //#endregion
 //#region src/algebra/operations.ts
-function _e(e, t) {
-	if (!Number.isSafeInteger(t)) throw Error("Can only raise item by an integer");
-	if (t < 0) throw Error("Can only raise item by a positive integer");
+function j(e, t) {
+	if (!Number.isSafeInteger(t)) throw new i("Can only raise item by an integer");
+	if (t < 0) throw new i("Can only raise item by a positive integer");
 	if (t === 0) return e.one();
 	let n = e.clone();
 	for (let r = 1; r < t; r++) e.multiply(n);
@@ -2684,7 +2687,7 @@ function _e(e, t) {
 }
 //#endregion
 //#region src/algebra/polynom.ts
-var j = class e {
+var M = class e {
 	#e = "x";
 	#t;
 	#n;
@@ -2695,7 +2698,7 @@ var j = class e {
 	}
 	parse(t, ...n) {
 		if (this.#n = [], this.#t = [], this.#u(), typeof t == "string") return this.#h(t, ...n);
-		if ((typeof t == "number" || t instanceof g || t instanceof A) && n.length === 0) this.#n.push(new A(t));
+		if ((typeof t == "number" || t instanceof m || t instanceof A) && n.length === 0) this.#n.push(new A(t));
 		else if (t instanceof A && n.length > 0) this.#n.push(new A(t)), n.forEach((e) => {
 			this.#n.push(new A(e));
 		});
@@ -2726,16 +2729,16 @@ var j = class e {
 	}
 	commonMonom() {
 		let e = new A().one();
-		e.coefficient = new g(this.gcdNumerator(), this.gcdDenominator());
+		e.coefficient = new m(this.gcdNumerator(), this.gcdDenominator());
 		for (let t of this.variables) {
 			e.setLetter(t, this.degree(t));
-			for (let n of this.#n) if (e.setLetter(t, g.min(n.degree(t), e.degree(t))), e.degree(t).isZero()) break;
+			for (let n of this.#n) if (e.setLetter(t, m.min(n.degree(t), e.degree(t))), e.degree(t).isZero()) break;
 		}
 		return e;
 	}
 	degree(e) {
-		let t = new g().zero();
-		for (let n of this.#n) t = g.max(n.degree(e).value, t);
+		let t = new m().zero();
+		for (let n of this.#n) t = m.max(n.degree(e).value, t);
 		return t;
 	}
 	derivative(t) {
@@ -2744,7 +2747,7 @@ var j = class e {
 		return n.reduce();
 	}
 	divide(t) {
-		if (t instanceof g) return this.#o(t);
+		if (t instanceof m) return this.#o(t);
 		if (typeof t == "number" && Number.isSafeInteger(t)) return this.#s(t);
 		if (t instanceof A) return this.divide(new e(t));
 		if (t instanceof e) {
@@ -2754,28 +2757,28 @@ var j = class e {
 				if (n.isZero()) return this.#n = e.monoms, this.#u(), this;
 			}
 		} else if (typeof t == "string") return this.divide(new e(t));
-		throw new h(`Cannot divide by ${t}`);
+		throw new r(`Cannot divide by ${t}`);
 	}
 	empty() {
 		return this.#n = [], this.#u(), this;
 	}
 	euclidean(t) {
-		let n = t.variables[0], r = new e().zero(), i = this.clone().reorder(n);
+		let n = t.variables[0], i = new e().zero(), a = this.clone().reorder(n);
 		if (t.variables.length === 0) return {
 			quotient: this.clone().divide(t).reduce(),
 			reminder: new e().zero()
 		};
-		if (!this.degree(n).isNatural() || !t.degree(n).isNatural()) throw new h("Euclidean division requires integer degrees");
-		let a = t.monomByDegree(void 0, n), o = t.degree(n), s, c = this.degree(n).value - o.value + 1;
-		for (; i.degree(n).isGeq(o) && c > 0 && (c--, s = i.monomByDegree(void 0, n).clone().divide(a), !(!s.isZero() && (r.add(s), i.subtract(t.clone().multiply(s)).reduce(), s.degree(n).isZero()))););
-		return r.reduce(), i.reduce(), {
-			quotient: r,
-			reminder: i
+		if (!this.degree(n).isNatural() || !t.degree(n).isNatural()) throw new r("Euclidean division requires integer degrees");
+		let o = t.monomByDegree(void 0, n), s = t.degree(n), c, l = this.degree(n).value - s.value + 1;
+		for (; a.degree(n).isGeq(s) && l > 0 && (l--, c = a.monomByDegree(void 0, n).clone().divide(o), !(!c.isZero() && (i.add(c), a.subtract(t.clone().multiply(c)).reduce(), c.degree(n).isZero()))););
+		return i.reduce(), a.reduce(), {
+			quotient: i,
+			reminder: a
 		};
 	}
 	evaluate(e, t) {
 		if (t) return this.#c(e);
-		let n = new g().zero();
+		let n = new m().zero();
 		return this.#n.forEach((r) => {
 			n.add(r.evaluate(e, t));
 		}), n;
@@ -2784,7 +2787,7 @@ var j = class e {
 		if (this.#t = [], this.monoms.length === 1) return [this.clone()];
 		let n = this.clone().reorder(), r = n.commonMonom();
 		n.monomByDegree().coefficient.isStrictlyNegative() && r.opposite(), r.isOne() || (this.#t.push(new e(r)), n = n.euclidean(this.#t[0]).quotient);
-		let i = new S(n).solve();
+		let i = new b(n).solve();
 		if (i.length === 0) return this.#t.length === 0 ? this.#t = [this.clone()] : this.#t.push(n), this.#t;
 		if (i.forEach((t) => {
 			if (t.exact && t.root.isZero()) for (let n = 0; n < t.count; n++) t.fraction.isRational() ? this.#t.push(new e().fromCoefficients(t.fraction.denominator, -t.fraction.numerator)) : this.#t.push(new e().fromCoefficients(1, t.fraction.clone().opposite()));
@@ -2802,18 +2805,18 @@ var j = class e {
 		let t = this.#e ?? "x";
 		return e.reverse().forEach((e, n) => {
 			let r = new A();
-			r.coefficient = new g(e), r.setLetter(t, n), this.#n.push(r);
+			r.coefficient = new m(e), r.setLetter(t, n), this.#n.push(r);
 		}), this.#u(), this.reorder();
 	}
 	gcdDenominator() {
-		return d.gcd(...this.getDenominators());
+		return p.gcd(...this.getDenominators());
 	}
 	gcdNumerator() {
-		return d.gcd(...this.getNumerators());
+		return p.gcd(...this.getNumerators());
 	}
 	getCoefficients() {
-		if (!this.degree().isNatural()) throw new h("getCoefficients() requires a polynomial with integer degrees");
-		let e = this.clone().reorder(), t = this.degree().value + 1, n = Array.from({ length: t }, () => new g(0));
+		if (!this.degree().isNatural()) throw new r("getCoefficients() requires a polynomial with integer degrees");
+		let e = this.clone().reorder(), t = this.degree().value + 1, n = Array.from({ length: t }, () => new m(0));
 		return e.monoms.forEach((e) => {
 			let r = t - e.degree().value - 1;
 			n[r] = e.coefficient.clone();
@@ -2830,14 +2833,14 @@ var j = class e {
 		return e;
 	}
 	getZeroes() {
-		return this.degree().isZero() ? [] : (this.roots = new S(this.clone()).solve(), this.roots);
+		return this.degree().isZero() ? [] : (this.roots = new b(this.clone()).solve(), this.roots);
 	}
 	hasVariable(e) {
 		return this.variables.includes(e);
 	}
 	integrate(e, t, n = "x") {
 		let r = this.primitive(n), i = {}, a = {};
-		return i[n] = new g(e), a[n] = new g(t), r.evaluate(a).subtract(r.evaluate(i));
+		return i[n] = new m(e), a[n] = new m(t), r.evaluate(a).subtract(r.evaluate(i));
 	}
 	inverse() {}
 	isDeveloped(t) {
@@ -2875,22 +2878,22 @@ var j = class e {
 		return this.#n.length === 1 && this.#n[0].coefficient.isZero() || this.#n.length === 0;
 	}
 	lcmDenominator() {
-		return d.lcm(...this.getDenominators());
+		return p.lcm(...this.getDenominators());
 	}
 	lcmNumerator() {
-		return d.lcm(...this.getNumerators());
+		return p.lcm(...this.getNumerators());
 	}
 	get length() {
 		return this.#n.length;
 	}
 	limitTo(e, t) {
-		let n = new g(e);
+		let n = new m(e);
 		if (n.isFinite()) {
 			let e = t ?? this.variables[0] ?? "x";
 			return this.evaluate({ [e]: n });
 		}
 		let r = this.monomByDegree(void 0, t), i = r.coefficient.sign(), a = r.degree(t);
-		return a.isZero() ? r.coefficient.clone() : a.isStrictlyPositive() ? n.isPositive() ? i === 1 ? new g().infinite() : new g().infinite().opposite() : (a.value % 2 == 0 ? i : -i) === 1 ? new g().infinite() : new g().infinite().opposite() : new g().zero();
+		return a.isZero() ? r.coefficient.clone() : a.isStrictlyPositive() ? n.isPositive() ? i === 1 ? new m().infinite() : new m().infinite().opposite() : (a.value % 2 == 0 ? i : -i) === 1 ? new m().infinite() : new m().infinite().opposite() : new m().zero();
 	}
 	monomByDegree(e, t) {
 		if (e === void 0) return this.monomByDegree(this.degree(t), t);
@@ -2917,16 +2920,16 @@ var j = class e {
 	}
 	multiply(t) {
 		if (t instanceof e) return this.#m(t);
-		if (t instanceof g) return this.#d(t);
+		if (t instanceof m) return this.#d(t);
 		if (t instanceof A) return this.#p(t);
 		if (Number.isSafeInteger(t) && typeof t == "number") return this.#f(t);
 		if (typeof t == "string") try {
-			let e = new g(t);
+			let e = new m(t);
 			return this.#d(e);
 		} catch (e) {
-			throw new h("Cannot multiply by this value.", { cause: e });
+			throw new r("Cannot multiply by this value.", { cause: e });
 		}
-		throw new h(`Cannot multiply by this value: ${t}`);
+		throw new r(`Cannot multiply by this value: ${t}`);
 	}
 	get numberOfVars() {
 		return this.variables.length;
@@ -2941,7 +2944,7 @@ var j = class e {
 		return this.#l("tex", !1, !1, !0);
 	}
 	pow(e) {
-		return _e(this, e).reduce();
+		return j(this, e).reduce();
 	}
 	primitive(t) {
 		let n = new e();
@@ -2971,16 +2974,16 @@ var j = class e {
 		}), this;
 	}
 	replaceBy(t, n) {
-		let r, i = new e().zero();
-		for (let e of this.monoms) if (!e.hasVariable(t) || e.literal[t].isZero()) i.add(e.clone());
+		let i, a = new e().zero();
+		for (let e of this.monoms) if (!e.hasVariable(t) || e.literal[t].isZero()) a.add(e.clone());
 		else {
-			if (r = e.literal[t].clone(), e.removeVariable(t), r.isStrictlyNegative()) throw new h(`Cannot replace variable "${t}" with negative power in a Polynom`);
-			i.add(n.clone().pow(r.numerator).multiply(e));
+			if (i = e.literal[t].clone(), e.removeVariable(t), i.isStrictlyNegative()) throw new r(`Cannot replace variable "${t}" with negative power in a Polynom`);
+			a.add(n.clone().pow(i.numerator).multiply(e));
 		}
-		return this.#n = i.reduce().monoms, this.#u(), this;
+		return this.#n = a.reduce().monoms, this.#u(), this;
 	}
 	root() {
-		throw new h("Cannot take the root from a polynom");
+		throw new r("Cannot take the root from a polynom");
 	}
 	get roots() {
 		return this.#i ? this.#r : this.getZeroes();
@@ -2992,7 +2995,7 @@ var j = class e {
 		return this.#e = e, this;
 	}
 	sqrt() {
-		throw new h("Cannot take the square root from a polynom");
+		throw new r("Cannot take the square root from a polynom");
 	}
 	subtract(...t) {
 		for (let n of t) n instanceof e ? this.add(n.clone().opposite()) : n instanceof A ? this.#n.push(n.clone().opposite()) : this.#n.push(new A(n).opposite());
@@ -3002,7 +3005,7 @@ var j = class e {
 		let e = this.roots, t = Array(2 * e.length + 1).fill("").map((e, t) => t % 2 == 0 ? "" : "z");
 		if (t.length === 1) {
 			let [e] = this.getCoefficients().map((e) => e.value);
-			t = v(t, "", e > 0 ? "+" : "-");
+			t = g(t, "", e > 0 ? "+" : "-");
 		} else if (this.degree().isOne()) {
 			let [e] = this.getCoefficients().map((e) => e.value);
 			t[0] = e > 0 ? "-" : "+", t[1] = "z", t[2] = e > 0 ? "+" : "-";
@@ -3041,7 +3044,7 @@ var j = class e {
 		return this.#u(), this;
 	}
 	#s(e) {
-		let t = new g(e);
+		let t = new m(e);
 		for (let e of this.#n) e.coefficient.divide(t);
 		return this.#u(), this;
 	}
@@ -3068,7 +3071,7 @@ var j = class e {
 		return this.reduce();
 	}
 	#f(e) {
-		return this.#d(new g(e));
+		return this.#d(new m(e));
 	}
 	#p(e) {
 		for (let t of this.#n) t.multiply(e);
@@ -3090,10 +3093,10 @@ var j = class e {
 		}
 		if (/^[a-z]+$/.test(e)) {
 			this.empty();
-			let n = t.map((e) => new g(e));
+			let n = t.map((e) => new m(e));
 			if (e.length > 1) {
 				let t = e.split("");
-				if (n.length > t.length + 1) throw Error(`Too many values: ${t.length} letters but ${n.length} values provided`);
+				if (n.length > t.length + 1) throw new i(`Too many values: ${t.length} letters but ${n.length} values provided`);
 				let r = 0;
 				for (let e of n) {
 					let n = new A();
@@ -3110,71 +3113,71 @@ var j = class e {
 		}
 		return this.zero();
 	}
-	#g(t, n) {
-		switch (n.tokenType) {
-			case E.COEFFICIENT:
-				t.push(new e(n.token));
+	#g(n, i) {
+		switch (i.tokenType) {
+			case w.COEFFICIENT:
+				n.push(new e(i.token));
 				break;
-			case E.VARIABLE:
-				t.push(new e().add(new A(n.token)));
+			case w.VARIABLE:
+				n.push(new e().add(new A(i.token)));
 				break;
-			case E.CONSTANT: throw new p("Unsupported CONSTANT token in Polynom parser");
-			case E.OPERATION:
-				if (t.length >= 2) {
-					let e = t.pop(), r = t.pop();
-					if (r === void 0 || e === void 0) throw new p("Unexpected undefined operand in Polynom parser stack");
-					if (n.token === "+") t.push(r.add(e));
-					else if (n.token === "-") t.push(r.subtract(e));
-					else if (n.token === "*") t.push(r.multiply(e));
-					else if (n.token === "/") {
-						if (e.degree().isStrictlyPositive()) throw new h("Cannot divide a Polynom by another Polynom of degree > 0");
-						t.push(r.divide(e.monoms[0].coefficient));
-					} else if (n.token === "^") {
-						if (e.degree().isStrictlyPositive()) throw new h("Cannot elevate a polynom with another polynom !");
-						if (e.monoms[0].coefficient.isRelative()) t.push(r.pow(e.monoms[0].coefficient.value));
-						else if (r.monoms.length === 1 && r.monoms[0].coefficient.isOne()) {
-							for (let t in r.monoms[0].literal) r.monoms[0].literal[t].multiply(e.monoms[0].coefficient);
-							t.push(r);
-						} else throw new h("Cannot raise a multi-monom Polynom to a fractional power");
+			case w.CONSTANT: throw new t("Unsupported CONSTANT token in Polynom parser");
+			case w.OPERATION:
+				if (n.length >= 2) {
+					let e = n.pop(), a = n.pop();
+					if (a === void 0 || e === void 0) throw new t("Unexpected undefined operand in Polynom parser stack");
+					if (i.token === "+") n.push(a.add(e));
+					else if (i.token === "-") n.push(a.subtract(e));
+					else if (i.token === "*") n.push(a.multiply(e));
+					else if (i.token === "/") {
+						if (e.degree().isStrictlyPositive()) throw new r("Cannot divide a Polynom by another Polynom of degree > 0");
+						n.push(a.divide(e.monoms[0].coefficient));
+					} else if (i.token === "^") {
+						if (e.degree().isStrictlyPositive()) throw new r("Cannot elevate a polynom with another polynom !");
+						if (e.monoms[0].coefficient.isRelative()) n.push(a.pow(e.monoms[0].coefficient.value));
+						else if (a.monoms.length === 1 && a.monoms[0].coefficient.isOne()) {
+							for (let t in a.monoms[0].literal) a.monoms[0].literal[t].multiply(e.monoms[0].coefficient);
+							n.push(a);
+						} else throw new r("Cannot raise a multi-monom Polynom to a fractional power");
 					}
-				} else if (n.token === "-") {
-					let e = t.pop();
-					e && t.push(e.opposite());
-				} else throw new p("Error parsing the polynom");
+				} else if (i.token === "-") {
+					let e = n.pop();
+					e && n.push(e.opposite());
+				} else throw new t("Error parsing the polynom");
 				break;
-			case E.MONOM: throw new p("Unexpected MONOM token in polynom parser");
-			case E.FUNCTION: throw new p(`Unsupported function token "${n.token}" in polynom parser`);
+			case w.MONOM: throw new t("Unexpected MONOM token in polynom parser");
+			case w.FUNCTION: throw new t(`Unsupported function token "${i.token}" in polynom parser`);
 		}
 	}
 	#_(e) {
-		let t;
+		let n;
 		try {
-			t = new k().parse(e);
-		} catch (t) {
-			throw new p(`Cannot parse "${e}" as a Polynom`, { cause: t });
+			n = new O().parse(e);
+		} catch (n) {
+			throw new t(`Cannot parse "${e}" as a Polynom`, { cause: n });
 		}
-		let n = t.rpn;
+		let r = n.rpn;
 		this.zero();
-		let r = [];
-		for (let e of n) this.#g(r, e);
-		return r.length === 1 && this.add(r[0]), this.reorder();
+		let i = [];
+		for (let e of r) this.#g(i, e);
+		return i.length === 1 && this.add(i[0]), this.reorder();
 	}
-}, M = class e {
+}, N = class e {
 	#e;
 	#t;
 	#n;
 	constructor(t, n, r) {
-		if (this.#e = new j().zero(), this.#t = new j().zero(), this.#n = "=", t !== void 0 && n === void 0) {
+		if (this.#e = new M().zero(), this.#t = new M().zero(), this.#n = "=", t !== void 0 && n === void 0) {
 			if (t instanceof e) return t.clone();
 			typeof t == "string" && this.parse(t);
-		} else t !== void 0 && n !== void 0 && (this.left = new j(t), this.right = new j(n));
+		} else t !== void 0 && n !== void 0 && (this.left = new M(t), this.right = new M(n));
 		return r !== void 0 && (this.sign = r), this;
 	}
 	parse = (e) => {
-		let t = this.#r(e);
-		if (t === !1) throw new p("The equation is not valid (no sign found)");
-		let n = e.split(t);
-		return this.create(new j(n[0]), new j(n[1]), this.#i(t));
+		let n = this.#r(e);
+		if (n === !1) throw new t("The equation is not valid (no sign found)");
+		let r = e.split(n);
+		return this.create(new M(r[0]), new M(r[1]), this.#i(n));
 	};
 	clone = () => new e(this.#e.clone(), this.#t.clone(), this.#n);
 	get tex() {
@@ -3193,13 +3196,13 @@ var j = class e {
 	add(t) {
 		if (t instanceof e) return this.#e.add(t.left), this.#t.add(t.right), this;
 		if (typeof t == "string" && !e.isEquationString(t)) return this.add(new e(t));
-		let n = new j(t);
+		let n = new M(t);
 		return this.#e.add(n), this.#t.add(n), this;
 	}
 	create = (e, t, n) => (this.#e = e, this.#t = t, this.#n = this.#i(n ?? "="), this);
-	degree = (e) => g.max(this.#e.degree(e), this.#t.degree(e));
+	degree = (e) => m.max(this.#e.degree(e), this.#t.degree(e));
 	divide = (e) => {
-		let t = new g(e);
+		let t = new m(e);
 		return t.isZero() ? this : this.multiply(t.inverse());
 	};
 	evaluate(e, t) {
@@ -3239,7 +3242,7 @@ var j = class e {
 	letters = () => [.../* @__PURE__ */ new Set([...this.#e.variables, ...this.#t.variables])];
 	moveLeft = () => (this.#e.subtract(this.#t), this.#t.zero(), this);
 	multiply = (e) => {
-		let t = new g(e);
+		let t = new m(e);
 		return this.#e.multiply(t), this.#t.multiply(t), this.#n !== "=" && t.sign() === -1 && this.#a(), this;
 	};
 	get numberOfVars() {
@@ -3272,15 +3275,15 @@ var j = class e {
 	get signAsTex() {
 		return this.#n === ">=" ? "\\geq" : this.#n === "<=" ? "\\leq" : this.#n;
 	}
-	simplify = () => (this.multiply(d.lcm(...this.#e.getDenominators(), ...this.#t.getDenominators())), this.divide(d.gcd(...this.#e.getNumerators(), ...this.#t.getNumerators())), this);
-	solve = () => new S(this.clone()).solve();
+	simplify = () => (this.multiply(p.lcm(...this.#e.getDenominators(), ...this.#t.getDenominators())), this.divide(p.gcd(...this.#e.getNumerators(), ...this.#t.getNumerators())), this);
+	solve = () => new b(this.clone()).solve();
 	split() {
 		return [this.#e.clone(), this.#t.clone()];
 	}
 	subtract(t) {
 		if (t instanceof e) return this.#e.subtract(t.left), this.#t.subtract(t.right), this;
 		if (typeof t == "string" && !e.isEquationString(t)) return this.subtract(new e(t));
-		let n = new j(t);
+		let n = new M(t);
 		return this.#e.subtract(n), this.#t.subtract(n), this;
 	}
 	test = (e) => this.left.evaluate(e).isEqual(this.right.evaluate(e));
@@ -3297,34 +3300,34 @@ var j = class e {
 		if (e.includes("=<")) return "=<";
 		if (e.includes("<")) return "<";
 		if (e.includes("=")) return "=";
-		throw new p("The equation is not valid (no sign found)");
+		throw new t("The equation is not valid (no sign found)");
 	};
 	#i = (e) => e === void 0 ? "=" : e.includes("geq") || e.includes(">=") || e.includes("=>") ? ">=" : e.includes(">") ? ">" : e.includes("leq") || e.includes("<=") || e.includes("=<") ? "<=" : e.includes("<") ? "<" : "=";
 	#a = () => this.#n === "=" ? this : this.#n.includes("<") ? (this.#n.replace("<", ">"), this) : (this.#n.includes(">") && this.#n.replace(">", "<"), this);
-}, N = class e {
+}, P = class e {
 	#e;
 	#t;
 	#n;
 	#r = !1;
 	constructor(t, n) {
-		return t instanceof e ? (this.#t = t.polynom.clone(), this.#n = t.power.clone(), n !== void 0 && this.#n.multiply(new g(n))) : t === void 0 ? (this.#t = new j(), this.#n = new g(1)) : (this.#t = new j(t), this.#n = new g(n ?? 1)), this.#e = 1, this;
+		return t instanceof e ? (this.#t = t.polynom.clone(), this.#n = t.power.clone(), n !== void 0 && this.#n.multiply(new m(n))) : t === void 0 ? (this.#t = new M(), this.#n = new m(1)) : (this.#t = new M(t), this.#n = new m(n ?? 1)), this.#e = 1, this;
 	}
 	parse() {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	}
 	clone() {
 		return new e(this);
 	}
 	get tex() {
 		let e = this.power.numerator, t = this.power.denominator, n, r;
-		return this.#e === 0 && t > 1 ? (n = `\\sqrt${t === 2 ? "" : `[ ${t} ]`}{ ${this.polynom.tex} }`, r = e === 1 ? "" : `^{ ${e} }`) : (n = this.#r && this.power.isOne() ? this.polynom.tex : ie(this.polynom.tex), r = t === 1 && e === 1 ? "" : `^{ ${this.power.tex} }`), n = `${n}${r}`, this.#e === 0 && e < 0 && (n = `\\frac{ 1 }{ ${n} }`), n;
+		return this.#e === 0 && t > 1 ? (n = `\\sqrt${t === 2 ? "" : `[ ${t} ]`}{ ${this.polynom.tex} }`, r = e === 1 ? "" : `^{ ${e} }`) : (n = this.#r && this.power.isOne() ? this.polynom.tex : se(this.polynom.tex), r = t === 1 && e === 1 ? "" : `^{ ${this.power.tex} }`), n = `${n}${r}`, this.#e === 0 && e < 0 && (n = `\\frac{ 1 }{ ${n} }`), n;
 	}
 	get display() {
 		let e = this.power.numerator, t = this.power.denominator, n, r;
-		return this.#e === 0 && t > 1 ? (n = `${t === 2 ? "sqrt" : `root(${t})`}(${this.polynom.display})`, r = e === 1 ? "" : `^(${e})`) : (n = this.#r && this.power.isOne() ? this.polynom.display : ie(this.polynom.display, !1), r = t === 1 && e === 1 ? "" : `^(${this.power.display})`), n = `${n}${r}`, this.#e === 0 && e < 0 && (n = `1/(${n})`), n;
+		return this.#e === 0 && t > 1 ? (n = `${t === 2 ? "sqrt" : `root(${t})`}(${this.polynom.display})`, r = e === 1 ? "" : `^(${e})`) : (n = this.#r && this.power.isOne() ? this.polynom.display : se(this.polynom.display, !1), r = t === 1 && e === 1 ? "" : `^(${this.power.display})`), n = `${n}${r}`, this.#e === 0 && e < 0 && (n = `1/(${n})`), n;
 	}
 	add() {
-		throw new h("Adding two factors is not possible");
+		throw new r("Adding two factors is not possible");
 	}
 	get asSingle() {
 		return this.#r = !0, this;
@@ -3341,19 +3344,19 @@ var j = class e {
 	}
 	develop() {
 		if (this.power.isNatural()) return this.polynom.clone().pow(this.power.value);
-		throw new h("The power must be a natural number");
+		throw new r("The power must be a natural number");
 	}
 	divide(t) {
 		if (t instanceof e && this.isSameAs(t)) return this.power.subtract(t.power), this;
-		let n = new j(t);
+		let n = new M(t);
 		if (this.isSameAs(n)) return this.power.subtract(1), this;
-		throw new h("The two factors must be the same");
+		throw new r("The two factors must be the same");
 	}
 	evaluate(e, t) {
 		return t ? this.polynom.evaluate(e, !0) ** this.power.value : this.polynom.evaluate(e).pow(this.power);
 	}
 	fromPolynom(e) {
-		return this.#t = new j(e), this.#n = new g(1), this;
+		return this.#t = new M(e), this.#n = new m(1), this;
 	}
 	hasVariable(e) {
 		return this.polynom.hasVariable(e);
@@ -3369,7 +3372,7 @@ var j = class e {
 	}
 	isSameAs(t) {
 		let n;
-		return n = t instanceof e ? t.polynom : t instanceof j ? t : new j(t), this.polynom.isEqual(n);
+		return n = t instanceof e ? t.polynom : t instanceof M ? t : new M(t), this.polynom.isEqual(n);
 	}
 	isZero() {
 		return this.polynom.isZero();
@@ -3378,15 +3381,15 @@ var j = class e {
 		let n = new e(t);
 		if (this.polynom.monoms.length === 1 && this.power.isOne() && n.polynom.monoms.length === 1 && this.power.isOne()) return this.polynom.multiply(n.polynom), this;
 		if (t instanceof e && this.isSameAs(t)) return this.power.add(t.power), this;
-		let r = new j(t);
-		if (this.isSameAs(r)) return this.power.add(1), this;
-		throw new h("The two factors must be the same");
+		let i = new M(t);
+		if (this.isSameAs(i)) return this.power.add(1), this;
+		throw new r("The two factors must be the same");
 	}
 	one() {
 		return this.#t.one(), this.#n.one(), this;
 	}
 	opposite() {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	}
 	get polynom() {
 		return this.#t;
@@ -3401,13 +3404,13 @@ var j = class e {
 		return this.#n;
 	}
 	set power(e) {
-		this.#n = new g(e);
+		this.#n = new m(e);
 	}
 	primitive() {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	}
 	reduce() {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	}
 	root(e) {
 		return this.power.divide(e), this;
@@ -3416,11 +3419,11 @@ var j = class e {
 		return this.root(2);
 	}
 	subtract() {
-		throw new h("Subtracting two factors is not possible");
+		throw new r("Subtracting two factors is not possible");
 	}
 	tableOfSigns() {
 		let e = this.power.clone().reduce(), t = this.polynom.tableOfSigns();
-		return e.isStrictlyNegative() && (t.signs = v(t.signs, "z", "d")), e.denominator % 2 == 0 ? t.signs = v(t.signs, "-", "h") : e.numerator % 2 == 0 && (t.signs = v(t.signs, "-", "+")), {
+		return e.isStrictlyNegative() && (t.signs = g(t.signs, "z", "d")), e.denominator % 2 == 0 ? t.signs = g(t.signs, "-", "h") : e.numerator % 2 == 0 && (t.signs = g(t.signs, "-", "+")), {
 			roots: t.roots,
 			signs: t.signs
 		};
@@ -3438,9 +3441,9 @@ var j = class e {
 		return this.#t.zero(), this.#n.one(), this;
 	}
 	static checkParseAsFactors(e) {
-		let t = y(e, "+");
+		let t = _(e, "+");
 		if (t[0] === "" && t.shift(), t.length > 1) return !1;
-		let n = y(e, "-");
+		let n = _(e, "-");
 		return n[0] === "" && n.shift(), !(n.length > 1);
 	}
 	static factorsFromString(t, n = !0) {
@@ -3448,19 +3451,19 @@ var j = class e {
 		let r = n ? 1 : -1, i = [];
 		for (let n of t.matchAll(/\(([^)]+)\)(?:\^(-?[0-9]+(?:\/[0-9]+)?|\(-?[0-9]+(?:\/[0-9]+)?\)))?|([^(]+)/g)) if (n[1] !== void 0) {
 			let t = (n[2] ?? "1").replace(/[()]/g, "");
-			i.push(new e(new j(n[1]), new g(t).multiply(r)));
-		} else n[3]?.trim() && i.push(new e(new j(n[3].trim()), new g(r)));
+			i.push(new e(new M(n[1]), new m(t).multiply(r)));
+		} else n[3]?.trim() && i.push(new e(new M(n[3].trim()), new m(r)));
 		return i;
 	}
-}, P = /* @__PURE__ */ function(e) {
+}, F = /* @__PURE__ */ function(e) {
 	return e[e.ROOT = 0] = "ROOT", e[e.POWER = 1] = "POWER", e;
-}({}), F = class e {
+}({}), I = class e {
 	#e;
 	#t;
 	constructor(...e) {
 		return this.#e = [], this.#t = [], e.length > 0 && this.parse(...e), this;
 	}
-	parse = (...e) => (this.#e = e.map((e) => new M(e)), this.#n(), this);
+	parse = (...e) => (this.#e = e.map((e) => new N(e)), this.#n(), this);
 	clone = () => new e().parse(...this.#e.map((e) => e.clone()));
 	get tex() {
 		let e = this.clone().reorder();
@@ -3469,11 +3472,11 @@ var j = class e {
 	get display() {
 		return this.tex + "as display";
 	}
-	static fromMatrix(t, n = "xyz") {
-		let r = t[0].length;
-		if (t.some((e) => e.length !== r)) throw new m("All rows must have the same number of columns");
-		let i = n.split("").splice(0, r - 1);
-		return new e(...t.map((e) => new M(new j(i.join(""), ...e), 0)));
+	static fromMatrix(t, r = "xyz") {
+		let i = t[0].length;
+		if (t.some((e) => e.length !== i)) throw new n("All rows must have the same number of columns");
+		let a = r.split("").splice(0, i - 1);
+		return new e(...t.map((e) => new N(new M(a.join(""), ...e), 0)));
 	}
 	static solutionAsDisplay(e) {
 		return `(${e.map((e) => e.display).join(";")})`;
@@ -3481,15 +3484,15 @@ var j = class e {
 	static solutionAsTex(e) {
 		return `\\left( ${e.map((e) => e.tex).join(" ; ")} \\right)`;
 	}
-	add(t, n) {
+	add(t, r) {
 		if (t instanceof e) {
 			let e = t.equations.length;
-			if (e !== this.#e.length) throw new m("The number of equations must be the same");
+			if (e !== this.#e.length) throw new n("The number of equations must be the same");
 			for (let n = 0; n < e; n++) this.#e[n].add(t.equations[n]);
 		} else {
-			if (n === void 0 || n < 0 || n >= this.#e.length) throw Error("Index out of range");
-			let e = new M(t);
-			this.#e[n].add(e);
+			if (r === void 0 || r < 0 || r >= this.#e.length) throw new o("Index out of range");
+			let e = new N(t);
+			this.#e[r].add(e);
 		}
 		return this;
 	}
@@ -3511,7 +3514,7 @@ var j = class e {
 		return t !== void 0 && t.length > 0 && (o = t[0].length), `\\left\\{\\begin{array}{${"r".repeat(i.length)}cl ${"|l".repeat(o)}}${a.join("\\\\ ")}\\end{array}\\right.`;
 	};
 	degree(e) {
-		return g.max(...this.#e.map((t) => t.degree(e)));
+		return m.max(...this.#e.map((t) => t.degree(e)));
 	}
 	get equations() {
 		return this.#e;
@@ -3520,7 +3523,7 @@ var j = class e {
 		this.#e = e, this.#n();
 	}
 	evaluate(e, t) {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	}
 	hasVariable(e) {
 		return this.#t.includes(e);
@@ -3540,11 +3543,11 @@ var j = class e {
 	}
 	multiply(e, t) {
 		if (Array.isArray(e)) {
-			if (e.length !== this.#e.length) throw new m("The number of values must be the same as the number of equations");
+			if (e.length !== this.#e.length) throw new n("The number of values must be the same as the number of equations");
 			for (let t = 0; t < e.length; t++) this.#e[t].multiply(e[t]);
 			return this;
 		}
-		if (t === void 0 || t < 0 || t >= this.#e.length) throw Error("Index out of range");
+		if (t === void 0 || t < 0 || t >= this.#e.length) throw new o("Index out of range");
 		return this.#e[t].multiply(e), this;
 	}
 	reduce() {
@@ -3557,13 +3560,13 @@ var j = class e {
 	solve() {
 		let [e, t] = this.matrix, n = e.map((e, n) => [...e, t[n]]);
 		for (let t = 0; t < e.length; t++) {
-			let r = n[t][t].clone();
-			if (r.isZero()) {
+			let i = n[t][t].clone();
+			if (i.isZero()) {
 				let e = n.find((e, n) => n > t && !e[t].isZero());
-				if (e) n[t].forEach((t, n) => t.add(e[n])), r = n[t][t].clone();
-				else throw new h("Unsolvable...");
+				if (e) n[t].forEach((t, n) => t.add(e[n])), i = n[t][t].clone();
+				else throw new r("Unsolvable...");
 			}
-			n[t] = n[t].map((e) => e.divide(r));
+			n[t] = n[t].map((e) => e.divide(i));
 			for (let r = 0; r < e.length; r++) {
 				if (r === t) continue;
 				let e = n[r][t].clone().opposite();
@@ -3577,7 +3580,7 @@ var j = class e {
 		let t = [], n = this.equations.map((t) => t.left.monomByLetter(e).coefficient.value);
 		return n.forEach((e, r) => {
 			for (let i = r + 1; i < n.length; i++) {
-				let a = d.lcm(e, n[i]), o = e < 0 ? -1 : 1;
+				let a = p.lcm(e, n[i]), o = e < 0 ? -1 : 1;
 				t.push([{
 					id: r,
 					factor: o * a / e
@@ -3588,15 +3591,15 @@ var j = class e {
 			}
 		}), t.sort((e, t) => Math.abs(e[0].factor) + Math.abs(e[1].factor) - (Math.abs(t[0].factor) + Math.abs(t[1].factor)));
 	}
-	subtract(t, n) {
+	subtract(t, r) {
 		if (t instanceof e) {
 			let e = t.equations.length;
-			if (e !== this.#e.length) throw new m("The number of equations must be the same");
+			if (e !== this.#e.length) throw new n("The number of equations must be the same");
 			for (let n = 0; n < e; n++) this.#e[n].subtract(t.equations[n]);
 		} else {
-			if (n === void 0 || n < 0 || n >= this.#e.length) throw Error("Index out of range");
-			let e = new M(t);
-			this.#e[n].subtract(e);
+			if (r === void 0 || r < 0 || r >= this.#e.length) throw new o("Index out of range");
+			let e = new N(t);
+			this.#e[r].subtract(e);
 		}
 		return this;
 	}
@@ -3623,23 +3626,23 @@ var j = class e {
 	#i(e) {
 		let t = [];
 		return e ? (e.forEach((e, n) => {
-			let r = x.fromFraction(e[e.length - 1]);
+			let r = y.fromFraction(e[e.length - 1]);
 			r.variable = this.variables[n], t.push(r);
 		}), t) : (this.variables.forEach((e) => {
-			let n = x.fromFraction(Infinity);
+			let n = y.fromFraction(Infinity);
 			n.variable = e, t.push(n);
 		}), t);
 	}
-}, I = class {
+}, L = class {
 	#e;
 	constructor(e) {
 		return this.#e = [], e !== void 0 && this.parse(e), this;
 	}
 	parse = (e) => {
 		try {
-			this.#e = new k(D.SET).parse(e).rpn;
-		} catch (t) {
-			throw new p(`Cannot parse "${e}" as a LogicalSet`, { cause: t });
+			this.#e = new O(T.SET).parse(e).rpn;
+		} catch (n) {
+			throw new t(`Cannot parse "${e}" as a LogicalSet`, { cause: n });
 		}
 		return this;
 	};
@@ -3790,8 +3793,8 @@ var j = class e {
 		}
 		return [...n[0]].sort();
 	}
-}, L = class e {
-	#e = P.POWER;
+}, R = class e {
+	#e = F.POWER;
 	#t = [];
 	constructor(...e) {
 		return this.parse(...e), this;
@@ -3799,7 +3802,7 @@ var j = class e {
 	parse(...t) {
 		return this.#t = [], t.length === 0 || t.forEach((t) => {
 			if (typeof t == "string") return this.fromString(t);
-			t instanceof e ? this.#t.push(...t.factors.map((e) => e.clone())) : this.#t.push(new N(t));
+			t instanceof e ? this.#t.push(...t.factors.map((e) => e.clone())) : this.#t.push(new P(t));
 		}), this;
 	}
 	clone() {
@@ -3814,16 +3817,16 @@ var j = class e {
 		return t.length === 0 ? e.length === 1 ? e[0].asSingle.display : e.map((e, t) => t === 0 && e.polynom.monoms.length === 1 ? e.asSingle.display : e.display).join("") : `(${e.length === 1 ? e[0].asSingle.display : e.map((e) => e.display).join("")})/(${t.length === 1 ? t[0].asSingle.display : t.map((e) => e.display).join("")})`;
 	}
 	static #n(t, n) {
-		let r = R(t), i = R(n), a = Object.keys(r).filter((e) => Object.hasOwn(i, e)).map((e) => {
-			let t = r[e].reduce((e, t) => e.add(t.power), new g("0")), n = i[e].reduce((e, t) => e.add(t.power), new g("0"));
-			return new N(e, g.min(t, n));
+		let r = z(t), i = z(n), a = Object.keys(r).filter((e) => Object.hasOwn(i, e)).map((e) => {
+			let t = r[e].reduce((e, t) => e.add(t.power), new m("0")), n = i[e].reduce((e, t) => e.add(t.power), new m("0"));
+			return new P(e, m.min(t, n));
 		});
 		return new e(...a);
 	}
 	static #r(t, n) {
-		let r = R(t), i = R(n), a = [.../* @__PURE__ */ new Set([...Object.keys(r), ...Object.keys(i)])].map((e) => {
-			let t = Object.hasOwn(r, e) ? r[e].reduce((e, t) => e.add(t.power), new g("0")) : new g(0), n = Object.hasOwn(i, e) ? i[e].reduce((e, t) => e.add(t.power), new g("0")) : new g(0);
-			return new N(e, g.max(t, n));
+		let r = z(t), i = z(n), a = [.../* @__PURE__ */ new Set([...Object.keys(r), ...Object.keys(i)])].map((e) => {
+			let t = Object.hasOwn(r, e) ? r[e].reduce((e, t) => e.add(t.power), new m("0")) : new m(0), n = Object.hasOwn(i, e) ? i[e].reduce((e, t) => e.add(t.power), new m("0")) : new m(0);
+			return new P(e, m.max(t, n));
 		});
 		return new e(...a);
 	}
@@ -3848,17 +3851,17 @@ var j = class e {
 				e.multiply(t.clone().divide(r[n]));
 			}), i = t;
 		}
-		let a = e.gcd(...n), o = new j(0).add(...n.map((e) => e.divide(a).reduce().develop().factors[0].polynom)).reduce();
-		return this.#t = [...a.factors, new N(o)], i && this.divide(i), this.#t = this.#t.filter((e) => !e.power.isZero()), this;
+		let a = e.gcd(...n), o = new M(0).add(...n.map((e) => e.divide(a).reduce().develop().factors[0].polynom)).reduce();
+		return this.#t = [...a.factors, new P(o)], i && this.divide(i), this.#t = this.#t.filter((e) => !e.power.isZero()), this;
 	}
 	get asPower() {
-		return this.#e = P.POWER, this;
+		return this.#e = F.POWER, this;
 	}
 	get asRoot() {
-		return this.#e = P.ROOT, this;
+		return this.#e = F.ROOT, this;
 	}
 	degree(e) {
-		return this.#t.reduce((t, n) => t.add(n.degree(e)), new g("0"));
+		return this.#t.reduce((t, n) => t.add(n.degree(e)), new m("0"));
 	}
 	get denominator() {
 		return new e(...this.#t.filter((e) => e.power.isNegative()).map((e) => e.clone().inverse()));
@@ -3874,7 +3877,7 @@ var j = class e {
 		return r !== void 0 && (this.#t = r.factors), this.add(...t);
 	}
 	develop() {
-		let t = new j("1"), n = new j("1");
+		let t = new M("1"), n = new M("1");
 		return this.numerator.factors.forEach((e) => {
 			t.multiply(e.develop());
 		}), this.denominator.factors.forEach((e) => {
@@ -3885,7 +3888,7 @@ var j = class e {
 		return this.#t = this.#t.concat(e.clone().factors.map((e) => e.inverse())), this;
 	}
 	evaluate(e, t) {
-		return t ? this.#t.reduce((n, r) => n * r.evaluate(e, t), 1) : this.#t.reduce((t, n) => t.multiply(n.evaluate(e)), new g("1"));
+		return t ? this.#t.reduce((n, r) => n * r.evaluate(e, t), 1) : this.#t.reduce((t, n) => t.multiply(n.evaluate(e)), new m("1"));
 	}
 	factorize(t) {
 		let n = [];
@@ -3893,7 +3896,7 @@ var j = class e {
 			let r = e.polynom.factorize(t);
 			if (r.length > 1) {
 				let t = e.power.clone();
-				n.push(...r.map((e) => new N(e, t)));
+				n.push(...r.map((e) => new P(e, t)));
 			} else n.push(e.clone());
 		});
 		let r = new e(...n), i = r.numerator.reduce(), a = r.denominator.reduce();
@@ -3906,20 +3909,20 @@ var j = class e {
 		this.#t = e;
 	}
 	fromPolynom(e, t) {
-		if (this.#t = [new N(new j(e))], t) {
-			let e = new j(t);
+		if (this.#t = [new P(new M(e))], t) {
+			let e = new M(t);
 			if (e.isOne()) return this;
-			if (e.isZero()) throw new h("Cannot divide by zero");
-			this.#t.push(new N(e, -1));
+			if (e.isZero()) throw new r("Cannot divide by zero");
+			this.#t.push(new P(e, -1));
 		}
 		return this;
 	}
 	fromString(e) {
 		this.#t = [];
-		let [t, ...n] = y(e, "/");
-		if (t === "") throw new p("Parsing a PolyFactor from a string requires a numerator");
-		if (n.length > 1) throw new p("Parsing a PolyFactor from a string only allows max one signe \"/\"");
-		return this.#t = n.length === 0 ? N.factorsFromString(_(t), !0) : [...N.factorsFromString(_(t), !0), ...N.factorsFromString(_(n[0]), !1)], this;
+		let [n, ...r] = _(e, "/");
+		if (n === "") throw new t("Parsing a PolyFactor from a string requires a numerator");
+		if (r.length > 1) throw new t("Parsing a PolyFactor from a string only allows max one signe \"/\"");
+		return this.#t = r.length === 0 ? P.factorsFromString(h(n), !0) : [...P.factorsFromString(h(n), !0), ...P.factorsFromString(h(r[0]), !1)], this;
 	}
 	getRoots() {
 		return [];
@@ -3954,27 +3957,27 @@ var j = class e {
 		return new e(...this.#t.filter((e) => e.power.isPositive()));
 	}
 	one() {
-		return this.#t = [new N("1", "1")], this;
+		return this.#t = [new P("1", "1")], this;
 	}
 	opposite() {
 		let e = this.#t.findIndex((e) => e.display === "(-1)");
-		return e >= 0 ? this.#t.splice(e, 1) : this.#t.push(new N("-1", "1")), this;
+		return e >= 0 ? this.#t.splice(e, 1) : this.#t.push(new P("-1", "1")), this;
 	}
 	pow(e) {
 		return this.#t = this.#t.map((t) => t.pow(e)), this;
 	}
 	primitive() {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	}
 	reduce() {
-		let e = R(this);
+		let e = z(this);
 		this.#t = Object.values(e).map((e) => {
 			let t = e[0].polynom;
-			return new N(t, e.reduce((e, t) => e.add(t.power), new g("0")).reduce());
+			return new P(t, e.reduce((e, t) => e.add(t.power), new m("0")).reduce());
 		}).filter((e) => !e.power.isZero());
-		let t = new N(1), n = new N(1), r = this.#t.filter((e) => e.polynom.monoms.length === 1 && e.power.isRelative());
+		let t = new P(1), n = new P(1), r = this.#t.filter((e) => e.polynom.monoms.length === 1 && e.power.isRelative());
 		return r.length > 0 && (r.forEach((e) => {
-			e.power.isPositive() ? t.multiply(new N(e.polynom.clone().pow(e.power.value))) : n.multiply(new N(e.polynom.clone().pow(-e.power.value)));
+			e.power.isPositive() ? t.multiply(new P(e.polynom.clone().pow(e.power.value))) : n.multiply(new P(e.polynom.clone().pow(-e.power.value)));
 		}), this.#t = this.#t.filter((e) => !(e.polynom.monoms.length === 1 && e.power.isRelative())), n.polynom.isOne() || this.#t.push(n.inverse()), t.polynom.isOne() || this.#t.push(t)), this;
 	}
 	root(e) {
@@ -3998,7 +4001,7 @@ var j = class e {
 	}
 	tableOfSigns() {
 		let e = this.getZeroes(), t = e.map((e) => e.value), n = this.factorize().factors.map((e) => ({
-			factor: new N(e),
+			factor: new P(e),
 			...e.tableOfSigns()
 		}));
 		return n.forEach((n) => {
@@ -4032,18 +4035,18 @@ var j = class e {
 		return this.#t.reduce((e, t) => e.concat(t.variables), []);
 	}
 	zero() {
-		return this.#t = [new N("0", "1")], this;
+		return this.#t = [new P("0", "1")], this;
 	}
 	#i() {
 		let e, t = [];
-		return this.#e === P.ROOT ? (e = this.numerator.factors, t = this.denominator.factors) : e = this.#t, e.length === 0 && (e = [new N("1")]), {
+		return this.#e === F.ROOT ? (e = this.numerator.factors, t = this.denominator.factors) : e = this.#t, e.length === 0 && (e = [new P("1")]), {
 			num: e,
 			den: t
 		};
 	}
 };
-function R(e) {
-	let t = new g().one(), n = new g().one(), r = e.factors.reduce((e, r) => {
+function z(e) {
+	let t = new m().one(), n = new m().one(), r = e.factors.reduce((e, r) => {
 		if (r.polynom.degree().isZero() && r.power.isRelative()) {
 			let i = r.polynom.monoms[0].coefficient.pow(r.power.clone().abs());
 			return r.power.isPositive() ? t.multiply(i) : n.multiply(i), e;
@@ -4051,7 +4054,7 @@ function R(e) {
 		let i = r.polynom.display;
 		return Object.hasOwn(e, i) ? e[i].push(r) : e[i] = [r], e;
 	}, {}), { numerator: i, denominator: a } = t.divide(n).reduce();
-	return i !== 1 && (r[i.toString()] = [new N(i, 1)]), a !== 1 && (r[a.toString()] = [new N(a, -1)]), r;
+	return i !== 1 && (r[i.toString()] = [new P(i, 1)]), a !== 1 && (r[a.toString()] = [new P(a, -1)]), r;
 }
 //#endregion
 //#region src/algebra/matrix.ts
@@ -4095,7 +4098,7 @@ var ve = class e {
 		return this.#e = null, t;
 	}
 	add(e) {
-		if (!this.canBeAdded(e)) throw new m("Cannot add a matrix with different dimensions.");
+		if (!this.canBeAdded(e)) throw new n("Cannot add a matrix with different dimensions.");
 		return this.forEach((t, n, r) => {
 			t.add(e.values[n][r]);
 		}), this;
@@ -4120,7 +4123,7 @@ var ve = class e {
 		return this.dimension.cols === e.dimension.rows;
 	}
 	characteristic_polynom(t) {
-		return t ??= "k", this.clone().subtract(new e(this.dimension.rows).one().multiply(new j(t))).determinant();
+		return t ??= "k", this.clone().subtract(new e(this.dimension.rows).one().multiply(new M(t))).determinant();
 	}
 	cofactor(e, t) {
 		let n = this.clone();
@@ -4129,14 +4132,14 @@ var ve = class e {
 		}), n.determinant().multiply((-1) ** (e + t));
 	}
 	get cols() {
-		let e = Array.from({ length: this.dimension.cols }, () => Array.from({ length: this.dimension.rows }, () => new j()));
+		let e = Array.from({ length: this.dimension.cols }, () => Array.from({ length: this.dimension.rows }, () => new M()));
 		return this.forEach((t, n, r) => {
 			e[r][n] = t;
 		}), e;
 	}
 	determinant() {
-		if (!this.isSquare()) throw new m("Matrix is not square");
-		let e = new j();
+		if (!this.isSquare()) throw new n("Matrix is not square");
+		let e = new M();
 		return this.#n.length === 1 ? this.#n[0][0].clone() : (this.values[0].forEach((t, n) => {
 			let r = this.cofactor(0, n);
 			e.add(t.clone().multiply(r));
@@ -4159,36 +4162,36 @@ var ve = class e {
 		});
 	}
 	fromDimensions(e, t) {
-		return this.#n = Array.from({ length: e }, () => Array.from({ length: t }, () => new j())), this;
+		return this.#n = Array.from({ length: e }, () => Array.from({ length: t }, () => new M())), this;
 	}
 	fromString(e) {
 		if (e.startsWith("((") && e.endsWith("))")) return this.fromString(e.substring(1, e.length - 1));
 		let t = e.split("),(");
-		return this.#n = t.map((e, n) => n === 0 ? e.substring(1).split(",") : n === t.length - 1 ? e.substring(0, e.length - 1).split(",") : e.split(",")).map((e) => e.map((e) => new j(e))), this;
+		return this.#n = t.map((e, n) => n === 0 ? e.substring(1).split(",") : n === t.length - 1 ? e.substring(0, e.length - 1).split(",") : e.split(",")).map((e) => e.map((e) => new M(e))), this;
 	}
 	fromValues(e) {
 		this.#n = [];
 		let t = e[0].length;
-		if (e.some((e) => e.length !== t)) throw new m("Each line must be the same length");
+		if (e.some((e) => e.length !== t)) throw new n("Each line must be the same length");
 		return e.forEach((e) => {
 			let t = [];
 			e.forEach((e) => {
-				t.push(new j(e));
+				t.push(new M(e));
 			}), this.#n.push(t);
 		}), this;
 	}
 	fromVectors(...e) {
 		this.#n = [];
 		let t = e[0].dimension;
-		if (e.some((e) => e.dimension !== t)) throw new m("Each vectors must be the same dimension");
+		if (e.some((e) => e.dimension !== t)) throw new n("Each vectors must be the same dimension");
 		return this.fromDimensions(e[0].dimension, e.length), e.forEach((e, t) => {
 			e.array.forEach((e, n) => {
-				this.#n[n][t] = new j(e);
+				this.#n[n][t] = new M(e);
 			});
 		}), this;
 	}
 	inverse() {
-		if (!this.canBeInverted()) throw new h("The matrix cannot be inverted.");
+		if (!this.canBeInverted()) throw new r("The matrix cannot be inverted.");
 		let t = new e().fromDimensions(this.dimension.rows, this.dimension.cols);
 		t.forEach((e, n, r) => {
 			t.setValue(n, r, this.cofactor(n, r));
@@ -4223,14 +4226,14 @@ var ve = class e {
 	}
 	multiply(t) {
 		if (t instanceof e) {
-			if (!this.canBeMultiplied(t)) throw new m("Cannot multiply a matrix with incompatibles dimensions");
-			let n = new e(this.dimension.rows, t.dimension.cols);
-			return n.forEach((e, r, i) => {
-				let a = this.rows[r], o = t.cols[i], s = new j();
+			if (!this.canBeMultiplied(t)) throw new n("Cannot multiply a matrix with incompatibles dimensions");
+			let r = new e(this.dimension.rows, t.dimension.cols);
+			return r.forEach((e, n, i) => {
+				let a = this.rows[n], o = t.cols[i], s = new M();
 				a.forEach((e, t) => {
 					s.add(e.clone().multiply(o[t]));
-				}), n.setValue(r, i, s);
-			}), this.#n = n.values, this;
+				}), r.setValue(n, i, s);
+			}), this.#n = r.values, this;
 		}
 		return this.forEach((e, n, r) => {
 			this.setValue(n, r, e.multiply(t));
@@ -4256,21 +4259,21 @@ var ve = class e {
 		return this.#t = 4, this;
 	}
 	pow(e) {
-		return _e(this, e);
+		return j(this, e);
 	}
 	reduce() {
-		throw Error("Not yet implemented");
+		throw new a("Not yet implemented");
 	}
 	get rows() {
 		return this.#n;
 	}
 	setValue(e, t, n) {
 		let { rows: r, cols: i } = this.dimension;
-		if (e < 0 || e >= r || t < 0 || t >= i) throw Error(`${e}x${t} is out of range (${r}x${i})`);
-		return this.#n[e][t] = new j(n), this;
+		if (e < 0 || e >= r || t < 0 || t >= i) throw new o(`${e}x${t} is out of range (${r}x${i})`);
+		return this.#n[e][t] = new M(n), this;
 	}
 	subtract(e) {
-		if (!this.canBeAdded(e)) throw new m("Cannot subtract a matrix with different dimensions.");
+		if (!this.canBeAdded(e)) throw new n("Cannot subtract a matrix with different dimensions.");
 		return this.forEach((t, n, r) => {
 			t.subtract(e.values[n][r]);
 		}), this;
@@ -4301,20 +4304,20 @@ function be(e, t) {
 	return e.array.every((e, r) => t.array[r].value === e.value * n);
 }
 function xe(e, t) {
-	return e.dimension === t.dimension ? e.array.reduce((e, n, r) => e.add(n.clone().multiply(t.array[r])), new g(0)) : new g().invalid();
+	return e.dimension === t.dimension ? e.array.reduce((e, n, r) => e.add(n.clone().multiply(t.array[r])), new m(0)) : new m().invalid();
 }
 function Se(...e) {
-	if (e.some((t) => t.dimension !== e[0].dimension)) throw new m("All vectors must have the same dimension");
-	if (e[0].dimension !== e.length) throw new m(`The determinant of dimension ${e[0].dimension} must have the same number of vectors (${e.length} given)`);
+	if (e.some((t) => t.dimension !== e[0].dimension)) throw new n("All vectors must have the same dimension");
+	if (e[0].dimension !== e.length) throw new n(`The determinant of dimension ${e[0].dimension} must have the same number of vectors (${e.length} given)`);
 	return e[0].dimension === 2 ? e[0].array[0].clone().multiply(e[1].array[1]).subtract(e[0].array[1].clone().multiply(e[1].array[0])) : e[0].array[0].clone().multiply(e[1].array[1].clone().multiply(e[2].array[2]).subtract(e[1].array[2].clone().multiply(e[2].array[1]))).subtract(e[0].array[1].clone().multiply(e[1].array[0].clone().multiply(e[2].array[2]).subtract(e[1].array[2].clone().multiply(e[2].array[0])))).add(e[0].array[2].clone().multiply(e[1].array[0].clone().multiply(e[2].array[1]).subtract(e[1].array[1].clone().multiply(e[2].array[0]))));
 }
 //#endregion
 //#region src/geometry/TupleN.ts
-var z = class {
+var B = class {
 	#e = [];
 	#t;
 	constructor(...e) {
-		this.#e = e.map((e) => new g(e));
+		this.#e = e.map((e) => new m(e));
 	}
 	copy() {
 		return this.#e.map((e) => e.clone());
@@ -4331,7 +4334,7 @@ var z = class {
 	fromString(e) {
 		e.startsWith("(") && (e = e.substring(1)), e.endsWith(")") && (e = e.substring(0, e.length - 1));
 		let t = e.split(/[,;\s]/g).filter((e) => e.trim() !== "");
-		return t.length < 2 || (this.#e = t.map((e) => new g(e))), this;
+		return t.length < 2 || (this.#e = t.map((e) => new m(e))), this;
 	}
 	get onChange() {
 		return this.#t;
@@ -4340,46 +4343,46 @@ var z = class {
 		this.#t = e;
 	}
 	setDimension(e = 2) {
-		if (e < 2) throw new m("Dimension must be at least 2");
+		if (e < 2) throw new n("Dimension must be at least 2");
 		if (e < this.dimension) this.#e = this.#e.slice(0, e);
-		else if (e > this.dimension) for (let t = this.dimension; t < e; t++) this.#e.push(new g(0));
+		else if (e > this.dimension) for (let t = this.dimension; t < e; t++) this.#e.push(new m(0));
 		return this;
 	}
 	get x() {
 		return this.#e[0];
 	}
 	set x(e) {
-		this.#e[0] = new g(e), this.#t?.();
+		this.#e[0] = new m(e), this.#t?.();
 	}
 	get y() {
 		return this.#e[1];
 	}
 	set y(e) {
-		this.#e[1] = new g(e), this.#t?.();
+		this.#e[1] = new m(e), this.#t?.();
 	}
 	get z() {
-		if (this.dimension < 3) throw new m("Vector is not 3D");
+		if (this.dimension < 3) throw new n("Vector is not 3D");
 		return this.#e[2];
 	}
 	set z(e) {
-		if (this.dimension < 3) throw new m("Vector is not 3D");
-		this.#e[2] = new g(e), this.#t?.();
+		if (this.dimension < 3) throw new n("Vector is not 3D");
+		this.#e[2] = new m(e), this.#t?.();
 	}
 	zero = () => (this.#e.forEach((e) => e.zero()), this.#t?.(), this);
-}, B = class e extends z {
+}, V = class e extends B {
 	constructor(...e) {
 		super(), e.length > 0 && this.parse(...e);
 	}
-	parse(...t) {
-		if (t.length === 1) {
-			if (t[0] instanceof z) return this.array = t[0].copy(), this;
-			if (typeof t[0] == "string") return this.fromString(t[0]), this;
+	parse(...n) {
+		if (n.length === 1) {
+			if (n[0] instanceof B) return this.array = n[0].copy(), this;
+			if (typeof n[0] == "string") return this.fromString(n[0]), this;
 		}
-		if (t.length > 1) {
-			if (t.some((t) => t instanceof e)) throw Error("Creating a point with  multiple argument requires an input fraction");
-			let n = t.map((e) => new g(e));
-			if (n.some((e) => e.isNaN())) throw new p("The given values are not a valid point string (a,b): ");
-			this.array = n;
+		if (n.length > 1) {
+			if (n.some((t) => t instanceof e)) throw new i("Creating a point with  multiple argument requires an input fraction");
+			let r = n.map((e) => new m(e));
+			if (r.some((e) => e.isNaN())) throw new t("The given values are not a valid point string (a,b): ");
+			this.array = r;
 		}
 		return this;
 	}
@@ -4393,9 +4396,9 @@ var z = class {
 		return `(${this.array.map((e) => e.display).join(";")})`;
 	}
 	distanceTo(e) {
-		if (this.dimension !== e.dimension) throw new m("The two points must have the same dimensions.");
-		let t = this.array.map((t, n) => e.array[n].clone().subtract(t)).reduce((e, t) => e.add(t.clone().pow(2)), new g(0));
-		return new b().from(2, t).reduce();
+		if (this.dimension !== e.dimension) throw new n("The two points must have the same dimensions.");
+		let t = this.array.map((t, n) => e.array[n].clone().subtract(t)).reduce((e, t) => e.add(t.clone().pow(2)), new m(0));
+		return new v().from(2, t).reduce();
 	}
 	isEqual(e) {
 		return this.x.value === e.x.value && this.y.value === e.y.value;
@@ -4404,30 +4407,30 @@ var z = class {
 		return this.isEqual(new e(t, n));
 	}
 	middleOf(e, t) {
-		if (e.dimension !== t.dimension) throw new m("Vectors must be the same dimension");
+		if (e.dimension !== t.dimension) throw new n("Vectors must be the same dimension");
 		return this.array = [], e.array.forEach((e, n) => {
 			this.array.push(e.clone().add(t.array[n]).divide(2));
 		}), this;
 	}
-}, V = class e extends z {
+}, H = class e extends B {
 	constructor(...e) {
 		return super(), e.length > 0 && this.parse(...e), this;
 	}
 	parse(...e) {
-		if (e.length === 0) throw Error("Invalid value");
+		if (e.length === 0) throw new i("Invalid value");
 		if (e.length === 1) {
-			if (e[0] instanceof z) return this.array = e[0].copy(), this;
+			if (e[0] instanceof B) return this.array = e[0].copy(), this;
 			if (typeof e[0] == "string") return this.fromString(e[0]);
-			throw Error("Invalid value");
+			throw new i("Invalid value");
 		}
 		if (e.length === 2) {
-			let [t, n] = e;
-			if (t instanceof z && n instanceof z) {
-				if (t.dimension !== n.dimension) throw new m("Vectors must have the same dimension");
-				return this.array = n.array.map((e, n) => e.clone().subtract(t.array[n])), this;
+			let [t, r] = e;
+			if (t instanceof B && r instanceof B) {
+				if (t.dimension !== r.dimension) throw new n("Vectors must have the same dimension");
+				return this.array = r.array.map((e, n) => e.clone().subtract(t.array[n])), this;
 			}
 		}
-		return this.array = e.map((e) => new g(e)), this;
+		return this.array = e.map((e) => new m(e)), this;
 	}
 	clone() {
 		return new e(...this.copy());
@@ -4450,10 +4453,10 @@ var z = class {
 		return t && (r = Math.abs(r)), (n ? 1 : 180 / Math.PI) * Math.acos(r / (this.norm * e.norm));
 	};
 	cross(t) {
-		if (this.dimension !== 3 || t.dimension !== 3) throw new m("Cross product can only be determined in 3D");
+		if (this.dimension !== 3 || t.dimension !== 3) throw new n("Cross product can only be determined in 3D");
 		return new e(this.y.clone().multiply(t.z).subtract(this.z.clone().multiply(t.y)), this.z.clone().multiply(t.x).subtract(this.x.clone().multiply(t.z)), this.x.clone().multiply(t.y).subtract(this.y.clone().multiply(t.x)));
 	}
-	divideByScalar = (e) => this.multiplyByScalar(new g(e).inverse());
+	divideByScalar = (e) => this.multiplyByScalar(new m(e).inverse());
 	dot = (e) => xe(this, e);
 	fromString(e) {
 		return e.startsWith("((") && e.endsWith("))") ? super.fromString(e.slice(1, -1)) : super.fromString(e);
@@ -4471,25 +4474,25 @@ var z = class {
 		return this.array.every((e) => e.isZero());
 	}
 	multiplyByScalar = (e) => {
-		let t = new g(e);
+		let t = new m(e);
 		return this.array.forEach((e) => e.multiply(t)), this;
 	};
 	get norm() {
 		return Math.sqrt(this.normSquare.value);
 	}
 	get normSquare() {
-		return this.array.reduce((e, t) => e.add(t.clone().pow(2)), new g(0));
+		return this.array.reduce((e, t) => e.add(t.clone().pow(2)), new m(0));
 	}
 	normal = () => {
-		if (this.dimension >= 3) throw new m("Normal vector can only be determined in 2D");
+		if (this.dimension >= 3) throw new n("Normal vector can only be determined in 2D");
 		let e = this.x.clone().opposite(), t = this.y.clone();
 		return this.array[0] = t, this.array[1] = e, this;
 	};
 	one = () => (this.zero(), this.x.one(), this);
 	opposite = () => (this.array.forEach((e) => e.opposite()), this);
 	simplify = () => {
-		let e = d.lcm(...this.array.map((e) => e.denominator)), t = d.gcd(...this.array.map((e) => e.numerator));
-		return this.multiplyByScalar(new g(e, t)), this.x.isNegative() && this.opposite(), this;
+		let e = p.lcm(...this.array.map((e) => e.denominator)), t = p.gcd(...this.array.map((e) => e.numerator));
+		return this.multiplyByScalar(new m(e, t)), this.x.isNegative() && this.opposite(), this;
 	};
 	subtract = (e) => this.add(e.clone().opposite());
 	translate(...e) {
@@ -4499,7 +4502,7 @@ var z = class {
 		let e = this.norm;
 		return e === 0 ? this : this.divideByScalar(e);
 	};
-}, H = /* @__PURE__ */ function(e) {
+}, U = /* @__PURE__ */ function(e) {
 	return e.None = "none", e.Parallel = "parallel", e.Perpendicular = "perpendicular", e.Tangent = "tangent", e;
 }({}), Ce = /* @__PURE__ */ function(e) {
 	return e.None = "none", e.Parallel = "parallel", e.Perpendicular = "perpendicular", e.Tangent = "tangent", e;
@@ -4509,31 +4512,31 @@ var z = class {
 function we(e = .5) {
 	return Math.random() < e;
 }
-function U(e, t, n) {
-	if (t === void 0) return e >= 0 ? U(0, e) : U(e, 0);
+function W(e, t, n) {
+	if (t === void 0) return e >= 0 ? W(0, e) : W(e, 0);
 	if (e === t) return e;
 	if (n === void 0) return Math.floor(Math.random() * (t - e + 1) + e);
-	if (Math.abs(t - e) <= n.length) throw Error("The number of excluded values is too high.");
-	let r = U(e, t);
-	for (; n.includes(r);) r = U(e, t);
+	if (Math.abs(t - e) <= n.length) throw new i("The number of excluded values is too high.");
+	let r = W(e, t);
+	for (; n.includes(r);) r = W(e, t);
 	return r;
 }
-function W(e, t) {
-	return t === !1 ? we() ? U(1, e) : -U(1, e) : U(-e, e);
+function G(e, t) {
+	return t === !1 ? we() ? W(1, e) : -W(1, e) : W(-e, e);
 }
 function Te(e, t) {
-	let n = d.pythagoreanTripletsWithTarget(e).filter((e) => t === !0 || !e.includes(0));
-	return n.length === 0 ? null : G(n);
+	let n = p.pythagoreanTripletsWithTarget(e).filter((e) => t === !0 || !e.includes(0));
+	return n.length === 0 ? null : K(n);
 }
 function Ee(e) {
-	let t = d.primes();
-	return e !== void 0 && (t = t.filter((t) => t < e)), G(t);
+	let t = p.primes();
+	return e !== void 0 && (t = t.filter((t) => t < e)), K(t);
 }
 function De(e, t) {
 	return t === void 0 && (t = 1), e.length <= 0 ? Object.values(e) : Oe(e).slice(0, t);
 }
-function G(e) {
-	return e.length === 0 ? null : e[U(0, e.length - 1)];
+function K(e) {
+	return e.length === 0 ? null : e[W(0, e.length - 1)];
 }
 function Oe(e) {
 	let t = Object.values(e);
@@ -4545,9 +4548,9 @@ function Oe(e) {
 }
 //#endregion
 //#region src/geometry/line.ts
-var K = class e {
-	static PARALLEL = H.Parallel;
-	static PERPENDICULAR = H.Perpendicular;
+var q = class e {
+	static PARALLEL = U.Parallel;
+	static PERPENDICULAR = U.Perpendicular;
 	#e;
 	#t;
 	#n;
@@ -4555,36 +4558,36 @@ var K = class e {
 	#i;
 	#a = 1;
 	constructor(...e) {
-		return this.#t = new g().zero(), this.#n = new g().zero(), this.#r = new g().zero(), this.#e = new V(), this.#i = "lr", e.length > 0 && this.parse(...e), this;
+		return this.#t = new m().zero(), this.#n = new m().zero(), this.#r = new m().zero(), this.#e = new H(), this.#i = "lr", e.length > 0 && this.parse(...e), this;
 	}
-	parse = (...t) => {
-		if (t.length === 0) return this;
-		if (t.length === 1) {
-			if (t[0] instanceof e) return this.fromCoefficient(t[0].a, t[0].b, t[0].c);
-			if (t[0] instanceof M) return this.fromEquation(t[0]);
-			if (typeof t[0] == "string") try {
-				let e = new M(t[0]);
+	parse = (...n) => {
+		if (n.length === 0) return this;
+		if (n.length === 1) {
+			if (n[0] instanceof e) return this.fromCoefficient(n[0].a, n[0].b, n[0].c);
+			if (n[0] instanceof N) return this.fromEquation(n[0]);
+			if (typeof n[0] == "string") try {
+				let e = new N(n[0]);
 				return this.parse(e);
 			} catch (e) {
-				throw new p(`Cannot parse "${t[0]}" as a Line`, { cause: e });
+				throw new t(`Cannot parse "${n[0]}" as a Line`, { cause: e });
 			}
 		}
-		if (t.length === 2) {
-			if (t[0] instanceof B && t[1] instanceof B) return this.fromPoints(t[0], t[1]);
-			if (t[0] instanceof B && t[1] instanceof V) return this.fromPointAndDirection(t[0], t[1]);
+		if (n.length === 2) {
+			if (n[0] instanceof V && n[1] instanceof V) return this.fromPoints(n[0], n[1]);
+			if (n[0] instanceof V && n[1] instanceof H) return this.fromPointAndDirection(n[0], n[1]);
 		}
-		return t.length === 3 && t.every((e) => g.isFraction(e)) ? this.fromCoefficient(t[0], t[1], t[2]) : (console.warn("Something wrong happened while creating the line"), console.warn(t), this);
+		return n.length === 3 && n.every((e) => m.isFraction(e)) ? this.fromCoefficient(n[0], n[1], n[2]) : (console.warn("Something wrong happened while creating the line"), console.warn(n), this);
 	};
 	clone = () => new e().fromCoefficient(this.#t, this.#n, this.#r);
 	get tex() {
 		let e = this.#a;
 		switch (this.#a = 1, e) {
 			case 0: return this.getEquation().reorder().tex;
-			case 2: return this.slope.isInfinity() ? "x=" + this.OA.x.tex : "y=" + new j().parse("x", this.slope, this.height).tex;
+			case 2: return this.slope.isInfinity() ? "x=" + this.OA.x.tex : "y=" + new M().parse("x", this.slope, this.height).tex;
 			case 3:
 			case 4: {
 				let t = this.d.clone().simplify();
-				return e === 3 ? `${V.asTex("x", "y")} = ${V.asTex(this.#e.x.tex, this.#e.y.tex)} + k\\cdot ${V.asTex(t.x.tex, t.y.tex)}` : `\\left\\{\\begin{aligned}\n\tx &= ${new j(this.#e.x).add(new A(t.x).multiply(new A("k"))).reorder("k", !0).tex}\\\\\n\ty &= ${new j(this.#e.y).add(new A(t.y).multiply(new A("k"))).reorder("k", !0).tex}\n\\end{aligned}\\right.`;
+				return e === 3 ? `${H.asTex("x", "y")} = ${H.asTex(this.#e.x.tex, this.#e.y.tex)} + k\\cdot ${H.asTex(t.x.tex, t.y.tex)}` : `\\left\\{\\begin{aligned}\n\tx &= ${new M(this.#e.x).add(new A(t.x).multiply(new A("k"))).reorder("k", !0).tex}\\\\\n\ty &= ${new M(this.#e.y).add(new A(t.y).multiply(new A("k"))).reorder("k", !0).tex}\n\\end{aligned}\\right.`;
 			}
 			default: {
 				let e = this.getEquation();
@@ -4596,13 +4599,13 @@ var K = class e {
 		let e = this.#a;
 		switch (this.#a = 1, e) {
 			case 0: return this.getEquation().reorder().display;
-			case 2: return this.slope.isInfinity() ? "x=" + this.OA.x.display : "y=" + new j().parse("x", this.slope, this.height).display;
+			case 2: return this.slope.isInfinity() ? "x=" + this.OA.x.display : "y=" + new M().parse("x", this.slope, this.height).display;
 			case 3: {
 				let e = this.d.clone().simplify();
 				return `((x,y))=((${this.#e.x.display},${this.#e.y.display}))+k((${e.x.display},${e.y.display}))`;
 			}
 			case 4: {
-				let e = this.d.clone().simplify(), t = new j(this.#e.x).add(new A(e.x).multiply(new A("k"))).reorder("k", !0), n = new j(this.#e.y).add(new A(e.y).multiply(new A("k"))).reorder("k", !0);
+				let e = this.d.clone().simplify(), t = new M(this.#e.x).add(new A(e.x).multiply(new A("k"))).reorder("k", !0), n = new M(this.#e.y).add(new A(e.y).multiply(new A("k"))).reorder("k", !0);
 				return `{(x,=,${t.display}),(y,=,${n.display}):}`;
 			}
 			default: {
@@ -4655,7 +4658,7 @@ var K = class e {
 		return this.#t.isZero() || (t = this.#t.isOne() ? "x" : this.#t.clone().opposite().isOne() ? "-x" : this.#t.value.toFixed(e) + "x"), this.#n.isZero() || (this.#n.isPositive() && (t += "+"), t += this.#n.value.toFixed(e) + "y"), this.#r.isZero() || (this.#r.isPositive() && (t += "+"), t += this.#r.value.toFixed(e)), t + "=0";
 	}
 	get d() {
-		let e = new V(this.#n.clone(), this.#t.clone().opposite());
+		let e = new H(this.#n.clone(), this.#t.clone().opposite());
 		return (this.#i === "lr" && e.x.isNegative() || this.#i === "rl" && e.x.isPositive()) && e.opposite(), e;
 	}
 	set d(e) {
@@ -4666,22 +4669,22 @@ var K = class e {
 	}
 	distanceTo(e) {
 		let t = e.x.clone().multiply(this.#t).add(e.y.clone().multiply(this.#n)).add(this.#r).abs(), n = this.normal.normSquare;
-		return n.isZero() ? new b(0) : new b().from(2, n.inverse(), t).reduce();
+		return n.isZero() ? new v(0) : new v().from(2, n.inverse(), t).reduce();
 	}
 	fromCoefficient(e, t, n) {
-		this.#t = new g(e), this.#n = new g(t), this.#r = new g(n);
+		this.#t = new m(e), this.#n = new m(t), this.#r = new m(n);
 		let r = [
 			this.#t,
 			this.#n,
 			this.#r
-		].every((e) => e.exact) ? d.lcm(this.#t.denominator, this.#n.denominator, this.#r.denominator) : 1;
-		if (r > 1 && (this.#t.multiply(r).reduce(), this.#n.multiply(r).reduce(), this.#r.multiply(r).reduce()), this.#n.isZero()) return this.#e = new V(this.#r.clone().divide(this.#t).opposite(), 0), this;
+		].every((e) => e.exact) ? p.lcm(this.#t.denominator, this.#n.denominator, this.#r.denominator) : 1;
+		if (r > 1 && (this.#t.multiply(r).reduce(), this.#n.multiply(r).reduce(), this.#r.multiply(r).reduce()), this.#n.isZero()) return this.#e = new H(this.#r.clone().divide(this.#t).opposite(), 0), this;
 		for (let e = 0; e < this.#n.value; e++) {
 			let t = this.#t.clone().divide(this.#n).multiply(e).subtract(this.#r.clone().divide(this.#n)).reduce();
-			if (this.#e = new V(e, t), t.isRelative()) return this;
+			if (this.#e = new H(e, t), t.isRelative()) return this;
 		}
 		let i = this.#r.clone().divide(this.#n).opposite().reduce();
-		return this.#e = new V(0, i), this;
+		return this.#e = new H(0, i), this;
 	}
 	fromEquation(e) {
 		e.reorder(!0);
@@ -4699,23 +4702,23 @@ var K = class e {
 	fromPointAndDirection(e, t) {
 		return this.#i = t.x.isPositive() ? "lr" : "rl", this.fromPointAndNormal(e, t.clone().normal());
 	}
-	fromPointAndLine(e, t, n = H.Parallel) {
-		return n === H.Perpendicular ? this.fromPointAndNormal(e, t.director) : this.fromPointAndNormal(e, t.normal);
+	fromPointAndLine(e, t, n = U.Parallel) {
+		return n === U.Perpendicular ? this.fromPointAndNormal(e, t.director) : this.fromPointAndNormal(e, t.normal);
 	}
-	fromPointAndNormal = (e, t) => t.isZero() ? (console.warn("Normal vector is null."), this) : (this.fromCoefficient(t.x, t.y, e.x.clone().multiply(t.x).add(e.y.clone().multiply(t.y)).opposite()), this.#e = new V(e.clone()), this);
+	fromPointAndNormal = (e, t) => t.isZero() ? (console.warn("Normal vector is null."), this) : (this.fromCoefficient(t.x, t.y, e.x.clone().multiply(t.x).add(e.y.clone().multiply(t.y)).opposite()), this.#e = new H(e.clone()), this);
 	fromPoints(e, t) {
-		return this.fromPointAndNormal(e, new V(e, t).normal());
+		return this.fromPointAndNormal(e, new H(e, t).normal());
 	}
 	getEquation() {
-		return new M(new j().parse("xy", this.#t, this.#n, this.#r), new j("0")).simplify();
+		return new N(new M().parse("xy", this.#t, this.#n, this.#r), new M("0")).simplify();
 	}
 	getValueAtX = (e) => {
-		let t = this.getEquation().isolate("y"), n = new g(e);
-		return t instanceof M ? t.right.evaluate({ x: n }) : new g().invalid();
+		let t = this.getEquation().isolate("y"), n = new m(e);
+		return t instanceof N ? t.right.evaluate({ x: n }) : new m().invalid();
 	};
 	getValueAtY = (e) => {
-		let t = this.getEquation().isolate("x"), n = new g(e);
-		return t instanceof M ? t.right.evaluate({ y: n }) : new g().invalid();
+		let t = this.getEquation().isolate("x"), n = new m(e);
+		return t instanceof N ? t.right.evaluate({ y: n }) : new m().invalid();
 	};
 	get height() {
 		return this.#r.clone().opposite().divide(this.#n);
@@ -4725,8 +4728,8 @@ var K = class e {
 		return r.hasIntersection ? r.point.x.value >= Math.min(t.x.value, n.x.value) && r.point.x.value <= Math.max(t.x.value, n.x.value) && r.point.y.value >= Math.min(t.y.value, n.y.value) && r.point.y.value <= Math.max(t.y.value, n.y.value) : !1;
 	}
 	intersection = (e) => {
-		let t = new B(), n = !1, r = !1;
-		return this.#n.isZero() || e.b.isZero(), this.isParallelTo(e) ? (t.x = new g().invalid(), t.y = new g().invalid(), n = !0) : this.isSameAs(e) ? (t.x = new g().invalid(), t.y = new g().invalid(), r = !0) : (t.x = this.#n.clone().multiply(e.c).subtract(this.#r.clone().multiply(e.b)).divide(this.#t.clone().multiply(e.b).subtract(this.#n.clone().multiply(e.a))), t.y = this.#t.clone().multiply(e.c).subtract(this.#r.clone().multiply(e.a)).divide(this.#n.clone().multiply(e.a).subtract(this.#t.clone().multiply(e.b)))), {
+		let t = new V(), n = !1, r = !1;
+		return this.#n.isZero() || e.b.isZero(), this.isParallelTo(e) ? (t.x = new m().invalid(), t.y = new m().invalid(), n = !0) : this.isSameAs(e) ? (t.x = new m().invalid(), t.y = new m().invalid(), r = !0) : (t.x = this.#n.clone().multiply(e.c).subtract(this.#r.clone().multiply(e.b)).divide(this.#t.clone().multiply(e.b).subtract(this.#n.clone().multiply(e.a))), t.y = this.#t.clone().multiply(e.c).subtract(this.#r.clone().multiply(e.a)).divide(this.#n.clone().multiply(e.a).subtract(this.#t.clone().multiply(e.b)))), {
 			point: t,
 			hasIntersection: !(n || r),
 			isParallel: n,
@@ -4747,25 +4750,25 @@ var K = class e {
 		return this.d.normal();
 	}
 	get normal() {
-		return new V(this.#t, this.#n);
+		return new H(this.#t, this.#n);
 	}
 	randomNearPoint = (e) => {
 		let t = this.randomPoint(e), n = 10;
-		for (; this.isOnLine(t) && n > 0;) t.x.add(W(1, !1)), t.y.add(W(1, !1)), n--;
+		for (; this.isOnLine(t) && n > 0;) t.x.add(G(1, !1)), t.y.add(G(1, !1)), n--;
 		return t;
 	};
-	randomPoint = (e) => new B(this.d.clone().multiplyByScalar(W(e === void 0 || e <= 1 ? 3 : e, !1)).add(this.#e));
+	randomPoint = (e) => new V(this.d.clone().multiplyByScalar(G(e === void 0 || e <= 1 ? 3 : e, !1)).add(this.#e));
 	simplify = () => {
-		let e = d.lcm(this.#t.denominator, this.#n.denominator, this.#r.denominator), t = d.gcd(this.#t.numerator, this.#n.numerator, this.#r.numerator);
+		let e = p.lcm(this.#t.denominator, this.#n.denominator, this.#r.denominator), t = p.gcd(this.#t.numerator, this.#n.numerator, this.#r.numerator);
 		return this.fromCoefficient(this.#t.clone().multiply(e).divide(t), this.#n.clone().multiply(e).divide(t), this.#r.clone().multiply(e).divide(t)), this;
 	};
 	get slope() {
 		return this.#t.clone().opposite().divide(this.#n);
 	}
-}, q = class e {
-	#e = new B();
-	#t = new B();
-	#n = new B();
+}, J = class e {
+	#e = new V();
+	#t = new V();
+	#n = new V();
 	#r = !1;
 	#i = null;
 	#a = !0;
@@ -4786,12 +4789,12 @@ var K = class e {
 				let [e, n, r] = t;
 				return this.fromLines(e, n, r);
 			}
-			if (t.every((e) => e instanceof K)) return this.fromLines(t[0], t[1], t[2]);
-			if (t.every((e) => e instanceof B)) return this.fromPoints(t[0], t[1], t[2]);
+			if (t.every((e) => e instanceof q)) return this.fromLines(t[0], t[1], t[2]);
+			if (t.every((e) => e instanceof V)) return this.fromPoints(t[0], t[1], t[2]);
 		}
 		if (t.length === 6) {
-			let e = t.map((e) => new g(e));
-			if (e.some((e) => e.isNaN())) throw Error("One of the values is not a valid number");
+			let e = t.map((e) => new m(e));
+			if (e.some((e) => e.isNaN())) throw new i("One of the values is not a valid number");
 			return this.fromCoordinates(e[0], e[1], e[2], e[3], e[4], e[5]);
 		}
 		return this;
@@ -4843,10 +4846,10 @@ var K = class e {
 		return this.#a = !0, this;
 	}
 	fromCoordinates(e, t, n, r, i, a) {
-		return this.fromPoints(new B(e, t), new B(n, r), new B(i, a));
+		return this.fromPoints(new V(e, t), new V(n, r), new V(i, a));
 	}
 	fromLines(e, t, n) {
-		let r = new K(e).clone(), i = new K(t).clone(), a = new K(n).clone(), o = r.intersection(i);
+		let r = new q(e).clone(), i = new q(t).clone(), a = new q(n).clone(), o = r.intersection(i);
 		if (o.hasIntersection) this.#t = o.point;
 		else return this.#r = !1, this;
 		if (o = i.intersection(a), o.hasIntersection) this.#n = o.point;
@@ -4889,7 +4892,7 @@ var K = class e {
 	}
 	getHeights() {
 		if (!this.#o.heights) {
-			let e = new K().fromPointAndNormal(this.#e, new V(this.#t, this.#n)), t = new K().fromPointAndNormal(this.#t, new V(this.#e, this.#n)), n = new K().fromPointAndNormal(this.#n, new V(this.#e, this.#t)), r = e.intersection(t).point;
+			let e = new q().fromPointAndNormal(this.#e, new H(this.#t, this.#n)), t = new q().fromPointAndNormal(this.#t, new H(this.#e, this.#n)), n = new q().fromPointAndNormal(this.#n, new H(this.#e, this.#t)), r = e.intersection(t).point;
 			this.#o.heights = {
 				A: e,
 				B: t,
@@ -4902,7 +4905,7 @@ var K = class e {
 	getMedians() {
 		let e = this.getMiddles();
 		if (!this.#o.medians) {
-			let t = new K().fromPoints(this.#e, e.BC), n = new K().fromPoints(this.#t, e.AC), r = new K().fromPoints(this.#n, e.AB), i = t.intersection(n).point;
+			let t = new q().fromPoints(this.#e, e.BC), n = new q().fromPoints(this.#t, e.AC), r = new q().fromPoints(this.#n, e.AB), i = t.intersection(n).point;
 			this.#o.medians = {
 				A: t,
 				B: n,
@@ -4915,7 +4918,7 @@ var K = class e {
 	getMediators() {
 		let e = this.getMiddles();
 		if (!this.#o.mediators) {
-			let t = new K().fromPointAndNormal(e.BC, new V(this.#t, this.#n)), n = new K().fromPointAndNormal(e.AC, new V(this.#e, this.#n)), r = new K().fromPointAndNormal(e.AB, new V(this.#e, this.#t)), i = t.intersection(n).point;
+			let t = new q().fromPointAndNormal(e.BC, new H(this.#t, this.#n)), n = new q().fromPointAndNormal(e.AC, new H(this.#e, this.#n)), r = new q().fromPointAndNormal(e.AB, new H(this.#e, this.#t)), i = t.intersection(n).point;
 			this.#o.mediators = {
 				a: t,
 				b: n,
@@ -4927,9 +4930,9 @@ var K = class e {
 	}
 	getMiddles() {
 		return {
-			AB: new B().middleOf(this.#e, this.#t),
-			AC: new B().middleOf(this.#e, this.#n),
-			BC: new B().middleOf(this.#t, this.#n)
+			AB: new V().middleOf(this.#e, this.#t),
+			AC: new V().middleOf(this.#e, this.#n),
+			BC: new V().middleOf(this.#t, this.#n)
 		};
 	}
 	getPoints() {
@@ -4968,9 +4971,9 @@ var K = class e {
 	}
 	get lines() {
 		return this.#i === null && (this.#i = {
-			AB: new K(this.#e, this.#t),
-			BC: new K(this.#t, this.#n),
-			AC: new K(this.#e, this.#n)
+			AB: new q(this.#e, this.#t),
+			BC: new q(this.#t, this.#n),
+			AC: new q(this.#e, this.#n)
 		}), this.#i;
 	}
 	medianA() {
@@ -4995,14 +4998,14 @@ var K = class e {
 		}, this;
 	}
 	#s(e, t = !0) {
-		let n = this.lines, r = new V(), i = new V(), a = new B();
-		if (e === "A" ? (a = this.A.clone(), r = n.AB.clone().d, i = n.AC.clone().d) : e === "B" ? (a = this.B.clone(), r = n.AB.clone().d.opposite(), i = n.BC.clone().d) : e === "C" && (a = this.C.clone(), r = n.BC.clone().d.opposite(), i = n.AC.clone().d.opposite()), r === void 0 || i === void 0) throw Error(`The point ${e} does not exist`);
-		let o = t ? r.unit().add(i.unit()) : r.unit().subtract(i.unit());
-		return new K().fromPointAndDirection(a, o);
+		let n = this.lines, r = new H(), i = new H(), a = new V();
+		if (e === "A" ? (a = this.A.clone(), r = n.AB.clone().d, i = n.AC.clone().d) : e === "B" ? (a = this.B.clone(), r = n.AB.clone().d.opposite(), i = n.BC.clone().d) : e === "C" && (a = this.C.clone(), r = n.BC.clone().d.opposite(), i = n.AC.clone().d.opposite()), r === void 0 || i === void 0) throw new o(`The point ${e} does not exist`);
+		let s = t ? r.unit().add(i.unit()) : r.unit().subtract(i.unit());
+		return new q().fromPointAndDirection(a, s);
 	}
 	#c(e, t, n) {
 		let r = (t ** 2 + n ** 2 - e ** 2) / (2 * t * n);
-		return this.#a ? Math.acos(r) : d.numberCorrection(Math.acos(r) * 180 / Math.PI);
+		return this.#a ? Math.acos(r) : p.numberCorrection(Math.acos(r) * 180 / Math.PI);
 	}
 	#l = (e) => {
 		switch (e.toUpperCase()) {
@@ -5012,8 +5015,8 @@ var K = class e {
 		}
 		return this.#e;
 	};
-	#u = (e, t) => new V(this.#l(e), this.#l(t));
-}, J = class e {
+	#u = (e, t) => new H(this.#l(e), this.#l(t));
+}, Y = class e {
 	#e = null;
 	#t = null;
 	#n = 1;
@@ -5022,7 +5025,7 @@ var K = class e {
 		e.length > 0 && this.parse(...e);
 	}
 	parse(...t) {
-		return typeof t[0] == "string" ? this.fromString(t[0]) : t[0] instanceof M ? this.fromEquation(t[0]) : t[0] instanceof e ? this.copy(t[0]) : t.length === 2 && t[0] instanceof B && t[1] instanceof B ? this.fromCenterPoint(t[0], t[1]) : t.length >= 2 && t[0] instanceof B && (t[1] instanceof g || typeof t[1] == "number") ? this.fromCenterRadius(t[0], t[1], typeof t[2] == "boolean" && t[2]) : this;
+		return typeof t[0] == "string" ? this.fromString(t[0]) : t[0] instanceof N ? this.fromEquation(t[0]) : t[0] instanceof e ? this.copy(t[0]) : t.length === 2 && t[0] instanceof V && t[1] instanceof V ? this.fromCenterPoint(t[0], t[1]) : t.length >= 2 && t[0] instanceof V && (t[1] instanceof m || typeof t[1] == "number") ? this.fromCenterRadius(t[0], t[1], typeof t[2] == "boolean" && t[2]) : this;
 	}
 	clone() {
 		return new e().fromCenterRadius(this.center.clone(), this.squareRadius.clone(), !0);
@@ -5047,36 +5050,36 @@ var K = class e {
 		return this.#n = 1, this;
 	}
 	get center() {
-		return this.#e ?? new B();
+		return this.#e ?? new V();
 	}
 	get equation() {
-		return this.#t?.clone() ?? new M("0=0");
+		return this.#t?.clone() ?? new N("0=0");
 	}
 	fromCenterPoint(e, t) {
-		return this.#e = e.clone(), this.#r = new V(this.#e, t).normSquare, this.#i(), this;
+		return this.#e = e.clone(), this.#r = new H(this.#e, t).normSquare, this.#i(), this;
 	}
 	fromCenterRadius(e, t, n) {
-		return this.#e = e.clone(), this.#r = n ? new g(t) : new g(t).pow(2), this.#i(), this;
+		return this.#e = e.clone(), this.#r = n ? new m(t) : new m(t).pow(2), this.#i(), this;
 	}
 	fromEquation(e) {
 		if (e.moveLeft(), e.degree("x").value === 2 && e.degree("y").value === 2) {
 			let t = e.left.monomByDegree(2, "x"), n = e.left.monomByDegree(2, "y"), r, i, a;
-			if (t.coefficient.isEqual(n.coefficient)) return e.divide(t.coefficient), r = e.left.monomByDegree(1, "x"), i = e.left.monomByDegree(1, "y"), a = e.left.monomByDegree(0), this.#e = new B(r.coefficient.clone().divide(2).opposite(), i.coefficient.clone().divide(2).opposite()), this.#r = a.coefficient.clone().opposite().add(this.#e.x.clone().pow(2)).add(this.#e.y.clone().pow(2)), this.#i(), this;
+			if (t.coefficient.isEqual(n.coefficient)) return e.divide(t.coefficient), r = e.left.monomByDegree(1, "x"), i = e.left.monomByDegree(1, "y"), a = e.left.monomByDegree(0), this.#e = new V(r.coefficient.clone().divide(2).opposite(), i.coefficient.clone().divide(2).opposite()), this.#r = a.coefficient.clone().opposite().add(this.#e.x.clone().pow(2)).add(this.#e.y.clone().pow(2)), this.#i(), this;
 			this.#a();
 		}
 		return this;
 	}
 	fromPoints(e, t, n) {
-		let r = new q(e, t, n);
+		let r = new J(e, t, n);
 		if (!r.isValid || !r.remarquables) return this.#a(), this;
 		let i = r.getMediators().c.clone(), a = r.getMediators().b.clone();
 		return this.fromCenterPoint(i.intersection(a).point, e);
 	}
 	fromString(e) {
-		return this.fromEquation(new M(e));
+		return this.fromEquation(new N(e));
 	}
 	getPointsOnCircle() {
-		let e = d.pythagoreanTripletsWithTarget(this.squareRadius.value, !0), t = [];
+		let e = p.pythagoreanTripletsWithTarget(this.squareRadius.value, !0), t = [];
 		return e.forEach((e) => {
 			for (let n of [
 				[1, 1],
@@ -5085,7 +5088,7 @@ var K = class e {
 				[1, -1]
 			]) {
 				let r = this.center.x.clone().add(n[0] * e[0]), i = this.center.y.clone().add(n[1] * e[1]);
-				t.every((e) => !e.isEqualXY(r, i)) && t.push(new B(r, i));
+				t.every((e) => !e.isEqualXY(r, i)) && t.push(new V(r, i));
 			}
 		}), t;
 	}
@@ -5098,17 +5101,17 @@ var K = class e {
 	}
 	lineIntersection(e) {
 		if (this.#t === null) return [];
-		let t = this.center, n = e.d, r = e.OA, i = n.normSquare, a = r.x.clone().subtract(t.x).multiply(n.x).add(r.y.clone().subtract(t.y).multiply(n.y)).multiply(2), o = r.x.clone().subtract(t.x).pow(2).add(r.y.clone().subtract(t.y).pow(2)).subtract(this.squareRadius), s = x.fromQuadratic(i, a, o);
+		let t = this.center, n = e.d, r = e.OA, i = n.normSquare, a = r.x.clone().subtract(t.x).multiply(n.x).add(r.y.clone().subtract(t.y).multiply(n.y)).multiply(2), o = r.x.clone().subtract(t.x).pow(2).add(r.y.clone().subtract(t.y).pow(2)).subtract(this.squareRadius), s = y.fromQuadratic(i, a, o);
 		if (s.length === 0) return [];
 		if (s.length === 1) {
 			let e = r.add(n.clone().multiplyByScalar(s[0].fraction));
-			return [new B(e.x, e.y)];
+			return [new V(e.x, e.y)];
 		}
 		let c = s[0].exact ? r.clone().add(n.clone().multiplyByScalar(s[0].fraction)) : r.clone().add(n.clone().multiplyByScalar(s[0].value)), l = s[1].exact ? r.clone().add(n.clone().multiplyByScalar(s[1].fraction)) : r.clone().add(n.clone().multiplyByScalar(s[1].value));
-		return [new B(c.x, c.y), new B(l.x, l.y)].sort((e, t) => n.x.isZero() ? n.y.isPositive() ? e.y.value - t.y.value : t.y.value - e.y.value : n.x.isPositive() ? e.x.value - t.x.value : t.x.value - e.x.value);
+		return [new V(c.x, c.y), new V(l.x, l.y)].sort((e, t) => n.x.isZero() ? n.y.isPositive() ? e.y.value - t.y.value : t.y.value - e.y.value : n.x.isPositive() ? e.x.value - t.x.value : t.x.value - e.x.value);
 	}
 	get radius() {
-		return new b().from(2, this.#r ?? 0);
+		return new v().from(2, this.#r ?? 0);
 	}
 	relativePosition(e) {
 		if (this.#e === null || this.#r === null) return -1;
@@ -5116,57 +5119,57 @@ var K = class e {
 		return t - n > 1e-10 ? 0 : Math.abs(t - n) < 1e-10 ? 1 : 2;
 	}
 	setRadius(e, t) {
-		return this.#r = t ? new g(e) : new g(e).pow(2), this.#i(), this;
+		return this.#r = t ? new m(e) : new m(e).pow(2), this.#i(), this;
 	}
 	get squareRadius() {
-		return this.#r?.clone() ?? new g(-1);
+		return this.#r?.clone() ?? new m(-1);
 	}
-	tangents = (e) => e instanceof g ? this.#c(e) : this.isPointOnCircle(e) ? this.#o(e) : this.#e !== null && this.#e.distanceTo(e).value > this.radius.value ? this.#s(e) : [];
+	tangents = (e) => e instanceof m ? this.#c(e) : this.isPointOnCircle(e) ? this.#o(e) : this.#e !== null && this.#e.distanceTo(e).value > this.radius.value ? this.#s(e) : [];
 	#i() {
-		this.#t = new M(new j(`(x-(${this.center.x.display}))^2+(y-(${this.center.y.display}))^2`), new j(this.squareRadius.display)).moveLeft();
+		this.#t = new N(new M(`(x-(${this.center.x.display}))^2+(y-(${this.center.y.display}))^2`), new M(this.squareRadius.display)).moveLeft();
 	}
 	#a() {
 		this.#e = null, this.#r = null, this.#t = null;
 	}
 	#o = (e) => {
-		let t = new V(this.center, e);
-		return [new K().fromPointAndNormal(e, t)];
+		let t = new H(this.center, e);
+		return [new q().fromPointAndNormal(e, t)];
 	};
 	#s = (e) => {
-		let t = this.center.x.clone().subtract(e.x), n = this.center.y.clone().subtract(e.y), r = new j("x"), i = new j("x^2+1");
-		return r.multiply(t).subtract(n).pow(2), i.multiply(this.squareRadius), new M(r, i).solve().map((t) => {
-			let n, r = new M("y", "x");
-			return t.exact ? (n = e.x.clone().opposite().multiply(t.fraction).add(e.y), r.right.multiply(t.fraction).add(n)) : (n = e.x.clone().opposite().multiply(t.value).add(e.y), r.right.multiply(t.value).add(n)), new K(r);
+		let t = this.center.x.clone().subtract(e.x), n = this.center.y.clone().subtract(e.y), r = new M("x"), i = new M("x^2+1");
+		return r.multiply(t).subtract(n).pow(2), i.multiply(this.squareRadius), new N(r, i).solve().map((t) => {
+			let n, r = new N("y", "x");
+			return t.exact ? (n = e.x.clone().opposite().multiply(t.fraction).add(e.y), r.right.multiply(t.fraction).add(n)) : (n = e.x.clone().opposite().multiply(t.value).add(e.y), r.right.multiply(t.value).add(n)), new q(r);
 		});
 	};
 	#c = (e) => {
 		let t = e.numerator, n = -e.denominator, r = this.center.x.clone(), i = this.center.y.clone(), a = this.squareRadius.clone().multiply(e.numerator ** 2 + e.denominator ** 2), o = r.clone().multiply(t).opposite().subtract(i.clone().multiply(n)).add(a.clone().sqrt()), s = r.clone().multiply(t).opposite().subtract(i.clone().multiply(n)).subtract(a.clone().sqrt());
-		return [new K(t, n, o), new K(t, n, s)];
+		return [new q(t, n, o), new q(t, n, s)];
 	};
-}, Y = class e {
+}, X = class e {
 	static PARALLEL = Ce.Parallel;
 	static PERPENDICULAR = Ce.Perpendicular;
-	#e = new B();
-	#t = new V();
+	#e = new V();
+	#t = new H();
 	constructor(e, t) {
-		return this.#e = e.clone(), this.#t = t instanceof B ? new V(e, t) : t.clone(), this;
+		return this.#e = e.clone(), this.#t = t instanceof V ? new H(e, t) : t.clone(), this;
 	}
 	clone = () => (this.#t = this.#t.clone(), this.#e = this.#e.clone(), this);
 	get tex() {
 		return {
-			parametric: `${V.asTex("x", "y", "z")} = ${V.asTex(this.#e.x.tex, this.#e.y.tex, this.#e.z.tex)} + k\\cdot ${V.asTex(this.#t.x.tex, this.#t.y.tex, this.#t.z.tex)}`,
+			parametric: `${H.asTex("x", "y", "z")} = ${H.asTex(this.#e.x.tex, this.#e.y.tex, this.#e.z.tex)} + k\\cdot ${H.asTex(this.#t.x.tex, this.#t.y.tex, this.#t.z.tex)}`,
 			system: `\\left\\{\\begin{aligned}
-    x &= ${new j(this.#e.x).add(new A(this.#t.x).multiply(new A("k"))).reorder("k", !0).tex}\\\\ 
-    y &= ${new j(this.#e.y).add(new A(this.#t.y).multiply(new A("k"))).reorder("k", !0).tex}\\\\
-    z &= ${new j(this.#e.z).add(new A(this.#t.z).multiply(new A("k"))).reorder("k", !0).tex}
+    x &= ${new M(this.#e.x).add(new A(this.#t.x).multiply(new A("k"))).reorder("k", !0).tex}\\\\ 
+    y &= ${new M(this.#e.y).add(new A(this.#t.y).multiply(new A("k"))).reorder("k", !0).tex}\\\\
+    z &= ${new M(this.#e.z).add(new A(this.#t.z).multiply(new A("k"))).reorder("k", !0).tex}
 \\end{aligned}\\right.`,
-			cartesian: `\\frac{ ${new j("x", 1, this.#e.x.clone().opposite()).tex} }{ ${this.direction.x.tex} } = \\frac{ ${new j("y", 1, this.#e.y.clone().opposite()).tex} }{ ${this.direction.y.tex} } = \\frac{ ${new j("z", 1, this.#e.z.clone().opposite()).tex} }{ ${this.direction.z.tex} }`
+			cartesian: `\\frac{ ${new M("x", 1, this.#e.x.clone().opposite()).tex} }{ ${this.direction.x.tex} } = \\frac{ ${new M("y", 1, this.#e.y.clone().opposite()).tex} }{ ${this.direction.y.tex} } = \\frac{ ${new M("z", 1, this.#e.z.clone().opposite()).tex} }{ ${this.direction.z.tex} }`
 		};
 	}
 	get display() {
 		let e = this.#e.x.display, t = this.#e.y.display, n = this.#e.z.display, r = this.direction.simplify(), i = r.x.display, a = r.y.display, o = r.z.display;
 		return {
-			parametric: `${V.asDisplay("x", "y", "z")} = ${V.asDisplay(this.#e.x.display, this.#e.y.display, this.#e.z.display)} + k\\cdot ${V.asDisplay(this.#t.x.display, this.#t.y.display, this.#t.z.display)}`,
+			parametric: `${H.asDisplay("x", "y", "z")} = ${H.asDisplay(this.#e.x.display, this.#e.y.display, this.#e.z.display)} + k\\cdot ${H.asDisplay(this.#t.x.display, this.#t.y.display, this.#t.z.display)}`,
 			system: "",
 			cartesian: `(x-${e})/${i} = (y-${t})/${a} = (z-${n})/${o}`
 		};
@@ -5187,7 +5190,7 @@ var K = class e {
 		return this.#t.clone();
 	}
 	distanceTo(e) {
-		let t = new V(this.#e, e), n = this.direction, r = this.direction.normSquare, i = t.cross(n).normSquare.clone().divide(r), a = i.clone().sqrt();
+		let t = new H(this.#e, e), n = this.direction, r = this.direction.normSquare, i = t.cross(n).normSquare.clone().divide(r), a = i.clone().sqrt();
 		return {
 			value: Math.sqrt(i.value),
 			fraction: i.clone().sqrt(),
@@ -5199,34 +5202,34 @@ var K = class e {
 		return r.hasIntersection ? r.point.x.value >= Math.min(t.x.value, n.x.value) && r.point.x.value <= Math.max(t.x.value, n.x.value) && r.point.y.value >= Math.min(t.y.value, n.y.value) && r.point.y.value <= Math.max(t.y.value, n.y.value) && r.point.z.value >= Math.min(t.z.value, n.z.value) && r.point.z.value <= Math.max(t.z.value, n.z.value) : !1;
 	}
 	intersection = (e) => {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	};
 	isOnLine = (e) => !1;
 	isParallelTo = (e) => {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	};
 	isPerpendicularTo = (e) => {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	};
 	isSameAs = (e) => {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	};
 	isVertical = () => {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	};
 	get point() {
 		return this.#e.clone();
 	}
 	randomPoint = (e = 5) => {
-		let t = this.#e.clone(), n = new g(W(e, !1));
-		return new B(t.x.clone().add(this.#t.x.clone().multiply(n)), t.y.clone().add(this.#t.y.clone().multiply(n)), t.z.clone().add(this.#t.z.clone().multiply(n)));
+		let t = this.#e.clone(), n = new m(G(e, !1));
+		return new V(t.x.clone().add(this.#t.x.clone().multiply(n)), t.y.clone().add(this.#t.y.clone().multiply(n)), t.z.clone().add(this.#t.z.clone().multiply(n)));
 	};
 	simplify = () => {
-		throw Error("Method not implemented.");
+		throw new a("Method not implemented.");
 	};
 }, ke = class e {
-	#e = new V(0, 0, 1);
-	#t = new B(0, 0, 0);
+	#e = new H(0, 0, 1);
+	#t = new V(0, 0, 0);
 	constructor(e) {
 		return e && this.parse(e), this;
 	}
@@ -5243,37 +5246,37 @@ var K = class e {
 		}
 		if (e.equation) {
 			let t = e.equation.moveLeft().reduce().left, n = t.monomByLetter("x").coefficient, r = t.monomByLetter("y").coefficient, i = t.monomByLetter("z").coefficient, a = t.monomByDegree(0).coefficient;
-			this.normal = new V(n, r, i), this.point = n.isNotZero() ? new B(a.clone().divide(n).opposite(), 0, 0) : r.isNotZero() ? new B(0, a.clone().divide(r).opposite(), 0) : new B(0, 0, a.clone().divide(i).opposite());
+			this.normal = new H(n, r, i), this.point = n.isNotZero() ? new V(a.clone().divide(n).opposite(), 0, 0) : r.isNotZero() ? new V(0, a.clone().divide(r).opposite(), 0) : new V(0, 0, a.clone().divide(i).opposite());
 			return;
 		}
-		if (e.points?.length === 3 && e.points.every((e) => e instanceof V)) {
-			let t = e.points[0], n = e.points[1], r = e.points[2], i = new V(t, n), a = new V(t, r);
+		if (e.points?.length === 3 && e.points.every((e) => e instanceof H)) {
+			let t = e.points[0], n = e.points[1], r = e.points[2], i = new H(t, n), a = new H(t, r);
 			this.normal = i.cross(a), this.point = t;
 			return;
 		}
 		if (e.coefficients?.length === 4) {
 			let [t, n, r, i] = e.coefficients;
-			this.normal = new V(t, n, r), this.point = new B(0, 0, -i);
+			this.normal = new H(t, n, r), this.point = new V(0, 0, -i);
 			return;
 		}
 	}
 	get tex() {
-		return new M(new j("xyz", this.a, this.b, this.c, this.d), new j(0)).reduce().tex;
+		return new N(new M("xyz", this.a, this.b, this.c, this.d), new M(0)).reduce().tex;
 	}
 	get display() {
-		return new M(new j("xyz", this.a, this.b, this.c, this.d), new j(0)).reduce().display;
+		return new N(new M("xyz", this.a, this.b, this.c, this.d), new M(0)).reduce().display;
 	}
 	get a() {
 		return this.#e.x;
 	}
-	angle(t, n, r) {
-		if (t instanceof e) return this.normal.angle(t.normal, n, r);
-		let i;
-		if (t instanceof V) {
-			if (t.dimension !== 3) throw new m("Vector is not 3D");
-			i = t;
-		} else i = t.direction;
-		return (r ? Math.PI / 2 : 90) - this.normal.angle(i, !0, r);
+	angle(t, r, i) {
+		if (t instanceof e) return this.normal.angle(t.normal, r, i);
+		let a;
+		if (t instanceof H) {
+			if (t.dimension !== 3) throw new n("Vector is not 3D");
+			a = t;
+		} else a = t.direction;
+		return (i ? Math.PI / 2 : 90) - this.normal.angle(a, !0, i);
 	}
 	get b() {
 		return this.#e.y;
@@ -5289,10 +5292,10 @@ var K = class e {
 	}
 	intersectWithLine(e) {
 		let { point: t, direction: n } = e, r = this.normal.dot(t).add(this.d).divide(this.normal.dot(n).opposite());
-		return new B(new V(t).add(n.clone().multiplyByScalar(r)));
+		return new V(new H(t).add(n.clone().multiplyByScalar(r)));
 	}
 	intersectWithPlane(e) {
-		throw this.normal.cross(e.normal), new B(0, 0, 0), Error("Intersection with plane  not yet implemented !");
+		throw this.normal.cross(e.normal), new V(0, 0, 0), new a("Intersection with plane  not yet implemented !");
 	}
 	isPointOnPlane(e) {
 		return this.normal.dot(e).add(this.d).isZero();
@@ -5301,13 +5304,13 @@ var K = class e {
 		return this.#e;
 	}
 	set normal(e) {
-		this.#e = new V(e);
+		this.#e = new H(e);
 	}
 	get point() {
 		return this.#t;
 	}
 	set point(e) {
-		this.#t = new B(e);
+		this.#t = new V(e);
 	}
 }, Ae = /* @__PURE__ */ function(e) {
 	return e[e.INTERIOR = 0] = "INTERIOR", e[e.EXTERIOR = 1] = "EXTERIOR", e[e.SECANT = 2] = "SECANT", e[e.TANGENT_INSIDE = 3] = "TANGENT_INSIDE", e[e.TANGENT_OUTSIDE = 4] = "TANGENT_OUTSIDE", e[e.SUPERPOSED = 5] = "SUPERPOSED", e[e.CONCENTRIC = 6] = "CONCENTRIC", e;
@@ -5317,28 +5320,28 @@ var K = class e {
 	#n = void 0;
 	#r = 1;
 	constructor(e, t) {
-		return e && t && (this.#e = e, this.#t = new g(t).clone().pow(2), this.#a()), this;
+		return e && t && (this.#e = e, this.#t = new m(t).clone().pow(2), this.#a()), this;
 	}
 	fromEquation(e) {
-		let t = new M(e).moveLeft().reduce(), n = [
+		let t = new N(e).moveLeft().reduce(), n = [
 			"x",
 			"y",
 			"z"
 		];
 		if (n.some((e) => t.degree(e).value !== 2)) return this.makeUndefined();
 		let r = t.left.monomByDegree(2, "x").coefficient;
-		return n.some((e) => t.left.monomByDegree(2, e).coefficient.isNotEqual(r)) ? this.makeUndefined() : (this.#e = new B(t.left.monomByDegree(1, "x").coefficient.clone().opposite().divide(2), t.left.monomByDegree(1, "y").coefficient.clone().opposite().divide(2), t.left.monomByDegree(1, "z").coefficient.clone().opposite().divide(2)), this.#t = t.left.monomByDegree(0).coefficient.clone().opposite().add(this.#e.x.clone().pow(2)).add(this.#e.y.clone().pow(2)).add(this.#e.z.clone().pow(2)), this.#a(), this);
+		return n.some((e) => t.left.monomByDegree(2, e).coefficient.isNotEqual(r)) ? this.makeUndefined() : (this.#e = new V(t.left.monomByDegree(1, "x").coefficient.clone().opposite().divide(2), t.left.monomByDegree(1, "y").coefficient.clone().opposite().divide(2), t.left.monomByDegree(1, "z").coefficient.clone().opposite().divide(2)), this.#t = t.left.monomByDegree(0).coefficient.clone().opposite().add(this.#e.x.clone().pow(2)).add(this.#e.y.clone().pow(2)).add(this.#e.z.clone().pow(2)), this.#a(), this);
 	}
 	get center() {
-		if (this.#e === void 0) throw Error("Sphere3 is undefined");
+		if (this.#e === void 0) throw new s("Sphere3 is undefined");
 		return this.#e;
 	}
 	get squareRadius() {
-		if (this.#t === void 0) throw Error("Sphere3 is undefined");
+		if (this.#t === void 0) throw new s("Sphere3 is undefined");
 		return this.#t;
 	}
 	get radius() {
-		if (this.#t === void 0) throw Error("Sphere3 is undefined");
+		if (this.#t === void 0) throw new s("Sphere3 is undefined");
 		return this.#t.isSquare() ? {
 			tex: this.#t.clone().sqrt().tex,
 			display: this.#t.clone().sqrt().display,
@@ -5350,7 +5353,7 @@ var K = class e {
 		};
 	}
 	get equation() {
-		if (this.#n === void 0) throw Error("Sphere3 is undefined");
+		if (this.#n === void 0) throw new s("Sphere3 is undefined");
 		return this.#n;
 	}
 	makeUndefined() {
@@ -5369,7 +5372,7 @@ var K = class e {
 		return this.#i(!1);
 	}
 	#i = (e) => {
-		if (this.#n === void 0) throw Error("Sphere3 is undefined");
+		if (this.#n === void 0) throw new s("Sphere3 is undefined");
 		if (this.#r === 0) return e ? this.#n.tex : this.#n.display;
 		let t = [];
 		return [
@@ -5379,13 +5382,13 @@ var K = class e {
 		].forEach((n) => {
 			if (this.center[n].isZero()) t.push(`${n}^2`);
 			else {
-				let r = new j(n).subtract(this.center[n]);
+				let r = new M(n).subtract(this.center[n]);
 				t.push(e ? `\\(${r.tex}\\)^2` : `(${r.display})^2`);
 			}
 		}), t.join("+") + "=" + (e ? this.squareRadius.tex : this.squareRadius.display);
 	};
 	#a() {
-		this.#n = new M(new j("x").subtract(this.center.x).pow(2).add(new j("y").subtract(this.center.y).pow(2)).add(new j("z").subtract(this.center.z).pow(2)), new j(this.squareRadius)).reduce();
+		this.#n = new N(new M("x").subtract(this.center.x).pow(2).add(new M("y").subtract(this.center.y).pow(2)).add(new M("z").subtract(this.center.z).pow(2)), new M(this.squareRadius)).reduce();
 	}
 	static RELATIVE_POSITION = Ae;
 	relativePosition = (e) => {
@@ -5400,18 +5403,18 @@ var K = class e {
 };
 //#endregion
 //#region src/randomization/coefficient/rndFraction.ts
-function X(e) {
+function Z(e) {
 	let t = Object.assign({
 		negative: !0,
 		max: 10,
 		reduced: !0,
 		zero: !0,
 		natural: !1
-	}, e), n = new g();
-	if (n.numerator = t.negative ? W(t.max, t.zero) : U(+!t.zero, t.max), t.natural) n.denominator = 1;
+	}, e), n = new m();
+	if (n.numerator = t.negative ? G(t.max, t.zero) : W(+!t.zero, t.max), t.natural) n.denominator = 1;
 	else {
 		let e = 0;
-		for (; n.isRelative() && e < 10;) n.denominator = U(1, t.max), e++;
+		for (; n.isRelative() && e < 10;) n.denominator = W(1, t.max), e++;
 	}
 	return t.reduced ? n.reduce() : n;
 }
@@ -5424,14 +5427,14 @@ function Me(e) {
 		fraction: !0,
 		zero: !1
 	}, e), n = new A();
-	if (n.coefficient = X(Object.assign({}, {
+	if (n.coefficient = Z(Object.assign({}, {
 		zero: t.zero,
 		reduced: !0,
 		natural: t.fraction === !1
 	}, typeof t.fraction == "boolean" ? {} : t.fraction)), t.letters.length > 1) {
 		for (let e of t.letters.split("")) n.setLetter(e, 0);
 		for (let e = 0; e < t.degree; e++) {
-			let e = G(t.letters.split(""));
+			let e = K(t.letters.split(""));
 			n.setLetter(e, n.degree(e).clone().add(1));
 		}
 	} else n.setLetter(t.letters, t.degree);
@@ -5439,7 +5442,7 @@ function Me(e) {
 }
 //#endregion
 //#region src/randomization/algebra/rndPolynom.ts
-var Z = {
+var Ne = {
 	letters: "x",
 	degree: 2,
 	fraction: !1,
@@ -5452,9 +5455,9 @@ var Z = {
 	positive: !0
 };
 function Q(e) {
-	let t = Object.assign({}, Z, e);
-	if (t.factorable) return Ne(t);
-	let n = new j().empty(), r, i = t.degree ?? 2;
+	let t = Object.assign({}, Ne, e);
+	if (t.factorable) return Pe(t);
+	let n = new M().empty(), r, i = t.degree ?? 2;
 	for (let e = i; e >= 0; e--) r = Me({
 		letters: t.letters,
 		degree: e,
@@ -5462,25 +5465,25 @@ function Q(e) {
 		zero: e !== i && t.allowNullMonom
 	}), t.unit && i === e && r.coefficient.one(), n.add(r);
 	if (t.positive && n.monomByDegree().coefficient.isNegative() && n.opposite(), t.numberOfMonoms && t.numberOfMonoms > 0 && t.numberOfMonoms < n.length) for (; n.length > t.numberOfMonoms;) {
-		let e = U(1, n.length - 1);
+		let e = W(1, n.length - 1);
 		n.monoms.splice(e, 1);
 	}
 	return n.reduce();
 }
-function Ne(e) {
-	let t = Object.assign(Z, e), n = { ...t };
+function Pe(e) {
+	let t = Object.assign(Ne, e), n = { ...t };
 	n.degree = 1, n.factorable = !1;
 	let r = [], i = t.degree ?? 2;
 	for (; r.length < i;) r.push(Q(n));
 	if (e?.commonConstant !== !1) {
-		let t = W(10, !1);
-		e?.commonConstant === !0 && (t === 1 || t === -1) && (t *= U(2, 5)), t !== 1 && t !== -1 && r.unshift(new j(t));
+		let t = G(10, !1);
+		e?.commonConstant === !0 && (t === 1 || t === -1) && (t *= W(2, 5)), t !== 1 && t !== -1 && r.unshift(new M(t));
 	}
-	return j.xMultiply(...r);
+	return M.xMultiply(...r);
 }
 //#endregion
 //#region src/randomization/algebra/rndEquation.ts
-function Pe(e) {
+function Fe(e) {
 	let t = Object.assign({
 		letters: "x",
 		degree: 1,
@@ -5497,7 +5500,7 @@ function Pe(e) {
 			nothing: !1,
 			everything: !1
 		}
-	}, e), n = new j().one();
+	}, e), n = new M().one();
 	for (let e = 0; e < t.degree; e++) {
 		let e = Q({
 			degree: 1,
@@ -5508,7 +5511,7 @@ function Pe(e) {
 		});
 		n.multiply(e);
 	}
-	return new M(n, 0);
+	return new N(n, 0);
 }
 //#endregion
 //#region src/randomization/geometry/rndPoint.ts
@@ -5518,18 +5521,18 @@ function $(e) {
 		fraction: !1,
 		max: 10,
 		quadrant: null
-	}, e), n = t.axis === "x", r = t.axis === "y", i = t.fraction ? X({
+	}, e), n = t.axis === "x", r = t.axis === "y", i = t.fraction ? Z({
 		max: t.max,
 		zero: n
-	}) : new g(W(t.max, n)), a = t.fraction ? X({
+	}) : new m(G(t.max, n)), a = t.fraction ? Z({
 		max: t.max,
 		zero: r
-	}) : new g(W(t.max, r));
-	return Number(t.quadrant) === 1 && (i.abs(), a.abs()), Number(t.quadrant) === 2 && (i.isPositive() && i.opposite(), a.isNegative() && a.opposite()), Number(t.quadrant) === 3 && (i.isPositive() && i.opposite(), a.isPositive() && a.opposite()), Number(t.quadrant) === 4 && (i.isNegative() && i.opposite(), a.isPositive() && a.opposite()), new B(i, a);
+	}) : new m(G(t.max, r));
+	return Number(t.quadrant) === 1 && (i.abs(), a.abs()), Number(t.quadrant) === 2 && (i.isPositive() && i.opposite(), a.isNegative() && a.opposite()), Number(t.quadrant) === 3 && (i.isPositive() && i.opposite(), a.isPositive() && a.opposite()), Number(t.quadrant) === 4 && (i.isNegative() && i.opposite(), a.isPositive() && a.opposite()), new V(i, a);
 }
 //#endregion
 //#region src/randomization/geometry/rndCircle.ts
-function Fe(e) {
+function Ie(e) {
 	let t = Object.assign({
 		center: {
 			x: {
@@ -5543,90 +5546,91 @@ function Fe(e) {
 		},
 		pointsOnCircle: 8
 	}, e), n = $(t.center), r, i;
-	return t.pointsOnCircle === 8 ? (r = U(1, 3), i = r ** 2 + (r + 1) ** 2) : i = U(1, 20), new J(n, i, !0);
+	return t.pointsOnCircle === 8 ? (r = W(1, 3), i = r ** 2 + (r + 1) ** 2) : i = W(1, 20), new Y(n, i, !0);
 }
 //#endregion
 //#region src/randomization/geometry/rndLine.ts
-function Ie(e) {
+function Le(e) {
 	let t = Object.assign({ A: {
-		x: W(10),
-		y: W(10)
-	} }, e), n = new V(0, 0);
-	for (; n.isNull;) n.x = W(10, t.allow?.vertical ?? !0), n.y = W(10, t.allow?.horizontal ?? !0);
-	return t.slope === 1 ? n.x.sign() !== n.y.sign() && n.y.opposite() : t.slope === -1 && n.x.sign() !== n.y.sign() && n.y.opposite(), new K().fromPointAndDirection(new V(t.A.x, t.A.y), n);
+		x: G(10),
+		y: G(10)
+	} }, e), n = new H(0, 0);
+	for (; n.isNull;) n.x = G(10, t.allow?.vertical ?? !0), n.y = G(10, t.allow?.horizontal ?? !0);
+	return t.slope === 1 ? n.x.sign() !== n.y.sign() && n.y.opposite() : t.slope === -1 && n.x.sign() !== n.y.sign() && n.y.opposite(), new q().fromPointAndDirection(new H(t.A.x, t.A.y), n);
 }
 //#endregion
 //#region src/randomization/geometry/rndLine3.ts
-function Le(e) {
+function Re(e) {
 	let t = Object.assign({
 		A: {
-			x: W(10),
-			y: W(10),
-			z: W(10)
+			x: G(10),
+			y: G(10),
+			z: G(10)
 		},
 		direction: {
-			x: W(10),
-			y: W(10),
-			z: W(10)
+			x: G(10),
+			y: G(10),
+			z: G(10)
 		}
 	}, e);
-	return new Y(new B(t.A.x, t.A.y, t.A.z), new V(t.direction.x, t.direction.y, t.direction.z));
+	return new X(new V(t.A.x, t.A.y, t.A.z), new H(t.direction.x, t.direction.y, t.direction.z));
 }
 //#endregion
 //#region src/randomization/random.ts
-var Re = {
-	equation: (e) => Pe(e),
+var ze = {
+	equation: (e) => Fe(e),
 	polynom: (e) => Q(e),
 	monom: (e) => Me(e),
-	fraction: (e) => X(e),
-	number: (e, t, n) => U(e, t, n),
-	numberSym: (e, t) => W(e, t),
+	fraction: (e) => Z(e),
+	number: (e, t, n) => W(e, t, n),
+	numberSym: (e, t) => G(e, t),
 	prime: (e) => Ee(e),
 	triplet: (e, t) => Te(e, t),
 	bool: (e) => we(e),
 	array: (e, t) => De(e, t),
-	item: (e) => G(e),
+	item: (e) => K(e),
 	shuffle: (e) => Oe(e),
-	line: (e) => Ie(e),
-	line3: (e) => Le(e),
-	vector: (e) => new V($(e)),
+	line: (e) => Le(e),
+	line3: (e) => Re(e),
+	vector: (e) => new H($(e)),
 	point: (e) => $(e),
-	circle: (e) => Fe(e)
-}, ze = {
-	Numeric: d,
-	Fraction: g,
-	Root: b,
+	circle: (e) => Ie(e)
+}, Be = {
+	Numeric: p,
+	Fraction: m,
+	Root: v,
 	Monom: A,
-	Polynom: j,
-	Equation: M,
+	Polynom: M,
+	Equation: N,
 	Matrix: ve,
-	LinearSystem: F,
-	Factor: N,
-	PolyFactor: L,
-	LogicalSet: I,
-	Random: Re,
+	LinearSystem: I,
+	Factor: P,
+	PolyFactor: R,
+	LogicalSet: L,
+	Random: ze,
 	Geometry: {
-		Vector: V,
-		Point: B,
-		Line: K,
-		Triangle: q,
-		Circle: J,
-		Line3: Y,
+		Vector: H,
+		Point: V,
+		Line: q,
+		Triangle: J,
+		Circle: Y,
+		Line3: X,
 		Plane3: ke,
 		Sphere3: je
 	},
 	Errors: {
-		PiMathError: f,
-		ParseError: p,
-		DimensionError: m,
-		MathError: h,
-		InvalidArgumentError: ee,
-		NotImplementedError: te,
-		IndexError: ne
+		PiMathError: e,
+		ParseError: t,
+		DimensionError: n,
+		MathError: r,
+		InvalidArgumentError: i,
+		NotImplementedError: a,
+		IndexError: o,
+		StateError: s
 	},
-	NumExp: ge
+	NumExp: k
 };
 //#endregion
-export { J as Circle, m as DimensionError, M as Equation, S as EquationSolver, P as FACTOR_DISPLAY, re as FRAC_TYPE, N as Factor, g as Fraction, ne as IndexError, ee as InvalidArgumentError, K as Line, Y as Line3, F as LinearSystem, I as LogicalSet, h as MathError, ve as Matrix, A as Monom, te as NotImplementedError, ge as NumExp, d as Numeric, p as ParseError, f as PiMathError, ke as Plane3, B as Point, L as PolyFactor, j as Polynom, Re as Random, b as Root, Ae as SPHERE3_RELATIVE_POSITION, x as Solution, je as Sphere3, ae as TableOfSigns, q as Triangle, V as Vector, be as areVectorsColinears, ye as areVectorsEquals, ze as default, Se as determinantFromVectors, xe as dotProduct };
+export { Y as Circle, n as DimensionError, N as Equation, b as EquationSolver, F as FACTOR_DISPLAY, oe as FRAC_TYPE, P as Factor, m as Fraction, o as IndexError, i as InvalidArgumentError, q as Line, X as Line3, I as LinearSystem, L as LogicalSet, r as MathError, ve as Matrix, A as Monom, a as NotImplementedError, k as NumExp, p as Numeric, t as ParseError, e as PiMathError, ke as Plane3, V as Point, R as PolyFactor, M as Polynom, ze as Random, v as Root, Ae as SPHERE3_RELATIVE_POSITION, y as Solution, je as Sphere3, s as StateError, ce as TableOfSigns, J as Triangle, H as Vector, be as areVectorsColinears, ye as areVectorsEquals, Be as default, Se as determinantFromVectors, xe as dotProduct };
 
 //# sourceMappingURL=pimath.js.map

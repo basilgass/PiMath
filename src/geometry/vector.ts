@@ -6,7 +6,7 @@ import type {InputValue, IPiMathObject} from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 import {areVectorsColinears, areVectorsEquals, dotProduct} from "./geomMath"
-import {DimensionError} from "../errors"
+import {DimensionError, InvalidArgumentError} from "../errors"
 import {TupleN} from "./TupleN"
 import {type Point} from "./point"
 
@@ -26,7 +26,7 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
 
     public parse(...values: (Vector | Point)[] | InputValue<Fraction>[]): this {
         if (values.length === 0) {
-            throw new Error(`Invalid value`)
+            throw new InvalidArgumentError(`Invalid value`)
         }
 
         if (values.length === 1) {
@@ -39,7 +39,7 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
                 return this.fromString(values[0])
             }
 
-            throw new Error(`Invalid value`)
+            throw new InvalidArgumentError(`Invalid value`)
         }
 
         // Two values are given

@@ -5,7 +5,7 @@ import {Line3} from "./line3"
 import {Point} from "./point"
 import {Vector} from "./vector"
 import type {Plane3Config} from "../pimath.interface"
-import {DimensionError} from "../errors"
+import {DimensionError, NotImplementedError} from "../errors"
 
 
 export class Plane3 {
@@ -154,7 +154,7 @@ export class Plane3 {
         // Solve the asSystem:
         // p1 // p2 // z=0
         const pt = new Point(0, 0, 0)
-        throw new Error('Intersection with plane  not yet implemented !')
+        throw new NotImplementedError('Intersection with plane  not yet implemented !')
         return new Line3(pt, direction)
     }
 

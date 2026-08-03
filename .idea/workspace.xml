@@ -4,34 +4,40 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Corrected typos en some tests, discovered while updating PiExpression.">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Refactor to fail-&gt;throw instead of silent fail.&#10;Create errors classes  and tests.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/pimath.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/pimath.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/pimath.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/equation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/equationSolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/equationSolver.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eslint.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/eslint.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/factor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/factor.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/linearSystem.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/linearSystem.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/logicalset.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/logicalset.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/matrix.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/matrix.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/monom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/monom.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/algebra/operations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/operations.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/polyFactor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polyFactor.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/coefficients/fraction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/fraction.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/coefficients/root.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/coefficients/root.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/TupleN.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/TupleN.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/geomMath.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/geomMath.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/geometry/line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/errors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/errors.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/line3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/line3.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/geometry/plane3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/plane3.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/geometry/point.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/point.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/sphere3.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/sphere3.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geometry/triangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/triangle.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/geometry/vector.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/geometry/vector.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/helpers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/numeric.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/numeric.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/randomization/rndHelpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/randomization/rndHelpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/errors.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/errors.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig-build.tsbuildinfo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/algebra/equation.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/algebra/equation.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/errors.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/errors.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/errors.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/errors.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/geometry/point.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/geometry/point.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/helpers.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/helpers.d.ts.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/index.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/types/index.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/index.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types/numeric.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/types/numeric.d.ts.map" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,61 +105,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.000210664149279" />
-      <entry key="MS500" value="1.3855711965684894" />
-      <entry key="S2" value="3.8922804236065063" />
-      <entry key="S5" value="8.388060493687629" />
-      <entry key="S10" value="12.619961258429958" />
-      <entry key="S30" value="17.51639226086662" />
-      <entry key="S60" value="19.151938179570074" />
-      <entry key="M2" value="20.294252534502743" />
-      <entry key="M5" value="31.22095573233883" />
-      <entry key="M10" value="61.464979721670424" />
-      <entry key="M15" value="85.50902737267108" />
-      <entry key="M30" value="125.84228690098298" />
-      <entry key="H1" value="170.85094678729334" />
-      <entry key="H2" value="242.2320243014484" />
-      <entry key="H4" value="327.65877216945677" />
-      <entry key="D1" value="463.6759760382981" />
-      <entry key="W1" value="497.0562543203563" />
+      <entry key="MS100" value="1.6098242354786199" />
+      <entry key="MS500" value="2.6956335096730504" />
+      <entry key="S2" value="5.761389006883059" />
+      <entry key="S5" value="10.483302516290324" />
+      <entry key="S10" value="15.947788218297642" />
+      <entry key="S30" value="25.045790433094883" />
+      <entry key="S60" value="28.958327028678823" />
+      <entry key="M2" value="31.315860405253375" />
+      <entry key="M5" value="32.88525907145074" />
+      <entry key="M10" value="33.84455195970442" />
+      <entry key="M15" value="36.65138047487848" />
+      <entry key="M30" value="57.49859500920898" />
+      <entry key="H1" value="108.03148771989193" />
+      <entry key="H2" value="193.50730081670935" />
+      <entry key="H4" value="299.9023978914962" />
+      <entry key="D1" value="481.8170660963568" />
+      <entry key="W1" value="528.5912837956912" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
       <entry key="MS500" value="0.0" />
-      <entry key="S2" value="4.970893483008583E-139" />
-      <entry key="S5" value="4.770608572514693E-56" />
-      <entry key="S10" value="2.184296209674413E-28" />
-      <entry key="S30" value="6.255969693236843E-10" />
-      <entry key="S60" value="3.0223683826901874E-5" />
-      <entry key="M2" value="0.009594661341401713" />
-      <entry key="M5" value="0.7414935469853008" />
-      <entry key="M10" value="4.483445915686696" />
-      <entry key="M15" value="8.49340090469976" />
-      <entry key="M30" value="16.469960415266343" />
-      <entry key="H1" value="24.801811492365" />
-      <entry key="H2" value="35.94363549048742" />
-      <entry key="H4" value="48.93709839981813" />
-      <entry key="D1" value="69.88453812814099" />
-      <entry key="W1" value="75.07425906088521" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="3.7680183E-317" />
+      <entry key="S10" value="6.138767124146933E-159" />
+      <entry key="S30" value="1.9020321124343073E-53" />
+      <entry key="S60" value="5.2699804220106354E-27" />
+      <entry key="M2" value="1.2669528489711763E-13" />
+      <entry key="M5" value="3.299132033988688E-5" />
+      <entry key="M10" value="0.029905983931146317" />
+      <entry key="M15" value="0.30096250828458543" />
+      <entry key="M30" value="3.1003301389030375" />
+      <entry key="H1" value="10.760714170992411" />
+      <entry key="H2" value="23.675592047651346" />
+      <entry key="H4" value="39.71710991264804" />
+      <entry key="D1" value="67.4949069767701" />
+      <entry key="W1" value="74.7020413066539" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.952839085459976" />
-      <entry key="MS500" value="1.3723172783086957" />
-      <entry key="S2" value="3.8829997252378714" />
-      <entry key="S5" value="8.379494999017977" />
-      <entry key="S10" value="12.613097521704068" />
-      <entry key="S30" value="17.51303225861694" />
-      <entry key="S60" value="19.150101126117868" />
-      <entry key="M2" value="20.302535696526018" />
-      <entry key="M5" value="31.951974435332396" />
-      <entry key="M10" value="65.92211266556035" />
-      <entry key="M15" value="93.97136991590537" />
-      <entry key="M30" value="142.28416320321438" />
-      <entry key="H1" value="195.6322219342321" />
-      <entry key="H2" value="278.1606716050526" />
-      <entry key="H4" value="376.58544205499277" />
-      <entry key="D1" value="533.5579495293254" />
-      <entry key="W1" value="572.1301169884034" />
+      <entry key="MS100" value="1.5325952581709357" />
+      <entry key="MS500" value="2.669918491919" />
+      <entry key="S2" value="5.743593048974201" />
+      <entry key="S5" value="10.463201226357807" />
+      <entry key="S10" value="15.930829175855687" />
+      <entry key="S30" value="25.0368765434647" />
+      <entry key="S60" value="28.9532153386419" />
+      <entry key="M2" value="31.313110468599874" />
+      <entry key="M5" value="32.884140354674514" />
+      <entry key="M10" value="33.873697832707435" />
+      <entry key="M15" value="36.95085067660832" />
+      <entry key="M30" value="60.59344165124635" />
+      <entry key="H1" value="118.78319311850116" />
+      <entry key="H2" value="217.17297092771236" />
+      <entry key="H4" value="339.61101934757835" />
+      <entry key="D1" value="549.3094920080525" />
+      <entry key="W1" value="603.2929300857456" />
     </decayedShown>
   </component>
   <component name="OptimizeOnSaveOptions">
@@ -928,15 +934,7 @@
       <workItem from="1785688069257" duration="40000" />
       <workItem from="1785694240182" duration="41000" />
       <workItem from="1785747148323" duration="1070000" />
-      <workItem from="1785757229229" duration="5179000" />
-    </task>
-    <task id="LOCAL-00049" summary="Added a nice version of Matrix :)&#10;Dependencies and Build oK">
-      <option name="closed" value="true" />
-      <created>1747663380347</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1747663380347</updated>
+      <workItem from="1785757229229" duration="6924000" />
     </task>
     <task id="LOCAL-00050" summary="Added a nice version of Matrix :)&#10;Dependencies and Build oK">
       <option name="closed" value="true" />
@@ -1322,7 +1320,15 @@
       <option name="project" value="LOCAL" />
       <updated>1785758190550</updated>
     </task>
-    <option name="localTasksCounter" value="98" />
+    <task id="LOCAL-00098" summary="Refactor to fail-&gt;throw instead of silent fail.&#10;Create errors classes  and tests.">
+      <option name="closed" value="true" />
+      <created>1785762532409</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1785762532409</updated>
+    </task>
+    <option name="localTasksCounter" value="99" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1354,7 +1360,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Code cleanup, remove unused methods...." />
     <MESSAGE value="Removed the ambigoues &quot;isApproximative&quot; from fraction.ts. Added the getter and setter &quot;exact&quot;, as for other items (Solutions, Root, ...)" />
     <MESSAGE value="Optimization, code reduction of factorization in polynom.ts.&#10;Created test for polynom factorization." />
     <MESSAGE value="Make the rndPolynom.ts accept factorable (and now it works). A new option `commonConstant` to multiply by an integer." />
@@ -1379,7 +1384,8 @@
     <MESSAGE value="Some minor adjustments: &#10;&#10;- random.point makes a point&#10;- random.vector makes a vector&#10;- random.monom work now with custom fraction config&#10;- matrix display and tex accepts now common latex displays (pmatrix, vmatrix, Vmatrix, bmatrix, Bmatrix)" />
     <MESSAGE value="Extend PolyFactor.multiply to allow string, polynom, factor, ...&#10;&#10;package.json update" />
     <MESSAGE value="Corrected typos en some tests, discovered while updating PiExpression." />
-    <option name="LAST_COMMIT_MESSAGE" value="Corrected typos en some tests, discovered while updating PiExpression." />
+    <MESSAGE value="Refactor to fail-&gt;throw instead of silent fail.&#10;Create errors classes  and tests." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor to fail-&gt;throw instead of silent fail.&#10;Create errors classes  and tests." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

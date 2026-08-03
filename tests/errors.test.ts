@@ -6,13 +6,16 @@ import {
     MathError,
     InvalidArgumentError,
     NotImplementedError,
-    IndexError
+    IndexError,
+    StateError
 } from "../src/errors"
 import {Polynom} from "../src/algebra/polynom"
 import {Line} from "../src/geometry/line"
 import {Matrix} from "../src/algebra/matrix"
 import {Factor} from "../src/algebra/factor"
 import {Vector} from "../src/geometry/vector"
+import {Fraction} from "../src/coefficients/fraction"
+import {Sphere3} from "../src/geometry/sphere3"
 
 describe("Error hierarchy", () => {
     const cases: [string, new (m: string) => PiMathError][] = [
@@ -21,7 +24,8 @@ describe("Error hierarchy", () => {
         ["MathError", MathError],
         ["InvalidArgumentError", InvalidArgumentError],
         ["NotImplementedError", NotImplementedError],
-        ["IndexError", IndexError]
+        ["IndexError", IndexError],
+        ["StateError", StateError]
     ]
 
     test.each(cases)("%s extends PiMathError and Error", (name, Klass) => {
@@ -102,5 +106,27 @@ describe("Typed throws (phase 2)", () => {
     test("DimensionError and MathError are both PiMathError", () => {
         expect(new DimensionError("d")).toBeInstanceOf(PiMathError)
         expect(new MathError("m")).toBeInstanceOf(PiMathError)
+    })
+})
+
+describe("Typed throws (phase 3)", () => {
+    test("NotImplementedError: a stub method throws", () => {
+        expect(() => new Factor("3x+2", "1/2").primitive()).toThrow(NotImplementedError)
+    })
+
+    test("IndexError: matrix access out of range", () => {
+        expect(() => new Matrix(2, 2).setValue(9, 9, 1)).toThrow(IndexError)
+    })
+
+    test("InvalidArgumentError: non-integer amplification factor", () => {
+        expect(() => new Fraction(3).amplify(1.5)).toThrow(InvalidArgumentError)
+    })
+
+    test("StateError: operating on an uninitialized Sphere3", () => {
+        expect(() => new Sphere3().center).toThrow(StateError)
+    })
+
+    test("StateError is a PiMathError", () => {
+        expect(new StateError("s")).toBeInstanceOf(PiMathError)
     })
 })

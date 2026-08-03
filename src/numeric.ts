@@ -1,3 +1,4 @@
+import {NotImplementedError} from "./errors"
 
 function decompose(value: number): number[][] {
     const divs: number[] = dividers(value)
@@ -131,7 +132,7 @@ function periodic(value: number): number {
     }
 
     // Find the periodic if it exists.
-    throw new Error('Periodic value: Not implemented yet')
+    throw new NotImplementedError('Periodic value: Not implemented yet')
 }
 
 /**

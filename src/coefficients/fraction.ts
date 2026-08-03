@@ -1,6 +1,6 @@
 import type {compareSign, IExpression, InputValue, IPiMathObject} from "../pimath.interface"
 import {Numeric} from "../numeric"
-import {MathError} from "../errors"
+import {InvalidArgumentError, MathError} from "../errors"
 
 export enum FRAC_TYPE {
     frac = 'frac',
@@ -264,7 +264,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
     public amplify = (k: number): this => {
         if (!Number.isSafeInteger(k)) {
-            throw new Error("The amplification factor must be a safe integer.")
+            throw new InvalidArgumentError("The amplification factor must be a safe integer.")
         }
 
         this.#numerator *= k
@@ -406,11 +406,11 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         const p: number = decimal ? decimal.length : 0
 
         if (!Number.isSafeInteger(length) || length <= 0) {
-            throw new Error("The periodic length must be a positive integer.")
+            throw new InvalidArgumentError("The periodic length must be a positive integer.")
         }
 
         if (length > p) {
-            throw new Error(`The periodic length (${length}) cannot exceed the number of decimal digits (${p}).`)
+            throw new InvalidArgumentError(`The periodic length (${length}) cannot exceed the number of decimal digits (${p}).`)
         }
 
         const power = Math.pow(10, p)
@@ -662,7 +662,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
         // if p is not a safe integer, throw error
         if (!Number.isSafeInteger(p)) {
-            throw new Error("The root must be an integer.")
+            throw new InvalidArgumentError("The root must be an integer.")
         }
 
         // If negative, inverse the fraction

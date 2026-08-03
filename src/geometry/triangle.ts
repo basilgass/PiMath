@@ -4,6 +4,7 @@ import {Vector} from "./vector"
 import {Point} from "./point"
 import type {InputValue, remarquableLines} from "../pimath.interface"
 import {Numeric} from "../numeric"
+import {IndexError, InvalidArgumentError} from "../errors"
 
 type TRIANGLE_SIDES = 'AB' | 'AC' | 'BC'
 
@@ -62,7 +63,7 @@ export class Triangle {
             const v: Fraction[] = values.map((x: unknown) => new Fraction(x as string))
 
             if (v.some(x => x.isNaN())) {
-                throw new Error('One of the values is not a valid number')
+                throw new InvalidArgumentError('One of the values is not a valid number')
             }
 
             return this.fromCoordinates(v[0], v[1], v[2], v[3], v[4], v[5])
@@ -436,7 +437,7 @@ export class Triangle {
         }
 
         if (d1 === undefined || d2 === undefined) {
-            throw new Error(`The point ${pt} does not exist`)
+            throw new IndexError(`The point ${pt} does not exist`)
         }
 
         const director = internal

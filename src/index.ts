@@ -25,7 +25,8 @@ import {
     MathError,
     InvalidArgumentError,
     NotImplementedError,
-    IndexError
+    IndexError,
+    StateError
 } from "./errors"
 
 // export everything to make them available as module
@@ -74,7 +75,8 @@ const PiMath = {
         MathError,
         InvalidArgumentError,
         NotImplementedError,
-        IndexError
+        IndexError,
+        StateError
     },
     NumExp
 }

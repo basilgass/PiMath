@@ -2,6 +2,7 @@ import {Point} from "./point"
 import {Fraction} from "../coefficients"
 import {Equation, Polynom} from "../algebra"
 import type {InputValue} from "../pimath.interface"
+import {StateError} from "../errors"
 
 enum SPHERE3_FORMAT {
     DEVELOPPED,
@@ -66,21 +67,21 @@ export class Sphere3 {
 
     get center(): Point {
         if (this.#center === undefined) {
-            throw new Error('Sphere3 is undefined')
+            throw new StateError('Sphere3 is undefined')
         }
         return this.#center
     }
 
     get squareRadius(): Fraction {
         if (this.#squareRadius === undefined) {
-            throw new Error('Sphere3 is undefined')
+            throw new StateError('Sphere3 is undefined')
         }
         return this.#squareRadius
     }
 
     get radius(): { tex: string, display: string, value: number } {
         if (this.#squareRadius === undefined) {
-            throw new Error('Sphere3 is undefined')
+            throw new StateError('Sphere3 is undefined')
         }
 
         if (this.#squareRadius.isSquare()) {
@@ -100,7 +101,7 @@ export class Sphere3 {
 
     get equation(): Equation {
         if (this.#equation === undefined) {
-            throw new Error('Sphere3 is undefined')
+            throw new StateError('Sphere3 is undefined')
         }
         return this.#equation
     }
@@ -133,7 +134,7 @@ export class Sphere3 {
 
     #output = (asTex: boolean): string => {
         if (this.#equation === undefined) {
-            throw new Error('Sphere3 is undefined')
+            throw new StateError('Sphere3 is undefined')
         }
 
         if (this.#format === SPHERE3_FORMAT.DEVELOPPED) {
