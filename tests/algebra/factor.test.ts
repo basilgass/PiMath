@@ -1,7 +1,7 @@
-import { describe, expect, test } from "vitest"
-import { Factor } from "../../src/algebra/factor"
-import { Polynom } from "../../src/algebra/polynom"
-import { Fraction } from "../../src/coefficients/fraction"
+import {describe, expect, test} from "vitest"
+import {Factor} from "../../src/algebra/factor"
+import {Polynom} from "../../src/algebra/polynom"
+import {Fraction} from "../../src/coefficients/fraction"
 
 
 describe("Factors creation", () => {
@@ -86,7 +86,7 @@ describe("Factors: compare functions", () => {
 
         expect(F.isSameAs('3x+2')).toBeTruthy()
         expect(F.isSameAs('3x-2')).toBeFalsy()
-        expect(F.isSameAs('6x+4)')).toBeFalsy()
+        expect(F.isSameAs('6x+4')).toBeFalsy()
     })
 
     test('should compare to zero', () => {

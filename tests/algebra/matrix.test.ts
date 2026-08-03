@@ -22,7 +22,7 @@ describe('Matrix creation', () => {
         expect(M.display).toEqual(str)
     })
     test('clone Matrix', () => {
-        const A = new Matrix().fromString('((1,2),(3,4)')
+        const A = new Matrix().fromString('((1,2),(3,4))')
 
         const B = A.clone()
 
@@ -207,15 +207,15 @@ describe('Matrix operations', () => {
         expect(() => A.add(C)).not.toThrowError()
     })
     test('add two Matrix', () => {
-        const A = new Matrix().fromString('((1,2,3),(4,5,6)')
-        const B = new Matrix().fromString('((3,4,5),(-1,-2,-3)')
+        const A = new Matrix().fromString('((1,2,3),(4,5,6))')
+        const B = new Matrix().fromString('((3,4,5),(-1,-2,-3))')
 
         A.add(B)
         expect(A.display).toBe('((4,6,8),(3,3,3))')
     })
     test('subtract two Matrix', () => {
-        const A = new Matrix().fromString('((1,2,3),(4,5,6)')
-        const B = new Matrix().fromString('((3,4,5),(-1,-2,-3)')
+        const A = new Matrix().fromString('((1,2,3),(4,5,6))')
+        const B = new Matrix().fromString('((3,4,5),(-1,-2,-3))')
 
         A.subtract(B)
         expect(A.display).toBe('((-2,-2,-2),(5,7,9))')
@@ -241,21 +241,21 @@ describe('Matrix operations', () => {
 
     })
     test('multiply matrix by scalar', () => {
-        const A = new Matrix().fromString('((1,2),(3,4)')
+        const A = new Matrix().fromString('((1,2),(3,4))')
         A.multiply(3)
 
         expect(A.display).toBe('((3,6),(9,12))')
     })
 
     test('raise Matrix by integer',()=>{
-        const A = new Matrix().fromString('((1,2),(3,4)')
+        const A = new Matrix().fromString('((1,2),(3,4))')
         A.pow(3)
 
         expect(A.display).toBe('((37,54),(81,118))')
     })
 
     test('invert a matrix', () => {
-        const A = new Matrix().fromString('((1,2),(3,4)')
+        const A = new Matrix().fromString('((1,2),(3,4))')
         A.inverse()
 
         expect(A.display).toBe('((-2,1),(3/2,-1/2))')

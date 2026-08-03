@@ -56,6 +56,6 @@
     "vue-router": "^5.2.0"
   },
   "dependencies": {
-    "piexpression": "^0.1.4"
+    "piexpression": "^0.1.5"
   }
 }
