@@ -1,7 +1,7 @@
 import {describe, expect, it, test} from "vitest"
-import {Fraction, Monom, Polynom} from "../../src"
+import type {randomPolynomConfig} from "../../src"
+import {Monom, Polynom} from "../../src"
 import {rndPolynom} from "../../src/randomization/algebra/rndPolynom"
-import type {randomPolynomConfig} from "../../src/randomization/rndTypes"
 
 describe('Polynom creation', () => {
     test('create Polynom', () => {
@@ -59,6 +59,24 @@ describe('Polynom creation', () => {
     test('parse trivial polynom (degree 0) with incomplete decimal value', () => {
         const P = new Polynom('2.')
         expect(P.display).toBe('2')
+    })
+
+    test('parse monom as polynom with relative power', ()=>{
+        const P = new Polynom('2/3x^(-4)')
+
+        expect(P.display).toBe('2/3x^(-4)')
+    })
+
+    test('parse monom as polynom with rational power', ()=>{
+        const P = new Polynom('2/3x^(5/7)')
+
+        expect(P.display).toBe('2/3x^(5/7)')
+    })
+
+    test('parse monom as polynom with negative rational power', ()=>{
+        const P = new Polynom('2/3x^(-5/7)')
+
+        expect(P.display).toBe('2/3x^(-5/7)')
     })
 
     test('create Polynom from [x] and numbers', () => {
@@ -175,7 +193,7 @@ describe('Polynom operations', () => {
         const P = new Polynom('x^2+2x+1')
         const Q = new Polynom('x+2')
 
-        expect(() => P.divide(Q)).toThrowError()
+        expect(() => P.divide(Q)).toThrow()
     })
     test('raise Polynom by integer', () => {
         const P = new Polynom('x+2')
@@ -186,8 +204,8 @@ describe('Polynom operations', () => {
 
     /* specific Polynom tests */
     it('euclidian division of two Polynoms', () => {
-        const P = new Polynom('(x-3)(x^2+5x-4)+12'),
-            D = new Polynom('x-3')
+        const P = new Polynom('(x-3)(x^2+5x-4)+12')
+            const D = new Polynom('x-3')
 
         const euclidian = P.euclidean(D)
 
@@ -201,8 +219,8 @@ describe('Polynom operations', () => {
         expect(P.derivative('y').display).toBe('0')
     })
     test('integrate Polynom', () => {
-        const F = new Polynom('2x^3-3x^2+x-3'),
-            G = new Polynom('3/5x^2+4')
+        const F = new Polynom('2x^3-3x^2+x-3')
+            const G = new Polynom('3/5x^2+4')
 
         expect(F.integrate(0, 2).value).toBe(-4)
         expect(G.integrate(-3, 3).display).toBe('174/5')
@@ -264,8 +282,8 @@ describe('Polynom evaluation', () => {
     test('evaluate Polynom', () => {
         const P = new Polynom('2x+1')
 
-        const evalF = P.evaluate(3) as Fraction
-        const evalN = P.evaluate(-2, true) as number
+        const evalF = P.evaluate(3)
+        const evalN = P.evaluate(-2, true)
 
         expect(evalF.display).toBe('7')
         expect(evalN).toBe(-3)

@@ -1150,8 +1150,8 @@ export class Polynom implements IPiMathObject<Polynom>,
                     } else if (element.token === '^') {
                         if (b.degree().isStrictlyPositive()) {
                             throw new MathError('Cannot elevate a polynom with another polynom !')
-                        } else if (b.monoms[0].coefficient.isRelative())
-                            // Integer power
+                        } else if (b.monoms[0].coefficient.isNatural())
+                            // Natural (positive) power
                         {
                             stack.push(a.pow(b.monoms[0].coefficient.value))
                         } else {
