@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Refactor to fail-&gt;throw instead of silent fail (finished).">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Corrected Polynom parsing. It now parse also `x^(-5)`, in a similar way than with `x^(-2/3)`">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/algebra/polynom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/algebra/polynom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/algebra/polynom.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,61 +73,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="3.1260615459261044E-23" />
-      <entry key="MS500" value="3.15500102614735E-5" />
-      <entry key="S2" value="0.07494624461194455" />
-      <entry key="S5" value="0.354731659391789" />
-      <entry key="S10" value="0.595595611778861" />
-      <entry key="S30" value="0.9170976638020762" />
-      <entry key="S60" value="2.162436824839186" />
-      <entry key="M2" value="7.488807318904116" />
-      <entry key="M5" value="22.557246625967938" />
-      <entry key="M10" value="34.4780485956477" />
-      <entry key="M15" value="40.08546088300231" />
-      <entry key="M30" value="50.15951547192553" />
-      <entry key="H1" value="77.74812581508796" />
-      <entry key="H2" value="149.9960726424682" />
-      <entry key="H4" value="266.42669341958754" />
-      <entry key="D1" value="509.0974654085766" />
-      <entry key="W1" value="578.304258069145" />
+      <entry key="MS100" value="1.476342399156678" />
+      <entry key="MS500" value="2.337114308764475" />
+      <entry key="S2" value="5.814749189284779" />
+      <entry key="S5" value="7.960782516866603" />
+      <entry key="S10" value="9.412434573085731" />
+      <entry key="S30" value="17.570266703872413" />
+      <entry key="S60" value="27.784570366098578" />
+      <entry key="M2" value="39.93977374398775" />
+      <entry key="M5" value="60.871030922113924" />
+      <entry key="M10" value="77.00760774139623" />
+      <entry key="M15" value="84.7577380612297" />
+      <entry key="M30" value="97.41049881005573" />
+      <entry key="H1" value="126.13818282529759" />
+      <entry key="H2" value="198.74227951557606" />
+      <entry key="H4" value="315.53553472131887" />
+      <entry key="D1" value="559.5164439304482" />
+      <entry key="W1" value="629.210415570272" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.000000000000028" />
-      <entry key="S5" value="1.0000037936026331" />
-      <entry key="S10" value="1.0019477174008384" />
-      <entry key="S30" value="1.1257144854948486" />
-      <entry key="S60" value="1.4049073994673904" />
-      <entry key="M2" value="2.0305982819980044" />
-      <entry key="M5" value="3.441744782255706" />
-      <entry key="M10" value="4.448986867283304" />
-      <entry key="M15" value="4.894050034767115" />
-      <entry key="M30" value="5.610033580451345" />
-      <entry key="H1" value="8.45336716798018" />
-      <entry key="H2" value="17.836546478630034" />
-      <entry key="H4" value="34.18905084261009" />
-      <entry key="D1" value="69.76277536361658" />
-      <entry key="W1" value="80.09777112037898" />
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="1.0126276484485272E-82" />
+      <entry key="S2" value="3.1722137647074636E-21" />
+      <entry key="S5" value="6.317520002309683E-9" />
+      <entry key="S10" value="7.963748738019982E-5" />
+      <entry key="S30" value="0.04840078635451288" />
+      <entry key="S60" value="0.29131294345646946" />
+      <entry key="M2" value="0.9246557084452305" />
+      <entry key="M5" value="2.512586829710167" />
+      <entry key="M10" value="3.801301630602155" />
+      <entry key="M15" value="4.406724267548903" />
+      <entry key="M30" value="5.323401184617791" />
+      <entry key="H1" value="8.23458279962919" />
+      <entry key="H2" value="17.604216617950605" />
+      <entry key="H4" value="33.96565633359131" />
+      <entry key="D1" value="69.68659492706581" />
+      <entry key="W1" value="80.08527010075977" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="3.367244706308952E-6" />
-      <entry key="MS500" value="0.08044178530443752" />
-      <entry key="S2" value="0.5797400137704527" />
-      <entry key="S5" value="1.0720241684213208" />
-      <entry key="S10" value="1.4263352881837308" />
-      <entry key="S30" value="1.9710206578747658" />
-      <entry key="S60" value="3.5160953990731367" />
-      <entry key="M2" value="9.470366466924629" />
-      <entry key="M5" value="25.95812004832946" />
-      <entry key="M10" value="38.8991146917058" />
-      <entry key="M15" value="44.9586987668388" />
-      <entry key="M30" value="55.75751877461743" />
-      <entry key="H1" value="86.19299360822093" />
-      <entry key="H2" value="167.82440591452436" />
-      <entry key="H4" value="300.608085220332" />
-      <entry key="D1" value="578.8576234436309" />
-      <entry key="W1" value="658.4015982794764" />
+      <entry key="MS100" value="1.3461207411370637" />
+      <entry key="MS500" value="2.2909163949149343" />
+      <entry key="S2" value="5.781906573145145" />
+      <entry key="S5" value="7.942392735694801" />
+      <entry key="S10" value="9.400923661694355" />
+      <entry key="S30" value="17.606085092136748" />
+      <entry key="S60" value="28.05719864476606" />
+      <entry key="M2" value="40.83653357206424" />
+      <entry key="M5" value="63.351029183812294" />
+      <entry key="M10" value="80.78357293461173" />
+      <entry key="M15" value="89.14471085994937" />
+      <entry key="M30" value="102.721965757599" />
+      <entry key="H1" value="134.36422364632645" />
+      <entry key="H2" value="216.33825779181558" />
+      <entry key="H4" value="349.4935157919316" />
+      <entry key="D1" value="629.2004133137387" />
+      <entry key="W1" value="709.2952532456236" />
     </decayedShown>
   </component>
   <component name="OptimizeOnSaveOptions">
@@ -543,7 +541,7 @@
       <command value="npm run test" />
     </option>
   </component>
-  <component name="RunManager" selected="Vitest.Polynom creation">
+  <component name="RunManager" selected="Vitest.Polynom creation.parse monom as polynom with relative power">
     <configuration name="All Tests" type="JavaScriptTestRunnerVitest" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -579,20 +577,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Polynom creation.parse monom as polynom with rational power" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
-      <working-dir value="$PROJECT_DIR$" />
-      <vitest-options value="--run" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tests/algebra/polynom.test.ts" />
-      <test-names>
-        <test-name value="Polynom creation" />
-        <test-name value="parse monom as polynom with rational power" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="Polynom creation.parse monom as polynom with relative power" type="JavaScriptTestRunnerVitest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <vitest-package value="$PROJECT_DIR$/node_modules/vitest" />
@@ -607,6 +591,16 @@
       </test-names>
       <method v="2" />
     </configuration>
+    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <configuration name="test" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -618,20 +612,20 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="npm.build" />
       <item itemvalue="npm.test" />
       <item itemvalue="Vitest.All Tests" />
       <item itemvalue="Vitest.Polynom creation" />
       <item itemvalue="Vitest.Polynom creation.parse monom as polynom with negative rational power" />
-      <item itemvalue="Vitest.Polynom creation.parse monom as polynom with rational power" />
       <item itemvalue="Vitest.Polynom creation.parse monom as polynom with relative power" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.build" />
+        <item itemvalue="Vitest.Polynom creation.parse monom as polynom with relative power" />
         <item itemvalue="npm.test" />
         <item itemvalue="Vitest.Polynom creation" />
-        <item itemvalue="Vitest.Polynom creation.parse monom as polynom with relative power" />
         <item itemvalue="Vitest.Polynom creation.parse monom as polynom with negative rational power" />
-        <item itemvalue="Vitest.Polynom creation.parse monom as polynom with rational power" />
       </list>
     </recent_temporary>
   </component>
@@ -911,15 +905,7 @@
       <workItem from="1785694240182" duration="41000" />
       <workItem from="1785747148323" duration="1070000" />
       <workItem from="1785757229229" duration="7877000" />
-      <workItem from="1786176279134" duration="3412000" />
-    </task>
-    <task id="LOCAL-00051" summary="Added a nice version of Matrix :)&#10;Dependencies and Build oK">
-      <option name="closed" value="true" />
-      <created>1755701681887</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1755701681887</updated>
+      <workItem from="1786176279134" duration="4246000" />
     </task>
     <task id="LOCAL-00052" summary="Add transpose, inverse and aij to matrix">
       <option name="closed" value="true" />
@@ -1305,7 +1291,15 @@
       <option name="project" value="LOCAL" />
       <updated>1785769067068</updated>
     </task>
-    <option name="localTasksCounter" value="100" />
+    <task id="LOCAL-00100" summary="Corrected Polynom parsing. It now parse also `x^(-5)`, in a similar way than with `x^(-2/3)`">
+      <option name="closed" value="true" />
+      <created>1786181758218</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1786181758218</updated>
+    </task>
+    <option name="localTasksCounter" value="101" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1337,7 +1331,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Optimization, code reduction of factorization in polynom.ts.&#10;Created test for polynom factorization." />
     <MESSAGE value="Make the rndPolynom.ts accept factorable (and now it works). A new option `commonConstant` to multiply by an integer." />
     <MESSAGE value="completed root.test.ts" />
     <MESSAGE value="Updated circle.ts and circle.test.ts&#10;Updated triangle.ts to work properly. Next step: tests for triangle" />
@@ -1362,7 +1355,8 @@
     <MESSAGE value="Corrected typos en some tests, discovered while updating PiExpression." />
     <MESSAGE value="Refactor to fail-&gt;throw instead of silent fail.&#10;Create errors classes  and tests." />
     <MESSAGE value="Refactor to fail-&gt;throw instead of silent fail (finished)." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor to fail-&gt;throw instead of silent fail (finished)." />
+    <MESSAGE value="Corrected Polynom parsing. It now parse also `x^(-5)`, in a similar way than with `x^(-2/3)`" />
+    <option name="LAST_COMMIT_MESSAGE" value="Corrected Polynom parsing. It now parse also `x^(-5)`, in a similar way than with `x^(-2/3)`" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

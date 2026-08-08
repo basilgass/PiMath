@@ -3134,7 +3134,7 @@ var M = class e {
 						n.push(a.divide(e.monoms[0].coefficient));
 					} else if (i.token === "^") {
 						if (e.degree().isStrictlyPositive()) throw new r("Cannot elevate a polynom with another polynom !");
-						if (e.monoms[0].coefficient.isRelative()) n.push(a.pow(e.monoms[0].coefficient.value));
+						if (e.monoms[0].coefficient.isNatural()) n.push(a.pow(e.monoms[0].coefficient.value));
 						else if (a.monoms.length === 1 && a.monoms[0].coefficient.isOne()) {
 							for (let t in a.monoms[0].literal) a.monoms[0].literal[t].multiply(e.monoms[0].coefficient);
 							n.push(a);
