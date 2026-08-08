@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Corrected Polynom parsing. It now parse also `x^(-5)`, in a similar way than with `x^(-2/3)`">
+    <list default="true" id="83119c8d-bcab-44f9-adac-36146757c6ee" name="Changes" comment="Build done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,61 +74,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.476342399156678" />
-      <entry key="MS500" value="2.337114308764475" />
-      <entry key="S2" value="5.814749189284779" />
-      <entry key="S5" value="7.960782516866603" />
-      <entry key="S10" value="9.412434573085731" />
-      <entry key="S30" value="17.570266703872413" />
-      <entry key="S60" value="27.784570366098578" />
-      <entry key="M2" value="39.93977374398775" />
-      <entry key="M5" value="60.871030922113924" />
-      <entry key="M10" value="77.00760774139623" />
-      <entry key="M15" value="84.7577380612297" />
-      <entry key="M30" value="97.41049881005573" />
-      <entry key="H1" value="126.13818282529759" />
-      <entry key="H2" value="198.74227951557606" />
-      <entry key="H4" value="315.53553472131887" />
-      <entry key="D1" value="559.5164439304482" />
-      <entry key="W1" value="629.210415570272" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0" />
+      <entry key="S10" value="1.0" />
+      <entry key="S30" value="1.0" />
+      <entry key="S60" value="1.0" />
+      <entry key="M2" value="1.0000000000021005" />
+      <entry key="M5" value="1.0001803791998627" />
+      <entry key="M10" value="1.1283165835575737" />
+      <entry key="M15" value="2.194033186486647" />
+      <entry key="M30" value="12.675604061778692" />
+      <entry key="H1" value="44.97646084230024" />
+      <entry key="H2" value="118.64840326934282" />
+      <entry key="H4" value="244.19949642803346" />
+      <entry key="D1" value="538.7640790289523" />
+      <entry key="W1" value="629.1588840679723" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="1.0126276484485272E-82" />
-      <entry key="S2" value="3.1722137647074636E-21" />
-      <entry key="S5" value="6.317520002309683E-9" />
-      <entry key="S10" value="7.963748738019982E-5" />
-      <entry key="S30" value="0.04840078635451288" />
-      <entry key="S60" value="0.29131294345646946" />
-      <entry key="M2" value="0.9246557084452305" />
-      <entry key="M5" value="2.512586829710167" />
-      <entry key="M10" value="3.801301630602155" />
-      <entry key="M15" value="4.406724267548903" />
-      <entry key="M30" value="5.323401184617791" />
-      <entry key="H1" value="8.23458279962919" />
-      <entry key="H2" value="17.604216617950605" />
-      <entry key="H4" value="33.96565633359131" />
-      <entry key="D1" value="69.68659492706581" />
-      <entry key="W1" value="80.08527010075977" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="8.452603283303953E-174" />
+      <entry key="S30" value="2.2916241825606864E-58" />
+      <entry key="S60" value="2.004496355051543E-29" />
+      <entry key="M2" value="7.670131326277154E-15" />
+      <entry key="M5" value="5.856662217965997E-6" />
+      <entry key="M10" value="0.005803592100257608" />
+      <entry key="M15" value="0.05842861293237495" />
+      <entry key="M30" value="0.6129768126226575" />
+      <entry key="H1" value="2.794274230582035" />
+      <entry key="H2" value="10.254876069698026" />
+      <entry key="H4" value="25.923692855504164" />
+      <entry key="D1" value="66.61807108580435" />
+      <entry key="W1" value="79.57172266023795" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.3461207411370637" />
-      <entry key="MS500" value="2.2909163949149343" />
-      <entry key="S2" value="5.781906573145145" />
-      <entry key="S5" value="7.942392735694801" />
-      <entry key="S10" value="9.400923661694355" />
-      <entry key="S30" value="17.606085092136748" />
-      <entry key="S60" value="28.05719864476606" />
-      <entry key="M2" value="40.83653357206424" />
-      <entry key="M5" value="63.351029183812294" />
-      <entry key="M10" value="80.78357293461173" />
-      <entry key="M15" value="89.14471085994937" />
-      <entry key="M30" value="102.721965757599" />
-      <entry key="H1" value="134.36422364632645" />
-      <entry key="H2" value="216.33825779181558" />
-      <entry key="H4" value="349.4935157919316" />
-      <entry key="D1" value="629.2004133137387" />
-      <entry key="W1" value="709.2952532456236" />
+      <entry key="MS100" value="0.05751172816405469" />
+      <entry key="MS500" value="0.5648736072850618" />
+      <entry key="S2" value="0.8669375635146866" />
+      <entry key="S5" value="0.9444851378072516" />
+      <entry key="S10" value="0.9718462521444694" />
+      <entry key="S30" value="0.9905259430837285" />
+      <entry key="S60" value="0.9952516983576207" />
+      <entry key="M2" value="0.9976230241738744" />
+      <entry key="M5" value="0.9992346902323389" />
+      <entry key="M10" value="1.1336055795354274" />
+      <entry key="M15" value="2.2518823698300108" />
+      <entry key="M30" value="13.287047091973324" />
+      <entry key="H1" value="47.767755960080464" />
+      <entry key="H2" value="128.8984396825025" />
+      <entry key="H4" value="270.1173108327844" />
+      <entry key="D1" value="605.3796367533614" />
+      <entry key="W1" value="708.7301765853149" />
     </decayedShown>
   </component>
   <component name="OptimizeOnSaveOptions">
@@ -536,9 +537,9 @@
       <command value="npm run dev" />
       <command value="npm run dependency-cruise" />
       <command value="npm run test --polynom" />
-      <command value="npm run build" />
       <command value="npm run install" />
       <command value="npm run test" />
+      <command value="npm run build" />
     </option>
   </component>
   <component name="RunManager" selected="Vitest.Polynom creation.parse monom as polynom with relative power">
@@ -905,15 +906,7 @@
       <workItem from="1785694240182" duration="41000" />
       <workItem from="1785747148323" duration="1070000" />
       <workItem from="1785757229229" duration="7877000" />
-      <workItem from="1786176279134" duration="4246000" />
-    </task>
-    <task id="LOCAL-00052" summary="Add transpose, inverse and aij to matrix">
-      <option name="closed" value="true" />
-      <created>1757343182829</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1757343182829</updated>
+      <workItem from="1786176279134" duration="5819000" />
     </task>
     <task id="LOCAL-00053" summary="Consolidate equationSolver to be more robust and more optimize. Still many things to do.">
       <option name="closed" value="true" />
@@ -1299,7 +1292,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786181758218</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL-00101" summary="Build done">
+      <option name="closed" value="true" />
+      <created>1786182661406</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1786182661406</updated>
+    </task>
+    <option name="localTasksCounter" value="102" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1331,7 +1332,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Make the rndPolynom.ts accept factorable (and now it works). A new option `commonConstant` to multiply by an integer." />
     <MESSAGE value="completed root.test.ts" />
     <MESSAGE value="Updated circle.ts and circle.test.ts&#10;Updated triangle.ts to work properly. Next step: tests for triangle" />
     <MESSAGE value="Finished the tests for the triangle.ts" />
@@ -1356,7 +1356,8 @@
     <MESSAGE value="Refactor to fail-&gt;throw instead of silent fail.&#10;Create errors classes  and tests." />
     <MESSAGE value="Refactor to fail-&gt;throw instead of silent fail (finished)." />
     <MESSAGE value="Corrected Polynom parsing. It now parse also `x^(-5)`, in a similar way than with `x^(-2/3)`" />
-    <option name="LAST_COMMIT_MESSAGE" value="Corrected Polynom parsing. It now parse also `x^(-5)`, in a similar way than with `x^(-2/3)`" />
+    <MESSAGE value="Build done" />
+    <option name="LAST_COMMIT_MESSAGE" value="Build done" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

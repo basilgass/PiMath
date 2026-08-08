@@ -2234,7 +2234,10 @@ var he = E("^", "*", "/", "+", "-"), D = E("^", "*", "/", "+", "-", "%", "sin", 
 					});
 					break;
 				case w.OPERATION:
-					if (r.length > 0) {
+					if (n.length === 0 && r.length === 0 && (a === "-" || a === "+") && n.push({
+						token: "0",
+						tokenType: w.COEFFICIENT
+					}), r.length > 0) {
 						let e = r[r.length - 1];
 						for (; e.token in this.#n && (this.#n[a].associative === "left" && this.#n[a].precedence <= this.#n[e.token].precedence || this.#n[a].associative === "right" && this.#n[a].precedence < this.#n[e.token].precedence) && (n.push(r.pop() ?? {
 							token: "",
@@ -2350,8 +2353,8 @@ var he = E("^", "*", "/", "+", "-"), D = E("^", "*", "/", "+", "-", "%", "sin", 
 				if (n === void 0 || e === void 0) throw new S(`The addition values ${n ?? "a"} or ${e ?? "b"} are not defined`);
 				t.push(n + e);
 			} else if (n.token === "-") {
-				let e = t.pop(), n = t.pop() ?? 0;
-				if (e === void 0) throw new S("The subtraction value b is  not defined");
+				let e = t.pop(), n = t.pop();
+				if (n === void 0 || e === void 0) throw new S(`The subtraction values ${n ?? "a"} or ${e ?? "b"} are not defined`);
 				t.push(n - e);
 			} else if (n.token === "%") {
 				let e = t.pop(), n = t.pop();
