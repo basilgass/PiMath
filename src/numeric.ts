@@ -1,9 +1,8 @@
-import {NotImplementedError} from "./errors"
-
 function decompose(value: number): number[][] {
     const divs: number[] = dividers(value)
     const arr: number[][] = []
-    let u, v
+    let u: number
+    let v: number
 
     while (divs.length > 0) {
         u = divs.shift() ?? 1
@@ -67,8 +66,8 @@ function greatestCommonDivisor(...values: number[]): number {
         return gcd2(b, a % b)
     }
 
-    let g = 1,
-        i = 2
+    let g = 1
+        let i = 2
 
     // Nothing is given
     if (values.length === 0) {
@@ -118,23 +117,6 @@ function numberCorrection(value: number, number_of_digits = 3) {
     return +value.toFixed(number_of_digits)
 }
 
-function periodic(value: number): number {
-    if (Number.isSafeInteger(value)) {
-        return 0
-    }
-
-    // Assume it's with decimal.
-    const decimal = (value.toString()).split('.')[0]
-
-    // The decimal part is limited
-    if (decimal.length < 10) {
-        return 0
-    }
-
-    // Find the periodic if it exists.
-    throw new NotImplementedError('Periodic value: Not implemented yet')
-}
-
 /**
  * Get the list of the nth first prime numbers.
  * @param nb : number of primes to choose from
@@ -150,8 +132,8 @@ function primes(nb?: number): number[] {
 
 function pythagoreanTripletsWithTarget(target: number, targetIsSquare?: boolean): [number,number,number][] {
     // méthode inverse, à partir du triplet.
-    const triplets:[number, number, number][] = [],
-        targetValue = targetIsSquare === true ? +target : target ** 2
+    const triplets:[number, number, number][] = []
+        const targetValue = targetIsSquare === true ? +target : target ** 2
     for (let u = 0; u <= target; u++) {
         for (let v = 0; v <= target; v++) {
             if (u ** 2 + v ** 2 === targetValue) {
@@ -195,7 +177,6 @@ export const Numeric = {
     gcd: greatestCommonDivisor,
     lcm: leastCommonMultiple,
     numberCorrection,
-    periodic,
     primes,
     pythagoreanTripletsWithTarget,
     round,

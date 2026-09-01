@@ -38,7 +38,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
      * Parse the value to get the numerator and denominator
      * @param value : number or string to parse to get the fraction
      */
-    public parse = (value: InputValue<Fraction>, denominator?: number): this => {
+    public parse(value: InputValue<Fraction>, denominator?: number): this {
 
         // A null value means a zero fraction.
         if (value === "") {
@@ -47,13 +47,13 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
             return this
         }
 
-        if(typeof value === "number" && isNaN(value)) {
+        if (typeof value === "number" && isNaN(value)) {
             return this.invalid()
         }
 
-        if(typeof value === "number" && !isFinite(value)) {
+        if (typeof value === "number" && !isFinite(value)) {
             this.infinite()
-            if(value < 0) {
+            if (value < 0) {
                 this.opposite()
             }
             return this
@@ -78,7 +78,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    public clone = (): Fraction => {
+    public clone(): Fraction {
         const F = new Fraction()
         F.numerator = this.#numerator
         F.denominator = this.#denominator
@@ -89,6 +89,15 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return F
     }
 
+    /**
+     * Copy the mathematical value of another fraction into this one.
+     *
+     * NOTE: unlike {@link clone}, `copy` intentionally transfers only the
+     * mathematical state (`#numerator`, `#denominator`, `#exact`) and NOT the
+     * display state (`#type`, `#digits`, `#withSign`). This divergence is by
+     * design: `parse()` routes a `Fraction` input to `copy()`, so the receiving
+     * fraction keeps its own formatting configuration.
+     */
     public copy(value: Fraction): this {
         this.#numerator = value.numerator
         this.#denominator = value.denominator
@@ -135,11 +144,11 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         }
     }
 
-    public static areEquals = (...F: Fraction[]): boolean => {
+    public static areEquals(...F: Fraction[]): boolean {
         return F.every(f => f.isEqual(F[0]))
     }
 
-    public static average = (...fractions: (InputValue<Fraction>)[]): Fraction => {
+    public static average(...fractions: (InputValue<Fraction>)[]): Fraction {
         const M = new Fraction().zero()
 
         for (const f of fractions) {
@@ -168,7 +177,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
     }
 
-    public static max = (...fractions: InputValue<Fraction>[]): Fraction => {
+    public static max(...fractions: InputValue<Fraction>[]): Fraction {
         let M = new Fraction(fractions[0])
 
         for (const m of fractions) {
@@ -181,7 +190,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return M
     }
 
-    public static min = (...fractions: (InputValue<Fraction>)[]): Fraction => {
+    public static min(...fractions: (InputValue<Fraction>)[]): Fraction {
         let M = new Fraction(fractions[0])
 
         for (const m of fractions) {
@@ -194,7 +203,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return M
     }
 
-    public static sort = (fractions: (InputValue<Fraction>)[], reverse?: boolean): Fraction[] => {
+    public static sort(fractions: (InputValue<Fraction>)[], reverse?: boolean): Fraction[] {
         const fractionsObject: Fraction[] = fractions.map(f => f instanceof Fraction ? f : new Fraction(f))
 
         const sorted = fractionsObject.sort((a, b) => a.value - b.value)
@@ -215,9 +224,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return F
     }
 
-    public static unique = (fractions: (InputValue<Fraction>)[]): Fraction[] => {
-        const unique: Record<string, boolean> = {},
-            distinct: Fraction[] = []
+    public static unique(fractions: (InputValue<Fraction>)[]): Fraction[] {
+        const unique: Record<string, boolean> = {}
+        const distinct: Fraction[] = []
 
         fractions.forEach(x => {
             if (!(x instanceof Fraction)) {
@@ -233,7 +242,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return distinct
     }
 
-    public static xMultiply = (...values: (InputValue<Fraction>)[]): Fraction => {
+    public static xMultiply(...values: (InputValue<Fraction>)[]): Fraction {
         const R = new Fraction()
 
         values.forEach(f => R.multiply(f, false))
@@ -241,16 +250,16 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return R
     }
 
-    public abs = (): this => {
+    public abs(): this {
         this.#numerator = Math.abs(this.#numerator)
         this.#denominator = Math.abs(this.#denominator)
         return this
     }
 
-    public add = (F: InputValue<Fraction>): this => {
+    public add(F: InputValue<Fraction>): this {
         if (F instanceof Fraction) {
-            const N: number = this.#numerator,
-                D: number = this.#denominator
+            const N: number = this.#numerator
+            const D: number = this.#denominator
 
             this.#numerator = N * F.denominator + F.numerator * D
             this.#denominator = D * F.denominator
@@ -262,9 +271,13 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this.reduce()
     }
 
-    public amplify = (k: number): this => {
+    public amplify(k: number): this {
         if (!Number.isSafeInteger(k)) {
             throw new InvalidArgumentError("The amplification factor must be a safe integer.")
+        }
+
+        if (k === 0) {
+            throw new InvalidArgumentError("The amplification factor cannot be zero.")
         }
 
         this.#numerator *= k
@@ -278,7 +291,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
      * @param F (Coefficient) The coefficient to _compare
      * @param sign (string| default is =): authorized values: =, <, <=, >, >= with some variations.
      */
-    public compare = (F: InputValue<Fraction>, sign?: compareSign): boolean => {
+    public compare(F: InputValue<Fraction>, sign?: compareSign): boolean {
         sign ??= '='
 
         let compareFraction: Fraction
@@ -330,15 +343,19 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    public divide = (F: Fraction | number): this => {
+    public divide(F: Fraction | number): this {
         const Q = new Fraction(F)
 
         if (Q.numerator === 0) {
-            return this.infinite()
+            // Division by zero yields infinity; preserve the dividend's sign
+            // so that e.g. (-3) / 0 evaluates to -Infinity, not +Infinity.
+            const s = this.sign()
+            this.infinite()
+            return s === -1 ? this.opposite() : this
         }
 
-        const N: number = this.#numerator,
-            D: number = this.#denominator
+        const N: number = this.#numerator
+        const D: number = this.#denominator
 
         this.#numerator = N * Q.denominator
         this.#denominator = D * Q.numerator
@@ -369,6 +386,13 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
             return this
         }
 
+        // Exponential notation (e.g. 1e-7, 1e21) is not supported: toString()
+        // would break the "integer numerator / integer denominator" invariant.
+        // Fail explicitly rather than silently producing a corrupted fraction.
+        if (value.toString().includes('e') || value.toString().includes('E')) {
+            throw new InvalidArgumentError(`Exponential notation is not supported: ${value}`)
+        }
+
         // The given value is a float number
         // Get the number of decimals after the float sign
         const [, decimal] = (value.toString()).split('.')
@@ -390,6 +414,15 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     public fromNumbers(numerator: number, denominator: number): this {
+        if (denominator === 0) {
+            // Single, centralized handling of a zero denominator:
+            // x/0 → signed infinity, and 0/0 → invalid (NaN).
+            if (numerator === 0) {
+                return this.invalid()
+            }
+            return numerator < 0 ? this.infinite().opposite() : this.infinite()
+        }
+
         if (Number.isSafeInteger(numerator) && Number.isSafeInteger(denominator)) {
             // The given value is an integer
             this.#numerator = numerator
@@ -414,15 +447,40 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         }
 
         const power = Math.pow(10, p)
+        const shift = Math.pow(10, p - length)
 
-        this.#numerator = (+value) * power - Math.floor((+value) * Math.pow(10, p - length))
-        this.#denominator = power - Math.pow(10, p - length)
+        // Handle the sign separately: Math.floor rounds toward -Infinity,
+        // which would corrupt the truncation for negative values.
+        const numericValue = +value
+        const sign = numericValue < 0 ? -1 : 1
+        const absValue = Math.abs(numericValue)
+
+        this.#numerator = sign * Math.round(absValue * power - Math.floor(absValue * shift))
+        this.#denominator = power - shift
         this.#exact = true
 
-        return this
+        return this.reduce()
     }
 
     public fromString(value: string): this {
+        // Periodic decimal notation, e.g. "2.31(25)" = 2.31252525...
+        const periodicMatch = /^([+-]?)(\d*)\.(\d*)\((\d+)\)$/.exec(value)
+        if (periodicMatch) {
+            const [, sign, intPart, nonPeriodic, period] = periodicMatch
+            const absDecimal = `${intPart || '0'}.${nonPeriodic}${period}`
+
+            this.fromPeriodic(absDecimal, period.length)
+            if (sign === '-') {
+                this.opposite()
+            }
+            return this.reduce()
+        }
+
+        // A string using parentheses that did not match the notation is malformed.
+        if (value.includes('(') || value.includes(')')) {
+            return this.invalid()
+        }
+
         // Split the string value in two parts: Numerator/Denominator
         const S = value.split('/').map(Number)
 
@@ -445,33 +503,26 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
             return this.fromNumber(+value)
         }
 
-        // One divide signe
-        // We check if the denominator is zero
-        if (S[1] === 0) {
-            return this.infinite()
-        }
-
-        this.#numerator = S[0]
-        this.#denominator = S[1]
-
-        return this
+        // One divide sign: delegate to fromNumbers so the zero-denominator case
+        // is handled at a single place (see fromNumbers).
+        return this.fromNumbers(S[0], S[1])
     }
 
-    public infinite = (): this => {
+    public infinite(): this {
         this.#numerator = Infinity
         this.#denominator = 1
         this.exact = true
         return this
     }
 
-    public invalid = (): this => {
+    public invalid(): this {
         this.#numerator = NaN
         this.#denominator = 1
         this.exact = true
         return this
     }
 
-    public inverse = (): this => {
+    public inverse(): this {
         const sign = this.sign()
         const n = Math.abs(this.#numerator)
         this.#numerator = Math.abs(this.#denominator) * sign
@@ -480,91 +531,130 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    public isEqual = (than: Fraction | number): boolean => {
+    public isEqual(than: Fraction | number): boolean {
         return this.compare(than, '=')
     }
 
-    public isEven = (): boolean => {
+    public isEven(): boolean {
         return this.isRelative() && this.value % 2 === 0
     }
 
-    public isFinite = (): boolean => {
+    public isFinite(): boolean {
         return !this.isInfinity() && !this.isNaN()
     }
 
-    public isGeq = (than: Fraction | number): boolean => {
+    public isGeq(than: Fraction | number): boolean {
         return this.compare(than, '>=')
     }
 
-    public isGreater = (than: Fraction | number): boolean => {
+    public isGreater(than: Fraction | number): boolean {
         return this.compare(than, '>')
     }
 
-    public isInfinity = (): boolean => {
+    public isInfinity(): boolean {
         return Math.abs(this.#numerator) === Infinity
     }
 
-    public isLeq = (than: Fraction | number): boolean => {
+    public isLeq(than: Fraction | number): boolean {
         return this.compare(than, '<=')
     }
 
-    public isLesser = (than: Fraction | number): boolean => {
+    public isLesser(than: Fraction | number): boolean {
         return this.compare(than, '<')
     }
 
-    public isNaN = (): boolean => {
+    public isNaN(): boolean {
         return isNaN(this.#numerator)
     }
 
-    public isNatural = (): boolean => {
+    public isNatural(): boolean {
         return this.isRelative() && this.isPositive()
     }
 
-    public isNegative = (): boolean => {
+    public isNegative(): boolean {
         return this.sign() === -1
     }
 
-    public isNotEqual = (than: Fraction | number): boolean => {
+    public isNotEqual(than: Fraction | number): boolean {
         return this.compare(than, '<>')
     }
 
-    public isNotZero = (): boolean => {
+    public isNotZero(): boolean {
         return this.#numerator !== 0
     }
 
-    public isOdd = (): boolean => {
+    public isOdd(): boolean {
         return this.isRelative() && Math.abs(this.value % 2) === 1
     }
 
-    public isOne = (): boolean => {
+    public isOne(): boolean {
         return this.#numerator === 1 && this.#denominator === 1
     }
 
-    public isPositive = (): boolean => {
+    public isPeriodic(): boolean {
+        if (!this.exact || !this.isFinite()) {
+            return false
+        }
+
+        let d = Math.abs(this.clone().reduce().denominator)
+        while (d % 2 === 0) {
+            d /= 2
+        }
+        while (d % 5 === 0) {
+            d /= 5
+        }
+
+        return d !== 1
+    }
+
+    public isPositive(): boolean {
         return this.sign() === 1
     }
 
-    public isRational = (): boolean => {
+    /**
+     * True when the fraction is exact and NOT an integer.
+     *
+     * Terminology note (internal, assumed): here an integer is deliberately
+     * excluded — use {@link isRelative} to test for an integer value.
+     */
+    public isRational(): boolean {
         return this.exact && !this.isRelative()
     }
 
-    public isReduced = (): boolean => {
+    public isReduced(): boolean {
         return Math.abs(Numeric.gcd(this.#numerator, this.#denominator)) === 1
     }
 
-    public isRelative = (): boolean => {
+    /**
+     * True when the fraction represents a relative integer, i.e. its reduced
+     * denominator equals 1 (e.g. 6/3 = 2). See {@link isRational} for the
+     * exact non-integer case.
+     */
+    public isRelative(): boolean {
         return this.exact && this.clone().reduce().denominator === 1
     }
 
-    public isSquare = (): boolean => {
-        return Math.sqrt(this.#numerator) % 1 === 0 && Math.sqrt(this.#denominator) % 1 === 0
+    public isSquare(): boolean {
+        const f = this.clone().reduce()
+
+        // A negative value can never be a perfect square.
+        if (f.isNegative()) {
+            return false
+        }
+
+        const n = Math.abs(f.numerator)
+        const d = Math.abs(f.denominator)
+        const rootN = Math.round(Math.sqrt(n))
+        const rootD = Math.round(Math.sqrt(d))
+
+        return rootN * rootN === n && rootD * rootD === d
     }
 
-    public isStrictlyNegative = (): boolean => {
+    public isStrictlyNegative(): boolean {
         return this.value < 0
     }
 
-    public isStrictlyPositive = (): boolean => {
+    public isStrictlyPositive(): boolean {
         return this.value > 0
     }
 
@@ -573,11 +663,11 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     // Mathematical operations specific to fractions
-    public isZero = (): boolean => {
+    public isZero(): boolean {
         return this.#numerator === 0
     }
 
-    public multiply = (F: InputValue<Fraction>, reduce = true): this => {
+    public multiply(F: InputValue<Fraction>, reduce = true): this {
         // Parse the value.
         // If it's a fraction, return a clone of it
         // If it's an integer, return the fraction F/1
@@ -600,16 +690,16 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         this.#numerator = value
     }
 
-    public one = (): this => {
+    public one(): this {
         return this.fromNumber(1)
     }
 
-    public opposite = (): this => {
+    public opposite(): this {
         this.#numerator = -this.#numerator
         return this
     }
 
-    public pow = (p: number | Fraction): this => {
+    public pow(p: number | Fraction): this {
         if (p instanceof Fraction) {
             return this.pow(p.value)
         }
@@ -619,21 +709,30 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
             this.inverse()
         }
 
-        // Check if numerator and denominator are roots of...
-        // otherwise, convert to numeric.
         const absP = Math.abs(p)
-        const powNum = Math.pow(this.#numerator, absP)
-        const powDen = Math.pow(this.#denominator, absP)
-        const controlNumerator = Math.floor(powNum)
-        const controlDenominator = Math.floor(powDen)
 
-        if (controlNumerator === powNum && controlDenominator === powDen) {
-            // Exact integer result — e.g. (9/4)^0.5 = 3/2
-            this.#numerator = controlNumerator
-            this.#denominator = controlDenominator
+        if (Number.isInteger(absP)) {
+            // Integer exponent: the result is always an exact rational.
+            // Round to absorb floating-point noise on large powers.
+            this.#numerator = Math.round(Math.pow(this.#numerator, absP))
+            this.#denominator = Math.round(Math.pow(this.#denominator, absP))
+            return this
+        }
+
+        // Fractional exponent (e.g. 0.5): exact only when both parts are
+        // perfect powers. Round the candidate, then verify by raising it back
+        // through the inverse exponent — no arbitrary epsilon involved.
+        const powNum = Math.round(Math.pow(this.#numerator, absP))
+        const powDen = Math.round(Math.pow(this.#denominator, absP))
+
+        if (Math.round(Math.pow(powNum, 1 / absP)) === this.#numerator &&
+            Math.round(Math.pow(powDen, 1 / absP)) === this.#denominator) {
+            // Exact result — e.g. (9/4)^0.5 = 3/2
+            this.#numerator = powNum
+            this.#denominator = powDen
         } else {
             // Non-exact result — e.g. (2/1)^0.5 = 1.414...
-            this.#numerator = powNum / powDen
+            this.#numerator = Math.pow(this.#numerator, absP) / Math.pow(this.#denominator, absP)
             this.#denominator = 1
             this.exact = false
         }
@@ -641,7 +740,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    public reduce = (): this => {
+    public reduce(): this {
         const g = Numeric.gcd(this.#numerator, this.#denominator)
         this.#numerator = this.#numerator / g
         this.#denominator = this.#denominator / g
@@ -653,7 +752,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    public root = (p: number): this => {
+    public root(p: number): this {
 
         // Check if they are perfect roots..
         if (p === 0) {
@@ -683,19 +782,22 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         // Reduce the fraction
         this.reduce()
 
-        // Check if numerator and denominator are roots of...
-        // otherwise, convert to numeric.
-        const controlNumerator = Math.floor(Math.pow(this.#numerator, Math.abs(1 / p))),
-            controlDenominator = Math.floor(Math.pow(this.#denominator, Math.abs(1 / p)))
+        // The root degree magnitude (the sign of p was already handled above).
+        const q = Math.abs(p)
 
-        this.#numerator = Math.pow(this.#numerator, Math.abs(1 / p))
-        this.#denominator = Math.pow(this.#denominator, Math.abs(1 / p))
+        // Round the candidate root, then verify by raising it back to the
+        // integer power q. Since q is an integer, that check is exact — this
+        // catches perfect roots (e.g. ∛27 = 3) that a plain floor would miss.
+        const rootNum = Math.round(Math.pow(this.#numerator, 1 / q))
+        const rootDen = Math.round(Math.pow(this.#denominator, 1 / q))
 
-        if (controlNumerator !== this.#numerator
-            ||
-            controlDenominator !== this.#denominator) {
+        if (Math.pow(rootNum, q) === this.#numerator && Math.pow(rootDen, q) === this.#denominator) {
+            // Perfect root
+            this.#numerator = rootNum
+            this.#denominator = rootDen
+        } else {
             // The fraction is not a perfect root - make it approximative
-            this.#numerator = this.#numerator / this.#denominator
+            this.#numerator = Math.pow(this.#numerator, 1 / q) / Math.pow(this.#denominator, 1 / q)
             this.#denominator = 1
             this.exact = false
         }
@@ -706,15 +808,22 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    public sign = (): 1 | -1 => {
+    /**
+     * Sign of the fraction, as +1 or -1.
+     *
+     * NOTE (assumed): zero is classified as positive (`sign()` returns 1).
+     * Consequently `isPositive()` and `isNatural()` are true for zero, while
+     * `isNegative()` is false.
+     */
+    public sign(): 1 | -1 {
         return (this.#numerator * this.#denominator >= 0) ? 1 : -1
     }
 
-    public sqrt = (): this => {
+    public sqrt(): this {
         return this.root(2)
     }
 
-    public subtract = (F: Fraction | number): this => {
+    public subtract(F: Fraction | number): this {
         if (F instanceof Fraction) {
             return this.add(F.clone().opposite())
         } else {
@@ -725,6 +834,47 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     public get tfrac(): this {
         this.#type = FRAC_TYPE.tfrac
         return this
+    }
+
+    public toRepeatingDecimal(): {
+        sign: 1 | -1
+        integerPart: string
+        nonPeriodic: string
+        periodic: string
+        periodLength: number
+    } {
+        if (!this.exact || !this.isFinite()) {
+            throw new InvalidArgumentError("Cannot decompose a non-exact or infinite fraction.")
+        }
+
+        const f = this.clone().reduce()
+        const sign = f.sign()
+        const n = Math.abs(f.numerator)
+        const d = Math.abs(f.denominator)
+
+        const integerPart = Math.floor(n / d).toString()
+        let remainder = n % d
+
+        const digits: number[] = []
+        const seen = new Map<number, number>()   // remainder -> index in digits
+        let periodStart = -1
+
+        while (remainder !== 0) {
+            const seenIndex = seen.get(remainder)
+            if (seenIndex !== undefined) {
+                periodStart = seenIndex
+                break
+            }
+            seen.set(remainder, digits.length)
+            remainder *= 10
+            digits.push(Math.floor(remainder / d))
+            remainder %= d
+        }
+
+        const nonPeriodic = (periodStart === -1 ? digits : digits.slice(0, periodStart)).join('')
+        const periodic = periodStart === -1 ? '' : digits.slice(periodStart).join('')
+
+        return {sign, integerPart, nonPeriodic, periodic, periodLength: periodic.length}
     }
 
     public get value(): number {
@@ -742,7 +892,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    public zero = (): this => {
+    public zero(): this {
         return this.fromNumber(0)
     }
 }

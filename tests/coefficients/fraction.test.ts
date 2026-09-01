@@ -1,5 +1,5 @@
 import {describe, expect, it, test} from "vitest"
-import {Fraction, Random} from "../../src"
+import {Fraction, InvalidArgumentError, Random} from "../../src"
 
 describe('Fraction creation', () => {
     test('create Fraction', () => {
@@ -67,11 +67,142 @@ describe('Fraction creation', () => {
         expect(F.denominator).toBe(1)
     })
 
-    test.todo('parse string with periodic decimal', () => {
+    test('parse string with periodic decimal', () => {
         const F = new Fraction('3.(142857)')
 
         expect(F.numerator).toBe(22)
         expect(F.denominator).toBe(7)
+    })
+
+    test('parse mixed periodic notation', () => {
+        const F = new Fraction('2.31(25)')
+
+        expect(F.numerator).toBe(11447)
+        expect(F.denominator).toBe(4950)
+    })
+
+    test('parse pure periodic notation', () => {
+        const F = new Fraction('0.(3)')
+
+        expect(F.numerator).toBe(1)
+        expect(F.denominator).toBe(3)
+    })
+
+    test('parse periodic notation without integer part', () => {
+        const F = new Fraction('.31(25)')
+
+        expect(F.numerator).toBe(1547)
+        expect(F.denominator).toBe(4950)
+    })
+
+    test('parse short mixed periodic notation', () => {
+        const F = new Fraction('0.1(6)')
+
+        expect(F.numerator).toBe(1)
+        expect(F.denominator).toBe(6)
+    })
+
+    test('parse negative periodic notation', () => {
+        const F = new Fraction('-2.31(25)')
+
+        expect(F.numerator).toBe(-11447)
+        expect(F.denominator).toBe(4950)
+        expect(F.sign()).toBe(-1)
+    })
+
+    test('malformed periodic notation is invalid', () => {
+        const F = new Fraction('2.3(2')
+
+        expect(F.isNaN()).toBe(true)
+    })
+})
+
+describe('Fraction fromPeriodic', () => {
+    test('reduces the resulting fraction', () => {
+        const F = new Fraction().fromPeriodic(2.3125, 2)
+
+        expect(F.numerator).toBe(11447)
+        expect(F.denominator).toBe(4950)
+    })
+
+    test('handles negative values', () => {
+        const F = new Fraction().fromPeriodic(-2.3125, 2)
+
+        expect(F.numerator).toBe(-11447)
+        expect(F.denominator).toBe(4950)
+        expect(F.sign()).toBe(-1)
+    })
+
+    test('reduces a pure periodic value', () => {
+        const F = new Fraction().fromPeriodic(0.3, 1)
+
+        expect(F.numerator).toBe(1)
+        expect(F.denominator).toBe(3)
+    })
+
+    test('reduces a negative pure periodic value', () => {
+        const F = new Fraction().fromPeriodic(-0.3, 1)
+
+        expect(F.numerator).toBe(-1)
+        expect(F.denominator).toBe(3)
+    })
+
+    test('is robust against floating point dust', () => {
+        const F = new Fraction().fromPeriodic(0.16, 1)
+
+        expect(F.numerator).toBe(1)
+        expect(F.denominator).toBe(6)
+    })
+})
+
+describe('Fraction periodic decimals', () => {
+    test('isPeriodic detects terminating fractions', () => {
+        expect(new Fraction(1, 4).isPeriodic()).toBe(false)
+        expect(new Fraction(2, 1).isPeriodic()).toBe(false)
+        expect(new Fraction(3, 8).isPeriodic()).toBe(false)
+    })
+
+    test('isPeriodic detects repeating fractions', () => {
+        expect(new Fraction(1, 3).isPeriodic()).toBe(true)
+        expect(new Fraction(1, 12).isPeriodic()).toBe(true)
+        expect(new Fraction(1, 6).isPeriodic()).toBe(true)
+        expect(new Fraction(1, 7).isPeriodic()).toBe(true)
+    })
+
+    test('toRepeatingDecimal on terminating fractions', () => {
+        expect(new Fraction(1, 4).toRepeatingDecimal()).toEqual({
+            sign: 1, integerPart: '0', nonPeriodic: '25', periodic: '', periodLength: 0
+        })
+        expect(new Fraction(2, 1).toRepeatingDecimal()).toEqual({
+            sign: 1, integerPart: '2', nonPeriodic: '', periodic: '', periodLength: 0
+        })
+    })
+
+    test('toRepeatingDecimal on pure periodic fractions', () => {
+        expect(new Fraction(1, 3).toRepeatingDecimal()).toEqual({
+            sign: 1, integerPart: '0', nonPeriodic: '', periodic: '3', periodLength: 1
+        })
+        expect(new Fraction(1, 7).toRepeatingDecimal()).toEqual({
+            sign: 1, integerPart: '0', nonPeriodic: '', periodic: '142857', periodLength: 6
+        })
+    })
+
+    test('toRepeatingDecimal on mixed periodic fractions', () => {
+        expect(new Fraction(1, 12).toRepeatingDecimal()).toEqual({
+            sign: 1, integerPart: '0', nonPeriodic: '08', periodic: '3', periodLength: 1
+        })
+        expect(new Fraction(1, 6).toRepeatingDecimal()).toEqual({
+            sign: 1, integerPart: '0', nonPeriodic: '1', periodic: '6', periodLength: 1
+        })
+    })
+
+    test('toRepeatingDecimal keeps the integer part and sign', () => {
+        expect(new Fraction(7, 3).toRepeatingDecimal()).toEqual({
+            sign: 1, integerPart: '2', nonPeriodic: '', periodic: '3', periodLength: 1
+        })
+        expect(new Fraction(-1, 3).toRepeatingDecimal()).toEqual({
+            sign: -1, integerPart: '0', nonPeriodic: '', periodic: '3', periodLength: 1
+        })
     })
 })
 
@@ -181,6 +312,61 @@ describe('Fraction operations', () => {
 
         expect(F.numerator).toBe(16)
         expect(F.denominator).toBe(81)
+    })
+
+    test('divide by zero keeps the dividend sign', () => {
+        const negative = new Fraction(-3).divide(0)
+        expect(negative.sign()).toBe(-1)
+        expect(negative.isFinite()).toBe(false)
+        expect(negative.tex).toBe('-\\infty')
+
+        const positive = new Fraction(3).divide(0)
+        expect(positive.sign()).toBe(1)
+        expect(positive.isFinite()).toBe(false)
+        expect(positive.tex).toBe('+\\infty')
+    })
+
+    test('fromNumber rejects exponential notation', () => {
+        expect(() => new Fraction().fromNumber(1e-7)).toThrow(InvalidArgumentError)
+        expect(() => new Fraction().fromNumber(1e21)).toThrow(InvalidArgumentError)
+    })
+
+    test('zero denominator gives signed infinity or NaN', () => {
+        expect(new Fraction(5, 0).isInfinity()).toBe(true)
+        expect(new Fraction(5, 0).sign()).toBe(1)
+
+        expect(new Fraction(-5, 0).isInfinity()).toBe(true)
+        expect(new Fraction(-5, 0).sign()).toBe(-1)
+
+        expect(new Fraction(0, 0).isNaN()).toBe(true)
+
+        expect(new Fraction("5/0").isInfinity()).toBe(true)
+    })
+
+    test('amplify by zero throws', () => {
+        expect(() => new Fraction(2, 3).amplify(0)).toThrow(InvalidArgumentError)
+    })
+
+    test('perfect roots stay exact', () => {
+        const cubeRoot = new Fraction(27).root(3)
+        expect(cubeRoot.numerator).toBe(3)
+        expect(cubeRoot.denominator).toBe(1)
+        expect(cubeRoot.exact).toBe(true)
+
+        const sqrt = new Fraction(9, 4).sqrt()
+        expect(sqrt.numerator).toBe(3)
+        expect(sqrt.denominator).toBe(2)
+        expect(sqrt.exact).toBe(true)
+
+        const nonPerfect = new Fraction(2).sqrt()
+        expect(nonPerfect.exact).toBe(false)
+    })
+
+    test('isSquare reduces and rejects negatives', () => {
+        expect(new Fraction(8, 2).isSquare()).toBe(true)   // = 4
+        expect(new Fraction(9, 4).isSquare()).toBe(true)
+        expect(new Fraction(-4).isSquare()).toBe(false)
+        expect(new Fraction(2).isSquare()).toBe(false)
     })
 })
 
