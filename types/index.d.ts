@@ -16,19 +16,18 @@ export { Random };
 export type * from "./pimath.interface";
 export type * from "./randomization/rndTypes";
 declare const PiMath: {
-    Numeric: {
+    Numeric: Readonly<{
         decompose: (value: number) => number[][];
         dividers: (value: number) => number[];
         divideNumbersByGCD: (...values: number[]) => number[];
         gcd: (...values: number[]) => number;
         lcm: (...values: number[]) => number;
         numberCorrection: (value: number, number_of_digits?: number) => number;
-        periodic: (value: number) => number;
         primes: (nb?: number) => number[];
         pythagoreanTripletsWithTarget: (target: number, targetIsSquare?: boolean) => [number, number, number][];
         round: (value: number, decimals?: number) => number;
         greatestPower: (value: number, index: number) => number;
-    };
+    }>;
     Fraction: typeof Fraction;
     Root: typeof Root;
     Monom: typeof Monom;

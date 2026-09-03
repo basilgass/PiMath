@@ -68,7 +68,7 @@ describe('Matrix output', () => {
 \t2 & 4 & 6\\\\
 \\end{pmatrix}`)
 
-        expect(M.bmatrix.tex).toBe(`\\begin{bmatrix}
+        expect(M.asBmatrix.tex).toBe(`\\begin{bmatrix}
 \t1 & 3 & 5\\\\
 \t2 & 4 & 6\\\\
 \\end{bmatrix}`)
@@ -78,7 +78,7 @@ describe('Matrix output', () => {
 \t2 & 4 & 6\\\\
 \\end{pmatrix}`)
 
-        expect(M.pmatrix.tex).toBe(`\\begin{pmatrix}
+        expect(M.asPmatrix.tex).toBe(`\\begin{pmatrix}
 \t1 & 3 & 5\\\\
 \t2 & 4 & 6\\\\
 \\end{pmatrix}`)
@@ -91,9 +91,9 @@ describe('Matrix output', () => {
         M.setValue(1, 1, -5)
 
         expect(M.display).toBe('((2,5),(-2,-5))')
-        expect(M.bmatrix.display).toBe('[(2,5),(-2,-5)]')
+        expect(M.asBmatrix.display).toBe('[(2,5),(-2,-5)]')
         expect(M.display).not.toBe('((2,5),(-2,-5))')
-        expect(M.pmatrix.display).toBe('((2,5),(-2,-5))')
+        expect(M.asPmatrix.display).toBe('((2,5),(-2,-5))')
     })
 })
 

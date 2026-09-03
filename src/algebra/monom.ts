@@ -793,13 +793,13 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
                 L += letter
                 if (this.#literal[letter].isNotEqual(1)) {
                     L += type === 'tex'
-                        ? `^{ ${this.#literal[letter].tfrac.tex} }`
+                        ? `^{ ${this.#literal[letter].asTfrac.tex} }`
                         : `^(${this.#literal[letter].display})`
                 }
             }
         }
 
-        const coeffStr = type === 'tex' ? this.#coefficient.frac.tex : this.#coefficient.display
+        const coeffStr = type === 'tex' ? this.#coefficient.asFrac.tex : this.#coefficient.display
 
         if (L === '') {
             return this.#coefficient.value !== 0 ? coeffStr : '0'

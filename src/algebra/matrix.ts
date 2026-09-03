@@ -125,12 +125,12 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this.#values[i][j]
     }
 
-    get bmatrix(): this {
+    get asBmatrix(): this {
         this.#matrix_parenthesis = MATRIX_TYPE.bmatrix
         return this
     }
 
-    get Bmatrix(): this {
+    get asBraceMatrix(): this {
         this.#matrix_parenthesis = MATRIX_TYPE.Bmatrix
         return this
     }
@@ -436,17 +436,17 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    get pmatrix(): this {
+    get asPmatrix(): this {
         this.#matrix_parenthesis = MATRIX_TYPE.pmatrix
         return this
     }
 
-    get vmatrix(): this {
+    get asVmatrix(): this {
         this.#matrix_parenthesis = MATRIX_TYPE.vmatrix
         return this
     }
 
-    get Vmatrix(): this {
+    get asDoubleVmatrix(): this {
         this.#matrix_parenthesis = MATRIX_TYPE.Vmatrix
         return this
     }

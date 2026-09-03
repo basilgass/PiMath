@@ -23,6 +23,49 @@ describe('Numeric', () => { // the tests container
         expect(Numeric.decompose(6).map(x => x.join(','))).to.have.all.members(['1,6', '2,3'])
     })
 
+    describe('gcd (greatest common divisor)', () => {
+        it('should compute the gcd of several numbers', () => {
+            expect(Numeric.gcd(12, 18)).to.equal(6)
+            expect(Numeric.gcd(12, 15, 33, 303)).to.equal(3)
+            expect(Numeric.gcd(7, 13)).to.equal(1)
+        })
+
+        it('should always return a positive value with negative inputs', () => {
+            // P1: the single-argument path must apply Math.abs like the >=2 path.
+            expect(Numeric.gcd(-5)).to.equal(5)
+            expect(Numeric.gcd(-12, 18)).to.equal(6)
+            expect(Numeric.gcd(-12, -18)).to.equal(6)
+        })
+
+        it('should handle edge cases (empty, zero)', () => {
+            expect(Numeric.gcd()).to.equal(1)
+            expect(Numeric.gcd(0)).to.equal(1)
+            expect(Numeric.gcd(0, 5)).to.equal(5)
+        })
+    })
+
+    describe('lcm (least common multiple)', () => {
+        it('should compute the lcm of several numbers', () => {
+            expect(Numeric.lcm(4, 6)).to.equal(12)
+            expect(Numeric.lcm(3, 4, 5)).to.equal(60)
+            expect(Numeric.lcm(6)).to.equal(6)
+        })
+
+        it('should return 1 for an empty argument list without throwing', () => {
+            // P2: reduce with an initial value avoids the TypeError on [].
+            expect(() => Numeric.lcm()).to.not.throw()
+            expect(Numeric.lcm()).to.equal(1)
+        })
+
+        it('should stay exact for large numbers (no overflow)', () => {
+            // P3: a * b = 5.4e19 overflows MAX_SAFE_INTEGER, but a / gcd * b = 1.8e10 stays exact.
+            const a = 6000000000
+            const b = 9000000000
+            expect(a * b).to.be.greaterThan(Number.MAX_SAFE_INTEGER)
+            expect(Numeric.lcm(a, b)).to.equal(18000000000)
+        })
+    })
+
     test('get pythagorician triplets', ()=>{
         const triples: number[] = []
 
@@ -35,5 +78,123 @@ describe('Numeric', () => { // the tests container
 
         console.log(triples.join(','))
 
+    })
+
+    describe('pythagoreanTripletsWithTarget', () => {
+        it('should find the (3, 4, 5) triplet from the hypotenuse', () => {
+            const triplets = Numeric.pythagoreanTripletsWithTarget(5)
+                .map(t => t.join(','))
+            expect(triplets).to.include('3,4,5')
+            // Both orderings and zero legs are returned on purpose.
+            expect(triplets).to.include('4,3,5')
+            expect(triplets).to.include('0,5,5')
+        })
+
+        it('should return the hypotenuse (not its square) when targetIsSquare', () => {
+            // P4: with targetIsSquare the third component must be sqrt(target) = 5, not 25.
+            const triplets = Numeric.pythagoreanTripletsWithTarget(25, true)
+            const nonZero = triplets.filter(t => !t.includes(0))
+            expect(nonZero.map(t => t.join(','))).to.include('3,4,5')
+            expect(nonZero.every(t => t[2] === 5)).to.equal(true)
+        })
+    })
+
+    describe('round', () => {
+        it('should round to the given number of decimals', () => {
+            expect(Numeric.round(3.14159)).to.equal(3.14)
+            expect(Numeric.round(3.14159, 3)).to.equal(3.142)
+            expect(Numeric.round(2.5, 0)).to.equal(3)
+        })
+
+        it('should round to tens/hundreds with negative decimals', () => {
+            // P5: negative decimals used to produce NaN (e--1); now round to 10, 100, ...
+            expect(Numeric.round(157, -1)).to.equal(160)
+            expect(Numeric.round(1449, -2)).to.equal(1400)
+        })
+
+        it('should truncate a non-integer decimals argument', () => {
+            expect(Numeric.round(3.14159, 2.9)).to.equal(3.14)
+        })
+    })
+
+    describe('numberCorrection', () => {
+        it('should correct floating point noise', () => {
+            expect(Numeric.numberCorrection(0.1 + 0.2)).to.equal(0.3)
+        })
+
+        it('should clamp the digits argument to a valid toFixed range', () => {
+            // P6: out-of-range digits used to throw a RangeError.
+            expect(() => Numeric.numberCorrection(1.2345, -1)).to.not.throw()
+            expect(() => Numeric.numberCorrection(1.2345, 500)).to.not.throw()
+            expect(Numeric.numberCorrection(1.2345, -1)).to.equal(1)
+        })
+    })
+
+    describe('dividers', () => {
+        it('should list the sorted unique dividers of an integer', () => {
+            expect(Numeric.dividers(12)).to.deep.equal([1, 2, 3, 4, 6, 12])
+            expect(Numeric.dividers(13)).to.deep.equal([1, 13])
+            expect(Numeric.dividers(25)).to.deep.equal([1, 5, 25])
+        })
+
+        it('should use the absolute value for negative integers', () => {
+            expect(Numeric.dividers(-6)).to.deep.equal([1, 2, 3, 6])
+        })
+
+        it('should throw on a non-integer input', () => {
+            // P7: the integer hypothesis is now validated.
+            expect(() => Numeric.dividers(2.5)).to.throw()
+            expect(() => Numeric.dividers(NaN)).to.throw()
+        })
+    })
+
+    describe('greatestPower', () => {
+        it('should return the greatest perfect power dividing the value', () => {
+            expect(Numeric.greatestPower(50, 2)).to.equal(25)
+            expect(Numeric.greatestPower(54, 3)).to.equal(27)
+        })
+
+        it('should return 1 when no perfect power divides the value', () => {
+            expect(Numeric.greatestPower(7, 2)).to.equal(1)
+        })
+
+        it('should guard against invalid arguments', () => {
+            // P8: index <= 0 or negative value returns 1 instead of NaN/garbage.
+            expect(Numeric.greatestPower(50, 0)).to.equal(1)
+            expect(Numeric.greatestPower(-50, 2)).to.equal(1)
+        })
+    })
+
+    describe('primes', () => {
+        it('should return the full list without argument', () => {
+            const all = Numeric.primes()
+            expect(all[0]).to.equal(2)
+            expect(all[1]).to.equal(3)
+            expect(all[all.length - 1]).to.equal(9973)
+        })
+
+        it('should return the nth first primes', () => {
+            expect(Numeric.primes(5)).to.deep.equal([2, 3, 5, 7, 11])
+            expect(Numeric.primes(0)).to.deep.equal([])
+        })
+
+        it('should cap nb to the list length', () => {
+            const all = Numeric.primes()
+            expect(Numeric.primes(all.length + 1000)).to.have.lengthOf(all.length)
+        })
+
+        it('should return a copy that does not affect the source', () => {
+            // A5: the returned array is a copy, mutating it must not leak.
+            const first = Numeric.primes()
+            first[0] = -1
+            expect(Numeric.primes()[0]).to.equal(2)
+        })
+    })
+
+    describe('Numeric namespace', () => {
+        it('should be frozen against mutation', () => {
+            // A8: the shared namespace must not be mutable.
+            expect(Object.isFrozen(Numeric)).to.equal(true)
+        })
     })
 })

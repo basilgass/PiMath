@@ -216,12 +216,12 @@ describe('Fraction output', () => {
     test('output as dfrac in LaTeX', () => {
         const F = new Fraction(2, 3)
 
-        expect(F.dfrac.tex).toBe('\\dfrac{ 2 }{ 3 }')
+        expect(F.asDfrac.tex).toBe('\\dfrac{ 2 }{ 3 }')
     })
     test('output as tfrac in LaTeX', () => {
         const F = new Fraction(2, 3)
 
-        expect(F.tfrac.tex).toBe('\\tfrac{ 2 }{ 3 }')
+        expect(F.asTfrac.tex).toBe('\\tfrac{ 2 }{ 3 }')
     })
 
     test('output as ASCII', () => {

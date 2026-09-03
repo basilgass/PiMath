@@ -113,12 +113,12 @@ export class Sphere3 {
         return this
     }
 
-    get centerRadius(): this {
+    get asCenterRadius(): this {
         this.#format = SPHERE3_FORMAT.CENTER_RADIUS
         return this
     }
 
-    get developped(): this {
+    get asDeveloped(): this {
         this.#format = SPHERE3_FORMAT.DEVELOPPED
         return this
     }

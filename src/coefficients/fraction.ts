@@ -333,7 +333,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         this.#denominator = value
     }
 
-    public get dfrac(): this {
+    public get asDfrac(): this {
         this.#type = FRAC_TYPE.dfrac
         return this
     }
@@ -372,7 +372,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         this.#exact = value
     }
 
-    public get frac(): this {
+    public get asFrac(): this {
         this.#type = FRAC_TYPE.frac
         return this
     }
@@ -831,7 +831,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         }
     }
 
-    public get tfrac(): this {
+    public get asTfrac(): this {
         this.#type = FRAC_TYPE.tfrac
         return this
     }
