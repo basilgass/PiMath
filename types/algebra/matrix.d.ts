@@ -13,8 +13,8 @@ export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultipl
     get display(): string;
     add(value: Matrix): this;
     aij(i: number, j: number): Polynom | null;
-    get bmatrix(): this;
-    get Bmatrix(): this;
+    get asBmatrix(): this;
+    get asBraceMatrix(): this;
     canBeAdded(matrix: Matrix): boolean;
     canBeInverted(): boolean;
     canBeMultiplied(matrix: Matrix): boolean;
@@ -41,9 +41,9 @@ export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultipl
     multiply(value: InputValue<Polynom> | Matrix): this;
     one(): this;
     opposite(): this;
-    get pmatrix(): this;
-    get vmatrix(): this;
-    get Vmatrix(): this;
+    get asPmatrix(): this;
+    get asVmatrix(): this;
+    get asDoubleVmatrix(): this;
     pow(value: number): this;
     reduce(): Matrix;
     get rows(): Polynom[][];

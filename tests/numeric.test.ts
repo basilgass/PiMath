@@ -117,6 +117,36 @@ describe('Numeric', () => { // the tests container
         })
     })
 
+    describe('nthRoot', () => {
+        it('should return the exact integer root of a perfect power', () => {
+            // P1: Math.pow(perfectPower, 1/index) used to produce float noise.
+            expect(Numeric.nthRoot(25, 2)).to.equal(5)
+            expect(Numeric.nthRoot(8, 3)).to.equal(2)
+            expect(Numeric.nthRoot(16, 4)).to.equal(2)
+            expect(Numeric.nthRoot(1000, 3)).to.equal(10)
+        })
+
+        it('should handle trivial cases', () => {
+            expect(Numeric.nthRoot(0, 3)).to.equal(0)
+            expect(Numeric.nthRoot(1, 5)).to.equal(1)
+            expect(Numeric.nthRoot(7, 1)).to.equal(7)
+        })
+
+        it('should fall back to the real root for a non-perfect power', () => {
+            expect(Numeric.nthRoot(10, 3)).to.be.closeTo(Math.cbrt(10), 1e-9)
+            expect(Number.isInteger(Numeric.nthRoot(10, 3))).to.equal(false)
+        })
+
+        it('should support negative values for odd indices only', () => {
+            expect(Numeric.nthRoot(-8, 3)).to.equal(-2)
+            expect(Numeric.nthRoot(-4, 2)).to.be.NaN
+        })
+
+        it('should return NaN for an invalid index', () => {
+            expect(Numeric.nthRoot(8, 0)).to.be.NaN
+        })
+    })
+
     describe('numberCorrection', () => {
         it('should correct floating point noise', () => {
             expect(Numeric.numberCorrection(0.1 + 0.2)).to.equal(0.3)
@@ -159,8 +189,21 @@ describe('Numeric', () => { // the tests container
         })
 
         it('should guard against invalid arguments', () => {
-            // P8: index <= 0 or negative value returns 1 instead of NaN/garbage.
+            // P8: index <= 0 returns 1 instead of NaN/garbage.
             expect(Numeric.greatestPower(50, 0)).to.equal(1)
+        })
+
+        it('should propagate the sign for a negative value with an odd index', () => {
+            // L1: an odd root of a negative is real; the sign is carried out so
+            // Root.reduce can pull -1 from the radical.
+            expect(Numeric.greatestPower(-8, 3)).to.equal(-8)
+            expect(Numeric.greatestPower(-54, 3)).to.equal(-27)
+            expect(Numeric.greatestPower(-40, 3)).to.equal(-8)
+            expect(Numeric.greatestPower(-2, 3)).to.equal(-1)
+        })
+
+        it('should return 1 for a negative value with an even index', () => {
+            // L1: an even root of a negative is not real, nothing to extract.
             expect(Numeric.greatestPower(-50, 2)).to.equal(1)
         })
     })

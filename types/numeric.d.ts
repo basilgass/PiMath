@@ -8,6 +8,7 @@ declare function primes(nb?: number): number[];
 declare function pythagoreanTripletsWithTarget(target: number, targetIsSquare?: boolean): [number, number, number][];
 declare function round(value: number, decimals?: number): number;
 declare function greatestPower(value: number, index: number): number;
+declare function nthRoot(value: number, index: number): number;
 export declare const Numeric: Readonly<{
     decompose: typeof decompose;
     dividers: typeof dividers;
@@ -19,6 +20,7 @@ export declare const Numeric: Readonly<{
     pythagoreanTripletsWithTarget: typeof pythagoreanTripletsWithTarget;
     round: typeof round;
     greatestPower: typeof greatestPower;
+    nthRoot: typeof nthRoot;
 }>;
 export {};
 //# sourceMappingURL=numeric.d.ts.map

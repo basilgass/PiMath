@@ -29,12 +29,12 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     compare(F: InputValue<Fraction>, sign?: compareSign): boolean;
     get denominator(): number;
     set denominator(value: number);
-    get dfrac(): this;
+    get asDfrac(): this;
     digits(value: number): this;
     divide(F: Fraction | number): this;
     get exact(): boolean;
     set exact(value: boolean);
-    get frac(): this;
+    get asFrac(): this;
     fromNumber(value: number): this;
     fromNumbers(numerator: number, denominator: number): this;
     fromPeriodic(value: string | number, length: number): this;
@@ -78,7 +78,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     sign(): 1 | -1;
     sqrt(): this;
     subtract(F: Fraction | number): this;
-    get tfrac(): this;
+    get asTfrac(): this;
     toRepeatingDecimal(): {
         sign: 1 | -1;
         integerPart: string;

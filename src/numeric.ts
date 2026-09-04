@@ -219,14 +219,23 @@ function round(value: number, decimals = 2): number {
 
 /**
  * Get the greatest perfect power of the given index that divides value
- * (e.g. greatestPower(50, 2) = 25). Returns 1 when none exists or on
- * invalid arguments (index <= 0 or value < 0).
+ * (e.g. greatestPower(50, 2) = 25). Returns 1 when none exists or when
+ * index <= 0.
+ *
+ * A negative value with an odd index propagates the sign so callers can pull
+ * it out of a radical (e.g. greatestPower(-8, 3) = -8, greatestPower(-40, 3)
+ * = -8). A negative value with an even index returns 1 (an even root of a
+ * negative is not real, nothing to extract).
  * @param value - the value to search into.
  * @param index - the power exponent (root degree).
  */
 function greatestPower(value: number, index: number): number {
-    if (index <= 0 || value < 0) {
+    if (index <= 0) {
         return 1
+    }
+
+    if (value < 0) {
+        return index % 2 === 1 ? -greatestPower(-value, index) : 1
     }
 
     let search_value = Math.floor(Math.pow(value, 1 / index))
@@ -243,6 +252,26 @@ function greatestPower(value: number, index: number): number {
     return 1
 }
 
+/**
+ * Exact integer nth root of a perfect index-th power (e.g. nthRoot(8, 3) = 2),
+ * avoiding Math.pow floating-point noise. Falls back to the real root when
+ * `value` is not a perfect power. Handles negative values for odd indices.
+ * @param value - the radicand.
+ * @param index - the root degree (must be > 0).
+ */
+function nthRoot(value: number, index: number): number {
+    if (index <= 0) return NaN
+    if (value < 0) {
+        return index % 2 === 1 ? -nthRoot(-value, index) : NaN
+    }
+
+    const approx = Math.pow(value, 1 / index)
+    const rounded = Math.round(approx)
+
+    // Snap to the exact integer only when value is truly a perfect power.
+    return Math.pow(rounded, index) === value ? rounded : approx
+}
+
 
 export const Numeric = Object.freeze({
     decompose,
@@ -254,5 +283,6 @@ export const Numeric = Object.freeze({
     primes,
     pythagoreanTripletsWithTarget,
     round,
-    greatestPower
+    greatestPower,
+    nthRoot
 })

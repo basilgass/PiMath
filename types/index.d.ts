@@ -27,6 +27,7 @@ declare const PiMath: {
         pythagoreanTripletsWithTarget: (target: number, targetIsSquare?: boolean) => [number, number, number][];
         round: (value: number, decimals?: number) => number;
         greatestPower: (value: number, index: number) => number;
+        nthRoot: (value: number, index: number) => number;
     }>;
     Fraction: typeof Fraction;
     Root: typeof Root;

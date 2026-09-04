@@ -24,8 +24,8 @@ export declare class Sphere3 {
     };
     get equation(): Equation;
     makeUndefined(): this;
-    get centerRadius(): this;
-    get developped(): this;
+    get asCenterRadius(): this;
+    get asDeveloped(): this;
     get tex(): string;
     get display(): string;
     static RELATIVE_POSITION: typeof SPHERE3_RELATIVE_POSITION;
