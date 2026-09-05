@@ -28,11 +28,15 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public parse(values: IMatrixValues): this {
+    parse(values: IMatrixValues): this {
         return this.fromValues(values)
     }
 
-    public clone(): Matrix {
+    copy(): this {
+        throw new NotImplementedError("copy() is not yet implemented for Matrix")
+    }
+
+    clone(): Matrix {
         // Copy the matrix.
         const duplicates: IMatrixValues = []
 
@@ -106,7 +110,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return output
     }
 
-    public add(value: Matrix): this {
+    add(value: Matrix): this {
         if (!this.canBeAdded(value)) {
             throw new DimensionError("Cannot add a matrix with different dimensions.")
         }
@@ -117,7 +121,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public aij(i: number, j: number) {
+    aij(i: number, j: number) {
         if (i < 0 || i > this.dimension.rows || j < 0 || j > this.dimension.cols) {
             return null
         }
@@ -135,14 +139,14 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public canBeAdded(matrix: Matrix): boolean {
+    canBeAdded(matrix: Matrix): boolean {
         const {rows, cols} = this.dimension
         const {rows: rows2, cols: cols2} = matrix.dimension
 
         return rows === rows2 && cols === cols2
     }
 
-    public canBeInverted(): boolean {
+    canBeInverted(): boolean {
         if (!this.isSquare()) {
             return false
         }
@@ -155,11 +159,11 @@ export class Matrix implements IPiMathObject<Matrix>,
         return true
     }
 
-    public canBeMultiplied(matrix: Matrix): boolean {
+    canBeMultiplied(matrix: Matrix): boolean {
         return this.dimension.cols === matrix.dimension.rows
     }
 
-    public characteristic_polynom(letter?: string): Polynom {
+    characteristic_polynom(letter?: string): Polynom {
         letter ??= 'k'
 
         return this.clone().subtract(
@@ -167,7 +171,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         ).determinant()
     }
 
-    public cofactor(row: number, column: number): Polynom {
+    cofactor(row: number, column: number): Polynom {
         // Remove a line.
         const coMatrix = this.clone()
 
@@ -194,7 +198,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return arr
     }
 
-    public determinant(): Polynom {
+    determinant(): Polynom {
         if (!this.isSquare()) {
             throw new DimensionError('Matrix is not square')
         }
@@ -224,11 +228,11 @@ export class Matrix implements IPiMathObject<Matrix>,
         }
     }
 
-    public flat(): Polynom[] {
+    flat(): Polynom[] {
         return this.#values.flat()
     }
 
-    public forEach(callback: (aij: Polynom, row: number, column: number) => void): void {
+    forEach(callback: (aij: Polynom, row: number, column: number) => void): void {
         this.#values.forEach((row, i) => {
             row.forEach((aij, j) => {
                 callback(aij, i, j)
@@ -236,7 +240,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         })
     }
 
-    public fromDimensions(rows: number, cols: number): this {
+    fromDimensions(rows: number, cols: number): this {
         this.#values = Array.from({length: rows}, () => {
             return Array.from({length: cols}, () => new Polynom())
         }) as unknown as Polynom[][]
@@ -244,7 +248,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public fromString(value: string): this {
+    fromString(value: string): this {
         // value = ((a,b),(c,d),(e,f))
         if (value.startsWith('((') && value.endsWith("))")) {
             return this.fromString(value.substring(1, value.length - 1))
@@ -271,7 +275,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public fromValues(values: IMatrixValues): this {
+    fromValues(values: IMatrixValues): this {
         this.#values = []
 
         // Check dimensions of each rows.
@@ -292,7 +296,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public fromVectors(...vectors: Vector[]): this {
+    fromVectors(...vectors: Vector[]): this {
 
         this.#values = []
 
@@ -313,7 +317,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public inverse(): this {
+    inverse(): this {
         if (!this.canBeInverted()) {
             throw new MathError('The matrix cannot be inverted.')
         }
@@ -332,7 +336,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public isEqual(value: Matrix): boolean {
+    isEqual(value: Matrix): boolean {
         // Two matrix are equals if they are the same dimension and all aij are equals.
         if (!this.canBeAdded(value)) {
             return false
@@ -346,7 +350,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return aij_are_equals
     }
 
-    public isOne(): boolean {
+    isOne(): boolean {
         for (let row = 0; row < this.#values.length; row++) {
             for (let col = 0; col < this.#values[row].length; col++) {
                 if (col === row && !this.#values[row][col].isOne()) {
@@ -361,15 +365,15 @@ export class Matrix implements IPiMathObject<Matrix>,
         return true
     }
 
-    public isSquare(): boolean {
+    isSquare(): boolean {
         return this.dimension.cols === this.dimension.rows
     }
 
-    public isZero(): boolean {
+    isZero(): boolean {
         return this.flat().every(v => v.isZero())
     }
 
-    public map<T>(callback: (aij: Polynom, row: number, column: number) => T): T[][] {
+    map<T>(callback: (aij: Polynom, row: number, column: number) => T): T[][] {
         const {rows, cols} = this.dimension
 
         const arr = Array.from({length: rows}, () => {
@@ -385,7 +389,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return arr
     }
 
-    public multiply(value: InputValue<Polynom> | Matrix): this {
+    multiply(value: InputValue<Polynom> | Matrix): this {
         if (value instanceof Matrix) {
             if (!this.canBeMultiplied(value)) {
                 throw new DimensionError(`Cannot multiply a matrix with incompatibles dimensions`)
@@ -418,7 +422,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public one(): this {
+    one(): this {
         this.forEach((aij, row, column) => {
             if (row === column) {
                 aij.one()
@@ -429,7 +433,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public opposite(): this {
+    opposite(): this {
         this.forEach((aij) => {
             aij.opposite()
         })
@@ -451,11 +455,11 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public pow(value: number): this {
+    pow(value: number): this {
         return operation_pow(this as Matrix, value) as this
     }
 
-    public reduce(): Matrix {
+    reduce(): Matrix {
         throw new NotImplementedError('Not yet implemented')
     }
 
@@ -463,7 +467,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this.#values
     }
 
-    public setValue(row: number, column: number, value: InputAlgebra<Polynom>): this {
+    setValue(row: number, column: number, value: InputAlgebra<Polynom>): this {
         const {rows, cols} = this.dimension
         if ((row < 0 || row >= rows) ||
             column < 0 || column >= cols) {
@@ -474,7 +478,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public subtract(value: Matrix): this {
+    subtract(value: Matrix): this {
         if (!this.canBeAdded(value)) {
             throw new DimensionError("Cannot subtract a matrix with different dimensions.")
         }
@@ -491,7 +495,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this
     }
 
-    public transpose(): this {
+    transpose(): this {
         const temp = this.clone()
 
         temp.forEach((aij, i, j) => {
@@ -505,7 +509,7 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this.#values
     }
 
-    public zero(): this {
+    zero(): this {
         this.forEach(aij => aij.zero())
         return this
     }

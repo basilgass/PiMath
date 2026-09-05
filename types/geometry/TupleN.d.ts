@@ -4,7 +4,7 @@ export declare abstract class TupleN {
     #private;
     constructor(...values: InputValue<Fraction>[]);
     abstract clone(): void;
-    copy(): Fraction[];
+    cloneCoordinates(): Fraction[];
     abstract get tex(): string;
     abstract get display(): string;
     get array(): Fraction[];

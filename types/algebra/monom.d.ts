@@ -5,6 +5,7 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
     constructor(value?: InputValue<Fraction>);
     constructor(value?: Monom);
     parse(inputStr: InputAlgebra<Monom>): this;
+    copy(): this;
     clone: () => Monom;
     get tex(): string;
     get display(): string;

@@ -16,6 +16,7 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     constructor(...values: InputValue<Fraction>[]);
     constructor(...values: InputAlgebra<Polynom>[]);
     parse(inputStr: PolynomParsingType, ...values: InputAlgebra<Monom>[]): this;
+    copy(): this;
     clone(): Polynom;
     get tex(): string;
     get display(): string;

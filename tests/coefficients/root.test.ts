@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Fraction, Root} from "../../src"
+import {Fraction, ParseError, Root} from "../../src"
 
 describe("root creation", () => {
     test('create root', () => {
@@ -8,6 +8,19 @@ describe("root creation", () => {
         expect(R.index).toBe(2)
         expect(R.factor.value).toBe(0)
         expect(R.radical.value).toBe(0)
+    })
+
+    test('falsy but valid inputs are parsed (0, "")', () => {
+        const zero = new Root(0)
+        expect(zero.factor.value).toBe(0)
+        expect(zero.isZero()).toBe(true)
+        expect(zero.display).toBe('0')
+
+        expect(new Root("").isZero()).toBe(true)
+    })
+
+    test('a NaN input is rejected, not swallowed into a zero root', () => {
+        expect(() => new Root(NaN)).toThrow(ParseError)
     })
 
     test('create from defined values', ()=>{

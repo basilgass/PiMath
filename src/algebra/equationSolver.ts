@@ -40,7 +40,7 @@ export class EquationSolver {
         this.#bissectionDeltaX = value
     }
 
-    public solve(): Solution[] {
+    solve(): Solution[] {
         const degree = this.#leftPolynom.degree().value
 
         if (degree === 0) {
@@ -77,7 +77,7 @@ export class EquationSolver {
         ).sort((a, b) => a.value - b.value)
     }
 
-    public solveAsCardan(): Solution[] {
+    solveAsCardan(): Solution[] {
         if (this.#leftPolynom.degree().value !== 3) {
             throw new MathError("The equation is not cubic.")
         }

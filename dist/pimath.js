@@ -329,6 +329,9 @@ var g = Object.freeze({
 		return this.sign() === 1;
 	}
 	isRational() {
+		return this.exact && this.isFinite();
+	}
+	hasFractionalPart() {
 		return this.exact && !this.isRelative();
 	}
 	isReduced() {
@@ -386,7 +389,8 @@ var g = Object.freeze({
 	root(e) {
 		if (e === 0) return this;
 		if (!Number.isSafeInteger(e)) throw new i("The root must be an integer.");
-		if (e < 0 && this.inverse(), this.isNegative() && e % 2 == 0) throw new r("The root of a negative number must be odd.");
+		if (this.isNegative() && e % 2 == 0) throw new r("The root of a negative number must be odd.");
+		e < 0 && this.inverse();
 		let t = this.sign();
 		this.abs(), this.reduce();
 		let n = Math.abs(e), a = Math.round(this.#r ** (1 / n)), o = Math.round(this.#e ** (1 / n));
@@ -443,36 +447,43 @@ var g = Object.freeze({
 	#n;
 	#r = !1;
 	constructor(e) {
-		return this.#t = 2, this.#e = new _().zero(), this.#n = new _().zero(), e && this.parse(e), this;
+		return this.#t = 2, this.#e = new _().zero(), this.#n = new _().zero(), e !== void 0 && this.parse(e), this;
 	}
-	parse(n) {
-		if (n instanceof e) return this.index = n.index, this.radical = n.radical.clone(), this.factor = n.factor.clone(), this;
-		if (n instanceof _) return this.index = 2, this.factor = n.clone(), this.radical.one(), this;
-		if (typeof n == "string") {
-			if (n.includes("sqrt")) return this.#d(n);
-			if (n.includes("root")) return this.#u(n);
-		}
-		let r = new _(n);
-		if (r.isNaN()) throw new t(`Cannot parse "${n}" as a root or fraction`);
-		return this.index = 2, this.factor = r, this.radical.one(), this;
+	parse(t) {
+		return t instanceof e ? this.copy(t) : t instanceof _ ? this.fromFraction(t) : typeof t == "string" ? this.fromString(t) : this.#i(t);
+	}
+	copy(e) {
+		return this.index = e.index, this.radical = e.radical.clone(), this.factor = e.factor.clone(), this;
+	}
+	fromFraction(e) {
+		return this.index = 2, this.factor = e.clone(), this.radical.one(), this;
+	}
+	fromString(e) {
+		return e.includes("sqrt") ? this.#f(e) : e.includes("root") ? this.#d(e) : this.#i(e);
+	}
+	#i(e) {
+		let n = new _(e);
+		if (n.isNaN()) throw new t(`Cannot parse "${e}" as a root or fraction`);
+		return this.index = 2, this.factor = n, this.radical.one(), this;
 	}
 	clone() {
-		return new e().from(this.index, this.radical, this.factor);
+		let t = new e().from(this.index, this.radical, this.factor);
+		return t.#r = this.#r, t;
 	}
 	get tex() {
 		let e = this.#r && this.factor.isPositive() ? "+" : "", t = e && this.#e.numerator === 1 ? " " : "";
 		if (this.isZero()) return `${e}0`;
-		let n = this.#c(this.#e.denominator, this.#n.denominator), r = this.#c(this.#e.numerator, this.#n.numerator) ?? "1";
+		let n = this.#l(this.#e.denominator, this.#n.denominator), r = this.#l(this.#e.numerator, this.#n.numerator) ?? "1";
 		return n === null ? `${e}${t}${r}` : `${e}${t}\\frac{ ${r} }{ ${n} }`;
 	}
 	get display() {
 		let e = this.#r && this.factor.isPositive() ? "+" : "";
 		if (this.isZero()) return `${e}0`;
-		let t = this.#s(this.#e.denominator, this.#n.denominator, !0), n = this.#s(this.#e.numerator, this.#n.numerator, t !== null) ?? "1";
+		let t = this.#c(this.#e.denominator, this.#n.denominator, !0), n = this.#c(this.#e.numerator, this.#n.numerator, t !== null) ?? "1";
 		return t === null ? `${e}${n}` : `${e}${n}/${t}`;
 	}
 	add(e) {
-		return this.#o(e, !1);
+		return this.#s(e, !1);
 	}
 	divide(t) {
 		return this.multiply(new e(t).inverse());
@@ -513,14 +524,14 @@ var g = Object.freeze({
 	}
 	isEqual(e) {
 		if (this.isZero() && e.isZero()) return !0;
-		if (!this.#i() || !e.#i() || this.#a() !== e.#a()) return !1;
+		if (!this.#a() || !e.#a() || this.#o() !== e.#o()) return !1;
 		let t = g.lcm(this.index, e.index), n = this.factor.clone().abs().pow(t).multiply(this.radical.clone().abs().pow(t / this.index)), r = e.factor.clone().abs().pow(t).multiply(e.radical.clone().abs().pow(t / e.index));
 		return n.isEqual(r);
 	}
-	#i() {
+	#a() {
 		return !(this.radical.isNegative() && this.index % 2 == 0);
 	}
-	#a() {
+	#o() {
 		let e = this.index % 2 == 1 ? this.radical.sign() : 1;
 		return this.factor.sign() * e;
 	}
@@ -562,7 +573,7 @@ var g = Object.freeze({
 		this.#n = e;
 	}
 	reduce() {
-		if (this.radical.isRational()) {
+		if (this.radical.hasFractionalPart()) {
 			let e = this.radical.numerator, t = this.radical.denominator;
 			this.radical = new _(e * t ** (this.index - 1)), this.factor.divide(t);
 		}
@@ -576,9 +587,9 @@ var g = Object.freeze({
 		return this.root(2);
 	}
 	subtract(e) {
-		return this.#o(e, !0);
+		return this.#s(e, !0);
 	}
-	#o(t, n) {
+	#s(t, n) {
 		let i = this.clone().reduce(), a = new e(t).reduce();
 		if (i.index !== a.index || !i.radical.isEqual(a.radical)) throw new r("Roots must share the same index and radical to be added or subtracted");
 		return n ? i.factor.subtract(a.factor) : i.factor.add(a.factor), this.parse(i);
@@ -596,34 +607,34 @@ var g = Object.freeze({
 	zero() {
 		return this.radical.zero(), this.factor.zero(), this;
 	}
-	#s(e, t, n) {
+	#c(e, t, n) {
 		let r = this.#t === 2 ? "sqrt" : `root(${this.#t})`;
-		return this.#l(e, t, {
+		return this.#u(e, t, {
 			radical: (e) => `${r}(${e})`,
 			separator: "",
 			wrap: n
 		});
 	}
-	#c(e, t) {
+	#l(e, t) {
 		let n = this.#t === 2 ? "\\sqrt" : `\\sqrt[ ${this.#t} ]`;
-		return this.#l(e, t, {
+		return this.#u(e, t, {
 			radical: (e) => `${n}{ ${e} }`,
 			separator: " "
 		});
 	}
-	#l(e, t, n) {
+	#u(e, t, n) {
 		let r = [e === 1 || e === 0 ? null : e === -1 ? "-" : e.toString(), t !== 1 && t !== 0 ? n.radical(t) : null].filter((e) => e !== null);
 		return r.length === 0 ? null : n.wrap && r.length === 2 ? `(${r.join(n.separator)})` : r.join(n.separator);
 	}
-	#u(e) {
+	#d(e) {
 		let n = /^(.*?)root\((\d+)\)\(?([^)]+)/.exec(e);
 		if (!n) throw new t(`Invalid root format: "${e}"`);
 		let [, r, i, a] = n;
 		return this.index = +i, this.radical = new _(a), this.factor = r === "" ? new _().one() : new _(r.trim()), this;
 	}
-	#d(e) {
+	#f(e) {
 		let n = /^\((.+)\)\/(\d+)$/.exec(e);
-		if (n) return this.#d(n[1]), this.factor.divide(+n[2]), this;
+		if (n) return this.#f(n[1]), this.factor.divide(+n[2]), this;
 		let r = /^([+-]?\d*(?:\/\d+)?)sqrt(?:\((-?\d+(?:\/\d+)?)\)|(\d+))(?:\/(\d+))?$/.exec(e);
 		if (!r) throw new t(`Invalid sqrt format: "${e}"`);
 		let i = r[1], a = r.at(2), o = r.at(3), s = r.at(4);
@@ -1312,6 +1323,9 @@ var me = E("^", "*", "/", "+", "-"), he = E("^", "*", "/", "+", "-", "%", "sin",
 	parse(t) {
 		return this.#e = new _(), this.#t = {}, t instanceof e ? (this.#e = t.#e.clone(), this.#n(t), this) : t instanceof _ ? (this.#e = t.clone(), this) : typeof t == "number" ? (this.#e = new _(t), this) : (isNaN(Number(t)) ? this.#s(t) : this.#e = new _(Number(t)), this);
 	}
+	copy() {
+		throw new a("copy() is not yet implemented for Monom");
+	}
 	clone = () => {
 		let t = new e();
 		t.coefficient = this.#e.clone();
@@ -1353,7 +1367,7 @@ var me = E("^", "*", "/", "+", "-"), he = E("^", "*", "/", "+", "-", "%", "sin",
 	set coefficient(e) {
 		this.#e = new _(e);
 	}
-	containsRationalPower = () => Object.values(this.#t).some((e) => e.isRational());
+	containsRationalPower = () => Object.values(this.#t).some((e) => e.hasFractionalPart());
 	degree = (e) => this.variables.length === 0 ? new _().zero() : e === void 0 ? Object.values(this.#t).reduce((e, t) => e.clone().add(t)) : this.hasVariable(e) ? this.#t[e].clone() : new _().zero();
 	derivative = (t = "x") => {
 		if (this.hasVariable(t)) {
@@ -1427,11 +1441,11 @@ var me = E("^", "*", "/", "+", "-"), he = E("^", "*", "/", "+", "-", "%", "sin",
 		if (e.degree().isStrictlyPositive()) {
 			for (let t of e.variables) if (!this.degree(t).isGeq(e.degree(t))) return !1;
 		}
-		return this.coefficient.isRational() || e.coefficient.isRational() ? !0 : this.coefficient.clone().divide(e.coefficient).isRelative();
+		return this.coefficient.hasFractionalPart() || e.coefficient.hasFractionalPart() ? !0 : this.coefficient.clone().divide(e.coefficient).isRelative();
 	};
 	isEqual = (e) => this.isSameAs(e) && this.#e.isEqual(e.coefficient);
 	isLiteralSquare = () => {
-		for (let e in this.literal) if (this.literal[e].isRational() || this.literal[e].isOdd()) return !1;
+		for (let e in this.literal) if (this.literal[e].hasFractionalPart() || this.literal[e].isOdd()) return !1;
 		return !0;
 	};
 	isOne = () => this.#e.value === 1 && this.variables.length === 0;
@@ -1641,6 +1655,9 @@ var N = class e {
 		else if (t instanceof e) for (let e of t.monoms) this.#n.push(e.clone());
 		return this;
 	}
+	copy() {
+		throw new a("copy() is not yet implemented for Polynom");
+	}
 	clone() {
 		let t = new e(), n = [];
 		t.#e = this.#e;
@@ -1726,7 +1743,7 @@ var N = class e {
 		let i = new b(n).solve();
 		if (i.length === 0) return this.#t.length === 0 ? this.#t = [this.clone()] : this.#t.push(n), this.#t;
 		if (i.forEach((t) => {
-			if (t.exact && t.root.isZero()) for (let n = 0; n < t.count; n++) t.fraction.isRational() ? this.#t.push(new e().fromCoefficients(t.fraction.denominator, -t.fraction.numerator)) : this.#t.push(new e().fromCoefficients(1, t.fraction.clone().opposite()));
+			if (t.exact && t.root.isZero()) for (let n = 0; n < t.count; n++) t.fraction.hasFractionalPart() ? this.#t.push(new e().fromCoefficients(t.fraction.denominator, -t.fraction.numerator)) : this.#t.push(new e().fromCoefficients(1, t.fraction.clone().opposite()));
 		}), this.#t.map((e) => e.degree().value).reduce((e, t) => e + t, 0) < this.degree().value) {
 			let t = e.xMultiply(...this.#t);
 			this.#t.push(this.clone().divide(t));
@@ -2115,6 +2132,9 @@ var N = class e {
 		let r = e.split(n);
 		return this.create(new N(r[0]), new N(r[1]), this.#i(n));
 	};
+	copy() {
+		throw new a("copy() is not yet implemented for Equation");
+	}
 	clone = () => new e(this.#e.clone(), this.#t.clone(), this.#n);
 	get tex() {
 		return `${this.#e.tex}${this.signAsTex}${this.#t.tex}`;
@@ -2250,6 +2270,9 @@ var N = class e {
 	}
 	parse() {
 		throw new a("Method not implemented.");
+	}
+	copy() {
+		throw new a("copy() is not yet implemented for Factor");
 	}
 	clone() {
 		return new e(this);
@@ -2400,6 +2423,9 @@ var N = class e {
 		return this.#e = [], this.#t = [], e.length > 0 && this.parse(...e), this;
 	}
 	parse = (...e) => (this.#e = e.map((e) => new P(e)), this.#n(), this);
+	copy() {
+		throw new a("copy() is not yet implemented for LinearSystem");
+	}
 	clone = () => new e().parse(...this.#e.map((e) => e.clone()));
 	get tex() {
 		let e = this.clone().reorder();
@@ -2741,6 +2767,9 @@ var N = class e {
 			t instanceof e ? this.#t.push(...t.factors.map((e) => e.clone())) : this.#t.push(new F(t));
 		}), this;
 	}
+	copy() {
+		throw new a("copy() is not yet implemented for PolyFactor");
+	}
 	clone() {
 		return new e(...this.#t.map((e) => e.clone()));
 	}
@@ -3004,6 +3033,9 @@ var Se = class e {
 	parse(e) {
 		return this.fromValues(e);
 	}
+	copy() {
+		throw new a("copy() is not yet implemented for Matrix");
+	}
 	clone() {
 		let t = [];
 		return this.#n.forEach((e) => {
@@ -3255,7 +3287,7 @@ var z = class {
 	constructor(...e) {
 		this.#e = e.map((e) => new _(e));
 	}
-	copy() {
+	cloneCoordinates() {
 		return this.#e.map((e) => e.clone());
 	}
 	get array() {
@@ -3311,7 +3343,7 @@ var z = class {
 	}
 	parse(...n) {
 		if (n.length === 1) {
-			if (n[0] instanceof z) return this.array = n[0].copy(), this;
+			if (n[0] instanceof z) return this.array = n[0].cloneCoordinates(), this;
 			if (typeof n[0] == "string") return this.fromString(n[0]), this;
 		}
 		if (n.length > 1) {
@@ -3323,7 +3355,7 @@ var z = class {
 		return this;
 	}
 	clone() {
-		return new e(...this.copy());
+		return new e(...this.cloneCoordinates());
 	}
 	get tex() {
 		return `\\left(${this.array.map((e) => e.tex).join(";")}\\right)`;
@@ -3355,7 +3387,7 @@ var z = class {
 	parse(...e) {
 		if (e.length === 0) throw new i("Invalid value");
 		if (e.length === 1) {
-			if (e[0] instanceof z) return this.array = e[0].copy(), this;
+			if (e[0] instanceof z) return this.array = e[0].cloneCoordinates(), this;
 			if (typeof e[0] == "string") return this.fromString(e[0]);
 			throw new i("Invalid value");
 		}
@@ -3369,7 +3401,10 @@ var z = class {
 		return this.array = e.map((e) => new _(e)), this;
 	}
 	clone() {
-		return new e(...this.copy());
+		return new e(...this.cloneCoordinates());
+	}
+	copy() {
+		throw new a("copy() is not yet implemented for Vector");
 	}
 	get tex() {
 		return `\\begin{pmatrix} ${this.array.map((e) => e.tex).join(" \\\\ ")} \\end{pmatrix}`;
@@ -3514,6 +3549,9 @@ var K = class e {
 		}
 		return n.length === 3 && n.every((e) => _.isFraction(e)) ? this.fromCoefficient(n[0], n[1], n[2]) : (console.warn("Something wrong happened while creating the line"), console.warn(n), this);
 	};
+	copy() {
+		throw new a("copy() is not yet implemented for Line");
+	}
 	clone = () => new e().fromCoefficient(this.#t, this.#n, this.#r);
 	get tex() {
 		let e = this.#a;

@@ -5,6 +5,7 @@ export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor
     #private;
     constructor(value?: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>);
     parse(): Factor;
+    copy(): this;
     clone(): Factor;
     get tex(): string;
     get display(): string;

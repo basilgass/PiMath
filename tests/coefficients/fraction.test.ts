@@ -1,5 +1,5 @@
 import {describe, expect, it, test} from "vitest"
-import {Fraction, InvalidArgumentError, Random} from "../../src"
+import {Fraction, InvalidArgumentError, MathError, Random} from "../../src"
 
 describe('Fraction creation', () => {
     test('create Fraction', () => {
@@ -362,11 +362,47 @@ describe('Fraction operations', () => {
         expect(nonPerfect.exact).toBe(false)
     })
 
+    test('a rejected root leaves the receiver intact (atomicity)', () => {
+        // Negative exponent: inverse() must NOT run before the rejection.
+        const negExp = new Fraction(-4)
+        expect(() => negExp.root(-2)).toThrow(MathError)
+        expect(negExp.display).toBe('-4')
+        expect(negExp.numerator).toBe(-4)
+        expect(negExp.denominator).toBe(1)
+
+        // Positive exponent: already rejected before any mutation.
+        const posExp = new Fraction(-4)
+        expect(() => posExp.root(2)).toThrow(MathError)
+        expect(posExp.display).toBe('-4')
+    })
+
     test('isSquare reduces and rejects negatives', () => {
         expect(new Fraction(8, 2).isSquare()).toBe(true)   // = 4
         expect(new Fraction(9, 4).isSquare()).toBe(true)
         expect(new Fraction(-4).isSquare()).toBe(false)
         expect(new Fraction(2).isSquare()).toBe(false)
+    })
+})
+
+describe('Fraction rational classification', () => {
+    test('isRational includes integers (4 = 4/1)', () => {
+        expect(new Fraction(4).isRational()).toBe(true)
+        expect(new Fraction(6, 3).isRational()).toBe(true)   // = 2
+        expect(new Fraction(3, 2).isRational()).toBe(true)
+        expect(new Fraction(0).isRational()).toBe(true)
+    })
+
+    test('isRational excludes non-exact and non-finite values', () => {
+        expect(new Fraction(2).sqrt().isRational()).toBe(false)   // approx √2
+        expect(new Fraction().infinite().isRational()).toBe(false)
+        expect(new Fraction().invalid().isRational()).toBe(false)
+    })
+
+    test('hasFractionalPart is true only for exact non-integers', () => {
+        expect(new Fraction(3, 2).hasFractionalPart()).toBe(true)
+        expect(new Fraction(4).hasFractionalPart()).toBe(false)
+        expect(new Fraction(6, 3).hasFractionalPart()).toBe(false)   // = 2
+        expect(new Fraction(0).hasFractionalPart()).toBe(false)
     })
 })
 

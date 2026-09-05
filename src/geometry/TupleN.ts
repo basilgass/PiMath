@@ -16,9 +16,9 @@ export abstract class TupleN {
         this.#array = values.map(x => new Fraction(x))
     };
 
-    public abstract clone(): void
+    abstract clone(): void
 
-    public copy(): Fraction[] {
+    cloneCoordinates(): Fraction[] {
         return this.#array.map(x => x.clone())
     }
 
@@ -38,7 +38,7 @@ export abstract class TupleN {
         return this.array.length
     }
 
-    public fromString(value: string): this {
+    fromString(value: string): this {
         // Remove the first letter if it's a parenthesis.
         if (value.startsWith('(')) {
             value = value.substring(1)

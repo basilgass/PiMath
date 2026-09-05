@@ -6,7 +6,7 @@ import type {InputValue, IPiMathObject} from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 import {areVectorsColinears, areVectorsEquals, dotProduct} from "./geomMath"
-import {DimensionError, InvalidArgumentError} from "../errors"
+import {DimensionError, InvalidArgumentError, NotImplementedError} from "../errors"
 import {TupleN} from "./TupleN"
 import {type Point} from "./point"
 
@@ -24,14 +24,14 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
     // ------------------------------------------
     // Getter and setter
 
-    public parse(...values: (Vector | Point)[] | InputValue<Fraction>[]): this {
+    parse(...values: (Vector | Point)[] | InputValue<Fraction>[]): this {
         if (values.length === 0) {
             throw new InvalidArgumentError(`Invalid value`)
         }
 
         if (values.length === 1) {
             if (values[0] instanceof TupleN) {
-                this.array = values[0].copy()
+                this.array = values[0].cloneCoordinates()
                 return this
             }
 
@@ -62,8 +62,12 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
         return this
     }
 
-    public clone(): Vector {
-        return new Vector(...this.copy())
+    clone(): Vector {
+        return new Vector(...this.cloneCoordinates())
+    }
+
+    copy(): this {
+        throw new NotImplementedError("copy() is not yet implemented for Vector")
     }
 
     get tex(): string {

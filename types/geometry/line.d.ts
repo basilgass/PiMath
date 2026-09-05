@@ -10,6 +10,7 @@ export declare class Line implements IPiMathObject<Line> {
     static PERPENDICULAR: LinePropriety;
     constructor(...values: unknown[]);
     parse: (...values: unknown[]) => this;
+    copy(): this;
     clone: () => Line;
     get tex(): string;
     get display(): string;

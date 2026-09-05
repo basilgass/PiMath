@@ -6,6 +6,7 @@ export declare class Vector extends TupleN implements IPiMathObject<Vector> {
     constructor(...values: (Vector | Point)[] | InputValue<Fraction>[]);
     parse(...values: (Vector | Point)[] | InputValue<Fraction>[]): this;
     clone(): Vector;
+    copy(): this;
     get tex(): string;
     get display(): string;
     static asDisplay(...values: string[]): string;

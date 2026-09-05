@@ -16,6 +16,7 @@ export interface IPiMathObject<T> {
     readonly tex: string;
     parse(...value: unknown[]): T;
     clone(): T;
+    copy(value: T): T;
 }
 export interface IExpressionBase<T> {
     add(value: InputValue<T>): T;

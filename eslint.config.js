@@ -18,6 +18,9 @@ export default defineConfig(
 		},
 		rules: {
 			semi: ['error', 'never'],
+			"@typescript-eslint/explicit-member-accessibility": ["error", {
+				accessibility: "no-public"
+			}],
 			curly: ['error', 'multi-line'],
 			"prefer-const": ["error", {
 				"destructuring": "all",

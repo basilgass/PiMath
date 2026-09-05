@@ -9,7 +9,7 @@ import type {
 } from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
-import {ParseError} from "../errors"
+import {NotImplementedError, ParseError} from "../errors"
 import {EquationSolver} from "./equationSolver"
 import {Monom} from "./monom"
 import {Polynom} from "./polynom"
@@ -58,7 +58,7 @@ export class Equation implements IPiMathObject<Equation>,
     }
 
     // ------------------------------------------
-    public parse = (equationString: string): this => {
+    parse = (equationString: string): this => {
         // Find the string separator
         const strSign: string | false = this.#findSign(equationString)
 
@@ -72,19 +72,23 @@ export class Equation implements IPiMathObject<Equation>,
         return this.create(new Polynom(pStr[0]), new Polynom(pStr[1]), this.#formatSign(strSign))
     }
 
-    public clone = (): Equation => {
+    copy(): this {
+        throw new NotImplementedError("copy() is not yet implemented for Equation")
+    }
+
+    clone = (): Equation => {
         return new Equation(this.#left.clone(), this.#right.clone(), this.#sign)
     }
 
-    public get tex(): string {
+    get tex(): string {
         return `${this.#left.tex}${this.signAsTex}${this.#right.tex}`
     }
 
-    public get display(): string {
+    get display(): string {
         return `${this.#left.display}${this.signAsTex}${this.#right.display}`
     }
 
-    public static isEquationString(equationString: string): boolean {
+    static isEquationString(equationString: string): boolean {
         // The equation sign can be one of the following:
         // =, <, >, <=, >=
 
@@ -95,7 +99,7 @@ export class Equation implements IPiMathObject<Equation>,
             equationString.includes('>=')
     }
 
-    public static makeSolutionsUnique(solutions: Solution[], sorted?: boolean): Solution[] {
+    static makeSolutionsUnique(solutions: Solution[], sorted?: boolean): Solution[] {
         const solutionAsTex: string[] = []
         const uniqueSolutions = solutions.filter(sol => {
             if (!solutionAsTex.includes(sol.tex)) {
@@ -121,7 +125,7 @@ export class Equation implements IPiMathObject<Equation>,
      * if it fails, create a polynom and add it to the left and right part of the equation
      * @param value | Polynom | Monom | Fraction | string | monom
      */
-    public add(value: InputValue<Equation | Polynom>): this {
+    add(value: InputValue<Equation | Polynom>): this {
 
         if (value instanceof Equation) {
             // add the left part of the equation
@@ -145,7 +149,7 @@ export class Equation implements IPiMathObject<Equation>,
         return this
     }
 
-    public create = (left: Polynom, right: Polynom, sign?: string): this => {
+    create = (left: Polynom, right: Polynom, sign?: string): this => {
         this.#left = left
         this.#right = right
         this.#sign = this.#formatSign(sign ?? "=")
@@ -156,7 +160,7 @@ export class Equation implements IPiMathObject<Equation>,
      * Get the degree of the equation
      * @param letter
      */
-    public degree = (letter?: string): Fraction => {
+    degree = (letter?: string): Fraction => {
         return Fraction.max(this.#left.degree(letter), this.#right.degree(letter))
     }
 
@@ -174,7 +178,7 @@ export class Equation implements IPiMathObject<Equation>,
      * @param value
      * @returns {Equation}
      */
-    public divide = (value: InputValue<Fraction>): this => {
+    divide = (value: InputValue<Fraction>): this => {
         // Make sure we have a fraction.
         const F: Fraction = new Fraction(value)
 
@@ -191,7 +195,7 @@ export class Equation implements IPiMathObject<Equation>,
      * @param values
      * @param asNumeric
      */
-    public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric: boolean): boolean {
+    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric: boolean): boolean {
         // Evaluate the left and right part of the equation.
         // compare the results.
 
@@ -213,11 +217,11 @@ export class Equation implements IPiMathObject<Equation>,
      * Determine if the equation contains a variable.
      * @param letter
      */
-    public hasVariable = (letter: string): boolean => {
+    hasVariable = (letter: string): boolean => {
         return this.variables.includes(letter)
     }
 
-    public isEqual(value: InputValue<Equation>): boolean {
+    isEqual(value: InputValue<Equation>): boolean {
         const equ = new Equation(value)
         return equ.left.isEqual(this.#left) && equ.right.isEqual(this.#right)
     }
@@ -226,7 +230,7 @@ export class Equation implements IPiMathObject<Equation>,
     // Equations operations
 
     // Equations helpers
-    public isEqualTo = (equ: Equation): boolean => {
+    isEqualTo = (equ: Equation): boolean => {
         const p1 = equ.clone().moveLeft().left
         const p2 = this.clone().moveLeft().left
 
@@ -234,7 +238,7 @@ export class Equation implements IPiMathObject<Equation>,
         return p1.isEqual(p2) || p1.isOppositeAt(p2)
     }
 
-    public isLinearTo = (equ: Equation): boolean => {
+    isLinearTo = (equ: Equation): boolean => {
         // Move all left.
         const p1 = equ.clone().moveLeft().simplify().left
         const p2 = this.clone().moveLeft().simplify().left
@@ -246,7 +250,7 @@ export class Equation implements IPiMathObject<Equation>,
     /**
      * Determine if the equation contains more than one letter/variable.
      */
-    public isMultiVariable = (): boolean => {
+    isMultiVariable = (): boolean => {
         return this.#left.isMultiVariable || this.#right.isMultiVariable
     }
 
@@ -254,7 +258,7 @@ export class Equation implements IPiMathObject<Equation>,
      * Reorder the polynom to have only one letter on the left, the rest on the right.
      * @param letter
      */
-    public isolate = (letter?: string): this | false => {
+    isolate = (letter?: string): this | false => {
         // Determine if we can isolate the variables.
 
         // Both part of the equations must be of the first degree.
@@ -293,16 +297,16 @@ export class Equation implements IPiMathObject<Equation>,
     }
 
     // Getter and setter
-    public get left(): Polynom {
+    get left(): Polynom {
         return this.#left
     }
 
-    public set left(value: Polynom) {
+    set left(value: Polynom) {
         this.#left = value
     }
 
     // -----------------------------------------------
-    public letters = (): string[] => {
+    letters = (): string[] => {
         return [...new Set([...this.#left.variables, ...this.#right.variables])]
     }
 
@@ -310,7 +314,7 @@ export class Equation implements IPiMathObject<Equation>,
     /**
      * Reorder will move all monoms containing a letter on the left, all the other on the right.
      */
-    public moveLeft = (): this => {
+    moveLeft = (): this => {
         this.#left.subtract(this.#right)
         this.#right.zero()
         return this
@@ -320,7 +324,7 @@ export class Equation implements IPiMathObject<Equation>,
      * Multiple an equation by a fraction value.
      * @param value
      */
-    public multiply = (value: InputValue<Fraction>): this => {
+    multiply = (value: InputValue<Fraction>): this => {
         // Make sure we have a fraction.
         const F: Fraction = new Fraction(value)
 
@@ -336,23 +340,23 @@ export class Equation implements IPiMathObject<Equation>,
         return this
     }
 
-    public get numberOfVars(): number {
+    get numberOfVars(): number {
         return this.variables.length
     }
 
-    public opposite = (): this => {
+    opposite = (): this => {
         this.#left = this.#left.opposite()
         this.#right = this.#right.opposite()
         return this
     }
 
-    public pow(value: number): this {
+    pow(value: number): this {
         this.#left.pow(value)
         this.#right.pow(value)
         return this
     }
 
-    public reduce(): this {
+    reduce(): this {
         // reduce means moving everything to the left
         // remove the fractions
         // simplify the equation
@@ -376,7 +380,7 @@ export class Equation implements IPiMathObject<Equation>,
         return this
     }
 
-    public reorder = (allLeft?: boolean): this => {
+    reorder = (allLeft?: boolean): this => {
         // Move all monoms of degree greater than 0 to the left.
         // and all zero degree monoms to the right.
         this.#left.subtract(this.#right)
@@ -404,31 +408,31 @@ export class Equation implements IPiMathObject<Equation>,
     }
 
     // ------------------------------------------
-    public replaceBy = (letter: string, P: Polynom): this => {
+    replaceBy = (letter: string, P: Polynom): this => {
         this.#left.replaceBy(letter, P)
         this.#right.replaceBy(letter, P)
         return this
     }
 
-    public get right(): Polynom {
+    get right(): Polynom {
         return this.#right
     }
 
-    public set right(value: Polynom) {
+    set right(value: Polynom) {
         this.#right = value
     }
 
     // ------------------------------------------
-    public get sign(): string {
+    get sign(): string {
         return this.#sign
     }
 
-    public set sign(value: string) {
+    set sign(value: string) {
         // Set the sign value as formatted.
         this.#sign = this.#formatSign(value)
     }
     
-    public get signAsTex(): string {
+    get signAsTex(): string {
         if (this.#sign === '>=') {
             return '\\geq'
         }
@@ -443,23 +447,23 @@ export class Equation implements IPiMathObject<Equation>,
     /**
      * Multiply by the lcm denominator and divide by the gcm numerators.
      */
-    public simplify = (): this => {
+    simplify = (): this => {
         this.multiply(Numeric.lcm(...this.#left.getDenominators(), ...this.#right.getDenominators()))
         this.divide(Numeric.gcd(...this.#left.getNumerators(), ...this.#right.getNumerators()))
         return this
     }
 
     // -----------------------------------------------
-    public solve = (): Solution[] => {
+    solve = (): Solution[] => {
         const solver = new EquationSolver(this.clone())
         return solver.solve()
     }
 
-    public split(): [Polynom, Polynom] {
+    split(): [Polynom, Polynom] {
         return [this.#left.clone(), this.#right.clone()]
     }
 
-    public subtract(value: InputValue<Equation | Polynom>): this {
+    subtract(value: InputValue<Equation | Polynom>): this {
         if (value instanceof Equation) {
             this.#left.subtract(value.left)
             this.#right.subtract(value.right)
@@ -479,11 +483,11 @@ export class Equation implements IPiMathObject<Equation>,
         return this
     }
 
-    public test = (values: literalType<Fraction>): boolean => {
+    test = (values: literalType<Fraction>): boolean => {
         return (this.left.evaluate(values)).isEqual(this.right.evaluate(values))
     }
 
-    public get variables(): string[] {
+    get variables(): string[] {
         return [...new Set(this.#right.variables.concat(this.#left.variables))]
     }
 

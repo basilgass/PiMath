@@ -60,6 +60,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     isPeriodic(): boolean;
     isPositive(): boolean;
     isRational(): boolean;
+    hasFractionalPart(): boolean;
     isReduced(): boolean;
     isRelative(): boolean;
     isSquare(): boolean;

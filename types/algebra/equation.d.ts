@@ -7,6 +7,7 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
     constructor(equation: InputAlgebra<Polynom> | Equation);
     constructor(left: InputAlgebra<Polynom>, right: InputAlgebra<Polynom>, sign?: EQUATION_SIGN);
     parse: (equationString: string) => this;
+    copy(): this;
     clone: () => Equation;
     get tex(): string;
     get display(): string;

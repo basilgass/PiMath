@@ -22,10 +22,10 @@ export class Point extends TupleN {
         }
     };
 
-    public parse(...values: (Point|Vector)[] | InputValue<Fraction>[]): this {
+    parse(...values: (Point|Vector)[] | InputValue<Fraction>[]): this {
         if (values.length === 1) {
             if (values[0] instanceof TupleN) {
-                this.array = values[0].copy()
+                this.array = values[0].cloneCoordinates()
                 return this
             }
 
@@ -53,8 +53,8 @@ export class Point extends TupleN {
         return this
     }
 
-    public clone(): Point {
-        return new Point(...this.copy())
+    clone(): Point {
+        return new Point(...this.cloneCoordinates())
     }
 
     get tex(): string {
@@ -82,11 +82,11 @@ export class Point extends TupleN {
         return new Root().from(2, distance2).reduce()
     }
 
-    public isEqual(pt: Point): boolean {
+    isEqual(pt: Point): boolean {
         return this.x.value===pt.x.value && this.y.value===pt.y.value
     }
 
-    public isEqualXY(x: InputValue<Fraction>, y: InputValue<Fraction>): boolean {
+    isEqualXY(x: InputValue<Fraction>, y: InputValue<Fraction>): boolean {
         return this.isEqual(new Point(x, y))
     }
 

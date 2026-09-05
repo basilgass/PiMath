@@ -6,6 +6,7 @@ export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultipl
     #private;
     constructor(rowCount?: number, colCount?: number);
     parse(values: IMatrixValues): this;
+    copy(): this;
     clone(): Matrix;
     get tex(): string;
     resolveWrapper(): [string, string];

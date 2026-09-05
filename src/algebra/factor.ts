@@ -42,15 +42,19 @@ export class Factor implements IPiMathObject<Factor>,
         return this
     }
 
-    public parse(/*value: InputValue<Factor>*/): Factor {
+    parse(/*value: InputValue<Factor>*/): Factor {
         throw new NotImplementedError("Method not implemented.")
     }
 
-    public clone(): Factor {
+    copy(): this {
+        throw new NotImplementedError("copy() is not yet implemented for Factor")
+    }
+
+    clone(): Factor {
         return new Factor(this)
     }
 
-    public get tex(): string {
+    get tex(): string {
         const num = this.power.numerator
         const den = this.power.denominator
 
@@ -77,7 +81,7 @@ export class Factor implements IPiMathObject<Factor>,
         return base
     }
 
-    public get display(): string {
+    get display(): string {
         const num = this.power.numerator
         const den = this.power.denominator
 
@@ -104,20 +108,20 @@ export class Factor implements IPiMathObject<Factor>,
         return base
     }
 
-    public add(): Factor {
+    add(): Factor {
         throw new MathError("Adding two factors is not possible")
     }
 
-    public get asSingle(): this {
+    get asSingle(): this {
         this.#singleMode = true
         return this
     }
 
-    public degree(letter?: string): Fraction {
+    degree(letter?: string): Fraction {
         return this.polynom.degree(letter).multiply(this.power)
     }
 
-    public derivative(): Factor[] {
+    derivative(): Factor[] {
         // The power is zero, the derivative is zero
         if (this.power.isZero()) {
             return [new Factor('0')]
@@ -137,7 +141,7 @@ export class Factor implements IPiMathObject<Factor>,
         ]
     }
 
-    public develop(): Polynom {
+    develop(): Polynom {
         if (this.power.isNatural()) {
             return this.polynom.clone().pow(this.power.value)
         }
@@ -145,7 +149,7 @@ export class Factor implements IPiMathObject<Factor>,
         throw new MathError("The power must be a natural number")
     }
 
-    public divide(value: InputAlgebra<Factor | Polynom>): this {
+    divide(value: InputAlgebra<Factor | Polynom>): this {
         if (value instanceof Factor) {
             if (this.isSameAs(value)) {
                 this.power.subtract(value.power)
@@ -163,7 +167,7 @@ export class Factor implements IPiMathObject<Factor>,
         throw new MathError("The two factors must be the same")
     }
 
-    public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction {
+    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction {
         if (asNumeric) {
             return (this.polynom.evaluate(values, true) as number) ** this.power.value
         }
@@ -172,33 +176,33 @@ export class Factor implements IPiMathObject<Factor>,
         return (this.polynom.evaluate(values) as Fraction).pow(this.power)
     }
 
-    public fromPolynom(polynom: InputValue<Polynom>): this {
+    fromPolynom(polynom: InputValue<Polynom>): this {
         this.#polynom = new Polynom(polynom)
         this.#power = new Fraction(1)
         return this
     }
 
-    public hasVariable(letter: string): boolean {
+    hasVariable(letter: string): boolean {
         return this.polynom.hasVariable(letter)
     }
 
-    public inverse(): this {
+    inverse(): this {
         this.power.opposite()
         return this
     }
 
-    public isEqual(value: Factor): boolean {
+    isEqual(value: Factor): boolean {
         // Must have the same polynom and the same reduce power
 
         return this.isSameAs(value) &&
             this.power.isEqual(value.power)
     }
 
-    public isOne(): boolean {
+    isOne(): boolean {
         return this.polynom.isOne() || this.power.isZero()
     }
 
-    public isSameAs(value: InputAlgebra<Factor | Polynom>) {
+    isSameAs(value: InputAlgebra<Factor | Polynom>) {
         let P: Polynom
         if (value instanceof Factor) {
             P = value.polynom
@@ -212,11 +216,11 @@ export class Factor implements IPiMathObject<Factor>,
         return this.polynom.isEqual(P)
     }
 
-    public isZero(): boolean {
+    isZero(): boolean {
         return this.polynom.isZero()
     }
 
-    public multiply(value: InputAlgebra<Factor | Polynom>): this {
+    multiply(value: InputAlgebra<Factor | Polynom>): this {
         const F = new Factor(value)
 
         // Case if this and value are monoms of degree one.
@@ -245,59 +249,59 @@ export class Factor implements IPiMathObject<Factor>,
         throw new MathError("The two factors must be the same")
     }
 
-    public one(): this {
+    one(): this {
         this.#polynom.one()
         this.#power.one()
         return this
     }
 
-    public opposite(): Factor {
+    opposite(): Factor {
         throw new NotImplementedError("Method not implemented.")
     }
 
-    public get polynom(): Polynom {
+    get polynom(): Polynom {
         return this.#polynom
     }
 
-    public set polynom(value: Polynom) {
+    set polynom(value: Polynom) {
         this.#polynom = value
     }
 
-    public pow(value: number | Fraction): this {
+    pow(value: number | Fraction): this {
         this.power.multiply(value)
         return this
     }
 
-    public get power(): Fraction {
+    get power(): Fraction {
         return this.#power
     }
 
-    public set power(value: InputValue<Fraction>) {
+    set power(value: InputValue<Fraction>) {
         this.#power = new Fraction(value)
     }
 
-    public primitive(): Factor {
+    primitive(): Factor {
         throw new NotImplementedError("Method not implemented.")
     }
 
-    public reduce(): Factor {
+    reduce(): Factor {
         throw new NotImplementedError("Method not implemented.")
     }
 
-    public root(value: number): this {
+    root(value: number): this {
         this.power.divide(value)
         return this
     }
 
-    public sqrt(): this {
+    sqrt(): this {
         return this.root(2)
     }
 
-    public subtract(): Factor {
+    subtract(): Factor {
         throw new MathError("Subtracting two factors is not possible")
     }
 
-    public tableOfSigns(): TABLE_OF_SIGNS {
+    tableOfSigns(): TABLE_OF_SIGNS {
         const pow = this.power.clone().reduce()
         const tos = this.polynom.tableOfSigns()
 
@@ -321,21 +325,21 @@ export class Factor implements IPiMathObject<Factor>,
         return {roots: tos.roots, signs: tos.signs}
     }
 
-    public get variables(): string[] {
+    get variables(): string[] {
         return this.polynom.variables
     }
 
-    public get withPower(): this {
+    get withPower(): this {
         this.#displayMode = FACTOR_DISPLAY.POWER
         return this
     }
 
-    public get withRoot(): this {
+    get withRoot(): this {
         this.#displayMode = FACTOR_DISPLAY.ROOT
         return this
     }
 
-    public zero(): this {
+    zero(): this {
         this.#polynom.zero()
         this.#power.one()
         return this

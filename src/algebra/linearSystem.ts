@@ -27,7 +27,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    public parse = (...equations: (string | Equation)[]): this => {
+    parse = (...equations: (string | Equation)[]): this => {
         // make the original equations
         this.#equations = equations.map(value => new Equation(value))
 
@@ -36,12 +36,16 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    public clone = (): LinearSystem => {
+    copy(): this {
+        throw new NotImplementedError("copy() is not yet implemented for LinearSystem")
+    }
+
+    clone = (): LinearSystem => {
         return new LinearSystem()
             .parse(...this.#equations.map(equ => equ.clone()))
     }
 
-    public get tex(): string {
+    get tex(): string {
         // Build the array of values.
         // Reorder
         // This clone the asSystem :!!!
@@ -56,7 +60,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this.tex + 'as display'
     }
 
-    public static fromMatrix(
+    static fromMatrix(
         matrix: InputValue<Fraction>[][],
         letters = 'xyz'): LinearSystem {
         // Check that each row has the same number of columns
@@ -79,13 +83,13 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
     }
 
-    public static solutionAsDisplay(value: Solution[]): string {
+    static solutionAsDisplay(value: Solution[]): string {
         return `(${value.map(x=>x.display).join(";")})`
     }
-    public static solutionAsTex(value: Solution[]): string {
+    static solutionAsTex(value: Solution[]): string {
         return `\\left( ${value.map(x=>x.tex).join(" ; ")} \\right)`
     }
-    public add(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this {
+    add(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this {
         if (value instanceof LinearSystem) {
             const length = value.equations.length
             if (length !== this.#equations.length) {
@@ -106,7 +110,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    public buildTex = (equations: Equation[], operators?: (string[])[]): string => {
+    buildTex = (equations: Equation[], operators?: (string[])[]): string => {
         let equStr: string[]
         let m: Monom
         let letters: string[] = []
@@ -161,35 +165,35 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return `\\left\\{\\begin{array}{${"r".repeat(letters.length)}cl ${"|l".repeat(operatorsColumns)}}${equArray.join('\\\\ ')}\\end{array}\\right.`
     }
 
-    public degree(letter?: string): Fraction {
+    degree(letter?: string): Fraction {
         return Fraction.max(...this.#equations.map(equ => equ.degree(letter)))
     }
 
     // ------------------------------------------
-    public get equations(): Equation[] {
+    get equations(): Equation[] {
         return this.#equations
     }
 
-    public set equations(value) {
+    set equations(value) {
         this.#equations = value
 
         // update the variables.
         this.#findLetters()
     }
 
-    public evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction {
+    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction {
         throw new NotImplementedError("Method not implemented.")
     }
 
-    public hasVariable(letter: string): boolean {
+    hasVariable(letter: string): boolean {
         return this.#variables.includes(letter)
     }
 
-    public isEqual(value: LinearSystem): boolean {
+    isEqual(value: LinearSystem): boolean {
         return this.equations.every((equ, index) => equ.isEqual(value.equations[index]))
     }
 
-    public get isSolvable(): boolean {
+    get isSolvable(): boolean {
         const V = this.variables
 
         // TODO: in some case, it is possible to resolve systems if there isn't the isSame number of vars and equations
@@ -202,12 +206,12 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return true
     }
 
-    public get matrix(): [Fraction[][], Fraction[]] {
+    get matrix(): [Fraction[][], Fraction[]] {
         //TODO: use Matrix class
         return this.#makeMatrix()
     }
 
-    public mergeEquations(equation1: { id: number, factor: InputValue<Fraction> }, equation2: {
+    mergeEquations(equation1: { id: number, factor: InputValue<Fraction> }, equation2: {
         id: number,
         factor: number
     }): Equation {
@@ -219,7 +223,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return eq1multiplied.add(eq2multiplied)
     }
 
-    public multiply(value: InputValue<Fraction> | InputValue<Fraction>[], index?: number): this {
+    multiply(value: InputValue<Fraction> | InputValue<Fraction>[], index?: number): this {
         // Multiply the asSystem by a number
         // the value can be an array of numbers
         // the value can be a number and the index of the equation to multiply
@@ -243,14 +247,14 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    public reduce(): this {
+    reduce(): this {
         // reduce all equations at once.
         this.equations.forEach(equ => equ.reduce())
         return this
     }
 
     // ------------------------------------------
-    public reorder = (): this => {
+    reorder = (): this => {
         for (const E of this.#equations) {
             E.reorder()
         }
@@ -258,7 +262,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    public solve(): Solution[] {
+    solve(): Solution[] {
         const [matrix, vector] = this.matrix
         // Solve the matrix
 
@@ -350,7 +354,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         })
     }
 
-    public subtract(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this {
+    subtract(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this {
         if (value instanceof LinearSystem) {
             const length = value.equations.length
             if (length !== this.#equations.length) {
@@ -371,11 +375,11 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    public get variables(): string[] {
+    get variables(): string[] {
         return this.#variables
     }
 
-    public set variables(value: string | string[]) {
+    set variables(value: string | string[]) {
         const vars = (typeof value === "string") ? value.split('') : [...value]
         vars.sort()
         this.#variables = vars

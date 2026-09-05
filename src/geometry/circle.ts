@@ -256,7 +256,7 @@ export class Circle
         return this.#equation?.test({x: P.x, y: P.y}) ?? false
     }
 
-    public isSame(circ: Circle): boolean {
+    isSame(circ: Circle): boolean {
         return circ.center.isEqual(this.center)
             && circ.radius.isEqual(this.radius)
     }
@@ -334,7 +334,7 @@ export class Circle
      * @param {Line} L
      * @returns {number}
      */
-    public relativePosition(L: Line): number {
+    relativePosition(L: Line): number {
         if (this.#center === null || this.#squareRadius === null) {
             return -1
         }

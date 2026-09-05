@@ -26,6 +26,8 @@ export interface IPiMathObject<T> {
     parse(...value: unknown[]): T;
 
     clone(): T;
+
+    copy(value: T): T;
 }
 
 export interface IExpressionBase<T> {

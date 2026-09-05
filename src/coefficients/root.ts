@@ -14,7 +14,10 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         this.#factor = new Fraction().zero()
         this.#radical = new Fraction().zero()
 
-        if (value) {
+        // Test `!== undefined`, not truthiness: 0 and "" are legitimate inputs,
+        // and a NaN must be rejected by parse (boundary strictness), not silently
+        // swallowed into a zero root.
+        if (value !== undefined) {
             this.parse(value)
         }
 
@@ -22,6 +25,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this
     }
 
+    // Router: inspect the input type and delegate to the matching builder.
+    // A same-type (Root) input goes through copy(); every other form has its
+    // own from*** / #fromScalar. Construction logic is never inlined here.
     parse(value: InputValue<Root | Fraction>): this {
         // should be able to parse "display" roots.
         // sqrt12 or sqrt(12) or sqrt(12/5) => [2, 12 or 12/5, 1]
@@ -30,34 +36,59 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         // 7root(n)10 or 7root(n)(10) or 7root(n)(10/3) => [n, 10 or 10/3, 7]
 
         if (value instanceof Root) {
-            this.index = value.index
-            this.radical = value.radical.clone()
-            this.factor = value.factor.clone()
-
-            return this
+            return this.copy(value)
         }
 
         if (value instanceof Fraction) {
-            this.index = 2
-            this.factor = value.clone()
-            this.radical.one()
-
-            return this
+            return this.fromFraction(value)
         }
 
         if (typeof value === "string") {
-            if (value.includes('sqrt')) {
-                return this.#parse_sqrt(value)
-            }
-
-            if (value.includes('root')) {
-                return this.#parse_root(value)
-            }
+            return this.fromString(value)
         }
 
-        // Strictness is enforced at Root's boundary: Fraction keeps a permissive
-        // NaN state (its invalid()), but a Root refuses to build on an invalid
-        // factor, so a malformed input throws instead of yielding a NaN root.
+        // Remaining scalar (number): build the factor at Root's boundary.
+        return this.#fromScalar(value)
+    }
+
+    // Copy the mathematical state of another Root (index + radical + factor).
+    // Like Fraction.copy, it deliberately does NOT transfer the display state
+    // (#withSign): parse() routes a Root input here, so the receiver keeps its
+    // own formatting. Use clone() for a full duplicate.
+    copy(value: Root): this {
+        this.index = value.index
+        this.radical = value.radical.clone()
+        this.factor = value.factor.clone()
+
+        return this
+    }
+
+    fromFraction(value: Fraction): this {
+        this.index = 2
+        this.factor = value.clone()
+        this.radical.one()
+
+        return this
+    }
+
+    fromString(value: string): this {
+        if (value.includes('sqrt')) {
+            return this.#parse_sqrt(value)
+        }
+
+        if (value.includes('root')) {
+            return this.#parse_root(value)
+        }
+
+        // Plain fraction string: no radical, delegate to the scalar builder.
+        return this.#fromScalar(value)
+    }
+
+    // Shared scalar builder (number or plain fraction string) → factor·√[2]{1}.
+    // Strictness is enforced at Root's boundary: Fraction keeps a permissive
+    // NaN state (its invalid()), but a Root refuses to build on an invalid
+    // factor, so a malformed input throws instead of yielding a NaN root.
+    #fromScalar(value: string | number): this {
         const factor = new Fraction(value)
         if (factor.isNaN()) {
             throw new ParseError(`Cannot parse "${value}" as a root or fraction`)
@@ -71,7 +102,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
     }
 
     clone(): Root {
-        return new Root().from(this.index, this.radical, this.factor)
+        const R = new Root().from(this.index, this.radical, this.factor)
+        R.#withSign = this.#withSign
+        return R
     }
 
     get tex(): string {
@@ -294,7 +327,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
 
         // Remove the root from the denominator:
         // √[n]{num/den} = √[n]{num · den^(n-1)} / den
-        if (this.radical.isRational()) {
+        if (this.radical.hasFractionalPart()) {
             const num = this.radical.numerator
             const den = this.radical.denominator
 
@@ -346,7 +379,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this.parse(a)
     }
 
-    public get value(): number {
+    get value(): number {
         const radical = this.radical.value
 
         if (radical < 0) {

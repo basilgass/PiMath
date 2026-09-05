@@ -399,7 +399,7 @@ export class Triangle {
         return this.#remarquables
     }
 
-    public reset(): this {
+    reset(): this {
         // Check if the triangle is valid
         // the three points must NOT be aligned.
         this.#isValid = !this.AB.isColinearTo(this.AC)

@@ -7,6 +7,7 @@ export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquat
     #private;
     constructor(...values: (string | Equation)[]);
     parse: (...equations: (string | Equation)[]) => this;
+    copy(): this;
     clone: () => LinearSystem;
     get tex(): string;
     get display(): string;

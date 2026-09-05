@@ -4,6 +4,9 @@ export declare class Root implements IPiMathObject<Root>, IExpression<Root> {
     #private;
     constructor(value?: InputValue<Root | Fraction>);
     parse(value: InputValue<Root | Fraction>): this;
+    copy(value: Root): this;
+    fromFraction(value: Fraction): this;
+    fromString(value: string): this;
     clone(): Root;
     get tex(): string;
     get display(): string;

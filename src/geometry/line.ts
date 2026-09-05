@@ -10,7 +10,7 @@ import {type InputValue, type IPiMathObject, LinePropriety} from "../pimath.inte
 import {randomIntSym} from "../randomization/rndHelpers"
 import {Point} from "./point"
 import {Root} from "../coefficients/root"
-import {ParseError} from "../errors"
+import {NotImplementedError, ParseError} from "../errors"
 
 enum LINE_DISPLAY {
     CARTESIAN,
@@ -120,6 +120,10 @@ export class Line implements IPiMathObject<Line> {
 
     // ------------------------------------------
     // Getter and setter
+
+    copy(): this {
+        throw new NotImplementedError("copy() is not yet implemented for Line")
+    }
 
     clone = (): Line => {
         return new Line().fromCoefficient(this.#a, this.#b, this.#c)
