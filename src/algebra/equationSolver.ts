@@ -17,8 +17,10 @@ export class EquationSolver {
         this.#bissectionDeltaX = 1e-4
         this._ = 0
 
-        // do this to avoid importing Polynom or Equation
-        if (Object.hasOwn(left, 'moveLeft')) {
+        // Duck-type an Equation without importing it (avoids a circular import).
+        // `in` walks the prototype chain, so it works whether `moveLeft` is an
+        // instance field or a prototype method.
+        if ('moveLeft' in left) {
             const equ = left as Equation
             this.#leftPolynom = equ.left.clone().subtract(equ.right)
         } else {
@@ -142,8 +144,8 @@ export class EquationSolver {
     }
 
     #solveByBissection_algorithm(polynom: Polynom, a: number, b: number): number | null {
-        let fa = polynom.evaluate(a, true) as number
-        let fb = polynom.evaluate(b, true) as number
+        let fa = polynom.evaluate(a, true)
+        let fb = polynom.evaluate(b, true)
 
         if (fa * fb > 0) {
             console.log("Pas de racine dans l'intervalle donné")
@@ -155,7 +157,7 @@ export class EquationSolver {
             this._++
 
             mid = (a + b) / 2
-            const fmid = polynom.evaluate(mid, true) as number
+            const fmid = polynom.evaluate(mid, true)
 
             if (fmid === 0) {
                 return mid // racine exacte trouvée
@@ -182,7 +184,7 @@ export class EquationSolver {
             evaluatedPoints.push(
                 {
                     x,
-                    fx: polynom.evaluate(x, true) as number
+                    fx: polynom.evaluate(x, true)
                 }
             )
         }
@@ -264,7 +266,7 @@ export class EquationSolver {
 
         // Each value in testingSolutions are "unique" -> juste test them to see if it evaluates to zero.
         testingSolutions.forEach(f => {
-            if ((left.evaluate(f) as Fraction).isZero()) {
+            if (left.evaluate(f).isZero()) {
                 solutions.push(this.#makeSolution(f))
             }
         })

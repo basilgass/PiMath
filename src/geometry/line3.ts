@@ -9,13 +9,13 @@ import {randomIntSym} from "../randomization/rndHelpers"
 import {NotImplementedError} from "../errors"
 import {Vector} from "./vector"
 import {Point} from "./point"
-import {Line3Propriety} from "../pimath.interface"
+import {Line3Property} from "../pimath.interface"
 
 
 export class Line3 {
-    static PARALLEL = Line3Propriety.Parallel
+    static PARALLEL = Line3Property.Parallel
     // A line is defined as the canonical form
-    static PERPENDICULAR = Line3Propriety.Perpendicular
+    static PERPENDICULAR = Line3Property.Perpendicular
     // ax + by + c = 0
     #OA: Point = new Point()
     #d: Vector = new Vector()

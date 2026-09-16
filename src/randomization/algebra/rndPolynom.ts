@@ -60,7 +60,7 @@ export function rndPolynom(userConfig?: randomPolynomConfig): Polynom {
             // Remove a random monom, except the first one
             const index = randomInt(1, P.length - 1)
 
-            P.monoms.splice(index, 1)
+            P.monoms = P.monoms.filter((_, i) => i !== index)
         }
     }
 

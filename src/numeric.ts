@@ -1,11 +1,21 @@
 import {InvalidArgumentError} from "./errors"
 
+/**
+ * Low-level numeric helpers (pure functions over `number`).
+ *
+ * Error policy (intentional split): functions that validate an integer
+ * *contract* throw (`dividers` -> {@link InvalidArgumentError}); functions
+ * defined over a mathematical *domain* return a sentinel for out-of-domain
+ * input instead of throwing (`nthRoot` -> NaN, `greatestPower` -> 1).
+ */
+
 /** Upper bound of the memoized prime sieve (largest prime below it is 9973). */
 const PRIME_LIMIT = 10000
 let primeCache: number[] | undefined
 
 /**
- * Sieve of Eratosthenes: all primes up to (and including) limit.
+ * Sieve of Eratosthenes: all primes up to (and including) limit. Called once to
+ * fill {@link primeCache} up to {@link PRIME_LIMIT}.
  * @param limit - inclusive upper bound.
  */
 function sieve(limit: number): number[] {
@@ -26,7 +36,10 @@ function sieve(limit: number): number[] {
 
 /**
  * Split a value into all its factor pairs [u, v] such that u * v = value.
+ * Pairs the smallest remaining divider with the largest; a perfect-square
+ * middle divider is paired with itself (e.g. 25 -> [[1, 25], [5, 5]]).
  * @param value - the integer to decompose.
+ * @throws {InvalidArgumentError} if value is not a finite integer (propagated from dividers).
  */
 function decompose(value: number): number[][] {
     const divs: number[] = dividers(value)
@@ -36,7 +49,8 @@ function decompose(value: number): number[][] {
 
     while (divs.length > 0) {
         u = divs.shift() ?? 1
-        v = (divs.length > 0 ? divs.pop() : +u) ?? 1
+        // Odd count left (perfect square): the middle divider pairs with itself.
+        v = (divs.length > 0 ? divs.pop() : u) ?? 1
 
         arr.push([u, v])
     }
@@ -55,7 +69,8 @@ function divideNumbersByGCD(...values: number[]): number[] {
 }
 
 /**
- * Get the sorted list of all (unique) dividers of an integer.
+ * Get the sorted list of all (unique) dividers of an integer. Returns [] for 0
+ * (every integer divides 0; there is no finite list to return).
  * @param value - an integer (a non-integer input is rejected).
  * @throws {InvalidArgumentError} if value is not a finite integer.
  */
@@ -87,8 +102,9 @@ function dividers(value: number): number[] {
 }
 
 /**
- * Great Common Divisor
- * @param values : number values
+ * Greatest common divisor of the given integers. Always positive; the gcd of an
+ * empty list, or of a single 0, is 1.
+ * @param values - the integers to reduce.
  */
 function greatestCommonDivisor(...values: number[]): number {
     // Define the gcd for two number
@@ -143,8 +159,9 @@ function greatestCommonDivisor(...values: number[]): number {
 }
 
 /**
- * Least Common Multiple
- * @param values: list of numbers
+ * Least common multiple of the given integers. Computed as a / gcd * b to avoid
+ * overflowing MAX_SAFE_INTEGER; returns 0 when any value is 0.
+ * @param values - the integers to combine.
  */
 function leastCommonMultiple(...values: number[]): number {
     return values.reduce(function (a, b) {
@@ -154,6 +171,9 @@ function leastCommonMultiple(...values: number[]): number {
 
 /**
  * Round away floating point representation noise (e.g. 0.1 + 0.2 -> 0.3).
+ * Contrast with {@link round}, which rescales via `1e{n}` string exponents to
+ * support arbitrary (including negative) decimals; this one trims noise through
+ * toFixed on a fixed [0, 100] digit range.
  * @param value - the number to correct.
  * @param number_of_digits - digits to keep, clamped to the [0, 100] toFixed range.
  */
@@ -179,10 +199,16 @@ function primes(nb?: number): number[] {
 /**
  * Find every pythagorean triplet [u, v, hypotenuse] with u^2 + v^2 = hypotenuse^2.
  * Both (u, v) and (v, u) orderings and zero legs are returned; callers filter them.
- * @param target - the hypotenuse (or its square if targetIsSquare is true).
+ * target 0 yields the single triplet [0, 0, 0].
+ * @param target - the hypotenuse (or its square if targetIsSquare is true); must be a non-negative integer.
  * @param targetIsSquare - when true, target is interpreted as the squared hypotenuse.
+ * @throws {InvalidArgumentError} if target is negative or not a finite integer.
  */
 function pythagoreanTripletsWithTarget(target: number, targetIsSquare?: boolean): [number, number, number][] {
+    if (!Number.isInteger(target) || target < 0) {
+        throw new InvalidArgumentError(`pythagoreanTripletsWithTarget expects a non-negative integer target, got ${target}`)
+    }
+
     // Inverse method: `target` is the hypotenuse, unless targetIsSquare is true
     // (then it is its square).
     const targetSquare = targetIsSquare === true ? target : target ** 2
@@ -190,14 +216,17 @@ function pythagoreanTripletsWithTarget(target: number, targetIsSquare?: boolean)
 
     const triplets: [number, number, number][] = []
 
-    // Legs never exceed the hypotenuse. Both (u, v) and (v, u) orderings and zero
-    // legs are returned on purpose; callers filter them as needed (e.g.
-    // randomTriplet excludes zeros).
+    // For each u there is at most one non-negative v with u^2 + v^2 = targetSquare,
+    // so derive v instead of scanning it (O(hypotenuse) instead of O(hypotenuse^2)).
+    // Scanning u over the full [0, hypotenuse] range still yields both (u, v) and
+    // (v, u) orderings and the zero legs; callers filter them as needed.
     for (let u = 0; u <= hypotenuse; u++) {
-        for (let v = 0; v <= hypotenuse; v++) {
-            if (u ** 2 + v ** 2 === targetSquare) {
-                triplets.push([u, v, hypotenuse])
-            }
+        const vSquare = targetSquare - u ** 2
+        if (vSquare < 0) break
+
+        const v = Math.round(Math.sqrt(vSquare))
+        if (v * v === vSquare) {
+            triplets.push([u, v, hypotenuse])
         }
     }
 
@@ -206,7 +235,8 @@ function pythagoreanTripletsWithTarget(target: number, targetIsSquare?: boolean)
 
 /**
  * Round a value to a given number of decimals. Negative decimals round to
- * tens, hundreds, etc.
+ * tens, hundreds, etc. Contrast with {@link numberCorrection}, which trims
+ * floating point noise through toFixed rather than rescaling.
  * @param value - the number to round.
  * @param decimals - decimal places (truncated to an integer); may be negative.
  */
@@ -219,8 +249,8 @@ function round(value: number, decimals = 2): number {
 
 /**
  * Get the greatest perfect power of the given index that divides value
- * (e.g. greatestPower(50, 2) = 25). Returns 1 when none exists or when
- * index <= 0.
+ * (e.g. greatestPower(50, 2) = 25). Returns 1 when none exists, when
+ * index <= 0, or for value 0 (nothing to extract).
  *
  * A negative value with an odd index propagates the sign so callers can pull
  * it out of a radical (e.g. greatestPower(-8, 3) = -8, greatestPower(-40, 3)
@@ -255,7 +285,9 @@ function greatestPower(value: number, index: number): number {
 /**
  * Exact integer nth root of a perfect index-th power (e.g. nthRoot(8, 3) = 2),
  * avoiding Math.pow floating-point noise. Falls back to the real root when
- * `value` is not a perfect power. Handles negative values for odd indices.
+ * `value` is not a perfect power. Handles negative values for odd indices;
+ * nthRoot(0, index) is 0. Returns NaN when index <= 0 or for an even root of a
+ * negative value.
  * @param value - the radicand.
  * @param index - the root degree (must be > 0).
  */

@@ -25,9 +25,12 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this
     }
 
-    // Router: inspect the input type and delegate to the matching builder.
-    // A same-type (Root) input goes through copy(); every other form has its
-    // own from*** / #fromScalar. Construction logic is never inlined here.
+    /**
+     * Router: inspect the input type and delegate to the matching builder.
+     * A same-type (Root) input goes through copy(); every other form has its
+     * own from*** / #fromScalar. Construction logic is never inlined here.
+     * @throws {ParseError} if a string/number input is malformed.
+     */
     parse(value: InputValue<Root | Fraction>): this {
         // should be able to parse "display" roots.
         // sqrt12 or sqrt(12) or sqrt(12/5) => [2, 12 or 12/5, 1]
@@ -71,6 +74,11 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this
     }
 
+    /**
+     * Delegate a string to the sqrt / root parser, or to the scalar builder for
+     * a plain fraction string.
+     * @throws {ParseError} if the string is a malformed radical or fraction.
+     */
     fromString(value: string): this {
         if (value.includes('sqrt')) {
             return this.#parse_sqrt(value)
@@ -141,10 +149,19 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return `${plus}${num}/${den}`
     }
 
+    /**
+     * Add another root. Both operands are reduced to a common radical first.
+     * @throws {MathError} if the roots do not share the same index and radical.
+     */
     add(value: InputValue<Root>): this {
         return this.#addSub(value, false)
     }
 
+    /**
+     * Divide by another root (multiply by its inverse).
+     * @throws {MathError} if the divisor is zero, or the roots are incompatible
+     *   for multiplication.
+     */
     divide(value: InputValue<Root>): this {
         return this.multiply(new Root(value).inverse())
     }
@@ -153,10 +170,19 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this.#factor
     }
 
+    /** @throws {InvalidArgumentError} if value is an invalid (NaN) fraction. */
     set factor(value: Fraction) {
+        if (value.isNaN()) {
+            throw new InvalidArgumentError("The factor cannot be an invalid (NaN) fraction.")
+        }
         this.#factor = value
     }
 
+    /**
+     * Explicit builder: index, radical and optional factor (defaults to 1).
+     * @throws {InvalidArgumentError} if index is not a strictly positive integer.
+     * @throws {ParseError} if radical or factor is an invalid (NaN) primitive.
+     */
     from(index: number, radical: InputValue<Fraction>, factor?: InputValue<Fraction>): this {
         // set the index (validates: strictly positive integer)
         this.index = index
@@ -196,6 +222,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this.#index
     }
 
+    /** @throws {InvalidArgumentError} if value is not a strictly positive integer. */
     set index(value: number) {
         if (!Number.isSafeInteger(value) || value <= 0) {
             throw new InvalidArgumentError("Index must be a strictly positive integer.")
@@ -203,11 +230,19 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         this.#index = value
     }
 
+    /** The index as a fractional exponent: 1 / index (e.g. index 3 → 1/3). */
     get indexAsPow(): Fraction {
         return new Fraction(this.index).inverse()
     }
 
+    /**
+     * Multiplicative inverse (1 / this): inverse both factor and radical.
+     * @throws {MathError} if the root is zero (0 has no inverse).
+     */
     inverse(): this {
+        if (this.isZero()) {
+            throw new MathError("Cannot invert a zero root.")
+        }
         this.factor.inverse()
         this.radical.inverse()
         return this
@@ -267,6 +302,11 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this.factor.isZero() || this.radical.isZero()
     }
 
+    /**
+     * Multiply by another root. Computed on a clone and committed on success
+     * (atomicity).
+     * @throws {MathError} unless the two roots share their radical or their index.
+     */
     multiply(value: InputValue<Root>): this {
         // Compute on a clone and commit only on success, so a failed multiply
         // leaves the receiver untouched (same atomic discipline as add).
@@ -303,21 +343,33 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this
     }
 
+    /**
+     * Raise the root to a power. Computed on a clone and committed only on
+     * success, so a rejected pow leaves the receiver intact (atomicity).
+     * @throws {MathError} (via Fraction.pow) for a fractional power of a negative
+     *   factor or radical.
+     */
     pow(value: number): this {
-        this.factor.pow(value)
+        const a = this.clone()
 
-        const g = Numeric.gcd(this.index, value)
-        this.index = this.index / g
-        this.radical.pow(value / g)
+        a.factor.pow(value)
 
-        return this
+        const g = Numeric.gcd(a.index, value)
+        a.index = a.index / g
+        a.radical.pow(value / g)
+
+        return this.parse(a)
     }
 
     get radical(): Fraction {
         return this.#radical
     }
 
+    /** @throws {InvalidArgumentError} if value is an invalid (NaN) fraction. */
     set radical(value: Fraction) {
+        if (value.isNaN()) {
+            throw new InvalidArgumentError("The radical cannot be an invalid (NaN) fraction.")
+        }
         this.#radical = value
     }
 
@@ -344,16 +396,31 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this
     }
 
+    /**
+     * Take the value-th root of this root (e.g. sqrt of sqrt). Computed on a
+     * clone and committed only on success (atomicity).
+     * @throws {InvalidArgumentError} if value is not a strictly positive integer.
+     */
     root(value: number): this {
-        this.group()
-        this.index = this.index * value
-        return this
+        if (!Number.isSafeInteger(value) || value <= 0) {
+            throw new InvalidArgumentError("The root degree must be a strictly positive integer.")
+        }
+
+        const a = this.clone()
+        a.group()
+        a.index = a.index * value
+
+        return this.parse(a)
     }
 
     sqrt(): this {
         return this.root(2)
     }
 
+    /**
+     * Subtract another root (see {@link add} for the shared-radical requirement).
+     * @throws {MathError} if the roots do not share the same index and radical.
+     */
     subtract(value: InputValue<Root>): this {
         return this.#addSub(value, true)
     }
@@ -379,6 +446,10 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this.parse(a)
     }
 
+    /**
+     * Numeric value of the root. Returns NaN for an even root of a negative
+     * radical (not real); an odd root of a negative is real and negative.
+     */
     get value(): number {
         const radical = this.radical.value
 
@@ -394,11 +465,13 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return Numeric.numberCorrection(this.factor.value * Math.pow(radical, 1 / this.index))
     }
 
+    /** Display option (chainable, returns this): force a leading '+' on a positive factor. */
     get withSign(): this {
         this.#withSign = true
         return this
     }
 
+    /** Display option (chainable, returns this): remove the forced leading '+'. */
     get withoutSign(): this {
         this.#withSign = false
         return this
@@ -442,14 +515,45 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
     }
 
     #parse_root(value: string): this {
-        // Format: [factor]root([index])[radical] or [factor]root([index])([radical])
-        const match = /^(.*?)root\((\d+)\)\(?([^)]+)/.exec(value)
+        // Mirrors #parse_sqrt for root(n): root(n) binds the immediately following
+        // integer; a fractional radical must be parenthesised. Leading N or N/D and
+        // a trailing /D are ordinary factor arithmetic (operator precedence).
+
+        // Round-trip of display's fractional output: (N root(n)(R))/D
+        const wrapped = /^\((.+)\)\/(\d+)$/.exec(value)
+        if (wrapped) {
+            this.#parse_root(wrapped[1])
+            this.factor.divide(+wrapped[2])
+            return this
+        }
+
+        const re = /^([+-]?\d*(?:\/\d+)?)root\((\d+)\)(?:\((-?\d+(?:\/\d+)?)\)|(\d+))(?:\/(\d+))?$/
+        const match = re.exec(value)
         if (!match) throw new ParseError(`Invalid root format: "${value}"`)
 
-        const [, factor, index, radical] = match
+        const rawFactor = match[1]
+        const index = match[2]
+        const radicalParen = match.at(3)
+        const radicalBare = match.at(4)
+        const denominator = match.at(5)
+
         this.index = +index
-        this.radical = new Fraction(radical)
-        this.factor = factor === '' ? new Fraction().one() : new Fraction(factor.trim())
+        this.radical = new Fraction(radicalParen ?? radicalBare ?? '')
+
+        let factor: Fraction
+        if (rawFactor === '' || rawFactor === '+' || rawFactor === '-') {
+            factor = new Fraction(rawFactor === '-' ? -1 : 1)
+        } else if (/^[+-]?\d+(?:\/\d+)?$/.test(rawFactor)) {
+            factor = new Fraction(rawFactor)
+        } else {
+            throw new ParseError(`Invalid root format: "${value}"`)
+        }
+
+        if (denominator !== undefined) {
+            factor.divide(+denominator)
+        }
+
+        this.factor = factor
 
         return this
     }

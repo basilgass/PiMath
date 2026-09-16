@@ -97,7 +97,7 @@ export class Circle
             return this.equation.moveLeft().reduce().tex
         }
 
-        let cx, cy
+        let cx; let cy
         if (this.center.x.isZero()) {
             cx = 'x^2'
         } else {
@@ -116,7 +116,7 @@ export class Circle
             return this.equation.moveLeft().reduce().display
         }
 
-        let cx, cy
+        let cx; let cy
         if (this.center.x.isZero()) {
             cx = 'x^2'
         } else {
@@ -176,8 +176,8 @@ export class Circle
 
         if (equ.degree('x').value === 2 && equ.degree('y').value === 2) {
             // Both must be of degree 2.
-            const x2 = equ.left.monomByDegree(2, 'x'), y2 = equ.left.monomByDegree(2, 'y')
-            let x1: Monom, y1: Monom, c: Monom
+            const x2 = equ.left.monomByDegree(2, 'x'); const y2 = equ.left.monomByDegree(2, 'y')
+            let x1: Monom; let y1: Monom; let c: Monom
 
             // Both square monoms must have the same coefficient.
             if (x2.coefficient.isEqual(y2.coefficient)) {
@@ -230,7 +230,15 @@ export class Circle
     getPointsOnCircle(): Point[] {
         // It means searching for pythagorician triples that make a perfect square.
         // (x-4)^2 + (y+3)^2 = 15
-        const triplets = Numeric.pythagoreanTripletsWithTarget(this.squareRadius.value, true)
+        // A non-integer squared radius has no integer lattice points; guard the
+        // integer contract of pythagoreanTripletsWithTarget (which now throws).
+        // TODO: also return exact fractional points (see .claude/docs/todo.md).
+        const squareRadius = this.squareRadius.value
+        if (!Number.isInteger(squareRadius) || squareRadius < 0) {
+            return []
+        }
+
+        const triplets = Numeric.pythagoreanTripletsWithTarget(squareRadius, true)
 
         const points: Point[] = []
 
@@ -445,11 +453,11 @@ export class Circle
         // x = -ac1-bc2  +-  sqrt(a^2 + b^2)*r
         // y = a/bx + h => ax-by + H = 0
 
-        const a = slope.numerator, b = -slope.denominator, c1 = this.center.x.clone(), c2 = this.center.y.clone()
+        const a = slope.numerator; const b = -slope.denominator; const c1 = this.center.x.clone(); const c2 = this.center.y.clone()
 
-        const sq = this.squareRadius.clone().multiply(slope.numerator ** 2 + slope.denominator ** 2),
-            x1 = c1.clone().multiply(a).opposite().subtract(c2.clone().multiply(b)).add(sq.clone().sqrt()),
-            x2 = c1.clone().multiply(a).opposite().subtract(c2.clone().multiply(b)).subtract(sq.clone().sqrt())
+        const sq = this.squareRadius.clone().multiply(slope.numerator ** 2 + slope.denominator ** 2)
+            const x1 = c1.clone().multiply(a).opposite().subtract(c2.clone().multiply(b)).add(sq.clone().sqrt())
+            const x2 = c1.clone().multiply(a).opposite().subtract(c2.clone().multiply(b)).subtract(sq.clone().sqrt())
 
         return [new Line(a, b, x1), new Line(a, b, x2)]
     }

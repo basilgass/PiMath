@@ -115,6 +115,14 @@ describe('Fraction creation', () => {
 
         expect(F.isNaN()).toBe(true)
     })
+
+    test('empty string parses to zero', () => {
+        // parse delegates the empty string to zero().
+        const F = new Fraction('')
+
+        expect(F.numerator).toBe(0)
+        expect(F.denominator).toBe(1)
+    })
 })
 
 describe('Fraction fromPeriodic', () => {
@@ -382,6 +390,64 @@ describe('Fraction operations', () => {
         expect(new Fraction(-4).isSquare()).toBe(false)
         expect(new Fraction(2).isSquare()).toBe(false)
     })
+
+    test('pow rejects a non-integer exponent on a negative base (atomic)', () => {
+        // no more silent NaN; align on root() which throws.
+        const F = new Fraction(-4)
+        expect(() => F.pow(0.5)).toThrow(MathError)
+        // Atomicity: the rejected pow left the receiver intact.
+        expect(F.display).toBe('-4')
+    })
+
+    test('pow handles negative and exact fractional exponents', () => {
+        // negative exponent inverses; an exact fractional exponent stays exact.
+        expect(new Fraction(2, 3).pow(-2).display).toBe('9/4')
+
+        const exact = new Fraction(9, 4).pow(0.5)
+        expect(exact.numerator).toBe(3)
+        expect(exact.denominator).toBe(2)
+        expect(exact.exact).toBe(true)
+    })
+
+    test('inverse swaps numerator and denominator, keeping the sign', () => {
+        // inverse() had no direct coverage.
+        expect(new Fraction(2, 3).inverse().display).toBe('3/2')
+
+        const neg = new Fraction(-2, 3).inverse()
+        expect(neg.display).toBe('-3/2')
+        expect(neg.sign()).toBe(-1)
+    })
+
+    test('subtract and divide accept string inputs (InputValue)', () => {
+        // signatures widened to honour the IExpression contract.
+        expect(new Fraction(2, 3).subtract('1/3').display).toBe('1/3')
+        expect(new Fraction(2, 3).divide('4/5').display).toBe('5/6')
+    })
+
+    test('setting denominator to zero yields signed infinity (mirrors divide)', () => {
+        // normalize the corrupting state instead of leaving value=∞ / isInfinity()=false.
+        const pos = new Fraction(3, 4)
+        pos.denominator = 0
+        expect(pos.isInfinity()).toBe(true)
+        expect(pos.sign()).toBe(1)
+
+        const neg = new Fraction(-3, 4)
+        neg.denominator = 0
+        expect(neg.isInfinity()).toBe(true)
+        expect(neg.sign()).toBe(-1)
+
+        const zero = new Fraction(0, 4)
+        zero.denominator = 0
+        expect(zero.isNaN()).toBe(true)
+    })
+
+    test('sign classifies NaN as positive, not negative', () => {
+        // a NaN has no real sign; +1 avoids a false isNegative().
+        const nan = new Fraction().invalid()
+        expect(nan.isNaN()).toBe(true)
+        expect(nan.sign()).toBe(1)
+        expect(nan.isNegative()).toBe(false)
+    })
 })
 
 describe('Fraction rational classification', () => {
@@ -474,6 +540,31 @@ describe("Fraction static functions", () => {
 
         expect(Fraction.xMultiply(...list).display).to.be.equal("60/12")
     })
+
+    it('should compute max, min and areEquals', function () {
+        // previously uncovered statics.
+        expect(Fraction.max('1/2', '3/4', '2/3').value).to.be.closeTo(0.75, 1e-9)
+        expect(Fraction.min('1/2', '3/4', '2/3').value).to.be.closeTo(0.5, 1e-9)
+
+        expect(Fraction.areEquals(new Fraction(1, 2), new Fraction(2, 4))).to.equal(true)
+        expect(Fraction.areEquals(new Fraction(1, 2), new Fraction(1, 3))).to.equal(false)
+    })
+
+    it('should bring fractions to the same denominator', function () {
+        // toSameDenominateur was uncovered.
+        const same = Fraction.toSameDenominateur('1/2', '1/3')
+        expect(same.map(f => f.denominator)).to.eql([6, 6])
+        expect(same.map(f => f.numerator)).to.eql([3, 2])
+    })
+
+    it('should classify strings with isFraction', function () {
+        // reject malformed strings, accept periodic notation.
+        expect(Fraction.isFraction('2/3')).to.equal(true)
+        expect(Fraction.isFraction('2.31(25)')).to.equal(true)
+        expect(Fraction.isFraction('2/')).to.equal(false)
+        expect(Fraction.isFraction('/3')).to.equal(false)
+        expect(Fraction.isFraction('1/2/3')).to.equal(false)
+    })
 })
 
 describe("Fraction evaluation", () => {
@@ -510,5 +601,33 @@ describe('specific test', ()=>{
 
         console.log(F.isNaN())
         console.log(F.isInfinity())
+    })
+})
+
+describe('Fraction compare', () => {
+    const a = new Fraction(1, 2) // 0.5
+    const b = new Fraction(3, 4) // 0.75
+
+    test('canonical signs', () => {
+        expect(a.compare(b, '<')).toBe(true)
+        expect(a.compare(b, '<=')).toBe(true)
+        expect(a.compare(b, '>')).toBe(false)
+        expect(a.compare(b, '>=')).toBe(false)
+        expect(a.compare(a.clone(), '=')).toBe(true)
+    })
+
+    test('alias spellings', () => {
+        expect(a.compare(b, 'leq')).toBe(true)
+        expect(a.compare(b, '=<')).toBe(true)
+        expect(b.compare(a, 'geq')).toBe(true)
+        expect(b.compare(a, '=>')).toBe(true)
+    })
+
+    test('(in)equality forms including neq and same', () => {
+        expect(a.compare(b, '<>')).toBe(true) // 1/2 != 3/4
+        expect(a.compare(b, 'neq')).toBe(true) // alias of <>
+        expect(a.compare(a.clone(), 'neq')).toBe(false)
+        expect(a.compare(a.clone(), 'same')).toBe(true) // alias of =
+        expect(a.compare(b, 'same')).toBe(false)
     })
 })

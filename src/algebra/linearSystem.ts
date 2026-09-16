@@ -1,4 +1,4 @@
-import type {IAlgebra, IEquation, InputValue, IPiMathObject, literalType} from "../pimath.interface"
+import type {IAlgebra, IEquation, InputValue, IPiMathObject, LiteralType} from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Equation} from "./equation"
 import {Monom} from "./monom"
@@ -9,7 +9,7 @@ import {DimensionError, IndexError, MathError, NotImplementedError} from "../err
 
 export class LinearSystem implements IPiMathObject<LinearSystem>,
     IEquation<LinearSystem>,
-    IAlgebra<LinearSystem> {
+    IAlgebra {
 
     #equations: Equation[]
 
@@ -118,7 +118,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
         // Get the letters from the linear asSystem
         for (const equ of equations) {
-            letters = letters.concat(equ.letters())
+            letters = letters.concat(equ.variables)
         }
 
         letters = [...new Set(letters)]
@@ -181,7 +181,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         this.#findLetters()
     }
 
-    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction {
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction {
         throw new NotImplementedError("Method not implemented.")
     }
 

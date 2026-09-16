@@ -111,6 +111,48 @@ describe('Polynom creation', () => {
     })
 })
 
+describe('Polynom from* builders', () => {
+    test('fromConstant builds a degree-0 polynom', () => {
+        expect(new Polynom().fromConstant(5).display).toBe('5')
+        expect(new Polynom().fromConstant('2/3').display).toBe('2/3')
+    })
+    test('fromCoefficients uses the default variable, descending powers', () => {
+        expect(new Polynom().fromCoefficients(2, 3, -4, 5).display).toBe('2x^(3)+3x^(2)-4x+5')
+    })
+    test('fromCoefficients honors setVariable', () => {
+        expect(new Polynom().setVariable('t').fromCoefficients(2, 3, 4).display).toBe('2t^(2)+3t+4')
+    })
+    test('fromLinear builds an affine form from several letters', () => {
+        expect(new Polynom().fromLinear('xyz', 2, 3, -4, 5).display).toBe('2x+3y-4z+5')
+    })
+    test('fromLinear rejects a single letter', () => {
+        expect(() => new Polynom().fromLinear('x', 2, 3)).toThrow()
+    })
+    test('fromLinear rejects too many coefficients', () => {
+        expect(() => new Polynom().fromLinear('xy', 1, 2, 3, 4)).toThrow()
+    })
+    test('fromMonoms sums the given monoms without reducing', () => {
+        const P = new Polynom().fromMonoms(new Monom('3x'), new Monom(2))
+        expect(P.monoms.length).toBe(2)
+    })
+    test('fromString parses an expression', () => {
+        expect(new Polynom().fromString('(x+1)^2').display).toBe('x^(2)+2x+1')
+    })
+    test('copy duplicates the mathematical state', () => {
+        const P = new Polynom('3x-2')
+        const C = new Polynom().copy(P)
+        C.opposite()
+        expect(P.display).toBe('3x-2')
+        expect(C.display).toBe('-3x+2')
+    })
+    test('parse routes number + coefficients to fromCoefficients', () => {
+        expect(new Polynom(2, 3, 4).display).toBe('2x^(2)+3x+4')
+    })
+    test('parse throws on unrecognized input', () => {
+        expect(() => new Polynom('2', 3, 4)).toThrow()
+    })
+})
+
 describe('Polynom output', () => {
     test('output as LaTeX', () => {
         const P = new Polynom('x^2-2x+1')
@@ -132,7 +174,7 @@ describe('Polynom operations', () => {
     })
     test('reorder Polynom', () => {
         const P = new Polynom('4')
-        P.monoms.push(new Monom('-3x'))
+        P.monoms = [...P.monoms, new Monom('-3x')]
 
         expect(P.display).toBe('4-3x')
         P.reorder()
@@ -232,7 +274,7 @@ describe('Polynom comparisons', () => {
         const P = new Polynom('2x+1')
         const Q = new Polynom('3')
         const Q2 = new Polynom('x^2+1')
-        Q.monoms.push(new Monom('6x'))
+        Q.add(new Monom('6x'))
 
         expect(Q.isSameAs(P)).toBeTruthy()
         expect(Q2.isSameAs(P)).toBeFalsy()
@@ -240,7 +282,7 @@ describe('Polynom comparisons', () => {
     test('equal Polynom', () => {
         const P = new Polynom('2x+1')
         const Q = new Polynom('1')
-        Q.monoms.push(new Monom('2x'))
+        Q.add(new Monom('2x'))
         const R = new Polynom('x+1')
 
         expect(Q.isEqual(P)).toBeTruthy()
@@ -276,7 +318,122 @@ describe('Polynom comparisons', () => {
     })
 })
 
-describe.todo('Polynom static functions')
+describe('Polynom default variable', () => {
+    test('setVariable accepts a single lowercase letter', () => {
+        const P = new Polynom('3x^2')
+        expect(() => P.setVariable('t')).not.toThrow()
+    })
+    test('setVariable rejects anything but a single lowercase letter', () => {
+        const P = new Polynom('3x^2')
+        expect(() => P.setVariable('xy')).toThrow()
+        expect(() => P.setVariable('X')).toThrow()
+        expect(() => P.setVariable('')).toThrow()
+        expect(() => P.setVariable('3')).toThrow()
+    })
+    test('integrate uses the sole variable when none is given', () => {
+        // A single-variable polynom in 't' integrates over 't' without setVariable.
+        expect(new Polynom('3t^2').integrate(0, 2).value).toBe(8)
+    })
+    test('integrate stays correct on x', () => {
+        expect(new Polynom('3x^2').integrate(0, 2).value).toBe(8)
+    })
+})
+
+describe('Polynom operation atomicity', () => {
+    test('add leaves the receiver unchanged when an operand is malformed', () => {
+        const P = new Polynom('3x+2')
+        expect(() => P.add(new Monom('x'), '@')).toThrow()
+        expect(P.display).toBe('3x+2')
+    })
+    test('subtract leaves the receiver unchanged when an operand is malformed', () => {
+        const P = new Polynom('3x+2')
+        expect(() => P.subtract(new Monom('x'), '@')).toThrow()
+        expect(P.display).toBe('3x+2')
+    })
+})
+
+describe('Polynom static functions', () => {
+    test('xMultiply multiplies polynoms', () => {
+        expect(Polynom.xMultiply(new Polynom('x+1'), new Polynom('x-1')).display).toBe('x^(2)-1')
+    })
+})
+
+describe('Polynom limitTo', () => {
+    test('finite value evaluates the polynom', () => {
+        expect(new Polynom('x+3').limitTo(2).display).toBe('5')
+    })
+    test('limit at +infinity follows the leading term', () => {
+        expect(new Polynom('x^2').limitTo(Infinity).display).toBe('+oo')
+        expect(new Polynom('-x^2').limitTo(Infinity).display).toBe('-oo')
+    })
+    test('limit at -infinity accounts for the degree parity', () => {
+        expect(new Polynom('x^3').limitTo(-Infinity).display).toBe('-oo')
+        expect(new Polynom('x^2').limitTo(-Infinity).display).toBe('+oo')
+    })
+    test('constant polynom is its own limit', () => {
+        expect(new Polynom('5').limitTo(Infinity).display).toBe('5')
+    })
+})
+
+describe('Polynom getCoefficients', () => {
+    test('returns coefficients in descending degree order', () => {
+        expect(new Polynom('x^2+2x+3').getCoefficients().map(c => c.display)).toEqual(['1', '2', '3'])
+        expect(new Polynom('x^3-1').getCoefficients().map(c => c.display)).toEqual(['1', '0', '0', '-1'])
+    })
+    test('throws on a non-integer degree', () => {
+        expect(() => new Polynom('x^(1/2)+1').getCoefficients()).toThrow()
+    })
+})
+
+describe('Polynom undefined operations throw', () => {
+    test('inverse throws', () => {
+        expect(() => new Polynom('x+1').inverse()).toThrow()
+    })
+    test('root throws', () => {
+        expect(() => new Polynom('x+1').root()).toThrow()
+    })
+    test('sqrt throws', () => {
+        expect(() => new Polynom('x+1').sqrt()).toThrow()
+    })
+})
+
+describe('Polynom replaceBy', () => {
+    test('substitutes a variable by a polynom', () => {
+        expect(new Polynom('x^2').replaceBy('x', new Polynom('y+1')).display).toBe('y^(2)+2y+1')
+    })
+    test('throws on a negative power', () => {
+        expect(() => new Polynom('x^(-1)').replaceBy('x', new Polynom('y+1'))).toThrow()
+    })
+})
+
+describe('Polynom queries', () => {
+    test('isDividableBy', () => {
+        expect(new Polynom('x^2-1').isDividableBy(new Polynom('x-1'))).toBeTruthy()
+        expect(new Polynom('x^2+1').isDividableBy(new Polynom('x-1'))).toBeFalsy()
+    })
+    test('commonMonom extracts the greatest common monom', () => {
+        expect(new Polynom('2x^3+6x^2').commonMonom().display).toBe('2x^(2)')
+    })
+    test('gcd and lcm of coefficients', () => {
+        expect(new Polynom('6x+9').gcdNumerator()).toBe(3)
+        expect(new Polynom('1/2x+1/3').lcmDenominator()).toBe(6)
+    })
+})
+
+describe('Polynom multivariable evaluation', () => {
+    test('evaluates with all variables provided', () => {
+        expect(new Polynom('x^2+y').evaluate({x: 2, y: 3}).display).toBe('7')
+    })
+    test('throws when a variable is missing', () => {
+        expect(() => new Polynom('x^2+y').evaluate({x: 2})).toThrow()
+    })
+})
+
+describe('Polynom parse errors', () => {
+    test('malformed expression throws', () => {
+        expect(() => new Polynom('@')).toThrow()
+    })
+})
 
 describe('Polynom evaluation', () => {
     test('evaluate Polynom', () => {
@@ -439,6 +596,21 @@ describe('Polynom factorisation', () => {
 
 
 })
+describe('Polynom factorisation in an arbitrary variable', () => {
+    test('common monom factor in t', () => {
+        expect(new Polynom('3t^2+6t').factors.map(f => f.display)).toEqual(['3t', 't+2'])
+    })
+    test('linear factors in y', () => {
+        const P = new Polynom('(y-2)(y+3)')
+        expect(P.factors).toHaveLength(2)
+        expect(P.factors.map(f => f.display)).toEqual(expect.arrayContaining(['y-2', 'y+3']))
+    })
+    test('explicit letter argument is honored', () => {
+        expect(new Polynom('z^2-1').factorize('z').map(f => f.display))
+            .toEqual(expect.arrayContaining(['z-1', 'z+1']))
+    })
+})
+
 describe('Polynom generators', () => {
     test('should create factorable polynom of degree 2', () => {
         const config = {

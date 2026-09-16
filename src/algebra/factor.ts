@@ -1,11 +1,12 @@
 import type {
     IAlgebra,
+    IEvaluable,
     IExpression,
     InputAlgebra,
     InputValue,
     IPiMathObject,
-    literalType,
-    TABLE_OF_SIGNS
+    LiteralType,
+    TableOfSignsData
 } from "../pimath.interface"
 import {Fraction} from "../coefficients/fraction"
 import {Polynom} from "./polynom"
@@ -14,7 +15,7 @@ import {MathError, NotImplementedError} from "../errors"
 
 export class Factor implements IPiMathObject<Factor>,
     IExpression<Factor>,
-    IAlgebra<Factor> {
+    IAlgebra, IEvaluable {
     #displayMode: FACTOR_DISPLAY
     #polynom: Polynom
     #power: Fraction
@@ -167,13 +168,16 @@ export class Factor implements IPiMathObject<Factor>,
         throw new MathError("The two factors must be the same")
     }
 
-    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction {
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric: true): number
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: false): Fraction
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction {
         if (asNumeric) {
-            return (this.polynom.evaluate(values, true) as number) ** this.power.value
+            return this.polynom.evaluate(values, true) ** this.power.value
         }
 
 
-        return (this.polynom.evaluate(values) as Fraction).pow(this.power)
+        return this.polynom.evaluate(values).pow(this.power)
     }
 
     fromPolynom(polynom: InputValue<Polynom>): this {
@@ -301,7 +305,7 @@ export class Factor implements IPiMathObject<Factor>,
         throw new MathError("Subtracting two factors is not possible")
     }
 
-    tableOfSigns(): TABLE_OF_SIGNS {
+    tableOfSigns(): TableOfSignsData {
         const pow = this.power.clone().reduce()
         const tos = this.polynom.tableOfSigns()
 

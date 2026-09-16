@@ -2,7 +2,7 @@ import {Fraction} from "../coefficients"
 import {Line} from "./line"
 import {Vector} from "./vector"
 import {Point} from "./point"
-import type {InputValue, remarquableLines} from "../pimath.interface"
+import type {InputValue, RemarquableLines} from "../pimath.interface"
 import {Numeric} from "../numeric"
 import {IndexError, InvalidArgumentError} from "../errors"
 
@@ -18,7 +18,7 @@ export class Triangle {
 // This is calculated
     #lines: Record<TRIANGLE_SIDES, Line> | null = null
     #radians = true
-    #remarquables: remarquableLines = {
+    #remarquables: RemarquableLines = {
         mediators: null, medians: null, heights: null, externalBisectors: null, bisectors: null
     }
 
@@ -395,7 +395,7 @@ export class Triangle {
         return this.getMedians().C
     }
 
-    get remarquables(): remarquableLines | null {
+    get remarquables(): RemarquableLines | null {
         return this.#remarquables
     }
 

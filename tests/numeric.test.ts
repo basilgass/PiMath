@@ -23,6 +23,11 @@ describe('Numeric', () => { // the tests container
         expect(Numeric.decompose(6).map(x => x.join(','))).to.have.all.members(['1,6', '2,3'])
     })
 
+    it('should propagate the integer check of dividers', () => {
+        // decompose relays the throw from dividers on a non-integer input.
+        expect(() => Numeric.decompose(2.5)).to.throw()
+    })
+
     describe('gcd (greatest common divisor)', () => {
         it('should compute the gcd of several numbers', () => {
             expect(Numeric.gcd(12, 18)).to.equal(6)
@@ -31,7 +36,7 @@ describe('Numeric', () => { // the tests container
         })
 
         it('should always return a positive value with negative inputs', () => {
-            // P1: the single-argument path must apply Math.abs like the >=2 path.
+            // the single-argument path must apply Math.abs like the >=2 path.
             expect(Numeric.gcd(-5)).to.equal(5)
             expect(Numeric.gcd(-12, 18)).to.equal(6)
             expect(Numeric.gcd(-12, -18)).to.equal(6)
@@ -52,17 +57,23 @@ describe('Numeric', () => { // the tests container
         })
 
         it('should return 1 for an empty argument list without throwing', () => {
-            // P2: reduce with an initial value avoids the TypeError on [].
+            // reduce with an initial value avoids the TypeError on [].
             expect(() => Numeric.lcm()).to.not.throw()
             expect(Numeric.lcm()).to.equal(1)
         })
 
         it('should stay exact for large numbers (no overflow)', () => {
-            // P3: a * b = 5.4e19 overflows MAX_SAFE_INTEGER, but a / gcd * b = 1.8e10 stays exact.
+            // a * b = 5.4e19 overflows MAX_SAFE_INTEGER, but a / gcd * b = 1.8e10 stays exact.
             const a = 6000000000
             const b = 9000000000
             expect(a * b).to.be.greaterThan(Number.MAX_SAFE_INTEGER)
             expect(Numeric.lcm(a, b)).to.equal(18000000000)
+        })
+
+        it('should return 0 when any value is 0', () => {
+            // lcm with a zero collapses to 0.
+            expect(Numeric.lcm(0, 5)).to.equal(0)
+            expect(Numeric.lcm(5, 0)).to.equal(0)
         })
     })
 
@@ -91,11 +102,23 @@ describe('Numeric', () => { // the tests container
         })
 
         it('should return the hypotenuse (not its square) when targetIsSquare', () => {
-            // P4: with targetIsSquare the third component must be sqrt(target) = 5, not 25.
+            // with targetIsSquare the third component must be sqrt(target) = 5, not 25.
             const triplets = Numeric.pythagoreanTripletsWithTarget(25, true)
             const nonZero = triplets.filter(t => !t.includes(0))
             expect(nonZero.map(t => t.join(','))).to.include('3,4,5')
             expect(nonZero.every(t => t[2] === 5)).to.equal(true)
+        })
+
+        it('should throw on a negative or non-integer target', () => {
+            // no more silent [] on invalid input.
+            expect(() => Numeric.pythagoreanTripletsWithTarget(-5)).to.throw()
+            expect(() => Numeric.pythagoreanTripletsWithTarget(2.5)).to.throw()
+            expect(() => Numeric.pythagoreanTripletsWithTarget(2.25, true)).to.throw()
+            expect(() => Numeric.pythagoreanTripletsWithTarget(NaN)).to.throw()
+        })
+
+        it('should yield the single [0, 0, 0] triplet for target 0', () => {
+            expect(Numeric.pythagoreanTripletsWithTarget(0)).to.deep.equal([[0, 0, 0]])
         })
     })
 
@@ -107,7 +130,7 @@ describe('Numeric', () => { // the tests container
         })
 
         it('should round to tens/hundreds with negative decimals', () => {
-            // P5: negative decimals used to produce NaN (e--1); now round to 10, 100, ...
+            // negative decimals used to produce NaN (e--1); now round to 10, 100, ...
             expect(Numeric.round(157, -1)).to.equal(160)
             expect(Numeric.round(1449, -2)).to.equal(1400)
         })
@@ -115,11 +138,16 @@ describe('Numeric', () => { // the tests container
         it('should truncate a non-integer decimals argument', () => {
             expect(Numeric.round(3.14159, 2.9)).to.equal(3.14)
         })
+
+        it('should truncate a negative non-integer decimals argument', () => {
+            // -1.9 truncates to -1, so 157 rounds to the nearest ten.
+            expect(Numeric.round(157, -1.9)).to.equal(160)
+        })
     })
 
     describe('nthRoot', () => {
         it('should return the exact integer root of a perfect power', () => {
-            // P1: Math.pow(perfectPower, 1/index) used to produce float noise.
+            // Math.pow(perfectPower, 1/index) used to produce float noise.
             expect(Numeric.nthRoot(25, 2)).to.equal(5)
             expect(Numeric.nthRoot(8, 3)).to.equal(2)
             expect(Numeric.nthRoot(16, 4)).to.equal(2)
@@ -153,7 +181,7 @@ describe('Numeric', () => { // the tests container
         })
 
         it('should clamp the digits argument to a valid toFixed range', () => {
-            // P6: out-of-range digits used to throw a RangeError.
+            // out-of-range digits used to throw a RangeError.
             expect(() => Numeric.numberCorrection(1.2345, -1)).to.not.throw()
             expect(() => Numeric.numberCorrection(1.2345, 500)).to.not.throw()
             expect(Numeric.numberCorrection(1.2345, -1)).to.equal(1)
@@ -171,8 +199,13 @@ describe('Numeric', () => { // the tests container
             expect(Numeric.dividers(-6)).to.deep.equal([1, 2, 3, 6])
         })
 
+        it('should return [] for 0', () => {
+            // 0 is divisible by every integer; no finite list is returned.
+            expect(Numeric.dividers(0)).to.deep.equal([])
+        })
+
         it('should throw on a non-integer input', () => {
-            // P7: the integer hypothesis is now validated.
+            // the integer hypothesis is now validated.
             expect(() => Numeric.dividers(2.5)).to.throw()
             expect(() => Numeric.dividers(NaN)).to.throw()
         })
@@ -189,8 +222,14 @@ describe('Numeric', () => { // the tests container
         })
 
         it('should guard against invalid arguments', () => {
-            // P8: index <= 0 returns 1 instead of NaN/garbage.
+            // index <= 0 returns 1 instead of NaN/garbage.
             expect(Numeric.greatestPower(50, 0)).to.equal(1)
+        })
+
+        it('should return 1 for value 0', () => {
+            // nothing to extract from 0.
+            expect(Numeric.greatestPower(0, 2)).to.equal(1)
+            expect(Numeric.greatestPower(0, 3)).to.equal(1)
         })
 
         it('should propagate the sign for a negative value with an odd index', () => {
@@ -227,7 +266,7 @@ describe('Numeric', () => { // the tests container
         })
 
         it('should return a copy that does not affect the source', () => {
-            // A5: the returned array is a copy, mutating it must not leak.
+            // the returned array is a copy, mutating it must not leak.
             const first = Numeric.primes()
             first[0] = -1
             expect(Numeric.primes()[0]).to.equal(2)
@@ -236,7 +275,7 @@ describe('Numeric', () => { // the tests container
 
     describe('Numeric namespace', () => {
         it('should be frozen against mutation', () => {
-            // A8: the shared namespace must not be mutable.
+            // the shared namespace must not be mutable.
             expect(Object.isFrozen(Numeric)).to.equal(true)
         })
     })

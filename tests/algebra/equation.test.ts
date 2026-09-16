@@ -1,6 +1,8 @@
 import {describe, expect, it, test} from "vitest"
 import {Equation} from "../../src/algebra/equation"
 import {Polynom} from "../../src/algebra/polynom"
+import {Fraction} from "../../src/coefficients/fraction"
+import {MathError, ParseError} from "../../src/errors"
 import {Random} from "../../src/randomization/random"
 
 describe('Equation creation', () => {
@@ -19,6 +21,29 @@ describe('Equation creation', () => {
         const E = new Equation('3x+5=0')
         expect(E).toBeDefined()
         expect(E.display).to.be.equal('3x+5=0')
+    })
+    test('parse each equation sign', () => {
+        expect(new Equation('x=3').sign).toBe('=')
+        expect(new Equation('x<3').sign).toBe('<')
+        expect(new Equation('x>3').sign).toBe('>')
+        expect(new Equation('x<=3').sign).toBe('<=')
+        expect(new Equation('x>=3').sign).toBe('>=')
+    })
+    test('parse latex and alternate sign notations', () => {
+        expect(new Equation('x\\geq3').sign).toBe('>=')
+        expect(new Equation('x\\leq3').sign).toBe('<=')
+        expect(new Equation('x=>3').sign).toBe('>=')
+        expect(new Equation('x=<3').sign).toBe('<=')
+    })
+    test('parsing a string without a sign throws', () => {
+        expect(() => new Equation('3x+5')).toThrow(ParseError)
+    })
+    test('a bare expression is read as "expression = 0"', () => {
+        const E = new Equation(new Polynom('3x+5'))
+
+        expect(E.left.display).to.be.equal('3x+5')
+        expect(E.right.display).to.be.equal('0')
+        expect(E.sign).to.be.equal('=')
     })
     test('clone Equation', () => {
         const E = new Equation('3x+5=0')
@@ -40,6 +65,43 @@ describe('Equation output', () => {
     test('output as ASCII', () => {
         const E = new Equation('3x^2-3x+5/2=0')
         expect(E.display).to.be.equal('3x^(2)-3x+5/2=0')
+    })
+})
+
+describe('Equation inequalities', () => {
+    test('render the sign as LaTeX', () => {
+        expect(new Equation('x>=3').signAsTex).toBe('\\geq')
+        expect(new Equation('x<=3').signAsTex).toBe('\\leq')
+        expect(new Equation('x>3').signAsTex).toBe('>')
+        expect(new Equation('x<3').signAsTex).toBe('<')
+    })
+    test('multiply by a negative reverses the inequality sign', () => {
+        const E = new Equation('2x<4')
+        E.multiply(-1)
+
+        expect(E.sign).toBe('>')
+        expect(E.left.display).to.be.equal('-2x')
+        expect(E.right.display).to.be.equal('-4')
+    })
+    test('multiply by a positive keeps the inequality sign', () => {
+        const E = new Equation('2x<4')
+        E.multiply(2)
+
+        expect(E.sign).toBe('<')
+    })
+    test('divide by a negative reverses the inequality sign', () => {
+        const E = new Equation('x>=3')
+        E.divide(-1)
+
+        expect(E.sign).toBe('<=')
+        expect(E.left.display).to.be.equal('-x')
+        expect(E.right.display).to.be.equal('-3')
+    })
+    test('an equality sign is never reversed', () => {
+        const E = new Equation('2x=4')
+        E.multiply(-1)
+
+        expect(E.sign).toBe('=')
     })
 })
 
@@ -98,37 +160,180 @@ describe('Equation operations', () => {
         E.pow(2)
         expect(E.display).to.be.equal('9x^(2)+30x+25=36')
     })
+    test('opposite negates both parts', () => {
+        const E = new Equation('3x+5=2')
+        E.opposite()
+
+        expect(E.left.display).to.be.equal('-3x-5')
+        expect(E.right.display).to.be.equal('-2')
+    })
+    test('reorder moves variables left and constants right', () => {
+        const E = new Equation('3x+5=2x-1')
+        E.reorder()
+
+        expect(E.left.display).to.be.equal('x')
+        expect(E.right.display).to.be.equal('-6')
+    })
+    test('reorder with allLeft keeps everything on the left', () => {
+        const E = new Equation('3x+5=2x-1')
+        E.reorder(true)
+
+        expect(E.left.display).to.be.equal('x+6')
+        expect(E.right.display).to.be.equal('0')
+    })
+    test('split returns detached clones of both parts', () => {
+        const E = new Equation('3x+5=2')
+        const [left, right] = E.split()
+
+        expect(left.display).to.be.equal('3x+5')
+        expect(right.display).to.be.equal('2')
+
+        // Mutating the returned parts must not affect the equation.
+        left.add(new Polynom('x'))
+        expect(E.left.display).to.be.equal('3x+5')
+    })
 })
 
 describe('Equation comparisons', () => {
-    test('equal Equation', () => {
+    test('isEqual is strict, member by member and sign-sensitive', () => {
         const E = new Equation('3x+5=0')
-        expect(E.isEqualTo(E)).toBe(true)
 
-        const F = new Equation('3x=-5')
-        expect(E.isEqualTo(F)).toBe(true)
-        expect(F.isEqualTo(E)).toBe(true)
-
-        const G = new Equation('6x+10=0')
-        expect(E.isEqualTo(G)).toBe(false)
+        expect(E.isEqual(new Equation('3x+5=0'))).toBe(true)
+        // Rearranged members are not strictly equal.
+        expect(E.isEqual(new Equation('3x=-5'))).toBe(false)
+        // A different sign is not equal.
+        expect(E.isEqual(new Equation('3x+5<0'))).toBe(false)
     })
-    test('same Equation', () => {
+    test('isEquivalentTo matches equations with the same solutions', () => {
         const E = new Equation('3x+5=0')
-        expect(E.isLinearTo(E)).toBe(true)
 
-        const F = new Equation('3x=-5')
-        expect(E.isLinearTo(F)).toBe(true)
-        expect(F.isLinearTo(E)).toBe(true)
+        expect(E.isEquivalentTo(E)).toBe(true)
+        // Rearranged.
+        expect(E.isEquivalentTo(new Equation('3x=-5'))).toBe(true)
+        // Scaled by a factor.
+        expect(E.isEquivalentTo(new Equation('6x+10=0'))).toBe(true)
+    })
+    test('isEquivalentTo respects the inequality direction', () => {
+        const E = new Equation('2x<4')
 
-        const G = new Equation('6x+10=0')
-        expect(E.isLinearTo(G)).toBe(true)
+        // Positive scaling keeps the direction.
+        expect(E.isEquivalentTo(new Equation('x<2'))).toBe(true)
+        // Negative scaling mirrors the equation, the sign must reverse.
+        expect(E.isEquivalentTo(new Equation('-x>-2'))).toBe(true)
+        // Same polynom up to scale but wrong direction.
+        expect(E.isEquivalentTo(new Equation('x>2'))).toBe(false)
+    })
+    test('isLinearTo is a deprecated alias of isEquivalentTo', () => {
+        const E = new Equation('3x+5=0')
+        expect(E.isLinearTo(new Equation('6x+10=0'))).toBe(true)
     })
 })
 
-describe.todo('Equation static functions')
+describe('Equation isolate', () => {
+    test('isolate the single variable of a linear equation', () => {
+        const E = new Equation('2x+4=0')
+
+        // isolate mutates and returns the receiver.
+        expect(E.isolate()).to.be.equal(E)
+        expect(E.left.display).to.be.equal('x')
+        expect(E.right.display).to.be.equal('-2')
+    })
+    test('isolate a chosen variable of a linear two-variable equation', () => {
+        const E = new Equation('2x+3y=6')
+        E.isolate('y')
+
+        expect(E.left.display).to.be.equal('y')
+        expect(E.right.evaluate({ x: new Fraction(0) }).display).to.be.equal('2')
+    })
+    test('cannot isolate an equation of degree greater than one', () => {
+        const E = new Equation('x^2+1=0')
+        const before = E.display
+
+        expect(() => E.isolate()).toThrow(MathError)
+        // A failed isolation leaves the equation untouched.
+        expect(E.display).to.be.equal(before)
+    })
+    test('cannot isolate across a cross-term and leaves the equation intact', () => {
+        const E = new Equation('xy+1=0')
+        const before = E.display
+
+        expect(() => E.isolate('x')).toThrow(MathError)
+        expect(E.display).to.be.equal(before)
+    })
+})
+
+describe('Equation canIsolate', () => {
+    test('accepts first-degree, cross-term-free equations', () => {
+        expect(new Equation('2x+4=0').canIsolate()).toBe(true)
+        expect(new Equation('2x+3y=6').canIsolate('y')).toBe(true)
+    })
+    test('rejects higher degree and cross-term equations', () => {
+        expect(new Equation('x^2+1=0').canIsolate()).toBe(false)
+        expect(new Equation('xy+1=0').canIsolate('x')).toBe(false)
+    })
+    test('is a pure query and does not mutate the equation', () => {
+        const E = new Equation('2x+3y=6')
+        const before = E.display
+
+        E.canIsolate('y')
+        expect(E.display).to.be.equal(before)
+    })
+})
+
+describe('Equation isMultiVariable', () => {
+    test('a single-variable equation is not multi-variable', () => {
+        expect(new Equation('3x+5=0').isMultiVariable()).toBe(false)
+    })
+    test('a linear equation in distinct variables is not multi-variable', () => {
+        expect(new Equation('2x+3y=6').isMultiVariable()).toBe(false)
+    })
+    test('a cross-term makes the equation multi-variable', () => {
+        expect(new Equation('xy+1=0').isMultiVariable()).toBe(true)
+    })
+})
+
+describe('Equation static functions', () => {
+    test('isEquationString detects the presence of a sign', () => {
+        expect(Equation.isEquationString('3x+5=0')).toBe(true)
+        expect(Equation.isEquationString('3x<5')).toBe(true)
+        expect(Equation.isEquationString('3x+5')).toBe(false)
+    })
+    test('makeSolutionsUnique removes duplicates and sorts', () => {
+        const E = new Equation('x^2-3x=-2')
+        const solutions = E.solve()
+
+        const unique = Equation.makeSolutionsUnique(solutions.concat(solutions), true)
+        expect(unique).to.be.length(2)
+        expect(unique.map(s => s.display)).to.deep.equal(['1', '2'])
+    })
+})
 
 describe('Equation evaluation', () => {
-    test.todo('evaluate Equation')
+    test('evaluate the equality as a predicate', () => {
+        const E = new Equation('2x=x+3')
+
+        expect(E.evaluate({ x: 3 }, true)).toBe(true)
+        expect(E.evaluate({ x: 2 }, true)).toBe(false)
+        expect(E.evaluate({ x: new Fraction(3) }, false)).toBe(true)
+    })
+    test('evaluate honours the inequality sign', () => {
+        const E = new Equation('2x<10')   // holds iff x < 5
+
+        expect(E.evaluate({ x: 3 }, true)).toBe(true)
+        expect(E.evaluate({ x: 5 }, true)).toBe(false)
+        expect(E.evaluate({ x: new Fraction(4) }, false)).toBe(true)
+        expect(E.evaluate({ x: new Fraction(5) }, false)).toBe(false)
+
+        const G = new Equation('2x>=10')  // holds iff x >= 5
+        expect(G.evaluate({ x: new Fraction(5) }, false)).toBe(true)
+        expect(G.evaluate({ x: new Fraction(4) }, false)).toBe(false)
+    })
+    test('test checks the equality at a given point', () => {
+        const E = new Equation('2x=x+3')
+
+        expect(E.test({ x: new Fraction(3) })).toBe(true)
+        expect(E.test({ x: new Fraction(2) })).toBe(false)
+    })
     test('solve linear Equation', () => {
         const E = new Equation('3x+5=11')
         const result = E.solve()
@@ -249,10 +454,8 @@ describe.skip('Equations tests', () => {
             Q = new Equation('5-3x=2y'),
             R = new Equation('6x+4y-10=0')
 
-        expect(P.isEqualTo(P)).toBe(true)
-        expect(P.isEqualTo(Q)).toBe(true)
-        expect(P.isEqualTo(R)).toBe(false)
-        expect(P.isLinearTo(Q)).toBe(true)
-        expect(P.isLinearTo(R)).toBe(true)
+        expect(P.isEqual(P)).toBe(true)
+        expect(P.isEquivalentTo(Q)).toBe(true)
+        expect(P.isEquivalentTo(R)).toBe(true)
     })
 })

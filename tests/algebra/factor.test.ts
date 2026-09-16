@@ -205,7 +205,7 @@ describe("Factors: algebra operations", () => {
     test('should evaluate the factor', () => {
         const F = new Factor('3x+2', '1/2')
 
-        expect((F.evaluate({ x: 2 }) as Fraction).value).toBe(2.8284271247461903)
+        expect(F.evaluate({ x: 2 }).value).toBe(2.8284271247461903)
     })
 
     test('should get the derivative of a trivial Factor', ()=>{

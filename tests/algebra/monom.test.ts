@@ -1,5 +1,5 @@
 import {describe, expect, test,} from "vitest"
-import {Fraction, Monom, Random} from "../../src"
+import {Fraction, Monom, ParseError, Random} from "../../src"
 
 describe('Monom creation', () => {
     test('create Monom', () => {
@@ -220,14 +220,14 @@ describe('Monom static functions', () => {
 describe('Monom evaluation', () => {
     test('evaluate Monom', () => {
         const M = new Monom('3x^2')
-        expect((M.evaluate(2) as Fraction).value).toBe(12)
-        expect((M.evaluate(2, true) as number)).toBe(12)
+        expect(M.evaluate(2).value).toBe(12)
+        expect(M.evaluate(2, true)).toBe(12)
     })
 
     test('evaluate Monom with multiple variables', () => {
         const M = new Monom('3x^2y^3')
-        expect((M.evaluate({x: 2, y: 3}) as Fraction).value).toBe(324)
-        expect((M.evaluate({x: 2, y: 3}, true) as number)).toBe(324)
+        expect(M.evaluate({x: 2, y: 3}).value).toBe(324)
+        expect(M.evaluate({x: 2, y: 3}, true)).toBe(324)
     })
 })
 
@@ -257,5 +257,102 @@ describe('Monom algebra operations', () => {
     test('primitive of Monom', () => {
         const M = new Monom('3x^2')
         expect(M.primitive().display).toBe('x^(3)')
+    })
+    test('derivative on a specific letter', () => {
+        expect(new Monom('3y^2').derivative('y').display).toBe('6y')
+    })
+    test('derivative on a missing letter is zero', () => {
+        expect(new Monom('3y^2').derivative('x').isZero()).toBeTruthy()
+    })
+    test('primitive on a missing letter introduces the letter', () => {
+        expect(new Monom('5').primitive('x').display).toBe('5x')
+    })
+    test('integrate over an interval', () => {
+        // ∫ 3x^2 dx from 0 to 2 = [x^3] = 8
+        expect(new Monom('3x^2').integrate(0, 2).value).toBe(8)
+    })
+})
+
+describe('Monom evaluate immutability', () => {
+    test('constant monom evaluate returns a detached Fraction', () => {
+        const M = new Monom('3')
+        const f = M.evaluate({})
+        f.add(new Fraction(10))
+        expect(M.coefficient.value).toBe(3)
+    })
+    test('variable monom evaluate returns a detached Fraction', () => {
+        const M = new Monom('3x')
+        const f = M.evaluate({x: 2}) // 6
+        f.add(new Fraction(100))
+        expect(M.coefficient.value).toBe(3)
+        expect(M.evaluate({x: 2}).value).toBe(6)
+    })
+})
+
+describe('Monom evaluate variable coverage', () => {
+    test('extra variables are ignored', () => {
+        const M = new Monom('3xy')
+        expect(M.evaluate({x: 4, y: 5, z: 3}).value).toBe(60)
+    })
+    test('throws when a variable of the monom is missing', () => {
+        const M = new Monom('3xy')
+        expect(() => M.evaluate({x: 4})).toThrow()
+    })
+})
+
+describe('Monom operation atomicity', () => {
+    test('add leaves the receiver unchanged on failure', () => {
+        const M = new Monom('3x^2')
+        expect(() => M.add(new Monom('2x^2'), new Monom('5x^3'))).toThrow()
+        expect(M.display).toBe('3x^(2)')
+    })
+    test('subtract leaves the receiver unchanged on failure', () => {
+        const M = new Monom('3x^2')
+        expect(() => M.subtract(new Monom('2x^2'), new Monom('5x^3'))).toThrow()
+        expect(M.display).toBe('3x^(2)')
+    })
+})
+
+describe('Monom sqrt', () => {
+    test('perfect square', () => {
+        expect(new Monom('4x^2').sqrt().display).toBe('2x')
+    })
+    test('literal with odd power yields a rational power', () => {
+        expect(new Monom('4x^3').sqrt().display).toBe('2x^(3/2)')
+    })
+    test('throws when the coefficient is not a perfect square', () => {
+        expect(() => new Monom('3x^2').sqrt()).toThrow()
+    })
+    test('receiver unchanged on failure', () => {
+        const M = new Monom('3x^2')
+        expect(() => M.sqrt()).toThrow()
+        expect(M.display).toBe('3x^(2)')
+    })
+})
+
+describe('Monom dividers and squares', () => {
+    test('dividers of a constant', () => {
+        expect(new Monom('6').dividers.map(m => m.display)).toEqual(['1', '2', '3', '6'])
+    })
+    test('dividers keeps the monom itself for rational powers', () => {
+        const M = new Monom('3x^(1/2)')
+        expect(M.dividers.map(m => m.display)).toEqual([M.display])
+    })
+    test('isSquare', () => {
+        expect(new Monom('4x^2').isSquare()).toBeTruthy()
+        expect(new Monom('4x^3').isSquare()).toBeFalsy() // odd power
+        expect(new Monom('3x^2').isSquare()).toBeFalsy() // coefficient not a square
+    })
+    test('gcd keeps the lowest power', () => {
+        expect(Monom.gcd(new Monom('x^5'), new Monom('x^2')).display).toBe('x^(2)')
+    })
+    test('gcd is zero when a monom has a rational power', () => {
+        expect(Monom.gcd(new Monom('x^(1/2)'), new Monom('x')).isZero()).toBeTruthy()
+    })
+})
+
+describe('Monom parse errors', () => {
+    test('malformed input throws ParseError', () => {
+        expect(() => new Monom('@')).toThrow(ParseError)
     })
 })

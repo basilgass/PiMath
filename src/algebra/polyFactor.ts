@@ -1,13 +1,14 @@
 import type {
-    FACTOR_TABLE_OF_SIGNS,
+    FactorTableOfSigns,
     IAlgebra,
+    IEvaluable,
     IExpression,
     InputAlgebra,
     InputValue,
     IPiMathObject,
-    literalType,
-    POLYFACTOR_TABLE_OF_SIGNS,
-    TABLE_OF_SIGNS_VALUES
+    LiteralType,
+    PolyFactorTableOfSigns,
+    TableOfSignsValues
 } from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {MathError, NotImplementedError, ParseError} from "../errors"
@@ -20,7 +21,7 @@ import {splitIfOutsideParentheses, stripParenthesis} from "../helpers"
 // PolyFactor is a class that represents a polynomial in factored form.
 export class PolyFactor implements IPiMathObject<PolyFactor>,
     IExpression<PolyFactor>,
-    IAlgebra<PolyFactor> {
+    IAlgebra, IEvaluable {
 
     #displayMode: FACTOR_DISPLAY = FACTOR_DISPLAY.POWER
     #factors: Factor[] = []
@@ -297,7 +298,10 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this
     }
 
-    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction {
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric: true): number
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: false): Fraction
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction {
         if (asNumeric) {
             return this.#factors
                 .reduce((acc, f) => acc * (f.evaluate(values, asNumeric) as number), 1)
@@ -387,7 +391,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     getZeroes(): Solution[] {
         // Calculate the list of roots (ordered, unique)
         const roots: Solution[] = ([] as Solution[])
-            .concat(...this.#factors.map(x => x.polynom.getZeroes()))
+            .concat(...this.#factors.map(x => x.polynom.roots))
         // .concat(...tos.map(x => x.roots))
 
         // Sort the values.
@@ -567,7 +571,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this.add(...values.map(f => f.opposite()))
     }
 
-    tableOfSigns(): POLYFACTOR_TABLE_OF_SIGNS {
+    tableOfSigns(): PolyFactorTableOfSigns {
         // Calculate the table of signs for each factor
         const roots = this.getZeroes()
         const roots_key = roots.map(x => x.value)
@@ -576,7 +580,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
 
 
         // These signs are NOT aligned
-        const factors: FACTOR_TABLE_OF_SIGNS[] = this.factorize().factors
+        const factors: FactorTableOfSigns[] = this.factorize().factors
             .map(factor => {
                 return {factor: new Factor(factor), ...factor.tableOfSigns()}
             })
@@ -585,9 +589,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         // Build the table of signs with extra roots for each factors.
         factors.forEach(item => {
             // Create the new signs row
-            const empty_signs: TABLE_OF_SIGNS_VALUES[] = new Array(2 * roots.length + 1).fill('') as unknown as TABLE_OF_SIGNS_VALUES[]
+            const empty_signs: TableOfSignsValues[] = new Array(2 * roots.length + 1).fill('') as unknown as TableOfSignsValues[]
 
-            let sign = item.signs.shift() as unknown as TABLE_OF_SIGNS_VALUES
+            let sign = item.signs.shift() as unknown as TableOfSignsValues
             let root = item.roots.shift()
 
             const aligned_signs = empty_signs.map((_sign, index) => {
@@ -601,10 +605,10 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
                 }
 
                 // The indexed root is the new root
-                const rootSign = item.signs.shift() as unknown as TABLE_OF_SIGNS_VALUES
+                const rootSign = item.signs.shift() as unknown as TableOfSignsValues
 
                 // Make the new signs.
-                sign = item.signs.shift() as unknown as TABLE_OF_SIGNS_VALUES
+                sign = item.signs.shift() as unknown as TableOfSignsValues
                 root = item.roots.shift()
                 return rootSign
             })
@@ -615,9 +619,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         })
 
         // Build the table of signs with extra roots : reault line
-        const signs: TABLE_OF_SIGNS_VALUES[] = factors
+        const signs: TableOfSignsValues[] = factors
             .map((item) => [...item.signs])
-            .reduce<TABLE_OF_SIGNS_VALUES[]>((a, b) => {
+            .reduce<TableOfSignsValues[]>((a, b) => {
                 if (a.length === 0) {
                     return b
                 }

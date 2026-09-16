@@ -3,30 +3,55 @@ import type {Equation, Factor, Monom} from "./algebra"
 import type {Line, Point, Vector} from "./geometry"
 import type {Solution} from "./analyze/solution"
 
-export type InputValue<T> = T | string | number | Fraction // | Root;
+// Universal construction input. `Root` is intentionally excluded: it is not
+// faithfully convertible to Fraction/number (irrationals), so it cannot be a
+// universal input. Accept a Root contextually — via the generic parameter
+// (`InputValue<Root>`) or a local union (see `Root.parse`: `InputValue<Root | Fraction>`),
+// the same way `InputAlgebra` adds `Monom`.
+export type InputValue<T> = T | string | number | Fraction
 export type InputAlgebra<T> = InputValue<T> | Monom
-export type literalType<T> = Record<string, T>;
+export type LiteralType<T> = Record<string, T>
 
-export type compareSign =
-    '>' | ">=" | "=>" | "geq" |
-    '<' | "<=" | "=<" | "leq" |
-    '=' | "<>" | "neq" | "same";
+// Canonical relational sign of an (in)equation, after normalization: exactly one
+// of =, <=, >=, <, >. No "not equal": an equation sign is purely relational.
+export type EquationSign = "=" | "<=" | ">=" | "<" | ">"
 
-export type EQUATION_SIGN = "=" | "<=" | ">=" | "<" | ">"
+// Permissive comparison input (Fraction.compare). The canonical EquationSign
+// signs, plus alias spellings (=> / geq for >=, =< / leq for <=) and the
+// (in)equality forms (<> / neq for ≠, same for =).
+export type CompareSign =
+    EquationSign |
+    "=>" | "geq" |
+    "=<" | "leq" |
+    "<>" | "neq" | "same"
 
-export enum PARTICULAR_SOLUTION {
-    real = "\\mathbb{R}",
-    varnothing = "\\varnothing"
-}
-
+/**
+ * Base contract of every PiMath value object: a displayable, duplicable
+ * mathematical entity.
+ *
+ * Note: construction (`parse` / `from***`) is intentionally NOT part of this
+ * contract — input shapes are class-specific and handled per class, not
+ * polymorphically. See `.claude/specs/pimath-architecture.md`.
+ */
 export interface IPiMathObject<T> {
+    /** ASCIIMath rendering of the current state (terminal output, not chainable). */
     readonly display: string
+    /** LaTeX rendering of the current state (terminal output, not chainable). */
     readonly tex: string
 
-    parse(...value: unknown[]): T;
-
+    /**
+     * Full duplicate of this instance, **including display state** (selected form
+     * and options set via `as***` / `with***`). Distinct from {@link copy}.
+     */
     clone(): T;
 
+    /**
+     * Copy the **mathematical state** of another instance into `this` (display
+     * state is NOT transferred — the receiver keeps its own formatting). Entry
+     * point used when constructing/parsing from a same-type input. Distinct from
+     * {@link clone}. Classes without a real implementation throw
+     * `NotImplementedError`.
+     */
     copy(value: T): T;
 }
 
@@ -57,13 +82,13 @@ export interface IExpressionMultiply<T> extends IExpressionBase<T> {
 }
 
 export interface IExpression<T> extends IExpressionMultiply<T> {
-    divide(value: InputValue<T>): T | null;
+    divide(value: InputValue<T>): T;
 
-    inverse(): T | undefined;
+    inverse(): T;
 
-    root(value: number): T | undefined;
+    root(value: number): T;
 
-    sqrt(): T | undefined;
+    sqrt(): T;
 }
 
 export interface IEquation<T> {
@@ -73,47 +98,66 @@ export interface IEquation<T> {
     solve(): Solution[]
 }
 
-export interface IAlgebra<T> {
+export interface IAlgebra {
     readonly variables: string[];
 
     degree(letter?: string): Fraction;
 
-    evaluate(values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number | boolean;
-
     hasVariable(letter: string): boolean;
+}
+
+// Value evaluation contract, distinct from IAlgebra (variable queries) and from
+// predicate evaluation (Equation/LogicalSet, which yield a boolean). Overloaded
+// on asNumeric: a literal `true` yields a number, otherwise a Fraction; a runtime
+// boolean falls back to the union.
+export interface IEvaluable {
+    evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric: true): number;
+
+    evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric?: false): Fraction;
+
+    evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number;
 }
 
 export interface IAnalyse<T> {
     derivative(): T | T[];
 
-    integrate(a: InputValue<Fraction>, b: InputValue<T>, letter?: string): Fraction;
+    integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string): Fraction;
 
     primitive(): T;
 }
 
-export type TABLE_OF_SIGNS_VALUES = '-' | '+' | 'h' | 'z' | 't' | 'd' | 'u' | 'n' | ''
+export type TableOfSignsValues = '-' | '+' | 'h' | 'z' | 't' | 'd' | 'u' | 'n' | ''
 
-export interface TABLE_OF_SIGNS {
+export interface TableOfSignsData {
     roots: Solution[],
-    signs: TABLE_OF_SIGNS_VALUES[]
+    signs: TableOfSignsValues[]
 }
 
-export interface FACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {
+export interface FactorTableOfSigns extends TableOfSignsData {
     factor: Factor
 }
 
-export interface POLYFACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {
-    factors: FACTOR_TABLE_OF_SIGNS[]
+export interface PolyFactorTableOfSigns extends TableOfSignsData {
+    factors: FactorTableOfSigns[]
 }
 
-export enum LinePropriety {
+/**
+ * Geometric relation between two lines in the plane (2D).
+ * @see Line3Property — the 3D equivalent, intentionally identical by design.
+ */
+export enum LineProperty {
     None = 'none',
     Parallel = 'parallel',
     Perpendicular = 'perpendicular',
     Tangent = 'tangent'
 }
 
-export enum Line3Propriety {
+/**
+ * Geometric relation between two lines in space (3D).
+ * Intentionally mirrors {@link LineProperty}: 3D shares by design the same set
+ * of relations as 2D. Both enums must stay synchronized.
+ */
+export enum Line3Property {
     None = 'none',
     Parallel = 'parallel',
     Perpendicular = 'perpendicular',
@@ -130,35 +174,16 @@ export interface Plane3Config {
 }
 
 
-export interface remarquableLines {
-    'bisectors': {
-        'A': Line,
-        'B': Line,
-        'C': Line,
-        'intersection': Point | null
-    } | null,
-    externalBisectors: {
-        'A': Line,
-        'B': Line,
-        'C': Line,
-        'intersection': Point | null
-    } | null,
-    'heights': {
-        'A': Line,
-        'B': Line,
-        'C': Line,
-        'intersection': Point | null
-    } | null,
-    'medians': {
-        'A': Line,
-        'B': Line,
-        'C': Line,
-        'intersection': Point | null
-    } | null,
-    'mediators': {
-        'a': Line,
-        'b': Line,
-        'c': Line,
-        'intersection': Point | null
-    } | null
+// A triad of triangle lines keyed by vertices (A/B/C — cevians) or by
+// sides (a/b/c — mediators), plus their common intersection point.
+type TriangleLineTriad<K extends string> = Record<K, Line> & {
+    intersection: Point | null
+}
+
+export interface RemarquableLines {
+    bisectors: TriangleLineTriad<'A' | 'B' | 'C'> | null,
+    externalBisectors: TriangleLineTriad<'A' | 'B' | 'C'> | null,
+    heights: TriangleLineTriad<'A' | 'B' | 'C'> | null,
+    medians: TriangleLineTriad<'A' | 'B' | 'C'> | null,
+    mediators: TriangleLineTriad<'a' | 'b' | 'c'> | null
 }

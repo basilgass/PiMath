@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Fraction, ParseError, Root} from "../../src"
+import {Fraction, MathError, ParseError, Root} from "../../src"
 
 describe("root creation", () => {
     test('create root', () => {
@@ -98,7 +98,7 @@ describe("root creation", () => {
     })
 
     test('parse rejects a malformed string with a coherent ParseError', ()=>{
-        // A6: strictness is enforced at Root's boundary, not by Fraction's NaN.
+        // strictness is enforced at Root's boundary, not by Fraction's NaN.
         expect(() => new Root('abc')).toThrowError('Cannot parse "abc" as a root or fraction')
         // A bare numeric / fractional string is still accepted (factor, radical 1).
         expect(new Root('5').display).toBe('5')
@@ -307,7 +307,7 @@ describe('root operations', ()=>{
         // √(1/2) = √2 / 2
         expect(new Root().from(2, '1/2').reduce().display).toBe('sqrt(2)/2')
 
-        // root(3)(1/4) = root(3)(2) / 2  (P6: was mathematically wrong for index >= 3)
+        // root(3)(1/4) = root(3)(2) / 2  (was mathematically wrong for index >= 3)
         expect(new Root().from(3, '1/4').reduce().display).toBe('root(3)(2)/2')
     })
     test('reduce preserves the value', ()=>{
@@ -318,12 +318,12 @@ describe('root operations', ()=>{
         }
     })
     test('reduce roots with index >= 3 (perfect power extraction)', ()=>{
-        // P1: extracting a perfect cube/4th power must give an exact integer factor.
+        // extracting a perfect cube/4th power must give an exact integer factor.
         expect(new Root().from(3, 16).reduce().display).toBe('2root(3)(2)')
         expect(new Root().from(4, 32).reduce().display).toBe('2root(4)(2)')
     })
     test('isEqual compares exact values across different indices', ()=>{
-        // P2: sqrt(9) = root(4)(81) = 3, and root(4)(9) = sqrt(3).
+        // sqrt(9) = root(4)(81) = 3, and root(4)(9) = sqrt(3).
         expect(new Root().from(2, 9).isEqual(new Root().from(4, 81))).toBe(true)
         expect(new Root().from(2, 9).isEqual(new Root(new Fraction(3)))).toBe(true)
         expect(new Root().from(4, 9).isEqual(new Root().from(2, 3))).toBe(true)
@@ -351,7 +351,7 @@ describe('root operations', ()=>{
         expect(()=>R1.clone().add(R4)).toThrowError("Roots must share the same index and radical to be added or subtracted")
     })
 
-    test('add leaves the receiver unchanged when it throws (P4)', ()=>{
+    test('add leaves the receiver unchanged when it throws', ()=>{
         const R = new Root().from(2, 12, 7) // 7sqrt(12), intentionally not reduced
         expect(() => R.add(new Root().from(2, 7)))
             .toThrowError('Roots must share the same index and radical to be added or subtracted')
@@ -395,7 +395,7 @@ describe('root operations', ()=>{
     })
 
     test('multiply/divide leave the receiver unchanged when they throw', ()=>{
-        // A4: multiply is atomic like add — a failed op must not corrupt `this`.
+        // multiply is atomic like add — a failed op must not corrupt `this`.
         const m = R1.clone() // 2sqrt(3)
         expect(() => m.multiply(R4)).toThrowError('Multiply can only be done if radical or index as equals.')
         expect(m.display).toBe('2sqrt(3)') // factor NOT already multiplied
@@ -429,7 +429,7 @@ describe('root operations', ()=>{
 })
 
 describe('predicates, accessors and edge cases', ()=>{
-    test('inverse of a root (T3)', ()=>{
+    test('inverse of a root', ()=>{
         const R = new Root().from(2, 3, 2) // 2sqrt(3)
         R.inverse()
         expect(R.factor.value).toBe(0.5)      // 1/2
@@ -438,21 +438,21 @@ describe('predicates, accessors and edge cases', ()=>{
         expect(R.value).toBeCloseTo(1 / (2 * Math.sqrt(3)), 3)
     })
 
-    test('group folds the factor into the radical (T3)', ()=>{
+    test('group folds the factor into the radical', ()=>{
         const R = new Root().from(2, 3, 2).group() // 2sqrt(3) -> sqrt(12)
         expect(R.factor.isOne()).toBe(true)
         expect(R.radical.value).toBe(12)
         expect(R.display).toBe('sqrt(12)')
     })
 
-    test('divide two compatible roots (T3)', ()=>{
+    test('divide two compatible roots', ()=>{
         // 2sqrt(3) / 2sqrt(3) = 1
         expect(new Root().from(2, 3, 2).divide(new Root().from(2, 3, 2)).value).toBe(1)
         // 6sqrt(3) / 2sqrt(3) = 3
         expect(new Root().from(2, 3, 6).divide(new Root().from(2, 3, 2)).value).toBe(3)
     })
 
-    test('isOne / isZero predicates (T4)', ()=>{
+    test('isOne / isZero predicates', ()=>{
         expect(new Root().from(2, 1, 1).isOne()).toBe(true)
         expect(new Root().from(2, 3, 1).isOne()).toBe(false)
 
@@ -462,14 +462,14 @@ describe('predicates, accessors and edge cases', ()=>{
         expect(new Root().from(2, 5, 2).isZero()).toBe(false)
     })
 
-    test('value of positive roots (T4)', ()=>{
+    test('value of positive roots', ()=>{
         expect(new Root().from(2, 9).value).toBe(3)
         expect(new Root().from(3, 8).value).toBe(2)
         // value rounds to 3 decimals (Numeric.numberCorrection default).
         expect(new Root().from(2, 3, 2).value).toBeCloseTo(2 * Math.sqrt(3), 3)
     })
 
-    test('index must be a strictly positive integer (T5)', ()=>{
+    test('index must be a strictly positive integer', ()=>{
         expect(() => new Root().from(0, 5)).toThrowError('Index must be a strictly positive integer.')
         expect(() => new Root().from(-2, 5)).toThrowError('Index must be a strictly positive integer.')
         expect(() => new Root().from(2.5, 5)).toThrowError('Index must be a strictly positive integer.')
@@ -479,7 +479,7 @@ describe('predicates, accessors and edge cases', ()=>{
         expect(() => { R.index = 0 }).toThrowError('Index must be a strictly positive integer.')
     })
 
-    test('withSign forces a leading + on a positive factor (T6)', ()=>{
+    test('withSign forces a leading + on a positive factor', ()=>{
         const R = new Root().from(2, 3, 2)
         expect(R.withSign.display).toBe('+2sqrt(3)')
         expect(R.withSign.tex).toBe('+2 \\sqrt{ 3 }')
@@ -497,7 +497,7 @@ describe('predicates, accessors and edge cases', ()=>{
         expect(R.factor.isZero()).toBe(true)
         expect(R.isZero()).toBe(true)
 
-        // NaN radical / factor are rejected at Root's boundary (A6 consistency).
+        // NaN radical / factor are rejected at Root's boundary.
         expect(() => new Root().from(2, 'abc')).toThrowError('Cannot build a root from an invalid radical: "abc"')
         expect(() => new Root().from(2, 5, 'xyz')).toThrowError('Cannot build a root from an invalid factor: "xyz"')
 
@@ -505,12 +505,47 @@ describe('predicates, accessors and edge cases', ()=>{
         expect(() => new Root().from(2, -4)).not.toThrow()
     })
 
-    test('pow(0) yields 1 (T7)', ()=>{
+    test('pow(0) yields 1', ()=>{
         const R = new Root().from(2, 3, 5).pow(0) // (5sqrt(3))^0 = 1
         expect(R.index).toBe(1)
         expect(R.factor.isOne()).toBe(true)
         expect(R.radical.isOne()).toBe(true)
         expect(R.value).toBe(1)
         expect(R.isOne()).toBe(true)
+    })
+
+    test('root() validates its degree and stays atomic', ()=>{
+        for (const bad of [0, -1, 1.5]) {
+            expect(() => new Root().from(2, 3, 2).root(bad))
+                .toThrowError('The root degree must be a strictly positive integer.')
+        }
+        // Atomicity: a rejected root() must not have folded the factor (group()).
+        const R = new Root().from(2, 3, 2) // 2sqrt(3)
+        expect(() => R.root(0)).toThrow()
+        expect(R.display).toBe('2sqrt(3)')
+    })
+
+    test('pow() stays atomic on a rejected fractional exponent', ()=>{
+        // Negative factor + fractional exponent -> Fraction.pow throws; the clone
+        // absorbs the mutation, so the receiver is intact.
+        const R = new Root().from(2, 3, -2) // -2sqrt(3)
+        expect(() => R.pow(0.5)).toThrow(MathError)
+        expect(R.display).toBe('-2sqrt(3)')
+    })
+
+    test('#parse_root rejects malformed factor/radical', ()=>{
+        expect(() => new Root('root(3)(abc)')).toThrowError('Invalid root format: "root(3)(abc)"')
+        expect(() => new Root('abcroot(3)(5)')).toThrowError('Invalid root format: "abcroot(3)(5)"')
+    })
+
+    test('inverse and divide reject a zero root', ()=>{
+        expect(() => new Root(0).inverse()).toThrowError('Cannot invert a zero root.')
+        expect(() => new Root().from(2, 3, 2).divide(new Root(0))).toThrow(MathError)
+    })
+
+    test('factor/radical setters reject an invalid (NaN) fraction', ()=>{
+        const R = new Root().from(2, 3, 2)
+        expect(() => { R.radical = new Fraction(NaN) }).toThrow()
+        expect(() => { R.factor = new Fraction(NaN) }).toThrow()
     })
 })

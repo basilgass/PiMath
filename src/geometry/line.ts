@@ -6,7 +6,7 @@ import {Numeric} from "../numeric"
 import {Fraction} from "../coefficients"
 import {Equation, Monom, Polynom} from "../algebra"
 import {Vector} from "./vector"
-import {type InputValue, type IPiMathObject, LinePropriety} from "../pimath.interface"
+import {type InputValue, type IPiMathObject, LineProperty} from "../pimath.interface"
 import {randomIntSym} from "../randomization/rndHelpers"
 import {Point} from "./point"
 import {Root} from "../coefficients/root"
@@ -26,8 +26,8 @@ enum LINE_DIRECTION {
 }
 
 export class Line implements IPiMathObject<Line> {
-    static PARALLEL = LinePropriety.Parallel
-    static PERPENDICULAR = LinePropriety.Perpendicular
+    static PARALLEL = LineProperty.Parallel
+    static PERPENDICULAR = LineProperty.Perpendicular
     #OA: Vector
     // ax + by + c = 0
     #a: Fraction
@@ -405,7 +405,7 @@ export class Line implements IPiMathObject<Line> {
         equ.reorder(true)
 
         // It must contain either x, y or both.
-        const letters = new Set(equ.letters())
+        const letters = new Set(equ.variables)
 
         // No 'x', no 'y' in the equations
         if (!(letters.has('x') || letters.has('y'))) {
@@ -447,9 +447,9 @@ export class Line implements IPiMathObject<Line> {
         return this.fromPointAndNormal(P, d.clone().normal())
     }
 
-    fromPointAndLine(P: Vector, L: Line, orientation: LinePropriety = LinePropriety.Parallel): this {
+    fromPointAndLine(P: Vector, L: Line, orientation: LineProperty = LineProperty.Parallel): this {
 
-        if (orientation === LinePropriety.Perpendicular) {
+        if (orientation === LineProperty.Perpendicular) {
             return this.fromPointAndNormal(P, L.director)
         }
 
@@ -488,24 +488,23 @@ export class Line implements IPiMathObject<Line> {
     }
 
     getValueAtX = (value: Fraction | number): Fraction => {
-        const equ = this.getEquation().isolate('y'),
+        const equ = this.getEquation(),
             F = new Fraction(value)
 
-        if (equ instanceof Equation) {
-            return equ.right.evaluate({x: F}) as Fraction
+        if (!equ.canIsolate('y')) {
+            return new Fraction().invalid()
         }
-        return new Fraction().invalid()
+        return equ.isolate('y').right.evaluate({x: F})
     }
 
     getValueAtY = (value: Fraction | number): Fraction => {
-        const equ = this.getEquation().isolate('x'),
+        const equ = this.getEquation(),
             F = new Fraction(value)
 
-        if (equ instanceof Equation) {
-            return equ.right.evaluate({y: F}) as Fraction
+        if (!equ.canIsolate('x')) {
+            return new Fraction().invalid()
         }
-
-        return new Fraction().invalid()
+        return equ.isolate('x').right.evaluate({y: F})
     }
 
     get height(): Fraction {
