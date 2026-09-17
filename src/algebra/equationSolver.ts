@@ -176,6 +176,44 @@ export class EquationSolver {
         return 1 + max
     }
 
+    /**
+     * Rational-root-theorem candidates p/q (p | a0, q | a_deg) for a residual
+     * polynom whose constant term is non-zero. Coefficients are first cleared
+     * of denominators (multiply by the lcm) then reduced by their content
+     * (gcd) to keep the divisor sets small. Candidates are de-duplicated by
+     * reduced form.
+     */
+    #rationalRootCandidates(coeffs: Fraction[]): Fraction[] {
+        const denomLcm = Numeric.lcm(...coeffs.map(c => c.denominator))
+        const ints = coeffs.map(c => c.clone().multiply(denomLcm).value)
+
+        const nonZero = ints.filter(v => v !== 0).map(v => Math.abs(v))
+        const content = nonZero.length > 0 ? Numeric.gcd(...nonZero) : 1
+        const prim = ints.map(v => v / content)
+
+        const a0 = Math.abs(prim[0])
+        const an = Math.abs(prim[prim.length - 1])
+
+        const P = Numeric.dividers(a0)
+        const Q = Numeric.dividers(an)
+
+        const seen = new Set<string>()
+        const out: Fraction[] = []
+        for (const p of P) {
+            for (const q of Q) {
+                for (const sign of [1, -1]) {
+                    const f = new Fraction(sign * p, q)
+                    const key = `${f.numerator}/${f.denominator}`
+                    if (!seen.has(key)) {
+                        seen.add(key)
+                        out.push(f)
+                    }
+                }
+            }
+        }
+        return out
+    }
+
     // Solve using bissection algorithm (approximative solution)
     #solveByBissection(polynom: Polynom): Solution[] {
         const solutions: Solution[] = []
