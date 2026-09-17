@@ -13,7 +13,6 @@ export class EquationSolver {
     readonly #variable: string
 
     constructor(left: Polynom | Equation, right?: Polynom, variable = "x") {
-        this.#variable = variable
         this.#bissectionDeltaX = 1e-4
         this._ = 0
 
@@ -27,7 +26,13 @@ export class EquationSolver {
             this.#leftPolynom = (left as Polynom).clone().subtract(right ?? 0)
         }
 
-        return this
+        // Variable resolution: an explicit argument wins; otherwise use the
+        // polynom's own single variable; fall back to "x" only for a constant
+        // or multi-variable polynom.
+        const vars = this.#leftPolynom.variables
+        this.#variable = variable !== "x"
+            ? variable
+            : (vars.length === 1 ? vars[0] : "x")
     }
 
     get bissectionComplexityCounter() {
@@ -100,11 +105,13 @@ export class EquationSolver {
     }
 
     #makeSolution(value: InputValue<Fraction>): Solution {
-        if (value instanceof Fraction && !value.exact) {
-            return this.#makeApproximativeSolution(value.value)
-        }
+        const sol = (value instanceof Fraction && !value.exact)
+            ? this.#makeApproximativeSolution(value.value)
+            : Solution.fromFraction(value)
 
-        return Solution.fromFraction(value)
+        sol.variable = this.#variable
+
+        return sol
     }
 
     // Solve using bissection algorithm (approximative solution)
@@ -288,7 +295,7 @@ export class EquationSolver {
             s.count = 0
 
             // Divide as long it's dividable.
-            while (left.isDividableBy(p)) {
+            while (left.isDivisibleBy(p)) {
                 left.divide(p)
                 s.count++
             }

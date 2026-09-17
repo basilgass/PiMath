@@ -16,6 +16,15 @@ describe("Equation Solver", () => {
         expect(result[0].exact).not.toBeFalsy()
     })
 
+    test('reports the solution in the equation own variable', () => {
+        const equation = new Equation("t^2-4=0")
+
+        const result = new EquationSolver(equation).solve()
+
+        expect(result.map(s => s.value)).to.have.all.members([-2, 2])
+        expect(result.every(s => s.variable === "t")).toBe(true)
+    })
+
     test('should solve the quadratic equation', () => {
         const equation = new Equation("x^2+7x+10=0")
 
