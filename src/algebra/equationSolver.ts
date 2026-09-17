@@ -10,6 +10,7 @@ export class EquationSolver {
     _: number
     #bissectionDeltaX: number
     readonly #leftPolynom: Polynom
+    readonly #coeffs: Fraction[]
     readonly #variable: string
 
     constructor(left: Polynom | Equation, right?: Polynom, variable = "x") {
@@ -33,6 +34,12 @@ export class EquationSolver {
         this.#variable = variable !== "x"
             ? variable
             : (vars.length === 1 ? vars[0] : "x")
+
+        // Dense coefficient vector, coeffs[i] = coefficient of x^i (index 0 =
+        // constant term). getCoefficients() returns highest-degree first, so we
+        // reverse once here. Throws MathError on a non-integer degree (strict
+        // boundary).
+        this.#coeffs = this.#leftPolynom.getCoefficients().reverse()
     }
 
     get bissectionComplexityCounter() {
@@ -112,6 +119,61 @@ export class EquationSolver {
         sol.variable = this.#variable
 
         return sol
+    }
+
+    /**
+     * Exact evaluation of the polynom (coeffs[i] = coefficient of x^i) at r,
+     * via Horner's scheme. No side effect on coeffs or r.
+     */
+    #hornerFraction(coeffs: Fraction[], r: Fraction): Fraction {
+        const acc = new Fraction(0)
+        for (let i = coeffs.length - 1; i >= 0; i--) {
+            acc.multiply(r).add(coeffs[i])
+        }
+        return acc
+    }
+
+    /**
+     * Floating-point evaluation at x, via Horner's scheme. Used as a cheap
+     * pre-filter for rational-root candidates and by the bisection.
+     */
+    #hornerNumber(coeffs: Fraction[], x: number): number {
+        let acc = 0
+        for (let i = coeffs.length - 1; i >= 0; i--) {
+            acc = acc * x + coeffs[i].value
+        }
+        return acc
+    }
+
+    /**
+     * Synthetic division of the polynom by (x - r), assuming r is an exact
+     * root. Returns the quotient coefficient vector (same convention,
+     * length - 1). O(n). No side effect on the input.
+     */
+    #deflate(coeffs: Fraction[], r: Fraction): Fraction[] {
+        const deg = coeffs.length - 1
+        const q: Fraction[] = new Array(deg)
+        q[deg - 1] = coeffs[deg].clone()
+        for (let i = deg - 1; i >= 1; i--) {
+            q[i - 1] = coeffs[i].clone().add(r.clone().multiply(q[i]))
+        }
+        return q
+    }
+
+    /**
+     * Cauchy bound for the real roots: every real root lies in [-B, B] with
+     * B = 1 + max_i |a_i / a_n|. Uses absolute values (a negative-coefficient
+     * polynom must not shrink the bound).
+     */
+    #cauchyBound(coeffs: Fraction[]): number {
+        const deg = coeffs.length - 1
+        const an = coeffs[deg].value
+        let max = 0
+        for (let i = 0; i < deg; i++) {
+            const ratio = Math.abs(coeffs[i].value / an)
+            if (ratio > max) max = ratio
+        }
+        return 1 + max
     }
 
     // Solve using bissection algorithm (approximative solution)
