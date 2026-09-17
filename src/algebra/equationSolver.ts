@@ -7,30 +7,30 @@ import {Solution} from "../analyze"
 import {MathError} from "../errors"
 
 export class EquationSolver {
-    _: number
     #bissectionDeltaX: number
-    readonly #leftPolynom: Polynom
+    #bisectionSteps: number
     readonly #coeffs: Fraction[]
     readonly #variable: string
 
     constructor(left: Polynom | Equation, right?: Polynom, variable = "x") {
         this.#bissectionDeltaX = 1e-4
-        this._ = 0
+        this.#bisectionSteps = 0
 
         // Duck-type an Equation without importing it (avoids a circular import).
         // `in` walks the prototype chain, so it works whether `moveLeft` is an
         // instance field or a prototype method.
+        let leftPolynom: Polynom
         if ('moveLeft' in left) {
-            const equ = left as Equation
-            this.#leftPolynom = equ.left.clone().subtract(equ.right)
+            const equ = left
+            leftPolynom = equ.left.clone().subtract(equ.right)
         } else {
-            this.#leftPolynom = (left as Polynom).clone().subtract(right ?? 0)
+            leftPolynom = left.clone().subtract(right ?? 0)
         }
 
         // Variable resolution: an explicit argument wins; otherwise use the
         // polynom's own single variable; fall back to "x" only for a constant
         // or multi-variable polynom.
-        const vars = this.#leftPolynom.variables
+        const vars = leftPolynom.variables
         this.#variable = variable !== "x"
             ? variable
             : (vars.length === 1 ? vars[0] : "x")
@@ -39,11 +39,11 @@ export class EquationSolver {
         // constant term). getCoefficients() returns highest-degree first, so we
         // reverse once here. Throws MathError on a non-integer degree (strict
         // boundary).
-        this.#coeffs = this.#leftPolynom.getCoefficients().reverse()
+        this.#coeffs = leftPolynom.getCoefficients().reverse()
     }
 
-    get bissectionComplexityCounter() {
-        return this._
+    get bissectionComplexityCounter(): number {
+        return this.#bisectionSteps
     }
 
     get bissectionDeltaX() {
@@ -54,48 +54,65 @@ export class EquationSolver {
         this.#bissectionDeltaX = value
     }
 
+    /**
+     * Solve P(x) = 0. Cascade strategy: closed form for degree <= 2, exact
+     * rational factorization then numeric fallback (Cardan for a residual
+     * cubic, bisection for degree >= 4) beyond. Solutions are returned sorted
+     * by value; `Solution.exact` distinguishes exact rationals / quadratic
+     * radicals from approximate (Cardan / bisection) results.
+     */
     solve(): Solution[] {
-        const degree = this.#leftPolynom.degree().value
+        const degree = this.#coeffs.length - 1
 
-        if (degree === 0) {
+        if (degree <= 0) {
             return []
         }
-
         if (degree === 1) {
-            return this.#solveLinear()
+            return this.#solveLinearCoeffs(this.#coeffs)
         }
-
         if (degree === 2) {
-            return this.#solveQuadratic()
+            return this.#solveQuadraticCoeffs(this.#coeffs)
         }
 
-        // Try to solve by factorization -> exact solutions.
-        const {solutions, reminder} = this.#solveByFactorization()
+        const {solutions, residual} = this.#solveByFactorizationCoeffs(this.#coeffs)
+        const residualDegree = residual.length - 1
 
-        // The remaining polynom is of degree zero. No more solutions available.
-        if (reminder.degree().isZero()) {
+        if (residualDegree <= 0) {
+            return solutions.sort((a, b) => a.value - b.value)
+        }
+        if (residualDegree === 1) {
             return solutions
+                .concat(this.#solveLinearCoeffs(residual))
+                .sort((a, b) => a.value - b.value)
+        }
+        if (residualDegree === 2) {
+            return solutions
+                .concat(this.#solveQuadraticCoeffs(residual))
+                .sort((a, b) => a.value - b.value)
+        }
+        if (residualDegree === 3) {
+            return solutions
+                .concat(this.#solveCubicNumeric(residual))
+                .sort((a, b) => a.value - b.value)
         }
 
-        // The remaining polyno is of degree one or two, but cannot be solved by factorization (!).
-        if (reminder.degree().value <= 2) {
-            return solutions.concat(
-                new EquationSolver(reminder.clone()).solve()
-            )
-        }
-
-        // Use approximative solutions, using bissection algorithm.
-        this._ = 0
-        return solutions.concat(
-            this.#solveByBissection(reminder)
-        ).sort((a, b) => a.value - b.value)
+        // Degree >= 4 residual: approximate via bisection.
+        this.#bisectionSteps = 0
+        return solutions
+            .concat(this.#solveByBissectionCoeffs(residual))
+            .sort((a, b) => a.value - b.value)
     }
 
+    /**
+     * Solve a cubic via the Cardan formulas. Always returns approximate
+     * solutions (an irreducible cubic is not representable exactly).
+     * @throws {MathError} when the polynom degree is not 3.
+     */
     solveAsCardan(): Solution[] {
-        if (this.#leftPolynom.degree().value !== 3) {
+        if (this.#coeffs.length - 1 !== 3) {
             throw new MathError("The equation is not cubic.")
         }
-        return this.#solveCubic_CardanFormula()
+        return this.#solveCubicNumeric(this.#coeffs)
     }
 
     #makeApproximativeSolution(value: number, output?: { tex: string, display: string }): Solution {
@@ -152,7 +169,7 @@ export class EquationSolver {
      */
     #deflate(coeffs: Fraction[], r: Fraction): Fraction[] {
         const deg = coeffs.length - 1
-        const q: Fraction[] = new Array(deg)
+        const q: Fraction[] = new Array<Fraction>(deg)
         q[deg - 1] = coeffs[deg].clone()
         for (let i = deg - 1; i >= 1; i--) {
             q[i - 1] = coeffs[i].clone().add(r.clone().multiply(q[i]))
@@ -214,385 +231,228 @@ export class EquationSolver {
         return out
     }
 
-    // Solve using bissection algorithm (approximative solution)
-    #solveByBissection(polynom: Polynom): Solution[] {
-        const solutions: Solution[] = []
-        const degree = polynom.degree().value
-
-        // Calculate the Cauchy Bounds.
-        const [a, ...values] = polynom.getCoefficients()
-        const B = 2 + Math.max(...values.map(x => x.value / a.value))
-
-        // Cut the [-B;B] interval in *n* parts : n = 100
-
-        // Calculate the f(x) value at each points
-        const evaluatedPoints = this.#solveByBissection_evaluatePoints(polynom, B, 100)
-
-        // Check if there is a least n opposite couples
-        const couples = this.#solveByBissection_getCouples(evaluatedPoints, degree)
-
-        // All solutions fund !
-        couples.forEach(couple => {
-            const [a, b] = couple
-
-            if (a === b) {
-                // Exact solution
-                solutions.push(this.#makeSolution(a))
-            } else {
-                const bissection = this.#solveByBissection_algorithm(polynom, a, b)
-
-                if (bissection !== null) {
-                    solutions.push(this.#makeApproximativeSolution(bissection))
-                }
-            }
-        })
-
-        return solutions
-    }
-
-    #solveByBissection_algorithm(polynom: Polynom, a: number, b: number): number | null {
-        let fa = polynom.evaluate(a, true)
-        let fb = polynom.evaluate(b, true)
-
-        if (fa * fb > 0) {
-            console.log("Pas de racine dans l'intervalle donné")
-            return null
-        }
-
-        let mid: number
-        while ((b - a) / 2 > this.#bissectionDeltaX) {
-            this._++
-
-            mid = (a + b) / 2
-            const fmid = polynom.evaluate(mid, true)
-
-            if (fmid === 0) {
-                return mid // racine exacte trouvée
-            } else if (fa * fmid < 0) {
-                b = mid
-                fb = fmid
-            } else {
-                a = mid
-                fa = fmid
-            }
-        }
-        return (a + b) / 2 // retourner la racine approximative
-    }
-
-    #solveByBissection_evaluatePoints(polynom: Polynom, bounds: number, slice: number): { x: number, fx: number }[] {
-
-        const evaluatedPoints: { x: number, fx: number }[] = []
-
-        const dx = 2 * bounds / slice
-
-        for (let searchValue = -bounds; searchValue <= bounds; searchValue += dx) {
-
-            const x = Numeric.numberCorrection(searchValue)
-            evaluatedPoints.push(
-                {
-                    x,
-                    fx: polynom.evaluate(x, true)
-                }
-            )
-        }
-
-        return evaluatedPoints
-    }
-
-    #solveByBissection_getCouples(evaluatedPoints: { x: number, fx: number }[], degree: number): [number, number][] {
-        const couples: [number, number][] = []
-
-        for (let index = 1; index < evaluatedPoints.length; index++) {
-
-            const value = evaluatedPoints[index]
-            const previous = evaluatedPoints[index - 1]
-
-            if (value.fx === 0) {
-                // exact value
-                couples.push([value.x, value.x])
-            } else if (value.fx * previous.fx < 0) {
-                // both evaluated expression are of opposite sign.
-                couples.push([previous.x, value.x])
-            }
-
-            if (couples.length === degree) {
-                // All couples are found.
-                return couples
-            }
-        }
-
-        return couples
-    }
-
-    #solveByFactorization(): { solutions: Solution[], reminder: Polynom } {
-        // Move everything to the left.
-
-        // Get the polynom on the left (on the right, it's zero)
-        const left = this.#leftPolynom.clone()
-
-        // The solutions of the equation
+    /**
+     * Exact factorization over the rationals on the coefficient vector.
+     * Strips the zero root (with its multiplicity), then applies the rational
+     * root theorem with a floating pre-filter and exact confirmation,
+     * deflating by synthetic division. Returns the exact solutions found and
+     * the residual coefficient vector (whose real roots, if any, are not
+     * rational).
+     */
+    #solveByFactorizationCoeffs(coeffs: Fraction[]): { solutions: Solution[], residual: Fraction[] } {
         const solutions: Solution[] = []
 
-        // multiply by the lcm of the denominators
-        // to get rid of the fractions
-        const lcm = left.lcmDenominator()
-        if (lcm !== 1) {
-            left.multiply(lcm)
+        // Strip the zero root with its multiplicity (low-order zero coeffs).
+        let k = 0
+        while (k < coeffs.length - 1 && coeffs[k].isZero()) {
+            k++
+        }
+        let residual = k > 0 ? coeffs.slice(k) : coeffs.slice()
+        if (k > 0) {
+            const zero = this.#makeSolution(0)
+            zero.count = k
+            solutions.push(zero)
         }
 
-        // alternative method : if there is no monom of degree zero.
-        // - get the monom with the smallest degree.
-        // - if degree>0, divide by x^{degree}
-        const a = left.monomByDegree().coefficient
-        const b = left.monomByDegree(0).coefficient
-        if (b.isZero()) {
-            solutions.push(this.#makeSolution(0))
-
-            const m = left.monoms.reduce((min, curr) => curr.degree().value < min.degree().value ? curr : min)
-            const k = m.coefficient
-            m.clone().divide(k) // make the monom unit
-            left.divide(m)
-        }
-
-        // get all dividers of a and b
-        const dividersA = Numeric.dividers(a.value)
-        const dividersB = Numeric.dividers(b.value)
-
-        // gel all possible solutions
-        const testingSolutions: Fraction[] = []
-        for (const da of dividersA) {
-            for (const db of dividersB) {
-                const f = new Fraction(db, da)
-                if (!testingSolutions.find(s => s.value === f.value)) {
-                    testingSolutions.push(f.clone())
-                    testingSolutions.push(f.opposite().clone())
-                }
-
+        // Rational root theorem with float pre-filter + exact confirmation.
+        const candidates = this.#rationalRootCandidates(residual)
+        const epsilon = 1e-9
+        for (const f of candidates) {
+            if (residual.length - 1 < 1) {
+                break
             }
-        }
-
-        // Each value in testingSolutions are "unique" -> juste test them to see if it evaluates to zero.
-        testingSolutions.forEach(f => {
-            if (left.evaluate(f).isZero()) {
-                solutions.push(this.#makeSolution(f))
-            }
-        })
-
-        // divide the left polynom by the solutions (as polynom)
-        // to get the reduced polynom
-        for (const s of solutions) {
-            // all solutions are exact solutions.
-            // skip the zero solutions if it exists.
-            if (s.isZero()) {
+            // Cheap float sieve first.
+            if (Math.abs(this.#hornerNumber(residual, f.value)) > epsilon) {
                 continue
             }
-
-            // The divider polynom
-            const p = left.clone()
-                .fromCoefficients(s.fraction.denominator, -s.fraction.numerator)
-
-            // Reset the count
-            s.count = 0
-
-            // Divide as long it's dividable.
-            while (left.isDivisibleBy(p)) {
-                left.divide(p)
-                s.count++
+            // Exact confirmation.
+            if (!this.#hornerFraction(residual, f).isZero()) {
+                continue
             }
+            const sol = this.#makeSolution(f.clone())
+            sol.count = 0
+            while (residual.length - 1 >= 1 && this.#hornerFraction(residual, f).isZero()) {
+                residual = this.#deflate(residual, f)
+                sol.count++
+            }
+            solutions.push(sol)
         }
 
-        // if the reduced polynom is of degree 0, we have found all the solutions
-        // if the reduced polynom is of degree greater than 3, we can't solve it
-        if (left.degree().isZero() || left.degree().value > 3) {
-            // Tri des réponses
-            solutions.sort((a, b) => a.value - b.value)
-            return {solutions, reminder: left}
-        }
-
-        // if the reduced polynom is of degree 1 or 2, we can solve it
-        const zeroPolynom = left.clone().zero()
-
-        const solver = new EquationSolver(left, zeroPolynom, this.#variable)
-        return {
-            solutions: solutions
-                .concat(solver.solve())
-                .sort((a, b) => a.value - b.value),
-            reminder: zeroPolynom
-        }
+        return {solutions, residual}
     }
 
-    #solveCubic_CardanFormula(): Solution[] {
-        // get the coefficients of the equation
-        const left = this.#leftPolynom
+    /** Linear polynom a1·x + a0 -> x = -a0/a1. Exact. */
+    #solveLinearCoeffs(coeffs: Fraction[]): Solution[] {
+        const a0 = coeffs[0]
+        const a1 = coeffs[1]
+        return [this.#makeSolution(a0.clone().opposite().divide(a1))]
+    }
 
-        // left is a polynom ax^3+bx^2+cx+d => the solution is x = (-b±√(b^2-4ac))/2a
-        const a = left.monomByDegree(3).coefficient
-        const b = left.monomByDegree(2).coefficient
-        const c = left.monomByDegree(1).coefficient
-        const d = left.monomByDegree(0).coefficient
+    /**
+     * Quadratic polynom a2·x^2 + a1·x + a0. Exact when the discriminant is a
+     * perfect square (rational solutions), otherwise represented exactly by a
+     * degree-2 Root ((-b ± √Δ)/2a). No real solution when Δ < 0.
+     */
+    #solveQuadraticCoeffs(coeffs: Fraction[]): Solution[] {
+        const c = coeffs[0]
+        const b = coeffs[1]
+        const a = coeffs[2]
 
-        // normalize the coefficient by dividing by a
-        const an = b.clone().divide(a)
-        const bn = c.clone().divide(a)
-        const cn = d.clone().divide(a)
+        const delta = b.clone().pow(2).subtract(a.clone().multiply(c).multiply(4))
 
-        // Depressed cubic equation
-        // x^3+px+q=0
-        const p = bn.clone().subtract(an.clone().pow(2).divide(3))
-        const q = cn.clone()
-            .subtract(an.clone().multiply(bn).divide(3))
-            .add(an.clone().pow(3).multiply(2).divide(27))
-
-
-        // Cardan method
-        // X^2 + qX - p^3/27 = 0
-        // X^2 -SX + P = 0
-        // S = u^3 + v^3 = -q
-        // P = u^3v^3 = -p^3/27
-        // u^3 and v^3 are the roots of the equation
-        const S = q.clone().opposite()
-        const P = p.clone().opposite().pow(3).divide(27)
-
-        // Discriminant : delta = -(S^2 - 4P)
-        // delta < 0 : 1 real solution
-        // delta = 0 : 2 real solutions
-        // delta > 0 : 3 real solutions
-        const delta = S.clone().pow(2).subtract(P.clone().multiply(4)).opposite()
-
-        // if delta is negative, there is one real solution
         if (delta.isNegative()) {
-            const u = q.clone().opposite().add(delta.clone().opposite().sqrt()).divide(2).root(3)
-            const v = q.clone().opposite().subtract(delta.clone().opposite().sqrt()).divide(2).root(3)
-
-            const x = u.clone().add(v).subtract(an.clone().divide(3))
-
-            return [this.#makeSolution(x)]
-        }
-
-        // if delta is zero, there are two real solutions
-        if (delta.isZero()) {
-            const u = q.clone().opposite().divide(2).root(3)
-
-            const x1 = u.clone().opposite().subtract(an.clone().divide(3))
-            const x2 = u.clone().multiply(2).subtract(an.clone().divide(3))
-
-            // There is only one unique solution
-            if (x1.isEqual(x2)) {
-                return [this.#makeSolution(x1)]
-            }
-
-            return [
-                this.#makeSolution(x2),
-                this.#makeSolution(x1)
-            ].sort((a, b) => a.value - b.value)
-        }
-
-        // if delta is positive, there are three real solutions
-        if (delta.isPositive()) {
-            const x: number[] = []
-            const pv = p.value,
-                qv = q.value,
-                anv = an.value
-
-            for (let i = 0; i < 3; i++) {
-                x.push(2 * Math.sqrt(-pv / 3) * Math.cos(Math.acos(3 * qv / (2 * pv) * Math.sqrt(-3 / pv)) / 3 + 2 * Math.PI * i / 3) - anv / 3)
-            }
-
-            return x
-                .map(v => this.#makeApproximativeSolution(v))
-                .sort((a, b) => a.value - b.value)
-
-        }
-
-        return []
-    }
-
-    #solveLinear(): Solution[] {
-        // The equation is linear.
-        const [a, b] = this.#leftPolynom.getCoefficients()
-
-        // left is a polynom ax+b => the solution is x = -b/a
-        const f = b.opposite().divide(a)
-
-        return [
-            this.#makeSolution(f)
-        ]
-    }
-
-    #solveQuadratic(): Solution[] {
-
-        // The equation is quadratic.
-        // We can solve it by isolating the variable.
-
-        // The monom with greatest degree must be positive.
-        const left = this.#leftPolynom
-        if (left.monomByDegree().coefficient.isNegative()) {
-            left.opposite()
-        }
-
-        // left is a polynom ax^2+bx+c => the solution is x = (-b±√(b^2-4ac))/2a
-        const [a, b, c] = left.getCoefficients()
-
-        // delta2 = b^2-4ac
-        const delta2 = b.clone().pow(2).subtract(a.clone().multiply(c).multiply(4))
-
-        // if delta2 is negative, there is no solution
-        if (delta2.isNegative()) {
             return []
         }
 
-        // if delta2 is zero, there is one solution
-        // if delta2 is positive, there are two solutions
-        // if delta2 is a square, it will be an exact solution.
+        const a2 = a.clone().multiply(2)
 
-        if (delta2.isSquare()) {
-            // delta is a fraction.
-            // the solutions are (-b±√(b^2-4ac))/2a
-            const delta = delta2.sqrt()
-            const f1 = b.clone().opposite().subtract(delta).divide(a.clone().multiply(2))
-            const f2 = b.clone().opposite().add(delta).divide(a.clone().multiply(2))
+        if (delta.isSquare()) {
+            const d = delta.sqrt()
+            const f1 = b.clone().opposite().subtract(d).divide(a2.clone())
+            const f2 = b.clone().opposite().add(d).divide(a2.clone())
 
-            // Delta is zero, there is only one solution
             if (delta.isZero()) {
                 const sol = this.#makeSolution(f1)
                 sol.count = 2
                 return [sol]
             }
-
-            // delta is positive, there are two solutions
-            return [
-                this.#makeSolution(f1),
-                this.#makeSolution(f2)
-            ].sort((a, b) => a.value - b.value)
+            return [this.#makeSolution(f1), this.#makeSolution(f2)]
+                .sort((x, y) => x.value - y.value)
         }
 
-        // delta is not a square, there are one or two approximative solutions.
-        // We will use the approximate value of the square root.
-        // const delta = delta2.value ** 0.5
-        // const f1 = (-b.value + delta) / (2 * a.value)
-        // const f2 = (-b.value - delta) / (2 * a.value)
-
-        return this.#solveQuadratic_Output(a, b, delta2)
-    }
-
-    #solveQuadratic_Output(a: Fraction, b: Fraction, delta: Fraction): Solution[] {
-        // -b +/- sqrt(delta) / 2a
-        // reduce the sqrt - extract pow.
-        const a2 = a.clone().multiply(2)
-
+        // Irrational quadratic roots: exact via Root of index 2.
         const sol1 = new Solution()
         sol1.fraction = b.clone().opposite().divide(a2.clone())
         sol1.root.radical = delta.clone()
         sol1.root.factor = new Fraction().one().divide(a2.clone())
         sol1.exact = true
+        sol1.variable = this.#variable
 
         const sol2 = new Solution()
         sol2.fraction = b.clone().opposite().divide(a2.clone())
         sol2.root.radical = delta.clone()
         sol2.root.factor = new Fraction().one().divide(a2.clone()).opposite()
         sol2.exact = true
+        sol2.variable = this.#variable
 
-        return [sol1, sol2]
-            .sort((a, b) => a.value - b.value)
+        return [sol1, sol2].sort((x, y) => x.value - y.value)
+    }
+
+    /**
+     * Numerical resolution of a residual cubic a3·x^3 + a2·x^2 + a1·x + a0
+     * (already free of rational roots). Uses the depressed-cubic / Cardan
+     * formulas; every solution is approximate (exact = false), since an
+     * irreducible cubic is not representable exactly by a single Root.
+     */
+    #solveCubicNumeric(coeffs: Fraction[]): Solution[] {
+        const a = coeffs[3].value
+        const b = coeffs[2].value
+        const c = coeffs[1].value
+        const d = coeffs[0].value
+
+        // Depressed cubic t^3 + p·t + q, with x = t - b/(3a).
+        const p = (3 * a * c - b * b) / (3 * a * a)
+        const q = (2 * b * b * b - 9 * a * b * c + 27 * a * a * d) / (27 * a * a * a)
+        const shift = b / (3 * a)
+        const epsilon = 1e-9
+
+        const roots: number[] = []
+        if (Math.abs(p) < epsilon) {
+            // t^3 + q = 0 -> a single real root (triple when q = 0 too).
+            roots.push(Math.cbrt(-q) - shift)
+        } else {
+            const discriminant = (q * q) / 4 + (p * p * p) / 27
+            if (discriminant > epsilon) {
+                // One real root.
+                const sqrtDisc = Math.sqrt(discriminant)
+                const u = Math.cbrt(-q / 2 + sqrtDisc)
+                const v = Math.cbrt(-q / 2 - sqrtDisc)
+                roots.push(u + v - shift)
+            } else {
+                // Three real roots (trigonometric form). p < 0 here.
+                const m = 2 * Math.sqrt(-p / 3)
+                const ratio = Math.max(-1, Math.min(1, (3 * q) / (p * m)))
+                const theta = Math.acos(ratio)
+                for (let i = 0; i < 3; i++) {
+                    roots.push(m * Math.cos(theta / 3 - (2 * Math.PI * i) / 3) - shift)
+                }
+            }
+        }
+
+        // De-duplicate repeated roots (double/triple roots on the boundary).
+        const unique: number[] = []
+        for (const r of roots.map(v => Numeric.numberCorrection(v, 6))) {
+            if (!unique.some(u => Math.abs(u - r) < 1e-6)) {
+                unique.push(r)
+            }
+        }
+
+        return unique
+            .map(v => this.#makeApproximativeSolution(v))
+            .sort((x, y) => x.value - y.value)
+    }
+
+    /**
+     * Approximate the real roots of a residual polynom (degree >= 4) by
+     * scanning [-B, B] (B = Cauchy bound) for sign changes, then bisecting.
+     * All solutions are approximate (exact = false).
+     */
+    #solveByBissectionCoeffs(coeffs: Fraction[]): Solution[] {
+        const degree = coeffs.length - 1
+        const B = this.#cauchyBound(coeffs)
+        const slices = 100
+        const dx = (2 * B) / slices
+
+        const solutions: Solution[] = []
+        let prevX = -B
+        let prevF = this.#hornerNumber(coeffs, prevX)
+
+        for (let step = 1; step <= slices; step++) {
+            const x = Numeric.numberCorrection(-B + step * dx)
+            const f = this.#hornerNumber(coeffs, x)
+
+            if (f === 0) {
+                solutions.push(this.#makeApproximativeSolution(x))
+            } else if (prevF * f < 0) {
+                const root = this.#bisect(coeffs, prevX, x)
+                if (root !== null) {
+                    solutions.push(this.#makeApproximativeSolution(root))
+                }
+            }
+
+            if (solutions.length === degree) {
+                break
+            }
+            prevX = x
+            prevF = f
+        }
+
+        return solutions
+    }
+
+    /** Bisection on [a, b] assuming a sign change; returns the approximate root. */
+    #bisect(coeffs: Fraction[], a: number, b: number): number | null {
+        let fa = this.#hornerNumber(coeffs, a)
+
+        if (fa * this.#hornerNumber(coeffs, b) > 0) {
+            return null
+        }
+
+        while ((b - a) / 2 > this.#bissectionDeltaX) {
+            this.#bisectionSteps++
+            const mid = (a + b) / 2
+            const fmid = this.#hornerNumber(coeffs, mid)
+
+            if (fmid === 0) {
+                return mid
+            }
+            if (fa * fmid < 0) {
+                b = mid
+            } else {
+                a = mid
+                fa = fmid
+            }
+        }
+        return (a + b) / 2
     }
 }

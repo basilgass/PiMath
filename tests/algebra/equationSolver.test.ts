@@ -97,10 +97,10 @@ describe("Equation Solver", () => {
         expect(result.length).to.eq(1)
         expect(result[0].variable).to.eq("x")
         expect(result[0].value).to.eq(1)
-        expect(result[0].exact).not.toBeFalsy()
+        expect(result[0].exact).toBe(false)
     })
 
-    test.skip('should solve the cubic equation (Cardan method, delta is negative)', () => {
+    test('should solve the cubic equation (Cardan method, delta is negative)', () => {
         const equation = new Equation("x^3+x^2+5x+5=0")
 
         const solver = new EquationSolver(equation)
@@ -108,11 +108,11 @@ describe("Equation Solver", () => {
 
         expect(result.length).to.eq(1)
         expect(result[0].variable).to.eq("x")
-        expect(result[0].value).to.eq(-1)
-        expect(result[0].exact).toBeFalsy()
+        expect(result[0].value).toBeCloseTo(-1, 6)
+        expect(result[0].exact).toBe(false)
     })
 
-    test.skip('should solve the cubic equation (Cardan method, delta is positive)', () => {
+    test('should solve the cubic equation (Cardan method, delta is positive)', () => {
             const equation = new Equation("x^3+2x^2-5x-6=0")
 
             const solver = new EquationSolver(equation)
@@ -120,10 +120,10 @@ describe("Equation Solver", () => {
 
             expect(result.length).to.eq(3)
             expect(result[0].variable).to.eq("x")
-            expect(result[0].value).to.eq(-3)
-            expect(result[1].value).to.eq(-1)
-            expect(result[2].value).to.eq(2)
-            expect(result[0].exact).toBeFalsy()
+            expect(result[0].value).toBeCloseTo(-3, 6)
+            expect(result[1].value).toBeCloseTo(-1, 6)
+            expect(result[2].value).toBeCloseTo(2, 6)
+            expect(result.every(s => s.exact === false)).toBe(true)
         }
     )
 
@@ -186,7 +186,56 @@ describe("Equation Solver", () => {
         const solutions = new EquationSolver(equation).solve()
 
         expect(solutions[0].value).toBe(-1)
-        expect(solutions[1].value).toBeCloseTo(1.166, 3)
+        expect(solutions[1].value).toBeCloseTo(1.1655, 3)
         expect(solutions[2].value).toBeCloseTo(4.868, 3)
+    })
+
+    test('counts the multiplicity of the zero root', () => {
+        const equation = new Equation("x^5(x^2+x-1)=0")
+
+        const result = new EquationSolver(equation).solve()
+
+        const zero = result.find(s => s.value === 0)
+        expect(zero).toBeDefined()
+        expect(zero?.count).toBe(5)
+    })
+
+    test('solves an irreducible cubic numerically without looping', () => {
+        // x^3 - 3x - 1 = 0 : three real irrational roots, no rational root.
+        const equation = new Equation("x^3-3x-1=0")
+
+        const result = new EquationSolver(equation).solve()
+
+        expect(result).toHaveLength(3)
+        expect(result.every(s => s.exact === false)).toBe(true)
+        expect(result[0].value).toBeCloseTo(-1.532, 2)
+        expect(result[1].value).toBeCloseTo(-0.347, 2)
+        expect(result[2].value).toBeCloseTo(1.879, 2)
+    })
+
+    test('solve() is idempotent (no receiver mutation)', () => {
+        const equation = new Equation("-x^2+3x-2=0")
+        const solver = new EquationSolver(equation)
+
+        const first = solver.solve().map(s => s.value).sort((a, b) => a - b)
+        const second = solver.solve().map(s => s.value).sort((a, b) => a - b)
+
+        expect(second).toEqual(first)
+        expect(first).to.have.all.members([1, 2])
+    })
+
+    test('marks quadratic-irrational solutions exact and cubic-irreducible solutions inexact', () => {
+        const quad = new EquationSolver(new Equation("x^2-2=0")).solve()
+        expect(quad.every(s => s.exact === true)).toBe(true)
+
+        const cubic = new EquationSolver(new Equation("x^3-3x-1=0")).solve()
+        expect(cubic.every(s => s.exact === false)).toBe(true)
+    })
+
+    test('finds all real roots when the leading term is negative', () => {
+        const equation = new Equation("-(x-1)(x-2)(x-3)(x-4)(x-5)=0")
+        const result = new EquationSolver(equation).solve()
+
+        expect(result.map(s => Math.round(s.value))).to.have.all.members([1, 2, 3, 4, 5])
     })
 })
