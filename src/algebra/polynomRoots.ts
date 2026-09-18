@@ -177,3 +177,224 @@ export function solveCubicCardan(coeffs: Fraction[]): PolynomRoot[] {
 
     return sortByValue(unique.map(v => approxRoot(v)))
 }
+
+/** Exact evaluation at r via Horner. No side effect. */
+function hornerFraction(coeffs: Fraction[], r: Fraction): Fraction {
+    const acc = new Fraction(0)
+    for (let i = coeffs.length - 1; i >= 0; i--) {
+        acc.multiply(r).add(coeffs[i])
+    }
+    return acc
+}
+
+/** Floating-point evaluation at x via Horner. Cheap sieve / bisection helper. */
+function hornerNumber(coeffs: Fraction[], x: number): number {
+    let acc = 0
+    for (let i = coeffs.length - 1; i >= 0; i--) {
+        acc = acc * x + coeffs[i].value
+    }
+    return acc
+}
+
+/** Synthetic division by (x - r), assuming r is a root. Returns the quotient. */
+function deflate(coeffs: Fraction[], r: Fraction): Fraction[] {
+    const deg = coeffs.length - 1
+    const q: Fraction[] = new Array<Fraction>(deg)
+    q[deg - 1] = coeffs[deg].clone()
+    for (let i = deg - 1; i >= 1; i--) {
+        q[i - 1] = coeffs[i].clone().add(r.clone().multiply(q[i]))
+    }
+    return q
+}
+
+/** Cauchy bound: every real root lies in [-B, B], B = 1 + max_i |a_i / a_n|. */
+function cauchyBound(coeffs: Fraction[]): number {
+    const deg = coeffs.length - 1
+    const an = coeffs[deg].value
+    let max = 0
+    for (let i = 0; i < deg; i++) {
+        const ratio = Math.abs(coeffs[i].value / an)
+        if (ratio > max) max = ratio
+    }
+    return 1 + max
+}
+
+/**
+ * Rational-root candidates p/q (p | a0, q | a_deg). Coefficients are cleared of
+ * denominators (× lcm) then reduced by their content (gcd) to bound the divisor
+ * sets. De-duplicated by reduced form.
+ */
+function rationalRootCandidates(coeffs: Fraction[]): Fraction[] {
+    const denomLcm = Numeric.lcm(...coeffs.map(c => c.denominator))
+    const ints = coeffs.map(c => c.clone().multiply(denomLcm).value)
+
+    const nonZero = ints.filter(v => v !== 0).map(v => Math.abs(v))
+    const content = nonZero.length > 0 ? Numeric.gcd(...nonZero) : 1
+    const prim = ints.map(v => v / content)
+
+    const a0 = Math.abs(prim[0])
+    const an = Math.abs(prim[prim.length - 1])
+
+    const P = Numeric.dividers(a0)
+    const Q = Numeric.dividers(an)
+
+    const seen = new Set<string>()
+    const out: Fraction[] = []
+    for (const p of P) {
+        for (const q of Q) {
+            for (const sign of [1, -1]) {
+                const f = new Fraction(sign * p, q)
+                const key = `${f.numerator}/${f.denominator}`
+                if (!seen.has(key)) {
+                    seen.add(key)
+                    out.push(f)
+                }
+            }
+        }
+    }
+    return out
+}
+
+/**
+ * Exact factorization over the rationals. Strips the zero root (with its
+ * multiplicity), then applies the rational root theorem with a floating
+ * pre-filter and exact confirmation, deflating by synthetic division. Returns
+ * the exact roots found and the residual (whose real roots, if any, are not
+ * rational).
+ */
+function solveByFactorization(coeffs: Fraction[]): { solutions: PolynomRoot[], residual: Fraction[] } {
+    const solutions: PolynomRoot[] = []
+
+    let k = 0
+    while (k < coeffs.length - 1 && coeffs[k].isZero()) {
+        k++
+    }
+    let residual = k > 0 ? coeffs.slice(k) : coeffs.slice()
+    if (k > 0) {
+        solutions.push(exactRoot(new Fraction(0), k))
+    }
+
+    const candidates = rationalRootCandidates(residual)
+    const epsilon = 1e-9
+    for (const f of candidates) {
+        if (residual.length - 1 < 1) {
+            break
+        }
+        // Cheap float sieve first.
+        if (Math.abs(hornerNumber(residual, f.value)) > epsilon) {
+            continue
+        }
+        // Exact confirmation.
+        if (!hornerFraction(residual, f).isZero()) {
+            continue
+        }
+        let multiplicity = 0
+        while (residual.length - 1 >= 1 && hornerFraction(residual, f).isZero()) {
+            residual = deflate(residual, f)
+            multiplicity++
+        }
+        solutions.push(exactRoot(f.clone(), multiplicity))
+    }
+
+    return {solutions, residual}
+}
+
+/** Bisection on [a, b] assuming a sign change; returns the approximate root. */
+function bisect(coeffs: Fraction[], a: number, b: number, deltaX: number): number | null {
+    let fa = hornerNumber(coeffs, a)
+    if (fa * hornerNumber(coeffs, b) > 0) {
+        return null
+    }
+    while ((b - a) / 2 > deltaX) {
+        const mid = (a + b) / 2
+        const fmid = hornerNumber(coeffs, mid)
+        if (fmid === 0) {
+            return mid
+        }
+        if (fa * fmid < 0) {
+            b = mid
+        } else {
+            a = mid
+            fa = fmid
+        }
+    }
+    return (a + b) / 2
+}
+
+/**
+ * Approximate the real roots of a residual polynom (degree >= 4) by scanning
+ * [-B, B] (B = Cauchy bound) for sign changes, then bisecting. All roots are
+ * approximate (exact = false).
+ */
+function solveByBisection(coeffs: Fraction[], deltaX: number): PolynomRoot[] {
+    const degree = coeffs.length - 1
+    const B = cauchyBound(coeffs)
+    const slices = 100
+    const dx = (2 * B) / slices
+
+    const solutions: PolynomRoot[] = []
+    let prevX = -B
+    let prevF = hornerNumber(coeffs, prevX)
+
+    for (let step = 1; step <= slices; step++) {
+        const x = Numeric.numberCorrection(-B + step * dx)
+        const f = hornerNumber(coeffs, x)
+
+        if (f === 0) {
+            solutions.push(approxRoot(x))
+        } else if (prevF * f < 0) {
+            const root = bisect(coeffs, prevX, x, deltaX)
+            if (root !== null) {
+                solutions.push(approxRoot(root))
+            }
+        }
+
+        if (solutions.length === degree) {
+            break
+        }
+        prevX = x
+        prevF = f
+    }
+
+    return solutions
+}
+
+/**
+ * Solve P(x) = 0 on a coefficient vector (coeffs[i] = coefficient of x^i).
+ * Normalizes trailing zeros, then cascades: closed form for degree <= 2, exact
+ * rational factorization then a numeric fallback (Cardan for a residual cubic,
+ * bisection for degree >= 4) beyond. Roots are returned sorted by value.
+ */
+export function solvePolynom(coeffs: Fraction[], options?: { bisectionDeltaX?: number }): PolynomRoot[] {
+    const c = normalize(coeffs)
+    const degree = c.length - 1
+
+    if (degree <= 0) {
+        return []
+    }
+    if (degree === 1) {
+        return solveLinear(c)
+    }
+    if (degree === 2) {
+        return solveQuadratic(c)
+    }
+
+    const {solutions, residual} = solveByFactorization(c)
+    const residualDegree = residual.length - 1
+
+    if (residualDegree <= 0) {
+        return sortByValue(solutions)
+    }
+    if (residualDegree === 1) {
+        return sortByValue(solutions.concat(solveLinear(residual)))
+    }
+    if (residualDegree === 2) {
+        return sortByValue(solutions.concat(solveQuadratic(residual)))
+    }
+    if (residualDegree === 3) {
+        return sortByValue(solutions.concat(solveCubicCardan(residual)))
+    }
+
+    const deltaX = options?.bisectionDeltaX ?? 1e-4
+    return sortByValue(solutions.concat(solveByBisection(residual, deltaX)))
+}

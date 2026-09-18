@@ -1,6 +1,6 @@
 import {describe, expect, test} from "vitest"
 import {Fraction} from "../../src/coefficients/fraction"
-import {solveCubicCardan, solveLinear, solveQuadratic} from "../../src/algebra/polynomRoots"
+import {solveCubicCardan, solveLinear, solvePolynom, solveQuadratic} from "../../src/algebra/polynomRoots"
 
 const F = (n: number, d = 1) => new Fraction(n, d)
 
@@ -90,3 +90,64 @@ describe("polynomRoots — solveCubicCardan", () => {
         expect(() => solveCubicCardan([F(1), F(2), F(3)])).toThrow()
     })
 })
+
+describe("polynomRoots — solvePolynom", () => {
+    test("returns [] for empty or constant vectors", () => {
+        expect(solvePolynom([])).toHaveLength(0)
+        expect(solvePolynom([F(5)])).toHaveLength(0)
+    })
+
+    test("normalizes trailing high-degree zeros to the true degree", () => {
+        // [1, 2, 0] is really 2x + 1 (degree 1), not a quadratic with a=0.
+        const roots = solvePolynom([F(1), F(2), F(0)])
+
+        expect(roots).toHaveLength(1)
+        expect(roots[0].fraction.value).toBe(-1 / 2)
+        expect(roots[0].exact).toBe(true)
+    })
+
+    test("dispatches degree 1 and 2 to closed forms", () => {
+        // x - 2 = 0 -> [−2, 1]
+        expect(solvePolynom([F(-2), F(1)])[0].fraction.value).toBe(2)
+        // x^2 + 7x + 10 -> [10, 7, 1]
+        expect(solvePolynom([F(10), F(7), F(1)]).map(r => r.fraction.value))
+            .to.have.all.members([-2, -5])
+    })
+
+    test("strips the zero root with its multiplicity", () => {
+        // x^5(x^2 + x - 1) : coeffs low->high = [0,0,0,0,0,-1,-1,1]
+        const roots = solvePolynom([F(0), F(0), F(0), F(0), F(0), F(-1), F(-1), F(1)])
+
+        const zero = roots.find(r => rootValueOf(r) === 0)
+        expect(zero).toBeDefined()
+        expect(zero?.multiplicity).toBe(5)
+    })
+
+    test("factors exact rational roots then sorts by value", () => {
+        // (2x-1)(3x+5)(x-7)(x+3) = 6x^4 -17x^3 -159x^2 -127x +105 -> -3, -5/3, 1/2, 7
+        // expanded low->high = [105, -127, -159, -17, 6]
+        const roots = solvePolynom([F(105), F(-127), F(-159), F(-17), F(6)])
+
+        expect(roots.map(r => r.fraction.value)).to.have.all.members([-3, -5 / 3, 1 / 2, 7])
+    })
+
+    test("routes a residual cubic to Cardan without looping", () => {
+        // x^3 - 3x - 1 = 0 : three irrational roots, no rational root.
+        const roots = solvePolynom([F(-1), F(-3), F(0), F(1)])
+
+        expect(roots).toHaveLength(3)
+        expect(roots.every(r => r.exact === false)).toBe(true)
+    })
+
+    test("bisects a degree-4+ residual with a negative leading term", () => {
+        // -(x-1)(x-2)(x-3)(x-4)(x-5) = 0 -> 1..5
+        // expanded low->high = [120, -274, 225, -85, 15, -1]
+        const roots = solvePolynom([F(120), F(-274), F(225), F(-85), F(15), F(-1)])
+
+        expect(roots.map(r => Math.round(rootValueOf(r)))).to.have.all.members([1, 2, 3, 4, 5])
+    })
+})
+
+function rootValueOf(r: { fraction: {value: number}, root: {value: number} }): number {
+    return r.fraction.value + r.root.value
+}
