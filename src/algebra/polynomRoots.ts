@@ -68,3 +68,59 @@ export function solveLinear(coeffs: Fraction[]): PolynomRoot[] {
     const a1 = coeffs[1]
     return [exactRoot(a0.clone().opposite().divide(a1))]
 }
+
+/**
+ * Quadratic a2·x² + a1·x + a0. Exact when Δ is a perfect square (rational
+ * roots), otherwise exact via a degree-2 Root ((-b ± √Δ)/2a). Returns [] when
+ * Δ < 0.
+ * @throws {MathError} on a wrong length or a zero leading coefficient.
+ */
+export function solveQuadratic(coeffs: Fraction[]): PolynomRoot[] {
+    requireDegree(coeffs, 2, "solveQuadratic")
+    const c = coeffs[0]
+    const b = coeffs[1]
+    const a = coeffs[2]
+
+    const delta = b.clone().pow(2).subtract(a.clone().multiply(c).multiply(4))
+
+    if (delta.isNegative()) {
+        return []
+    }
+
+    const a2 = a.clone().multiply(2)
+
+    if (delta.isSquare()) {
+        const d = delta.sqrt()
+        const f1 = b.clone().opposite().subtract(d).divide(a2.clone())
+        const f2 = b.clone().opposite().add(d).divide(a2.clone())
+
+        if (delta.isZero()) {
+            return [exactRoot(f1, 2)]
+        }
+        return sortByValue([exactRoot(f1), exactRoot(f2)])
+    }
+
+    // Irrational roots: exact via a Root of index 2, sign carried by the factor.
+    const root1 = new Root()
+    root1.radical = delta.clone()
+    root1.factor = new Fraction().one().divide(a2.clone())
+
+    const root2 = new Root()
+    root2.radical = delta.clone()
+    root2.factor = new Fraction().one().divide(a2.clone()).opposite()
+
+    const sol1: PolynomRoot = {
+        fraction: b.clone().opposite().divide(a2.clone()),
+        root: root1,
+        exact: true,
+        multiplicity: 1
+    }
+    const sol2: PolynomRoot = {
+        fraction: b.clone().opposite().divide(a2.clone()),
+        root: root2,
+        exact: true,
+        multiplicity: 1
+    }
+
+    return sortByValue([sol1, sol2])
+}
