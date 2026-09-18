@@ -118,8 +118,8 @@ export class Factor implements IPiMathObject<Factor>,
         return this
     }
 
-    degree(letter?: string): Fraction {
-        return this.polynom.degree(letter).multiply(this.power)
+    degree(variable?: string): Fraction {
+        return this.polynom.degree(variable).multiply(this.power)
     }
 
     derivative(): Factor[] {
@@ -186,8 +186,8 @@ export class Factor implements IPiMathObject<Factor>,
         return this
     }
 
-    hasVariable(letter: string): boolean {
-        return this.polynom.hasVariable(letter)
+    hasVariable(variable: string): boolean {
+        return this.polynom.hasVariable(variable)
     }
 
     inverse(): this {

@@ -1,9 +1,9 @@
-import type { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType, POLYFACTOR_TABLE_OF_SIGNS } from "../pimath.interface";
+import type { IAlgebra, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType, PolyFactorTableOfSigns } from "../pimath.interface";
 import { Fraction } from "../coefficients";
 import { Factor } from "./factor";
 import { Polynom } from "./polynom";
 import type { Solution } from "../analyze";
-export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpression<PolyFactor>, IAlgebra<PolyFactor> {
+export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpression<PolyFactor>, IAlgebra, IEvaluable {
     #private;
     constructor(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]);
     parse(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]): this;
@@ -16,20 +16,22 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     add(...values: PolyFactor[]): this;
     get asPower(): this;
     get asRoot(): this;
-    degree(letter?: string): Fraction;
+    degree(variable?: string): Fraction;
     get denominator(): PolyFactor;
     derivative(): this;
     develop(): PolyFactor;
-    divide(value: PolyFactor): this;
-    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction;
-    factorize(letter?: string): PolyFactor;
+    divide(...values: PolyFactor[]): this;
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric: true): number;
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: false): Fraction;
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction;
+    factorize(variable?: string): PolyFactor;
     get factors(): Factor[];
     set factors(value: Factor[]);
     fromPolynom(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>): this;
     fromString(value: string): this;
     getRoots(): Solution[];
     getZeroes(): Solution[];
-    hasVariable(letter: string): boolean;
+    hasVariable(variable: string): boolean;
     inverse(): this;
     isEqual(value: PolyFactor): boolean;
     isOne(): boolean;
@@ -42,10 +44,10 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     primitive(): PolyFactor;
     reduce(): this;
     root(value: number): this;
-    sort(letter?: string): this;
+    sort(variable?: string): this;
     sqrt(): this;
     subtract(...values: PolyFactor[]): this;
-    tableOfSigns(): POLYFACTOR_TABLE_OF_SIGNS;
+    tableOfSigns(): PolyFactorTableOfSigns;
     get variables(): string[];
     zero(): this;
 }

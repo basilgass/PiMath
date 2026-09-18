@@ -38,14 +38,14 @@ export class Sphere3 {
         const equ = new Equation(equation).moveLeft().reduce()
 
         // Check that x, y, z has the same power and same coefficient.
-        const letters = ['x', 'y', 'z']
+        const variables = ['x', 'y', 'z']
 
-        if (letters.some((letter) => equ.degree(letter).value !== 2)){
+        if (variables.some((variable) => equ.degree(variable).value !== 2)){
             return this.makeUndefined()
         }
 
         const coefficient = equ.left.monomByDegree(2, 'x').coefficient
-        if (letters.some((letter) => equ.left.monomByDegree(2, letter).coefficient.isNotEqual(coefficient))) {
+        if (variables.some((variable) => equ.left.monomByDegree(2, variable).coefficient.isNotEqual(coefficient))) {
             return this.makeUndefined()
         }
 
@@ -142,13 +142,13 @@ export class Sphere3 {
         }
 
         const output: string[] = []
-        const letters: ('x' | 'y' | 'z')[] = ['x', 'y', 'z']
+        const variables: ('x' | 'y' | 'z')[] = ['x', 'y', 'z']
 
-        letters.forEach((letter: 'x' | 'y' | 'z') => {
-            if (this.center[letter].isZero()) {
-                output.push(`${letter}^2`)
+        variables.forEach((variable: 'x' | 'y' | 'z') => {
+            if (this.center[variable].isZero()) {
+                output.push(`${variable}^2`)
             } else {
-                const P = new Polynom(letter).subtract(this.center[letter])
+                const P = new Polynom(variable).subtract(this.center[variable])
                 output.push(
                     asTex ?
                         `\\(${P.tex}\\)^2` :

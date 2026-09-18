@@ -163,11 +163,11 @@ export class Matrix implements IPiMathObject<Matrix>,
         return this.dimension.cols === matrix.dimension.rows
     }
 
-    characteristic_polynom(letter?: string): Polynom {
-        letter ??= 'k'
+    characteristic_polynom(variable?: string): Polynom {
+        variable ??= 'k'
 
         return this.clone().subtract(
-            new Matrix(this.dimension.rows).one().multiply(new Polynom(letter))
+            new Matrix(this.dimension.rows).one().multiply(new Polynom(variable))
         ).determinant()
     }
 

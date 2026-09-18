@@ -154,6 +154,18 @@ describe('Equation operations', () => {
         E.divide(2)
         expect(E.display).to.be.equal('3/2x+5/2=-3')
     })
+    test('multiply by several coefficients at once', () => {
+        const E = new Equation('3x+5=-3')
+
+        E.multiply(2, 3)
+        expect(E.display).to.be.equal('18x+30=-18')
+    })
+    test('add several equations at once', () => {
+        const E = new Equation('3x+5=0')
+
+        E.add(new Equation('2x-1=x+3'), new Equation('x=1'))
+        expect(E.display).to.be.equal('6x+4=x+4')
+    })
     test('raise Equation by integer', () => {
         const E = new Equation('3x+5=-6')
 
@@ -280,15 +292,15 @@ describe('Equation canIsolate', () => {
     })
 })
 
-describe('Equation isMultiVariable', () => {
-    test('a single-variable equation is not multi-variable', () => {
-        expect(new Equation('3x+5=0').isMultiVariable()).toBe(false)
+describe('Equation hasCrossTerm', () => {
+    test('a single-variable equation has no cross-term', () => {
+        expect(new Equation('3x+5=0').hasCrossTerm()).toBe(false)
     })
-    test('a linear equation in distinct variables is not multi-variable', () => {
-        expect(new Equation('2x+3y=6').isMultiVariable()).toBe(false)
+    test('a linear equation in distinct variables has no cross-term', () => {
+        expect(new Equation('2x+3y=6').hasCrossTerm()).toBe(false)
     })
-    test('a cross-term makes the equation multi-variable', () => {
-        expect(new Equation('xy+1=0').isMultiVariable()).toBe(true)
+    test('a cross-term is detected', () => {
+        expect(new Equation('xy+1=0').hasCrossTerm()).toBe(true)
     })
 })
 
@@ -315,6 +327,9 @@ describe('Equation evaluation', () => {
         expect(E.evaluate({ x: 3 }, true)).toBe(true)
         expect(E.evaluate({ x: 2 }, true)).toBe(false)
         expect(E.evaluate({ x: new Fraction(3) }, false)).toBe(true)
+        // asNumeric defaults to false (exact), like Polynom/Monom.
+        expect(E.evaluate({ x: new Fraction(3) })).toBe(true)
+        expect(E.evaluate({ x: new Fraction(2) })).toBe(false)
     })
     test('evaluate honours the inequality sign', () => {
         const E = new Equation('2x<10')   // holds iff x < 5

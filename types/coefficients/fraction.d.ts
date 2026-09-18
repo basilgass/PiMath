@@ -1,5 +1,5 @@
-import type { compareSign, IExpression, InputValue, IPiMathObject } from "../pimath.interface";
-export declare enum FRAC_TYPE {
+import type { CompareSign, IExpression, InputValue, IPiMathObject } from "../pimath.interface";
+export declare enum FracType {
     frac = "frac",
     dfrac = "dfrac",
     tfrac = "tfrac"
@@ -26,12 +26,12 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     abs(): this;
     add(F: InputValue<Fraction>): this;
     amplify(k: number): this;
-    compare(F: InputValue<Fraction>, sign?: compareSign): boolean;
+    compare(F: InputValue<Fraction>, sign?: CompareSign): boolean;
     get denominator(): number;
     set denominator(value: number);
     get asDfrac(): this;
     digits(value: number): this;
-    divide(F: Fraction | number): this;
+    divide(F: InputValue<Fraction>): this;
     get exact(): boolean;
     set exact(value: boolean);
     get asFrac(): this;
@@ -78,7 +78,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     root(p: number): this;
     sign(): 1 | -1;
     sqrt(): this;
-    subtract(F: Fraction | number): this;
+    subtract(F: InputValue<Fraction>): this;
     get asTfrac(): this;
     toRepeatingDecimal(): {
         sign: 1 | -1;

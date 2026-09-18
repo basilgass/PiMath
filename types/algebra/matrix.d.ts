@@ -19,7 +19,7 @@ export declare class Matrix implements IPiMathObject<Matrix>, IExpressionMultipl
     canBeAdded(matrix: Matrix): boolean;
     canBeInverted(): boolean;
     canBeMultiplied(matrix: Matrix): boolean;
-    characteristic_polynom(letter?: string): Polynom;
+    characteristic_polynom(variable?: string): Polynom;
     cofactor(row: number, column: number): Polynom;
     get cols(): Polynom[][];
     determinant(): Polynom;

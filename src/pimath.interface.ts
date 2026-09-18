@@ -101,9 +101,9 @@ export interface IEquation<T> {
 export interface IAlgebra {
     readonly variables: string[];
 
-    degree(letter?: string): Fraction;
+    degree(variable?: string): Fraction;
 
-    hasVariable(letter: string): boolean;
+    hasVariable(variable: string): boolean;
 }
 
 // Value evaluation contract, distinct from IAlgebra (variable queries) and from
@@ -121,7 +121,7 @@ export interface IEvaluable {
 export interface IAnalyse<T> {
     derivative(): T | T[];
 
-    integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, letter?: string): Fraction;
+    integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, variable?: string): Fraction;
 
     primitive(): T;
 }

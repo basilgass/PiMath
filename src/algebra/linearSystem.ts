@@ -13,7 +13,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
     #equations: Equation[]
 
-    // Determine the letters in the linear asSystem, usually ['x', 'y']
+    // Determine the variables in the linear asSystem, usually ['x', 'y']
     #variables: string[]
 
     constructor(...values: (string | Equation)[]) {
@@ -31,7 +31,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         // make the original equations
         this.#equations = equations.map(value => new Equation(value))
 
-        // get the letters.
+        // get the variables.
         this.#findLetters()
         return this
     }
@@ -62,15 +62,15 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
     static fromMatrix(
         matrix: InputValue<Fraction>[][],
-        letters = 'xyz'): LinearSystem {
+        variables = 'xyz'): LinearSystem {
         // Check that each row has the same number of columns
         const cols = matrix[0].length
         if (matrix.some(row => row.length !== cols)) {
             throw new DimensionError("All rows must have the same number of columns")
         }
 
-        // Determine the default letters. The number of letters are cols-1
-        const vars = letters.split('')
+        // Determine the default variables. The number of variables are cols-1
+        const vars = variables.split('')
             .splice(0, cols - 1)
 
         // Create a new LinearSystem
@@ -113,23 +113,23 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
     buildTex = (equations: Equation[], operators?: (string[])[]): string => {
         let equStr: string[]
         let m: Monom
-        let letters: string[] = []
+        let variables: string[] = []
         const equArray: string[] = []
 
-        // Get the letters from the linear asSystem
+        // Get the variables from the linear asSystem
         for (const equ of equations) {
-            letters = letters.concat(equ.variables)
+            variables = variables.concat(equ.variables)
         }
 
-        letters = [...new Set(letters)]
-        letters.sort()
+        variables = [...new Set(variables)]
+        variables.sort()
 
         for (let i = 0; i < equations.length; i++) {
             const equ = equations[i]
 
             equStr = []
-            for (const L of letters) {
-                m = equ.left.monomByLetter(L)
+            for (const L of variables) {
+                m = equ.left.monomByVariable(L)
 
                 if (equStr.length === 0) {
                     equStr.push(m.isZero() ? '' : m.tex)
@@ -162,11 +162,11 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
             operatorsColumns = operators[0].length
         }
 
-        return `\\left\\{\\begin{array}{${"r".repeat(letters.length)}cl ${"|l".repeat(operatorsColumns)}}${equArray.join('\\\\ ')}\\end{array}\\right.`
+        return `\\left\\{\\begin{array}{${"r".repeat(variables.length)}cl ${"|l".repeat(operatorsColumns)}}${equArray.join('\\\\ ')}\\end{array}\\right.`
     }
 
-    degree(letter?: string): Fraction {
-        return Fraction.max(...this.#equations.map(equ => equ.degree(letter)))
+    degree(variable?: string): Fraction {
+        return Fraction.max(...this.#equations.map(equ => equ.degree(variable)))
     }
 
     // ------------------------------------------
@@ -185,8 +185,8 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         throw new NotImplementedError("Method not implemented.")
     }
 
-    hasVariable(letter: string): boolean {
-        return this.#variables.includes(letter)
+    hasVariable(variable: string): boolean {
+        return this.#variables.includes(variable)
     }
 
     isEqual(value: LinearSystem): boolean {
@@ -326,12 +326,12 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
     }
 
-    solve_compute_factors(letter: string):
+    solve_compute_factors(variable: string):
         [{ id: number, factor: number }, { id: number, factor: number }][] {
         // when solving, every monoms with a variable is on the left !
         // and every coefficient are relative numbers.
         const result: [{ id: number, factor: number }, { id: number, factor: number }][] = []
-        const coefficients = this.equations.map(equ => equ.left.monomByLetter(letter).coefficient.value)
+        const coefficients = this.equations.map(equ => equ.left.monomByVariable(variable).coefficient.value)
 
         // search for a factor
         coefficients.forEach((reference, index) => {
@@ -404,11 +404,11 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
             const equ = E.clone().reorder()
             for (const L of this.variables) {
-                const m = equ.left.monomByLetter(L)
+                const m = equ.left.monomByVariable(L)
                 row.push(m.coefficient)
             }
 
-            // Add the "no letter part"
+            // Add the "no variable part"
             vector.push(equ.right.monoms[0].coefficient)
 
             // Add to the matrix
@@ -423,9 +423,9 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
         if(!matrix){
             // infinite solutions
-            this.variables.forEach(letter=>{
+            this.variables.forEach(variable=>{
                 const sol = Solution.fromFraction(Infinity)
-                sol.variable = letter
+                sol.variable = variable
                 result.push(sol)
             })
 

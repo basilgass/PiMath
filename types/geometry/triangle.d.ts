@@ -2,7 +2,7 @@ import { Fraction } from "../coefficients";
 import { Line } from "./line";
 import { Vector } from "./vector";
 import { Point } from "./point";
-import type { InputValue, remarquableLines } from "../pimath.interface";
+import type { InputValue, RemarquableLines } from "../pimath.interface";
 type TRIANGLE_SIDES = 'AB' | 'AC' | 'BC';
 export declare class Triangle {
     #private;
@@ -69,7 +69,7 @@ export declare class Triangle {
     medianA(): Line;
     medianB(): Line;
     medianC(): Line;
-    get remarquables(): remarquableLines | null;
+    get remarquables(): RemarquableLines | null;
     reset(): this;
 }
 export {};

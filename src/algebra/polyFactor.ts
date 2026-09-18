@@ -238,8 +238,8 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this
     }
 
-    degree(letter?: string): Fraction {
-        return this.#factors.reduce((acc, f) => acc.add(f.degree(letter)), new Fraction('0'))
+    degree(variable?: string): Fraction {
+        return this.#factors.reduce((acc, f) => acc.add(f.degree(variable)), new Fraction('0'))
     }
 
     get denominator(): PolyFactor {
@@ -293,8 +293,10 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return new PolyFactor().fromPolynom(N, D)
     }
 
-    divide(value: PolyFactor): this {
-        this.#factors = this.#factors.concat(value.clone().factors.map(f => f.inverse()))
+    divide(...values: PolyFactor[]): this {
+        for (const value of values) {
+            this.#factors = this.#factors.concat(value.clone().factors.map(f => f.inverse()))
+        }
         return this
     }
 
@@ -311,13 +313,13 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             .reduce((acc, f) => acc.multiply(f.evaluate(values)), new Fraction('1'))
     }
 
-    factorize(letter?: string): PolyFactor {
+    factorize(variable?: string): PolyFactor {
         // Go through each factors.
         // If it can be factorized, remove the factor (set its power to zero) and insert the new factors instead.
         const newFactors: Factor[] = []
 
         this.#factors.forEach(factor => {
-            const factors = factor.polynom.factorize(letter)
+            const factors = factor.polynom.factorize(variable)
             if (factors.length > 1) {
                 const pow = factor.power.clone()
                 newFactors.push(...factors.map(x => new Factor(x, pow)))
@@ -405,8 +407,8 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             )
     }
 
-    hasVariable(letter: string): boolean {
-        return this.#factors.some(f => f.hasVariable(letter))
+    hasVariable(variable: string): boolean {
+        return this.#factors.some(f => f.hasVariable(variable))
     }
 
     inverse(): this {
@@ -517,9 +519,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
      * 2. degree of polynom
      * 3. power of polyfactor
      */
-    sort(letter?: string): this {
+    sort(variable?: string): this {
         // Sort each polynom
-        this.#factors.forEach(f=>f.polynom.reorder(letter))
+        this.#factors.forEach(f=>f.polynom.reorder(variable))
 
         this.#factors.sort((a, b) => {
             // If the compare powers are opposite, the negative power goes to the end.
@@ -537,8 +539,8 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             }
 
             // The monom length are the same, check the polynom degree.
-            const aDegree = a.polynom.degree(letter).value
-            const bDegree = b.polynom.degree(letter).value
+            const aDegree = a.polynom.degree(variable).value
+            const bDegree = b.polynom.degree(variable).value
             if (aDegree !== bDegree) {
                 return aDegree - bDegree
             }
@@ -549,7 +551,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             }
 
             // It the monoms length are two AND of degree one, sort by the zero.
-            if(a.polynom.degree(letter).isOne() && b.polynom.degree(letter).isOne()){
+            if(a.polynom.degree(variable).isOne() && b.polynom.degree(variable).isOne()){
                 const aSol = a.polynom.monoms[1].coefficient.clone().opposite().divide(a.polynom.monoms[0].coefficient).value
                 const bSol = b.polynom.monoms[1].coefficient.clone().opposite().divide(b.polynom.monoms[0].coefficient).value
 

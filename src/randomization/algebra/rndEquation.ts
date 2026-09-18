@@ -6,7 +6,7 @@ import { rndPolynom } from "./rndPolynom"
 export function rndEquation(userConfig?: randomEquationConfig): Equation {
     const config = Object.assign(
         {
-            letters: 'x',
+            variables: 'x',
             degree: 1,
             fraction: false,
             zero: false,
@@ -31,7 +31,7 @@ export function rndEquation(userConfig?: randomEquationConfig): Equation {
             degree: 1,
             unit: config.unit,
             fraction: config.fraction,
-            letters: config.letters,
+            variables: config.variables,
             zero: config.zero
         })
         P.multiply(factor)

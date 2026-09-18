@@ -239,7 +239,7 @@ describe('Monom generators', () => {
     })
     test('random Monom with options', () => {
         const M = Random.monom({
-            letters: 'xyz',
+            variables: 'xyz',
             degree: 5,
             fraction: false,
             zero: false

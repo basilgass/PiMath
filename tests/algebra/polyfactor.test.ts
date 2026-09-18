@@ -243,6 +243,22 @@ describe("PolyFactor: operations", () => {
         expect(PF3.factors[3].power.display).toBe('-2/3')
     })
 
+    test('should divide by several PolyFactors at once', () => {
+        const PF = new PolyFactor(
+            new Factor('3x+2', '1/2'),
+            new Factor('4x-3', '2/3')
+        )
+        const A = new PolyFactor(new Factor('7x-5', '1'))
+        const B = new PolyFactor(new Factor('x+9', '2'))
+
+        const PF3 = PF.divide(A, B)
+
+        expect(PF3.factors.length).toBe(4)
+        // The divided factors carry the negated power.
+        expect(PF3.factors[2].power.display).toBe('-1')
+        expect(PF3.factors[3].power.display).toBe('-2')
+    })
+
     test('should inverse a PolyFactors', () => {
         const PF = new PolyFactor(
             new Factor('3x+2', '1/2'),

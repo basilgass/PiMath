@@ -405,28 +405,28 @@ export class Line implements IPiMathObject<Line> {
         equ.reorder(true)
 
         // It must contain either x, y or both.
-        const letters = new Set(equ.variables)
+        const variables = new Set(equ.variables)
 
         // No 'x', no 'y' in the equations
-        if (!(letters.has('x') || letters.has('y'))) {
+        if (!(variables.has('x') || variables.has('y'))) {
             return this
         }
 
-        // Another letter in the equation ?
+        // Another variable in the equation ?
         for (const elem of ['x', 'y']) {
-            if (letters.has(elem)) {
-                letters.delete(elem)
+            if (variables.has(elem)) {
+                variables.delete(elem)
             }
         }
 
-        if (letters.size > 0) {
+        if (variables.size > 0) {
             return this
         }
 
         // Everything should be ok now...
         return this.fromCoefficient(
-            equ.left.monomByLetter('x').coefficient,
-            equ.left.monomByLetter('y').coefficient,
+            equ.left.monomByVariable('x').coefficient,
+            equ.left.monomByVariable('y').coefficient,
             equ.left.monomByDegree(0).coefficient
         )
     }

@@ -4,7 +4,7 @@ import {Monom, Polynom} from "../../algebra"
 import {randomInt, randomIntSym} from "../rndHelpers"
 
 const defaultPolynomConfig: randomPolynomConfig = {
-    letters: 'x',
+    variables: 'x',
     degree: 2,
     fraction: false,
     zero: false,
@@ -34,7 +34,7 @@ export function rndPolynom(userConfig?: randomPolynomConfig): Polynom {
     for (let i = targetDegree; i >= 0; i--) {
         // Create monom of corresponding degree.
         M = rndMonom({
-            letters: config.letters,
+            variables: config.variables,
             degree: i,
             fraction: config.fraction,
             zero: (i === targetDegree) ? false : config.allowNullMonom

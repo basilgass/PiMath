@@ -1,13 +1,13 @@
 import { Fraction } from "../coefficients";
 import { Equation } from "../algebra";
 import { Vector } from "./vector";
-import { type InputValue, type IPiMathObject, LinePropriety } from "../pimath.interface";
+import { type InputValue, type IPiMathObject, LineProperty } from "../pimath.interface";
 import { Point } from "./point";
 import { Root } from "../coefficients/root";
 export declare class Line implements IPiMathObject<Line> {
     #private;
-    static PARALLEL: LinePropriety;
-    static PERPENDICULAR: LinePropriety;
+    static PARALLEL: LineProperty;
+    static PERPENDICULAR: LineProperty;
     constructor(...values: unknown[]);
     parse: (...values: unknown[]) => this;
     copy(): this;
@@ -37,7 +37,7 @@ export declare class Line implements IPiMathObject<Line> {
     fromParallel(parallel: Line, point: Point): this;
     fromPerpendicular(perpendicular: Line, point: Point): this;
     fromPointAndDirection(P: Point | Vector, d: Vector): this;
-    fromPointAndLine(P: Vector, L: Line, orientation?: LinePropriety): this;
+    fromPointAndLine(P: Vector, L: Line, orientation?: LineProperty): this;
     fromPointAndNormal: (P: Point | Vector, n: Vector) => this;
     fromPoints(A: Point, B: Point): this;
     getEquation(): Equation;

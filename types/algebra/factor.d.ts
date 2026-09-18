@@ -1,7 +1,7 @@
-import type { IAlgebra, IExpression, InputAlgebra, InputValue, IPiMathObject, literalType, TABLE_OF_SIGNS } from "../pimath.interface";
+import type { IAlgebra, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType, TableOfSignsData } from "../pimath.interface";
 import { Fraction } from "../coefficients/fraction";
 import { Polynom } from "./polynom";
-export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor>, IAlgebra<Factor> {
+export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor>, IAlgebra, IEvaluable {
     #private;
     constructor(value?: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>);
     parse(): Factor;
@@ -11,13 +11,15 @@ export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor
     get display(): string;
     add(): Factor;
     get asSingle(): this;
-    degree(letter?: string): Fraction;
+    degree(variable?: string): Fraction;
     derivative(): Factor[];
     develop(): Polynom;
     divide(value: InputAlgebra<Factor | Polynom>): this;
-    evaluate(values: InputValue<Fraction> | literalType<number | Fraction>, asNumeric?: boolean): number | Fraction;
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric: true): number;
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: false): Fraction;
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction;
     fromPolynom(polynom: InputValue<Polynom>): this;
-    hasVariable(letter: string): boolean;
+    hasVariable(variable: string): boolean;
     inverse(): this;
     isEqual(value: Factor): boolean;
     isOne(): boolean;
@@ -36,7 +38,7 @@ export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor
     root(value: number): this;
     sqrt(): this;
     subtract(): Factor;
-    tableOfSigns(): TABLE_OF_SIGNS;
+    tableOfSigns(): TableOfSignsData;
     get variables(): string[];
     get withPower(): this;
     get withRoot(): this;

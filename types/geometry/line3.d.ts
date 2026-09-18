@@ -1,11 +1,11 @@
 import { Fraction } from "../coefficients/fraction";
 import { Vector } from "./vector";
 import { Point } from "./point";
-import { Line3Propriety } from "../pimath.interface";
+import { Line3Property } from "../pimath.interface";
 export declare class Line3 {
     #private;
-    static PARALLEL: Line3Propriety;
-    static PERPENDICULAR: Line3Propriety;
+    static PARALLEL: Line3Property;
+    static PERPENDICULAR: Line3Property;
     constructor(A: Point, B: Point);
     constructor(A: Point, d: Vector);
     clone: () => this;

@@ -237,6 +237,28 @@ describe('Polynom operations', () => {
 
         expect(() => P.divide(Q)).toThrow()
     })
+    test('multiply by several values at once', () => {
+        const P = new Polynom('x+1')
+
+        P.multiply(new Polynom('x-1'), 2)
+
+        expect(P.display).toBe('2x^(2)-2')
+    })
+    test('divide by several values at once', () => {
+        const P = new Polynom('12x^2+6x')
+
+        P.divide(2, 3)
+
+        expect(P.display).toBe('2x^(2)+x')
+    })
+    test('a failing operand leaves the polynom unchanged (atomic multi-divide)', () => {
+        const P = new Polynom('6x^2+11x-10')
+        const before = P.display
+
+        // First divisor is exact, second leaves a remainder and throws.
+        expect(() => P.divide(new Polynom('2x+5'), new Polynom('x+2'))).toThrow()
+        expect(P.display).toBe(before)
+    })
     test('raise Polynom by integer', () => {
         const P = new Polynom('x+2')
         P.pow(2)
@@ -407,9 +429,9 @@ describe('Polynom replaceBy', () => {
 })
 
 describe('Polynom queries', () => {
-    test('isDividableBy', () => {
-        expect(new Polynom('x^2-1').isDividableBy(new Polynom('x-1'))).toBeTruthy()
-        expect(new Polynom('x^2+1').isDividableBy(new Polynom('x-1'))).toBeFalsy()
+    test('isDivisibleBy', () => {
+        expect(new Polynom('x^2-1').isDivisibleBy(new Polynom('x-1'))).toBeTruthy()
+        expect(new Polynom('x^2+1').isDivisibleBy(new Polynom('x-1'))).toBeFalsy()
     })
     test('commonMonom extracts the greatest common monom', () => {
         expect(new Polynom('2x^3+6x^2').commonMonom().display).toBe('2x^(2)')

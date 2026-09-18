@@ -6,7 +6,7 @@ import {randomItem} from "../rndHelpers"
 export function rndMonom(userConfig?: randomMonomConfig): Monom {
     const config = Object.assign(
         {
-            letters: 'x',
+            variables: 'x',
             degree: 2,
             fraction: true,
             zero: false,
@@ -28,17 +28,17 @@ export function rndMonom(userConfig?: randomMonomConfig): Monom {
         )
     )
 
-    if (config.letters.length > 1) {
+    if (config.variables.length > 1) {
         // Initialise each items...
-        for (const L of config.letters.split('')) {
-            M.setLetter(L, 0)
+        for (const L of config.variables.split('')) {
+            M.setExponent(L, 0)
         }
         for (let i = 0; i < config.degree; i++) {
-            const L = randomItem(config.letters.split(""))
-            M.setLetter(L, M.degree(L).clone().add(1))
+            const L = randomItem(config.variables.split(""))
+            M.setExponent(L, M.degree(L).clone().add(1))
         }
     } else {
-        M.setLetter(config.letters, config.degree)
+        M.setExponent(config.variables, config.degree)
     }
 
     return M

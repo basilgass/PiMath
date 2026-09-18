@@ -37,9 +37,9 @@ export class Plane3 {
         if (config.equation) {
             const cartesian = config.equation.moveLeft().reduce().left
 
-            const a = cartesian.monomByLetter('x').coefficient
-            const b = cartesian.monomByLetter('y').coefficient
-            const c = cartesian.monomByLetter('z').coefficient
+            const a = cartesian.monomByVariable('x').coefficient
+            const b = cartesian.monomByVariable('y').coefficient
+            const c = cartesian.monomByVariable('z').coefficient
             const d = cartesian.monomByDegree(0).coefficient
 
             // Get the normal vector

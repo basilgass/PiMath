@@ -4,17 +4,12 @@ import type { Line, Point, Vector } from "./geometry";
 import type { Solution } from "./analyze/solution";
 export type InputValue<T> = T | string | number | Fraction;
 export type InputAlgebra<T> = InputValue<T> | Monom;
-export type literalType<T> = Record<string, T>;
-export type compareSign = '>' | ">=" | "=>" | "geq" | '<' | "<=" | "=<" | "leq" | '=' | "<>" | "neq" | "same";
-export type EQUATION_SIGN = "=" | "<=" | ">=" | "<" | ">";
-export declare enum PARTICULAR_SOLUTION {
-    real = "\\mathbb{R}",
-    varnothing = "\\varnothing"
-}
+export type LiteralType<T> = Record<string, T>;
+export type EquationSign = "=" | "<=" | ">=" | "<" | ">";
+export type CompareSign = EquationSign | "=>" | "geq" | "=<" | "leq" | "<>" | "neq" | "same";
 export interface IPiMathObject<T> {
     readonly display: string;
     readonly tex: string;
-    parse(...value: unknown[]): T;
     clone(): T;
     copy(value: T): T;
 }
@@ -34,44 +29,48 @@ export interface IExpressionMultiply<T> extends IExpressionBase<T> {
     pow(value: number): T;
 }
 export interface IExpression<T> extends IExpressionMultiply<T> {
-    divide(value: InputValue<T>): T | null;
-    inverse(): T | undefined;
-    root(value: number): T | undefined;
-    sqrt(): T | undefined;
+    divide(value: InputValue<T>): T;
+    inverse(): T;
+    root(value: number): T;
+    sqrt(): T;
 }
 export interface IEquation<T> {
     reduce(): T;
     solve(): Solution[];
 }
-export interface IAlgebra<T> {
+export interface IAlgebra {
     readonly variables: string[];
-    degree(letter?: string): Fraction;
-    evaluate(values: literalType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number | boolean;
-    hasVariable(letter: string): boolean;
+    degree(variable?: string): Fraction;
+    hasVariable(variable: string): boolean;
+}
+export interface IEvaluable {
+    evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric: true): number;
+    evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric?: false): Fraction;
+    evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number;
 }
 export interface IAnalyse<T> {
     derivative(): T | T[];
-    integrate(a: InputValue<Fraction>, b: InputValue<T>, letter?: string): Fraction;
+    integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, variable?: string): Fraction;
     primitive(): T;
 }
-export type TABLE_OF_SIGNS_VALUES = '-' | '+' | 'h' | 'z' | 't' | 'd' | 'u' | 'n' | '';
-export interface TABLE_OF_SIGNS {
+export type TableOfSignsValues = '-' | '+' | 'h' | 'z' | 't' | 'd' | 'u' | 'n' | '';
+export interface TableOfSignsData {
     roots: Solution[];
-    signs: TABLE_OF_SIGNS_VALUES[];
+    signs: TableOfSignsValues[];
 }
-export interface FACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {
+export interface FactorTableOfSigns extends TableOfSignsData {
     factor: Factor;
 }
-export interface POLYFACTOR_TABLE_OF_SIGNS extends TABLE_OF_SIGNS {
-    factors: FACTOR_TABLE_OF_SIGNS[];
+export interface PolyFactorTableOfSigns extends TableOfSignsData {
+    factors: FactorTableOfSigns[];
 }
-export declare enum LinePropriety {
+export declare enum LineProperty {
     None = "none",
     Parallel = "parallel",
     Perpendicular = "perpendicular",
     Tangent = "tangent"
 }
-export declare enum Line3Propriety {
+export declare enum Line3Property {
     None = "none",
     Parallel = "parallel",
     Perpendicular = "perpendicular",
@@ -85,36 +84,15 @@ export interface Plane3Config {
     point?: Point;
     points?: Point[];
 }
-export interface remarquableLines {
-    'bisectors': {
-        'A': Line;
-        'B': Line;
-        'C': Line;
-        'intersection': Point | null;
-    } | null;
-    externalBisectors: {
-        'A': Line;
-        'B': Line;
-        'C': Line;
-        'intersection': Point | null;
-    } | null;
-    'heights': {
-        'A': Line;
-        'B': Line;
-        'C': Line;
-        'intersection': Point | null;
-    } | null;
-    'medians': {
-        'A': Line;
-        'B': Line;
-        'C': Line;
-        'intersection': Point | null;
-    } | null;
-    'mediators': {
-        'a': Line;
-        'b': Line;
-        'c': Line;
-        'intersection': Point | null;
-    } | null;
+type TriangleLineTriad<K extends string> = Record<K, Line> & {
+    intersection: Point | null;
+};
+export interface RemarquableLines {
+    bisectors: TriangleLineTriad<'A' | 'B' | 'C'> | null;
+    externalBisectors: TriangleLineTriad<'A' | 'B' | 'C'> | null;
+    heights: TriangleLineTriad<'A' | 'B' | 'C'> | null;
+    medians: TriangleLineTriad<'A' | 'B' | 'C'> | null;
+    mediators: TriangleLineTriad<'a' | 'b' | 'c'> | null;
 }
+export {};
 //# sourceMappingURL=pimath.interface.d.ts.map

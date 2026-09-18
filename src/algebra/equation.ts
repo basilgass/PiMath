@@ -19,7 +19,7 @@ import type {Solution} from "../analyze"
 // token MUST come before any of its substrings (\geq before geq, >= before >),
 // so both the parser (#findSign) and the normalizer (#formatSign) match the
 // longest token first.
-const SIGN_TOKENS: ReadonlyArray<{ token: string; sign: EquationSign }> = [
+const SIGN_TOKENS: readonly { token: string; sign: EquationSign }[] = [
     {token: '\\geq', sign: '>='},
     {token: 'geq', sign: '>='},
     {token: '\\leq', sign: '<='},
@@ -171,46 +171,44 @@ export class Equation implements IPiMathObject<Equation>,
     }
 
     /**
-     * Add a value to the equation
-     * if value is an equation, add the left part to the left part of the equation
-     * and the right part to the right part of the equation
-     * if value is a string, try to create an equation
-     * if it fails, create a polynom and add it to the left and right part of the equation
-     * @param value | Polynom | Monom | Fraction | string | monom
+     * Add one or more values to the equation. An Equation operand is added
+     * member by member; any other value (Polynom, Monom, Fraction, number, or a
+     * sign-less string) is added to both members. Atomic: a failing operand
+     * leaves the receiver intact.
+     * @param values the values to add
      */
-    add(value: InputValue<Equation | Polynom>): this {
+    add(...values: InputValue<Equation | Polynom>[]): this {
+        // Apply each operand on a single clone; commit on success.
+        const clone = this.clone()
+        for (const value of values) {
+            clone.#addOne(value)
+        }
+        return this.#commit(clone)
+    }
 
+    #addOne(value: InputValue<Equation | Polynom>): void {
         if (value instanceof Equation) {
-            // Compute on clones so a failing operand leaves the receiver intact.
-            const left = this.#left.clone().add(value.left)
-            const right = this.#right.clone().add(value.right)
-            this.#left = left
-            this.#right = right
-
-            return this
+            this.#left.add(value.left)
+            this.#right.add(value.right)
+            return
         }
 
-        if (typeof value === 'string' &&
-            !Equation.isEquationString(value)) {
-
-            return this.add(new Equation(value))
+        if (typeof value === 'string' && !Equation.isEquationString(value)) {
+            this.#addOne(new Equation(value))
+            return
         }
 
         const p = new Polynom(value)
-        const left = this.#left.clone().add(p)
-        const right = this.#right.clone().add(p)
-        this.#left = left
-        this.#right = right
-
-        return this
+        this.#left.add(p)
+        this.#right.add(p)
     }
 
     /**
      * Get the degree of the equation
-     * @param letter
+     * @param variable
      */
-    degree(letter?: string): Fraction {
-        return Fraction.max(this.#left.degree(letter), this.#right.degree(letter))
+    degree(variable?: string): Fraction {
+        return Fraction.max(this.#left.degree(variable), this.#right.degree(variable))
     }
 
     /**
@@ -222,15 +220,14 @@ export class Equation implements IPiMathObject<Equation>,
      * 8x+10=6x | 2  ->  4x+5=3x
      * ```
      */
-    divide(value: InputValue<Fraction>): this {
-        // Make sure we have a fraction.
-        const F: Fraction = new Fraction(value)
+    divide(...values: InputValue<Fraction>[]): this {
+        // Dividing by v is multiplying by 1/v; a zero divisor is a no-op.
+        const inverses = values
+            .map(value => new Fraction(value))
+            .filter(F => !F.isZero())
+            .map(F => F.inverse())
 
-        if (F.isZero()) {
-            return this
-        } else {
-            return this.multiply(F.inverse())
-        }
+        return this.multiply(...inverses)
     }
 
     /**
@@ -240,9 +237,10 @@ export class Equation implements IPiMathObject<Equation>,
      * from the value-producing `evaluate` of Polynom/Monom (which returns a
      * number).
      * @param values variable values to substitute (e.g. `{x: 3}`)
-     * @param asNumeric compare as numbers (approximate) rather than exact Fractions
+     * @param asNumeric compare as numbers (approximate) rather than exact
+     *   Fractions; defaults to `false` (exact), like Polynom/Monom's `evaluate`
      */
-    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric: boolean): boolean {
+    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric = false): boolean {
         const left = this.#left.evaluate(values, asNumeric)
         const right = this.#right.evaluate(values, asNumeric)
 
@@ -268,10 +266,10 @@ export class Equation implements IPiMathObject<Equation>,
 
     /**
      * Determine if the equation contains a variable.
-     * @param letter
+     * @param variable
      */
-    hasVariable(letter: string): boolean {
-        return this.variables.includes(letter)
+    hasVariable(variable: string): boolean {
+        return this.variables.includes(variable)
     }
 
     /**
@@ -322,13 +320,13 @@ export class Equation implements IPiMathObject<Equation>,
     }
 
     /**
-     * Determine if the equation contains a cross-term monom (a single monom
-     * carrying more than one variable, such as `xy`), which prevents isolating
-     * a variable linearly. A linear equation in several distinct variables
-     * (e.g. `ax+by+c=0`) is not considered multi-variable here and stays isolable.
+     * Whether the equation contains a cross-term monom (a single monom carrying
+     * more than one variable, such as `xy`), which prevents isolating a variable
+     * linearly. A linear equation in several distinct variables (e.g. `ax+by+c=0`)
+     * has no cross-term and stays isolable.
      */
-    isMultiVariable(): boolean {
-        return this.#left.isMultiVariable || this.#right.isMultiVariable
+    hasCrossTerm(): boolean {
+        return this.#left.hasCrossTerm() || this.#right.hasCrossTerm()
     }
 
     /**
@@ -336,8 +334,8 @@ export class Equation implements IPiMathObject<Equation>,
      * it must be of the first degree and free of any cross-term monom.
      * Pure query (no mutation); use it to guard `isolate`.
      */
-    canIsolate(letter?: string): boolean {
-        return this.degree(letter).isOne() && !this.isMultiVariable()
+    canIsolate(variable?: string): boolean {
+        return this.degree(variable).isOne() && !this.hasCrossTerm()
     }
 
     /**
@@ -345,14 +343,14 @@ export class Equation implements IPiMathObject<Equation>,
      * on the right. Atomic: on failure the receiver is left unchanged.
      * @throws {MathError} when the equation cannot be isolated (guard with canIsolate).
      */
-    isolate(letter?: string): this {
-        if (!this.canIsolate(letter)) {
-            throw new MathError(`Cannot isolate "${letter ?? this.variables[0]}" in ${this.display}`)
+    isolate(variable?: string): this {
+        if (!this.canIsolate(variable)) {
+            throw new MathError(`Cannot isolate "${variable ?? this.variables[0]}" in ${this.display}`)
         }
 
-        // Resolve the letter: an explicit one wins, otherwise the sole variable
+        // Resolve the variable: an explicit one wins, otherwise the sole variable
         // (single-variable and of degree one at this point, so it always exists).
-        const L: string = letter ?? this.variables[0]
+        const L: string = variable ?? this.variables[0]
 
         // Work on a clone so a failed isolation leaves the receiver intact.
         const clone = this.clone()
@@ -398,7 +396,7 @@ export class Equation implements IPiMathObject<Equation>,
 
     // -----------------------------------------------
     /**
-     * Reorder will move all monoms containing a letter on the left, all the other on the right.
+     * Reorder will move all monoms containing a variable on the left, all the other on the right.
      */
     moveLeft(): this {
         this.#left = this.#left.clone().subtract(this.#right)
@@ -407,26 +405,27 @@ export class Equation implements IPiMathObject<Equation>,
     }
 
     /**
-     * Multiple an equation by a fraction value.
-     * @param value
+     * Multiply both members of the equation by one or more fraction values.
+     * A negative factor reverses the inequality sign. Atomic: a failing operand
+     * leaves the receiver intact.
+     * @param values the factors to multiply by
      */
-    multiply(value: InputValue<Fraction>): this {
-        // Make sure we have a fraction.
-        const F: Fraction = new Fraction(value)
+    multiply(...values: InputValue<Fraction>[]): this {
+        // Multiply both members by each value on a clone; commit on success so a
+        // failure leaves the receiver intact.
+        const clone = this.clone()
+        for (const value of values) {
+            const F: Fraction = new Fraction(value)
+            clone.#left.multiply(F)
+            clone.#right.multiply(F)
 
-        // Multiply each part of the equation by the fraction (on clones,
-        // so a failure leaves the receiver intact).
-        const left = this.#left.clone().multiply(F)
-        const right = this.#right.clone().multiply(F)
-        this.#left = left
-        this.#right = right
-
-        // The sign of the inequality must be changed.
-        if (this.#sign !== '=' && F.sign() === -1) {
-            this.#reverseSign()
+            // A negative factor reverses the inequality direction.
+            if (clone.#sign !== '=' && F.sign() === -1) {
+                clone.#reverseSign()
+            }
         }
 
-        return this
+        return this.#commit(clone)
     }
 
     get numberOfVars(): number {
@@ -508,9 +507,9 @@ export class Equation implements IPiMathObject<Equation>,
     }
 
     // ------------------------------------------
-    replaceBy(letter: string, P: Polynom): this {
-        this.#left.replaceBy(letter, P)
-        this.#right.replaceBy(letter, P)
+    replaceBy(variable: string, P: Polynom): this {
+        this.#left.replaceBy(variable, P)
+        this.#right.replaceBy(variable, P)
         return this
     }
 
@@ -564,28 +563,35 @@ export class Equation implements IPiMathObject<Equation>,
         return [this.#left.clone(), this.#right.clone()]
     }
 
-    subtract(value: InputValue<Equation | Polynom>): this {
-        if (value instanceof Equation) {
-            const left = this.#left.clone().subtract(value.left)
-            const right = this.#right.clone().subtract(value.right)
-            this.#left = left
-            this.#right = right
+    /**
+     * Subtract one or more values from the equation (member by member for an
+     * Equation operand, from both members otherwise). Atomic: a failing operand
+     * leaves the receiver intact.
+     * @param values the values to subtract
+     */
+    subtract(...values: InputValue<Equation | Polynom>[]): this {
+        const clone = this.clone()
+        for (const value of values) {
+            clone.#subtractOne(value)
+        }
+        return this.#commit(clone)
+    }
 
-            return this
+    #subtractOne(value: InputValue<Equation | Polynom>): void {
+        if (value instanceof Equation) {
+            this.#left.subtract(value.left)
+            this.#right.subtract(value.right)
+            return
         }
 
-        if (typeof value === 'string' &&
-            !Equation.isEquationString(value)) {
-            return this.subtract(new Equation(value))
+        if (typeof value === 'string' && !Equation.isEquationString(value)) {
+            this.#subtractOne(new Equation(value))
+            return
         }
 
         const p = new Polynom(value)
-        const left = this.#left.clone().subtract(p)
-        const right = this.#right.clone().subtract(p)
-        this.#left = left
-        this.#right = right
-
-        return this
+        this.#left.subtract(p)
+        this.#right.subtract(p)
     }
 
     test(values: LiteralType<Fraction>): boolean {

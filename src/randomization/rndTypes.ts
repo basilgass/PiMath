@@ -11,7 +11,7 @@ export interface randomCoefficientConfig {
 export interface randomMonomConfig {
     degree?: number,
     fraction?: boolean | randomCoefficientConfig,
-    letters?: string,
+    variables?: string,
     zero?: boolean
 }
 
@@ -21,7 +21,7 @@ export interface randomPolynomConfig {
     degree?: number,
     factorable?: boolean,
     fraction?: boolean | randomCoefficientConfig,
-    letters?: string,
+    variables?: string,
     numberOfMonoms?: number,
     positive?: boolean
     unit?: boolean,
