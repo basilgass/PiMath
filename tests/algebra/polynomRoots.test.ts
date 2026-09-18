@@ -146,6 +146,13 @@ describe("polynomRoots — solvePolynom", () => {
 
         expect(roots.map(r => Math.round(rootValueOf(r)))).to.have.all.members([1, 2, 3, 4, 5])
     })
+
+    test("rejects a non-positive bisection step", () => {
+        const coeffs = [F(120), F(-274), F(225), F(-85), F(15), F(-1)]
+
+        expect(() => solvePolynom(coeffs, {bisectionDeltaX: 0})).toThrow()
+        expect(() => solvePolynom(coeffs, {bisectionDeltaX: -1})).toThrow()
+    })
 })
 
 function rootValueOf(r: { fraction: {value: number}, root: {value: number} }): number {

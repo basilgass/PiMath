@@ -1,6 +1,7 @@
 import {describe, expect, test} from "vitest"
 import {Equation} from "../../src/algebra/equation"
 import {EquationSolver} from "../../src/algebra/equationSolver"
+import {Polynom} from "../../src/algebra/polynom"
 
 
 describe("Equation Solver", () => {
@@ -237,5 +238,25 @@ describe("Equation Solver", () => {
         const result = new EquationSolver(equation).solve()
 
         expect(result.map(s => Math.round(s.value))).to.have.all.members([1, 2, 3, 4, 5])
+    })
+
+    test('honours an explicitly forced "x" over the polynom own variable', () => {
+        const result = new EquationSolver(new Equation("t^2-4=0"), undefined, "x").solve()
+
+        expect(result.every(s => s.variable === "x")).toBe(true)
+    })
+
+    test('throws on an invalid variable argument', () => {
+        expect(() => new EquationSolver(new Equation("x-1=0"), undefined, "xy")).toThrow()
+    })
+
+    test('solveAsCardan throws when the equation is not cubic', () => {
+        expect(() => new EquationSolver(new Equation("x^2-1=0")).solveAsCardan()).toThrow()
+    })
+
+    test('subtracts a right-hand polynom in the (Polynom, Polynom) form', () => {
+        const result = new EquationSolver(new Polynom("x^2"), new Polynom("4")).solve()
+
+        expect(result.map(s => s.value)).to.have.all.members([-2, 2])
     })
 })

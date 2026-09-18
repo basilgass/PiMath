@@ -1,7 +1,7 @@
 import {Fraction} from "../coefficients"
 import {Root} from "../coefficients/root"
 import {Numeric} from "../numeric"
-import {MathError} from "../errors"
+import {InvalidArgumentError, MathError} from "../errors"
 
 /**
  * A polynomial root as raw data (no display state, no Solution class).
@@ -11,10 +11,10 @@ import {MathError} from "../errors"
  * Cardan / bisection (floating) value. `multiplicity` is always >= 1.
  */
 export interface PolynomRoot {
-    fraction: Fraction
-    root: Root
-    exact: boolean
-    multiplicity: number
+    readonly fraction: Fraction
+    readonly root: Root
+    readonly exact: boolean
+    readonly multiplicity: number
 }
 
 /** Numeric value of a root (rational + radical parts), used for sorting. */
@@ -323,8 +323,9 @@ function bisect(coeffs: Fraction[], a: number, b: number, deltaX: number): numbe
 
 /**
  * Approximate the real roots of a residual polynom (degree >= 4) by scanning
- * [-B, B] (B = Cauchy bound) for sign changes, then bisecting. All roots are
- * approximate (exact = false).
+ * [-B, B] (B = Cauchy bound) in 100 slices for sign changes, then bisecting. All
+ * roots are approximate (exact = false). Known limitation: two roots inside the
+ * same slice (very close roots) are not separated, and one may be missed.
  */
 function solveByBisection(coeffs: Fraction[], deltaX: number): PolynomRoot[] {
     const degree = coeffs.length - 1
@@ -363,9 +364,18 @@ function solveByBisection(coeffs: Fraction[], deltaX: number): PolynomRoot[] {
  * Solve P(x) = 0 on a coefficient vector (coeffs[i] = coefficient of x^i).
  * Normalizes trailing zeros, then cascades: closed form for degree <= 2, exact
  * rational factorization then a numeric fallback (Cardan for a residual cubic,
- * bisection for degree >= 4) beyond. Roots are returned sorted by value.
+ * bisection for degree >= 4) beyond. Roots are returned sorted by value; an empty
+ * vector or a constant (degree <= 0 after normalization) yields `[]`.
+ * @param options.bisectionDeltaX half-interval width at which the degree->=4
+ * bisection stops (default 1e-4); must be > 0.
+ * @throws {InvalidArgumentError} when `bisectionDeltaX` is <= 0.
  */
 export function solvePolynom(coeffs: Fraction[], options?: { bisectionDeltaX?: number }): PolynomRoot[] {
+    const deltaX = options?.bisectionDeltaX ?? 1e-4
+    if (deltaX <= 0) {
+        throw new InvalidArgumentError("bisectionDeltaX must be > 0")
+    }
+
     const c = normalize(coeffs)
     const degree = c.length - 1
 
@@ -395,6 +405,5 @@ export function solvePolynom(coeffs: Fraction[], options?: { bisectionDeltaX?: n
         return sortByValue(solutions.concat(solveCubicCardan(residual)))
     }
 
-    const deltaX = options?.bisectionDeltaX ?? 1e-4
     return sortByValue(solutions.concat(solveByBisection(residual, deltaX)))
 }

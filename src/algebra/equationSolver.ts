@@ -2,7 +2,7 @@ import type {Fraction} from "../coefficients"
 import type {Polynom} from "./polynom"
 import type {Equation} from "./equation"
 import {Solution} from "../analyze"
-import {MathError} from "../errors"
+import {InvalidArgumentError, MathError} from "../errors"
 import {solveCubicCardan, solvePolynom} from "./polynomRoots"
 import type {PolynomRoot} from "./polynomRoots"
 
@@ -17,12 +17,18 @@ export class EquationSolver {
     readonly #variable: string
 
     /**
-     * Build a solver for P(x) = 0 from a polynom (optionally minus a right-hand
-     * polynom) or from an equation (its members are subtracted). The working
-     * variable defaults to the polynom's own single variable.
+     * Build a solver for P(x) = 0 from a polynom (optionally minus `right`, a
+     * right-hand polynom subtracted from it) or from an equation (its members are
+     * subtracted). The working variable defaults to the polynom's own single
+     * variable, falling back to "x".
+     * @throws {InvalidArgumentError} when `variable` is not a single lowercase letter.
      * @throws {MathError} when the resulting polynom has a non-integer degree.
      */
-    constructor(left: Polynom | Equation, right?: Polynom, variable = "x") {
+    constructor(left: Polynom | Equation, right?: Polynom, variable?: string) {
+        if (variable !== undefined && !/^[a-z]$/.test(variable)) {
+            throw new InvalidArgumentError(`EquationSolver expects a single lowercase variable, got "${variable}"`)
+        }
+
         // Duck-type an Equation without importing it (avoids a circular import).
         // `in` walks the prototype chain, so it works whether `moveLeft` is an
         // instance field or a prototype method.
@@ -34,11 +40,12 @@ export class EquationSolver {
             leftPolynom = left.clone().subtract(right ?? 0)
         }
 
-        // Variable resolution: an explicit argument wins; otherwise use the
-        // polynom's own single variable; fall back to "x" for a constant or
-        // multi-variable polynom.
+        // Variable resolution: an explicit argument wins (tested with `!==
+        // undefined` so an explicit "x" is honoured, not mistaken for the
+        // default); otherwise use the polynom's own single variable; fall back to
+        // "x" for a constant or multi-variable polynom.
         const vars = leftPolynom.variables
-        this.#variable = variable !== "x"
+        this.#variable = variable !== undefined
             ? variable
             : (vars.length === 1 ? vars[0] : "x")
 
