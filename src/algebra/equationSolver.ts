@@ -12,6 +12,12 @@ export class EquationSolver {
     readonly #coeffs: Fraction[]
     readonly #variable: string
 
+    /**
+     * Build a solver for P(x) = 0 from a polynom (optionally minus a right-hand
+     * polynom) or from an equation (its members are subtracted). The working
+     * variable defaults to the polynom's own single variable.
+     * @throws {MathError} when the resulting polynom has a non-integer degree.
+     */
     constructor(left: Polynom | Equation, right?: Polynom, variable = "x") {
         this.#bissectionDeltaX = 1e-4
         this.#bisectionSteps = 0
@@ -42,6 +48,7 @@ export class EquationSolver {
         this.#coeffs = leftPolynom.getCoefficients().reverse()
     }
 
+    /** Number of bisection iterations performed by the last solve(). */
     get bissectionComplexityCounter(): number {
         return this.#bisectionSteps
     }
