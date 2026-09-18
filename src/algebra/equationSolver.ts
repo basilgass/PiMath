@@ -7,7 +7,7 @@ import {Solution} from "../analyze"
 import {MathError} from "../errors"
 
 export class EquationSolver {
-    #bissectionDeltaX: number
+    #bisectionDeltaX: number
     #bisectionSteps: number
     readonly #coeffs: Fraction[]
     readonly #variable: string
@@ -19,7 +19,7 @@ export class EquationSolver {
      * @throws {MathError} when the resulting polynom has a non-integer degree.
      */
     constructor(left: Polynom | Equation, right?: Polynom, variable = "x") {
-        this.#bissectionDeltaX = 1e-4
+        this.#bisectionDeltaX = 1e-4
         this.#bisectionSteps = 0
 
         // Duck-type an Equation without importing it (avoids a circular import).
@@ -49,16 +49,16 @@ export class EquationSolver {
     }
 
     /** Number of bisection iterations performed by the last solve(). */
-    get bissectionComplexityCounter(): number {
+    get bisectionComplexityCounter(): number {
         return this.#bisectionSteps
     }
 
-    get bissectionDeltaX() {
-        return this.#bissectionDeltaX
+    get bisectionDeltaX() {
+        return this.#bisectionDeltaX
     }
 
-    set bissectionDeltaX(value: number) {
-        this.#bissectionDeltaX = value
+    set bisectionDeltaX(value: number) {
+        this.#bisectionDeltaX = value
     }
 
     /**
@@ -106,7 +106,7 @@ export class EquationSolver {
         // Degree >= 4 residual: approximate via bisection.
         this.#bisectionSteps = 0
         return solutions
-            .concat(this.#solveByBissectionCoeffs(residual))
+            .concat(this.#solveByBisectionCoeffs(residual))
             .sort((a, b) => a.value - b.value)
     }
 
@@ -404,7 +404,7 @@ export class EquationSolver {
      * scanning [-B, B] (B = Cauchy bound) for sign changes, then bisecting.
      * All solutions are approximate (exact = false).
      */
-    #solveByBissectionCoeffs(coeffs: Fraction[]): Solution[] {
+    #solveByBisectionCoeffs(coeffs: Fraction[]): Solution[] {
         const degree = coeffs.length - 1
         const B = this.#cauchyBound(coeffs)
         const slices = 100
@@ -445,7 +445,7 @@ export class EquationSolver {
             return null
         }
 
-        while ((b - a) / 2 > this.#bissectionDeltaX) {
+        while ((b - a) / 2 > this.#bisectionDeltaX) {
             this.#bisectionSteps++
             const mid = (a + b) / 2
             const fmid = this.#hornerNumber(coeffs, mid)
