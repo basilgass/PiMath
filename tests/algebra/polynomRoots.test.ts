@@ -1,6 +1,6 @@
 import {describe, expect, test} from "vitest"
 import {Fraction} from "../../src/coefficients/fraction"
-import {solveLinear, solveQuadratic} from "../../src/algebra/polynomRoots"
+import {solveCubicCardan, solveLinear, solveQuadratic} from "../../src/algebra/polynomRoots"
 
 const F = (n: number, d = 1) => new Fraction(n, d)
 
@@ -62,5 +62,31 @@ describe("polynomRoots — solveQuadratic", () => {
 
     test("throws on a zero leading coefficient", () => {
         expect(() => solveQuadratic([F(1), F(2), F(0)])).toThrow()
+    })
+})
+
+describe("polynomRoots — solveCubicCardan", () => {
+    test("finds the single real root of a one-root cubic (approximate)", () => {
+        // x^3 + x^2 + 5x + 5 = 0 -> x = -1 ; coeffs [5, 5, 1, 1]
+        const roots = solveCubicCardan([F(5), F(5), F(1), F(1)])
+
+        expect(roots).toHaveLength(1)
+        expect(roots[0].fraction.value).toBeCloseTo(-1, 6)
+        expect(roots[0].exact).toBe(false)
+    })
+
+    test("finds three real roots (trigonometric branch, approximate)", () => {
+        // x^3 + 2x^2 - 5x - 6 = 0 -> -3, -1, 2 ; coeffs [-6, -5, 2, 1]
+        const roots = solveCubicCardan([F(-6), F(-5), F(2), F(1)])
+
+        expect(roots).toHaveLength(3)
+        expect(roots.map(r => r.fraction.value)[0]).toBeCloseTo(-3, 6)
+        expect(roots.map(r => r.fraction.value)[1]).toBeCloseTo(-1, 6)
+        expect(roots.map(r => r.fraction.value)[2]).toBeCloseTo(2, 6)
+        expect(roots.every(r => r.exact === false)).toBe(true)
+    })
+
+    test("throws on a wrong-length vector", () => {
+        expect(() => solveCubicCardan([F(1), F(2), F(3)])).toThrow()
     })
 })

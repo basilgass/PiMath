@@ -124,3 +124,56 @@ export function solveQuadratic(coeffs: Fraction[]): PolynomRoot[] {
 
     return sortByValue([sol1, sol2])
 }
+
+/**
+ * Residual cubic a3·x³ + a2·x² + a1·x + a0 via the depressed-cubic / Cardan
+ * formulas. Every root is approximate (exact = false): an irreducible cubic is
+ * not representable exactly by a single Root.
+ * @throws {MathError} on a wrong length or a zero leading coefficient.
+ */
+export function solveCubicCardan(coeffs: Fraction[]): PolynomRoot[] {
+    requireDegree(coeffs, 3, "solveCubicCardan")
+    const a = coeffs[3].value
+    const b = coeffs[2].value
+    const c = coeffs[1].value
+    const d = coeffs[0].value
+
+    // Depressed cubic t^3 + p·t + q, with x = t - b/(3a).
+    const p = (3 * a * c - b * b) / (3 * a * a)
+    const q = (2 * b * b * b - 9 * a * b * c + 27 * a * a * d) / (27 * a * a * a)
+    const shift = b / (3 * a)
+    const epsilon = 1e-9
+
+    const roots: number[] = []
+    if (Math.abs(p) < epsilon) {
+        // t^3 + q = 0 -> a single real root (triple when q = 0 too).
+        roots.push(Math.cbrt(-q) - shift)
+    } else {
+        const discriminant = (q * q) / 4 + (p * p * p) / 27
+        if (discriminant > epsilon) {
+            // One real root.
+            const sqrtDisc = Math.sqrt(discriminant)
+            const u = Math.cbrt(-q / 2 + sqrtDisc)
+            const v = Math.cbrt(-q / 2 - sqrtDisc)
+            roots.push(u + v - shift)
+        } else {
+            // Three real roots (trigonometric form). p < 0 here.
+            const m = 2 * Math.sqrt(-p / 3)
+            const ratio = Math.max(-1, Math.min(1, (3 * q) / (p * m)))
+            const theta = Math.acos(ratio)
+            for (let i = 0; i < 3; i++) {
+                roots.push(m * Math.cos(theta / 3 - (2 * Math.PI * i) / 3) - shift)
+            }
+        }
+    }
+
+    // De-duplicate repeated roots (double/triple on the boundary).
+    const unique: number[] = []
+    for (const r of roots.map(v => Numeric.numberCorrection(v, 6))) {
+        if (!unique.some(u => Math.abs(u - r) < 1e-6)) {
+            unique.push(r)
+        }
+    }
+
+    return sortByValue(unique.map(v => approxRoot(v)))
+}
