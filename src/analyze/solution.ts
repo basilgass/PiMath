@@ -1,6 +1,8 @@
 import type {InputValue} from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Root} from "../coefficients/root"
+import {solveQuadratic} from "../algebra/polynomRoots"
+import type {PolynomRoot} from "../algebra/polynomRoots"
 
 export class Solution {
     #count: number
@@ -79,36 +81,19 @@ export class Solution {
         return sol
     }
 
+    static fromPolynomRoot(root: PolynomRoot): Solution {
+        const sol = new Solution()
+        sol.fraction = root.fraction.clone()
+        sol.root = root.root.clone()
+        sol.exact = root.exact
+        sol.count = root.multiplicity
+        return sol
+    }
+
     static fromQuadratic(A: InputValue<Fraction>, B: InputValue<Fraction>, C: InputValue<Fraction>): Solution[] {
         const [a, b, c] = [A, B, C].map(x => new Fraction(x))
-
-        // D = b^2-4ac
-        const delta2 = b.clone().pow(2).subtract(a.clone().multiply(c).multiply(4))
-        if (delta2.isNegative()) {
-            return []
-        }
-
-        if (delta2.isSquare()) {
-            const delta = delta2.sqrt()
-            const root1 = b.clone().opposite().subtract(delta).divide(a.clone().multiply(2))
-            const root2 = b.clone().opposite().add(delta).divide(a.clone().multiply(2))
-
-            return delta.isZero()
-                ? [Solution.fromFraction(root1)]
-                : [Solution.fromFraction(root1), Solution.fromFraction(root2)]
-        }
-
-        const sol1 = new Solution()
-        sol1.fraction = b.clone().opposite().divide(a).divide(2)
-        sol1.root = new Root().from(2, delta2, a.clone().multiply(2).inverse().opposite())
-        sol1.setExact(false)
-
-        const sol2 = new Solution()
-        sol2.fraction = b.clone().opposite().divide(a).divide(2)
-        sol2.root = new Root().from(2, delta2, a.clone().multiply(2).inverse())
-        sol2.setExact(false)
-
-        return [sol1, sol2]
+        // Coefficients low->high: [constant, x, x^2] = [C, B, A].
+        return solveQuadratic([c, b, a]).map(root => Solution.fromPolynomRoot(root))
     }
 
     get count(): number {
