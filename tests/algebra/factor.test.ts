@@ -2,6 +2,7 @@ import {describe, expect, test} from "vitest"
 import {Factor} from "../../src/algebra/factor"
 import {Polynom} from "../../src/algebra/polynom"
 import {Fraction} from "../../src/coefficients/fraction"
+import {MathError} from "../../src/errors"
 
 
 describe("Factors creation", () => {
@@ -178,6 +179,25 @@ describe("Factors operations", () => {
 
         expect(F.inverse().power.display).toBe('-1/2')
     })
+
+    test('throws when multiplying single-monom factors with different polynomials and non-unit power', () => {
+        const F = new Factor('3x', 1)
+        expect(() => F.multiply(new Factor('5x', '1/2'))).toThrow(MathError)
+    })
+
+    test('multiply failure leaves the receiver intact', () => {
+        const F = new Factor('3x+2', '1/2')
+        const display = F.display
+        expect(() => F.multiply(new Factor('x-1'))).toThrow(MathError)
+        expect(F.display).toBe(display)
+    })
+
+    test('divide failure leaves the receiver intact', () => {
+        const F = new Factor('3x+2', '1/2')
+        const display = F.display
+        expect(() => F.divide(new Factor('x-1'))).toThrow(MathError)
+        expect(F.display).toBe(display)
+    })
 })
 
 describe("Factors: algebra operations", () => {
@@ -247,6 +267,60 @@ describe("Factors: algebra operations", () => {
 
         expect(dF.degree().value).toBe(3)
         expect(dF.display).toBe('x^(3)+6x^(2)+12x+8')
+    })
+
+    test('evaluate returns a number when asNumeric is true', () => {
+        const F = new Factor('3x+2', '1/2')
+        const result = F.evaluate({x: 2}, true)
+        expect(typeof result).toBe('number')
+        expect(result).toBeCloseTo(2.8284271247461903)
+    })
+
+    test('develop throws when power is not a natural number', () => {
+        const F = new Factor('x+2', '1/2')
+        expect(() => F.develop()).toThrow(MathError)
+    })
+})
+
+describe('Factor static parsing', () => {
+    test('checkParseAsFactors returns true for a single parenthesised factor', () => {
+        expect(Factor.checkParseAsFactors('(3x+2)^2')).toBe(true)
+    })
+
+    test('checkParseAsFactors returns true for a product of factors', () => {
+        expect(Factor.checkParseAsFactors('(x+1)(x-1)')).toBe(true)
+    })
+
+    test('checkParseAsFactors returns false for a sum', () => {
+        expect(Factor.checkParseAsFactors('(x+1)+(x-1)')).toBe(false)
+    })
+
+    test('checkParseAsFactors returns false for a difference', () => {
+        expect(Factor.checkParseAsFactors('3x^2+2x-1')).toBe(false)
+    })
+
+    test('factorsFromString parses a parenthesised factor with power', () => {
+        const factors = Factor.factorsFromString('(3x+2)^2')
+        expect(factors).toHaveLength(1)
+        expect(factors[0].polynom.display).toBe('3x+2')
+        expect(factors[0].power.display).toBe('2')
+    })
+
+    test('factorsFromString parses a product of two factors', () => {
+        const factors = Factor.factorsFromString('(x+1)(x-1)')
+        expect(factors).toHaveLength(2)
+        expect(factors[0].polynom.display).toBe('x+1')
+        expect(factors[1].polynom.display).toBe('x-1')
+    })
+
+    test('factorsFromString wraps an unparseable string as a single factor', () => {
+        const factors = Factor.factorsFromString('x^2+2x+1')
+        expect(factors).toHaveLength(1)
+    })
+
+    test('factorsFromString negates powers when isNumerator is false', () => {
+        const factors = Factor.factorsFromString('(x+1)^2', false)
+        expect(factors[0].power.display).toBe('-2')
     })
 })
 

@@ -24,7 +24,7 @@ export class Factor implements IPiMathObject<Factor>,
     constructor(value?: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>) {
 
         if (value instanceof Factor) {
-            this.#polynom = value.polynom.clone()
+            this.#polynom = value.#polynom.clone()
             this.#power = value.power.clone()
 
             if (power !== undefined) {
@@ -43,12 +43,26 @@ export class Factor implements IPiMathObject<Factor>,
         return this
     }
 
-    parse(/*value: InputValue<Factor>*/): Factor {
-        throw new NotImplementedError("Method not implemented.")
+    parse(value: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>): this {
+        if (value instanceof Factor) {
+            this.copy(value)
+        } else if (typeof value === 'string') {
+            this.fromString(value)
+        } else {
+            this.fromPolynom(value)
+        }
+        if (power !== undefined) this.#power.multiply(new Fraction(power))
+        return this
     }
 
-    copy(): this {
-        throw new NotImplementedError("copy() is not yet implemented for Factor")
+    fromString(value: string): this {
+        return this.copy(Factor.factorsFromString(value)[0])
+    }
+
+    copy(value: Factor): this {
+        this.#polynom = value.#polynom.clone()
+        this.#power = value.#power.clone()
+        return this
     }
 
     clone(): Factor {
@@ -109,7 +123,8 @@ export class Factor implements IPiMathObject<Factor>,
         return base
     }
 
-    add(): Factor {
+    /** @throws {MathError} always — adding two factors is not defined. */
+    add(): this {
         throw new MathError("Adding two factors is not possible")
     }
 
@@ -122,19 +137,23 @@ export class Factor implements IPiMathObject<Factor>,
         return this.polynom.degree(variable).multiply(this.power)
     }
 
+    /**
+     * Derivative of P(x)^n via the chain rule: d/dx[P^n] = n · P'(x) · P(x)^(n−1).
+     *
+     * Returns the factors to be multiplied together:
+     * - n = 0: `[0]` (constant)
+     * - n = 1: `[P'(x)]`
+     * - otherwise: `[n, P'(x), P(x)^(n−1)]`
+     */
     derivative(): Factor[] {
-        // The power is zero, the derivative is zero
         if (this.power.isZero()) {
             return [new Factor('0')]
         }
 
-        // The power is one, the derivative is the derivative of the polynom
         if (this.power.isOne()) {
             return [new Factor(this.polynom.clone().derivative())]
         }
 
-        // In any other case, the derivative consist of three Factors:
-        // the derivative of the polynom, the power and the polynom
         return [
             new Factor(this.power.clone()),
             new Factor(this.polynom.clone().derivative()),
@@ -150,22 +169,9 @@ export class Factor implements IPiMathObject<Factor>,
         throw new MathError("The power must be a natural number")
     }
 
+    /** @throws {MathError} when the two factors do not share the same base polynomial. */
     divide(value: InputAlgebra<Factor | Polynom>): this {
-        if (value instanceof Factor) {
-            if (this.isSameAs(value)) {
-                this.power.subtract(value.power)
-                return this
-            }
-        }
-
-
-        const P = new Polynom(value as Polynom)
-        if (this.isSameAs(P)) {
-            this.power.subtract(1)
-            return this
-        }
-
-        throw new MathError("The two factors must be the same")
+        return this.multiply(new Factor(value).inverse())
     }
 
     evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric: true): number
@@ -180,7 +186,7 @@ export class Factor implements IPiMathObject<Factor>,
         return this.polynom.evaluate(values).pow(this.power)
     }
 
-    fromPolynom(polynom: InputValue<Polynom>): this {
+    fromPolynom(polynom: InputAlgebra<Polynom>): this {
         this.#polynom = new Polynom(polynom)
         this.#power = new Fraction(1)
         return this
@@ -224,15 +230,21 @@ export class Factor implements IPiMathObject<Factor>,
         return this.polynom.isZero()
     }
 
+    /**
+     * Multiply by another factor or polynom. Succeeds only when both share the
+     * same base polynomial; powers are added. Two single-monom factors with
+     * integer power 1 are multiplied directly as polynomials.
+     * @throws {MathError} when the base polynomials differ.
+     */
     multiply(value: InputAlgebra<Factor | Polynom>): this {
         const F = new Factor(value)
 
         // Case if this and value are monoms of degree one.
         if(this.polynom.monoms.length===1 && this.power.isOne()
             &&
-            F.polynom.monoms.length===1 && this.power.isOne()
+            F.polynom.monoms.length===1 && F.power.isOne()
         ){
-            this.polynom.multiply(F.polynom)
+            this.#polynom.multiply(F.polynom)
             return this
         }
 
@@ -244,8 +256,7 @@ export class Factor implements IPiMathObject<Factor>,
         }
 
 
-        const P = new Polynom(value as Polynom)
-        if (this.isSameAs(P)) {
+        if (this.isSameAs(F.polynom)) {
             this.power.add(1)
             return this
         }
@@ -259,12 +270,12 @@ export class Factor implements IPiMathObject<Factor>,
         return this
     }
 
-    opposite(): Factor {
+    opposite(): this {
         throw new NotImplementedError("Method not implemented.")
     }
 
     get polynom(): Polynom {
-        return this.#polynom
+        return this.#polynom.clone()
     }
 
     set polynom(value: Polynom) {
@@ -301,10 +312,20 @@ export class Factor implements IPiMathObject<Factor>,
         return this.root(2)
     }
 
-    subtract(): Factor {
+    /** @throws {MathError} always — subtracting two factors is not defined. */
+    subtract(): this {
         throw new MathError("Subtracting two factors is not possible")
     }
 
+    /**
+     * Build the sign table for P(x)^n.
+     *
+     * Sign codes in the returned `signs` array:
+     * - `'+'` / `'-'` — positive / negative
+     * - `'z'` — zero (root of P)
+     * - `'d'` — defence: undefined (asymptote) when n < 0
+     * - `'h'` — hole: even-index radical of a negative, not real over ℝ
+     */
     tableOfSigns(): TableOfSignsData {
         const pow = this.power.clone().reduce()
         const tos = this.polynom.tableOfSigns()
@@ -361,6 +382,16 @@ export class Factor implements IPiMathObject<Factor>,
         return true
     }
 
+    /**
+     * Parse a product string into an array of Factor instances.
+     *
+     * Supported format: parenthesised terms with optional powers and implicit
+     * multiplication, e.g. `"(3x+2)^2*(x-1)"` or `"(x+1)(x-1)^(1/2)"`.
+     * Non-parenthesised tokens (e.g. `"3x"`) are treated as a single factor
+     * with implicit power ±1.
+     *
+     * @param isNumerator - when `false`, all parsed powers are negated (denominator use).
+     */
     static factorsFromString(value: string, isNumerator = true): Factor[] {
         if (!Factor.checkParseAsFactors(value)) {
             return [new Factor(value, isNumerator ? 1 : -1)]
@@ -369,13 +400,13 @@ export class Factor implements IPiMathObject<Factor>,
         const sign = isNumerator ? 1 : -1
         const factors: Factor[] = []
 
-        // Alternance : facteur parenthésé avec puissance optionnelle | séquence non-parenthésée
+        // Alternates: parenthesised factor with optional power | non-parenthesised sequence
         const regex =
             /\(([^)]+)\)(?:\^(-?[0-9]+(?:\/[0-9]+)?|\(-?[0-9]+(?:\/[0-9]+)?\)))?|([^(]+)/g
 
         for (const match of value.matchAll(regex)) {
             if (match[1] !== undefined) {
-                // Cas : (expr)^puissance
+                // Case: (expr)^power
                 const powStr = (match[2] ?? '1')
                     .replace(/[()]/g, '')
 
@@ -384,7 +415,7 @@ export class Factor implements IPiMathObject<Factor>,
                     new Fraction(powStr).multiply(sign))
                 )
             } else if (match[3]?.trim()) {
-                // Cas : monôme ou constante hors parenthèses (ex: 3x^2, 3)
+                // Case: monomial or constant outside parentheses (e.g. 3x^2, 3)
                 factors.push(new Factor(new Polynom(match[3].trim()), new Fraction(sign)))
             }
         }

@@ -3,8 +3,8 @@ import type {Polynom} from "./polynom"
 import type {Equation} from "./equation"
 import {Solution} from "../analyze"
 import {InvalidArgumentError, MathError} from "../errors"
-import {solveCubicCardan, solvePolynom} from "./polynomRoots"
 import type {PolynomRoot} from "./polynomRoots"
+import {solveCubicCardan, solvePolynom} from "./polynomRoots"
 
 /**
  * Internal service that solves P(x) = 0 for a Polynom or an Equation. Thin
@@ -45,9 +45,7 @@ export class EquationSolver {
         // default); otherwise use the polynom's own single variable; fall back to
         // "x" for a constant or multi-variable polynom.
         const vars = leftPolynom.variables
-        this.#variable = variable !== undefined
-            ? variable
-            : (vars.length === 1 ? vars[0] : "x")
+        this.#variable = variable ?? (vars.length === 1 ? vars[0] : "x")
 
         // Dense coefficient vector, coeffs[i] = coefficient of x^i (index 0 =
         // constant term). getCoefficients() returns highest-degree first, so we

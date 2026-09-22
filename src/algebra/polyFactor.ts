@@ -521,7 +521,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
      */
     sort(variable?: string): this {
         // Sort each polynom
-        this.#factors.forEach(f=>f.polynom.reorder(variable))
+        this.#factors.forEach(f => { f.polynom = f.polynom.reorder(variable) })
 
         this.#factors.sort((a, b) => {
             // If the compare powers are opposite, the negative power goes to the end.
