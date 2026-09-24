@@ -43,9 +43,22 @@ describe("PolyFactor creation", () => {
 
         expect(PF.factors.length).toBe(PF2.factors.length)
 
-        PF2.factors[0].power = 2
+        PF2.pow(2)
 
-        expect(PF.factors[0].power.value).not.toBe(PF2.factors[0].power.value)
+        expect(PF.factors[0].power.display).toBe('1/2')
+        expect(PF2.factors[0].power.display).toBe('1')
+    })
+
+    test('clone preserves asRoot display mode', () => {
+        const PF = new PolyFactor(
+            new Factor('3x+2', '1'),
+            new Factor('4x-3', '-2')
+        ).asRoot
+
+        const PF2 = PF.clone()
+
+        expect(PF2.tex).toBe(`\\frac{ 3x+2 }{ \\left( 4x-3 \\right)^{ 2 } }`)
+        expect(PF2.display).toBe(`(3x+2)/((4x-3)^(2))`)
     })
 
     test('should make a zero PolyFactor', () => {
@@ -62,6 +75,25 @@ describe("PolyFactor creation", () => {
 
         expect(PF.isZero()).toBeTruthy()
         expect(PF.isOne()).toBeFalsy()
+    })
+
+    test('isZero returns true when one factor among several is zero', () => {
+        const PF = new PolyFactor(
+            new Factor('3x+2', '1'),
+            new Factor('0', '1'),
+            new Factor('x-5', '2')
+        )
+
+        expect(PF.isZero()).toBeTruthy()
+    })
+
+    test('isZero returns false when no factor is zero', () => {
+        const PF = new PolyFactor(
+            new Factor('3x+2', '1'),
+            new Factor('x-5', '2')
+        )
+
+        expect(PF.isZero()).toBeFalsy()
     })
 
     test('should make a one PolyFactor', () => {
@@ -144,6 +176,13 @@ describe("PolyFactor creation", () => {
             expect(PF.denominator.factors).toHaveLength(2)
         })
     })
+
+    test('constructor keeps factors from a Factor followed by a string', () => {
+        const PF = new PolyFactor(new Factor('x+1', 2), '(x-3)')
+        expect(PF.factors).toHaveLength(2)
+        expect(PF.factors[0].polynom.display).toBe('x+1')
+        expect(PF.factors[1].polynom.display).toBe('x-3')
+    })
 })
 
 describe("PolyFactor: output functions", () => {
@@ -210,6 +249,13 @@ describe("PolyFactor: operations", () => {
 
         expect(PF3.factors.length).toBe(4)
         expect(PF3.factors[3].power.display).toBe('2/3')
+    })
+
+    test('multiply is atomic — malformed second argument leaves receiver intact', () => {
+        const PF = new PolyFactor(new Factor('3x+2', 2))
+        const displayBefore = PF.display
+        expect(() => PF.multiply(new Factor('x-1', 1), '/(bad')).toThrow()
+        expect(PF.display).toBe(displayBefore)
     })
 
     test('should multiply two PolyFactors as string', () => {
@@ -334,11 +380,11 @@ describe("PolyFactor: operations", () => {
         const PF = new PolyFactor().fromPolynom('18(x+6)(x+3)', '27x+243')
 
         const PFF = PF.factorize().sort()
-        expect(PFF.asRoot.display).toBe('((18)(x+6)(x+3))/((27)(x+9))')
+        expect(PFF.asRoot.display).toBe('(18(x+6)(x+3))/(27(x+9))')
 
         PFF.reduce()
         PFF.sort()
-        expect(PFF.asRoot.display).toBe('((2)(x+6)(x+3))/((3)(x+9))')
+        expect(PFF.asRoot.display).toBe('(2(x+6)(x+3))/(3(x+9))')
     })
 
     test('should reduce a PolyFactors with opposite factors.', () => {
@@ -463,7 +509,22 @@ describe("PolyFactor: operations", () => {
         expect(gcd.isOne()).toBeTruthy()
     })
 
-    test.todo('should get the lcm of two PolyFactors')
+    test('should get the lcm of two PolyFactors', () => {
+        const PF = new PolyFactor(new Factor('3x+2', 4), new Factor('4x-3', 2))
+        const PF2 = new PolyFactor(new Factor('3x+2', 6), new Factor('4x-3'))
+
+        const lcm = PolyFactor.lcm(PF, PF2)
+
+        expect(lcm.factors.length).toBe(2)
+
+        const factor1 = lcm.factors.filter(f => f.polynom.display === '3x+2')
+        expect(factor1).toHaveLength(1)
+        expect(factor1[0].power.display).toBe('6')
+
+        const factor2 = lcm.factors.filter(f => f.polynom.display === '4x-3')
+        expect(factor2).toHaveLength(1)
+        expect(factor2[0].power.display).toBe('2')
+    })
 })
 
 describe("PolyFactor: algebra operations", () => {
@@ -474,6 +535,15 @@ describe("PolyFactor: algebra operations", () => {
         )
 
         expect(PF.variables).toEqual(['x', 'y'])
+    })
+
+    test('variables deduplicates when several factors share the same variable', () => {
+        const PF = new PolyFactor(
+            new Factor('3x+2', '2'),
+            new Factor('x-5', '3')
+        )
+
+        expect(PF.variables).toEqual(['x'])
     })
 
     test('should check if a variable is in the PolyFactor', () => {

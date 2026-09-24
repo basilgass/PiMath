@@ -27,78 +27,45 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     #factors: Factor[] = []
 
     constructor(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]) {
-        this.parse(...values)
-        return this
-    }
-
-    parse(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]): this {
-        // Init the factors list
         this.#factors = []
-
-        // Nothing to create
-        if (values.length === 0) {
-            return this
-        }
-
-        values.forEach(value => {
-            if(typeof  value==="string"){
-                return this.fromString(value)
-            }else if (value instanceof PolyFactor) {
-                this.#factors.push(...value.factors.map(f => f.clone()))
-            } else {
-                this.#factors.push(new Factor(value))
-            }
+        values.forEach(v => {
+            if (typeof v === 'string')        this.#factors.push(...new PolyFactor().fromString(v).factors)
+            else if (v instanceof PolyFactor) this.#factors.push(...v.factors)
+            else                              this.#factors.push(new Factor(v))
         })
-
         return this
     }
 
-    copy(): this {
-        throw new NotImplementedError("copy() is not yet implemented for PolyFactor")
+    parse(value: InputAlgebra<Polynom> | Factor | PolyFactor | string): this {
+        if (typeof value === 'string')   return this.fromString(value)
+        if (value instanceof PolyFactor) return this.copy(value)
+        return this.fromFactors(value)
+    }
+
+    copy(value: PolyFactor): this {
+        this.#factors = value.factors
+        return this
     }
 
     clone(): PolyFactor {
-        return new PolyFactor(...this.#factors.map(f => f.clone()))
+        const result = new PolyFactor()
+        result.#factors = this.factors
+        result.#displayMode = this.#displayMode
+        return result
     }
 
     get tex(): string {
-        const {num, den} = this.#extractNumeratorAndDenominator()
-
-        if (den.length === 0) {
-            if (num.length === 1) {
-                return num[0].asSingle.tex
-            }
-
-            return num.map(f => f.tex).join("")
-        }
-
-        // There is a numerator and a denominator
-        const numTeX = num.length === 1 ? num[0].asSingle.tex : num.map(f => f.tex).join("")
-        const denTeX = den.length === 1 ? den[0].asSingle.tex : den.map(f => f.tex).join("")
-
-        return `\\frac{ ${numTeX} }{ ${denTeX} }`
-
+        return this.#toOutput(
+            f => f.tex,
+            (num, den) => `\\frac{ ${num} }{ ${den} }`
+        )
     }
 
     get display(): string {
-        const {num, den} = this.#extractNumeratorAndDenominator()
-
-        if (den.length === 0) {
-            if (num.length === 1) {
-                return num[0].asSingle.display
-            }
-
-            return num.map((f, index) =>
-                index === 0 && f.polynom.monoms.length === 1 ? f.asSingle.display : f.display
-            ).join("")
-        }
-
-        // There is a numerator and a denominator
-        const numTeX = num.length === 1 ? num[0].asSingle.display : num.map(f => f.display).join("")
-        const denTeX = den.length === 1 ? den[0].asSingle.display : den.map(f => f.display).join("")
-
-        return `(${numTeX})/(${denTeX})`
-
+        return this.#toOutput(
+            f => f.display,
+            (num, den) => `(${num})/(${den})`
+        )
     }
 
 
@@ -179,6 +146,13 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return PF
     }
 
+    /**
+     * Add one or more PolyFactors to this one.
+     *
+     * Algorithm: compute the LCM of all denominators, scale each numerator by
+     * its complementary factor, then extract the GCD of the scaled numerators
+     * and collect the residuals into a single polynomial factor.
+     */
     add(...values: PolyFactor[]): this {
         // Adding two (or more) polyfactors:
         // if both are numerators only, use the common polynom
@@ -295,7 +269,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
 
     divide(...values: PolyFactor[]): this {
         for (const value of values) {
-            this.#factors = this.#factors.concat(value.clone().factors.map(f => f.inverse()))
+            this.#factors = this.#factors.concat(value.factors.map(f => f.inverse()))
         }
         return this
     }
@@ -306,7 +280,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction {
         if (asNumeric) {
             return this.#factors
-                .reduce((acc, f) => acc * (f.evaluate(values, asNumeric) as number), 1)
+                .reduce((acc, f) => acc * (f.evaluate(values, asNumeric)), 1)
         }
 
         return this.#factors
@@ -336,7 +310,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     get factors(): Factor[] {
-        return this.#factors
+        return this.#factors.map(f=>f.clone())
     }
 
     set factors(value: Factor[]) {
@@ -354,9 +328,14 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             if (polynom.isOne()) return this
 
             if (polynom.isZero()) throw new MathError("Cannot divide by zero")
-            
+
             this.#factors.push(new Factor(polynom, -1))
         }
+        return this
+    }
+
+    fromFactors(...values: (Factor | InputAlgebra<Polynom>)[]): this {
+        this.#factors = values.map(v => new Factor(v))
         return this
     }
 
@@ -383,28 +362,13 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this
     }
 
-    /**
-     * Get the roots of the PolyFactor.
-     */
-    getRoots(): Solution[] {
-        return []
-    }
-
-    getZeroes(): Solution[] {
-        // Calculate the list of roots (ordered, unique)
+    get roots(): Solution[] {
         const roots: Solution[] = ([] as Solution[])
             .concat(...this.#factors.map(x => x.polynom.roots))
-        // .concat(...tos.map(x => x.roots))
-
-        // Sort the values.
         roots.sort((a, b) => a.value - b.value)
-        // Remove duplicates.
-        return roots
-            .filter((value, index, self) =>
-                    index === self.findIndex((t) =>
-                        t.value === value.value
-                    )
-            )
+        return roots.filter((value, index, self) =>
+            index === self.findIndex(t => t.value === value.value)
+        )
     }
 
     hasVariable(variable: string): boolean {
@@ -430,15 +394,12 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     isZero(): boolean {
-        return this.#factors.every(f => f.isZero())
+        return this.#factors.some(f => f.isZero())
     }
 
-    multiply(...values: (InputAlgebra<Polynom> | Factor |PolyFactor)[]): this {
-        values.forEach(value => {
-            const PF = new PolyFactor( value )
-            this.#factors = this.#factors.concat(PF.factors)
-        })
-
+    multiply(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]): this {
+        const newFactors = values.flatMap(v => new PolyFactor(v).factors)
+        this.#factors = this.#factors.concat(newFactors)
         return this
     }
 
@@ -453,7 +414,8 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
 
     opposite(): this {
         // Add the -1 factor or remove if it exists
-        const index = this.#factors.findIndex(f => f.display === '(-1)')
+        const minus1 = new Factor(-1)
+        const index = this.#factors.findIndex(f => f.isEqual(minus1))
 
         if (index >= 0) {
             this.#factors.splice(index, 1)
@@ -573,9 +535,18 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this.add(...values.map(f => f.opposite()))
     }
 
+    /**
+     * Build the sign table for this factored expression.
+     *
+     * Factorizes first, then aligns each factor's sign row to the global root
+     * list (inserting `'t'` tabs for roots that don't belong to a given factor).
+     * Factors with negative power produce `'d'` (defence/asymptote) at their roots;
+     * even-index radicals produce `'h'` (hole) for negative values.
+     * The result row is the product of all factor sign rows.
+     */
     tableOfSigns(): PolyFactorTableOfSigns {
         // Calculate the table of signs for each factor
-        const roots = this.getZeroes()
+        const roots = this.roots
         const roots_key = roots.map(x => x.value)
 
         // Get the table of signs of every factors
@@ -587,18 +558,18 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
                 return {factor: new Factor(factor), ...factor.tableOfSigns()}
             })
 
-        
+
         // Build the table of signs with extra roots for each factors.
         factors.forEach(item => {
             // Create the new signs row
-            const empty_signs: TableOfSignsValues[] = new Array(2 * roots.length + 1).fill('') as unknown as TableOfSignsValues[]
+            const empty_signs = new Array<TableOfSignsValues>(2 * roots.length + 1).fill('')
 
-            let sign = item.signs.shift() as unknown as TableOfSignsValues
+            let sign = item.signs.shift()
             let root = item.roots.shift()
 
             const aligned_signs = empty_signs.map((_sign, index) => {
                 if (index % 2 === 0) {
-                    return sign
+                    return sign ?? ''
                 }
 
                 // The sign for this indexed root is a t(ab)
@@ -610,7 +581,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
                 const rootSign = item.signs.shift() as unknown as TableOfSignsValues
 
                 // Make the new signs.
-                sign = item.signs.shift() as unknown as TableOfSignsValues
+                sign = item.signs.shift()
                 root = item.roots.shift()
                 return rootSign
             })
@@ -655,8 +626,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     }
 
     get variables(): string[] {
-        return this.#factors
-            .reduce((acc: string[], f: Factor) => acc.concat(f.variables), [])
+        return [...new Set(
+            this.#factors.reduce((acc: string[], f: Factor) => acc.concat(f.variables), [])
+        )]
     }
 
     zero(): this {
@@ -664,16 +636,34 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return this
     }
 
+    #toOutput(
+        render: (f: Factor) => string,
+        wrapFraction: (num: string, den: string) => string
+    ): string {
+        const {num, den} = this.#extractNumeratorAndDenominator()
+
+        const renderGroup = (factors: Factor[]) => {
+            if (factors.length === 1) return render(factors[0].asSingle)
+            return factors
+                .map((f, i) => canOmitParens(f, i) ? render(f.asSingle) : render(f))
+                .join("")
+        }
+
+        const numStr = renderGroup(num)
+        if (den.length === 0) return numStr
+        return wrapFraction(numStr, renderGroup(den))
+    }
+
     #extractNumeratorAndDenominator() {
-        let num: Factor[],
-            den: Factor[] = []
+        let num: Factor[]
+            let den: Factor[] = []
 
         if (this.#displayMode === FACTOR_DISPLAY.ROOT) {
             // the power are positive integers
             num = this.numerator.factors
             den = this.denominator.factors
         } else {
-            num = this.#factors
+            num = this.factors
         }
 
         // There is no factor
@@ -683,6 +673,13 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         return {num, den}
     }
 
+}
+
+function canOmitParens(f: Factor, index: number): boolean {
+    if (!f.power.isOne() || f.polynom.monoms.length !== 1) return false
+    if (index === 0) return true
+    return f.polynom.degree().value > 0
+        && !f.polynom.monoms[0].coefficient.isStrictlyNegative()
 }
 
 function keyFactors(value: PolyFactor): Record<string, Factor[]> {

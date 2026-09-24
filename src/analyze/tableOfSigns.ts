@@ -16,7 +16,7 @@ export class TableOfSigns {
         }
 
         // Factorize de PolyFactor.
-        this.#roots = this.#fx.getRoots()
+        this.#roots = this.#fx.roots
 
     }
 
