@@ -36,6 +36,10 @@ export class InvalidArgumentError extends PiMathError {
 export class NotImplementedError extends PiMathError {
 }
 
+/** The operation is not supported by this type — by design, not pending implementation. */
+export class UnsupportedOperationError extends PiMathError {
+}
+
 /** An index is out of range. */
 export class IndexError extends PiMathError {
 }

@@ -53,12 +53,12 @@ describe("Factors outputs", () => {
     test('should output LaTeX with sqrt', () => {
         const F = new Factor('3x+2', '1/2')
 
-        expect(F.withRoot.tex).toBe('\\sqrt{ 3x+2 }')
+        expect(F.asRoot.tex).toBe('\\sqrt{ 3x+2 }')
     })
     test('should output LaTeX with root', () => {
         const F = new Factor('3x+2', '2/3')
 
-        expect(F.withRoot.tex).toBe('\\sqrt[ 3 ]{ 3x+2 }^{ 2 }')
+        expect(F.asRoot.tex).toBe('\\sqrt[ 3 ]{ 3x+2 }^{ 2 }')
     })
 
     test('should output ASCII with power', () => {
@@ -70,13 +70,13 @@ describe("Factors outputs", () => {
     test('should output ASCII with sqrt', () => {
         const F = new Factor('3x+2', '1/2')
 
-        expect(F.withRoot.display).toBe('sqrt(3x+2)')
+        expect(F.asRoot.display).toBe('sqrt(3x+2)')
     })
 
     test('should output ASCII with root', () => {
         const F = new Factor('3x+2', '2/3')
 
-        expect(F.withRoot.display).toBe('root(3)(3x+2)^(2)')
+        expect(F.asRoot.display).toBe('root(3)(3x+2)^(2)')
     })
 
 })
@@ -230,7 +230,7 @@ describe("Factors: algebra operations", () => {
 
     test('should get the derivative of a trivial Factor', ()=>{
         const F = new Factor('3')
-        const dF = F.derivative()
+        const dF = F.getDerivativeFactors()
 
         expect(dF).toHaveLength(1)
         expect(dF[0].asSingle.display).toBe('0')
@@ -239,7 +239,7 @@ describe("Factors: algebra operations", () => {
 
     test('should get the derivative of a monomial Factor', ()=>{
         const F = new Factor().fromPolynom('3x^4')
-        const dF = F.derivative()
+        const dF = F.getDerivativeFactors()
         expect(dF).toHaveLength(1)
         expect(dF[0].asSingle.display).toBe('12x^(3)')
     })
@@ -248,7 +248,7 @@ describe("Factors: algebra operations", () => {
     test('should get the derivative of the factor', () => {
         const F = new Factor('3x^2+2x-1', '1/2')
 
-        const dF = F.derivative()
+        const dF = F.getDerivativeFactors()
         expect(dF.length).toBe(3)
 
         const [dF1, dF2, dF3] = dF

@@ -11,8 +11,17 @@ import type {
 import {Fraction} from "../coefficients/fraction"
 import {Polynom} from "./polynom"
 import {replace_in_array, splitIfOutsideParentheses, wrapParenthesis} from "../helpers"
-import {MathError, NotImplementedError} from "../errors"
+import {MathError, UnsupportedOperationError} from "../errors"
 
+/**
+ * Represents a single factor `P(x)^n` in a factored polynomial expression.
+ *
+ * `Factor` is designed to be used as a building block inside {@link PolyFactor},
+ * not as a standalone expression type. Several `IExpression` operations
+ * (`add`, `subtract`, `opposite`, `reduce`, `primitive`, `derivative`) are
+ * structurally unsupported at this level and will throw
+ * {@link UnsupportedOperationError}.
+ */
 export class Factor implements IPiMathObject<Factor>,
     IExpression<Factor>,
     IAlgebra, IEvaluable {
@@ -66,7 +75,10 @@ export class Factor implements IPiMathObject<Factor>,
     }
 
     clone(): Factor {
-        return new Factor(this)
+        const result = new Factor(this)
+        result.#displayMode = this.#displayMode
+        result.#singleMode = this.#singleMode
+        return result
     }
 
     get tex(): string {
@@ -137,15 +149,22 @@ export class Factor implements IPiMathObject<Factor>,
         return this.polynom.degree(variable).multiply(this.power)
     }
 
+    /** @throws {UnsupportedOperationError} always — use {@link getDerivativeFactors} and compose via PolyFactor. */
+    derivative(): this {
+        throw new UnsupportedOperationError("Factor.derivative() is not supported — use getDerivativeFactors() and compose via PolyFactor")
+    }
+
     /**
-     * Derivative of P(x)^n via the chain rule: d/dx[P^n] = n · P'(x) · P(x)^(n−1).
+     * Chain-rule decomposition of `P(x)^n`: returns the factors whose product
+     * equals `d/dx[P^n]`.
      *
-     * Returns the factors to be multiplied together:
-     * - n = 0: `[0]` (constant)
-     * - n = 1: `[P'(x)]`
-     * - otherwise: `[n, P'(x), P(x)^(n−1)]`
+     * - n = 0 → `[0]` (constant)
+     * - n = 1 → `[P'(x)]`
+     * - otherwise → `[n, P'(x), P(x)^(n−1)]`
+     *
+     * Intended for use by {@link PolyFactor.derivative}, not for standalone consumption.
      */
-    derivative(): Factor[] {
+    getDerivativeFactors(): Factor[] {
         if (this.power.isZero()) {
             return [new Factor('0')]
         }
@@ -197,7 +216,7 @@ export class Factor implements IPiMathObject<Factor>,
     }
 
     inverse(): this {
-        this.power.opposite()
+        this.#power.opposite()
         return this
     }
 
@@ -250,14 +269,14 @@ export class Factor implements IPiMathObject<Factor>,
 
         if (value instanceof Factor) {
             if (this.isSameAs(value)) {
-                this.power.add(value.power)
+                this.#power.add(value.power)
                 return this
             }
         }
 
 
         if (this.isSameAs(F.polynom)) {
-            this.power.add(1)
+            this.#power.add(1)
             return this
         }
 
@@ -271,7 +290,7 @@ export class Factor implements IPiMathObject<Factor>,
     }
 
     opposite(): this {
-        throw new NotImplementedError("Method not implemented.")
+        throw new UnsupportedOperationError("Factor has no sign: use PolyFactor to represent the negation")
     }
 
     get polynom(): Polynom {
@@ -283,12 +302,12 @@ export class Factor implements IPiMathObject<Factor>,
     }
 
     pow(value: number | Fraction): this {
-        this.power.multiply(value)
+        this.#power.multiply(value)
         return this
     }
 
     get power(): Fraction {
-        return this.#power
+        return this.#power.clone()
     }
 
     set power(value: InputValue<Fraction>) {
@@ -296,15 +315,15 @@ export class Factor implements IPiMathObject<Factor>,
     }
 
     primitive(): Factor {
-        throw new NotImplementedError("Method not implemented.")
+        throw new UnsupportedOperationError("Factor.primitive() is not applicable in the general case — use PolyFactor")
     }
 
     reduce(): Factor {
-        throw new NotImplementedError("Method not implemented.")
+        throw new UnsupportedOperationError("Factor.reduce() is not applicable — use PolyFactor.reduce()")
     }
 
     root(value: number): this {
-        this.power.divide(value)
+        this.#power.divide(value)
         return this
     }
 
@@ -327,7 +346,7 @@ export class Factor implements IPiMathObject<Factor>,
      * - `'h'` — hole: even-index radical of a negative, not real over ℝ
      */
     tableOfSigns(): TableOfSignsData {
-        const pow = this.power.clone().reduce()
+        const pow = this.power.reduce()
         const tos = this.polynom.tableOfSigns()
 
         // The zero roots becomes defence (d) if the power is negative
@@ -354,12 +373,12 @@ export class Factor implements IPiMathObject<Factor>,
         return this.polynom.variables
     }
 
-    get withPower(): this {
+    get asPower(): this {
         this.#displayMode = FACTOR_DISPLAY.POWER
         return this
     }
 
-    get withRoot(): this {
+    get asRoot(): this {
         this.#displayMode = FACTOR_DISPLAY.ROOT
         return this
     }

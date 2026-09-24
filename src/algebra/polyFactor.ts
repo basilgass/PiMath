@@ -234,7 +234,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             // unchanged factors
             const factors = this.#factors.slice()
             // derivative factor
-            const derivativeFactor = factors.splice(i, 1)[0].derivative()
+            const derivativeFactor = factors.splice(i, 1)[0].getDerivativeFactors()
             // Add the product of factors
             dPF.push(
                 new PolyFactor(...factors, ...derivativeFactor))

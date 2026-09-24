@@ -6,6 +6,7 @@ import {
     MathError,
     InvalidArgumentError,
     NotImplementedError,
+    UnsupportedOperationError,
     IndexError,
     StateError
 } from "../src/errors"
@@ -110,8 +111,8 @@ describe("Typed throws (phase 2)", () => {
 })
 
 describe("Typed throws (phase 3)", () => {
-    test("NotImplementedError: a stub method throws", () => {
-        expect(() => new Factor("3x+2", "1/2").primitive()).toThrow(NotImplementedError)
+    test("UnsupportedOperationError: a by-design unsupported method throws", () => {
+        expect(() => new Factor("3x+2", "1/2").primitive()).toThrow(UnsupportedOperationError)
     })
 
     test("IndexError: matrix access out of range", () => {
