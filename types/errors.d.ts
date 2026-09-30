@@ -13,6 +13,8 @@ export declare class InvalidArgumentError extends PiMathError {
 }
 export declare class NotImplementedError extends PiMathError {
 }
+export declare class UnsupportedOperationError extends PiMathError {
+}
 export declare class IndexError extends PiMathError {
 }
 export declare class StateError extends PiMathError {

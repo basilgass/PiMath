@@ -3,7 +3,7 @@ import {Fraction} from "../coefficients"
 import {Root} from "../coefficients/root"
 import {solveQuadratic} from "../algebra/polynomRoots"
 import type {PolynomRoot} from "../algebra/polynomRoots"
-import {InvalidArgumentError} from "../errors"
+import {InvalidArgumentError, ParseError} from "../errors"
 
 /**
  * An equation / polynomial root as an exact decomposed value: a rational part
@@ -149,6 +149,51 @@ export class Solution implements IPiMathObject<Solution> {
         const [a, b, c] = [A, B, C].map(x => new Fraction(x))
         // Coefficients low->high: [constant, x, x^2] = [C, B, A].
         return solveQuadratic([c, b, a]).map(root => Solution.fromPolynomRoot(root))
+    }
+
+    /**
+     * Parse a string representation of a solution. Three strict forms:
+     *
+     * - Pure rational : `2/5`, `-3`, `1.23`
+     * - Pure radical  : `sqrt(5)`, `-2sqrt(3)`, `sqrt(5)/3`, `2sqrt(3)/5`
+     * - Combined      : `(-1+sqrt(5))/2`, `(3-2sqrt(7))/4`
+     *
+     * @throws {ParseError} if the string matches none of the supported forms.
+     */
+    static fromString(value: string): Solution {
+        const s = value.trim()
+
+        // Combined: (integer ± [coeff]sqrt(radicand)) / denominator
+        const combined = /^\(([+-]?\d+)([+-])(\d*)sqrt\((\d+)\)\)\/(\d+)$/.exec(s)
+        if (combined) {
+            const [, numStr, sign, coeffStr, radStr, denomStr] = combined
+            const q = +denomStr
+            const sol = new Solution()
+            sol.#fraction = new Fraction(+numStr, q)
+            const coeff = coeffStr === '' ? 1 : +coeffStr
+            const rootFactor = new Fraction(sign === '-' ? -coeff : coeff, q)
+            const root = new Root()
+            root.index = 2
+            root.radical = new Fraction(+radStr)
+            root.factor = rootFactor
+            sol.#root = root
+            sol.#exact = true
+            return sol
+        }
+
+        // Pure radical: delegate entirely to Root.fromString
+        if (s.includes('sqrt') || s.includes('root')) {
+            const sol = new Solution()
+            sol.#fraction = new Fraction().zero()
+            sol.#root = Root.fromString(s)
+            sol.#exact = true
+            return sol
+        }
+
+        // Pure rational
+        const frac = Fraction.fromString(s)
+        if (frac.isNaN()) throw new ParseError(`Cannot parse "${value}" as a Solution`)
+        return Solution.fromFraction(frac)
     }
 
     /**

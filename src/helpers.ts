@@ -4,6 +4,10 @@ export function wrapParenthesis(str: string, tex = true): string {
     return tex ? `\\left( ${str} \\right)` : `(${str})`
 }
 
+/**
+ * Removes the outermost parentheses only if they wrap the entire expression.
+ * `(a)(b)` is left unchanged — the opening paren closes before the end.
+ */
 export function stripParenthesis(str: string): string {
     if (!str.startsWith('(') || !str.endsWith(')')) return str
 
@@ -17,15 +21,12 @@ export function stripParenthesis(str: string): string {
     return str.slice(1, -1)
 }
 
-export function wrapVert(str: string, tex = true): string {
-    return tex ? `\\left\\vert ${str} \\right\\vert` : `|${str}|`
-}
 
-export function wrapNorm(str: string, tex = true): string {
-    return tex ? `\\left\\Vect ${str} \\right\\Vect` : `||${str}||`
-}
-
-export function replace_in_array<T>(haystack: string[], search: string, target: string, start?: number, end?: number): T {
+/**
+ * Replaces every occurrence of `search` with `target` in a copy of `haystack`.
+ * `start` and `end` are inclusive indices; elements outside that range are left unchanged.
+ */
+export function replace_in_array(haystack: string[], search: string, target: string, start?: number, end?: number): string[] {
     return haystack.map((x, index) => {
         if (start !== undefined && index < start) {
             return x
@@ -34,7 +35,7 @@ export function replace_in_array<T>(haystack: string[], search: string, target: 
             return x
         }
         return x === search ? target : x
-    }) as T
+    })
 }
 
 export function splitIfOutsideParentheses(
@@ -45,8 +46,8 @@ export function splitIfOutsideParentheses(
         throw new InvalidArgumentError(`splitChar must be a single character, got: "${splitChar}"`)
     }
 
-    let depth = 0,
-        lastIndex = 0
+    let depth = 0
+        let lastIndex = 0
     const result: string[] = []
 
     for (let i = 0; i < value.length; i++) {

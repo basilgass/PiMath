@@ -127,14 +127,14 @@ describe('Fraction creation', () => {
 
 describe('Fraction fromPeriodic', () => {
     test('reduces the resulting fraction', () => {
-        const F = new Fraction().fromPeriodic(2.3125, 2)
+        const F = Fraction.fromPeriodic(2.3125, 2)
 
         expect(F.numerator).toBe(11447)
         expect(F.denominator).toBe(4950)
     })
 
     test('handles negative values', () => {
-        const F = new Fraction().fromPeriodic(-2.3125, 2)
+        const F = Fraction.fromPeriodic(-2.3125, 2)
 
         expect(F.numerator).toBe(-11447)
         expect(F.denominator).toBe(4950)
@@ -142,21 +142,21 @@ describe('Fraction fromPeriodic', () => {
     })
 
     test('reduces a pure periodic value', () => {
-        const F = new Fraction().fromPeriodic(0.3, 1)
+        const F = Fraction.fromPeriodic(0.3, 1)
 
         expect(F.numerator).toBe(1)
         expect(F.denominator).toBe(3)
     })
 
     test('reduces a negative pure periodic value', () => {
-        const F = new Fraction().fromPeriodic(-0.3, 1)
+        const F = Fraction.fromPeriodic(-0.3, 1)
 
         expect(F.numerator).toBe(-1)
         expect(F.denominator).toBe(3)
     })
 
     test('is robust against floating point dust', () => {
-        const F = new Fraction().fromPeriodic(0.16, 1)
+        const F = Fraction.fromPeriodic(0.16, 1)
 
         expect(F.numerator).toBe(1)
         expect(F.denominator).toBe(6)
@@ -335,8 +335,8 @@ describe('Fraction operations', () => {
     })
 
     test('fromNumber rejects exponential notation', () => {
-        expect(() => new Fraction().fromNumber(1e-7)).toThrow(InvalidArgumentError)
-        expect(() => new Fraction().fromNumber(1e21)).toThrow(InvalidArgumentError)
+        expect(() => Fraction.fromNumber(1e-7)).toThrow(InvalidArgumentError)
+        expect(() => Fraction.fromNumber(1e21)).toThrow(InvalidArgumentError)
     })
 
     test('zero denominator gives signed infinity or NaN', () => {

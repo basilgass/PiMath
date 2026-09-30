@@ -64,15 +64,15 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         }
 
         if (typeof value === "string") {
-            return this.fromString(value)
+            return this.copy(Fraction.fromString(value))
         }
 
         if (typeof value === "number" && denominator === undefined) {
-            return this.fromNumber(value)
+            return this.copy(Fraction.fromNumber(value))
         }
 
         if (typeof value === "number" && typeof denominator === "number") {
-            return this.fromNumbers(value, denominator)
+            return this.copy(Fraction.fromNumbers(value, denominator))
         }
 
         if (value instanceof Fraction) {
@@ -422,17 +422,17 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     /**
-     * Build the fraction from a single number (integer or decimal).
+     * Build a new fraction from a single number (integer or decimal).
      * @throws {InvalidArgumentError} for exponential notation (e.g. 1e-7), which
      *   would break the integer numerator/denominator invariant.
      */
-    fromNumber(value: number): this {
+    static fromNumber(value: number): Fraction {
+        const f = new Fraction()
         if (Number.isSafeInteger(value)) {
-            // The given value is an integer
-            this.#numerator = value
-            this.#denominator = 1
-            this.#exact = true
-            return this
+            f.#numerator = value
+            f.#denominator = 1
+            f.#exact = true
+            return f
         }
 
         // Exponential notation (e.g. 1e-7, 1e21) is not supported: toString()
@@ -442,54 +442,54 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
             throw new InvalidArgumentError(`Exponential notation is not supported: ${value}`)
         }
 
-        // The given value is a float number
-        // Get the number of decimals after the float sign
         const [, decimal] = (value.toString()).split('.')
         const p: number = decimal ? decimal.length : 0
         const power = Math.pow(10, p)
 
-        this.#numerator = value * power
-        this.#denominator = power
+        f.#numerator = value * power
+        f.#denominator = power
 
-        this.#numerator = Numeric.numberCorrection(this.#numerator)
-        this.#denominator = Numeric.numberCorrection(this.#denominator)
+        f.#numerator = Numeric.numberCorrection(f.#numerator)
+        f.#denominator = Numeric.numberCorrection(f.#denominator)
 
-        this.reduce()
+        f.reduce()
 
         // assume it's not exact if the decimal part is more than 10 decimals
-        this.#exact = p < 10
+        f.#exact = p < 10
 
-        return this
+        return f
     }
 
-    fromNumbers(numerator: number, denominator: number): this {
+    static fromNumbers(numerator: number, denominator: number): Fraction {
         if (denominator === 0) {
             // Single, centralized handling of a zero denominator:
             // x/0 → signed infinity, and 0/0 → invalid (NaN).
             if (numerator === 0) {
-                return this.invalid()
+                return new Fraction().invalid()
             }
-            return numerator < 0 ? this.infinite().opposite() : this.infinite()
+            const f = new Fraction().infinite()
+            if (numerator < 0) f.opposite()
+            return f
         }
 
         if (Number.isSafeInteger(numerator) && Number.isSafeInteger(denominator)) {
-            // The given value is an integer
-            this.#numerator = numerator
-            this.#denominator = denominator
-            this.#exact = true
-            return this
+            const f = new Fraction()
+            f.#numerator = numerator
+            f.#denominator = denominator
+            f.#exact = true
+            return f
         }
 
-        return this.fromNumber(numerator / denominator)
+        return Fraction.fromNumber(numerator / denominator)
     }
 
     /**
-     * Build the fraction from a decimal whose last `length` digits repeat
+     * Build a new fraction from a decimal whose last `length` digits repeat
      * (e.g. fromPeriodic(2.3125, 2) → 11447/4950).
      * @throws {InvalidArgumentError} if length is not a positive integer, or
      *   exceeds the number of decimal digits.
      */
-    fromPeriodic(value: string | number, length: number): this {
+    static fromPeriodic(value: string | number, length: number): Fraction {
         const [, decimal] = (value.toString()).split(/[.,]/)
         const p: number = decimal ? decimal.length : 0
 
@@ -510,57 +510,51 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         const sign = numericValue < 0 ? -1 : 1
         const absValue = Math.abs(numericValue)
 
-        this.#numerator = sign * Math.round(absValue * power - Math.floor(absValue * shift))
-        this.#denominator = power - shift
-        this.#exact = true
+        const f = new Fraction()
+        f.#numerator = sign * Math.round(absValue * power - Math.floor(absValue * shift))
+        f.#denominator = power - shift
+        f.#exact = true
 
-        return this.reduce()
+        return f.reduce()
     }
 
-    fromString(value: string): this {
+    static fromString(value: string): Fraction {
         // Periodic decimal notation, e.g. "2.31(25)" = 2.31252525...
         const periodicMatch = /^([+-]?)(\d*)\.(\d*)\((\d+)\)$/.exec(value)
         if (periodicMatch) {
             const [, sign, intPart, nonPeriodic, period] = periodicMatch
             const absDecimal = `${intPart || '0'}.${nonPeriodic}${period}`
 
-            this.fromPeriodic(absDecimal, period.length)
-            if (sign === '-') {
-                this.opposite()
-            }
-            return this.reduce()
+            const f = Fraction.fromPeriodic(absDecimal, period.length)
+            if (sign === '-') f.opposite()
+            return f.reduce()
         }
 
         // A string using parentheses that did not match the notation is malformed.
         if (value.includes('(') || value.includes(')')) {
-            return this.invalid()
+            return new Fraction().invalid()
         }
 
         // Split the string value in two parts: Numerator/Denominator
         const S = value.split('/').map(Number)
 
-        this.#exact = true
-
         // Only one divide sign allowed
         if (S.length > 2) {
-            this.#numerator = NaN
-            return this
+            return new Fraction().invalid()
         }
 
-        // Each parts must be a number
+        // Each part must be a number
         if (S.some(x => isNaN(x))) {
-            this.#numerator = NaN
-            return this
+            return new Fraction().invalid()
         }
 
         if (S.length === 1) {
-            // No divide sign - it's a number
-            return this.fromNumber(+value)
+            return Fraction.fromNumber(+value)
         }
 
         // One divide sign: delegate to fromNumbers so the zero-denominator case
         // is handled at a single place (see fromNumbers).
-        return this.fromNumbers(S[0], S[1])
+        return Fraction.fromNumbers(S[0], S[1])
     }
 
     infinite(): this {
@@ -754,7 +748,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     one(): this {
-        return this.fromNumber(1)
+        return this.copy(Fraction.fromNumber(1))
     }
 
     opposite(): this {
@@ -983,6 +977,6 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     zero(): this {
-        return this.fromNumber(0)
+        return this.copy(Fraction.fromNumber(0))
     }
 }

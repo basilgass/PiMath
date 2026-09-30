@@ -3,6 +3,7 @@ import {Factor} from "../../src/algebra/factor"
 import {Polynom} from "../../src/algebra/polynom"
 import {Fraction} from "../../src/coefficients/fraction"
 import {MathError} from "../../src/errors"
+import {TableOfSigns} from "../../src/analyze/tableOfSigns"
 
 
 describe("Factors creation", () => {
@@ -326,38 +327,23 @@ describe('Factor static parsing', () => {
 
 describe('Table of signs of Factors', ()=>{
     test('with negative', ()=>{
-        const F = new Factor('x-3', -3)
-
-        const tos = F.tableOfSigns()
-
+        const tos = TableOfSigns.fromFactor(new Factor('x-3', -3))
         expect(tos.signs).toEqual(['-', 'd', '+'])
     })
     test('with power even', ()=>{
-        const F = new Factor('x-3', 2)
-
-        const tos = F.tableOfSigns()
-
+        const tos = TableOfSigns.fromFactor(new Factor('x-3', 2))
         expect(tos.signs).toEqual(['+', 'z', '+'])
     })
     test('with power odd', ()=>{
-        const F = new Factor('x-3', 3)
-
-        const tos = F.tableOfSigns()
-
+        const tos = TableOfSigns.fromFactor(new Factor('x-3', 3))
         expect(tos.signs).toEqual(['-', 'z', '+'])
     })
     test('with root even', ()=>{
-        const F = new Factor('x-3', '1/2')
-
-        const tos = F.tableOfSigns()
-
+        const tos = TableOfSigns.fromFactor(new Factor('x-3', '1/2'))
         expect(tos.signs).toEqual(['h', 'z', '+'])
     })
     test('with root odd', ()=>{
-        const F = new Factor('x-3', '1/3')
-
-        const tos = F.tableOfSigns()
-
+        const tos = TableOfSigns.fromFactor(new Factor('x-3', '1/3'))
         expect(tos.signs).toEqual(['-', 'z', '+'])
     })
 })

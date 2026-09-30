@@ -4,9 +4,6 @@ import { Solution } from "../analyze";
 export declare class EquationSolver {
     #private;
     constructor(left: Polynom | Equation, right?: Polynom, variable?: string);
-    get bissectionComplexityCounter(): number;
-    get bissectionDeltaX(): number;
-    set bissectionDeltaX(value: number);
     solve(): Solution[];
     solveAsCardan(): Solution[];
 }

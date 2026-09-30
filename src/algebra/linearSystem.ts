@@ -1,10 +1,11 @@
-import type {IAlgebra, IEquation, InputValue, IPiMathObject, LiteralType} from "../pimath.interface"
+import type {IAlgebra, IEquation, InputValue, IPiMathObject, OutputStyle} from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Equation} from "./equation"
-import {Monom} from "./monom"
+import {Matrix} from "./matrix"
 import {Polynom} from "./polynom"
 import {Numeric} from "../numeric"
 import {Solution} from "../analyze"
+import {Vector} from "../geometry"
 import {DimensionError, IndexError, MathError, NotImplementedError} from "../errors"
 
 export class LinearSystem implements IPiMathObject<LinearSystem>,
@@ -27,20 +28,53 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    parse = (...equations: (string | Equation)[]): this => {
-        // make the original equations
-        this.#equations = equations.map(value => new Equation(value))
+    parse(...inputs: (string | Equation)[]): this {
+        return this.fromEquations(...inputs.map(v => new Equation(v)))
+    }
 
-        // get the variables.
+    fromEquations(...equations: Equation[]): this {
+        const vars = [...new Set(equations.flatMap(e => e.variables))].sort()
+        const matrix = equations.map(equ => {
+            const cloned = equ.clone().reorder()
+            const row = vars.map(v => cloned.left.monomByVariable(v).coefficient)
+            const constant = cloned.right.monoms[0].coefficient
+            return [...row, constant]
+        })
+        return this.fromComponents(matrix, vars.join(''))
+    }
+
+    fromComponents(matrix: InputValue<Fraction>[][], variables = 'xyz'): this {
+        if (matrix.length === 0) {
+            throw new DimensionError("Matrix must have at least one row")
+        }
+        const cols = matrix[0].length
+        if (matrix.some(row => row.length !== cols)) {
+            throw new DimensionError("All rows must have the same number of columns")
+        }
+
+        const vars = variables.split('').slice(0, cols - 1)
+        this.#equations = matrix.map(row => {
+            const P = new Polynom(vars.join(''), ...(row.slice(0, -1)))
+            return new Equation(P, row[row.length - 1])
+        })
         this.#findLetters()
         return this
+    }
+
+    fromMatrix(value: Matrix, variables = 'xyz'): this {
+        const rows = value.rows.map(row => row.map(p => p.monoms[0].coefficient))
+        return this.fromComponents(rows, variables)
+    }
+
+    fromVectors(...vectors: Vector[]): this {
+        return this.fromMatrix(new Matrix().fromVectors(...vectors))
     }
 
     copy(): this {
         throw new NotImplementedError("copy() is not yet implemented for LinearSystem")
     }
 
-    clone = (): LinearSystem => {
+    clone(): LinearSystem {
         return new LinearSystem()
             .parse(...this.#equations.map(equ => equ.clone()))
     }
@@ -55,32 +89,9 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this.buildTex(LS.equations)
     }
 
-    get display() {
-        // TODO : LinearSystem - display: implement the display of the linear asSystem
-        return this.tex + 'as display'
-    }
-
-    static fromMatrix(
-        matrix: InputValue<Fraction>[][],
-        variables = 'xyz'): LinearSystem {
-        // Check that each row has the same number of columns
-        const cols = matrix[0].length
-        if (matrix.some(row => row.length !== cols)) {
-            throw new DimensionError("All rows must have the same number of columns")
-        }
-
-        // Determine the default variables. The number of variables are cols-1
-        const vars = variables.split('')
-            .splice(0, cols - 1)
-
-        // Create a new LinearSystem
-        return new LinearSystem(
-            ...matrix.map(row => {
-                const P = new Polynom(vars.join(''), ...row)
-                return new Equation(P, 0)
-            })
-        )
-
+    get display(): string {
+        const LS = this.clone().reorder()
+        return this.#toOutput(LS.equations, 'display')
     }
 
     static solutionAsDisplay(value: Solution[]): string {
@@ -110,59 +121,19 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    buildTex = (equations: Equation[], operators?: (string[])[]): string => {
-        let equStr: string[]
-        let m: Monom
-        let variables: string[] = []
-        const equArray: string[] = []
-
-        // Get the variables from the linear asSystem
-        for (const equ of equations) {
-            variables = variables.concat(equ.variables)
-        }
-
-        variables = [...new Set(variables)]
-        variables.sort()
-
-        for (let i = 0; i < equations.length; i++) {
-            const equ = equations[i]
-
-            equStr = []
-            for (const L of variables) {
-                m = equ.left.monomByVariable(L)
-
-                if (equStr.length === 0) {
-                    equStr.push(m.isZero() ? '' : m.tex)
-                } else {
-                    equStr.push(m.isZero() ? '' : ((m.coefficient.sign() === 1) ? '+' : '') + m.tex)
-                }
-            }
-
-            // Add the equal sign
-            equStr.push('=')
-
-            // Add the right hand part of the equation (should be only a number, because it has been reordered)
-            equStr.push(equ.right.tex)
-
-            // Add the operations if existing
-            if (operators?.[i] !== undefined) {
-                // add extra space at the end of the equation
-                equStr[equStr.length - 1] = equStr[equStr.length - 1] + ' \\phantom{\\quad}'
-                for (const o of operators[i]) {
-                    equStr.push(`\\ \\cdot\\ ${o.startsWith('-') ? "\\left(" + o + "\\right)" : o}`)
-                }
-            }
-
-            // Add to the list.
-            equArray.push(equStr.join('&'))
-        }
-
-        let operatorsColumns = 0
-        if (operators !== undefined && operators.length > 0) {
-            operatorsColumns = operators[0].length
-        }
-
-        return `\\left\\{\\begin{array}{${"r".repeat(variables.length)}cl ${"|l".repeat(operatorsColumns)}}${equArray.join('\\\\ ')}\\end{array}\\right.`
+    /**
+     * Builds the LaTeX `\left\{...\right.` representation from an explicit equation list.
+     *
+     * Called by `tex` with the reordered clone. Pass `equations` directly when
+     * generating a step-by-step derivation on a non-standard equation list.
+     *
+     * @param equations - Equations to render (typically from a cloned/reordered system).
+     * @param operators - Per-equation multiplier annotations. `operators[i]` lists
+     *   the multipliers shown as `\cdot k` next to equation i; each adds a `|l`
+     *   column. Negative values are wrapped in `\left(...\right)`.
+     */
+    buildTex(equations: Equation[], operators?: (string[])[]): string {
+        return this.#toOutput(equations, 'tex', operators)
     }
 
     degree(variable?: string): Fraction {
@@ -171,7 +142,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
     // ------------------------------------------
     get equations(): Equation[] {
-        return this.#equations
+        return this.#equations.map(e => e.clone())
     }
 
     set equations(value) {
@@ -181,7 +152,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         this.#findLetters()
     }
 
-    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction {
+    evaluate(): number | Fraction {
         throw new NotImplementedError("Method not implemented.")
     }
 
@@ -193,22 +164,17 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this.equations.every((equ, index) => equ.isEqual(value.equations[index]))
     }
 
-    get isSolvable(): boolean {
-        const V = this.variables
-
-        // TODO: in some case, it is possible to resolve systems if there isn't the isSame number of vars and equations
-        if (V.length !== this.#equations.length) {
+    isSolvable(): boolean {
+        if (this.variables.length !== this.#equations.length) {
             return false
         }
-
-        //TODO: Must check if two equations isn't a linear combination of the others ?
-
-        return true
+        const [M] = this.matrix
+        return !M.determinant().isZero()
     }
 
-    get matrix(): [Fraction[][], Fraction[]] {
-        //TODO: use Matrix class
-        return this.#makeMatrix()
+    get matrix(): [Matrix, Vector] {
+        const [coeffs, vector] = this.#makeMatrix()
+        return [new Matrix().fromValues(coeffs), new Vector(...vector)]
     }
 
     mergeEquations(equation1: { id: number, factor: InputValue<Fraction> }, equation2: {
@@ -248,13 +214,12 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
     }
 
     reduce(): this {
-        // reduce all equations at once.
-        this.equations.forEach(equ => equ.reduce())
+        this.#equations.forEach(equ => equ.reduce())
         return this
     }
 
     // ------------------------------------------
-    reorder = (): this => {
+    reorder(): this {
         for (const E of this.#equations) {
             E.reorder()
         }
@@ -262,8 +227,16 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
+    /**
+     * Solves the system by Gauss-Jordan elimination on the augmented matrix.
+     *
+     * - Unique solution: one `Solution` per variable, in `variables` order.
+     * - Impossible (no solution): returns `[]`.
+     * - Infinite solutions: one `Solution` per variable with `.value === Infinity`.
+     * @throws {MathError} if a zero pivot is found with no non-zero row below it.
+     */
     solve(): Solution[] {
-        const [matrix, vector] = this.matrix
+        const [matrix, vector] = this.#makeMatrix()
         // Solve the matrix
 
         // Make the augmented matrix (matrix + vector)
@@ -326,6 +299,13 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
 
     }
 
+    /**
+     * For each pair of equations (i, j), computes LCM-based multipliers that eliminate
+     * `variable` by linear combination. The factors satisfy `f_i·coeff_i + f_j·coeff_j = 0`.
+     *
+     * Pairs are sorted by `|f_i| + |f_j|` (smallest multipliers first).
+     * Requires that all variable terms are on the left side of each equation.
+     */
     solve_compute_factors(variable: string):
         [{ id: number, factor: number }, { id: number, factor: number }][] {
         // when solving, every monoms with a variable is on the left !
@@ -385,7 +365,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         this.#variables = vars
     }
 
-    #findLetters = (): this => {
+    #findLetters(): this {
         this.#variables = this.#equations.reduce((acc: string[], equ) => {
             return [...new Set([...acc, ...equ.variables])]
         }, [])
@@ -394,7 +374,7 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         return this
     }
 
-    #makeMatrix = (): [Fraction[][], Fraction[]] => {
+    #makeMatrix(): [Fraction[][], Fraction[]] {
         // Make the matrix
         const matrix: Fraction[][] = []
         const vector: Fraction[] = []
@@ -441,6 +421,49 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         })
 
         return result
+    }
+
+    #toOutput(equations: Equation[], style: OutputStyle, operators?: (string[])[]): string {
+        let variables: string[] = []
+        for (const equ of equations) {
+            variables = variables.concat(equ.variables)
+        }
+        variables = [...new Set(variables)].sort()
+
+        const rows: string[] = []
+        for (let i = 0; i < equations.length; i++) {
+            const equ = equations[i]
+            const cols: string[] = []
+
+            for (const L of variables) {
+                const m = equ.left.monomByVariable(L)
+                if (cols.length === 0) {
+                    cols.push(m.isZero() ? '' : (style === 'tex' ? m.tex : m.display))
+                } else {
+                    const sign = m.coefficient.sign() === 1 ? '+' : ''
+                    cols.push(m.isZero() ? '' : sign + (style === 'tex' ? m.tex : m.display))
+                }
+            }
+
+            cols.push('=')
+            cols.push(style === 'tex' ? equ.right.tex : equ.right.display)
+
+            if (style === 'tex' && operators?.[i] !== undefined) {
+                cols[cols.length - 1] = cols[cols.length - 1] + ' \\phantom{\\quad}'
+                for (const o of operators[i]) {
+                    cols.push(`\\ \\cdot\\ ${o.startsWith('-') ? "\\left(" + o + "\\right)" : o}`)
+                }
+            }
+
+            rows.push(style === 'tex' ? cols.join('&') : `(${cols.join(',')})`)
+        }
+
+        if (style === 'tex') {
+            const operatorsColumns = operators?.[0]?.length ?? 0
+            return `\\left\\{\\begin{array}{${"r".repeat(variables.length)}cl ${"|l".repeat(operatorsColumns)}}${rows.join('\\\\ ')}\\end{array}\\right.`
+        }
+
+        return `{${rows.join(',')}:}`
     }
 
 }

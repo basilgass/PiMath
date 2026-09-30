@@ -2,6 +2,7 @@ import {describe, expect, it, test} from "vitest"
 import type {randomPolynomConfig} from "../../src"
 import {Monom, Polynom} from "../../src"
 import {rndPolynom} from "../../src/randomization/algebra/rndPolynom"
+import {TableOfSigns} from "../../src/analyze/tableOfSigns"
 
 describe('Polynom creation', () => {
     test('create Polynom', () => {
@@ -471,8 +472,7 @@ describe('Polynom evaluation', () => {
 
 describe('Table of signs of a Polynom', () => {
     test('first degree', () => {
-        const P = new Polynom('x+3')
-        const tos = P.tableOfSigns()
+        const tos = TableOfSigns.fromPolynom(new Polynom('x+3'))
 
         expect(tos.signs).toEqual(['-', 'z', '+'])
         expect(tos.roots).toHaveLength(1)
@@ -480,16 +480,14 @@ describe('Table of signs of a Polynom', () => {
     })
 
     test('a constant', () => {
-        const P = new Polynom('3')
-        const tos = P.tableOfSigns()
+        const tos = TableOfSigns.fromPolynom(new Polynom('3'))
 
         expect(tos.signs).toEqual(['+'])
         expect(tos.roots).toHaveLength(0)
     })
 
     test('2nd degree (two solutions)', () => {
-        const P = new Polynom('(x-2)(3-x)')
-        const tos = P.tableOfSigns()
+        const tos = TableOfSigns.fromPolynom(new Polynom('(x-2)(3-x)'))
 
         expect(tos.signs).toEqual(['-', 'z', '+', 'z', '-'])
         expect(tos.roots).toHaveLength(2)
@@ -497,8 +495,7 @@ describe('Table of signs of a Polynom', () => {
     })
 
     test('2nd degree (one solution)', () => {
-        const P = new Polynom('(x-2)^2')
-        const tos = P.tableOfSigns()
+        const tos = TableOfSigns.fromPolynom(new Polynom('(x-2)^2'))
 
         expect(tos.signs).toEqual(['+', 'z', '+'])
         expect(tos.roots).toHaveLength(1)
@@ -506,16 +503,14 @@ describe('Table of signs of a Polynom', () => {
     })
 
     test('2nd degree (no solution)', () => {
-        const P = new Polynom('x^2+2')
-        const tos = P.tableOfSigns()
+        const tos = TableOfSigns.fromPolynom(new Polynom('x^2+2'))
 
         expect(tos.signs).toEqual(['+'])
         expect(tos.roots).toHaveLength(0)
     })
 
     test('6th degree (three solutions)', () => {
-        const P = new Polynom('x^3(x-2)^2(x+3)')
-        const tos = P.tableOfSigns()
+        const tos = TableOfSigns.fromPolynom(new Polynom('x^3(x-2)^2(x+3)'))
 
         expect(tos.signs).toEqual(['+', 'z', '-', 'z', '+', 'z', '+'])
         expect(tos.roots).toHaveLength(3)

@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {replace_in_array, splitIfOutsideParentheses} from "../src/helpers"
+import {replace_in_array, splitIfOutsideParentheses, stripParenthesis} from "../src/helpers"
 
 describe('Replace in array', () => {
     test('complete array', () => {
@@ -49,6 +49,41 @@ describe('Replace in array', () => {
         ])
     })
 
+    test('no match → array unchanged', () => {
+        const a = ['a', 'b', 'c']
+        expect(replace_in_array(a, 'x', 'y')).toEqual(['a', 'b', 'c'])
+    })
+
+    test('empty array → returns empty array', () => {
+        expect(replace_in_array([], 'x', 'y')).toEqual([])
+    })
+
+})
+
+describe('stripParenthesis', () => {
+    test('wrapping parens are stripped', () => {
+        expect(stripParenthesis('(a+b)')).toBe('a+b')
+    })
+
+    test('only one layer is stripped', () => {
+        expect(stripParenthesis('((a+b))')).toBe('(a+b)')
+    })
+
+    test('non-wrapping parens are left unchanged', () => {
+        expect(stripParenthesis('(a)(b)')).toBe('(a)(b)')
+    })
+
+    test('string without parens is left unchanged', () => {
+        expect(stripParenthesis('abc')).toBe('abc')
+    })
+
+    test('unbalanced parens are left unchanged', () => {
+        expect(stripParenthesis('(a')).toBe('(a')
+    })
+
+    test('empty string is left unchanged', () => {
+        expect(stripParenthesis('')).toBe('')
+    })
 })
 
 describe('split outside parenthesis', () => {

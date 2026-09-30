@@ -1,29 +1,34 @@
-import type { IAlgebra, IEquation, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
+import type { IAlgebra, IEquation, InputValue, IPiMathObject } from "../pimath.interface";
 import { Fraction } from "../coefficients";
 import { Equation } from "./equation";
+import { Matrix } from "./matrix";
 import { Polynom } from "./polynom";
 import { Solution } from "../analyze";
+import { Vector } from "../geometry";
 export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquation<LinearSystem>, IAlgebra {
     #private;
     constructor(...values: (string | Equation)[]);
-    parse: (...equations: (string | Equation)[]) => this;
+    parse(...inputs: (string | Equation)[]): this;
+    fromEquations(...equations: Equation[]): this;
+    fromComponents(matrix: InputValue<Fraction>[][], variables?: string): this;
+    fromMatrix(value: Matrix, variables?: string): this;
+    fromVectors(...vectors: Vector[]): this;
     copy(): this;
-    clone: () => LinearSystem;
+    clone(): LinearSystem;
     get tex(): string;
     get display(): string;
-    static fromMatrix(matrix: InputValue<Fraction>[][], variables?: string): LinearSystem;
     static solutionAsDisplay(value: Solution[]): string;
     static solutionAsTex(value: Solution[]): string;
     add(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this;
-    buildTex: (equations: Equation[], operators?: (string[])[]) => string;
+    buildTex(equations: Equation[], operators?: (string[])[]): string;
     degree(variable?: string): Fraction;
     get equations(): Equation[];
     set equations(value: Equation[]);
-    evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction;
+    evaluate(): number | Fraction;
     hasVariable(variable: string): boolean;
     isEqual(value: LinearSystem): boolean;
-    get isSolvable(): boolean;
-    get matrix(): [Fraction[][], Fraction[]];
+    isSolvable(): boolean;
+    get matrix(): [Matrix, Vector];
     mergeEquations(equation1: {
         id: number;
         factor: InputValue<Fraction>;
@@ -33,7 +38,7 @@ export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquat
     }): Equation;
     multiply(value: InputValue<Fraction> | InputValue<Fraction>[], index?: number): this;
     reduce(): this;
-    reorder: () => this;
+    reorder(): this;
     solve(): Solution[];
     solve_compute_factors(variable: string): [
         {

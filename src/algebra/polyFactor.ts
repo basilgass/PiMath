@@ -1,5 +1,4 @@
 import type {
-    FactorTableOfSigns,
     IAlgebra,
     IEvaluable,
     IExpression,
@@ -7,8 +6,6 @@ import type {
     InputValue,
     IPiMathObject,
     LiteralType,
-    PolyFactorTableOfSigns,
-    TableOfSignsValues
 } from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {MathError, NotImplementedError, ParseError} from "../errors"
@@ -533,96 +530,6 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
 
     subtract(...values: PolyFactor[]): this {
         return this.add(...values.map(f => f.opposite()))
-    }
-
-    /**
-     * Build the sign table for this factored expression.
-     *
-     * Factorizes first, then aligns each factor's sign row to the global root
-     * list (inserting `'t'` tabs for roots that don't belong to a given factor).
-     * Factors with negative power produce `'d'` (defence/asymptote) at their roots;
-     * even-index radicals produce `'h'` (hole) for negative values.
-     * The result row is the product of all factor sign rows.
-     */
-    tableOfSigns(): PolyFactorTableOfSigns {
-        // Calculate the table of signs for each factor
-        const roots = this.roots
-        const roots_key = roots.map(x => x.value)
-
-        // Get the table of signs of every factors
-
-
-        // These signs are NOT aligned
-        const factors: FactorTableOfSigns[] = this.factorize().factors
-            .map(factor => {
-                return {factor: new Factor(factor), ...factor.tableOfSigns()}
-            })
-
-
-        // Build the table of signs with extra roots for each factors.
-        factors.forEach(item => {
-            // Create the new signs row
-            const empty_signs = new Array<TableOfSignsValues>(2 * roots.length + 1).fill('')
-
-            let sign = item.signs.shift()
-            let root = item.roots.shift()
-
-            const aligned_signs = empty_signs.map((_sign, index) => {
-                if (index % 2 === 0) {
-                    return sign ?? ''
-                }
-
-                // The sign for this indexed root is a t(ab)
-                if (root?.value !== roots_key[(index - 1) / 2]) {
-                    return 't'
-                }
-
-                // The indexed root is the new root
-                const rootSign = item.signs.shift() as unknown as TableOfSignsValues
-
-                // Make the new signs.
-                sign = item.signs.shift()
-                root = item.roots.shift()
-                return rootSign
-            })
-
-            // Set the roots for this item to all roots
-            item.roots = roots
-            item.signs = aligned_signs
-        })
-
-        // Build the table of signs with extra roots : reault line
-        const signs: TableOfSignsValues[] = factors
-            .map((item) => [...item.signs])
-            .reduce<TableOfSignsValues[]>((a, b) => {
-                if (a.length === 0) {
-                    return b
-                }
-
-                // a and b are "not aligned"
-                b.forEach((value, index) => {
-                    // Case of a zero, invalid or tab value
-                    // tab < zero < defence
-                    switch (value) {
-                        case "d":
-                            a[index] = "d"
-                            break
-                        case "z":
-                            a[index] = a[index] === "d" ? "d" : "z"
-                            break
-                        case "h":
-                            a[index] = "h"
-                            break
-                        case "-":
-                            a[index] = a[index] === "h" ? "h" : a[index] === "-" ? "+" : "-"
-                            break
-                    }
-                })
-
-                return a
-            }, [])
-
-        return {signs, roots, factors}
     }
 
     get variables(): string[] {

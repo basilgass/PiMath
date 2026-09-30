@@ -1,25 +1,27 @@
-import type { InputValue } from "../pimath.interface";
+import type { InputValue, IPiMathObject } from "../pimath.interface";
 import { Fraction } from "../coefficients";
 import { Root } from "../coefficients/root";
-export declare class Solution {
+import type { PolynomRoot } from "../algebra/polynomRoots";
+export declare class Solution implements IPiMathObject<Solution> {
     #private;
     constructor();
     get tex(): string;
     set tex(value: string | null);
-    get display(): string | null;
+    get display(): string;
     set display(value: string | null);
     static fromFraction(value: InputValue<Fraction>): Solution;
+    static fromRoot(value: InputValue<Root>): Solution;
+    static fromPolynomRoot(root: PolynomRoot): Solution;
     static fromQuadratic(A: InputValue<Fraction>, B: InputValue<Fraction>, C: InputValue<Fraction>): Solution[];
+    static parse(value: Fraction | Root | PolynomRoot | Solution): Solution;
+    copy(value: Solution): this;
+    clone(): Solution;
     get count(): number;
-    set count(value: number);
     get exact(): boolean;
-    set exact(value: boolean);
     get fraction(): Fraction;
-    set fraction(value: Fraction);
     isZero(): boolean;
     reduce(): this;
     get root(): Root;
-    set root(value: Root);
     setExact(value?: boolean): this;
     get value(): number;
     get variable(): string;

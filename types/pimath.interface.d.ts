@@ -7,6 +7,7 @@ export type InputAlgebra<T> = InputValue<T> | Monom;
 export type LiteralType<T> = Record<string, T>;
 export type EquationSign = "=" | "<=" | ">=" | "<" | ">";
 export type CompareSign = EquationSign | "=>" | "geq" | "=<" | "leq" | "<>" | "neq" | "same";
+export type OutputStyle = 'tex' | 'display';
 export interface IPiMathObject<T> {
     readonly display: string;
     readonly tex: string;

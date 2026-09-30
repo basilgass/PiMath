@@ -1,5 +1,5 @@
 import type {Fraction} from "./coefficients"
-import type {Equation, Factor, Monom} from "./algebra"
+import type {Equation, Monom} from "./algebra"
 import type {Line, Point, Vector} from "./geometry"
 import type {Solution} from "./analyze/solution"
 
@@ -24,6 +24,9 @@ export type CompareSign =
     "=>" | "geq" |
     "=<" | "leq" |
     "<>" | "neq" | "same"
+
+/** Selects between LaTeX and AsciiMath rendering in `#toOutput` helpers. */
+export type OutputStyle = 'tex' | 'display'
 
 /**
  * Base contract of every PiMath value object: a displayable, duplicable
@@ -126,20 +129,16 @@ export interface IAnalyse<T> {
     primitive(): T;
 }
 
-export type TableOfSignsValues = '-' | '+' | 'h' | 'z' | 't' | 'd' | 'u' | 'n' | ''
-
-export interface TableOfSignsData {
-    roots: Solution[],
-    signs: TableOfSignsValues[]
-}
-
-export interface FactorTableOfSigns extends TableOfSignsData {
-    factor: Factor
-}
-
-export interface PolyFactorTableOfSigns extends TableOfSignsData {
-    factors: FactorTableOfSigns[]
-}
+/**
+ * Sign codes for sign tables (`TableOfSigns`).
+ *
+ * Codes reserved for the **variation table** (tableau de croissance — not yet
+ * implemented) were removed to keep the type honest:
+ * - `'u'` croissant (increasing)
+ * - `'n'` décroissant (decreasing)
+ * Add them back here when the variation table is implemented.
+ */
+export type TableOfSignsValues = '-' | '+' | 'h' | 'z' | 't' | 'd' | ''
 
 /**
  * Geometric relation between two lines in the plane (2D).

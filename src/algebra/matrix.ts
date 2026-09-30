@@ -1,8 +1,7 @@
 import type {IExpressionMultiply, InputAlgebra, InputValue, IPiMathObject} from "../pimath.interface"
 import {Polynom} from "./polynom"
 import type {Vector} from "../geometry"
-import {operation_pow} from "./operations"
-import {DimensionError, IndexError, MathError, NotImplementedError} from "../errors"
+import {DimensionError, IndexError, InvalidArgumentError, MathError, NotImplementedError} from "../errors"
 
 export type IMatrixValues = InputAlgebra<Polynom>[][]
 
@@ -456,7 +455,20 @@ export class Matrix implements IPiMathObject<Matrix>,
     }
 
     pow(value: number): this {
-        return operation_pow(this as Matrix, value) as this
+        if (!Number.isSafeInteger(value)) {
+            throw new InvalidArgumentError('Can only raise item by an integer')
+        }
+        if (value < 0) {
+            throw new InvalidArgumentError('Can only raise item by a non-negative integer')
+        }
+        if (value === 0) {
+            return this.one()
+        }
+        const P = this.clone()
+        for (let i = 1; i < value; i++) {
+            this.multiply(P)
+        }
+        return this
     }
 
     reduce(): Matrix {

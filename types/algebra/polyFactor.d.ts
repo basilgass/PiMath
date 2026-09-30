@@ -6,8 +6,8 @@ import type { Solution } from "../analyze";
 export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpression<PolyFactor>, IAlgebra, IEvaluable {
     #private;
     constructor(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]);
-    parse(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]): this;
-    copy(): this;
+    parse(value: InputAlgebra<Polynom> | Factor | PolyFactor | string): this;
+    copy(value: PolyFactor): this;
     clone(): PolyFactor;
     get tex(): string;
     get display(): string;
@@ -28,9 +28,9 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     get factors(): Factor[];
     set factors(value: Factor[]);
     fromPolynom(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>): this;
+    fromFactors(...values: (Factor | InputAlgebra<Polynom>)[]): this;
     fromString(value: string): this;
-    getRoots(): Solution[];
-    getZeroes(): Solution[];
+    get roots(): Solution[];
     hasVariable(variable: string): boolean;
     inverse(): this;
     isEqual(value: PolyFactor): boolean;

@@ -43,15 +43,17 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         }
 
         if (value instanceof Fraction) {
-            return this.fromFraction(value)
+            return this.copy(Root.fromFraction(value))
         }
 
         if (typeof value === "string") {
-            return this.fromString(value)
+            return this.copy(Root.fromString(value))
         }
 
         // Remaining scalar (number): build the factor at Root's boundary.
-        return this.#fromScalar(value)
+        const r = new Root()
+        r.#fromScalar(value)
+        return this.copy(r)
     }
 
     // Copy the mathematical state of another Root (index + radical + factor).
@@ -66,30 +68,24 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this
     }
 
-    fromFraction(value: Fraction): this {
-        this.index = 2
-        this.factor = value.clone()
-        this.radical.one()
-
-        return this
+    static fromFraction(value: Fraction): Root {
+        const r = new Root()
+        r.index = 2
+        r.factor = value.clone()
+        r.#radical.one()
+        return r
     }
 
     /**
-     * Delegate a string to the sqrt / root parser, or to the scalar builder for
-     * a plain fraction string.
+     * Build a new Root by delegating a string to the sqrt / root parser, or to
+     * the scalar builder for a plain fraction string.
      * @throws {ParseError} if the string is a malformed radical or fraction.
      */
-    fromString(value: string): this {
-        if (value.includes('sqrt')) {
-            return this.#parse_sqrt(value)
-        }
-
-        if (value.includes('root')) {
-            return this.#parse_root(value)
-        }
-
-        // Plain fraction string: no radical, delegate to the scalar builder.
-        return this.#fromScalar(value)
+    static fromString(value: string): Root {
+        const r = new Root()
+        if (value.includes('sqrt')) return r.#parse_sqrt(value)
+        if (value.includes('root')) return r.#parse_root(value)
+        return r.#fromScalar(value)
     }
 
     // Shared scalar builder (number or plain fraction string) → factor·√[2]{1}.

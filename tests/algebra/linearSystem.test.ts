@@ -14,15 +14,15 @@ describe('Linear System creation', () => {
         expect(LS.equations[0].display).to.be.equal('4x+5y=11')
     })
     test('create Linear System from matrix', () => {
-        const LS = LinearSystem.fromMatrix([
+        const LS = new LinearSystem().fromComponents([
             [4, 5, 11],
             [3, -7, 24]
         ])
         expect(LS).toBeDefined()
         expect(LS.equations).toHaveLength(2)
         expect(LS.variables).toHaveLength(2)
-        expect(LS.equations[0].display).to.be.equal('4x+5y+11=0')
-        expect(LS.equations[1].display).to.be.equal('3x-7y+24=0')
+        expect(LS.equations[0].display).to.be.equal('4x+5y=11')
+        expect(LS.equations[1].display).to.be.equal('3x-7y=24')
     })
 
     test.todo('parse string')
@@ -38,7 +38,7 @@ describe('Linear System creation', () => {
         expect(LS2.variables).toHaveLength(2)
         expect(LS2.equations[0].display).to.be.equal('4x+5y=11')
 
-        LS.equations[0] = new Equation('2x+3y=5')
+        LS.add(new LinearSystem('2x+3y=5', '7y-24=3x'))
         expect(LS2.equations[0].display).to.be.equal('4x+5y=11')
 
     })
@@ -46,11 +46,53 @@ describe('Linear System creation', () => {
     test.todo('set to one Linear System')
 })
 describe('Linear System output', () => {
-    test.todo('output as LaTeX')
-    test.todo('output as ASCII')
+    test('tex wraps system in \\left\\{...\\right.', () => {
+        const LS = new LinearSystem('2x+3y=5', '4x-5y=7')
+        expect(LS.tex).toContain('\\left\\{')
+        expect(LS.tex).toContain('\\right.')
+        expect(LS.tex).toContain('\\begin{array}')
+        expect(LS.tex).toContain('&=&')
+    })
+
+    test('buildTex with operators adds \\cdot annotations', () => {
+        const LS = new LinearSystem('2x+3y=5', '4x-5y=7')
+        const result = LS.buildTex(LS.equations, [['2'], ['-3']])
+        expect(result).toContain('\\cdot')
+        expect(result).toContain('\\left(-3\\right)')
+    })
+
+    test('display renders AsciiMath matrix format', () => {
+        const LS = new LinearSystem('2x+3y=5', '4x-5y=7')
+        expect(LS.display).toBe('{(2x,+3y,=,5),(4x,-5y,=,7):}')
+    })
 })
 describe('Linear System operations', () => {
     test.todo('reduce Linear System')
+    test('multiply all equations by an array of factors', () => {
+        const LS = new LinearSystem('2x+3y=5', '4x+5y=7')
+        LS.multiply([2, 3])
+        expect(LS.equations[0].display).toBe('4x+6y=10')
+        expect(LS.equations[1].display).toBe('12x+15y=21')
+    })
+
+    test('multiply one equation by index', () => {
+        const LS = new LinearSystem('2x+3y=5', '4x+5y=7')
+        LS.multiply(3, 1)
+        expect(LS.equations[0].display).toBe('2x+3y=5')
+        expect(LS.equations[1].display).toBe('12x+15y=21')
+    })
+
+    test('multiply with array length mismatch throws', () => {
+        const LS = new LinearSystem('2x+3y=5', '4x+5y=7')
+        expect(() => LS.multiply([2])).toThrow()
+    })
+
+    test('multiply with index out of range throws', () => {
+        const LS = new LinearSystem('2x+3y=5', '4x+5y=7')
+        expect(() => LS.multiply(2, 5)).toThrow()
+        expect(() => LS.multiply(2)).toThrow()
+    })
+
     test('add two Linear Systems', () => {
         const LS = new LinearSystem(
             '4x+5y=11',
@@ -116,13 +158,13 @@ describe('Linear System algebra', () => {
             '7y-24=3x'
         )
         const [matrix, vector] = LS.matrix
-        expect(matrix.map(x => x.map(y => y.value)))
+        expect(matrix.rows.map(row => row.map(p => p.monoms[0].coefficient.value)))
             .to.be.deep.equal([
             [4, 5],
             [-3, 7]
         ])
 
-        expect(vector.map(x => x.value)).to.be.deep.equal([11, 24])
+        expect(vector.array.map(f => f.value)).to.be.deep.equal([11, 24])
     })
 
     test('solve 2x2 Linear System', () => {
@@ -206,6 +248,49 @@ describe('Linear System algebra', () => {
         expect(LinearSystem.solutionAsDisplay(M)).toBe('(-3;8)')
     })
 
+})
+
+describe('solve_compute_factors', () => {
+    test('2x2 system — factors eliminate the variable', () => {
+        const LS = new LinearSystem('2x+3y=5', '4x+5y=7')
+        const [[eq0, eq1]] = LS.solve_compute_factors('x')
+        expect(eq0.id).toBe(0)
+        expect(eq1.id).toBe(1)
+        expect(eq0.factor * 2 + eq1.factor * 4).toBe(0)
+    })
+
+    test('3x3 system — sorted by smallest absolute sum', () => {
+        const LS = new LinearSystem('2x+3y=5', '4x+5y=7', '6x+7y=9')
+        const factors = LS.solve_compute_factors('x')
+        expect(factors).toHaveLength(3)
+        const sums = factors.map(([a, b]) => Math.abs(a.factor) + Math.abs(b.factor))
+        for (let i = 0; i < sums.length - 1; i++) {
+            expect(sums[i]).toBeLessThanOrEqual(sums[i + 1])
+        }
+    })
+
+    test('factors for y variable', () => {
+        const LS = new LinearSystem('2x+3y=5', '4x+5y=7')
+        const [[eq0, eq1]] = LS.solve_compute_factors('y')
+        expect(eq0.factor * 3 + eq1.factor * 5).toBe(0)
+    })
+})
+
+describe('isSolvable', () => {
+    test('independent 2x2 system is solvable', () => {
+        const LS = new LinearSystem('4x+5y=11', '-3x+7y=24')
+        expect(LS.isSolvable()).toBe(true)
+    })
+
+    test('proportional equations are not solvable', () => {
+        const LS = new LinearSystem('2x+4y=6', 'x+2y=3')
+        expect(LS.isSolvable()).toBe(false)
+    })
+
+    test('more equations than variables is not solvable', () => {
+        const LS = new LinearSystem('x+2y=3', 'x-y=1', '2x+y=5')
+        expect(LS.isSolvable()).toBe(false)
+    })
 })
 
 describe.todo('Linear System generators')

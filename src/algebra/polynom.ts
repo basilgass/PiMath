@@ -12,15 +12,11 @@ import type {
     InputValue,
     IPiMathObject,
     LiteralType,
-    TableOfSignsData,
-    TableOfSignsValues
 } from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Numeric} from '../numeric'
 import {EquationSolver} from './equationSolver'
 import {Monom} from './monom'
-import {replace_in_array} from "../helpers"
-import {operation_pow} from "./operations"
 import {Solution} from "../analyze/solution"
 
 
@@ -819,8 +815,19 @@ export class Polynom implements IPiMathObject<Polynom>,
     }
 
     pow(nb: number): this {
-        // operation_pow mutates the receiver in place (repeated multiply / one()).
-        operation_pow(this as Polynom, nb)
+        if (!Number.isSafeInteger(nb)) {
+            throw new InvalidArgumentError('Can only raise item by an integer')
+        }
+        if (nb < 0) {
+            throw new InvalidArgumentError('Can only raise item by a non-negative integer')
+        }
+        if (nb === 0) {
+            return this.one()
+        }
+        const P = this.clone()
+        for (let i = 1; i < nb; i++) {
+            this.multiply(P)
+        }
         return this.reduce()
     }
 
@@ -987,52 +994,6 @@ export class Polynom implements IPiMathObject<Polynom>,
 
         this.#monoms = this.#monoms.concat(monoms)
         return this.reduce()
-    }
-
-    tableOfSigns(): TableOfSignsData {
-        // returns ['+-', 'd|t|z', '+-']...
-
-        // Memoized roots of the polynom (see the roots getter).
-        const roots: Solution[] = this.roots
-
-        // Build the table os sign length and default values
-        // The signs looks like: ['+', 't', '+', 't', '+', 't', '+']
-        let signs: TableOfSignsValues[] = new Array(2 * roots.length + 1)
-            .fill('')
-            .map((_x, index) => {
-                return index % 2 === 0 ? '' : 'z'
-            })
-
-
-        if (signs.length === 1) {
-            // The polynom is a constant or has not roots
-            const [a] = this.getCoefficients().map(x => x.value)
-            signs = replace_in_array(signs, '', a > 0 ? '+' : '-')
-        } else if (this.degree().isOne()) {
-            // First degree: ax+b
-            const [a] = this.getCoefficients().map(x => x.value)
-
-            // Get the index of the zero.
-            signs[0] = a > 0 ? '-' : '+'
-            signs[1] = 'z'
-            signs[2] = a > 0 ? '+' : '-'
-        } else {
-            const testingRoots = [
-                roots[0].value - 1,
-                ...roots.map((_root, index) => {
-                    return index === roots.length - 1 ?
-                        roots[index].value + 1 :
-                        (roots[index].value + roots[index + 1].value) / 2
-                })
-            ]
-
-            testingRoots.forEach((test, index) => {
-                const sign = this.evaluate({[this.#resolveVariable()]: test}, true)
-                signs[index * 2] = sign > 0 ? '+' : '-'
-            })
-        }
-
-        return {roots, signs}
     }
 
     /** Numeric value of a constant polynom, or `undefined` when the degree is not zero. */

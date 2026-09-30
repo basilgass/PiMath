@@ -6,11 +6,10 @@ import type {
     InputValue,
     IPiMathObject,
     LiteralType,
-    TableOfSignsData
 } from "../pimath.interface"
 import {Fraction} from "../coefficients/fraction"
 import {Polynom} from "./polynom"
-import {replace_in_array, splitIfOutsideParentheses, wrapParenthesis} from "../helpers"
+import {splitIfOutsideParentheses, wrapParenthesis} from "../helpers"
 import {MathError, UnsupportedOperationError} from "../errors"
 
 /**
@@ -334,39 +333,6 @@ export class Factor implements IPiMathObject<Factor>,
     /** @throws {MathError} always — subtracting two factors is not defined. */
     subtract(): this {
         throw new MathError("Subtracting two factors is not possible")
-    }
-
-    /**
-     * Build the sign table for P(x)^n.
-     *
-     * Sign codes in the returned `signs` array:
-     * - `'+'` / `'-'` — positive / negative
-     * - `'z'` — zero (root of P)
-     * - `'d'` — defence: undefined (asymptote) when n < 0
-     * - `'h'` — hole: even-index radical of a negative, not real over ℝ
-     */
-    tableOfSigns(): TableOfSignsData {
-        const pow = this.power.reduce()
-        const tos = this.polynom.tableOfSigns()
-
-        // The zero roots becomes defence (d) if the power is negative
-        if (pow.isStrictlyNegative()) {
-            tos.signs = replace_in_array(tos.signs, 'z', 'd')
-        }
-
-        // The - sign becomes
-        // + (plus) if the power num is even and the power den is odd
-        // i (invalid) if the power denominator is even
-        if (pow.denominator % 2 === 0) {
-            // it's an even roots : no negative values!
-            tos.signs = replace_in_array(tos.signs, '-', 'h')
-        } else if (pow.numerator % 2 === 0) {
-            // it's an even power :  negative values becomes positive !
-            tos.signs = replace_in_array(tos.signs, '-', '+')
-        }
-
-
-        return {roots: tos.roots, signs: tos.signs}
     }
 
     get variables(): string[] {

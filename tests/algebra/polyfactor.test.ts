@@ -1,5 +1,6 @@
 import {describe, expect, test} from "vitest"
 import {Factor, PolyFactor} from "../../src"
+import {TableOfSigns} from "../../src/analyze/tableOfSigns"
 
 describe("PolyFactor creation", () => {
     test('should create a PolyFactor', () => {
@@ -775,32 +776,26 @@ describe("PolyFactor: comparison operations", () => {
 
 describe('PolyFactor: Table of signs', () => {
     test('compile table of signs of factors', () => {
-        const PF = new PolyFactor(
+        const tos = TableOfSigns.fromPolyFactor(new PolyFactor(
             new Factor('x-3', 3),
             new Factor('x-2', 2),
             new Factor('x+5', '1/2'),
             new Factor('x', -2)
-        )
-
-        const tos = PF.tableOfSigns()
+        ))
 
         expect(tos.roots.map(x => x.value)).toEqual([-5, 0, 2, 3])
         expect(tos.signs).toEqual(['h', 'z', '-', 'd', '-', 'z', '-', 'z', '+'])
     })
 
     test('compile table of signs with constant value', () => {
-        const PF = new PolyFactor().fromPolynom('3', 'x^2-1')
-
-        const tos = PF.tableOfSigns()
+        const tos = TableOfSigns.fromPolyFactor(new PolyFactor().fromPolynom('3', 'x^2-1'))
 
         expect(tos.roots.map(x => x.value)).toEqual([-1, 1])
         expect(tos.signs).toEqual(['+', 'd', '-', 'd', '+'])
     })
 
     test('compile table of signs from two polynoms', () => {
-        const PF = new PolyFactor().fromPolynom('(x^2-16)(x+3)', '(x+5)')
-
-        const tos = PF.tableOfSigns()
+        const tos = TableOfSigns.fromPolyFactor(new PolyFactor().fromPolynom('(x^2-16)(x+3)', '(x+5)'))
 
         expect(tos.factors[0].factor.polynom.display).toBe('x+4')
         expect(tos.factors[0].signs.join("")).toBe('-t-z+t+t+')
@@ -813,11 +808,10 @@ describe('PolyFactor: Table of signs', () => {
 
         expect(tos.factors[3].factor.polynom.display).toBe('x+5')
         expect(tos.factors[3].signs.join("")).toBe('-d+t+t+t+')
-
     })
+
     test('solve polynom without bx', () => {
-        const PF = new PolyFactor().fromPolynom('8-x^2')
-        const tos = PF.tableOfSigns()
+        const tos = TableOfSigns.fromPolyFactor(new PolyFactor().fromPolynom('8-x^2'))
 
         expect(tos.roots).toHaveLength(2)
         expect(tos.roots[0].reduce().display).toBe('-2sqrt(2)')
