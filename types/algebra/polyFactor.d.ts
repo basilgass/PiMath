@@ -1,4 +1,4 @@
-import type { IAlgebra, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType, PolyFactorTableOfSigns } from "../pimath.interface";
+import type { IAlgebra, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
 import { Fraction } from "../coefficients";
 import { Factor } from "./factor";
 import { Polynom } from "./polynom";
@@ -47,7 +47,6 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     sort(variable?: string): this;
     sqrt(): this;
     subtract(...values: PolyFactor[]): this;
-    tableOfSigns(): PolyFactorTableOfSigns;
     get variables(): string[];
     zero(): this;
 }

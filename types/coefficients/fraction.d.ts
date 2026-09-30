@@ -35,10 +35,10 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     get exact(): boolean;
     set exact(value: boolean);
     get asFrac(): this;
-    fromNumber(value: number): this;
-    fromNumbers(numerator: number, denominator: number): this;
-    fromPeriodic(value: string | number, length: number): this;
-    fromString(value: string): this;
+    static fromNumber(value: number): Fraction;
+    static fromNumbers(numerator: number, denominator: number): Fraction;
+    static fromPeriodic(value: string | number, length: number): Fraction;
+    static fromString(value: string): Fraction;
     infinite(): this;
     invalid(): this;
     inverse(): this;

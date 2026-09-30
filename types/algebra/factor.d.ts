@@ -1,4 +1,4 @@
-import type { IAlgebra, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType, TableOfSignsData } from "../pimath.interface";
+import type { IAlgebra, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
 import { Fraction } from "../coefficients/fraction";
 import { Polynom } from "./polynom";
 export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor>, IAlgebra, IEvaluable {
@@ -40,7 +40,6 @@ export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor
     root(value: number): this;
     sqrt(): this;
     subtract(): this;
-    tableOfSigns(): TableOfSignsData;
     get variables(): string[];
     get asPower(): this;
     get asRoot(): this;

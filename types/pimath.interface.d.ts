@@ -1,5 +1,5 @@
 import type { Fraction } from "./coefficients";
-import type { Equation, Factor, Monom } from "./algebra";
+import type { Equation, Monom } from "./algebra";
 import type { Line, Point, Vector } from "./geometry";
 import type { Solution } from "./analyze/solution";
 export type InputValue<T> = T | string | number | Fraction;
@@ -54,17 +54,7 @@ export interface IAnalyse<T> {
     integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, variable?: string): Fraction;
     primitive(): T;
 }
-export type TableOfSignsValues = '-' | '+' | 'h' | 'z' | 't' | 'd' | 'u' | 'n' | '';
-export interface TableOfSignsData {
-    roots: Solution[];
-    signs: TableOfSignsValues[];
-}
-export interface FactorTableOfSigns extends TableOfSignsData {
-    factor: Factor;
-}
-export interface PolyFactorTableOfSigns extends TableOfSignsData {
-    factors: FactorTableOfSigns[];
-}
+export type TableOfSignsValues = '-' | '+' | 'h' | 'z' | 't' | 'd' | '';
 export declare enum LineProperty {
     None = "none",
     Parallel = "parallel",

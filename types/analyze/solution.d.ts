@@ -13,6 +13,7 @@ export declare class Solution implements IPiMathObject<Solution> {
     static fromRoot(value: InputValue<Root>): Solution;
     static fromPolynomRoot(root: PolynomRoot): Solution;
     static fromQuadratic(A: InputValue<Fraction>, B: InputValue<Fraction>, C: InputValue<Fraction>): Solution[];
+    static fromString(value: string): Solution;
     static parse(value: Fraction | Root | PolynomRoot | Solution): Solution;
     copy(value: Solution): this;
     clone(): Solution;

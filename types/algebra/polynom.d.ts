@@ -1,4 +1,4 @@
-import type { IAlgebra, IAnalyse, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType, TableOfSignsData } from "../pimath.interface";
+import type { IAlgebra, IAnalyse, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
 import { Fraction } from "../coefficients";
 import { Monom } from './monom';
 import { Solution } from "../analyze/solution";
@@ -80,7 +80,6 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     setVariable(value: string): this;
     sqrt(): this;
     subtract(...values: InputAlgebra<Polynom>[]): this;
-    tableOfSigns(): TableOfSignsData;
     get value(): number | undefined;
     get variables(): string[];
     zero(): this;
