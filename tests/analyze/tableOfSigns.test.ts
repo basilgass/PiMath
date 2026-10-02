@@ -19,6 +19,16 @@ describe('TableOfSigns — construction', () => {
         expect(tos.roots).toHaveLength(2)
     })
 
+    test('PolyFactor with shared root (x-1)×(x-1)²: root deduplicated, sign changes', () => {
+        const tos = TableOfSigns.fromPolyFactor(new PolyFactor(
+            new Factor('x-1', 1),
+            new Factor('x-1', 2)
+        ))
+        expect(tos.roots).toHaveLength(1)
+        expect(tos.signs).toEqual(['-', 'z', '+'])
+        expect(tos.zeros()[0].value).toBe(1)
+    })
+
     test('empty constructor produces empty domain', () => {
         const tos = new TableOfSigns()
         expect(tos.roots).toHaveLength(0)
@@ -75,6 +85,56 @@ describe('TableOfSigns — nonNegative / nonPositive', () => {
     test('x-2: nonPositive includes root ]-∞;2]', () => {
         const tos = TableOfSigns.fromPolynom(new Polynom('x-2'))
         expect(tos.nonPositive().display).toBe(']-oo;2]')
+    })
+})
+
+describe('TableOfSigns — zero polynomial', () => {
+    test('sign slot is z with no roots', () => {
+        const tos = TableOfSigns.fromPolynom(new Polynom('0'))
+        expect(tos.signs).toEqual(['z'])
+        expect(tos.roots).toHaveLength(0)
+    })
+
+    test('positive and negative are empty', () => {
+        const tos = TableOfSigns.fromPolynom(new Polynom('0'))
+        expect(tos.positive().display).toBe('O/')
+        expect(tos.negative().display).toBe('O/')
+    })
+
+    test('nonNegative and nonPositive are RR', () => {
+        const tos = TableOfSigns.fromPolynom(new Polynom('0'))
+        expect(tos.nonNegative().display).toBe('RR')
+        expect(tos.nonPositive().display).toBe('RR')
+    })
+
+    test('domain is RR', () => {
+        const tos = TableOfSigns.fromPolynom(new Polynom('0'))
+        expect(tos.domain().display).toBe('RR')
+    })
+})
+
+describe('TableOfSigns — factor sign adjustment', () => {
+    test('even-power factor (x-1)²: signs are all non-negative', () => {
+        const tos = TableOfSigns.fromFactor(new Factor('x-1', 2))
+        expect(tos.signs).toEqual(['+', 'z', '+'])
+    })
+
+    test('even-power factor (x-1)²: nonNegative is RR', () => {
+        const tos = TableOfSigns.fromFactor(new Factor('x-1', 2))
+        expect(tos.nonNegative().display).toBe('RR')
+    })
+
+    test('even-power factor (x-1)²: zeros contains 1', () => {
+        const tos = TableOfSigns.fromFactor(new Factor('x-1', 2))
+        expect(tos.zeros()).toHaveLength(1)
+        expect(tos.zeros()[0].value).toBe(1)
+    })
+
+    test('even-power factor (x-1)²: positive excludes the root', () => {
+        const tos = TableOfSigns.fromFactor(new Factor('x-1', 2))
+        expect(tos.positive().contains(1)).toBe(false)
+        expect(tos.positive().contains(0)).toBe(true)
+        expect(tos.positive().contains(2)).toBe(true)
     })
 })
 
@@ -143,6 +203,16 @@ describe('TableOfSigns — clone / copy', () => {
         const clone = tos.clone()
         expect(clone.tex).toContain('\\(g(x)\\)/1')
         expect(clone.tex).toContain('[lgt=3,espcl=2]')
+    })
+
+    test('copy on instance with modified display state: target state preserved', () => {
+        const src = TableOfSigns.fromPolynom(new Polynom('x-1'))
+        const dst = new TableOfSigns()
+        dst.withLabel('g(x)').withTkzTabOptions(4, 2)
+        dst.copy(src)
+        expect(dst.signs).toEqual(src.signs)
+        expect(dst.tex).toContain('\\(g(x)\\)/1')
+        expect(dst.tex).toContain('[lgt=4,espcl=2]')
     })
 
     test('copy transfers math state but not display state', () => {

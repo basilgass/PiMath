@@ -25,39 +25,43 @@ export class TableOfSigns implements IPiMathObject<TableOfSigns> {
         this.#roots = []
         this.#signs = ['']
         this.#factorRows = []
-
-        if (value === undefined) return
-
-        if (value instanceof Factor) {
-            const row = TableOfSigns.#computeFactorSigns(value)
-            this.#roots = row.roots
-            this.#signs = row.signs
-        } else if (value instanceof PolyFactor) {
-            const data = TableOfSigns.#computePolyFactorSigns(value)
-            this.#roots = data.roots
-            this.#signs = data.signs
-            this.#factorRows = data.factorRows
-        } else if (value instanceof Polynom) {
-            const row = TableOfSigns.#computePolynomSigns(value)
-            this.#roots = row.roots
-            this.#signs = row.signs
-        }
+        if (value !== undefined) this.parse(value)
     }
 
     // -------------------------------------------------------------------------
-    // Static factories
+    // parse / Static factories
     // -------------------------------------------------------------------------
 
+    parse(value: InputAlgebra<PolyFactor | Factor | Polynom>): this {
+        if (value instanceof PolyFactor) return this.copy(TableOfSigns.fromPolyFactor(value))
+        if (value instanceof Factor)     return this.copy(TableOfSigns.fromFactor(value))
+        if (value instanceof Polynom)    return this.copy(TableOfSigns.fromPolynom(value))
+        return this.copy(TableOfSigns.fromFactor(new Factor(value)))
+    }
+
     static fromPolynom(p: Polynom): TableOfSigns {
-        return new TableOfSigns(p)
+        const tos = new TableOfSigns()
+        const row = TableOfSigns.#computePolynomSigns(p)
+        tos.#roots = row.roots
+        tos.#signs = row.signs
+        return tos
     }
 
     static fromFactor(f: Factor): TableOfSigns {
-        return new TableOfSigns(f)
+        const tos = new TableOfSigns()
+        const row = TableOfSigns.#computeFactorSigns(f)
+        tos.#roots = row.roots
+        tos.#signs = row.signs
+        return tos
     }
 
     static fromPolyFactor(pf: PolyFactor): TableOfSigns {
-        return new TableOfSigns(pf)
+        const tos = new TableOfSigns()
+        const data = TableOfSigns.#computePolyFactorSigns(pf)
+        tos.#roots = data.roots
+        tos.#signs = data.signs
+        tos.#factorRows = data.factorRows
+        return tos
     }
 
     // -------------------------------------------------------------------------
@@ -72,12 +76,7 @@ export class TableOfSigns implements IPiMathObject<TableOfSigns> {
 
         if (signs.length === 1) {
             const [a] = p.getCoefficients().map(x => x.value)
-            signs = replace_in_array(signs, '', a > 0 ? '+' : '-') as TableOfSignsValues[]
-        } else if (p.degree().isOne()) {
-            const [a] = p.getCoefficients().map(x => x.value)
-            signs[0] = a > 0 ? '-' : '+'
-            signs[1] = 'z'
-            signs[2] = a > 0 ? '+' : '-'
+            signs = replace_in_array(signs, '', a > 0 ? '+' : a < 0 ? '-' : 'z') as TableOfSignsValues[]
         } else {
             const variable = p.variables[0] ?? 'x'
             const testingRoots = [
@@ -224,6 +223,7 @@ export class TableOfSigns implements IPiMathObject<TableOfSigns> {
         ].join('\n')
     }
 
+    /** @throws {NotImplementedError} Always; ASCII display is not yet implemented. */
     get display(): string {
         throw new NotImplementedError('TableOfSigns.display is not yet implemented')
     }
@@ -317,7 +317,7 @@ export class TableOfSigns implements IPiMathObject<TableOfSigns> {
 
     /** Intervals where f(x) ≥ 0 (closed at zeros). */
     nonNegative(): Domain {
-        return this.#buildDomain(s => s === '+', s => s === 'z')
+        return this.#buildDomain(s => s === '+' || s === 'z', s => s === 'z')
     }
 
     /** Intervals where f(x) < 0. */
@@ -327,12 +327,14 @@ export class TableOfSigns implements IPiMathObject<TableOfSigns> {
 
     /** Intervals where f(x) ≤ 0. */
     nonPositive(): Domain {
-        return this.#buildDomain(s => s === '-', s => s === 'z')
+        return this.#buildDomain(s => s === '-' || s === 'z', s => s === 'z')
     }
 
     /**
-     * Definition domain: excludes poles ('d') and holes ('h').
-     * Includes zeros and sign-passing roots.
+     * Definition domain: excludes poles (`'d'`), holes (`'h'`), and unresolved
+     * slots (`''`). Includes zeros (`'z'`) and sign-changing roots at both
+     * interval and root positions — so the zero polynomial, whose sole interval
+     * slot carries `'z'`, correctly yields ℝ.
      */
     domain(): Domain {
         return this.#buildDomain(
@@ -373,7 +375,12 @@ export class TableOfSigns implements IPiMathObject<TableOfSigns> {
         return [...this.#signs]
     }
 
-    /** Per-factor sign rows (only populated when built from a PolyFactor). */
+    /**
+     * Per-factor sign rows (only populated when built from a PolyFactor).
+     * Sign arrays are aligned to the global root list: a `'t'` value at an
+     * odd (root) position means the factor has no root there — that global
+     * root belongs to another factor.
+     */
     get factors(): { factor: Factor, roots: Solution[], signs: TableOfSignsValues[] }[] {
         return this.#factorRows.map(fr => ({
             factor: fr.factor,
