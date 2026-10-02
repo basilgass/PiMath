@@ -7,12 +7,28 @@ import {Solution} from "./solution"
 // Module-level comparison helpers
 // ---------------------------------------------------------------------------
 
-function cmpSolution(a: Solution, b: Solution): number {
-    if (a.value === b.value) return 0
-    return a.value > b.value ? 1 : -1
+function fractionEqual(a: Fraction, b: Fraction): boolean {
+    return a.numerator * b.denominator === b.numerator * a.denominator
 }
 
-/** Compare left bounds: null = -∞ (smallest). */
+function exactEqual(a: Solution, b: Solution): boolean {
+    if (!fractionEqual(a.fraction, b.fraction)) return false
+    const ra = a.root, rb = b.root
+    if (ra.isZero() && rb.isZero()) return true
+    if (ra.isZero() !== rb.isZero()) return false
+    return ra.index === rb.index
+        && fractionEqual(ra.factor, rb.factor)
+        && fractionEqual(ra.radical, rb.radical)
+}
+
+function cmpSolution(a: Solution, b: Solution): number {
+    if (a.exact && b.exact && exactEqual(a, b)) return 0
+    const diff = a.value - b.value
+    if (diff === 0) return 0
+    return diff > 0 ? 1 : -1
+}
+
+/** Compare left bounds: null = -∞ (smallest). Exported for Domain's interval normalization. */
 export function cmpLeft(a: Solution | null, b: Solution | null): number {
     if (a === null && b === null) return 0
     if (a === null) return -1
@@ -20,7 +36,7 @@ export function cmpLeft(a: Solution | null, b: Solution | null): number {
     return cmpSolution(a, b)
 }
 
-/** Compare right bounds: null = +∞ (largest). */
+/** Compare right bounds: null = +∞ (largest). Exported for Domain's interval normalization. */
 export function cmpRight(a: Solution | null, b: Solution | null): number {
     if (a === null && b === null) return 0
     if (a === null) return 1
@@ -36,8 +52,8 @@ export function cmpRight(a: Solution | null, b: Solution | null): number {
  * An immutable interval over ℝ with exact (Solution-based) bounds.
  *
  * `null` encodes ±∞ (always open by convention).
- * Use the static factories — `fromBounds`, `empty`, `real`, `point` — to
- * construct instances; the constructor is private.
+ * Prefer the static factories — `fromBounds`, `empty`, `real`, `point`, `fromString` —
+ * or `new Interval(stringOrInterval)` via the public constructor.
  */
 export class Interval implements IPiMathObject<Interval> {
     #left: Solution | null
@@ -46,18 +62,23 @@ export class Interval implements IPiMathObject<Interval> {
     #rightOpen: boolean
     #empty: boolean
 
-    private constructor() {
+    constructor(value?: string | Interval) {
         this.#left = null
         this.#right = null
         this.#leftOpen = true
         this.#rightOpen = true
         this.#empty = false
+        if (value !== undefined) this.parse(value)
     }
 
     // -------------------------------------------------------------------------
     // Static factories
     // -------------------------------------------------------------------------
 
+    /**
+     * Construct an interval from explicit bounds and open/closed flags.
+     * A `null` bound encodes ±∞ and is always forced open, regardless of the flag passed.
+     */
     static fromBounds(
         left: Solution | null,
         right: Solution | null,
@@ -141,6 +162,16 @@ export class Interval implements IPiMathObject<Interval> {
     }
 
     // -------------------------------------------------------------------------
+    // Parse
+    // -------------------------------------------------------------------------
+
+    parse(value: string | Interval): this {
+        if (value instanceof Interval) return this.copy(value)
+        if (typeof value === 'string') return this.copy(Interval.fromString(value))
+        throw new ParseError(`Cannot parse ${typeof value} as Interval`)
+    }
+
+    // -------------------------------------------------------------------------
     // IPiMathObject
     // -------------------------------------------------------------------------
 
@@ -219,6 +250,7 @@ export class Interval implements IPiMathObject<Interval> {
     contains(x: Fraction | number): boolean {
         if (this.isEmpty()) return false
         const v = typeof x === 'number' ? x : x.value
+        if (Number.isNaN(v)) return false
 
         if (this.#left !== null) {
             const l = this.#left.value

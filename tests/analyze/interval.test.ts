@@ -2,6 +2,7 @@ import {describe, expect, it} from "vitest"
 import {Interval} from "../../src/analyze/interval"
 import {Solution} from "../../src/analyze/solution"
 import {Fraction} from "../../src/coefficients"
+import {ParseError} from "../../src/errors"
 
 function sol(n: number, d = 1): Solution {
     return Solution.fromFraction(new Fraction(n, d))
@@ -35,12 +36,15 @@ describe("Interval — factories", () => {
 
 describe("Interval — isEmpty / isPoint", () => {
     it("degenerate open interval ]a;a[ is empty", () => {
-        const iv = Interval.fromBounds(sol(2), sol(2), true, false)
-        expect(iv.isEmpty()).toBe(true)
+        expect(Interval.fromBounds(sol(2), sol(2), true, true).isEmpty()).toBe(true)
     })
 
     it("degenerate half-open interval ]a;a] is empty", () => {
         expect(Interval.fromBounds(sol(2), sol(2), true, false).isEmpty()).toBe(true)
+    })
+
+    it("degenerate half-open interval [a;a[ is empty", () => {
+        expect(Interval.fromBounds(sol(2), sol(2), false, true).isEmpty()).toBe(true)
     })
 
     it("[a;a] is a point, not empty", () => {
@@ -71,6 +75,11 @@ describe("Interval — contains", () => {
 
     it("empty interval contains nothing", () => {
         expect(Interval.empty().contains(0)).toBe(false)
+    })
+
+    it("contains(NaN) returns false for any interval", () => {
+        expect(Interval.real().contains(NaN)).toBe(false)
+        expect(Interval.fromBounds(sol(1), sol(3), false, false).contains(NaN)).toBe(false)
     })
 })
 
@@ -147,5 +156,84 @@ describe("Interval — clone/copy", () => {
         const b = a.clone()
         expect(b.display).toBe(a.display)
         expect(b).not.toBe(a)
+    })
+})
+
+describe("Interval — fromString", () => {
+    it("'O/' → empty", () => {
+        expect(Interval.fromString('O/').isEmpty()).toBe(true)
+    })
+
+    it("'RR' → real line", () => {
+        expect(Interval.fromString('RR').isReal()).toBe(true)
+    })
+
+    it("'RR_+' → [0;+∞[", () => {
+        const iv = Interval.fromString('RR_+')
+        expect(iv.left?.value).toBe(0)
+        expect(iv.leftOpen).toBe(false)
+        expect(iv.right).toBeNull()
+    })
+
+    it("'RR_-' → ]-∞;0]", () => {
+        const iv = Interval.fromString('RR_-')
+        expect(iv.left).toBeNull()
+        expect(iv.right?.value).toBe(0)
+        expect(iv.rightOpen).toBe(false)
+    })
+
+    it("'RR_+**' → ]0;+∞[", () => {
+        const iv = Interval.fromString('RR_+**')
+        expect(iv.left?.value).toBe(0)
+        expect(iv.leftOpen).toBe(true)
+        expect(iv.right).toBeNull()
+    })
+
+    it("'RR_-**' → ]-∞;0[", () => {
+        const iv = Interval.fromString('RR_-**')
+        expect(iv.left).toBeNull()
+        expect(iv.right?.value).toBe(0)
+        expect(iv.rightOpen).toBe(true)
+    })
+
+    it("'{3}' → singleton {3}", () => {
+        const iv = Interval.fromString('{3}')
+        expect(iv.isPoint()).toBe(true)
+        expect(iv.left?.value).toBe(3)
+    })
+
+    it("'[1;3]' → closed interval", () => {
+        const iv = Interval.fromString('[1;3]')
+        expect(iv.left?.value).toBe(1)
+        expect(iv.right?.value).toBe(3)
+        expect(iv.leftOpen).toBe(false)
+        expect(iv.rightOpen).toBe(false)
+    })
+
+    it("']1;3[' → open interval", () => {
+        const iv = Interval.fromString(']1;3[')
+        expect(iv.left?.value).toBe(1)
+        expect(iv.right?.value).toBe(3)
+        expect(iv.leftOpen).toBe(true)
+        expect(iv.rightOpen).toBe(true)
+    })
+
+    it("']-oo;2]' → ]-∞;2]", () => {
+        const iv = Interval.fromString(']-oo;2]')
+        expect(iv.left).toBeNull()
+        expect(iv.right?.value).toBe(2)
+        expect(iv.rightOpen).toBe(false)
+    })
+
+    it("'[1;+oo[' → [1;+∞[", () => {
+        const iv = Interval.fromString('[1;+oo[')
+        expect(iv.left?.value).toBe(1)
+        expect(iv.leftOpen).toBe(false)
+        expect(iv.right).toBeNull()
+    })
+
+    it("unrecognised format throws ParseError", () => {
+        expect(() => Interval.fromString('foo')).toThrow(ParseError)
+        expect(() => Interval.fromString('[1 2]')).toThrow(ParseError)
     })
 })

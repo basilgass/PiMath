@@ -141,6 +141,11 @@ describe("Domain — contains", () => {
         expect(d.contains(new Fraction(0))).toBe(false)
         expect(d.contains(1)).toBe(true)
     })
+
+    it("contains(NaN) returns false", () => {
+        expect(Domain.real().contains(NaN)).toBe(false)
+        expect(Domain.fromInterval(iv(1, 3)).contains(NaN)).toBe(false)
+    })
 })
 
 describe("Domain — fromString", () => {
@@ -209,7 +214,30 @@ describe("Domain — fromString", () => {
         expect(d.display).toBe("]1;3]")
     })
 
+    it("'{3}' single singleton delegated to Interval.fromString", () => {
+        const d = Domain.fromString("{3}")
+        expect(d.length).toBe(1)
+        expect(d.contains(3)).toBe(true)
+        expect(d.contains(2)).toBe(false)
+    })
+
     it("invalid string throws ParseError", () => {
         expect(() => Domain.fromString("invalid")).toThrow()
+    })
+})
+
+describe("Domain — clone/copy", () => {
+    it("clone produces independent copy", () => {
+        const d = Domain.fromInterval(iv(1, 3))
+        const c = d.clone()
+        expect(c.display).toBe(d.display)
+        expect(c).not.toBe(d)
+    })
+
+    it("copy transfers state into receiver", () => {
+        const d = Domain.fromInterval(iv(1, 3))
+        const c = new Domain()
+        c.copy(d)
+        expect(c.display).toBe(d.display)
     })
 })

@@ -2,7 +2,7 @@ import type {IPiMathObject, OutputStyle} from "../pimath.interface"
 import type {Fraction} from "../coefficients"
 import {ParseError} from "../errors"
 import {Solution} from "./solution"
-import {Interval, cmpLeft, cmpRight} from "./interval"
+import {cmpLeft, cmpRight, Interval} from "./interval"
 
 // ---------------------------------------------------------------------------
 // Normalization helper: sort + merge overlapping/adjacent intervals
@@ -56,14 +56,16 @@ function normalizeIntervals(raw: Interval[]): Interval[] {
  * A (possibly empty) subset of ℝ represented as a finite union of intervals.
  * The internal interval list is always sorted and non-overlapping (normalized).
  *
- * Use the static factories — `fromIntervals`, `fromInterval`, `empty`, `real` —
- * to construct instances.
+ * Construct via `new Domain()`, `new Domain(string)`, `new Domain(interval)`,
+ * `new Domain(domain)`, or the static factories `fromIntervals`, `fromInterval`,
+ * `empty`, `real`, `fromString`.
  */
 export class Domain implements IPiMathObject<Domain> {
     #intervals: Interval[]
 
-    private constructor(intervals: Interval[]) {
-        this.#intervals = normalizeIntervals(intervals)
+    constructor(value?: string | Domain | Interval) {
+        this.#intervals = []
+        if (value !== undefined) this.parse(value)
     }
 
     // -------------------------------------------------------------------------
@@ -71,21 +73,23 @@ export class Domain implements IPiMathObject<Domain> {
     // -------------------------------------------------------------------------
 
     static fromIntervals(intervals: Interval[]): Domain {
-        return new Domain(intervals)
+        const d = new Domain()
+        d.#intervals = normalizeIntervals(intervals)
+        return d
     }
 
     static fromInterval(interval: Interval): Domain {
-        return new Domain([interval])
+        return Domain.fromIntervals([interval])
     }
 
     /** The empty domain ∅. */
     static empty(): Domain {
-        return new Domain([])
+        return new Domain()
     }
 
     /** The whole real line ℝ. */
     static real(): Domain {
-        return new Domain([Interval.real()])
+        return Domain.fromIntervals([Interval.real()])
     }
 
     /**
@@ -96,6 +100,7 @@ export class Domain implements IPiMathObject<Domain> {
      * - `RR`                          → ℝ
      * - `RR^**`                       → ℝ* = ]-∞;0[ ∪ ]0;+∞[
      * - `RR\{a;b;…}`                  → ℝ minus a finite set of points
+     * - `{a}`                          → closed singleton (delegated to Interval.fromString)
      * - `{a;b;…}`                     → union of closed singletons
      * - `I1uuI2uu…`                   → union of intervals (each parsed via Interval.fromString)
      * - Any single-interval string    → delegated to Interval.fromString
@@ -138,6 +143,17 @@ export class Domain implements IPiMathObject<Domain> {
 
         // Single interval: delegate
         return Domain.fromInterval(Interval.fromString(s))
+    }
+
+    // -------------------------------------------------------------------------
+    // Parse
+    // -------------------------------------------------------------------------
+
+    parse(value: string | Domain | Interval): this {
+        if (value instanceof Domain) return this.copy(value)
+        if (value instanceof Interval) return this.copy(Domain.fromInterval(value))
+        if (typeof value === 'string') return this.copy(Domain.fromString(value))
+        throw new ParseError(`Cannot parse ${typeof value} as Domain`)
     }
 
     // -------------------------------------------------------------------------
@@ -197,7 +213,7 @@ export class Domain implements IPiMathObject<Domain> {
             const next = ivs[i + 1]
             if (!curr.rightOpen || !next.leftOpen) return null
             if (curr.right === null || next.left === null) return null
-            if (curr.right.value !== next.left.value) return null
+            if (cmpLeft(curr.right, next.left) !== 0) return null
             pts.push(curr.right)
         }
         return pts
@@ -220,7 +236,9 @@ export class Domain implements IPiMathObject<Domain> {
     }
 
     clone(): Domain {
-        return new Domain(this.#intervals.map(iv => iv.clone()))
+        const d = new Domain()
+        d.#intervals = this.#intervals.map(iv => iv.clone())
+        return d
     }
 
     copy(value: Domain): this {
@@ -244,6 +262,10 @@ export class Domain implements IPiMathObject<Domain> {
     // Set operations
     // -------------------------------------------------------------------------
 
+    /**
+     * O(n·m) pairwise intersection — negligible for the typical 1–3 interval count.
+     * The result is normalized (sorted, non-overlapping).
+     */
     intersect(other: Domain): Domain {
         const result: Interval[] = []
         for (const a of this.#intervals) {
@@ -252,11 +274,12 @@ export class Domain implements IPiMathObject<Domain> {
                 if (!iv.isEmpty()) result.push(iv)
             }
         }
-        return new Domain(result)
+        return Domain.fromIntervals(result)
     }
 
+    /** Returns the union, automatically normalized (overlapping intervals are merged). */
     union(other: Domain): Domain {
-        return new Domain([...this.#intervals, ...other.#intervals])
+        return Domain.fromIntervals([...this.#intervals, ...other.#intervals])
     }
 
     /**
@@ -291,7 +314,7 @@ export class Domain implements IPiMathObject<Domain> {
             gaps.push(Interval.fromBounds(last.right, null, !last.rightOpen, true))
         }
 
-        return new Domain(gaps)
+        return Domain.fromIntervals(gaps)
     }
 
     // -------------------------------------------------------------------------
