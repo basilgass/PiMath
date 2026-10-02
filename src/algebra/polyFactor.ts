@@ -26,17 +26,16 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
     constructor(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]) {
         this.#factors = []
         values.forEach(v => {
-            if (typeof v === 'string')        this.#factors.push(...new PolyFactor().fromString(v).factors)
+            if (typeof v === 'string')        this.#factors.push(...PolyFactor.fromString(v).factors)
             else if (v instanceof PolyFactor) this.#factors.push(...v.factors)
             else                              this.#factors.push(new Factor(v))
         })
-        return this
     }
 
     parse(value: InputAlgebra<Polynom> | Factor | PolyFactor | string): this {
-        if (typeof value === 'string')   return this.fromString(value)
+        if (typeof value === 'string')   return this.copy(PolyFactor.fromString(value))
         if (value instanceof PolyFactor) return this.copy(value)
-        return this.fromFactors(value)
+        return this.copy(PolyFactor.fromFactors(value))
     }
 
     copy(value: PolyFactor): this {
@@ -261,7 +260,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             D.multiply(f.develop())
         })
 
-        return new PolyFactor().fromPolynom(N, D)
+        return PolyFactor.fromPolynom(N, D)
     }
 
     divide(...values: PolyFactor[]): this {
@@ -314,49 +313,38 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         this.#factors = value
     }
 
-    fromPolynom(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>): this {
-        // fromPolynom loads the numerator and denominator as is, without factorizing !
-        // TODO: fromPolynom should parse the string if it's factorized: 3x(...)^3(..)^2(12x)
-        this.#factors = [new Factor(new Polynom(numerator))]
-
+    static fromPolynom(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>): PolyFactor {
+        const pf = new PolyFactor()
+        pf.#factors = [new Factor(new Polynom(numerator))]
         if (denominator) {
             const polynom = new Polynom(denominator)
-
-            if (polynom.isOne()) return this
-
+            if (polynom.isOne()) return pf
             if (polynom.isZero()) throw new MathError("Cannot divide by zero")
-
-            this.#factors.push(new Factor(polynom, -1))
+            pf.#factors.push(new Factor(polynom, -1))
         }
-        return this
+        return pf
     }
 
-    fromFactors(...values: (Factor | InputAlgebra<Polynom>)[]): this {
-        this.#factors = values.map(v => new Factor(v))
-        return this
+    static fromFactors(...values: (Factor | InputAlgebra<Polynom>)[]): PolyFactor {
+        const pf = new PolyFactor()
+        pf.#factors = values.map(v => new Factor(v))
+        return pf
     }
 
-    fromString(value: string): this {
-        this.#factors = []
-
-        // Two cases :
-        // - either the string is given as a factorized string
-        // - or the string has something that prevents this => use fromPolynom
-
+    static fromString(value: string): PolyFactor {
+        const pf = new PolyFactor()
         const [num, ...den] = splitIfOutsideParentheses(value, '/')
-        if(num==='') throw new ParseError('Parsing a PolyFactor from a string requires a numerator')
-        if(den.length>1) throw new ParseError('Parsing a PolyFactor from a string only allows max one signe "/"')
-
-        if(den.length===0) {
-            this.#factors = Factor.factorsFromString(stripParenthesis(num), true)
-        }else{
-            this.#factors = [
+        if (num === '') throw new ParseError('Parsing a PolyFactor from a string requires a numerator')
+        if (den.length > 1) throw new ParseError('Parsing a PolyFactor from a string only allows max one signe "/"')
+        if (den.length === 0) {
+            pf.#factors = Factor.factorsFromString(stripParenthesis(num), true)
+        } else {
+            pf.#factors = [
                 ...Factor.factorsFromString(stripParenthesis(num), true),
                 ...Factor.factorsFromString(stripParenthesis(den[0]), false),
             ]
         }
-
-        return this
+        return pf
     }
 
     get roots(): Solution[] {

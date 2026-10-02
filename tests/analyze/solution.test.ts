@@ -89,29 +89,34 @@ describe("Solution — fromPolynomRoot", () => {
 
 describe("Solution — parse (type router)", () => {
     test("routes a Fraction to fromFraction", () => {
-        const sol = Solution.parse(new Fraction(3, 2))
+        const sol = new Solution().parse(new Fraction(3, 2))
         expect(sol.value).toBe(1.5)
         expect(sol.root.isZero()).toBe(true)
     })
 
     test("routes a Root to fromRoot", () => {
-        const sol = Solution.parse(new Root().from(2, 2))
+        const sol = new Solution().parse(new Root().from(2, 2))
         expect(sol.fraction.isZero()).toBe(true)
         expect(sol.value).toBeCloseTo(Math.SQRT2, 3)
     })
 
     test("routes a PolynomRoot to fromPolynomRoot", () => {
         const [dbl] = solveQuadratic([new Fraction(1), new Fraction(2), new Fraction(1)])
-        const sol = Solution.parse(dbl)
+        const sol = new Solution().parse(dbl)
         expect(sol.value).toBe(-1)
         expect(sol.count).toBe(2)
     })
 
     test("routes a Solution to an independent copy", () => {
         const source = Solution.fromFraction(new Fraction(5))
-        const sol = Solution.parse(source)
+        const sol = new Solution().parse(source)
         expect(sol).not.toBe(source)
         expect(sol.value).toBe(5)
+    })
+
+    test("routes a string to fromString", () => {
+        const sol = new Solution('2/3')
+        expect(sol.value).toBeCloseTo(2 / 3, 5)
     })
 })
 

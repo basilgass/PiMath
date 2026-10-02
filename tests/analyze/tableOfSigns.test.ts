@@ -15,7 +15,7 @@ describe('TableOfSigns — construction', () => {
     })
 
     test('fromPolyFactor via constructor', () => {
-        const tos = new TableOfSigns(new PolyFactor().fromPolynom('x-1', 'x+1'))
+        const tos = new TableOfSigns(PolyFactor.fromPolynom('x-1', 'x+1'))
         expect(tos.roots).toHaveLength(2)
     })
 

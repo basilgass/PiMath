@@ -19,13 +19,13 @@ describe("PolyFactor creation", () => {
     })
 
     test('create a PolyFactor from a Polynom', () => {
-        const PF = new PolyFactor().fromPolynom('x^2-5x+6')
+        const PF = PolyFactor.fromPolynom('x^2-5x+6')
         expect(PF).toBeDefined()
         expect(PF.factors).toHaveLength(1)
     })
 
     test('create a PolyFactor from a numerator and denominator', () => {
-        const PF = new PolyFactor().fromPolynom('x^2-5x+6', 'x^2+3x+2')
+        const PF = PolyFactor.fromPolynom('x^2-5x+6', 'x^2+3x+2')
         expect(PF).toBeDefined()
         expect(PF.factors).toHaveLength(2)
 
@@ -115,7 +115,7 @@ describe("PolyFactor creation", () => {
 
     describe('should parse a string with fromString', () => {
         test('simple factorized string: constant and factors', () => {
-            const PF = new PolyFactor().fromString('3(x+1)^2(x-3)')
+            const PF = PolyFactor.fromString('3(x+1)^2(x-3)')
             expect(PF.factors).toHaveLength(3)
             expect(PF.factors[0].polynom.display).toBe('3')
             expect(PF.factors[0].power.value).toBe(1)
@@ -126,7 +126,7 @@ describe("PolyFactor creation", () => {
         })
 
         test('factorized string: rational power in parentheses', () => {
-            const PF = new PolyFactor().fromString('(3x-5)^(4/3)(2x+25)')
+            const PF = PolyFactor.fromString('(3x-5)^(4/3)(2x+25)')
             expect(PF.factors).toHaveLength(2)
             expect(PF.factors[0].polynom.display).toBe('3x-5')
             expect(PF.factors[0].power.display).toBe('4/3')
@@ -135,14 +135,14 @@ describe("PolyFactor creation", () => {
         })
 
         test('non-factorized string: creates a single Factor', () => {
-            const PF = new PolyFactor().fromString('x^2+3x+2')
+            const PF = PolyFactor.fromString('x^2+3x+2')
             expect(PF.factors).toHaveLength(1)
             expect(PF.factors[0].polynom.display).toBe('x^(2)+3x+2')
             expect(PF.factors[0].power.value).toBe(1)
         })
 
         test('string with leading negative sign', () => {
-            const PF = new PolyFactor().fromString('-3(x+1)^2')
+            const PF = PolyFactor.fromString('-3(x+1)^2')
             expect(PF.factors).toHaveLength(2)
             expect(PF.factors[0].polynom.display).toBe('-3')
             expect(PF.factors[1].polynom.display).toBe('x+1')
@@ -150,7 +150,7 @@ describe("PolyFactor creation", () => {
         })
 
         test('string with factorized numerator and denominator', () => {
-            const PF = new PolyFactor().fromString('3(x+1)^2/(x-3)(2x+1)')
+            const PF = PolyFactor.fromString('3(x+1)^2/(x-3)(2x+1)')
             expect(PF.numerator.factors).toHaveLength(2)
             expect(PF.denominator.factors).toHaveLength(2)
             expect(PF.factors[0].power.value).toBe(1)   // 3, num
@@ -160,7 +160,7 @@ describe("PolyFactor creation", () => {
         })
 
         test('string with non-factorized numerator and denominator', () => {
-            const PF = new PolyFactor().fromString('x^2+3x+2/x+1')
+            const PF = PolyFactor.fromString('x^2+3x+2/x+1')
             expect(PF.numerator.factors).toHaveLength(1)
             expect(PF.denominator.factors).toHaveLength(1)
             expect(PF.numerator.factors[0].polynom.display).toBe('x^(2)+3x+2')
@@ -168,11 +168,11 @@ describe("PolyFactor creation", () => {
         })
 
         test('string with multiple "/" should throw', () => {
-            expect(() => new PolyFactor().fromString('(x+1)/(x-3)/(x+2)')).toThrow()
+            expect(() => PolyFactor.fromString('(x+1)/(x-3)/(x+2)')).toThrow()
         })
 
         test('AsciiMath: strips extra outer parentheses from numerator and denominator', () => {
-            const PF = new PolyFactor().fromString('(3(x+1)^2)/((x-3)(2x+1))')
+            const PF = PolyFactor.fromString('(3(x+1)^2)/((x-3)(2x+1))')
             expect(PF.numerator.factors).toHaveLength(2)
             expect(PF.denominator.factors).toHaveLength(2)
         })
@@ -378,7 +378,7 @@ describe("PolyFactor: operations", () => {
     })
 
     test('should reduce a PolyFactors with constant factors', () => {
-        const PF = new PolyFactor().fromPolynom('18(x+6)(x+3)', '27x+243')
+        const PF = PolyFactor.fromPolynom('18(x+6)(x+3)', '27x+243')
 
         const PFF = PF.factorize().sort()
         expect(PFF.asRoot.display).toBe('(18(x+6)(x+3))/(27(x+9))')
@@ -606,7 +606,7 @@ describe("PolyFactor: algebra operations", () => {
     })
 
     test('should factorize the PolyFactor', () => {
-        const PF = new PolyFactor().fromPolynom('x^2-5x+6')
+        const PF = PolyFactor.fromPolynom('x^2-5x+6')
         const PF2 = PF.factorize()
         expect(PF.factors).toHaveLength(1)
         expect(PF.display).toBe('x^(2)-5x+6')
@@ -788,14 +788,14 @@ describe('PolyFactor: Table of signs', () => {
     })
 
     test('compile table of signs with constant value', () => {
-        const tos = TableOfSigns.fromPolyFactor(new PolyFactor().fromPolynom('3', 'x^2-1'))
+        const tos = TableOfSigns.fromPolyFactor(PolyFactor.fromPolynom('3', 'x^2-1'))
 
         expect(tos.roots.map(x => x.value)).toEqual([-1, 1])
         expect(tos.signs).toEqual(['+', 'd', '-', 'd', '+'])
     })
 
     test('compile table of signs from two polynoms', () => {
-        const tos = TableOfSigns.fromPolyFactor(new PolyFactor().fromPolynom('(x^2-16)(x+3)', '(x+5)'))
+        const tos = TableOfSigns.fromPolyFactor(PolyFactor.fromPolynom('(x^2-16)(x+3)', '(x+5)'))
 
         expect(tos.factors[0].factor.polynom.display).toBe('x+4')
         expect(tos.factors[0].signs.join("")).toBe('-t-z+t+t+')
@@ -811,7 +811,7 @@ describe('PolyFactor: Table of signs', () => {
     })
 
     test('solve polynom without bx', () => {
-        const tos = TableOfSigns.fromPolyFactor(new PolyFactor().fromPolynom('8-x^2'))
+        const tos = TableOfSigns.fromPolyFactor(PolyFactor.fromPolynom('8-x^2'))
 
         expect(tos.roots).toHaveLength(2)
         expect(tos.roots[0].reduce().display).toBe('-2sqrt(2)')
@@ -823,7 +823,7 @@ describe('PolyFactor: Table of signs', () => {
 describe('PolyFactor temporary tests', ()=>{
    test('parse polfactor', ()=>{
        const p = "(3-x)(x+5)+(x+7)^2"
-       const PF = new PolyFactor().fromString(p)
+       const PF = PolyFactor.fromString(p)
        console.log(PF.display)
        console.log(PF.factors.length)
    })

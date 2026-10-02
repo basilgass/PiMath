@@ -114,30 +114,30 @@ describe('Polynom creation', () => {
 
 describe('Polynom from* builders', () => {
     test('fromConstant builds a degree-0 polynom', () => {
-        expect(new Polynom().fromConstant(5).display).toBe('5')
-        expect(new Polynom().fromConstant('2/3').display).toBe('2/3')
+        expect(Polynom.fromConstant(5).display).toBe('5')
+        expect(Polynom.fromConstant('2/3').display).toBe('2/3')
     })
-    test('fromCoefficients uses the default variable, descending powers', () => {
-        expect(new Polynom().fromCoefficients(2, 3, -4, 5).display).toBe('2x^(3)+3x^(2)-4x+5')
+    test('fromCoefficients uses the given variable, descending powers', () => {
+        expect(Polynom.fromCoefficients('x', 2, 3, -4, 5).display).toBe('2x^(3)+3x^(2)-4x+5')
     })
-    test('fromCoefficients honors setVariable', () => {
-        expect(new Polynom().setVariable('t').fromCoefficients(2, 3, 4).display).toBe('2t^(2)+3t+4')
+    test('fromCoefficients respects a non-default variable', () => {
+        expect(Polynom.fromCoefficients('t', 2, 3, 4).display).toBe('2t^(2)+3t+4')
     })
     test('fromLinear builds an affine form from several letters', () => {
-        expect(new Polynom().fromLinear('xyz', 2, 3, -4, 5).display).toBe('2x+3y-4z+5')
+        expect(Polynom.fromLinear('xyz', 2, 3, -4, 5).display).toBe('2x+3y-4z+5')
     })
     test('fromLinear rejects a single letter', () => {
-        expect(() => new Polynom().fromLinear('x', 2, 3)).toThrow()
+        expect(() => Polynom.fromLinear('x', 2, 3)).toThrow()
     })
     test('fromLinear rejects too many coefficients', () => {
-        expect(() => new Polynom().fromLinear('xy', 1, 2, 3, 4)).toThrow()
+        expect(() => Polynom.fromLinear('xy', 1, 2, 3, 4)).toThrow()
     })
     test('fromMonoms sums the given monoms without reducing', () => {
-        const P = new Polynom().fromMonoms(new Monom('3x'), new Monom(2))
+        const P = Polynom.fromMonoms(new Monom('3x'), new Monom(2))
         expect(P.monoms.length).toBe(2)
     })
     test('fromString parses an expression', () => {
-        expect(new Polynom().fromString('(x+1)^2').display).toBe('x^(2)+2x+1')
+        expect(Polynom.fromString('(x+1)^2').display).toBe('x^(2)+2x+1')
     })
     test('copy duplicates the mathematical state', () => {
         const P = new Polynom('3x-2')

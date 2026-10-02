@@ -41,47 +41,36 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      * copied; every other shape delegates without inlining construction logic.
      */
     parse(inputStr: InputAlgebra<Monom>): this {
-        if (inputStr instanceof Monom) {
-            return this.copy(inputStr)
-        }
-        if (inputStr instanceof Fraction) {
-            return this.fromFraction(inputStr)
-        }
-        if (typeof inputStr === 'number') {
-            return this.fromNumber(inputStr)
-        }
-        return this.fromString(inputStr)
+        if (inputStr instanceof Monom) return this.copy(inputStr)
+        if (inputStr instanceof Fraction || typeof inputStr === 'number') return this.copy(Monom.fromFraction(inputStr))
+        return this.copy(Monom.fromString(inputStr))
     }
 
-    /**
-     * Build a constant monom (empty literal part) from a number.
-     */
-    fromNumber(value: number): this {
-        this.#coefficient = new Fraction(value)
-        this.#literal = {}
-        return this
+    /** Build a constant monom (empty literal part) from a number. */
+    static fromNumber(value: number): Monom {
+        return Monom.fromFraction(value)
     }
 
-    /**
-     * Build a constant monom (empty literal part) from a Fraction.
-     */
-    fromFraction(value: Fraction): this {
-        this.#coefficient = value.clone()
-        this.#literal = {}
-        return this
+    /** Build a constant monom (empty literal part). */
+    static fromFraction(value: InputValue<Fraction>): Monom {
+        const m = new Monom()
+        m.#coefficient = new Fraction(value)
+        m.#literal = {}
+        return m
     }
 
     /**
      * Build a monom from an explicit coefficient and literal part. The literal
      * Fractions are cloned to avoid aliasing the caller's dictionary.
      */
-    fromLiteral(coefficient: InputValue<Fraction>, literal: LiteralType<Fraction>): this {
-        this.#coefficient = new Fraction(coefficient)
-        this.#literal = {}
+    static fromLiteral(coefficient: InputValue<Fraction>, literal: LiteralType<Fraction>): Monom {
+        const m = new Monom()
+        m.#coefficient = new Fraction(coefficient)
+        m.#literal = {}
         for (const k in literal) {
-            this.#literal[k] = literal[k].clone()
+            m.#literal[k] = literal[k].clone()
         }
-        return this
+        return m
     }
 
     /**
@@ -89,11 +78,11 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      * any other string is parsed as an algebraic expression.
      * @throws {ParseError} If the string cannot be parsed as a monom.
      */
-    fromString(value: string): this {
-        if (!isNaN(Number(value))) {
-            return this.fromNumber(Number(value))
-        }
-        return this.#shutingYardToReducedMonom(value)
+    static fromString(value: string): Monom {
+        if (!isNaN(Number(value))) return Monom.fromNumber(Number(value))
+        const m = new Monom()
+        m.#shutingYardToReducedMonom(value)
+        return m
     }
 
     /**
@@ -327,16 +316,16 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         if (literals.length > 0 && dividers.length > 0) {
             for (const N of dividers) {
                 for (const L of literals) {
-                    monomDividers.push(new Monom().fromLiteral(N, L))
+                    monomDividers.push(Monom.fromLiteral(N, L))
                 }
             }
         } else if (dividers.length === 0) {
             for (const L of literals) {
-                monomDividers.push(new Monom().fromLiteral(1, L))
+                monomDividers.push(Monom.fromLiteral(1, L))
             }
         } else {
             for (const N of dividers) {
-                monomDividers.push(new Monom().fromNumber(N))
+                monomDividers.push(Monom.fromNumber(N))
             }
         }
 

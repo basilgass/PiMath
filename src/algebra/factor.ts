@@ -30,41 +30,26 @@ export class Factor implements IPiMathObject<Factor>,
     #singleMode = false
 
     constructor(value?: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>) {
-
-        if (value instanceof Factor) {
-            this.#polynom = value.#polynom.clone()
-            this.#power = value.power.clone()
-
-            if (power !== undefined) {
-                this.#power.multiply(new Fraction(power))
-            }
-        } else if (value !== undefined) {
-            this.#polynom = new Polynom(value)
-            this.#power = new Fraction(power ?? 1)
-        } else {
-            this.#polynom = new Polynom()
-            this.#power = new Fraction(1)
-        }
-
+        this.#polynom = new Polynom()
+        this.#power = new Fraction(1)
         this.#displayMode = FACTOR_DISPLAY.POWER
-
-        return this
+        if (value !== undefined) this.parse(value, power)
     }
 
     parse(value: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>): this {
         if (value instanceof Factor) {
             this.copy(value)
         } else if (typeof value === 'string') {
-            this.fromString(value)
+            this.copy(Factor.fromString(value))
         } else {
-            this.fromPolynom(value)
+            this.copy(Factor.fromPolynom(value))
         }
         if (power !== undefined) this.#power.multiply(new Fraction(power))
         return this
     }
 
-    fromString(value: string): this {
-        return this.copy(Factor.factorsFromString(value)[0])
+    static fromString(value: string): Factor {
+        return Factor.factorsFromString(value)[0]
     }
 
     copy(value: Factor): this {
@@ -204,10 +189,11 @@ export class Factor implements IPiMathObject<Factor>,
         return this.polynom.evaluate(values).pow(this.power)
     }
 
-    fromPolynom(polynom: InputAlgebra<Polynom>): this {
-        this.#polynom = new Polynom(polynom)
-        this.#power = new Fraction(1)
-        return this
+    static fromPolynom(polynom: InputAlgebra<Polynom>): Factor {
+        const f = new Factor()
+        f.#polynom = new Polynom(polynom)
+        f.#power = new Fraction(1)
+        return f
     }
 
     hasVariable(variable: string): boolean {
@@ -379,7 +365,10 @@ export class Factor implements IPiMathObject<Factor>,
      */
     static factorsFromString(value: string, isNumerator = true): Factor[] {
         if (!Factor.checkParseAsFactors(value)) {
-            return [new Factor(value, isNumerator ? 1 : -1)]
+            const f = new Factor()
+            f.#polynom = new Polynom(value)
+            f.#power = new Fraction(isNumerator ? 1 : -1)
+            return [f]
         }
 
         const sign = isNumerator ? 1 : -1

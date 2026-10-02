@@ -1,12 +1,13 @@
 /**
- * Vector2D module contains everything necessary to handle 2d vectors.
+ * Vector module — N-dimensional vector with exact Fraction coordinates.
  * @module Vector
  */
-import type {InputValue, IPiMathObject} from "../pimath.interface"
+import type {InputAlgebra, InputValue, IPiMathObject} from "../pimath.interface"
+import {Polynom} from "../algebra/polynom"
 import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 import {areVectorsColinears, areVectorsEquals, dotProduct} from "./geomMath"
-import {DimensionError, InvalidArgumentError, NotImplementedError} from "../errors"
+import {DimensionError, InvalidArgumentError, ParseError} from "../errors"
 import {TupleN} from "./TupleN"
 import {type Point} from "./point"
 
@@ -31,22 +32,20 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
 
         if (values.length === 1) {
             if (values[0] instanceof TupleN) {
-                this.array = values[0].cloneCoordinates()
-                return this
+                return this.copy(values[0])
             }
 
             if (typeof values[0] === 'string') {
-                return this.fromString(values[0])
+                return this.copy(Vector.fromString(values[0]))
             }
 
             throw new InvalidArgumentError(`Invalid value`)
         }
 
-        // Two values are given
+        // Two TupleN arguments: build vector AB = B − A
         if (values.length === 2) {
             const [A, B] = values
 
-            // The two values are vectors
             if (A instanceof TupleN && B instanceof TupleN) {
                 if (A.dimension !== B.dimension) {
                     throw new DimensionError('Vectors must have the same dimension')
@@ -57,17 +56,20 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
             }
         }
 
-        // Two ore more values as number, string, fraction...
-        this.array = values.map(x => new Fraction(x as InputValue<Fraction>))
+        // Two or more scalar values — reject any remaining TupleN
+        if (values.some(x => x instanceof TupleN)) {
+            throw new InvalidArgumentError('Creating a vector from multiple arguments requires scalar inputs')
+        }
+        const coords = values.map(x => new Fraction(x as InputValue<Fraction>))
+        if (coords.some(x => x.isNaN())) {
+            throw new ParseError('The given values are not valid coordinates')
+        }
+        this.array = coords
         return this
     }
 
     clone(): Vector {
         return new Vector(...this.cloneCoordinates())
-    }
-
-    copy(): this {
-        throw new NotImplementedError("copy() is not yet implemented for Vector")
     }
 
     get tex(): string {
@@ -86,13 +88,12 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
         return `\\begin{pmatrix} ${values.join(' \\\\ ')} \\end{pmatrix}`
     }
 
-    add = (V: Vector): this => {
-        this.array.forEach((x, index) => x.add(V.array[index]))
+    add(V: Vector): this {
+        this.array = this.cloneCoordinates().map((x, index) => x.add(V.array[index]))
         return this
     }
 
-    angle = (V: Vector, sharp?: boolean, radian?: boolean): number => {
-
+    angle(V: Vector, sharp?: boolean, radian?: boolean): number {
         let scalar = this.dot(V).value
         if (sharp) {
             scalar = Math.abs(scalar)
@@ -103,6 +104,9 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
         return toDegree * Math.acos(scalar / (this.norm * V.norm))
     }
 
+    /**
+     * @throws {DimensionError} if either vector is not 3-dimensional
+     */
     cross(value: Vector): Vector {
         if (this.dimension !== 3 || value.dimension !== 3) {
             throw new DimensionError('Cross product can only be determined in 3D')
@@ -118,63 +122,91 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
     // ------------------------------------------
     // Creation / parsing functions
 
-    divideByScalar = (k: InputValue<Fraction>): this => {
+    divideByScalar(k: InputValue<Fraction>): this {
         return this.multiplyByScalar(new Fraction(k).inverse())
     }
 
-    dot = (V: Vector |Point): Fraction => {
+    dot(V: Vector | Point): Fraction {
         return dotProduct(this, V)
     }
 
-    override fromString(value: string): this {
+    /**
+     * Accepts `((x,y,...))`, `(x;y;...)`, or `x,y,...` format.
+     * @throws {ParseError} if fewer than 2 components are found
+     */
+    static fromString(value: string): Vector {
+        const v = new Vector()
         if (value.startsWith('((') && value.endsWith('))')) {
-            return super.fromString(value.slice(1, -1))
+            v.array = TupleN.parseString(value.slice(1, -1))
+        } else {
+            v.array = TupleN.parseString(value)
         }
-
-        return super.fromString(value)
+        return v
     }
 
-    isColinearTo = (v: Vector): boolean => {
+    static fromPolynom(expr: InputAlgebra<Polynom>, vectors: Record<string, Vector | string>): Vector {
+        const poly = expr instanceof Polynom ? expr : new Polynom(expr)
+
+        const resolved: Record<string, Vector> = {}
+        for (const [key, val] of Object.entries(vectors)) {
+            resolved[key] = val instanceof Vector ? val : Vector.fromString(val)
+        }
+
+        const dims = Object.values(resolved).map(v => v.dimension)
+        if (dims.length === 0) throw new InvalidArgumentError('No vectors provided')
+        if (new Set(dims).size > 1) throw new DimensionError('All vectors must have the same dimension')
+
+        const result = new Vector(...Array.from({length: dims[0]}, () => 0))
+
+        for (const monom of poly.monoms) {
+            const vars = monom.variables
+            if (vars.length === 0) {
+                if (!monom.coefficient.isZero()) {
+                    throw new InvalidArgumentError('Constant term has no associated vector')
+                }
+                continue
+            }
+            if (vars.length > 1 || monom.degree().value !== 1) {
+                throw new InvalidArgumentError(`Monom is not a simple linear term: ${monom.display}`)
+            }
+            const varName = vars[0]
+            if (!(varName in resolved)) {
+                throw new InvalidArgumentError(`No vector provided for variable '${varName}'`)
+            }
+            result.add(resolved[varName].clone().multiplyByScalar(monom.coefficient))
+        }
+
+        return result
+    }
+
+    isColinearTo(v: Vector): boolean {
         return areVectorsColinears(this, v)
     }
 
-    isEqual = (v: Vector): boolean => {
+    isEqual(v: Vector): boolean {
         return areVectorsEquals(this, v)
     }
 
-    isNormalTo = (v: Vector): boolean => {
+    isNormalTo(v: Vector): boolean {
         return this.dot(v).isZero()
     }
 
     // ------------------------------------------
-    get isNull(): boolean {
-        return this.array.every(x => x.isZero())
-    }
-
     isOne(): boolean {
         return this.array.every((x, index) => index === 0 ? x.isOne() : x.isZero())
     }
 
-    isZero(): boolean {
-        return this.array.every(x => x.isZero())
-    }
-
-    multiplyByScalar = (k: InputValue<Fraction>): this => {
+    multiplyByScalar(k: InputValue<Fraction>): this {
         const scalar = new Fraction(k)
-        this.array.forEach(x => x.multiply(scalar))
+        this.array = this.cloneCoordinates().map(x => x.multiply(scalar))
         return this
     }
 
-    get norm(): number {
-        return Math.sqrt(this.normSquare.value)
-    }
-
-    get normSquare(): Fraction {
-        // Get the norm square of the vector
-        return this.array.reduce((acc, x) => acc.add(x.clone().pow(2)), new Fraction(0))
-    }
-
-    normal = (): this => {
+    /**
+     * Rotates 90° to obtain a perpendicular vector: `(x, y) → (y, −x)`.
+     * @throws {DimensionError} if the vector is not 2-dimensional
+     */
+    normal(): this {
         if (this.dimension >= 3) {
             throw new DimensionError('Normal vector can only be determined in 2D')
         }
@@ -182,23 +214,18 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
         const x = this.x.clone().opposite()
         const y = this.y.clone()
 
-        this.array[0] = y
-        this.array[1] = x
+        this.x = y
+        this.y = x
         return this
     }
 
-    one = (): this => {
+    one(): this {
         this.zero()
         this.x.one()
         return this
     }
 
-    opposite = (): this => {
-        this.array.forEach(x => x.opposite())
-        return this
-    }
-
-    simplify = (): this => {
+    simplify(): this {
         const lcm = Numeric.lcm(...this.array.map(x => x.denominator))
         const gcd = Numeric.gcd(...this.array.map(x => x.numerator))
 
@@ -209,16 +236,16 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
         return this
     }
 
-    subtract = (V: Vector): this => {
+    subtract(V: Vector): this {
         return this.add(V.clone().opposite())
     }
 
     translate(...values: Fraction[]): this {
-        this.array.forEach((x, index) => x.add(values[index]))
+        this.array = this.cloneCoordinates().map((x, index) => x.add(values[index]))
         return this
     }
 
-    unit = (): this => {
+    unit(): this {
         const norm = this.norm
         if (norm === 0) {
             return this

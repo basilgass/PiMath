@@ -239,7 +239,7 @@ describe("Factors: algebra operations", () => {
 
 
     test('should get the derivative of a monomial Factor', ()=>{
-        const F = new Factor().fromPolynom('3x^4')
+        const F = Factor.fromPolynom('3x^4')
         const dF = F.getDerivativeFactors()
         expect(dF).toHaveLength(1)
         expect(dF[0].asSingle.display).toBe('12x^(3)')

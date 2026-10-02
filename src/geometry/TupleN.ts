@@ -1,23 +1,20 @@
 /**
- * POint module contains everything necessary to handle 2d Points
- * It's a "wrapper" of the Vector class.
- * @module Point
+ * Abstract base class for N-dimensional coordinate tuples (Point, Vector).
+ * Coordinates are stored as an array of Fraction values.
+ * @module TupleN
  */
 
 import {Fraction} from "../coefficients"
-import type {InputValue} from "../pimath.interface"
-import {DimensionError} from "../errors"
+import type {IPiMathObject} from "../pimath.interface"
+import {DimensionError, ParseError} from "../errors"
 
-export abstract class TupleN {
+export abstract class TupleN implements IPiMathObject<TupleN> {
     #array: Fraction[] = []
     #onChange?: () => void
 
-    constructor(...values: InputValue<Fraction>[]) {
-        this.#array = values.map(x => new Fraction(x))
-    };
+    abstract clone(): TupleN
 
-    abstract clone(): void
-
+    /** Returns a deep copy of the raw coordinate array. Unlike `clone()`, returns a `Fraction[]`, not a TupleN instance. */
     cloneCoordinates(): Fraction[] {
         return this.#array.map(x => x.clone())
     }
@@ -27,7 +24,7 @@ export abstract class TupleN {
     abstract get display(): string
 
     get array(): Fraction[] {
-        return this.#array
+        return this.#array.map(x => x.clone())
     }
 
     set array(value: Fraction[]) {
@@ -35,32 +32,24 @@ export abstract class TupleN {
     }
 
     get dimension(): number {
-        return this.array.length
+        return this.#array.length
     }
 
-    fromString(value: string): this {
-        // Remove the first letter if it's a parenthesis.
-        if (value.startsWith('(')) {
-            value = value.substring(1)
-        }
+    /**
+     * Strips optional outer parentheses, splits on `,` `;` or space, and returns the parsed Fraction array.
+     * @throws {ParseError} if fewer than 2 components are found.
+     */
+    protected static parseString(value: string): Fraction[] {
+        if (value.startsWith('(')) value = value.substring(1)
+        if (value.endsWith(')'))   value = value.substring(0, value.length - 1)
 
-        // Remove the last letter if it's a parenthesis.
-        if (value.endsWith(')')) {
-            value = value.substring(0, value.length - 1)
-        }
+        const components = value.split(/[,;\s]/g).filter(v => v.trim() !== '')
 
-        // Split comma, semi colon or single space.
-        const components = value.split(/[,;\s]/g)
-            .filter((v) => v.trim() !== '')
-
-        // there must be at least two Pages.
         if (components.length < 2) {
-            return this
+            throw new ParseError(`Cannot parse "${value}" as a tuple: at least 2 components required`)
         }
 
-        // Validate the fraction values.
-        this.#array = components.map(x => new Fraction(x))
-        return this
+        return components.map(x => new Fraction(x))
     }
 
     get onChange(): undefined | (() => void) {
@@ -71,6 +60,7 @@ export abstract class TupleN {
         this.#onChange = value
     }
 
+    /** @throws {DimensionError} if value < 2 */
     setDimension(value = 2): this {
         if (value < 2) {
             throw new DimensionError('Dimension must be at least 2')
@@ -105,6 +95,7 @@ export abstract class TupleN {
         this.#onChange?.()
     }
 
+    /** @throws {DimensionError} if dimension < 3 */
     get z(): Fraction {
         if (this.dimension < 3) {
             throw new DimensionError('Vector is not 3D')
@@ -112,6 +103,7 @@ export abstract class TupleN {
         return this.#array[2]
     }
 
+    /** @throws {DimensionError} if dimension < 3 */
     set z(value: Fraction | number | string) {
         if (this.dimension < 3) {
             throw new DimensionError('Vector is not 3D')
@@ -120,7 +112,29 @@ export abstract class TupleN {
         this.#onChange?.()
     }
 
-    zero = (): this => {
+    copy(value: TupleN): this {
+        this.array = value.cloneCoordinates()
+        return this
+    }
+
+    isZero(): boolean {
+        return this.#array.every(x => x.isZero())
+    }
+
+    get norm(): number {
+        return Math.sqrt(this.normSquare.value)
+    }
+
+    get normSquare(): Fraction {
+        return this.#array.reduce((acc, x) => acc.add(x.clone().pow(2)), new Fraction(0))
+    }
+
+    opposite(): this {
+        this.array = this.cloneCoordinates().map(x => x.opposite())
+        return this
+    }
+
+    zero(): this {
         this.#array.forEach(x => x.zero())
         this.#onChange?.()
         return this

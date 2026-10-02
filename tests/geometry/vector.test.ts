@@ -1,6 +1,7 @@
 import {describe, test, expect} from "vitest"
 import {Vector} from "../../src/geometry/vector"
 import {Point} from "../../src/geometry/point"
+import {DimensionError, InvalidArgumentError, ParseError} from "../../src/errors"
 
 
 describe('Vector creation', () => {
@@ -58,5 +59,202 @@ describe('Vector output', () => {
         expect(v.display).toBe('((2,-3))')
     })
 })
-// All other tests are the same as vector3d.test.ts - no need to reproduce them here
+describe('Vector.parse errors', () => {
+    test('throws InvalidArgumentError when called with no arguments', () => {
+        expect(() => new Vector(undefined as unknown)).toThrow(InvalidArgumentError)
+    })
+
+    test('throws InvalidArgumentError for a single non-string scalar', () => {
+        expect(() => new Vector(42 as unknown)).toThrow(InvalidArgumentError)
+    })
+
+    test('throws InvalidArgumentError when mixing TupleN with scalars', () => {
+        expect(() => new Vector(new Point(1, 2) as unknown, 3 as unknown)).toThrow(InvalidArgumentError)
+    })
+
+    test('throws ParseError for invalid scalar coordinates', () => {
+        expect(() => new Vector('x' as unknown, 'y' as unknown)).toThrow(ParseError)
+    })
+
+    test('throws DimensionError when building AB from vectors of different dimension', () => {
+        const A = new Point(1, 2)
+        const B = new Point(1, 2, 3)
+        expect(() => new Vector(A, B)).toThrow(DimensionError)
+    })
+})
+
+describe('Vector construction from TupleN', () => {
+    test('constructs from another Vector', () => {
+        const v1 = new Vector(3, 4)
+        const v2 = new Vector(v1)
+        v2.x = 99
+        expect(v1.x.display).toBe('3')
+        expect(v2.x.display).toBe('99')
+    })
+
+    test('constructs from a Point', () => {
+        const p = new Point(2, 5)
+        const v = new Vector(p)
+        expect(v.x.display).toBe('2')
+        expect(v.y.display).toBe('5')
+    })
+
+    test('builds AB vector from two Points', () => {
+        const A = new Point(1, 2)
+        const B = new Point(4, 6)
+        const v = new Vector(A, B)
+        expect(v.x.display).toBe('3')
+        expect(v.y.display).toBe('4')
+    })
+})
+
+describe('Vector.fromString', () => {
+    test('parses ((x,y)) double-paren format', () => {
+        const v = Vector.fromString('((3,7))')
+        expect(v.x.display).toBe('3')
+        expect(v.y.display).toBe('7')
+    })
+
+    test('parses (x;y) semicolon format', () => {
+        const v = Vector.fromString('(2;-5)')
+        expect(v.x.display).toBe('2')
+        expect(v.y.display).toBe('-5')
+    })
+})
+
+describe('Vector 2D operations', () => {
+    test('dot product', () => {
+        const v1 = new Vector(3, 4)
+        const v2 = new Vector(1, -2)
+        expect(v1.dot(v2).display).toBe('-5')
+    })
+
+    test('isNormalTo returns true for perpendicular vectors', () => {
+        expect(new Vector(1, 0).isNormalTo(new Vector(0, 1))).toBe(true)
+    })
+
+    test('isNormalTo returns false for non-perpendicular vectors', () => {
+        expect(new Vector(1, 1).isNormalTo(new Vector(1, 0))).toBe(false)
+    })
+
+    test('normal produces perpendicular vector (x,y)→(y,−x)', () => {
+        const v = new Vector(3, 4)
+        v.normal()
+        expect(v.x.display).toBe('4')
+        expect(v.y.display).toBe('-3')
+    })
+
+    test('normal throws DimensionError on 3D vector', () => {
+        expect(() => new Vector(1, 2, 3).normal()).toThrow(DimensionError)
+    })
+
+    test('cross throws DimensionError on 2D vector', () => {
+        expect(() => new Vector(1, 0).cross(new Vector(0, 1))).toThrow(DimensionError)
+    })
+
+    test('unit normalises a vector to norm 1', () => {
+        const v = new Vector(3, 4).unit()
+        expect(v.norm).toBe(1)
+    })
+
+    test('unit on zero vector returns zero vector unchanged', () => {
+        const v = new Vector(0, 0)
+        v.unit()
+        expect(v.x.display).toBe('0')
+        expect(v.y.display).toBe('0')
+    })
+
+    test('divideByScalar', () => {
+        const v = new Vector(6, 4).divideByScalar(2)
+        expect(v.x.display).toBe('3')
+        expect(v.y.display).toBe('2')
+    })
+})
+
+// All other operation tests (add, subtract, multiply, norm, angle, colinear, equal, simplify) are in vector3d.test.ts
 describe.todo('Vector generators')
+
+describe('Vector.fromPolynom', () => {
+    test('linear combination 2D: 3a+5b', () => {
+        const a = new Vector(1, 0)
+        const b = new Vector(0, 1)
+        const v = Vector.fromPolynom('3a+5b', {a, b})
+        expect(v.x.display).toBe('3')
+        expect(v.y.display).toBe('5')
+    })
+
+    test('negative coefficient: -2a+b', () => {
+        const a = new Vector(1, 0)
+        const b = new Vector(0, 1)
+        const v = Vector.fromPolynom('-2a+b', {a, b})
+        expect(v.x.display).toBe('-2')
+        expect(v.y.display).toBe('1')
+    })
+
+    test('single term: 3a', () => {
+        const a = new Vector(2, 4)
+        const v = Vector.fromPolynom('3a', {a})
+        expect(v.x.display).toBe('6')
+        expect(v.y.display).toBe('12')
+    })
+
+    test('vectors passed as strings', () => {
+        const v = Vector.fromPolynom('2a+3b', {a: '((1,0))', b: '((0,1))'})
+        expect(v.x.display).toBe('2')
+        expect(v.y.display).toBe('3')
+    })
+
+    test('fractional coefficient: (1/2)a', () => {
+        const a = new Vector(4, 6)
+        const v = Vector.fromPolynom('(1/2)a', {a})
+        expect(v.x.display).toBe('2')
+        expect(v.y.display).toBe('3')
+    })
+
+    test('zero polynomial yields zero vector', () => {
+        const a = new Vector(1, 2)
+        const v = Vector.fromPolynom('0a', {a})
+        expect(v.x.display).toBe('0')
+        expect(v.y.display).toBe('0')
+    })
+
+    test('3D vectors', () => {
+        const a = new Vector(1, 0, 0)
+        const b = new Vector(0, 1, 0)
+        const v = Vector.fromPolynom('2a+3b', {a, b})
+        expect(v.x.display).toBe('2')
+        expect(v.y.display).toBe('3')
+        expect(v.z.display).toBe('0')
+    })
+
+    test('throws InvalidArgumentError when no vectors provided', () => {
+        expect(() => Vector.fromPolynom('3a', {})).toThrow(InvalidArgumentError)
+    })
+
+    test('throws InvalidArgumentError when variable missing from dictionary', () => {
+        const a = new Vector(1, 0)
+        expect(() => Vector.fromPolynom('3a+2b', {a})).toThrow(InvalidArgumentError)
+    })
+
+    test('throws InvalidArgumentError for non-zero constant term', () => {
+        const a = new Vector(1, 0)
+        expect(() => Vector.fromPolynom('3a+2', {a})).toThrow(InvalidArgumentError)
+    })
+
+    test('throws InvalidArgumentError for non-linear monom (a²)', () => {
+        const a = new Vector(1, 0)
+        expect(() => Vector.fromPolynom('a^2', {a})).toThrow(InvalidArgumentError)
+    })
+
+    test('throws InvalidArgumentError for multi-variable monom (ab)', () => {
+        const a = new Vector(1, 0)
+        const b = new Vector(0, 1)
+        expect(() => Vector.fromPolynom('ab', {a, b})).toThrow(InvalidArgumentError)
+    })
+
+    test('throws DimensionError when vectors have different dimensions', () => {
+        const a = new Vector(1, 0)
+        const b = new Vector(0, 1, 0)
+        expect(() => Vector.fromPolynom('a+b', {a, b})).toThrow(DimensionError)
+    })
+})

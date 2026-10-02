@@ -67,13 +67,8 @@ export class Equation implements IPiMathObject<Equation>,
         if (left !== undefined && right === undefined) {
             this.parse(left)
         } else if (left !== undefined && right !== undefined) {
-            // Two members (with an optional sign). The 2-argument overload
-            // forbids an Equation as left, but the implementation signature
-            // stays permissive, hence the cast.
-            this.fromPolynoms(left as InputAlgebra<Polynom>, right, sign)
+            this.copy(Equation.fromPolynoms(left as InputAlgebra<Polynom>, right, sign))
         }
-
-        return this
     }
 
     // ------------------------------------------
@@ -84,38 +79,31 @@ export class Equation implements IPiMathObject<Equation>,
      * algebraic expression is read as `<expr> = 0`.
      */
     parse(value: InputAlgebra<Polynom> | Equation): this {
-        if (value instanceof Equation) {
-            return this.copy(value)
-        }
-
-        if (typeof value === 'string') {
-            return this.fromString(value)
-        }
-
-        return this.fromPolynoms(value, new Polynom().zero())
+        if (value instanceof Equation) return this.copy(value)
+        if (typeof value === 'string') return this.copy(Equation.fromString(value))
+        return this.copy(Equation.fromPolynoms(value, new Polynom().zero()))
     }
 
     /**
      * Build the equation from a complete equation string (containing a sign).
      * @throws {ParseError} when the string carries no equation sign.
      */
-    fromString(equationString: string): this {
-        // Find the string separator (#findSign throws if none is present).
-        const strSign: string = this.#findSign(equationString)
-        const pStr: string[] = equationString.split(strSign)
-
-        return this.fromPolynoms(new Polynom(pStr[0]), new Polynom(pStr[1]), this.#formatSign(strSign))
+    static fromString(equationString: string): Equation {
+        const strSign = Equation.#findSign(equationString)
+        const pStr = equationString.split(strSign)
+        return Equation.fromPolynoms(new Polynom(pStr[0]), new Polynom(pStr[1]), Equation.#formatSign(strSign))
     }
 
     /**
      * Build the equation from its two members and an optional sign
      * (defaults to `=`).
      */
-    fromPolynoms(left: InputAlgebra<Polynom>, right: InputAlgebra<Polynom>, sign?: EquationSign): this {
-        this.#left = new Polynom(left)
-        this.#right = new Polynom(right)
-        this.#sign = this.#formatSign(sign)
-        return this
+    static fromPolynoms(left: InputAlgebra<Polynom>, right: InputAlgebra<Polynom>, sign?: EquationSign): Equation {
+        const e = new Equation()
+        e.#left = new Polynom(left)
+        e.#right = new Polynom(right)
+        e.#sign = Equation.#formatSign(sign)
+        return e
     }
 
     /**
@@ -527,8 +515,7 @@ export class Equation implements IPiMathObject<Equation>,
     }
 
     set sign(value: string) {
-        // Set the sign value as formatted.
-        this.#sign = this.#formatSign(value)
+        this.#sign = Equation.#formatSign(value)
     }
     
     get signAsTex(): string {
@@ -618,7 +605,7 @@ export class Equation implements IPiMathObject<Equation>,
      * Return the raw sign token present in the string (used to split it).
      * @throws {ParseError} when the string contains no equation sign.
      */
-    #findSign(equationString: string): string {
+    static #findSign(equationString: string): string {
         const found = SIGN_TOKENS.find(entry => equationString.includes(entry.token))
 
         if (found === undefined) {
@@ -630,11 +617,8 @@ export class Equation implements IPiMathObject<Equation>,
 
     // -----------------------------------------------
     // Equations solving algorithms
-    #formatSign(signStr?: string): EquationSign {
-        if (signStr === undefined) {
-            return '='
-        }
-
+    static #formatSign(signStr?: string): EquationSign {
+        if (signStr === undefined) return '='
         return SIGN_TOKENS.find(entry => signStr.includes(entry.token))?.sign ?? '='
     }
 

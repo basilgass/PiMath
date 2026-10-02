@@ -5,68 +5,92 @@ import {DimensionError} from "../errors"
 
 type V = Vector | Point
 export function areVectorsEquals(v1: V, v2: V): boolean {
-    return v1.dimension === v2.dimension &&
-        v1.array.every(
-            (value, index) => {
-                return v2.array[index].isEqual(value)
-            })
+    if (v1.dimension !== v2.dimension) return false
+    const a = v1.array
+    const b = v2.array
+    return a.every((value, index) => b[index].isEqual(value))
 }
 
+/**
+ * Two vectors are colinear iff every 2×2 minor aᵢbⱼ − aⱼbᵢ equals zero.
+ * Returns false immediately when dimensions differ.
+ */
 export function areVectorsColinears(v1: V, v2: V): boolean {
-    if (v1.dimension !== v2.dimension) { return false }
-
-    // Constant of proportionality
-    const k = v2.array[0].value / v1.array[0].value
-    return v1.array.every(
-        (value, index) => {
-            return v2.array[index].value === value.value * k
-        })
+    if (v1.dimension !== v2.dimension) return false
+    const a = v1.array
+    const b = v2.array
+    for (let i = 0; i < a.length; i++) {
+        for (let j = i + 1; j < a.length; j++) {
+            if (!a[i].clone().multiply(b[j]).isEqual(a[j].clone().multiply(b[i]))) {
+                return false
+            }
+        }
+    }
+    return true
 }
 
 
+/** @throws {DimensionError} if the vectors have different dimensions */
 export function dotProduct(v1: V, v2: V): Fraction {
-    if (v1.dimension !== v2.dimension) { return new Fraction().invalid() }
+    if (v1.dimension !== v2.dimension) {
+        throw new DimensionError('Vectors must have the same dimension')
+    }
 
     // Calculate the dot product
-    // Why does the reduce not add the last element?
-
     return v1.array.reduce(
         (acc, value, index) => {
             return acc.add(value.clone().multiply(v2.array[index]))
         }, new Fraction(0))
 }
 
+/**
+ * Computes the determinant of the n×n matrix formed by treating each vector as a row,
+ * using the Bareiss algorithm (exact rational arithmetic, O(n³)).
+ * @throws {DimensionError} if no vectors are given, if dimensions are inconsistent,
+ *   or if the number of vectors does not equal their dimension
+ */
 export function determinantFromVectors(...values: V[]): Fraction {
-    // TODO: Make it work for vectors of dimension n
-    // Check if the vectors are in the same dimension
+    if (values.length === 0) {
+        throw new DimensionError('At least one vector is required')
+    }
+
     if (values.some((value) => value.dimension !== values[0].dimension)) {
         throw new DimensionError('All vectors must have the same dimension')
     }
 
-    // Check if the vectors are in dimension 2 or 3 and that the number of values is correct
-    if (values[0].dimension !== values.length ) {
-        throw new DimensionError(`The determinant of dimension ${values[0].dimension} must have the same number of vectors (${values.length} given)`)
+    const n = values[0].dimension
+    if (n !== values.length) {
+        throw new DimensionError(`Determinant of dimension ${n} requires exactly ${n} vectors (${values.length} given)`)
     }
 
-    // Calculate the determinant 2x2
-    if (values[0].dimension === 2) {
-        return values[0].array[0].clone().multiply(values[1].array[1])
-            .subtract(values[0].array[1].clone().multiply(values[1].array[0]))
+    // Bareiss algorithm — exact integer arithmetic, O(n³)
+    const M: Fraction[][] = values.map(v => v.cloneCoordinates())
+    let sign = 1
+
+    for (let k = 0; k < n - 1; k++) {
+        if (M[k][k].isZero()) {
+            let swapped = false
+            for (let i = k + 1; i < n; i++) {
+                if (!M[i][k].isZero()) {
+                    ;[M[k], M[i]] = [M[i], M[k]]
+                    sign = -sign
+                    swapped = true
+                    break
+                }
+            }
+            if (!swapped) return new Fraction(0)
+        }
+
+        const prevPivot = k === 0 ? new Fraction(1) : M[k - 1][k - 1]
+
+        for (let i = k + 1; i < n; i++) {
+            for (let j = k + 1; j < n; j++) {
+                M[i][j] = M[k][k].clone().multiply(M[i][j])
+                    .subtract(M[i][k].clone().multiply(M[k][j]))
+                    .divide(prevPivot)
+            }
+        }
     }
 
-    // Calculate the determinant 3x3
-    return values[0].array[0].clone()
-        .multiply(
-            values[1].array[1].clone().multiply(values[2].array[2])
-                .subtract(values[1].array[2].clone().multiply(values[2].array[1]))
-        )
-        .subtract(values[0].array[1].clone()
-            .multiply(
-                values[1].array[0].clone().multiply(values[2].array[2])
-                    .subtract(values[1].array[2].clone().multiply(values[2].array[0]))
-            )
-        )
-        .add(values[0].array[2].clone()
-            .multiply(values[1].array[0].clone().multiply(values[2].array[1])
-                .subtract(values[1].array[1].clone().multiply(values[2].array[0]))))
+    return sign === 1 ? M[n - 1][n - 1].clone() : M[n - 1][n - 1].clone().opposite()
 }

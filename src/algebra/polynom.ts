@@ -68,28 +68,20 @@ export class Polynom implements IPiMathObject<Polynom>,
      * @throws {ParseError} when the input matches no known form.
      */
     parse(inputStr: PolynomParsingType, ...values: InputAlgebra<Monom>[]): this {
-        this.#monoms = []
-        this.#factors = []
-        this.#invalidateCache()
-
-        if (inputStr instanceof Polynom) {
-            return this.copy(inputStr)
-        }
+        if (inputStr instanceof Polynom) return this.copy(inputStr)
         if (inputStr instanceof Monom) {
-            return this.fromMonoms(inputStr, ...values as InputAlgebra<Fraction>[])
+            return this.copy(Polynom.fromMonoms(inputStr, ...values as InputAlgebra<Fraction>[]))
         }
         if (inputStr instanceof Fraction || typeof inputStr === 'number') {
             return values.length === 0
-                ? this.fromConstant(inputStr)
-                : this.fromCoefficients(inputStr, ...values as InputValue<Fraction>[])
+                ? this.copy(Polynom.fromConstant(inputStr))
+                : this.copy(Polynom.fromCoefficients(this.#defaultVariable, inputStr, ...values as InputValue<Fraction>[]))
         }
         if (typeof inputStr === 'string') {
-            if (values.length === 0) {
-                return this.fromString(inputStr)
-            }
+            if (values.length === 0) return this.copy(Polynom.fromString(inputStr))
             return inputStr.length === 1
-                ? this.setVariable(inputStr).fromCoefficients(...values as InputValue<Fraction>[])
-                : this.fromLinear(inputStr, ...values as InputValue<Fraction>[])
+                ? this.copy(Polynom.fromCoefficients(inputStr, ...values as InputValue<Fraction>[]))
+                : this.copy(Polynom.fromLinear(inputStr, ...values as InputValue<Fraction>[]))
         }
 
         throw new ParseError(`Cannot parse "${String(inputStr)}" as a Polynom`)
@@ -374,9 +366,9 @@ export class Polynom implements IPiMathObject<Polynom>,
             if (sol.exact && sol.root.isZero()) {
                 for (let i = 0; i < sol.count; i++) {
                     if (sol.fraction.hasFractionalPart()) {
-                        this.#factors.push(new Polynom().setVariable(L).fromCoefficients(sol.fraction.denominator, -sol.fraction.numerator))
+                        this.#factors.push(Polynom.fromCoefficients(L, sol.fraction.denominator, -sol.fraction.numerator))
                     } else {
-                        this.#factors.push(new Polynom().setVariable(L).fromCoefficients(1, sol.fraction.clone().opposite()))
+                        this.#factors.push(Polynom.fromCoefficients(L, 1, sol.fraction.clone().opposite()))
                     }
                 }
             }
@@ -404,66 +396,68 @@ export class Polynom implements IPiMathObject<Polynom>,
         return this.#factors
     }
 
-    fromCoefficients(...values: InputValue<Fraction>[]): this {
-
-        this.#monoms = []
-        const variable = this.#defaultVariable
-        values.reverse().forEach((coeff, index) => {
+    /**
+     * Build a polynom from coefficients ordered highest→lowest degree.
+     * The first argument is the variable (e.g. `'x'`, `'t'`).
+     * @throws {InvalidArgumentError} when `variable` is not a single lowercase letter.
+     */
+    static fromCoefficients(variable: string, ...values: InputValue<Fraction>[]): Polynom {
+        if (!/^[a-z]$/.test(variable)) {
+            throw new InvalidArgumentError(`fromCoefficients expects a single lowercase letter, got "${variable}"`)
+        }
+        const p = new Polynom()
+        p.#defaultVariable = variable
+        ;[...values].reverse().forEach((coeff, index) => {
             const monom = new Monom()
             monom.coefficient = new Fraction(coeff)
             monom.setExponent(variable, index)
-
-            this.#monoms.push(monom)
+            p.#monoms.push(monom)
         })
-
-        this.#invalidateCache()
-        return this.reorder()
+        p.#invalidateCache()
+        return p.reorder()
     }
 
-    fromConstant(value: InputValue<Fraction>): this {
-        this.#monoms = [new Monom(new Fraction(value))]
-        this.#invalidateCache()
-        return this
+    static fromConstant(value: InputValue<Fraction>): Polynom {
+        return Polynom.fromMonoms(new Fraction(value))
     }
 
-    fromLinear(variables: string, ...coefficients: InputValue<Fraction>[]): this {
+    /**
+     * Build a multivariate linear polynom: `'xyz', a, b, c, d` → `ax + by + cz + d`.
+     * @throws {ParseError} when `variables` is not two or more lowercase letters.
+     * @throws {InvalidArgumentError} when more coefficients than variables+1 are given.
+     */
+    static fromLinear(variables: string, ...coefficients: InputValue<Fraction>[]): Polynom {
         if (!/^[a-z]{2,}$/.test(variables)) {
             throw new ParseError(`fromLinear expects at least two lowercase variables, got "${variables}"`)
         }
-
         const variableList = variables.split('')
         const fractions = coefficients.map(x => new Fraction(x))
         if (fractions.length > variableList.length + 1) {
             throw new InvalidArgumentError(`Too many values: ${variableList.length} variables but ${fractions.length} values provided`)
         }
-
-        this.empty()
-        // 'xyz', a, b, c, d => ax + by + cz + d. A trailing (n+1)th coefficient
-        // has no matching variable and becomes the constant term.
+        const p = new Polynom()
         fractions.forEach((F, i) => {
             const m = new Monom()
             m.coefficient = F.clone()
             m.literalStr = variableList[i] ?? ''
-            this.add(m)
+            p.add(m)
         })
-
-        this.#invalidateCache()
-        return this
+        p.#invalidateCache()
+        return p
     }
 
-    fromMonoms(...monoms: InputAlgebra<Fraction>[]): this {
-        this.#monoms = monoms.map(m => m instanceof Monom ? m.clone() : new Monom(m))
-        this.#invalidateCache()
-        return this
+    static fromMonoms(...monoms: InputAlgebra<Fraction>[]): Polynom {
+        const p = new Polynom()
+        p.#monoms = monoms.map(m => m instanceof Monom ? m.clone() : new Monom(m))
+        p.#invalidateCache()
+        return p
     }
 
-    fromString(value: string): this {
-        // A plain number is a constant polynom.
-        if (value !== '' && !isNaN(Number(value))) {
-            return this.fromConstant(Number(value))
-        }
-        // Otherwise, parse the expression with the shunting-yard algorithm.
-        return this.#shutingYardToReducedPolynom(value)
+    static fromString(value: string): Polynom {
+        if (value !== '' && !isNaN(Number(value))) return Polynom.fromConstant(Number(value))
+        const p = new Polynom()
+        p.#shutingYardToReducedPolynom(value)
+        return p
     }
 
     gcdDenominator(): number {

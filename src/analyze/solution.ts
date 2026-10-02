@@ -31,7 +31,7 @@ export class Solution implements IPiMathObject<Solution> {
     #tex: string | null
     #variable: string
 
-    constructor() {
+    constructor(value?: string | Fraction | Root | PolynomRoot | Solution) {
         this.#variable = 'x'
         this.#exact = false
 
@@ -41,6 +41,8 @@ export class Solution implements IPiMathObject<Solution> {
         this.#fraction = new Fraction().zero()
         this.#root = new Root()
         this.#count = 1
+
+        if (value !== undefined) this.parse(value)
     }
 
     /**
@@ -198,15 +200,15 @@ export class Solution implements IPiMathObject<Solution> {
 
     /**
      * Router that builds a Solution from a supported input by delegating to the
-     * matching factory: `Fraction` -> `fromFraction`, `Root` -> `fromRoot`,
-     * `PolynomRoot` -> `fromPolynomRoot`, and a same-type `Solution` -> `copy`.
+     * matching factory: `string` → `fromString`, `Fraction` → `fromFraction`,
+     * `Root` → `fromRoot`, `PolynomRoot` → `fromPolynomRoot`, `Solution` → `copy`.
      */
-    static parse(value: Fraction | Root | PolynomRoot | Solution): Solution {
-        if (value instanceof Solution) return new Solution().copy(value)
-        if (value instanceof Fraction) return Solution.fromFraction(value)
-        if (value instanceof Root) return Solution.fromRoot(value)
-
-        return Solution.fromPolynomRoot(value)
+    parse(value: string | Fraction | Root | PolynomRoot | Solution): this {
+        if (value instanceof Solution) return this.copy(value)
+        if (typeof value === 'string') return this.copy(Solution.fromString(value))
+        if (value instanceof Fraction) return this.copy(Solution.fromFraction(value))
+        if (value instanceof Root) return this.copy(Solution.fromRoot(value))
+        return this.copy(Solution.fromPolynomRoot(value))
     }
 
     /**
