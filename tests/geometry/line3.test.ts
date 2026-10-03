@@ -1,41 +1,330 @@
-import {describe, expect, it, test} from "vitest"
+import {describe, expect, it} from "vitest"
 import {Line3} from "../../src/geometry/line3"
 import {Random} from "../../src/randomization/random"
 import {Vector} from "../../src/geometry/vector"
 import {Point} from "../../src/geometry/point"
-import {Plane3} from "../../src/geometry/plane3"
-import {Equation} from "../../src/algebra/equation"
+import {Root} from "../../src/coefficients/root"
 
-describe.todo('Line 3D creation', () => {
-    test.todo('create Line 3D')
-    test.todo('parse string')
-    test.todo('clone Line 3D')
-    test.todo('set to zero Line 3D')
-    test.todo('set to one Line 3D')
+// ─── Construction ────────────────────────────────────────────────────────────
+
+describe('Line3 construction', () => {
+    it('fromPoints creates correct OA and direction', () => {
+        const A = new Point(1, 2, 3)
+        const B = new Point(4, 6, 9)
+        const L = Line3.fromPoints(A, B)
+        expect(L.OA.x.display).toBe('1')
+        expect(L.OA.y.display).toBe('2')
+        expect(L.OA.z.display).toBe('3')
+        expect(L.d.x.display).toBe('3')
+        expect(L.d.y.display).toBe('4')
+        expect(L.d.z.display).toBe('6')
+    })
+
+    it('fromPointAndDirection creates correct OA and direction', () => {
+        const A = new Point(1, 2, 3)
+        const d = new Vector(4, 5, 6)
+        const L = Line3.fromPointAndDirection(A, d)
+        expect(L.OA.x.display).toBe('1')
+        expect(L.OA.y.display).toBe('2')
+        expect(L.OA.z.display).toBe('3')
+        expect(L.d.x.display).toBe('4')
+        expect(L.d.y.display).toBe('5')
+        expect(L.d.z.display).toBe('6')
+    })
+
+    it('parse with two points delegates to fromPoints', () => {
+        const A = new Point(1, 2, 3)
+        const B = new Point(4, 6, 9)
+        const L = new Line3()
+        L.parse(A, B)
+        expect(L.OA.x.display).toBe('1')
+        expect(L.d.x.display).toBe('3')
+    })
+
+    it('parse with point and vector delegates to fromPointAndDirection', () => {
+        const A = new Point(1, 2, 3)
+        const d = new Vector(4, 5, 6)
+        const L = new Line3()
+        L.parse(A, d)
+        expect(L.OA.x.display).toBe('1')
+        expect(L.d.x.display).toBe('4')
+    })
+
+    it('copy replicates OA and direction', () => {
+        const L1 = new Line3(new Point(1, 2, 3), new Vector(4, 5, 6))
+        const L2 = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        L2.copy(L1)
+        expect(L2.OA.x.display).toBe('1')
+        expect(L2.OA.y.display).toBe('2')
+        expect(L2.d.x.display).toBe('4')
+    })
+
+    it('copy is isolated from the original', () => {
+        const L1 = new Line3(new Point(1, 2, 3), new Vector(4, 5, 6))
+        const L2 = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        L2.copy(L1)
+        L1.OA.x.add(100)
+        expect(L2.OA.x.display).toBe('1')
+    })
 })
-describe.todo('Line 3D output', () => {
-    test.todo('output as LaTeX')
-    test.todo('output as ASCII')
+
+// ─── tex / display ───────────────────────────────────────────────────────────
+
+describe('Line3 tex/display output', () => {
+    const A = new Point(1, 2, 3)
+    const d = new Vector(4, 5, 6)
+
+    it('tex returns parametric form by default', () => {
+        const L = new Line3(A, d)
+        expect(L.tex).toBe('\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} 1 \\\\ 2 \\\\ 3 \\end{pmatrix} + k\\cdot \\begin{pmatrix} 4 \\\\ 5 \\\\ 6 \\end{pmatrix}')
+    })
+
+    it('asParametric.tex returns parametric form', () => {
+        const L = new Line3(A, d)
+        expect(L.asParametric.tex).toBe('\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} 1 \\\\ 2 \\\\ 3 \\end{pmatrix} + k\\cdot \\begin{pmatrix} 4 \\\\ 5 \\\\ 6 \\end{pmatrix}')
+    })
+
+    it('asSystem.tex returns LaTeX system form', () => {
+        const L = new Line3(A, d)
+        expect(L.asSystem.tex).toBe('\\left\\{\\begin{aligned}\n    x &= 1+4k\\\\ \n    y &= 2+5k\\\\\n    z &= 3+6k\n\\end{aligned}\\right.')
+    })
+
+    it('asSystem.display returns AsciiMath system form', () => {
+        const L = new Line3(A, d)
+        expect(L.asSystem.display).toBe('{(x,=,1+4k),(y,=,2+5k),(z,=,3+6k):}')
+    })
+
+    it('asCartesian.tex returns LaTeX cartesian form', () => {
+        const L = new Line3(A, d)
+        expect(L.asCartesian.tex).toBe('\\frac{ x-1 }{ 4 } = \\frac{ y-2 }{ 5 } = \\frac{ z-3 }{ 6 }')
+    })
+
+    it('asCartesian.display returns AsciiMath cartesian form', () => {
+        const L = new Line3(A, d)
+        expect(L.asCartesian.display).toBe('(x-1)/4 = (y-2)/5 = (z-3)/6')
+    })
+
+    it('mode resets to parametric after tex', () => {
+        const L = new Line3(A, d)
+        L.asSystem.tex
+        expect(L.tex).toBe('\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} 1 \\\\ 2 \\\\ 3 \\end{pmatrix} + k\\cdot \\begin{pmatrix} 4 \\\\ 5 \\\\ 6 \\end{pmatrix}')
+    })
+
+    it('display returns parametric form by default', () => {
+        const L = new Line3(A, d)
+        expect(typeof L.display).toBe('string')
+        expect(L.display).toBe('((x,y,z)) = ((1,2,3)) + k\\cdot ((4,5,6))')
+    })
 })
-describe.todo('Line 3D operations', () => {
-    test.todo('reduce Line 3D')
-    test.todo('add two Line 3Ds')
-    test.todo('subtract two Line 3Ds')
-    test.todo('multiply two Line 3Ds')
-    test.todo('divide by Line 3D')
-    test.todo('raise Line 3D by integer')
+
+// ─── Predicates ──────────────────────────────────────────────────────────────
+
+describe('Line3 geometric predicates', () => {
+    const xAxis = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+
+    it('isOnLine returns true for the base point', () => {
+        expect(xAxis.isOnLine(new Point(0, 0, 0))).toBe(true)
+    })
+
+    it('isOnLine returns true for a point on the line', () => {
+        expect(xAxis.isOnLine(new Point(3, 0, 0))).toBe(true)
+    })
+
+    it('isOnLine returns false for a point not on the line', () => {
+        expect(xAxis.isOnLine(new Point(3, 1, 0))).toBe(false)
+    })
+
+    it('isSameAs returns true for the same geometric line (different OA)', () => {
+        const L = new Line3(new Point(5, 0, 0), new Vector(2, 0, 0))
+        expect(xAxis.isSameAs(L)).toBe(true)
+    })
+
+    it('isSameAs returns false for a parallel but distinct line', () => {
+        const L = new Line3(new Point(0, 1, 0), new Vector(1, 0, 0))
+        expect(xAxis.isSameAs(L)).toBe(false)
+    })
+
+    it('isParallelTo returns true for a parallel line', () => {
+        const L = new Line3(new Point(0, 1, 0), new Vector(2, 0, 0))
+        expect(xAxis.isParallelTo(L)).toBe(true)
+    })
+
+    it('isParallelTo returns false for the same line', () => {
+        const L = new Line3(new Point(5, 0, 0), new Vector(1, 0, 0))
+        expect(xAxis.isParallelTo(L)).toBe(false)
+    })
+
+    it('isParallelTo returns false for a non-parallel line', () => {
+        const L = new Line3(new Point(0, 0, 0), new Vector(0, 1, 0))
+        expect(xAxis.isParallelTo(L)).toBe(false)
+    })
+
+    it('isPerpendicularTo returns true for a perpendicular line', () => {
+        const L = new Line3(new Point(0, 0, 0), new Vector(0, 1, 0))
+        expect(xAxis.isPerpendicularTo(L)).toBe(true)
+    })
+
+    it('isPerpendicularTo returns false for a non-perpendicular line', () => {
+        const L = new Line3(new Point(0, 0, 0), new Vector(1, 1, 0))
+        expect(xAxis.isPerpendicularTo(L)).toBe(false)
+    })
 })
-describe.todo('Line 3D comparisons', () => {
-    test.todo('same Line 3D')
-    test.todo('equal Line 3D')
-    test.todo('is one Line 3D')
-    test.todo('is zero Line 3D')
+
+// ─── simplify ────────────────────────────────────────────────────────────────
+
+describe('Line3 simplify', () => {
+    it('simplify reduces the direction vector', () => {
+        const L = new Line3(new Point(1, 2, 3), new Vector(4, 6, 8))
+        L.simplify()
+        expect(L.d.x.display).toBe('2')
+        expect(L.d.y.display).toBe('3')
+        expect(L.d.z.display).toBe('4')
+    })
+
+    it('simplify returns this', () => {
+        const L = new Line3(new Point(0, 0, 0), new Vector(2, 4, 6))
+        expect(L.simplify()).toBe(L)
+    })
 })
-describe.todo('Line 3D static functions')
-describe.todo('Line 3D evaluation', () => {
-    test.todo('evaluate Line 3D')
+
+// ─── intersection ────────────────────────────────────────────────────────────
+
+describe('Line3 intersection', () => {
+    it('returns hasIntersection true and correct point for two intersecting lines', () => {
+        // L1 = x-axis, L2 passes through (2,3,0) in the y-direction
+        const L1 = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        const L2 = new Line3(new Point(2, 3, 0), new Vector(0, 1, 0))
+        const result = L1.intersection(L2)
+        expect(result.hasIntersection).toBe(true)
+        expect(result.isParallel).toBe(false)
+        expect(result.isSame).toBe(false)
+        expect(result.point.x.display).toBe('2')
+        expect(result.point.y.display).toBe('0')
+        expect(result.point.z.display).toBe('0')
+    })
+
+    it('returns isParallel true for parallel lines', () => {
+        const L1 = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        const L2 = new Line3(new Point(0, 1, 0), new Vector(1, 0, 0))
+        const result = L1.intersection(L2)
+        expect(result.hasIntersection).toBe(false)
+        expect(result.isParallel).toBe(true)
+        expect(result.isSame).toBe(false)
+    })
+
+    it('returns isSame true for the same line', () => {
+        const L1 = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        const L2 = new Line3(new Point(5, 0, 0), new Vector(2, 0, 0))
+        const result = L1.intersection(L2)
+        expect(result.hasIntersection).toBe(false)
+        expect(result.isParallel).toBe(false)
+        expect(result.isSame).toBe(true)
+    })
+
+    it('returns hasIntersection false for skew lines', () => {
+        // L1 = x-axis, L2 passes through (0,1,1) in the z-direction
+        const L1 = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        const L2 = new Line3(new Point(0, 1, 1), new Vector(0, 0, 1))
+        const result = L1.intersection(L2)
+        expect(result.hasIntersection).toBe(false)
+        expect(result.isParallel).toBe(false)
+        expect(result.isSame).toBe(false)
+    })
 })
-describe.todo('Line 3D generators')
+
+// ─── randomNearPoint ─────────────────────────────────────────────────────────
+
+describe('Line3 randomNearPoint', () => {
+    it('returns a point not on the line', () => {
+        const L = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        const P = L.randomNearPoint()
+        expect(L.isOnLine(P)).toBe(false)
+    })
+
+    it('returns a 3D point', () => {
+        const L = new Line3(new Point(1, 2, 3), new Vector(1, 1, 1))
+        const P = L.randomNearPoint()
+        expect(P.dimension).toBe(3)
+    })
+})
+
+// ─── clone ───────────────────────────────────────────────────────────────────
+
+describe('Line3 clone', () => {
+    it('returns a new object, not the same reference', () => {
+        const L = new Line3(new Point(1, 2, 3), new Vector(4, 5, 6))
+        const C = L.clone()
+        expect(C).not.toBe(L)
+    })
+
+    it('preserves the math values of the original', () => {
+        const L = new Line3(new Point(1, 2, 3), new Vector(4, 5, 6))
+        const C = L.clone()
+        expect(C.OA.x.display).toBe('1')
+        expect(C.OA.y.display).toBe('2')
+        expect(C.d.x.display).toBe('4')
+    })
+
+    it('is isolated from the original after cloning', () => {
+        const L = new Line3(new Point(1, 2, 3), new Vector(4, 5, 6))
+        const C = L.clone()
+        L.OA.x.add(100)
+        expect(C.OA.x.display).toBe('1')
+    })
+})
+
+// ─── distanceTo ──────────────────────────────────────────────────────────────
+
+describe('Line3 distanceTo', () => {
+    it('returns a Root instance', () => {
+        const L = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        const dist = L.distanceTo(new Point(0, 3, 0))
+        expect(dist).toBeInstanceOf(Root)
+    })
+
+    it('returns zero for a point on the line', () => {
+        const L = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        const dist = L.distanceTo(new Point(5, 0, 0))
+        expect(dist.value).toBe(0)
+    })
+
+    it('returns the correct distance for a point off the line', () => {
+        // x-axis, point (0, 3, 0): distance = 3
+        const L = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        const dist = L.distanceTo(new Point(0, 3, 0))
+        expect(dist.value).toBe(3)
+    })
+
+    it('tex output is correct for a rational distance', () => {
+        // x-axis, point (0, 3, 0): sqrt(9/1) reduced = 3
+        const L = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        const dist = L.distanceTo(new Point(0, 3, 0))
+        expect(dist.tex).toBe('3')
+    })
+})
+
+// ─── hitSegment ──────────────────────────────────────────────────────────────
+
+describe('Line3 hitSegment', () => {
+    it('returns true when the line crosses the segment', () => {
+        // x-axis hits the segment from (2,-1,0) to (2,1,0) at (2,0,0)
+        const L = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        expect(L.hitSegment(new Point(2, -1, 0), new Point(2, 1, 0))).toBe(true)
+    })
+
+    it('returns false when the intersection lies outside the segment', () => {
+        // x-axis would meet the line through (2,1,0)→(2,3,0) at y=0, which is outside
+        const L = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        expect(L.hitSegment(new Point(2, 1, 0), new Point(2, 3, 0))).toBe(false)
+    })
+
+    it('returns false for a parallel segment', () => {
+        const L = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+        expect(L.hitSegment(new Point(0, 1, 0), new Point(3, 1, 0))).toBe(false)
+    })
+})
+
+// ─── Existing tests (API updated) ────────────────────────────────────────────
 
 describe('Geometry Line3 tests', function () {
     it('should create a line from two points', function () {
@@ -54,8 +343,8 @@ describe('Geometry Line3 tests', function () {
         const d = new Vector(4, 5, 6)
         const L = new Line3(A, d)
 
-        expect(L.tex.parametric).to.be.equal('\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} 1 \\\\ 2 \\\\ 3 \\end{pmatrix} + k\\cdot \\begin{pmatrix} 4 \\\\ 5 \\\\ 6 \\end{pmatrix}')
-        expect(L.tex.system).to.be.equal('\\left\\{\\begin{aligned}\n    x &= 1+4k\\\\ \n    y &= 2+5k\\\\\n    z &= 3+6k\n\\end{aligned}\\right.')
+        expect(L.tex).to.be.equal('\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} 1 \\\\ 2 \\\\ 3 \\end{pmatrix} + k\\cdot \\begin{pmatrix} 4 \\\\ 5 \\\\ 6 \\end{pmatrix}')
+        expect(L.asSystem.tex).to.be.equal('\\left\\{\\begin{aligned}\n    x &= 1+4k\\\\ \n    y &= 2+5k\\\\\n    z &= 3+6k\n\\end{aligned}\\right.')
     })
 
     it('should create a random line', function () {
@@ -115,100 +404,4 @@ describe('Geometry Line3 tests', function () {
         if (!isNaN(k3)) { expect(P.z.display).not.to.be.equal(L.OA.z.display) }
     })
 
-    it('test', () => {
-        const A1 = new Vector(3, -1, 4)
-        const v1 = new Vector(-1, 2, -1)
-
-        const v2 = new Vector(-2, 3, 1)
-
-        const I = A1.clone().add(v1.clone().multiplyByScalar(4))
-        const A2 = I.clone().subtract(v2.clone().multiplyByScalar(3))
-
-        console.log(A2.display)
-
-        const l1 = new Line3(A1, v1)
-        const l2 = new Line3(A2, v2)
-
-        console.log(l1.tex.parametric)
-        console.log(l2.tex.cartesian)
-
-        // const control = l1.intersection(l2)
-        // console.log(control.point.display)
-    })
-    it.skip('test 2', () => {
-        const A = new Point(-1, 3, 4)
-        const B = new Point(3, 3, 7)
-        const D = new Point(3, 5, 0)
-        const AB = new Vector(A, B)
-        const AD = new Vector(A, D)
-
-        console.log('A=', A.display)
-        console.log('B=', B.display)
-        console.log('D=', D.display)
-        console.log('AB=', AB.display, AB.normSquare.display)
-        console.log('AD=', AD.display, AD.normSquare.display)
-        const P = B.add(new Vector(A, D).multiplyByScalar(2))
-        console.log('P=', P.display)
-
-        console.log('ABxAD=', AB.cross(AD).display)
-        const p = new Plane3({
-            points: [A, B, D]
-        })
-        console.log(p.tex)
-
-        const S = P.clone().add(p.normal.clone().multiplyByScalar(1))
-        console.log('S=', S.display)
-    })
-    it.skip('test 2B', () => {
-        const A = new Point(-2, 3, 4)
-        const B = new Point(2, 3, 7)
-        const D = new Point(2, 5, 0)
-        const AB = new Vector(A, B)
-        const AD = new Vector(A, D)
-
-        console.log('A=', A.display)
-        console.log('B=', B.display)
-        console.log('D=', D.display)
-        console.log('AB=', AB.display, AB.normSquare.display)
-        console.log('AD=', AD.display, AD.normSquare.display)
-        const P = B.add(new Vector(A, D).multiplyByScalar(2))
-        console.log('P=', P.display)
-
-        console.log('ABxAD=', AB.cross(AD).display)
-        const p = new Plane3({
-            points: [A, B, D]
-        })
-        console.log(p.tex)
-
-        const S = P.clone().add(p.normal.clone().multiplyByScalar(1))
-        console.log('S=', S.display)
-    })
-
-    it('test 3', () => {
-        const p1 = new Plane3({
-            equation: new Equation('2x-y+z=0')
-        })
-        const p2 = new Plane3({
-            equation: new Equation('x-3y+z+5=0')
-        })
-
-        const d = new Line3(
-            new Point(0, 0, 0),
-            new Vector(1, -2, 3)
-        )
-        console.log(p1.tex)
-        console.log(p2.tex)
-        console.log(d.tex.parametric)
-
-        const cross = p1.normal.cross(p2.normal)
-        console.log('cross', cross.display)
-
-        const pt = new Point(1, 2, 0)
-        console.log(p1.isPointOnPlane(pt))
-        console.log(p2.isPointOnPlane(pt))
-        console.log(pt.display)
-
-        const d2 = new Line3(pt, cross)
-        console.log(d2.display.parametric)
-    })
 })

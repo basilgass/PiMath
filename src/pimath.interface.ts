@@ -141,6 +141,17 @@ export interface IAnalyse<T> {
 export type TableOfSignsValues = '-' | '+' | 'h' | 'z' | 't' | 'd' | ''
 
 /**
+ * Result of a line intersection query (2D or 3D).
+ * When `hasIntersection` is false, `point` is an invalid placeholder (NaN coordinates).
+ */
+export interface LineIntersection {
+    point: Point
+    hasIntersection: boolean
+    isParallel: boolean
+    isSame: boolean
+}
+
+/**
  * Geometric relation between two lines in the plane (2D).
  * @see Line3Property — the 3D equivalent, intentionally identical by design.
  */

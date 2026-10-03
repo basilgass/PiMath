@@ -6,7 +6,7 @@ import {Numeric} from "../numeric"
 import {Fraction} from "../coefficients"
 import {Equation, Monom, Polynom} from "../algebra"
 import {Vector} from "./vector"
-import {type InputValue, type IPiMathObject, LineProperty, type OutputStyle} from "../pimath.interface"
+import {type InputValue, type IPiMathObject, type LineIntersection, LineProperty, type OutputStyle} from "../pimath.interface"
 import {randomIntSym} from "../randomization/rndHelpers"
 import {Point} from "./point"
 import {Root} from "../coefficients/root"
@@ -23,13 +23,6 @@ enum LINE_DISPLAY {
 enum LINE_DIRECTION {
     LEFT_TO_RIGHT = 'lr',
     RIGHT_TO_LEFT = 'rl'
-}
-
-export interface LineIntersection {
-    point: Point
-    hasIntersection: boolean
-    isParallel: boolean
-    isSame: boolean
 }
 
 export class Line implements IPiMathObject<Line> {
@@ -529,7 +522,6 @@ export class Line implements IPiMathObject<Line> {
             Line.fromPoints(A, B)
         )
 
-        // There is an intersection point
         if (iPt.hasIntersection) {
             return iPt.point.x.value >= Math.min(A.x.value, B.x.value)
                 && iPt.point.x.value <= Math.max(A.x.value, B.x.value)
@@ -540,52 +532,27 @@ export class Line implements IPiMathObject<Line> {
     }
 
     intersection(line: Line): LineIntersection {
-        // TODO: rework Line.intersection
         const Pt = new Point()
-        let isParallel = false
-        let isSame = false
 
-        // this         => ax+by+c = 0
-        // line         => dx+ey+f = 0
-        //
-        //  aex + bey + ce = 0
-        //  dbx + bey + bf = 0
-        // (ae-db)x + ce-bf = 0
-        //
-        //  adx + bdy + cd = 0
-        //  adx + aey + af = 0
-        // (bd-ae)y + (cd-af)
-        //
-        // x = (bf-ce)/(ae-db)
-        // y = (af-cd)/(bd-ae)
-
-
-        // Theres is no 'y'
-        if (this.#b.isZero() || line.b.isZero()) {
-            // TODO : handle no y in the line canonical form
+        if (this.isSameAs(line)) {
+            Pt.x = new Fraction().invalid()
+            Pt.y = new Fraction().invalid()
+            return {point: Pt, hasIntersection: false, isParallel: false, isSame: true}
         }
 
         if (this.isParallelTo(line)) {
             Pt.x = new Fraction().invalid()
             Pt.y = new Fraction().invalid()
-            isParallel = true
-        } else if (this.isSameAs(line)) {
-            Pt.x = new Fraction().invalid()
-            Pt.y = new Fraction().invalid()
-            isSame = true
-        } else {
-            Pt.x = this.#b.clone().multiply(line.c).subtract(this.#c.clone().multiply(line.b))
-                .divide(this.#a.clone().multiply(line.b).subtract(this.#b.clone().multiply(line.a)))
-            Pt.y = this.#a.clone().multiply(line.c).subtract(this.#c.clone().multiply(line.a))
-                .divide(this.#b.clone().multiply(line.a).subtract(this.#a.clone().multiply(line.b)))
+            return {point: Pt, hasIntersection: false, isParallel: true, isSame: false}
         }
 
-        return {
-            point: Pt,
-            hasIntersection: !(isParallel || isSame),
-            isParallel,
-            isSame
-        }
+        // x = (bf-ce)/(ae-db),  y = (af-cd)/(bd-ae)
+        Pt.x = this.#b.clone().multiply(line.c).subtract(this.#c.clone().multiply(line.b))
+            .divide(this.#a.clone().multiply(line.b).subtract(this.#b.clone().multiply(line.a)))
+        Pt.y = this.#a.clone().multiply(line.c).subtract(this.#c.clone().multiply(line.a))
+            .divide(this.#b.clone().multiply(line.a).subtract(this.#a.clone().multiply(line.b)))
+
+        return {point: Pt, hasIntersection: true, isParallel: false, isSame: false}
     }
 
     isHorizontal(): boolean {
@@ -652,7 +619,6 @@ export class Line implements IPiMathObject<Line> {
     }
 
     randomPoint(k?: number): Point {
-        // Return a random point on the line.
         const pt = this.d
             .clone()
             .multiplyByScalar(randomIntSym((k === undefined || k <= 1) ? 3 : k, false))
