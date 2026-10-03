@@ -198,9 +198,9 @@ describe('Line3 intersection', () => {
         expect(result.hasIntersection).toBe(true)
         expect(result.isParallel).toBe(false)
         expect(result.isSame).toBe(false)
-        expect(result.point.x.display).toBe('2')
-        expect(result.point.y.display).toBe('0')
-        expect(result.point.z.display).toBe('0')
+        expect(result.point!.x.display).toBe('2')
+        expect(result.point!.y.display).toBe('0')
+        expect(result.point!.z.display).toBe('0')
     })
 
     it('returns isParallel true for parallel lines', () => {
@@ -404,4 +404,61 @@ describe('Geometry Line3 tests', function () {
         if (!isNaN(k3)) { expect(P.z.display).not.to.be.equal(L.OA.z.display) }
     })
 
+})
+
+// ─── project ─────────────────────────────────────────────────────────────────
+
+describe('Line3 project', () => {
+    const xAxis = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+
+    it('projects a point onto the x-axis', () => {
+        const proj = xAxis.project(new Point(3, 4, 5))
+        expect(proj.display).toBe('(3;0;0)')
+    })
+
+    it('returns the point itself when it lies on the line', () => {
+        const pt = new Point(7, 0, 0)
+        expect(xAxis.project(pt).display).toBe('(7;0;0)')
+    })
+
+    it('projected point lies on the line', () => {
+        const L = new Line3(new Point(1, 2, 3), new Vector(2, 1, -1))
+        const proj = L.project(new Point(5, 0, 4))
+        expect(L.isOnLine(proj)).toBe(true)
+    })
+
+    it('AP vector is perpendicular to the direction after projection', () => {
+        const L = new Line3(new Point(0, 1, 0), new Vector(1, 1, 0))
+        const pt = new Point(3, 0, 2)
+        const proj = L.project(pt)
+        const residual = new Vector(proj, pt)
+        expect(residual.dot(L.direction).isZero()).toBe(true)
+    })
+})
+
+// ─── reflect ─────────────────────────────────────────────────────────────────
+
+describe('Line3 reflect', () => {
+    const xAxis = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
+
+    it('reflects a point through the x-axis', () => {
+        const ref = xAxis.reflect(new Point(3, 2, 1))
+        expect(ref.display).toBe('(3;-2;-1)')
+    })
+
+    it('point on the line reflects to itself', () => {
+        expect(xAxis.reflect(new Point(5, 0, 0)).display).toBe('(5;0;0)')
+    })
+
+    it('projection is the midpoint of point and its reflection', () => {
+        const L = new Line3(new Point(0, 1, 0), new Vector(1, 1, 1))
+        const pt = new Point(3, 0, 2)
+        const ref = L.reflect(pt)
+        const mid = new Point(
+            pt.x.clone().add(ref.x).divide(2),
+            pt.y.clone().add(ref.y).divide(2),
+            pt.z.clone().add(ref.z).divide(2)
+        )
+        expect(L.isOnLine(mid)).toBe(true)
+    })
 })

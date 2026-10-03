@@ -27,6 +27,11 @@ export default defineConfig(
 				"ignoreReadBeforeAssign": false
 			}],
 			"one-var": ["error", "never"],
+			"@typescript-eslint/no-unused-vars": ["error", {
+				argsIgnorePattern: "^_",
+				varsIgnorePattern: "^_",
+				caughtErrorsIgnorePattern: "^_",
+			}],
 			"@typescript-eslint/unified-signatures": "off",
 			"@typescript-eslint/no-unnecessary-condition": "warn",
 			"@typescript-eslint/restrict-template-expressions": ["error", {

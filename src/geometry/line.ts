@@ -532,21 +532,16 @@ export class Line implements IPiMathObject<Line> {
     }
 
     intersection(line: Line): LineIntersection {
-        const Pt = new Point()
-
         if (this.isSameAs(line)) {
-            Pt.x = new Fraction().invalid()
-            Pt.y = new Fraction().invalid()
-            return {point: Pt, hasIntersection: false, isParallel: false, isSame: true}
+            return {point: null, hasIntersection: false, isParallel: false, isSame: true}
         }
 
         if (this.isParallelTo(line)) {
-            Pt.x = new Fraction().invalid()
-            Pt.y = new Fraction().invalid()
-            return {point: Pt, hasIntersection: false, isParallel: true, isSame: false}
+            return {point: null, hasIntersection: false, isParallel: true, isSame: false}
         }
 
         // x = (bf-ce)/(ae-db),  y = (af-cd)/(bd-ae)
+        const Pt = new Point()
         Pt.x = this.#b.clone().multiply(line.c).subtract(this.#c.clone().multiply(line.b))
             .divide(this.#a.clone().multiply(line.b).subtract(this.#b.clone().multiply(line.a)))
         Pt.y = this.#a.clone().multiply(line.c).subtract(this.#c.clone().multiply(line.a))
@@ -638,6 +633,22 @@ export class Line implements IPiMathObject<Line> {
         ))
 
         return this
+    }
+
+    /** Orthogonal projection of `pt` onto this line. */
+    project(pt: Point): Point {
+        const n = this.normal                                    // (a, b)
+        const n2 = n.dot(n)                                     // a² + b²
+        const t = n.dot(pt).add(this.#c).divide(n2)
+        return new Point(
+            new Vector(pt).subtract(n.clone().multiplyByScalar(t))
+        )
+    }
+
+    /** Reflection of `pt` through this line (`proj` is the midpoint of `[pt, reflect(pt)]`). */
+    reflect(pt: Point): Point {
+        const displacement = new Vector(pt, this.project(pt))
+        return new Point(new Vector(pt).add(displacement.multiplyByScalar(2)))
     }
 
     get slope(): Fraction {

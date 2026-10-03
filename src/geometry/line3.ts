@@ -10,7 +10,7 @@ import {Monom} from "../algebra/monom"
 import {randomIntSym} from "../randomization/rndHelpers"
 import {Vector} from "./vector"
 import {Point} from "./point"
-import {type LineIntersection, type OutputStyle} from "../pimath.interface"
+import {type IPiMathObject, type LineIntersection, type OutputStyle} from "../pimath.interface"
 
 enum LINE3_DISPLAY {
     PARAMETRIC,
@@ -18,7 +18,7 @@ enum LINE3_DISPLAY {
     CARTESIAN
 }
 
-export class Line3 {
+export class Line3 implements IPiMathObject<Line3>{
     #OA: Point = new Point()
     #d: Vector = new Vector()
     #outputMode: LINE3_DISPLAY = LINE3_DISPLAY.PARAMETRIC
@@ -171,7 +171,7 @@ export class Line3 {
     }
 
     get d(): Vector {
-        return this.#d
+        return this.direction
     }
 
     set d(value: Vector) {
@@ -225,19 +225,19 @@ export class Line3 {
     intersection(line: Line3): LineIntersection {
         const isSame = this.isSameAs(line)
         if (isSame) {
-            return {point: new Point(), hasIntersection: false, isParallel: false, isSame: true}
+            return {point: null, hasIntersection: false, isParallel: false, isSame: true}
         }
 
         const isParallel = this.isParallelTo(line)
         if (isParallel) {
-            return {point: new Point(), hasIntersection: false, isParallel: true, isSame: false}
+            return {point: null, hasIntersection: false, isParallel: true, isSame: false}
         }
 
         // Triple product (OB−OA) · (d1×d2): zero iff lines are coplanar (intersecting)
         const AP = new Vector(this.#OA, line.#OA)
         const cross = this.#d.cross(line.#d)
         if (!AP.dot(cross).isZero()) {
-            return {point: new Point(), hasIntersection: false, isParallel: false, isSame: false}
+            return {point: null, hasIntersection: false, isParallel: false, isSame: false}
         }
 
         // t = ((OB−OA) × d2) · (d1×d2) / |d1×d2|²
@@ -294,5 +294,20 @@ export class Line3 {
     simplify(): this {
         this.#d.simplify()
         return this
+    }
+
+    /** Orthogonal projection of `pt` onto this line. */
+    project(pt: Point): Point {
+        const AP = new Vector(this.#OA, pt)
+        const t = AP.dot(this.#d).divide(this.#d.dot(this.#d))
+        return new Point(
+            new Vector(this.#OA).add(this.#d.clone().multiplyByScalar(t))
+        )
+    }
+
+    /** Reflection of `pt` through this line (`proj` is the midpoint of `[pt, reflect(pt)]`). */
+    reflect(pt: Point): Point {
+        const displacement = new Vector(pt, this.project(pt))
+        return new Point(new Vector(pt).add(displacement.multiplyByScalar(2)))
     }
 }

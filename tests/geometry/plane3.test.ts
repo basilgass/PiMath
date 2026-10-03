@@ -3,241 +3,315 @@ import {Plane3} from "../../src/geometry/plane3"
 import {Line3} from "../../src/geometry/line3"
 import {Point} from "../../src/geometry/point"
 import {Vector} from "../../src/geometry/vector"
-import {determinantFromVectors} from "../../src/geometry/geomMath"
-import {Matrix} from "../../src"
+import {Equation} from "../../src/algebra/equation"
+import {Polynom} from "../../src/algebra/polynom"
+import {ParseError} from "../../src/errors"
 
-describe.skip('Plane 3D creation', () => {
-    test.skip('create Plane 3D')
-    test.skip('parse string')
-    test.skip('clone Plane 3D')
-    test.skip('set to zero Plane 3D')
-    test.skip('set to one Plane 3D')
-})
-describe.skip('Plane 3D output', () => {
-    test.skip('output as LaTeX')
-    test.skip('output as ASCII')
-})
-describe.skip('Plane 3D operations', () => {
-    test.skip('reduce Plane 3D')
-    test.skip('add two Plane 3Ds')
-    test.skip('subtract two Plane 3Ds')
-    test.skip('multiply two Plane 3Ds')
-    test.skip('divide by Plane 3D')
-    test.skip('raise Plane 3D by integer')
-})
-describe.skip('Plane 3D comparisons', () => {
-    test.skip('same Plane 3D')
-    test.skip('equal Plane 3D')
-    test.skip('is one Plane 3D')
-    test.skip('is zero Plane 3D')
-})
-describe.skip('Plane 3D static functions')
-describe.skip('Plane 3D evaluation', () => {
-    test.skip('evaluate Plane 3D')
-})
-describe.skip('Plane 3D generators')
-describe('Geometry Plane', function () {
-    it.skip('should create a plane from 3 points', function () {
-        const P1 = new Point(1, 0, 0),
-            P2 = new Point(0, 1, 0),
-            P3 = new Point(0, 0, 1),
-            plane = new Plane3({points: [P1, P2, P3]})
+describe('Plane3 construction', () => {
+    it('builds from a point and a normal vector', () => {
+        const P = new Point(1, 2, 3)
+        const N = new Vector(4, 5, 6)
+        const plane = new Plane3({point: P, normal: N})
 
-        expect(plane).toBeDefined()
-        expect(plane.normal.display).to.be.equal('((1,1,1))')
+        expect(plane.normal.display).toBe('((4,5,6))')
+        expect(plane.point.display).toBe('(1;2;3)')
     })
 
-    it.skip('should create a plane from a point and a normal', function () {
-        const P = new Point(1, 2, 3),
-            N = new Vector(4, 5, 6),
-            plane = new Plane3({point: P, normal: N})
+    it('builds from a point and two direction vectors', () => {
+        const P = new Point(1, 0, 3)
+        const v1 = new Vector(2, 1, -3)
+        const v2 = new Vector(0, 2, -1)
+        const plane = new Plane3({point: P, directions: [v1, v2]})
 
-        expect(plane).toBeDefined()
-        expect(plane.normal.display).to.be.equal('((4,5,6))')
-        expect(plane.point.display).to.be.equal('(1;2;3)')
+        expect(plane.normal.display).toBe(v1.cross(v2).display)
     })
 
-    it('should output nice Tex', function () {
-        const P = new Point(1, 2, 3),
-            N = new Vector(4, 5, 6),
-            plane = new Plane3({point: P, normal: N})
+    it('builds from three points', () => {
+        const P1 = new Point(1, 0, 0)
+        const P2 = new Point(0, 1, 0)
+        const P3 = new Point(0, 0, 1)
+        const plane = new Plane3({points: [P1, P2, P3]})
 
-        expect(plane.tex).to.be.equal('4x+5y+6z-32=0')
+        expect(plane.isPointOnPlane(P1)).toBe(true)
+        expect(plane.isPointOnPlane(P2)).toBe(true)
+        expect(plane.isPointOnPlane(P3)).toBe(true)
     })
 
-    it.skip('should get the intersection point with a plane', function () {
-        const A = new Point(3, 1, 4)
-        const L = new Line3(
-            A,
-            new Point(-5, -2, 1)
+    it('builds from a cartesian equation', () => {
+        const eq = new Equation(new Polynom('xyz', 2, 3, -1, 4), new Polynom(0))
+        const plane = Plane3.fromEquation(eq)
+
+        expect(plane.a.display).toBe('2')
+        expect(plane.b.display).toBe('3')
+        expect(plane.c.display).toBe('-1')
+        expect(plane.d.display).toBe('4')
+    })
+
+    it('builds from four coefficients — point lies on the plane', () => {
+        const plane = Plane3.fromCoefficients(1, 2, 3, -6)
+
+        expect(plane.a.display).toBe('1')
+        expect(plane.d.display).toBe('-6')
+        expect(plane.isPointOnPlane(plane.point)).toBe(true)
+    })
+
+    it('fromCoefficients stores d correctly regardless of c value', () => {
+        // bug regression: old code used new Point(0,0,-d) which ignored c
+        const plane = Plane3.fromCoefficients(0, 0, 2, -4)
+
+        expect(plane.d.display).toBe('-4')
+        expect(plane.isPointOnPlane(plane.point)).toBe(true)
+    })
+
+    it('throws ParseError on empty config', () => {
+        expect(() => new Plane3({})).toThrow(ParseError)
+    })
+})
+
+describe('Plane3 output', () => {
+    it('outputs correct LaTeX equation from point and normal', () => {
+        const P = new Point(1, 2, 3)
+        const N = new Vector(4, 5, 6)
+        const plane = new Plane3({point: P, normal: N})
+
+        expect(plane.tex).toBe('4x+5y+6z-32=0')
+    })
+
+    it('tex and display both produce the cartesian equation', () => {
+        const plane = Plane3.fromCoefficients(1, 2, 3, -6)
+
+        expect(plane.tex).toBe('x+2y+3z-6=0')
+        expect(plane.display).toBe('x+2y+3z-6=0')
+    })
+})
+
+describe('Plane3 clone / copy', () => {
+    it('clone produces an independent copy', () => {
+        const P = new Point(1, 2, 3)
+        const N = new Vector(4, 5, 6)
+        const plane = new Plane3({point: P, normal: N})
+        const clone = plane.clone()
+
+        expect(clone.tex).toBe(plane.tex)
+        clone.normal = new Vector(1, 0, 0)
+        expect(clone.tex).not.toBe(plane.tex)
+    })
+
+    it('copy transfers mathematical state', () => {
+        const p1 = Plane3.fromCoefficients(1, 0, 0, -3)
+        const p2 = Plane3.fromCoefficients(0, 1, 0, -5)
+        p2.copy(p1)
+
+        expect(p2.tex).toBe(p1.tex)
+    })
+})
+
+describe('Plane3 geometric operations', () => {
+    it('distanceTo returns correct distance from a point', () => {
+        const plane = Plane3.fromCoefficients(0, 0, 1, -2)
+
+        expect(plane.distanceTo(new Point(0, 0, 5))).toBeCloseTo(3)
+        expect(plane.distanceTo(new Point(1, 1, 2))).toBeCloseTo(0)
+    })
+
+    it('isPointOnPlane returns true for a point on the plane', () => {
+        const plane = new Plane3({point: new Point(0, 0, 0), normal: new Vector(1, 1, 1)})
+
+        expect(plane.isPointOnPlane(new Point(1, -1, 0))).toBe(true)
+        expect(plane.isPointOnPlane(new Point(0, 0, 1))).toBe(false)
+    })
+
+    it('intersectWithLine returns the correct intersection point', () => {
+        const plane = Plane3.fromCoefficients(0, 0, 1, 0)
+        const line = new Line3(new Point(0, 0, 3), new Vector(0, 0, -1))
+        const result = plane.intersectWithLine(line)
+
+        expect(result.hasIntersection).toBe(true)
+        expect(result.point!.display).toBe('(0;0;0)')
+    })
+
+    it('intersectWithLine returns isParallel for a line parallel to the plane', () => {
+        const plane = Plane3.fromCoefficients(0, 0, 1, 0)
+        const line = new Line3(new Point(1, 2, 5), new Vector(1, 0, 0))
+        const result = plane.intersectWithLine(line)
+
+        expect(result.hasIntersection).toBe(false)
+        expect(result.isParallel).toBe(true)
+        expect(result.isOnPlane).toBe(false)
+        expect(result.point).toBeNull()
+    })
+
+    it('intersectWithLine returns isOnPlane for a line contained in the plane', () => {
+        const plane = Plane3.fromCoefficients(0, 0, 1, 0)
+        const line = new Line3(new Point(1, 2, 0), new Vector(1, 0, 0))
+        const result = plane.intersectWithLine(line)
+
+        expect(result.hasIntersection).toBe(false)
+        expect(result.isParallel).toBe(false)
+        expect(result.isOnPlane).toBe(true)
+        expect(result.point).toBeNull()
+    })
+
+    it('angle between two planes equals angle between their normals', () => {
+        const p1 = new Plane3({point: new Point(0, 0, 0), normal: new Vector(1, 0, 0)})
+        const p2 = new Plane3({point: new Point(0, 0, 0), normal: new Vector(0, 1, 0)})
+
+        expect(p1.angle(p2, true)).toBeCloseTo(90)
+    })
+})
+
+describe('Plane3 predicates', () => {
+    const xy = new Plane3({point: new Point(0, 0, 0), normal: new Vector(0, 0, 1)})
+    const xz = new Plane3({point: new Point(0, 0, 0), normal: new Vector(0, 1, 0)})
+    const xyShifted = new Plane3({point: new Point(0, 0, 3), normal: new Vector(0, 0, 1)})
+
+    it('isParallelTo plane — parallel planes', () => {
+        expect(xy.isParallelTo(xyShifted)).toBe(true)
+    })
+
+    it('isParallelTo plane — non-parallel planes', () => {
+        expect(xy.isParallelTo(xz)).toBe(false)
+    })
+
+    it('isParallelTo line — direction in the plane', () => {
+        const line = new Line3(new Point(0, 0, 5), new Vector(1, 0, 0))
+        expect(xy.isParallelTo(line)).toBe(true)
+    })
+
+    it('isParallelTo line — line cuts through the plane', () => {
+        const line = new Line3(new Point(0, 0, 0), new Vector(0, 0, 1))
+        expect(xy.isParallelTo(line)).toBe(false)
+    })
+
+    it('isPerpendicularTo plane — perpendicular planes', () => {
+        expect(xy.isPerpendicularTo(xz)).toBe(true)
+    })
+
+    it('isPerpendicularTo plane — parallel planes are not perpendicular', () => {
+        expect(xy.isPerpendicularTo(xyShifted)).toBe(false)
+    })
+
+    it('isPerpendicularTo line — normal direction', () => {
+        const line = new Line3(new Point(0, 0, 0), new Vector(0, 0, 1))
+        expect(xy.isPerpendicularTo(line)).toBe(true)
+    })
+
+    it('isPerpendicularTo line — oblique line', () => {
+        const line = new Line3(new Point(0, 0, 0), new Vector(1, 1, 0))
+        expect(xy.isPerpendicularTo(line)).toBe(false)
+    })
+
+    it('isEqual — same plane defined differently', () => {
+        const p1 = Plane3.fromCoefficients(2, 4, 6, -12)
+        const p2 = Plane3.fromCoefficients(1, 2, 3, -6)
+        expect(p1.isEqual(p2)).toBe(true)
+    })
+
+    it('isEqual — parallel but distinct planes are not equal', () => {
+        expect(xy.isEqual(xyShifted)).toBe(false)
+    })
+})
+
+describe('Plane3 simplify', () => {
+    it('reduces coefficients by GCD', () => {
+        const plane = Plane3.fromCoefficients(2, 4, 6, -12)
+        plane.simplify()
+        expect(plane.tex).toBe('x+2y+3z-6=0')
+    })
+
+    it('returns this for chaining', () => {
+        const plane = Plane3.fromCoefficients(2, 4, 6, -12)
+        expect(plane.simplify()).toBe(plane)
+    })
+})
+
+describe('Plane3 reflect', () => {
+    it('reflects a point through the xy-plane (z=0)', () => {
+        const plane = Plane3.fromCoefficients(0, 0, 1, 0)
+        expect(plane.reflect(new Point(3, 4, 5)).display).toBe('(3;4;-5)')
+    })
+
+    it('point on the plane reflects to itself', () => {
+        const plane = Plane3.fromCoefficients(0, 0, 1, 0)
+        expect(plane.reflect(new Point(1, 2, 0)).display).toBe('(1;2;0)')
+    })
+
+    it('projection is the midpoint of point and its reflection', () => {
+        const plane = new Plane3({point: new Point(0, 0, 1), normal: new Vector(0, 0, 1)})
+        const pt = new Point(2, 3, 4)
+        const ref = plane.reflect(pt)
+        const mid = new Point(
+            pt.x.clone().add(ref.x).divide(2),
+            pt.y.clone().add(ref.y).divide(2),
+            pt.z.clone().add(ref.z).divide(2)
         )
-        const K = L.randomPoint()
-        L.OA = K
-
-        console.log(L.point.display, L.d.display)
-
-        console.log(L.tex.parametric)
-        const p = new Plane3({
-            points: [
-                A.clone(),
-                new Point(4, -4, 0),
-                new Point(2, 2, 2)
-            ]
-        })
-        console.log(p.tex)
-
-        const intersection = p.intersectWithLine(L)
-        console.log(intersection.display)
-
-        expect(intersection.dimension).to.be.equal(3)
+        expect(plane.isPointOnPlane(mid)).toBe(true)
     })
-    it.skip('should create a plane from 3 points (custom)', function () {
-        const P1 = new Point(4, 6, 0),
-            P2 = new Point(8, 0, 10),
-            P3 = new Point(14, 8, 0),
-            P4 = new Point(0, 14, 12),
-            plane1 = new Plane3({points: [P1, P2, P3]}),
-            plane2 = new Plane3({points: [P1, P2, P4]})
-        console.log(plane1.tex)
-        console.log(plane2.tex)
+})
 
-        console.log(plane1.normal.cross(plane2.normal).display)
-        console.log(plane1.normal.cross(plane2.normal).simplify().display)
+describe('Plane3 intersectWithPlane', () => {
+    it('returns isParallel for parallel planes', () => {
+        const p1 = Plane3.fromCoefficients(0, 0, 1, 0)
+        const p2 = Plane3.fromCoefficients(0, 0, 1, -3)
+        const result = p1.intersectWithPlane(p2)
+
+        expect(result.hasIntersection).toBe(false)
+        expect(result.isParallel).toBe(true)
+        expect(result.isEqual).toBe(false)
+        expect(result.line).toBeNull()
     })
 
-    it.skip('should create a plane from one point and two vectors', function () {
-        const P = new Point(1, 0, 3),
-            v1 = new Vector(2, 1, -3),
-            v2 = new Vector(0, 2, -1),
-            plane = new Plane3({point: P, directions: [v1, v2]})
+    it('returns isEqual for equal planes', () => {
+        const p1 = Plane3.fromCoefficients(1, 2, 3, -6)
+        const p2 = Plane3.fromCoefficients(2, 4, 6, -12)
+        const result = p1.intersectWithPlane(p2)
 
-        console.log(v1.cross(v2).display)
-        expect(plane).toBeDefined()
-
-        console.log(plane.tex)
+        expect(result.hasIntersection).toBe(false)
+        expect(result.isParallel).toBe(false)
+        expect(result.isEqual).toBe(true)
+        expect(result.line).toBeNull()
     })
 
-    it.skip('test', () => {
-        const A = new Point(5, -1, 2)
-        const B = new Point(7, 8, 8)
-        const C = new Point(1, 6, 6)
-        const D = new Point(3, 3, 9)
+    it('intersection of z=0 and x=0 is the y-axis', () => {
+        const xy = Plane3.fromCoefficients(0, 0, 1, 0)  // z = 0
+        const yz = Plane3.fromCoefficients(1, 0, 0, 0)  // x = 0
+        const result = xy.intersectWithPlane(yz)
 
-        const AB = new Vector(A, B)
-        const AC = new Vector(A, C)
-        const AD = new Vector(A, D)
-        const BD = new Vector(B, D)
-        const CD = new Vector(C, D)
-        const CB = new Vector(C, B)
-        const ABxAC = AB.cross(AC)
-        const ABxAD = AB.cross(AD)
-        const ACxAD = AC.cross(AD)
-        const BDxCD = BD.cross(CD)
-
-        const ABC = new Plane3({points: [A, B, C]})
-        const BCD = new Plane3({points: [B, C, D]})
-        const ACD = new Plane3({points: [A, C, D]})
-        const ABD = new Plane3({points: [A, B, D]})
-        const M = new Matrix(AB, AC, AD)
-        const d = AB.clone().multiplyByScalar(AC.norm).add(AC.clone().multiplyByScalar(AB.norm)).simplify()
-        const b = new Line3(A, d)
-        const bc = new Line3(B, C)
-
-
-        console.log('Vectors')
-        console.log('AB: ', AB.display, 'AC: ', AC.display, 'AD: ', AD.display, 'BD:', BD.display, 'CD: ', CD.display)
-        console.log('Cross')
-        console.log('ABxAC=', ABxAC.display, 'ABxAD=', ABxAD.display, 'ACxAD=', ACxAD.display, 'BDxCD=', BDxCD.display)
-        console.log('Volume')
-        console.log(M.determinant().divide(6).display)
-        console.log('Aire totale')
-        console.log(
-            ABxAC.norm / 2
-            + ABxAD.norm / 2
-            + ACxAD.norm / 2
-            + BDxCD.norm / 2
-        )
-        console.log('Angle ABD')
-        console.log(AB.angle(BD, true))
-        console.log('Angle ABC et BCD')
-        console.log(ABC.angle(BCD, true))
-        console.log('Angle entre CB et ACD')
-        console.log(ACD.angle(CB, true))
-        console.log('Bissectrice interne BAC')
-        console.log(AB.norm, AC.norm)
-        console.log(b.display.parametric)
-        console.log('Distance D à BC')
-        console.log(bc.distanceTo(D).value)
-        console.log(bc.distanceTo(D).tex)
-        console.log('Hauteur issue de C')
-        console.log(ABD.distanceTo(C))
+        expect(result.hasIntersection).toBe(true)
+        expect(result.line!.isOnLine(new Point(0, 0, 0))).toBe(true)
+        expect(result.line!.isOnLine(new Point(0, 5, 0))).toBe(true)
+        expect(result.line!.isOnLine(new Point(1, 0, 0))).toBe(false)
     })
 
-    it.skip('test2', () => {
-        const A = new Point(6, -1, -1)
-        const B = new Point(5, 2, 3)
-        const Cp = new Point(3, 1, 4)
-        const ABCp = new Plane3({
-            points: [A, B, Cp]
-        })
-        const AB = new Vector(A, B)
-        const ACp = new Vector(A, Cp)
-        const C = Cp.clone().add(ABCp.normal.simplify().clone().multiplyByScalar(-2))
-        const AC = new Vector(A, C)
-        const dAB = new Line3(A, B)
-        const dBC = new Line3(B, C)
-        const dAC = new Line3(A, C)
-        const M = new Point().middleOf(A, Cp)
-        const BM = new Vector(B, M)
-        const D = B.clone().add(BM.clone().multiplyByScalar(3))
-        const BCD = new Plane3({points: [B, C, D]})
-        const E = Cp.clone().add(AB)
-        const BCE = new Plane3({points: [B, C, E]})
+    it('intersection point lies on both planes', () => {
+        const p1 = new Plane3({point: new Point(0, 0, 0), normal: new Vector(1, 1, 1)})
+        const p2 = new Plane3({point: new Point(1, 0, 0), normal: new Vector(1, -1, 0)})
+        const result = p1.intersectWithPlane(p2)
 
-        console.log('A=', A.display)
-        console.log('B=', B.display)
-        console.log('C=', C.display)
-        console.log('Cp=', Cp.display)
-        console.log('M=', M.display)
-        console.log('(D)=', D.display)
-        console.log('(E)=', E.display)
-        console.log('AB=', AB.display)
-        console.log('ACp=', ACp.display)
-        console.log('ABCp= ', ABCp.tex)
-        console.log('BCD= ', BCD.tex)
-        console.log('BCE= ', BCE.tex)
-        console.log('dAB=', dAB.display.parametric)
-        console.log('d=dAC=', dAC.display.cartesian)
-        console.log('dBC=', dBC.display.parametric)
-        console.log('BM=', BM.display)
-        console.log('-----------')
-        console.log('\\item \\(\\pi_1: ' + BCD.tex + '\\)')
-        console.log('\\item \\(\\pi_2: ' + ABCp.tex + '\\)')
-        console.log('\\item \\(\\pi_3: ' + BCE.tex + '\\)')
-        console.log('\\item \\(' + `A= ${A.tex} ` + '\\)')
-        console.log(`\\item \\(\\displaystyle d: ${dAC.tex.cartesian} \\)`)
-
-        console.log('AB - CC\' = ', dAB.distanceTo(Cp).value)
-        console.log('d - BM = ', determinantFromVectors(AC, BM, new Vector(A, M)).value / AC.cross(BM).norm)
-
+        expect(result.hasIntersection).toBe(true)
+        expect(p1.isPointOnPlane(result.line!.point)).toBe(true)
+        expect(p2.isPointOnPlane(result.line!.point)).toBe(true)
     })
 
-    test('test', () => {
-        const d = new Vector(10,1,-4)
-        const T = new Point(9, -2, -6)
+    it('intersection line direction is perpendicular to both normals', () => {
+        const p1 = new Plane3({point: new Point(0, 0, 1), normal: new Vector(0, 0, 1)})
+        const p2 = new Plane3({point: new Point(0, 1, 0), normal: new Vector(0, 1, 0)})
+        const result = p1.intersectWithPlane(p2)
 
-        const p = new Plane3({
-            point: T,
-            normal: d
-        })
-
-        console.log(p.tex)
+        expect(result.hasIntersection).toBe(true)
+        expect(result.line!.direction.dot(p1.normal).isZero()).toBe(true)
+        expect(result.line!.direction.dot(p2.normal).isZero()).toBe(true)
     })
 
-    test('test2', ()=>{
-        const v1 = new Vector(1, -2, 2)
-        const v2 = new Vector(8,1,-2)
-        console.log('CROSS: ' + v1.cross(v2).display)
-    })
+    it('general case: x+y+z=1 and x-y=0', () => {
+        const p1 = Plane3.fromCoefficients(1, 1, 1, -1)
+        const p2 = Plane3.fromCoefficients(1, -1, 0, 0)
+        const result = p1.intersectWithPlane(p2)
 
+        expect(result.hasIntersection).toBe(true)
+        expect(p1.isPointOnPlane(result.line!.point)).toBe(true)
+        expect(p2.isPointOnPlane(result.line!.point)).toBe(true)
+        expect(result.line!.direction.dot(p1.normal).isZero()).toBe(true)
+        expect(result.line!.direction.dot(p2.normal).isZero()).toBe(true)
+    })
 })

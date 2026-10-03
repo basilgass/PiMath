@@ -177,7 +177,11 @@ export class Circle
         const mAB = T.getMediators().c.clone()
         const mAC = T.getMediators().b.clone()
 
-        return Circle.fromCenterPoint(mAB.intersection(mAC).point, A)
+        const center = mAB.intersection(mAC)
+        if (!center.hasIntersection) {
+            throw new MathError('Cannot find circumcenter: mediators do not intersect')
+        }
+        return Circle.fromCenterPoint(center.point, A)
     }
 
     static fromString(str: string): Circle {

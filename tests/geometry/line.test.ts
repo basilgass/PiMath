@@ -175,8 +175,8 @@ describe('Vertical line comparisons', () => {
         const diagonal = new Line('x-y=0') // y = x
         const result = x1.intersection(diagonal)
         expect(result.hasIntersection).toBe(true)
-        expect(result.point.x.value).toBe(1)
-        expect(result.point.y.value).toBe(1)
+        expect(result.point!.x.value).toBe(1)
+        expect(result.point!.y.value).toBe(1)
     })
 })
 
@@ -211,7 +211,7 @@ describe('Operation with Lines', function () {
         )
         const P = L1.intersection(L2)
         expect(P.hasIntersection).toBe(true)
-        expect(P.point.display).toBe('(6;4)')
+        expect(P.point!.display).toBe('(6;4)')
     })
 
     test('should fail on intersection with parallel lines', () => {
@@ -259,4 +259,67 @@ describe('Operation with Lines', function () {
         expect(L.getValueAtX(0).isNaN()).toBe(true)
     })
 
+})
+
+describe('Line project', () => {
+    test('projects a point onto the x-axis (y=0)', () => {
+        const L = Line.fromCoefficient(0, 1, 0)   // y = 0
+        const proj = L.project(new Point(3, 5))
+        expect(proj.display).toBe('(3;0)')
+    })
+
+    test('projects a point onto a vertical line (x=2)', () => {
+        const L = Line.fromCoefficient(1, 0, -2)  // x = 2
+        const proj = L.project(new Point(7, 4))
+        expect(proj.display).toBe('(2;4)')
+    })
+
+    test('returns the point itself when it lies on the line', () => {
+        const L = Line.fromPoints(new Point(0, 0), new Point(1, 1))
+        const pt = new Point(3, 3)
+        expect(L.isOnLine(pt)).toBe(true)
+        expect(L.project(pt).display).toBe('(3;3)')
+    })
+
+    test('projected point lies on the line', () => {
+        const L = Line.fromPoints(new Point(0, 0), new Point(3, 1))
+        const proj = L.project(new Point(2, 5))
+        expect(L.isOnLine(proj)).toBe(true)
+    })
+
+    test('residual vector is perpendicular to the line direction', () => {
+        const L = Line.fromPoints(new Point(1, 2), new Point(4, 6))
+        const pt = new Point(0, 5)
+        const proj = L.project(pt)
+        const residual = new Vector(proj, pt)
+        expect(residual.dot(L.d).isZero()).toBe(true)
+    })
+})
+
+describe('Line reflect', () => {
+    test('reflects a point through the x-axis (y=0)', () => {
+        const L = Line.fromCoefficient(0, 1, 0)
+        expect(L.reflect(new Point(3, 5)).display).toBe('(3;-5)')
+    })
+
+    test('reflects a point through a vertical line (x=2)', () => {
+        const L = Line.fromCoefficient(1, 0, -2)
+        expect(L.reflect(new Point(5, 4)).display).toBe('(-1;4)')
+    })
+
+    test('point on the line reflects to itself', () => {
+        const L = Line.fromPoints(new Point(0, 0), new Point(1, 1))
+        expect(L.reflect(new Point(3, 3)).display).toBe('(3;3)')
+    })
+
+    test('projection is the midpoint of point and its reflection', () => {
+        const L = Line.fromPoints(new Point(0, 0), new Point(3, 1))
+        const pt = new Point(1, 4)
+        const ref = L.reflect(pt)
+        const mid = new Point(
+            pt.x.clone().add(ref.x).divide(2),
+            pt.y.clone().add(ref.y).divide(2)
+        )
+        expect(L.isOnLine(mid)).toBe(true)
+    })
 })

@@ -1,6 +1,6 @@
 import type {Fraction} from "./coefficients"
 import type {Equation, Monom} from "./algebra"
-import type {Line, Point, Vector} from "./geometry"
+import type {Line, Line3, Point, Vector} from "./geometry"
 import type {Solution} from "./analyze/solution"
 
 // Universal construction input. `Root` is intentionally excluded: it is not
@@ -142,14 +142,27 @@ export type TableOfSignsValues = '-' | '+' | 'h' | 'z' | 't' | 'd' | ''
 
 /**
  * Result of a line intersection query (2D or 3D).
- * When `hasIntersection` is false, `point` is an invalid placeholder (NaN coordinates).
+ * Discriminated on `hasIntersection`: when true, `point` is a `Point` and both flags are false.
  */
-export interface LineIntersection {
-    point: Point
-    hasIntersection: boolean
-    isParallel: boolean
-    isSame: boolean
-}
+export type LineIntersection =
+    | { hasIntersection: true;  point: Point;  isParallel: false;   isSame: false }
+    | { hasIntersection: false; point: null;   isParallel: boolean; isSame: boolean }
+
+/**
+ * Result of a plane–line intersection query.
+ * Discriminated on `hasIntersection`: when true, `point` is a `Point` and both flags are false.
+ */
+export type PlaneLineIntersection =
+    | { hasIntersection: true;  point: Point;  isParallel: false;   isOnPlane: false }
+    | { hasIntersection: false; point: null;   isParallel: boolean; isOnPlane: boolean }
+
+/**
+ * Result of a plane–plane intersection query.
+ * Discriminated on `hasIntersection`: when true, `line` is a `Line3` and both flags are false.
+ */
+export type PlanePlaneIntersection =
+    | { hasIntersection: true;  line: Line3;   isParallel: false;   isEqual: false }
+    | { hasIntersection: false; line: null;    isParallel: boolean; isEqual: boolean }
 
 /**
  * Geometric relation between two lines in the plane (2D).
