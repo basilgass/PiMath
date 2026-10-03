@@ -109,7 +109,7 @@ describe('Circle operations', () => {
             ),
             LT = new Line('2x+y-32=0')
         // const LSe = new Line('3x-y-8=0')
-        const LS = new Line().fromPointAndDirection(
+        const LS = Line.fromPointAndDirection(
             new Point(3,1),
             new Vector(1,3)
         )

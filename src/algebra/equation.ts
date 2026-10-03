@@ -55,6 +55,7 @@ export class Equation implements IPiMathObject<Equation>,
     #sign: EquationSign
 
 
+    constructor()
     constructor(equation: InputAlgebra<Polynom> | Equation)
     constructor(left: InputAlgebra<Polynom>, right: InputAlgebra<Polynom>, sign?: EquationSign)
     constructor(left?: InputAlgebra<Polynom> | Equation, right?: InputAlgebra<Polynom>, sign?: EquationSign) {

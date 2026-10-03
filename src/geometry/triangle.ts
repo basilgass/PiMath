@@ -261,9 +261,9 @@ export class Triangle {
     getHeights(): { 'A': Line, 'B': Line, 'C': Line, 'intersection': Point | null } {
 
         if (!this.#remarquables.heights) {
-            const A = new Line().fromPointAndNormal(this.#A, new Vector(this.#B, this.#C))
-            const B = new Line().fromPointAndNormal(this.#B, new Vector(this.#A, this.#C))
-            const C = new Line().fromPointAndNormal(this.#C, new Vector(this.#A, this.#B))
+            const A = Line.fromPointAndNormal(this.#A, new Vector(this.#B, this.#C))
+            const B = Line.fromPointAndNormal(this.#B, new Vector(this.#A, this.#C))
+            const C = Line.fromPointAndNormal(this.#C, new Vector(this.#A, this.#B))
 
             const intersection = A.intersection(B).point
             this.#remarquables.heights = {A, B, C, intersection}
@@ -276,9 +276,9 @@ export class Triangle {
         const middles = this.getMiddles()
 
         if (!this.#remarquables.medians) {
-            const A = new Line().fromPoints(this.#A, middles.BC)
-            const B = new Line().fromPoints(this.#B, middles.AC)
-            const C = new Line().fromPoints(this.#C, middles.AB)
+            const A = Line.fromPoints(this.#A, middles.BC)
+            const B = Line.fromPoints(this.#B, middles.AC)
+            const C = Line.fromPoints(this.#C, middles.AB)
 
             const intersection = A.intersection(B).point
             this.#remarquables.medians = {A, B, C, intersection}
@@ -291,9 +291,9 @@ export class Triangle {
         const middles = this.getMiddles()
 
         if (!this.#remarquables.mediators) {
-            const a = new Line().fromPointAndNormal(middles.BC, new Vector(this.#B, this.#C))
-            const b = new Line().fromPointAndNormal(middles.AC, new Vector(this.#A, this.#C))
-            const c = new Line().fromPointAndNormal(middles.AB, new Vector(this.#A, this.#B))
+            const a = Line.fromPointAndNormal(middles.BC, new Vector(this.#B, this.#C))
+            const b = Line.fromPointAndNormal(middles.AC, new Vector(this.#A, this.#C))
+            const c = Line.fromPointAndNormal(middles.AB, new Vector(this.#A, this.#B))
 
             const intersection = a.intersection(b).point
             this.#remarquables.mediators = {a, b, c, intersection}
@@ -444,7 +444,7 @@ export class Triangle {
             ? d1.unit().add(d2.unit())
             : d1.unit().subtract(d2.unit())
 
-        return new Line().fromPointAndDirection(P, director)
+        return Line.fromPointAndDirection(P, director)
     }
 
     #cosThm(opposite: number, adjacent1: number, adjacent2: number): number {

@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Line, Point, Vector} from "../../src"
+import {Equation, Line, ParseError, Point, Vector} from "../../src"
 
 
 describe('Line creation', () => {
@@ -9,7 +9,7 @@ describe('Line creation', () => {
         expect(line).toBeDefined()
     })
     test('create Line through two points', () => {
-        const line = new Line().fromPoints(
+        const line = Line.fromPoints(
             new Point(3, 4),
             new Point(1, 2)
         )
@@ -29,7 +29,7 @@ describe('Line creation', () => {
         expect(L.isOnLine(P2)).toBe(true)
     })
     test('clone Line', () => {
-        const L = new Line().fromCoefficient(2, 3, 4)
+        const L = Line.fromCoefficient(2, 3, 4)
         const cloned = L.clone()
 
         cloned.OA = new Point(0, 0)
@@ -37,24 +37,45 @@ describe('Line creation', () => {
         expect(cloned.asCanonical.display).toBe('2x+3y=0')
     })
     test('create from a parallel', () => {
-        const L = new Line().fromCoefficient(2, 3, 4)
+        const L = Line.fromCoefficient(2, 3, 4)
 
         const P = new Point(7, -2)
-        const parallel = new Line().fromParallel(L, P)
+        const parallel = Line.fromParallel(L, P)
 
         expect(parallel.asCanonical.display).toBe('2x+3y-8=0')
         expect(parallel.OA.display).toBe('((7,-2))')
 
     })
     test('create from a perpendicular', () => {
-        const L = new Line().fromCoefficient(2, 3, 4)
+        const L = Line.fromCoefficient(2, 3, 4)
 
         const P = new Point(7, -2)
-        const parallel = new Line().fromPerpendicular(L, P)
+        const perpendicular = Line.fromPerpendicular(L, P)
 
-        expect(parallel.asCanonical.display).toBe('3x-2y-25=0')
-        expect(parallel.OA.display).toBe('((7,-2))')
+        expect(perpendicular.asCanonical.display).toBe('3x-2y-25=0')
+        expect(perpendicular.OA.display).toBe('((7,-2))')
 
+    })
+    test('create parallel through fromPointAndLine', () => {
+        const L = Line.fromCoefficient(2, 3, 4)
+        const P = new Point(7, -2)
+        const parallel = Line.fromPointAndLine(P, L)
+        expect(parallel.asCanonical.display).toBe('2x+3y-8=0')
+    })
+    test('create perpendicular through fromPointAndLine', () => {
+        const L = Line.fromCoefficient(2, 3, 4)
+        const P = new Point(7, -2)
+        const perpendicular = Line.fromPointAndLine(P, L, Line.PERPENDICULAR)
+        expect(perpendicular.asCanonical.display).toBe('3x-2y-25=0')
+    })
+    test('fromEquation throws on equation without x or y', () => {
+        expect(() => Line.fromEquation(new Equation('z+3=0'))).toThrow(ParseError)
+    })
+    test('fromEquation throws on nonlinear equation', () => {
+        expect(() => Line.fromEquation(new Equation('x^2+y=0'))).toThrow(ParseError)
+    })
+    test('parse throws ParseError on unrecognized input', () => {
+        expect(() => new Line(42 as unknown as string)).toThrow(ParseError)
     })
 })
 describe('Line output', () => {
@@ -81,31 +102,31 @@ describe('Line output', () => {
 
 describe('Line comparisons', () => {
     test('same Line', () => {
-        const L1 = new Line().fromCoefficient(1, 2, 3)
-        const L2 = new Line().fromCoefficient(2, 4, 6)
+        const L1 = Line.fromCoefficient(1, 2, 3)
+        const L2 = Line.fromCoefficient(2, 4, 6)
 
         expect(L1.isSameAs(L2)).toBe(true)
         expect(L2.isSameAs(L1)).toBe(true)
     })
 
     test('is parallel to', () => {
-        const L1 = new Line().fromCoefficient(1, 2, 3)
-        const L2 = new Line().fromParallel(L1, new Point(0, 0))
+        const L1 = Line.fromCoefficient(1, 2, 3)
+        const L2 = Line.fromParallel(L1, new Point(0, 0))
 
         expect(L1.isParallelTo(L2)).toBe(true)
         expect(L2.isParallelTo(L1)).toBe(true)
     })
 
     test('is perpendicular to', () => {
-        const L1 = new Line().fromCoefficient(1, 2, 3)
-        const L2 = new Line().fromPerpendicular(L1, new Point(0, 0))
+        const L1 = Line.fromCoefficient(1, 2, 3)
+        const L2 = Line.fromPerpendicular(L1, new Point(0, 0))
 
         expect(L1.isPerpendicularTo(L2)).toBe(true)
         expect(L2.isPerpendicularTo(L1)).toBe(true)
     })
 
     test('is vertical', () => {
-        const L1 = new Line().fromPointAndDirection(
+        const L1 = Line.fromPointAndDirection(
             new Point(1, 0),
             new Vector(0, 1)
         )
@@ -115,13 +136,47 @@ describe('Line comparisons', () => {
     })
 
     test('is horizontal', () => {
-        const L1 = new Line().fromPointAndDirection(
+        const L1 = Line.fromPointAndDirection(
             new Point(1, 0),
             new Vector(1, 0)
         )
 
         expect(L1.isVertical()).toBe(false)
         expect(L1.isHorizontal()).toBe(true)
+    })
+})
+
+describe('Vertical line comparisons', () => {
+    const x1 = Line.fromCoefficient(1, 0, -1)  // x = 1
+    const x2 = Line.fromCoefficient(1, 0, -2)  // x = 2
+    const x1b = Line.fromCoefficient(2, 0, -2) // 2x = 2, same as x = 1
+
+    test('two distinct vertical lines are parallel', () => {
+        expect(x1.isParallelTo(x2)).toBe(true)
+        expect(x2.isParallelTo(x1)).toBe(true)
+    })
+
+    test('two distinct vertical lines are not the same', () => {
+        expect(x1.isSameAs(x2)).toBe(false)
+        expect(x2.isSameAs(x1)).toBe(false)
+    })
+
+    test('proportional vertical lines are the same', () => {
+        expect(x1.isSameAs(x1b)).toBe(true)
+        expect(x1b.isSameAs(x1)).toBe(true)
+    })
+
+    test('parallel vertical lines have no intersection', () => {
+        expect(x1.intersection(x2).hasIntersection).toBe(false)
+        expect(x1.intersection(x2).isParallel).toBe(true)
+    })
+
+    test('vertical and non-vertical lines intersect', () => {
+        const diagonal = new Line('x-y=0') // y = x
+        const result = x1.intersection(diagonal)
+        expect(result.hasIntersection).toBe(true)
+        expect(result.point.x.value).toBe(1)
+        expect(result.point.y.value).toBe(1)
     })
 })
 
@@ -145,12 +200,12 @@ describe('Operation with Lines', function () {
     })
 
     test('should get the intersection point with another line', () => {
-        const L1 = new Line().fromPointAndDirection(
+        const L1 = Line.fromPointAndDirection(
             new Point(0, 0),
             new Vector(3, 2)
         )
 
-        const L2 = new Line().fromPointAndDirection(
+        const L2 = Line.fromPointAndDirection(
             new Point(5, 6),
             new Vector(-1, 2)
         )
@@ -159,13 +214,13 @@ describe('Operation with Lines', function () {
         expect(P.point.display).toBe('(6;4)')
     })
 
-    test('should fail on intersection with parallel lnies', () => {
-        const L1 = new Line().fromPointAndDirection(
+    test('should fail on intersection with parallel lines', () => {
+        const L1 = Line.fromPointAndDirection(
             new Point(0, 0),
             new Vector(3, 2)
         )
 
-        const L2 = new Line().fromPointAndDirection(
+        const L2 = Line.fromPointAndDirection(
             new Point(5, 6),
             new Vector(3, 2)
         )
@@ -175,7 +230,7 @@ describe('Operation with Lines', function () {
     })
 
     test('should check if line hits a segment', () => {
-        const L = new Line().fromPointAndDirection(
+        const L = Line.fromPointAndDirection(
             new Point(0, 0),
             new Vector(3, 2)
         )
@@ -189,15 +244,19 @@ describe('Operation with Lines', function () {
     })
 
 
-    test('example', () => {
-        const d = new Line().fromPoints(
-            new Point(3,5),
-            new Point(-1,2)
+    test('distance from point to line', () => {
+        const d = Line.fromPoints(
+            new Point(3, 5),
+            new Point(-1, 2)
         )
-        const P = new Point(11,-3)
+        const P = new Point(11, -3)
 
-        console.log(d.distanceTo(P).display)
+        expect(d.distanceTo(P).value).toBeCloseTo(11.2, 1)
     })
 
+    test('getValueAtX returns invalid on vertical line', () => {
+        const L = Line.fromCoefficient(1, 0, -3)  // x = 3
+        expect(L.getValueAtX(0).isNaN()).toBe(true)
+    })
 
 })

@@ -408,7 +408,7 @@ export class Circle
 
     #tangentsThroughOnePointOnTheCircle = (P: Point): Line[] => {
         const CT = new Vector(this.center, P)
-        return [new Line().fromPointAndNormal(P, CT)]
+        return [Line.fromPointAndNormal(P, CT)]
     }
 
     #tangentsThroughOnePointOutsideTheCircle = (P: Point): Line[] => {
