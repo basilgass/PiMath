@@ -346,8 +346,8 @@ describe('Monom dividers and squares', () => {
     test('gcd keeps the lowest power', () => {
         expect(Monom.gcd(new Monom('x^5'), new Monom('x^2')).display).toBe('x^(2)')
     })
-    test('gcd is zero when a monom has a rational power', () => {
-        expect(Monom.gcd(new Monom('x^(1/2)'), new Monom('x')).isZero()).toBeTruthy()
+    test('gcd throws when a monom has a rational power', () => {
+        expect(() => Monom.gcd(new Monom('x^(1/2)'), new Monom('x'))).toThrow()
     })
 })
 

@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Circle, Fraction, Line, Point, Vector} from "../../src"
+import {Circle, Equation, Fraction, Line, Point, Vector} from "../../src"
 
 describe('Circle creation', () => {
     test('create Circle', () => {
@@ -29,16 +29,21 @@ describe('Circle creation', () => {
         expect(C.radius.value).toBe(5)
     })
 
-    test('create circle from three points', ()=>{
-        const A = new Point(4,4)
-        const B = new Point(6,10)
-        const C = new Point(10,2)
-
-        const c = new Circle().fromPoints(A, B, C)
-
+    test('create circle from three points', () => {
+        const A = new Point(4, 4), B = new Point(6, 10), C = new Point(10, 2)
+        const c = new Circle(A, B, C)
         expect(c.center.x.value).toBe(8)
         expect(c.center.y.value).toBe(6)
         expect(c.squareRadius.value).toBe(20)
+    })
+
+    test('fromEquation throws on non-circle equation', () => {
+        expect(() => Circle.fromEquation(new Equation('x+y=1'))).toThrow()
+        expect(() => Circle.fromEquation(new Equation('x^2+2y^2=4'))).toThrow()
+    })
+
+    test('fromPoints throws on collinear points', () => {
+        expect(() => Circle.fromPoints(new Point(0, 0), new Point(1, 1), new Point(2, 2))).toThrow()
     })
 
     test('clone Circle', () => {
@@ -134,19 +139,80 @@ describe('Circle operations', () => {
 
 })
 describe('Circle comparisons', () => {
-    test('same Circle', ()=>{
-        const C1 = new Circle().fromCenterRadius(
-            new Point(2,3),
-            3
-        )
+    test('equal circles', () => {
+        const C1 = Circle.fromCenterRadius(new Point(2, 3), 3)
+        const C2 = Circle.fromString('(x-2)^2+(y-3)^2=9')
+        const C3 = Circle.fromString('(x-2)^2+(y+3)^2=9')
 
-        const C2 = new Circle().fromString('(x-2)^2+(y-3)^2=9')
-        const C3 = new Circle().fromString('(x-2)^2+(y+3)^2=9')
+        expect(C1.isEqual(C1)).toBe(true)
+        expect(C1.isEqual(C2)).toBe(true)
+        expect(C2.isEqual(C1)).toBe(true)
+        expect(C1.isEqual(C3)).toBe(false)
+    })
+})
 
-        expect(C1.isSame(C1)).toBe(true)
-        expect(C1.isSame(C2)).toBe(true)
-        expect(C2.isSame(C1)).toBe(true)
-        expect(C1.isSame(C3)).toBe(false)
+describe('Circle relative position', () => {
+    test('external line returns 0', () => {
+        const C = new Circle(new Point(0, 0), 5)
+        const L = new Line('x-10=0')
+        expect(C.relativePosition(L)).toBe(0)
+    })
+
+    test('tangent line returns 1', () => {
+        const C = new Circle(new Point(0, 0), 25, true)
+        const L = new Line('x-5=0')
+        expect(C.relativePosition(L)).toBe(1)
+    })
+
+    test('secant line returns 2', () => {
+        const C = new Circle(new Point(0, 0), 25, true)
+        const L = new Line('x=0')
+        expect(C.relativePosition(L)).toBe(2)
+    })
+})
+
+describe('Circle parse and construction', () => {
+    test('constructor with 3 points delegates to fromPoints', () => {
+        const A = new Point(4, 4), B = new Point(6, 10), C = new Point(10, 2)
+        const c1 = new Circle(A, B, C)
+        const c2 = Circle.fromPoints(A, B, C)
+        expect(c1.center.x.value).toBe(c2.center.x.value)
+        expect(c1.center.y.value).toBe(c2.center.y.value)
+    })
+
+    test('fromEquation does not mutate the input equation', () => {
+        const equ = new Equation('(x-3)^2+(y+4)^2=16')
+        const original = equ.display
+        Circle.fromEquation(equ)
+        expect(equ.display).toBe(original)
+    })
+
+    test('clone preserves asCanonical output style', () => {
+        const C = new Circle(new Point(1, 2), 9, true).asCanonical
+        const D = C.clone()
+        expect(D.tex).toBe(C.tex)
+        expect(D.display).toBe(C.display)
+    })
+})
+
+describe('Circle edge cases', () => {
+    test('lineIntersection with no intersection returns empty array', () => {
+        const C = new Circle(new Point(0, 0), 25, true)
+        const L = new Line('x-10=0')
+        expect(C.lineIntersection(L)).toHaveLength(0)
+    })
+
+    test('getPointsOnCircle with non-integer squared radius returns empty array', () => {
+        const C = Circle.fromCenterRadius(new Point(0, 0), new Fraction(3, 2))
+        expect(C.squareRadius.value).toBe(2.25)
+        expect(C.getPointsOnCircle()).toHaveLength(0)
+    })
+
+    test('display with fractional center coordinates contains no LaTeX', () => {
+        const C = Circle.fromCenterRadius(new Point(new Fraction(1, 2), new Fraction(3, 4)), 5)
+        expect(C.display).not.toMatch(/\\/)
+        expect(C.display).toContain('1/2')
+        expect(C.display).toContain('3/4')
     })
 })
 

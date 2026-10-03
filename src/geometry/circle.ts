@@ -2,13 +2,14 @@ import {Line} from "./line"
 import {Vector} from "./vector"
 import {Numeric} from "../numeric"
 import {Fraction, Root} from "../coefficients"
-import {Equation, Monom, Polynom} from "../algebra"
-import {type IPiMathObject} from "../pimath.interface"
+import {Equation, Polynom} from "../algebra"
+import {MathError} from "../errors"
+import {type IPiMathObject, type OutputStyle} from "../pimath.interface"
 import {Point} from "./point"
 import {Triangle} from "./triangle"
 import {Solution} from "../analyze"
 
-enum CIRCLE_DISPLAY {
+enum CircleDisplay {
     CANONICAL,
     CENTER_RADIUS,
 }
@@ -18,7 +19,7 @@ export class Circle
 
     #center: Point | null = null
     #equation: Equation | null = null
-    #output_style: CIRCLE_DISPLAY = CIRCLE_DISPLAY.CENTER_RADIUS
+    #output_style: CircleDisplay = CircleDisplay.CENTER_RADIUS
     #squareRadius: Fraction | null = null
 
     constructor()
@@ -34,109 +35,69 @@ export class Circle
     }
 
     parse(...values: unknown[]): this {
-        // Data can be given in these formats:
-        // one value, a string -> make it an Equation
-        // one value, an Equation
-        // one value, a circle -> clone it
-        // two values: two points (center and pointThrough)
-        // two values: point and Fraction (center and radius)
-        // three values: Vector2D, Fraction, Boolean (center, square radius, true)
-
         if (typeof values[0] === 'string') {
-            return this.fromString(values[0])
+            return this.copy(Circle.fromString(values[0]))
         }
-
         if (values[0] instanceof Equation) {
-            return this.fromEquation(values[0])
+            return this.copy(Circle.fromEquation(values[0]))
         }
-
         if (values[0] instanceof Circle) {
             return this.copy(values[0])
         }
-
-        if (values.length === 2 &&
-            values[0] instanceof Point && values[1] instanceof Point
-        ) {
-            // Circle center through one point
-            return this.fromCenterPoint(values[0], values[1])
+        if (values.length === 2 && values[0] instanceof Point && values[1] instanceof Point) {
+            return this.copy(Circle.fromCenterPoint(values[0], values[1]))
         }
-
-        if (values.length >= 2 && values[0]
-            instanceof Point &&
+        if (values.length >= 2 && values[0] instanceof Point &&
             (values[1] instanceof Fraction || typeof values[1] === 'number')
         ) {
-            // Circle center through one point
-            return this.fromCenterRadius(
+            return this.copy(Circle.fromCenterRadius(
                 values[0], values[1],
-                (typeof values[2] === "boolean") ? values[2] : false
-            )
+                typeof values[2] === 'boolean' ? values[2] : false
+            ))
         }
-
+        if (values.length === 3 &&
+            values[0] instanceof Point && values[1] instanceof Point && values[2] instanceof Point
+        ) {
+            return this.copy(Circle.fromPoints(values[0], values[1], values[2]))
+        }
         return this
     }
 
     clone(): Circle {
-        return new Circle().fromCenterRadius(
-            this.center.clone(),
-            this.squareRadius.clone(),
-            true
-        )
+        if (this.#center === null || this.#squareRadius === null) {
+            return new Circle()
+        }
+        const c = Circle.fromCenterRadius(this.#center, this.#squareRadius, true)
+        c.#output_style = this.#output_style
+        return c
     }
 
     copy(circle: Circle): this {
-        this.#center = circle.center.clone()
-        this.#squareRadius = circle.squareRadius.clone()
-
+        if (circle.#center === null || circle.#squareRadius === null) {
+            this.#reset()
+            return this
+        }
+        this.#center = circle.#center.clone()
+        this.#squareRadius = circle.#squareRadius.clone()
         this.#calculateCartesian()
-
         return this
     }
 
     get tex(): string {
-        if (this.#output_style === CIRCLE_DISPLAY.CANONICAL) {
-            return this.equation.moveLeft().reduce().tex
-        }
-
-        let cx; let cy
-        if (this.center.x.isZero()) {
-            cx = 'x^2'
-        } else {
-            cx = `\\left(x${this.center.x.isNegative() ? '+' : '-'}${this.center.x.clone().abs().tex}\\right)^2`
-        }
-        if (this.center.y.isZero()) {
-            cy = 'y^2'
-        } else {
-            cy = `\\left(y${this.center.y.isNegative() ? '+' : '-'}${this.center.y.clone().abs().tex}\\right)^2`
-        }
-        return `${cx}+${cy}=${this.squareRadius.tex}`
+        return this.#toOutput('tex')
     }
 
     get display(): string {
-        if (this.#output_style === CIRCLE_DISPLAY.CANONICAL) {
-            return this.equation.moveLeft().reduce().display
-        }
-
-        let cx; let cy
-        if (this.center.x.isZero()) {
-            cx = 'x^2'
-        } else {
-            cx = `(x${this.center.x.isNegative() ? '+' : '-'}${this.center.x.clone().abs().tex})^2`
-        }
-        if (this.center.y.isZero()) {
-            cy = 'y^2'
-        } else {
-            cy = `(y${this.center.y.isNegative() ? '+' : '-'}${this.center.y.clone().abs().tex})^2`
-        }
-        return `${cx}+${cy}=${this.squareRadius.display}`
+        return this.#toOutput('display')
     }
 
     get asCanonical(): this {
-        this.#output_style = CIRCLE_DISPLAY.CANONICAL
+        this.#output_style = CircleDisplay.CANONICAL
         return this
     }
 
     get asCenterRadius(): this {
-        this.#output_style = CIRCLE_DISPLAY.CENTER_RADIUS
+        this.#output_style = CircleDisplay.CENTER_RADIUS
         return this
     }
 
@@ -148,83 +109,79 @@ export class Circle
         return this.#equation?.clone() ?? new Equation('0=0')
     }
 
-    fromCenterPoint(center: Point, pointThrough: Point): this {
-        this.#center = center.clone()
-        this.#squareRadius = new Vector(this.#center, pointThrough).normSquare
-
-        this.#calculateCartesian()
-
-        return this
+    static fromCenterPoint(center: Point, pointThrough: Point): Circle {
+        const c = new Circle()
+        c.#center = center.clone()
+        c.#squareRadius = new Vector(c.#center, pointThrough).normSquare
+        c.#calculateCartesian()
+        return c
     }
 
-    fromCenterRadius(center: Point, radius: Fraction | number, square?: boolean): this {
-        this.#center = center.clone()
-        if (square) {
-            this.#squareRadius = (new Fraction(radius))
-        } else {
-            this.#squareRadius = new Fraction(radius).pow(2)
+    /**
+     * @param square if true, `radius` is already r² (avoids an extra squaring)
+     */
+    static fromCenterRadius(center: Point, radius: Fraction | number, square?: boolean): Circle {
+        const c = new Circle()
+        c.#center = center.clone()
+        c.#squareRadius = square ? new Fraction(radius) : new Fraction(radius).pow(2)
+        c.#calculateCartesian()
+        return c
+    }
+
+    /**
+     * Does not mutate `equ`.
+     * @throws {MathError} if `equ` is not a valid circle equation
+     */
+    static fromEquation(equ: Equation): Circle {
+        const c = new Circle()
+        const eq = equ.clone()
+        eq.moveLeft()
+
+        if (eq.degree('x').value !== 2 || eq.degree('y').value !== 2) {
+            throw new MathError('Cannot create a Circle: equation must be degree 2 in both x and y')
         }
 
-        this.#calculateCartesian()
+        const x2 = eq.left.monomByDegree(2, 'x')
+        const y2 = eq.left.monomByDegree(2, 'y')
 
-        return this
-    }
-
-    fromEquation(equ: Equation): this {
-        // Move everything to the left.
-        equ.moveLeft()
-
-        if (equ.degree('x').value === 2 && equ.degree('y').value === 2) {
-            // Both must be of degree 2.
-            const x2 = equ.left.monomByDegree(2, 'x'); const y2 = equ.left.monomByDegree(2, 'y')
-            let x1: Monom; let y1: Monom; let c: Monom
-
-            // Both square monoms must have the same coefficient.
-            if (x2.coefficient.isEqual(y2.coefficient)) {
-                equ.divide(x2.coefficient)
-
-                x1 = equ.left.monomByDegree(1, 'x')
-                y1 = equ.left.monomByDegree(1, 'y')
-
-                c = equ.left.monomByDegree(0)
-
-                this.#center = new Point(x1.coefficient.clone().divide(2).opposite(), y1.coefficient.clone().divide(2).opposite())
-
-                this.#squareRadius = c.coefficient.clone().opposite()
-                    .add(this.#center.x.clone().pow(2))
-                    .add(this.#center.y.clone().pow(2))
-
-                this.#calculateCartesian()
-
-                return this
-            } else {
-                // The circle is not a valid circle
-                this.#reset()
-            }
+        if (!x2.coefficient.isEqual(y2.coefficient)) {
+            throw new MathError('Cannot create a Circle: coefficients of x² and y² must be equal')
         }
 
-        return this
+        eq.divide(x2.coefficient)
+
+        const x1 = eq.left.monomByDegree(1, 'x')
+        const y1 = eq.left.monomByDegree(1, 'y')
+        const constant = eq.left.monomByDegree(0)
+
+        c.#center = new Point(
+            x1.coefficient.clone().divide(2).opposite(),
+            y1.coefficient.clone().divide(2).opposite()
+        )
+        c.#squareRadius = constant.coefficient.clone().opposite()
+            .add(c.#center.x.clone().pow(2))
+            .add(c.#center.y.clone().pow(2))
+
+        c.#calculateCartesian()
+        return c
     }
 
-    fromPoints(A: Point, B: Point, C: Point): this {
+    /** @throws {MathError} if A, B, C are collinear or form a degenerate triangle */
+    static fromPoints(A: Point, B: Point, C: Point): Circle {
         const T = new Triangle(A, B, C)
 
         if (!T.isValid || !T.remarquables) {
-            this.#reset()
-            return this
+            throw new MathError('Cannot create a Circle: points must form a non-degenerate triangle')
         }
 
         const mAB = T.getMediators().c.clone()
         const mAC = T.getMediators().b.clone()
 
-        return this.fromCenterPoint(
-            mAB.intersection(mAC).point,
-            A
-        )
+        return Circle.fromCenterPoint(mAB.intersection(mAC).point, A)
     }
 
-    fromString(str: string): this {
-        return this.fromEquation(new Equation(str))
+    static fromString(str: string): Circle {
+        return Circle.fromEquation(new Equation(str))
     }
 
     getPointsOnCircle(): Point[] {
@@ -260,13 +217,13 @@ export class Circle
         return points
     }
 
-    isPointOnCircle = (P: Point): boolean => {
+    isPointOnCircle(P: Point): boolean {
         return this.#equation?.test({x: P.x, y: P.y}) ?? false
     }
 
-    isSame(circ: Circle): boolean {
+    isEqual(circ: Circle): boolean {
         return circ.center.isEqual(this.center)
-            && circ.radius.isEqual(this.radius)
+            && circ.squareRadius.isEqual(this.squareRadius)
     }
 
     /**
@@ -300,7 +257,7 @@ export class Circle
 
         // One intersection point
         if (sol.length === 1) { // means exact answer
-            const OX = OP.add(d.clone().multiplyByScalar(sol[0].fraction))
+            const OX = OP.clone().add(d.clone().multiplyByScalar(sol[0].fraction))
             return [
                 new Point(OX.x, OX.y)
             ]
@@ -338,27 +295,27 @@ export class Circle
     }
 
     /**
-     * Get the relative position between circle and line. It corresponds to the number of intersection.
-     * @param {Line} L
-     * @returns {number}
+     * Returns the number of intersections between circle and line.
+     * @returns 0 = external, 1 = tangent, 2 = secant
+     * @throws {MathError} if the circle is uninitialized
      */
-    relativePosition(L: Line): number {
+    relativePosition(L: Line): 0 | 1 | 2 {
         if (this.#center === null || this.#squareRadius === null) {
-            return -1
+            throw new MathError('Circle is not initialized')
         }
 
         const distance = L.distanceTo(this.#center).pow(2).value
         const radius = this.#squareRadius.value
 
         if (distance - radius > 0.0000000001) {
-            return 0 // external
+            return 0
         }
 
         if (Math.abs(distance - radius) < 0.0000000001) {
-            return 1 // tangent
+            return 1
         }
 
-        return 2 // secant
+        return 2
     }
 
     setRadius(radius: Fraction | number, square?: boolean): this {
@@ -376,7 +333,14 @@ export class Circle
         return this.#squareRadius?.clone() ?? new Fraction(-1)
     }
 
-    tangents = (P: Point | Fraction): Line[] => {
+    /**
+     * Returns the tangent line(s) to the circle.
+     * - `P: Point` on the circle → 1 tangent (perpendicular to the radius at P).
+     * - `P: Point` outside the circle → 2 tangents through P.
+     * - `P: Point` inside the circle → [] (no real tangent).
+     * - `P: Fraction` → 2 tangents with slope P.
+     */
+    tangents(P: Point | Fraction): Line[] {
         if (P instanceof Fraction) {
             return this.#tangentsWithSlope(P)
         }
@@ -392,12 +356,39 @@ export class Circle
         return []
     }
 
+    #toOutput(style: OutputStyle): string {
+        if (this.#output_style === CircleDisplay.CANONICAL) {
+            const eq = this.equation.moveLeft().reduce()
+            return style === 'tex' ? eq.tex : eq.display
+        }
+
+        const center = this.center
+        const absX = center.x.clone().abs()
+        const absY = center.y.clone().abs()
+        const sr = this.squareRadius
+
+        const cx = center.x.isZero()
+            ? 'x^2'
+            : style === 'tex'
+                ? `\\left(x${center.x.isNegative() ? '+' : '-'}${absX.tex}\\right)^2`
+                : `(x${center.x.isNegative() ? '+' : '-'}${absX.display})^2`
+
+        const cy = center.y.isZero()
+            ? 'y^2'
+            : style === 'tex'
+                ? `\\left(y${center.y.isNegative() ? '+' : '-'}${absY.tex}\\right)^2`
+                : `(y${center.y.isNegative() ? '+' : '-'}${absY.display})^2`
+
+        return `${cx}+${cy}=${style === 'tex' ? sr.tex : sr.display}`
+    }
+
     #calculateCartesian(): void {
+        const x = Polynom.fromCoefficients('x', 1, this.center.x.clone().opposite()).pow(2)
+        const y = Polynom.fromCoefficients('y', 1, this.center.y.clone().opposite()).pow(2)
+        const k = Polynom.fromConstant(this.squareRadius)
         this.#equation = (
-            new Equation(
-                new Polynom(`(x-(${this.center.x.display}))^2+(y-(${this.center.y.display}))^2`),
-                new Polynom(this.squareRadius.display))
-        ).moveLeft()
+            new Equation(x.add(y).subtract(k), 0)
+        )
     }
 
     #reset() {
@@ -406,12 +397,12 @@ export class Circle
         this.#equation = null
     }
 
-    #tangentsThroughOnePointOnTheCircle = (P: Point): Line[] => {
+    #tangentsThroughOnePointOnTheCircle(P: Point): Line[] {
         const CT = new Vector(this.center, P)
         return [Line.fromPointAndNormal(P, CT)]
     }
 
-    #tangentsThroughOnePointOutsideTheCircle = (P: Point): Line[] => {
+    #tangentsThroughOnePointOutsideTheCircle(P: Point): Line[] {
         // y = mx + h
         // px, py => h = -m px + py => mx - y -m.px + py = 0 =>
         // Centre: cx, cy, radius: r
@@ -448,16 +439,19 @@ export class Circle
 
     }
 
-    #tangentsWithSlope = (slope: Fraction): Line[] => {
+    #tangentsWithSlope(slope: Fraction): Line[] {
         // d(C;t)=r => ac1+bc2 + x = +- sqrt(a^2 + b^2)*r
         // x = -ac1-bc2  +-  sqrt(a^2 + b^2)*r
         // y = a/bx + h => ax-by + H = 0
 
-        const a = slope.numerator; const b = -slope.denominator; const c1 = this.center.x.clone(); const c2 = this.center.y.clone()
+        const a = slope.numerator
+        const b = -slope.denominator
+        const c1 = this.center.x.clone()
+        const c2 = this.center.y.clone()
 
         const sq = this.squareRadius.clone().multiply(slope.numerator ** 2 + slope.denominator ** 2)
-            const x1 = c1.clone().multiply(a).opposite().subtract(c2.clone().multiply(b)).add(sq.clone().sqrt())
-            const x2 = c1.clone().multiply(a).opposite().subtract(c2.clone().multiply(b)).subtract(sq.clone().sqrt())
+        const x1 = c1.clone().multiply(a).opposite().subtract(c2.clone().multiply(b)).add(sq.clone().sqrt())
+        const x2 = c1.clone().multiply(a).opposite().subtract(c2.clone().multiply(b)).subtract(sq.clone().sqrt())
 
         return [new Line(a, b, x1), new Line(a, b, x2)]
     }

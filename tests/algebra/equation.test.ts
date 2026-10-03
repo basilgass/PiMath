@@ -235,10 +235,6 @@ describe('Equation comparisons', () => {
         // Same polynom up to scale but wrong direction.
         expect(E.isEquivalentTo(new Equation('x>2'))).toBe(false)
     })
-    test('isLinearTo is a deprecated alias of isEquivalentTo', () => {
-        const E = new Equation('3x+5=0')
-        expect(E.isLinearTo(new Equation('6x+10=0'))).toBe(true)
-    })
 })
 
 describe('Equation isolate', () => {

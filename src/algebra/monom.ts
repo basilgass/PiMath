@@ -128,7 +128,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         // All the monoms must be with natural powers...
         for (const m of monoms) {
             if (m.containsRationalPower()) {
-                return new Monom().zero()
+                throw new MathError('Monom.gcd: all monomials must have integer powers')
             }
         }
 
@@ -416,13 +416,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
     }
 
     /**
-     * @deprecated Use {@link isDivisibleBy} instead.
-     */
-    isDivisible(div: Monom): boolean {
-        return this.isDivisibleBy(div)
-    }
-
-    /**
      * Determine if two monoms are equals
      */
     isEqual(M: Monom): boolean {
@@ -682,13 +675,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         this.#literal[variable] = exponent.clone()
 
         return this
-    }
-
-    /**
-     * @deprecated Use {@link setExponent} instead.
-     */
-    setLetter(variable: string, exponent: InputValue<Fraction>): this {
-        return this.setExponent(variable, exponent)
     }
 
     /**

@@ -582,13 +582,6 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
     }
 
-    /**
-     * @deprecated Use {@link isDivisibleBy} instead.
-     */
-    isDividableBy(div: Polynom): boolean {
-        return this.isDivisibleBy(div)
-    }
-
     isEqual(P: Polynom): boolean {
         return this.#compare(P, '=')
     }
@@ -699,13 +692,6 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
 
         return new Monom().zero()
-    }
-
-    /**
-     * @deprecated Use {@link monomByVariable} instead.
-     */
-    monomByLetter(variable: string): Monom {
-        return this.monomByVariable(variable)
     }
 
     // ------------------------------------------

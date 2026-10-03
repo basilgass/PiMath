@@ -302,13 +302,6 @@ export class Equation implements IPiMathObject<Equation>,
     }
 
     /**
-     * @deprecated Use {@link isEquivalentTo} instead (same behaviour).
-     */
-    isLinearTo(equ: Equation): boolean {
-        return this.isEquivalentTo(equ)
-    }
-
-    /**
      * Whether the equation contains a cross-term monom (a single monom carrying
      * more than one variable, such as `xy`), which prevents isolating a variable
      * linearly. A linear equation in several distinct variables (e.g. `ax+by+c=0`)
@@ -373,14 +366,6 @@ export class Equation implements IPiMathObject<Equation>,
 
     set left(value: Polynom) {
         this.#left = value
-    }
-
-    // -----------------------------------------------
-    /**
-     * @deprecated Use the `variables` getter instead (same set of variables).
-     */
-    letters(): string[] {
-        return this.variables
     }
 
     // -----------------------------------------------
