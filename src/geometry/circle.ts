@@ -79,7 +79,7 @@ export class Circle
         }
         this.#center = circle.#center.clone()
         this.#squareRadius = circle.#squareRadius.clone()
-        this.#calculateCartesian()
+        this.#computeEquation()
         return this
     }
 
@@ -113,7 +113,7 @@ export class Circle
         const c = new Circle()
         c.#center = center.clone()
         c.#squareRadius = new Vector(c.#center, pointThrough).normSquare
-        c.#calculateCartesian()
+        c.#computeEquation()
         return c
     }
 
@@ -124,7 +124,7 @@ export class Circle
         const c = new Circle()
         c.#center = center.clone()
         c.#squareRadius = square ? new Fraction(radius) : new Fraction(radius).pow(2)
-        c.#calculateCartesian()
+        c.#computeEquation()
         return c
     }
 
@@ -162,7 +162,7 @@ export class Circle
             .add(c.#center.x.clone().pow(2))
             .add(c.#center.y.clone().pow(2))
 
-        c.#calculateCartesian()
+        c.#computeEquation()
         return c
     }
 
@@ -329,7 +329,7 @@ export class Circle
             this.#squareRadius = new Fraction(radius).pow(2)
         }
 
-        this.#calculateCartesian()
+        this.#computeEquation()
         return this
     }
 
@@ -386,7 +386,7 @@ export class Circle
         return `${cx}+${cy}=${style === 'tex' ? sr.tex : sr.display}`
     }
 
-    #calculateCartesian(): void {
+    #computeEquation(): void {
         const x = Polynom.fromCoefficients('x', 1, this.center.x.clone().opposite()).pow(2)
         const y = Polynom.fromCoefficients('y', 1, this.center.y.clone().opposite()).pow(2)
         const k = Polynom.fromConstant(this.squareRadius)

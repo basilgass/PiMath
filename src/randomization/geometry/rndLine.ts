@@ -15,7 +15,7 @@ export function rndLine(userConfig?: randomGeometryLineConfig): Line {
     // The A point exists.
     const d = new Vector(0, 0)
 
-    while (d.isNull) {
+    while (d.x.isZero() && d.y.isZero()) {
         d.x = randomIntSym(10, config.allow?.vertical ?? true)
         d.y = randomIntSym(10, config.allow?.horizontal ?? true)
     }
