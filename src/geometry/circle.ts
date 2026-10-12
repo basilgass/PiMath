@@ -4,7 +4,8 @@ import {Numeric} from "../numeric"
 import {Fraction, Root} from "../coefficients"
 import {Equation, Polynom} from "../algebra"
 import {MathError} from "../errors"
-import {type InputAlgebra, type IPiMathObject, type OutputStyle} from "../pimath.interface"
+import {type IDisplayDigits, type InputAlgebra, type IPiMathObject, type OutputStyle} from "../pimath.interface"
+import {assertDigits} from "../helpers"
 import {Point} from "./point"
 import {Triangle} from "./triangle"
 import {Solution} from "../analyze"
@@ -25,12 +26,13 @@ export enum CircleRelativePosition {
 }
 
 export class Circle
-    implements IPiMathObject<Circle> {
+    implements IPiMathObject<Circle>, IDisplayDigits {
 
     #center: Point | undefined = undefined
     #equation: Equation | undefined = undefined
     #output_style: CircleDisplay = CircleDisplay.CENTER_RADIUS
     #squareRadius: Fraction | undefined = undefined
+    #digits: number | null = null
 
     constructor()
     constructor(equation: string | Equation)
@@ -79,7 +81,16 @@ export class Circle
         }
         const c = Circle.fromCenterRadius(this.#center, this.#squareRadius, true)
         c.#output_style = this.#output_style
-        return c as this
+        return c.withDigits(this.#digits) as this
+    }
+
+    /** @see IDisplayDigits.withDigits */
+    withDigits(digits: number | null): this {
+        this.#digits = assertDigits(digits)
+        this.#center?.withDigits(digits)
+        this.#squareRadius?.withDigits(digits)
+        this.#equation?.withDigits(digits)
+        return this
     }
 
     copy(circle: Circle): this {
@@ -91,7 +102,8 @@ export class Circle
         this.#squareRadius = circle.#squareRadius.clone()
         this.#output_style = CircleDisplay.CENTER_RADIUS
         this.#computeEquation()
-        return this
+        // the display state of the receiver is kept (the copied values come with the other's)
+        return this.withDigits(this.#digits)
     }
 
     get tex(): string {
@@ -414,7 +426,7 @@ export class Circle
 
     #toOutput(style: OutputStyle): string {
         if (this.#output_style === CircleDisplay.DEVELOPED) {
-            const eq = this.equation.moveLeft().reduce()
+            const eq = this.equation.moveLeft().reduce().withDigits(this.#digits)
             return style === 'tex' ? eq.tex : eq.display
         }
 
@@ -444,7 +456,7 @@ export class Circle
         const k = Polynom.fromConstant(this.squareRadius)
         this.#equation = (
             new Equation(x.add(y).subtract(k), 0)
-        )
+        ).withDigits(this.#digits)
     }
 
     #reset() {

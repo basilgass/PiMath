@@ -5,10 +5,10 @@
  */
 
 import {Fraction} from "../coefficients"
-import type {IPiMathObject} from "../pimath.interface"
+import type { IDisplayDigits,IPiMathObject} from "../pimath.interface"
 import {DimensionError, ParseError} from "../errors"
 
-export abstract class TupleN implements IPiMathObject<TupleN> {
+export abstract class TupleN implements IPiMathObject<TupleN>, IDisplayDigits {
     #array: Fraction[] = []
     #onChange?: () => void
 
@@ -17,6 +17,12 @@ export abstract class TupleN implements IPiMathObject<TupleN> {
     /** Returns a deep copy of the raw coordinate array. Unlike `clone()`, returns a `Fraction[]`, not a TupleN instance. */
     cloneCoordinates(): Fraction[] {
         return this.#array.map(x => x.clone())
+    }
+
+    /** @see IDisplayDigits.withDigits */
+    withDigits(digits: number | null): this {
+        this.#array.forEach(c => c.withDigits(digits))
+        return this
     }
 
     abstract get tex(): string

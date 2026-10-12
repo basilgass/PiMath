@@ -82,12 +82,13 @@ describe('Matrix creation', () => {
     })
 })
 describe('Matrix output', () => {
-    test('toFixed is a one-shot option (resets after display)', () => {
+    test('withDigits shows every value as a decimal until it is reset with null', () => {
         const A = Matrix.fromString('((1,2),(3,4))')
         A.inverse()
 
-        expect(A.toFixed(3).display).toBe('((-2,1),(1.5,-0.5))')
-        expect(A.display).toBe('((-2,1),(3/2,-1/2))')
+        expect(A.withDigits(3).display).toBe('((-2.000,1.000),(1.500,-0.500))')
+        expect(A.display).toBe('((-2.000,1.000),(1.500,-0.500))')
+        expect(A.withDigits(null).display).toBe('((-2,1),(3/2,-1/2))')
     })
     test('output as LaTeX', () => {
         const M = new Matrix(2, 3)

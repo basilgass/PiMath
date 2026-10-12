@@ -1,4 +1,5 @@
 import type {
+    IDisplayDigits,
     IAlgebra,
     IEvaluable,
     IExpression,
@@ -16,7 +17,7 @@ import {splitIfOutsideParentheses, stripParenthesis} from "../helpers"
 
 
 // PolyFactor is a class that represents a polynomial in factored form.
-export class PolyFactor implements IPiMathObject<PolyFactor>,
+export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
     IExpression<PolyFactor>,
     IAlgebra, IEvaluable {
 
@@ -48,6 +49,12 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
         result.#factors = this.factors
         result.#displayMode = this.#displayMode
         return result
+    }
+
+    /** @see IDisplayDigits.withDigits */
+    withDigits(digits: number | null): this {
+        this.#factors.forEach(f => f.withDigits(digits))
+        return this
     }
 
     get tex(): string {

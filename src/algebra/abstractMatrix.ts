@@ -1,4 +1,5 @@
-import type {IMatrixElement, InputAlgebra, InputValue} from "../pimath.interface"
+import type {IDisplayDigits, IMatrixElement, InputAlgebra, InputValue} from "../pimath.interface"
+import {assertDigits} from "../helpers"
 import {Vector} from "../geometry/vector"
 import {DimensionError, IndexError, InvalidArgumentError, MathError} from "../errors"
 
@@ -10,8 +11,7 @@ enum MatrixType {
     Vmatrix
 }
 
-export abstract class AbstractMatrix<T extends IMatrixElement<T>> {
-    #digits: number | null = null
+export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDisplayDigits {
     #matrix_parenthesis: MatrixType = MatrixType.pmatrix
     #partition: number | null = null
     #values: T[][] = []
@@ -56,14 +56,9 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> {
             const colSpec = 'c'.repeat(this.#partition) + '|' + 'c'.repeat(cols - this.#partition)
             const [lDel, rDel] = this.#resolveTeXdelimiters()
             const rows = this.#values.map(row => '\t' + row
-                .map(p => {
-                    const v = p.value
-                    if (this.#digits !== null && v !== undefined) return +v.toFixed(this.#digits)
-                    return p.tex
-                })
+                .map(p => p.tex)
                 .join(' & ') + '\\\\'
             )
-            this.#digits = null
             return [`\\left${lDel}\\begin{array}{${colSpec}}`, ...rows, `\\end{array}\\right${rDel}`].join('\n')
         }
 
@@ -72,17 +67,12 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> {
             `\\begin{${wrapper}}`,
             ...this.#values
                 .map(row => '\t' + row
-                    .map(p => {
-                        const v = p.value
-                        if (this.#digits !== null && v !== undefined) return +v.toFixed(this.#digits)
-                        return p.tex
-                    })
+                    .map(p => p.tex)
                     .join(' & ') + '\\\\'
                 ),
             `\\end{${wrapper}}`
         ].join('\n')
 
-        this.#digits = null
         return output
     }
 
@@ -116,11 +106,7 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> {
         const p = this.#partition
         const wrapper = this.#resolveWrapper()
         const output = wrapper[0] +
-            this.map(aij => {
-                const v = aij.value
-                if (this.#digits !== null && v !== undefined) return +v.toFixed(this.#digits)
-                return aij.display
-            })
+            this.map(aij => aij.display)
                 .map(row => {
                     if (p !== null) {
                         return `(${row.slice(0, p).join(',')}|${row.slice(p).join(',')})`
@@ -130,7 +116,6 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> {
                 .join(',') +
             wrapper[1]
 
-        this.#digits = null
         return output
     }
 
@@ -531,9 +516,10 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> {
         return this
     }
 
-    /** One-shot: applies to the next call to `tex` or `display`, then resets. */
-    toFixed(value: number): this {
-        this.#digits = value
+    /** @see IDisplayDigits.withDigits */
+    withDigits(digits: number | null): this {
+        assertDigits(digits)
+        this.#values.forEach(row => row.forEach(aij => aij.withDigits(digits)))
         return this
     }
 

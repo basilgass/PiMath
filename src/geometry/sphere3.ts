@@ -2,7 +2,8 @@ import {Point} from "./point"
 import {Vector} from "./vector"
 import {Fraction} from "../coefficients"
 import {Equation, Polynom} from "../algebra"
-import type {InputAlgebra, IPiMathObject, InputValue, OutputStyle} from "../pimath.interface"
+import type {IDisplayDigits, InputAlgebra, IPiMathObject, InputValue, OutputStyle} from "../pimath.interface"
+import {assertDigits} from "../helpers"
 import {MathError, StateError} from "../errors"
 
 enum Sphere3Format {
@@ -21,10 +22,11 @@ export enum Sphere3RelativePosition {
 }
 
 export class Sphere3
-    implements IPiMathObject<Sphere3> {
+    implements IPiMathObject<Sphere3>, IDisplayDigits {
 
     #center: Point | undefined = undefined
     #squareRadius: Fraction | undefined = undefined
+    #digits: number | null = null
     #equation: Equation | undefined = undefined
     #format: Sphere3Format = Sphere3Format.CENTER_RADIUS
 
@@ -67,7 +69,17 @@ export class Sphere3
         s.#squareRadius = this.#squareRadius.clone()
         s.#equation = this.#equation?.clone()
         s.#format = this.#format
+        s.#digits = this.#digits
         return s as this
+    }
+
+    /** @see IDisplayDigits.withDigits */
+    withDigits(digits: number | null): this {
+        this.#digits = assertDigits(digits)
+        this.#center?.withDigits(digits)
+        this.#squareRadius?.withDigits(digits)
+        this.#equation?.withDigits(digits)
+        return this
     }
 
     copy(sphere: Sphere3): this {
@@ -79,7 +91,8 @@ export class Sphere3
         this.#squareRadius = sphere.#squareRadius.clone()
         this.#format = Sphere3Format.CENTER_RADIUS
         this.#computeEquation()
-        return this
+        // the display state of the receiver is kept (the copied values come with the other's)
+        return this.withDigits(this.#digits)
     }
 
     static fromCenterRadius(center: Point, radius: InputValue<Fraction>, square?: boolean): Sphere3 {
@@ -212,7 +225,7 @@ export class Sphere3
             if (this.center[variable].isZero()) {
                 output.push(`${variable}^2`)
             } else {
-                const P = new Polynom(variable).subtract(this.center[variable])
+                const P = new Polynom(variable).subtract(this.center[variable]).withDigits(this.#digits)
                 output.push(
                     style === 'tex' ?
                         `\\(${P.tex}\\)^2` :

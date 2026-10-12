@@ -4,6 +4,7 @@
 import {ShutingYard, ShutingyardType, type Token} from "piexpression"
 import {InvalidArgumentError, MathError, ParseError} from "../errors"
 import type {
+    IDisplayDigits,
     IAlgebra,
     IAnalyse,
     IEvaluable,
@@ -33,7 +34,7 @@ export interface IEuclidean {
  * let P = new Polynom('3x-4')
  * ```
  */
-export class Polynom implements IPiMathObject<Polynom>,
+export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
     IExpression<Polynom>,
     IAnalyse<Polynom>,
     IAlgebra, IEvaluable {
@@ -110,6 +111,12 @@ export class Polynom implements IPiMathObject<Polynom>,
         P.monoms = M
 
         return P
+    }
+
+    /** @see IDisplayDigits.withDigits */
+    withDigits(digits: number | null): this {
+        this.#monoms.forEach(m => m.withDigits(digits))
+        return this
     }
 
     get tex(): string {

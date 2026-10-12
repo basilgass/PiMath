@@ -1,4 +1,5 @@
-import type {InputValue, IPiMathObject} from "../pimath.interface"
+import type {IDisplayDigits, InputValue, IPiMathObject} from "../pimath.interface"
+import {assertDigits} from "../helpers"
 import {Fraction} from "../coefficients"
 import {Root} from "../coefficients/root"
 import {solveQuadratic} from "../algebra/polynomRoots"
@@ -22,8 +23,9 @@ import {InvalidArgumentError, ParseError} from "../errors"
  * perfect-power radical (e.g. `#fraction = 1`, `#root = √4`), which would render
  * as the unsimplified `1 +2` — an incoherent state the producers never create.
  */
-export class Solution implements IPiMathObject<Solution> {
+export class Solution implements IPiMathObject<Solution>, IDisplayDigits {
     #count: number
+    #digits: number | null = null
     #display: string | null
     #exact: boolean
     #fraction: Fraction
@@ -51,7 +53,19 @@ export class Solution implements IPiMathObject<Solution> {
      * fraction or radical alone in the degenerate cases, else
      * `(numerator ± radical)/denominator` over a common denominator.
      */
+    /**
+     * Show the numeric value as a decimal with `digits` digits, whatever the exact form (a
+     * radical included: `(1+sqrt(2))/2` becomes `1.21`). `null` goes back to the exact form.
+     * Takes precedence over a `tex` / `display` override.
+     * @throws {InvalidArgumentError} if `digits` is neither `null` nor an integer from 0 to 100.
+     */
+    withDigits(digits: number | null): this {
+        this.#digits = assertDigits(digits)
+        return this
+    }
+
     get tex(): string {
+        if (this.#digits !== null) return this.value.toFixed(this.#digits)
         if (this.#tex) return this.#tex
 
         return this.#compose(
@@ -71,6 +85,7 @@ export class Solution implements IPiMathObject<Solution> {
      * Returns `null` only when explicitly overridden to `null` via `set display`.
      */
     get display(): string {
+        if (this.#digits !== null) return this.value.toFixed(this.#digits)
         if(this.#display) return this.#display
 
         return this.#compose(
@@ -238,6 +253,7 @@ export class Solution implements IPiMathObject<Solution> {
         sol.#variable = this.#variable
         sol.#display = this.#display
         sol.#tex = this.#tex
+        sol.#digits = this.#digits
 
         return sol
     }

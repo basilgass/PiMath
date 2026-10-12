@@ -69,7 +69,10 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
     }
 
     clone(): Vector {
-        return new Vector(...this.cloneCoordinates())
+        // direct assignment: the constructor would rebuild the coordinates and drop their display state
+        const v = new Vector()
+        v.array = this.cloneCoordinates()
+        return v
     }
 
     get tex(): string {

@@ -2,6 +2,7 @@
  * Monom class
  */
 import type {
+    IDisplayDigits,
     IAlgebra,
     IAnalyse,
     IEvaluable,
@@ -17,7 +18,7 @@ import {Numeric} from "../numeric"
 import {ShutingYard, ShutingyardType, type Token} from "piexpression"
 import {MathError, NotImplementedError, ParseError} from "../errors"
 
-export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra, IEvaluable {
+export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra, IEvaluable, IDisplayDigits {
     #coefficient: Fraction
     #literal: LiteralType<Fraction>
 
@@ -100,7 +101,8 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
     clone(): Monom {
         const F: Monom = new Monom()
 
-        F.coefficient = this.#coefficient.clone()
+        // direct assignment: the coefficient setter would rebuild it and drop its display state
+        F.#coefficient = this.#coefficient.clone()
 
         // Copy the literal parts.
         for (const k in this.#literal) {
@@ -112,6 +114,12 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
     /**
      * Get the tex output of the monom
      */
+    /** @see IDisplayDigits.withDigits */
+    withDigits(digits: number | null): this {
+        this.#coefficient.withDigits(digits)
+        return this
+    }
+
     get tex(): string {
         return this.#format('tex')
     }

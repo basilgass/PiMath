@@ -155,7 +155,7 @@ export interface IEvaluable {
     evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number;
 }
 
-export interface IMatrixElement<T> extends IPiMathObject<T>, IExpressionMultiply<T> {
+export interface IMatrixElement<T> extends IPiMathObject<T>, IExpressionMultiply<T>, IDisplayDigits {
     divide(value: InputValue<T>): T
     readonly value: number | undefined
 }

@@ -59,7 +59,10 @@ export class Point extends TupleN implements IPiMathObject<Point> {
     }
 
     clone(): Point {
-        return new Point(...this.cloneCoordinates())
+        // direct assignment: the constructor would rebuild the coordinates and drop their display state
+        const p = new Point()
+        p.array = this.cloneCoordinates()
+        return p
     }
 
     get tex(): string {

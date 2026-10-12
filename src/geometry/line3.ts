@@ -10,7 +10,8 @@ import {Monom} from "../algebra/monom"
 import {randomIntSym} from "../randomization/rndHelpers"
 import {Vector} from "./vector"
 import {Point} from "./point"
-import {type IPiMathObject, type LineIntersection, type OutputStyle} from "../pimath.interface"
+import {type IDisplayDigits, type IPiMathObject, type LineIntersection, type OutputStyle} from "../pimath.interface"
+import {assertDigits} from "../helpers"
 
 enum Line3Display {
     PARAMETRIC,
@@ -18,10 +19,11 @@ enum Line3Display {
     CARTESIAN
 }
 
-export class Line3 implements IPiMathObject<Line3>{
+export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
     #OA: Point = new Point()
     #d: Vector = new Vector()
     #outputMode: Line3Display = Line3Display.PARAMETRIC
+    #digits: number | null = null
 
     /** Creates an empty line, or a line through two points, or a line through a point with a direction. */
     constructor()
@@ -77,7 +79,16 @@ export class Line3 implements IPiMathObject<Line3>{
         cloned.#OA = this.#OA.clone()
         cloned.#d = this.#d.clone()
         cloned.#outputMode = this.#outputMode
+        cloned.#digits = this.#digits
         return cloned
+    }
+
+    /** @see IDisplayDigits.withDigits */
+    withDigits(digits: number | null): this {
+        this.#digits = assertDigits(digits)
+        this.#OA.withDigits(digits)
+        this.#d.withDigits(digits)
+        return this
     }
 
     // ------------------------------------------
@@ -132,9 +143,9 @@ export class Line3 implements IPiMathObject<Line3>{
     }
 
     #toSystem(style: OutputStyle): string {
-        const px = (new Polynom(this.#OA.x).add(new Monom(this.#d.x).multiply(new Monom('k')))).reorder('k', true)
-        const py = (new Polynom(this.#OA.y).add(new Monom(this.#d.y).multiply(new Monom('k')))).reorder('k', true)
-        const pz = (new Polynom(this.#OA.z).add(new Monom(this.#d.z).multiply(new Monom('k')))).reorder('k', true)
+        const px = (new Polynom(this.#OA.x).add(new Monom(this.#d.x).multiply(new Monom('k')))).reorder('k', true).withDigits(this.#digits)
+        const py = (new Polynom(this.#OA.y).add(new Monom(this.#d.y).multiply(new Monom('k')))).reorder('k', true).withDigits(this.#digits)
+        const pz = (new Polynom(this.#OA.z).add(new Monom(this.#d.z).multiply(new Monom('k')))).reorder('k', true).withDigits(this.#digits)
 
         if (style === 'tex') {
             return `\\left\\{\\begin{aligned}\n    x &= ${px.tex}\\\\ \n    y &= ${py.tex}\\\\\n    z &= ${pz.tex}\n\\end{aligned}\\right.`
@@ -143,7 +154,7 @@ export class Line3 implements IPiMathObject<Line3>{
     }
 
     #toCartesian(style: OutputStyle): string {
-        const d = this.#d.clone().simplify()
+        const d = this.#d.clone().simplify().withDigits(this.#digits)
         const coords = [
             {v: 'x', offset: this.#OA.x, di: d.x},
             {v: 'y', offset: this.#OA.y, di: d.y},
@@ -152,11 +163,11 @@ export class Line3 implements IPiMathObject<Line3>{
 
         if (style === 'tex') {
             return coords
-                .map(({v, offset, di}) => `\\frac{ ${new Polynom(v, 1, offset.clone().opposite()).tex} }{ ${di.tex} }`)
+                .map(({v, offset, di}) => `\\frac{ ${new Polynom(v, 1, offset.clone().opposite()).withDigits(this.#digits).tex} }{ ${di.tex} }`)
                 .join(' = ')
         }
         return coords
-            .map(({v, offset, di}) => `(${new Polynom(v, 1, offset.clone().opposite()).display})/${di.display}`)
+            .map(({v, offset, di}) => `(${new Polynom(v, 1, offset.clone().opposite()).withDigits(this.#digits).display})/${di.display}`)
             .join(' = ')
     }
 

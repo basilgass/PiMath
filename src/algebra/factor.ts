@@ -1,4 +1,5 @@
 import type {
+    IDisplayDigits,
     IAlgebra,
     IEvaluable,
     IExpression,
@@ -21,7 +22,7 @@ import {MathError, UnsupportedOperationError} from "../errors"
  * structurally unsupported at this level and will throw
  * {@link UnsupportedOperationError}.
  */
-export class Factor implements IPiMathObject<Factor>,
+export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
     IExpression<Factor>,
     IAlgebra, IEvaluable {
     #displayMode: FACTOR_DISPLAY
@@ -63,6 +64,12 @@ export class Factor implements IPiMathObject<Factor>,
         result.#displayMode = this.#displayMode
         result.#singleMode = this.#singleMode
         return result
+    }
+
+    /** @see IDisplayDigits.withDigits */
+    withDigits(digits: number | null): this {
+        this.#polynom.withDigits(digits)
+        return this
     }
 
     get tex(): string {

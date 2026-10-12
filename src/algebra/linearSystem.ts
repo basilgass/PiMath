@@ -1,4 +1,4 @@
-import type {IAlgebra, IEquation, InputValue, IPiMathObject, OutputStyle} from "../pimath.interface"
+import type {IAlgebra, IDisplayDigits, IEquation, InputValue, IPiMathObject, OutputStyle} from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Equation} from "./equation"
 import {Matrix} from "./matrix"
@@ -6,13 +6,15 @@ import {Polynom} from "./polynom"
 import {Numeric} from "../numeric"
 import {Solution} from "../analyze"
 import {Vector} from "../geometry"
+import {assertDigits} from "../helpers"
 import {DimensionError, IndexError, NotImplementedError} from "../errors"
 
-export class LinearSystem implements IPiMathObject<LinearSystem>,
+export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits,
     IEquation<LinearSystem>,
     IAlgebra {
 
     #equations: Equation[]
+    #digits: number | null = null
 
     // Determine the variables in the linear asSystem, usually ['x', 'y']
     #variables: string[]
@@ -74,8 +76,20 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
     }
 
     clone(): LinearSystem {
-        return new LinearSystem()
-            .parse(...this.#equations.map(equ => equ.clone()))
+        // direct copy: parsing the equations again would rebuild them and drop their display state
+        const LS = new LinearSystem()
+        LS.#equations = this.#equations.map(equ => equ.clone())
+        LS.#variables = [...this.#variables]
+        LS.#digits = this.#digits
+        return LS
+    }
+
+    /** @see IDisplayDigits.withDigits */
+    withDigits(digits: number | null): this {
+        // kept on the system too: reordering for the output rebuilds the equations
+        this.#digits = assertDigits(digits)
+        this.#equations.forEach(e => e.withDigits(digits))
+        return this
     }
 
     get tex(): string {
@@ -83,13 +97,13 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
         // Reorder
         // This clone the asSystem :!!!
         //TODO: Avoid cloning this linear asSystem
-        const LS = this.clone().reorder()
+        const LS = this.clone().reorder().withDigits(this.#digits)
 
         return this.buildTex(LS.equations)
     }
 
     get display(): string {
-        const LS = this.clone().reorder()
+        const LS = this.clone().reorder().withDigits(this.#digits)
         return this.#toOutput(LS.equations, 'display')
     }
 

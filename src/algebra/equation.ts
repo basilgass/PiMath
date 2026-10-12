@@ -1,4 +1,5 @@
 import type {
+    IDisplayDigits,
     EquationSign,
     IAlgebra,
     IEquation,
@@ -43,7 +44,7 @@ const REVERSED_SIGN: Readonly<Record<EquationSign, EquationSign>> = {
     '>=': '<='
 }
 
-export class Equation implements IPiMathObject<Equation>,
+export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
     IEquation<Equation>,
     IAlgebra {
 
@@ -120,6 +121,13 @@ export class Equation implements IPiMathObject<Equation>,
 
     clone(): Equation {
         return new Equation(this.#left.clone(), this.#right.clone(), this.#sign)
+    }
+
+    /** @see IDisplayDigits.withDigits */
+    withDigits(digits: number | null): this {
+        this.#left.withDigits(digits)
+        this.#right.withDigits(digits)
+        return this
     }
 
     get tex(): string {

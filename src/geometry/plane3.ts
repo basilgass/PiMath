@@ -5,13 +5,15 @@ import {Root} from "../coefficients/root"
 import {Line3} from "./line3"
 import {Point} from "./point"
 import {Vector} from "./vector"
-import type {InputAlgebra, IPiMathObject, OutputStyle, Plane3Config, PlaneLineIntersection, PlanePlaneIntersection} from "../pimath.interface"
+import type {IDisplayDigits, InputAlgebra, IPiMathObject, OutputStyle, Plane3Config, PlaneLineIntersection, PlanePlaneIntersection} from "../pimath.interface"
 import {DimensionError, ParseError} from "../errors"
+import {assertDigits} from "../helpers"
 
 
-export class Plane3 implements IPiMathObject<Plane3> {
+export class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
     #normal: Vector = new Vector(0, 0, 1)
     #point: Point = new Point(0, 0, 0)
+    #digits: number | null = null
 
     constructor(config?: Plane3Config) {
         if (config) {
@@ -140,7 +142,16 @@ export class Plane3 implements IPiMathObject<Plane3> {
         const cloned = new Plane3() as this
         cloned.#normal = this.#normal.clone()
         cloned.#point = this.#point.clone()
+        cloned.#digits = this.#digits
         return cloned
+    }
+
+    /** @see IDisplayDigits.withDigits */
+    withDigits(digits: number | null): this {
+        this.#digits = assertDigits(digits)
+        this.#normal.withDigits(digits)
+        this.#point.withDigits(digits)
+        return this
     }
 
     // ------------------------------------------
@@ -150,7 +161,7 @@ export class Plane3 implements IPiMathObject<Plane3> {
         const eq = new Equation(
             new Polynom('xyz', this.a, this.b, this.c, this.d),
             new Polynom(0)
-        ).reduce()
+        ).reduce().withDigits(this.#digits)
         return style === 'tex' ? eq.tex : eq.display
     }
 

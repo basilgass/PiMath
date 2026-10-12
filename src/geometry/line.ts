@@ -6,11 +6,12 @@ import {Numeric} from "../numeric"
 import {Fraction} from "../coefficients"
 import {Equation, Monom, Polynom} from "../algebra"
 import {Vector} from "./vector"
-import {type InputAlgebra, type InputValue, type IPiMathObject, type LineIntersection, LineProperty, type OutputStyle} from "../pimath.interface"
+import {type IDisplayDigits, type InputAlgebra, type InputValue, type IPiMathObject, type LineIntersection, LineProperty, type OutputStyle} from "../pimath.interface"
 import {randomIntSym} from "../randomization/rndHelpers"
 import {Point} from "./point"
 import {Root} from "../coefficients/root"
 import {ParseError} from "../errors"
+import {assertDigits} from "../helpers"
 
 enum LineDisplay {
     CARTESIAN,
@@ -25,7 +26,7 @@ enum LineDirection {
     RIGHT_TO_LEFT = 'rl'
 }
 
-export class Line implements IPiMathObject<Line> {
+export class Line implements IPiMathObject<Line>, IDisplayDigits {
     static PARALLEL = LineProperty.Parallel
     static PERPENDICULAR = LineProperty.Perpendicular
     #OA: Vector
@@ -121,18 +122,14 @@ export class Line implements IPiMathObject<Line> {
 
     get tex(): string {
         const mode = this.#outputMode
-        const decimals = this.#decimals
         this.#outputMode = LineDisplay.CANONICAL
-        this.#decimals = null
-        return this.#toOutput('tex', mode, decimals)
+        return this.#toOutput('tex', mode, this.#decimals)
     }
 
     get display(): string {
         const mode = this.#outputMode
-        const decimals = this.#decimals
         this.#outputMode = LineDisplay.CANONICAL
-        this.#decimals = null
-        return this.#toOutput('display', mode, decimals)
+        return this.#toOutput('display', mode, this.#decimals)
     }
 
     #toOutput(style: OutputStyle, mode: LineDisplay, decimals: number | null): string {
@@ -303,11 +300,12 @@ export class Line implements IPiMathObject<Line> {
     }
 
     /**
-     * Sets decimal precision for the next output (all modes). Consumed and reset after `.tex` or `.display`.
-     * Call without argument to revert to exact output.
+     * Show the coefficients as decimals with `digits` digits, in every output mode. Persistent
+     * (copied by `clone()`); `null` goes back to the exact output.
+     * @throws {InvalidArgumentError} if `digits` is neither `null` nor an integer from 0 to 100.
      */
-    withDecimals(n?: number): this {
-        this.#decimals = n ?? null
+    withDigits(digits: number | null): this {
+        this.#decimals = assertDigits(digits)
         return this
     }
 
