@@ -240,3 +240,28 @@ describe('LogicalSet — variables', () => {
         expect(new LogicalSet().variables).toEqual([])
     })
 })
+
+describe('LogicalSet — operator precedence', () => {
+    const table = (expression: string) => {
+        const L = new LogicalSet(expression)
+        return [0, 1, 2, 3, 4, 5, 6, 7]
+            .map(m => (L.evaluate({A: !!(m & 1), B: !!(m & 2), C: !!(m & 4)}) ? 1 : 0))
+            .join('')
+    }
+
+    test('& and | share a level and apply from left to right', () => {
+        expect(table('A|B&C')).toBe(table('(A|B)&C'))
+        expect(table('A&B|C')).toBe(table('(A&B)|C'))
+        expect(table('A|B&C')).not.toBe(table('A|(B&C)'))
+    })
+
+    test('! binds tighter than & and |', () => {
+        expect(table('!A&B')).toBe(table('(!A)&B'))
+        expect(table('!A|!B')).toBe(table('(!A)|(!B)'))
+    })
+
+    test('- is applied after & and from left to right', () => {
+        expect(table('A-B&C')).toBe(table('A-(B&C)'))
+        expect(table('A-B-C')).toBe(table('(A-B)-C'))
+    })
+})

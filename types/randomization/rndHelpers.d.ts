@@ -1,6 +1,6 @@
 export declare function randomBool(percent?: number): boolean;
 export declare function randomInt(a: number, b?: number, exclude?: number[]): number;
-export declare function randomIntSym(max: number, zero?: boolean): number;
+export declare function randomIntSym(max: number, allowZero?: boolean): number;
 export declare function randomTriplet(target: number, allowZero?: boolean): [number, number, number] | null;
 export declare function randomPrime(max?: number): number;
 export declare function randomArray<T>(arr: T[], number?: number): T[];

@@ -2,13 +2,15 @@ import { Fraction } from "../coefficients";
 import { Line } from "./line";
 import { Vector } from "./vector";
 import { Point } from "./point";
-import type { InputValue, RemarquableLines } from "../pimath.interface";
+import type { IPiMathObject, InputValue, RemarquableLines } from "../pimath.interface";
 type TRIANGLE_SIDES = 'AB' | 'AC' | 'BC';
-export declare class Triangle {
+export declare class Triangle implements IPiMathObject<Triangle> {
     #private;
     constructor(...values: unknown[]);
-    parse: (...values: unknown[]) => this;
-    clone: () => Triangle;
+    parse(...values: unknown[]): this;
+    get tex(): string;
+    get display(): string;
+    clone(): this;
     copy(value: Triangle): this;
     get A(): Point;
     set A(value: Point);
@@ -24,9 +26,9 @@ export declare class Triangle {
     get CB(): Vector;
     get asDegree(): this;
     get asRadians(): this;
-    fromCoordinates(x1: InputValue<Fraction>, y1: InputValue<Fraction>, x2: InputValue<Fraction>, y2: InputValue<Fraction>, x3: InputValue<Fraction>, y3: InputValue<Fraction>): this;
-    fromLines(line1: Line | string, line2: Line | string, line3: Line | string): this;
-    fromPoints(A: Point, B: Point, C: Point): this;
+    static fromCoordinates(x1: InputValue<Fraction>, y1: InputValue<Fraction>, x2: InputValue<Fraction>, y2: InputValue<Fraction>, x3: InputValue<Fraction>, y3: InputValue<Fraction>): Triangle;
+    static fromLines(line1: Line | string, line2: Line | string, line3: Line | string): Triangle;
+    static fromPoints(A: Point, B: Point, C: Point): Triangle;
     getAngle(name: 'A' | 'B' | 'C'): number;
     getBisectors(internal?: boolean): {
         'A': Line;
@@ -64,12 +66,8 @@ export declare class Triangle {
     isIsocele(): boolean;
     isRectangle(): boolean;
     get isValid(): boolean;
-    set isValid(value: boolean);
     get lines(): Record<TRIANGLE_SIDES, Line>;
-    medianA(): Line;
-    medianB(): Line;
-    medianC(): Line;
-    get remarquables(): RemarquableLines | null;
+    get remarquables(): RemarquableLines;
     reset(): this;
 }
 export {};

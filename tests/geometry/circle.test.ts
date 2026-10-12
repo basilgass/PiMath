@@ -261,3 +261,31 @@ describe('Circle relative position (circle-circle)', () => {
         expect(C1.relativePosition(C2)).toBe(CircleRelativePosition.CONCENTRIC)
     })
 })
+
+describe('Circle with irrational line intersections', () => {
+    const C = new Circle(new Point(0, 0), 4, true)
+
+    test('intersection keeps both irrational points instead of the chord midpoint twice', () => {
+        const pts = C.intersection(Line.fromPoints(new Point(1, 0), new Point(0, 1)))
+        expect(pts).toHaveLength(2)
+        const [p, q] = pts
+        expect(p.x.value + q.x.value).toBeCloseTo(1, 2)
+        expect(Math.abs(p.x.value - q.x.value)).toBeGreaterThan(1)
+        for (const pt of pts) {
+            expect(pt.x.value ** 2 + pt.y.value ** 2).toBeCloseTo(4, 1)
+            expect(pt.x.value + pt.y.value).toBeCloseTo(1, 2)
+        }
+    })
+
+    test('tangents from an outside point with irrational slopes are two distinct tangent lines', () => {
+        const tangents = C.tangents(new Point(3, 0))
+        expect(tangents).toHaveLength(2)
+        expect(tangents[0].isEqual(tangents[1])).toBe(false)
+        for (const t of tangents) {
+            // the slope is irrational, so the line is an approximation: the distance to the center is only close to the radius
+            const distance = Math.abs(t.c.value) / Math.hypot(t.a.value, t.b.value)
+            expect(distance).toBeCloseTo(2, 2)
+            expect(t.isPointOnLine(new Point(3, 0))).toBe(true)
+        }
+    })
+})

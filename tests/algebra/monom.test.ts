@@ -1,5 +1,5 @@
 import {describe, expect, test,} from "vitest"
-import {Fraction, Monom, ParseError} from "../../src"
+import {Fraction, MathError, Monom, ParseError} from "../../src"
 
 describe('Monom creation', () => {
     test('create Monom', () => {
@@ -336,5 +336,35 @@ describe('Monom dividers and squares', () => {
 describe('Monom parse errors', () => {
     test('malformed input throws ParseError', () => {
         expect(() => new Monom('@')).toThrow(ParseError)
+    })
+})
+
+describe('Monom zero exponents and primitives', () => {
+    test('setExponent with zero removes the variable and ignores an absent one', () => {
+        const M = new Monom('3x^2y')
+        M.setExponent('x', 0)
+        expect(M.hasVariable('x')).toBe(false)
+        expect(M.display).toBe('3y')
+        M.setExponent('z', 0)
+        expect(M.hasVariable('z')).toBe(false)
+        expect(M.variables).toEqual(['y'])
+    })
+
+    test('the primitive of a constant is a x', () => {
+        expect(new Monom('3').primitive().display).toBe('3x')
+    })
+
+    test('the primitive of the zero monom is zero', () => {
+        expect(new Monom('0').primitive().isZero()).toBe(true)
+        expect(new Monom('0x').primitive().isZero()).toBe(true)
+    })
+
+    test('the primitive of x^-1 is a logarithm and is rejected', () => {
+        expect(() => new Monom('x^(-1)').primitive()).toThrow(MathError)
+        expect(() => new Monom('2/x').primitive()).toThrow(MathError)
+    })
+
+    test('the primitive of a regular power is unchanged', () => {
+        expect(new Monom('3x^2').primitive().display).toBe('x^(3)')
     })
 })

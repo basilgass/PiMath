@@ -1,4 +1,5 @@
-import type {CompareSign, IExpression, InputValue, IPiMathObject} from "../pimath.interface"
+import type {CompareSign, IDisplayDigits, IExpression, InputValue, IPiMathObject} from "../pimath.interface"
+import {assertDigits} from "../helpers"
 import {Numeric} from "../numeric"
 import {InvalidArgumentError, MathError} from "../errors"
 
@@ -18,9 +19,9 @@ export enum FracType {
  * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
  */
 
-export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> {
+export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>, IDisplayDigits {
     #denominator = 1
-    #digits = 3
+    #digits: number | null = null
     #exact = true
     #numerator = 0
     #type: FracType = FracType.frac
@@ -117,6 +118,10 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
         const plus = this.#withSign && this.isPositive() ? '+' : ''
 
+        if (this.#digits !== null) {
+            return plus + this.value.toFixed(this.#digits)
+        }
+
         if (this.exact) {
             if (this.#denominator === 1) {
                 return `${plus}${this.#numerator}`
@@ -126,7 +131,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
                 return `${plus}\\${this.#type}{ ${this.#numerator} }{ ${this.#denominator} }`
             }
         } else {
-            return plus + this.value.toFixed(this.#digits)
+            return plus + this.value.toFixed(this.#digits ?? 3)
         }
     }
 
@@ -137,6 +142,10 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
 
         const plus = this.#withSign && this.isPositive() ? '+' : ''
 
+        if (this.#digits !== null) {
+            return plus + this.value.toFixed(this.#digits)
+        }
+
         if (this.exact) {
             if (this.#denominator === 1) {
                 return `${plus}${this.#numerator}`
@@ -144,7 +153,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
                 return `${plus}${this.#numerator}/${this.#denominator}`
             }
         } else {
-            return plus + this.value.toFixed(this.#digits)
+            return plus + this.value.toFixed(this.#digits ?? 3)
         }
     }
 
@@ -281,6 +290,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
             this.#numerator = N * F.denominator + F.numerator * D
             this.#denominator = D * F.denominator
             this.exact = this.exact && F.exact
+            this.#flagOverflow()
         } else {
             return this.add(new Fraction(F))
         }
@@ -377,8 +387,13 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
-    digits(value: number): this {
-        this.#digits = value
+    /**
+     * Show the value as a decimal with `digits` digits (exact fractions included), or `null` for the
+     * default display: an exact fraction as `a/b`, an approximate value with 3 digits.
+     * @throws {InvalidArgumentError} if `digits` is neither `null` nor an integer from 0 to 100.
+     */
+    withDigits(digits: number | null): this {
+        this.#digits = assertDigits(digits)
         return this
     }
 
@@ -405,6 +420,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         this.#denominator = D * Q.numerator
 
         this.exact = this.exact && Q.exact
+        this.#flagOverflow()
         return this.reduce()
     }
 
@@ -571,13 +587,32 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         return this
     }
 
+    /**
+     * Swap numerator and denominator, keeping the sign. Total operation, like
+     * {@link divide}: the inverse of zero is +∞ (1 / 0), not an error.
+     */
     inverse(): this {
+        if (this.#numerator === 0) {
+            return this.infinite()
+        }
+
         const sign = this.sign()
         const n = Math.abs(this.#numerator)
         this.#numerator = Math.abs(this.#denominator) * sign
         this.#denominator = n
 
         return this
+    }
+
+    /**
+     * Past 2^53 the integer parts are no longer exact, so the result is no longer
+     * an exact rational: flag it (permissive primitive, no error).
+     */
+    #flagOverflow(): void {
+        const unsafe = (v: number) => Number.isFinite(v) && Math.abs(v) > Number.MAX_SAFE_INTEGER
+        if (unsafe(this.#numerator) || unsafe(this.#denominator)) {
+            this.exact = false
+        }
     }
 
     isEqual(than: Fraction | number): boolean {
@@ -734,6 +769,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
         this.#denominator = this.#denominator * Q.denominator
 
         this.exact = this.exact && Q.exact
+        this.#flagOverflow()
 
         return reduce ? this.reduce() : this
     }
@@ -782,6 +818,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
             // Round to absorb floating-point noise on large powers.
             this.#numerator = Math.round(Math.pow(this.#numerator, absP))
             this.#denominator = Math.round(Math.pow(this.#denominator, absP))
+            this.#flagOverflow()
             return this
         }
 

@@ -4,11 +4,12 @@ import { Polynom } from "./polynom";
 import type { Solution } from "../analyze";
 export declare class Equation implements IPiMathObject<Equation>, IEquation<Equation>, IAlgebra {
     #private;
+    constructor();
     constructor(equation: InputAlgebra<Polynom> | Equation);
     constructor(left: InputAlgebra<Polynom>, right: InputAlgebra<Polynom>, sign?: EquationSign);
     parse(value: InputAlgebra<Polynom> | Equation): this;
-    fromString(equationString: string): this;
-    fromPolynoms(left: InputAlgebra<Polynom>, right: InputAlgebra<Polynom>, sign?: EquationSign): this;
+    static fromString(equationString: string): Equation;
+    static fromPolynoms(left: InputAlgebra<Polynom>, right: InputAlgebra<Polynom>, sign?: EquationSign): Equation;
     copy(value: Equation): this;
     clone(): Equation;
     get tex(): string;
@@ -22,13 +23,11 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
     hasVariable(variable: string): boolean;
     isEqual(value: InputValue<Equation>): boolean;
     isEquivalentTo(equ: Equation): boolean;
-    isLinearTo(equ: Equation): boolean;
     hasCrossTerm(): boolean;
     canIsolate(variable?: string): boolean;
     isolate(variable?: string): this;
     get left(): Polynom;
     set left(value: Polynom);
-    letters(): string[];
     moveLeft(): this;
     multiply(...values: InputValue<Fraction>[]): this;
     get numberOfVars(): number;

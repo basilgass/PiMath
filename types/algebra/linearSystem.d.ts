@@ -29,6 +29,7 @@ export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquat
     isEqual(value: LinearSystem): boolean;
     isSolvable(): boolean;
     get matrix(): [Matrix, Vector];
+    toAugmentedMatrix(): Matrix;
     mergeEquations(equation1: {
         id: number;
         factor: InputValue<Fraction>;

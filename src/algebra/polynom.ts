@@ -374,15 +374,16 @@ export class Polynom implements IPiMathObject<Polynom>,
             }
         })
 
-        // Check if we have all factors.
-        const fDegrees = this.#factors
-            .map(f => f.degree().value)
-            .reduce((a, b) => a + b, 0)
+        // What the factors found do not cover: a scalar (rational content, e.g. 1/2 in 1/2x^2-2)
+        // and/or a polynom with no rational root.
+        const found = Polynom.xMultiply(...this.#factors)
+        const remaining = this.clone().divide(found)
 
-        if (fDegrees < this.degree().value) {
-            // missing polynom.
-            const fPolynom = Polynom.xMultiply(...this.#factors)
-            this.#factors.push(this.clone().divide(fPolynom))
+        if (remaining.degree().isStrictlyPositive()) {
+            this.#factors.push(remaining)
+        } else if (!remaining.isOne()) {
+            // Scalar first, like the common monom.
+            this.#factors.unshift(remaining)
         }
 
         return this.#factors

@@ -256,8 +256,8 @@ describe('Fraction output', () => {
 
         expect(F.display).toBe('1.414')
         expect(F.tex).toBe('1.414')
-        expect(F.digits(5).display).toBe('1.41421')
-        expect(F.digits(5).tex).toBe('1.41421')
+        expect(F.withDigits(5).display).toBe('1.41421')
+        expect(F.withDigits(5).tex).toBe('1.41421')
     })
 })
 
@@ -629,5 +629,37 @@ describe('Fraction compare', () => {
         expect(a.compare(a.clone(), 'neq')).toBe(false)
         expect(a.compare(a.clone(), 'same')).toBe(true) // alias of =
         expect(a.compare(b, 'same')).toBe(false)
+    })
+})
+describe('Fraction inverse of zero and integer overflow', () => {
+    test('the inverse of zero is +Infinity, a consistent infinite state', () => {
+        const F = new Fraction(0).inverse()
+        expect(F.isInfinity()).toBe(true)
+        expect(F.value).toBe(Infinity)
+        expect(F.display).toBe(new Fraction(1).divide(0).display)
+    })
+
+    test('the inverse of a regular fraction keeps its sign', () => {
+        expect(new Fraction(-2, 3).inverse().display).toBe('-3/2')
+    })
+
+    test('a product past 2^53 is no longer flagged as exact', () => {
+        const F = new Fraction(2 ** 30).multiply(2 ** 30 + 1)
+        expect(F.exact).toBe(false)
+        expect(F.isRational()).toBe(false)
+    })
+
+    test('a power past 2^53 is no longer flagged as exact', () => {
+        expect(new Fraction(3).pow(40).exact).toBe(false)
+    })
+
+    test('a sum with a common denominator past 2^53 is no longer flagged as exact', () => {
+        const F = new Fraction(1, 2 ** 30 + 1).add(new Fraction(1, 2 ** 30 - 1))
+        expect(F.exact).toBe(false)
+    })
+
+    test('results below 2^53 stay exact', () => {
+        expect(new Fraction(2 ** 20).multiply(2 ** 20).exact).toBe(true)
+        expect(new Fraction(1, 3).add(new Fraction(1, 6)).exact).toBe(true)
     })
 })

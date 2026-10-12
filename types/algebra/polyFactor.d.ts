@@ -27,9 +27,9 @@ export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpressio
     factorize(variable?: string): PolyFactor;
     get factors(): Factor[];
     set factors(value: Factor[]);
-    fromPolynom(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>): this;
-    fromFactors(...values: (Factor | InputAlgebra<Polynom>)[]): this;
-    fromString(value: string): this;
+    static fromPolynom(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>): PolyFactor;
+    static fromFactors(...values: (Factor | InputAlgebra<Polynom>)[]): PolyFactor;
+    static fromString(value: string): PolyFactor;
     get roots(): Solution[];
     hasVariable(variable: string): boolean;
     inverse(): this;

@@ -604,22 +604,30 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return this
     }
 
+    /**
+     * Primitive with respect to a variable (integration constant omitted). The primitive
+     * of the zero monom is the zero monom.
+     * @throws {MathError} for a power of -1 of the variable: its primitive is a logarithm, not a monom.
+     */
     primitive(variable = 'x'): Monom {
-        // Zero monom
         const M = this.clone()
         let degree: Fraction
 
+        if (M.coefficient.isZero()) {
+            return M
+        }
+
         if (M.hasVariable(variable)) {
             degree = M.degree(variable).clone().add(1)
+            if (degree.isZero()) {
+                throw new MathError(`The primitive of ${this.display} is a logarithm, not a monom`)
+            }
             M.coefficient = M.coefficient.clone().divide(degree)
             M.setExponent(variable, degree)
         } else {
             // There is no variable.
 
-            // The coefficient might be zero (=> x) or a number a (=> ax)
-            if (M.coefficient.isZero()) {
-                M.coefficient = new Fraction(1)
-            }
+            // A constant a => ax
             M.setExponent(variable, 1)
         }
 
@@ -658,19 +666,21 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
     /**
      * Set the exponent of a particular variable.
      * @param variable variable whose exponent to change
-     * @param exponent exponent to assign to the variable
+     * @param exponent exponent to assign to the variable; zero removes the variable
      */
     setExponent(variable: string, exponent: InputValue<Fraction>): this {
         if (!(exponent instanceof Fraction)) {
             return this.setExponent(variable, new Fraction(exponent))
         }
 
-        // Set the exponent of the variable to zero => remove it
-        if (this.hasVariable(variable) && exponent.isZero()) {
-            this.removeVariable(variable)
+        // A zero exponent means the variable is not part of the literal: remove it
+        // (nothing to do when it is absent) instead of storing `variable^0`.
+        if (exponent.isZero()) {
+            if (this.hasVariable(variable)) {
+                this.removeVariable(variable)
+            }
             return this
         }
-
 
         this.#literal[variable] = exponent.clone()
 

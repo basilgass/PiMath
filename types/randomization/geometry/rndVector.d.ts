@@ -1,4 +1,4 @@
-import type { randomGeometryPointConfig } from "../rndTypes";
-import { Point } from "../../geometry/point";
-export declare function rndVector(userConfig?: randomGeometryPointConfig): Point;
+import type { Vector } from "../../geometry";
+import type { RandomGeometryVectorConfig } from "../rndTypes";
+export declare function rndVector(userConfig?: RandomGeometryVectorConfig): Vector;
 //# sourceMappingURL=rndVector.d.ts.map

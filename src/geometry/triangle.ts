@@ -63,7 +63,16 @@ export class Triangle implements IPiMathObject<Triangle> {
         return this
     }
 
+    /**
+     * Not implemented on purpose: a triangle has no single equation to display.
+     * @throws {NotImplementedError} always. Describe it through its {@link lines} or its vertices.
+     */
     get tex(): string { throw new NotImplementedError('Triangle has no equation representation') }
+
+    /**
+     * Not implemented on purpose: see {@link tex}.
+     * @throws {NotImplementedError} always.
+     */
     get display(): string { throw new NotImplementedError('Triangle has no equation representation') }
 
     clone(): this {
@@ -418,19 +427,15 @@ export class Triangle implements IPiMathObject<Triangle> {
     }
 
     #calculateBisectors(pt: 'A' | 'B' | 'C', internal = true): Line {
-        const tlines = this.lines
+        const P = this.#getPointByName(pt).clone()
 
-        const P = pt === 'A' ? this.A.clone()
-            : pt === 'B' ? this.B.clone()
-            : this.C.clone()
-
-        const d1 = pt === 'A' ? tlines.AB.clone().d
-            : pt === 'B' ? tlines.AB.clone().d.opposite()
-            : tlines.BC.clone().d.opposite()
-
-        const d2 = pt === 'A' ? tlines.AC.clone().d
-            : pt === 'B' ? tlines.BC.clone().d
-            : tlines.AC.clone().d.opposite()
+        // Directions come from the vertices, not from `Line.d`, whose sense does not necessarily
+        // follow the segment: a flipped direction turns the sum (internal) into a difference.
+        const [first, second] = pt === 'A' ? ['B', 'C'] as const
+            : pt === 'B' ? ['A', 'C'] as const
+            : ['A', 'B'] as const
+        const d1 = new Vector(P, this.#getPointByName(first))
+        const d2 = new Vector(P, this.#getPointByName(second))
 
         const director = internal
             ? d1.unit().add(d2.unit())

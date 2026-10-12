@@ -5,6 +5,7 @@ import { Domain } from "./domain";
 export declare class TableOfSigns implements IPiMathObject<TableOfSigns> {
     #private;
     constructor(value?: InputAlgebra<PolyFactor | Factor | Polynom>);
+    parse(value: InputAlgebra<PolyFactor | Factor | Polynom>): this;
     static fromPolynom(p: Polynom): TableOfSigns;
     static fromFactor(f: Factor): TableOfSigns;
     static fromPolyFactor(pf: PolyFactor): TableOfSigns;

@@ -158,3 +158,31 @@ describe("polynomRoots — solvePolynom", () => {
 function rootValueOf(r: { fraction: {value: number}, root: {value: number} }): number {
     return r.fraction.value + r.root.value
 }
+
+describe('solvePolynom irrational roots of even multiplicity', () => {
+    const poly = (...coeffs: number[]) => coeffs.map(c => new Fraction(c))
+
+    test('(x^2-2)^2 gives both irrational roots as double roots', () => {
+        // x^4 - 4x^2 + 4
+        const roots = solvePolynom(poly(4, 0, -4, 0, 1))
+        expect(roots).toHaveLength(2)
+        expect(roots.map(r => r.multiplicity)).toEqual([2, 2])
+        expect(roots[0].fraction.value + roots[1].fraction.value).toBeCloseTo(0, 6)
+        expect(Math.abs(roots[1].fraction.value + roots[1].root.value)).toBeCloseTo(Math.SQRT2, 2)
+    })
+
+    test('(x^2-2)^2 (x-1) keeps the rational root and the double irrational roots', () => {
+        // (x^4 - 4x^2 + 4)(x - 1)
+        const roots = solvePolynom(poly(-4, 4, 4, -4, -1, 1))
+        expect(roots.map(r => r.multiplicity)).toEqual([2, 1, 2])
+        expect(roots[1].exact).toBe(true)
+        expect(roots[1].fraction.value).toBe(1)
+    })
+
+    test('a square-free quartic is still solved by the numeric scan', () => {
+        // x^4 - x - 1 has two real irrational roots, both simple
+        const roots = solvePolynom(poly(-1, -1, 0, 0, 1))
+        expect(roots).toHaveLength(2)
+        expect(roots.every(r => r.multiplicity === 1 && !r.exact)).toBe(true)
+    })
+})

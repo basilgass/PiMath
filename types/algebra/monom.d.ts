@@ -5,10 +5,10 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
     constructor(value?: InputValue<Fraction>);
     constructor(value?: Monom);
     parse(inputStr: InputAlgebra<Monom>): this;
-    fromNumber(value: number): this;
-    fromFraction(value: Fraction): this;
-    fromLiteral(coefficient: InputValue<Fraction>, literal: LiteralType<Fraction>): this;
-    fromString(value: string): this;
+    static fromNumber(value: number): Monom;
+    static fromFraction(value: InputValue<Fraction>): Monom;
+    static fromLiteral(coefficient: InputValue<Fraction>, literal: LiteralType<Fraction>): Monom;
+    static fromString(value: string): Monom;
     copy(value: Monom): this;
     clone(): Monom;
     get tex(): string;
@@ -30,7 +30,6 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
     integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, variable?: string): Fraction;
     inverse(): this;
     isDivisibleBy(div: Monom): boolean;
-    isDivisible(div: Monom): boolean;
     isEqual(M: Monom): boolean;
     isLiteralSquare(): boolean;
     isOne(): boolean;
@@ -50,7 +49,6 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
     removeVariable(variable: string): void;
     root(): this;
     setExponent(variable: string, exponent: InputValue<Fraction>): this;
-    setLetter(variable: string, exponent: InputValue<Fraction>): this;
     sqrt(): this;
     subtract(...M: InputAlgebra<Fraction>[]): this;
     get variables(): string[];

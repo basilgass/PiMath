@@ -315,3 +315,11 @@ describe('Plane3 intersectWithPlane', () => {
         expect(result.line!.direction.dot(p2.normal).isZero()).toBe(true)
     })
 })
+
+describe('Plane3 angle with parallel planes', () => {
+    it('two parallel planes with non-trivial normals have a dihedral angle of 0, never NaN', () => {
+        const p1 = new Plane3({coefficients: [1, -8, 2, 1]})
+        const p2 = new Plane3({coefficients: [3, -24, 6, 5]})
+        expect(p1.angle(p2)).toBeCloseTo(0, 4)
+    })
+})

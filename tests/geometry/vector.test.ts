@@ -1,7 +1,7 @@
 import {describe, test, expect} from "vitest"
 import {Vector} from "../../src/geometry/vector"
 import {Point} from "../../src/geometry/point"
-import {DimensionError, InvalidArgumentError, ParseError} from "../../src/errors"
+import {DimensionError, InvalidArgumentError, MathError, ParseError} from "../../src/errors"
 
 
 describe('Vector creation', () => {
@@ -256,5 +256,18 @@ describe('Vector.fromPolynom', () => {
         const a = new Vector(1, 0)
         const b = new Vector(0, 1, 0)
         expect(() => Vector.fromPolynom('a+b', {a, b})).toThrow(DimensionError)
+    })
+})
+describe('Vector angle rounding and degenerate cases', () => {
+    test('colinear vectors give 0 and not NaN even when the ratio rounds above 1', () => {
+        const a = new Vector(1, -8, 2)
+        const b = new Vector(3, -24, 6)
+        expect(a.angle(b)).toBeCloseTo(0, 4)
+        expect(a.angle(b.clone().opposite())).toBeCloseTo(180, 4)
+        expect(a.angle(b.clone().opposite(), true)).toBeCloseTo(0, 4)
+    })
+
+    test('a zero vector has no angle', () => {
+        expect(() => new Vector(1, 2).angle(new Vector(0, 0))).toThrow(MathError)
     })
 })

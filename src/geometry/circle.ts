@@ -278,11 +278,13 @@ export class Circle
         }
 
         // Two intersection points
-        const OX1 = sol[0].exact
+        // `exact` also covers quadratic radicals, whose `fraction` drops the irrational part: only a
+        // rational solution can use it, an irrational one needs its numeric value.
+        const OX1 = sol[0].root.isZero()
             ? OP.clone().add(d.clone().multiplyByScalar(sol[0].fraction))
             : OP.clone().add(d.clone().multiplyByScalar(sol[0].value))
 
-        const OX2 = sol[1].exact
+        const OX2 = sol[1].root.isZero()
             ? OP.clone().add(d.clone().multiplyByScalar(sol[1].fraction))
             : OP.clone().add(d.clone().multiplyByScalar(sol[1].value))
 
@@ -477,16 +479,11 @@ export class Circle
 
         return solutions.map(sol => {
             //  h = -m px + py
-            let h: Fraction
+            // an irrational slope has no exact Fraction: approximate it from its numeric value
+            const m = sol.root.isZero() ? sol.fraction : new Fraction(sol.value)
+            const h = P.x.clone().opposite().multiply(m).add(P.y)
             const equ = new Equation('y', 'x')
-
-            if (sol.exact) {
-                h = P.x.clone().opposite().multiply(sol.fraction).add(P.y)
-                equ.right.multiply(sol.fraction).add(h)
-            } else {
-                h = P.x.clone().opposite().multiply(sol.value).add(P.y)
-                equ.right.multiply(sol.value).add(h)
-            }
+            equ.right.multiply(m).add(h)
 
             return new Line(equ)
         })

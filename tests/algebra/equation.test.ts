@@ -436,3 +436,32 @@ describe.skip('Equations tests', () => {
         expect(P.isEquivalentTo(R)).toBe(true)
     })
 })
+
+describe('Equation inequalities with negative factors', () => {
+    test('isolate divides by a negative coefficient and reverses the sign', () => {
+        const E = new Equation('-2x<6').isolate('x')
+        expect(E.display).toBe('x>-3')
+    })
+
+    test('isolate keeps the sign for a positive coefficient and for an equality', () => {
+        expect(new Equation('2x<6').isolate('x').display).toBe('x<3')
+        expect(new Equation('-2x=6').isolate('x').display).toBe('x=-3')
+    })
+
+    test('isolate moves the constants and reverses the sign', () => {
+        expect(new Equation('5-x<2').isolate('x').display).toBe('x>3')
+    })
+
+    test('opposite reverses the direction of an inequality only', () => {
+        const E = new Equation('x<3')
+        E.opposite()
+        expect(E.left.display).toBe('-x')
+        expect(E.right.display).toBe('-3')
+        expect(E.display).toContain('>')
+        expect(new Equation('x=3').opposite().display).toContain('=')
+    })
+
+    test('divide by a negative value reverses the sign', () => {
+        expect(new Equation('4x<8').divide(-2).display).toContain('>')
+    })
+})

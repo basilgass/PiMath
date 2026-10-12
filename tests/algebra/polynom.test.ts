@@ -625,3 +625,29 @@ describe('Polynom factorisation in an arbitrary variable', () => {
             .toEqual(expect.arrayContaining(['z-1', 'z+1']))
     })
 })
+
+describe('Polynom.factorize keeps the rational content', () => {
+    const product = (P: Polynom) => Polynom.xMultiply(...P.factorize())
+
+    test('1/2x^2-2 keeps its factor 1/2', () => {
+        const P = new Polynom('1/2x^2-2')
+        expect(product(P).isEqual(P)).toBe(true)
+    })
+
+    test('2/3x^2-8/3 keeps its fractional content', () => {
+        const P = new Polynom('2/3x^2-8/3')
+        expect(product(P).isEqual(P)).toBe(true)
+    })
+
+    test('integer coefficients are still fully factorized', () => {
+        const P = new Polynom('2x^2-5x+2')
+        const factors = P.factorize()
+        expect(Polynom.xMultiply(...factors).isEqual(P)).toBe(true)
+        expect(factors.length).toBe(2)
+    })
+
+    test('an irreducible part is kept together with the content', () => {
+        const P = new Polynom('1/2x^3-1/2x')
+        expect(product(P).isEqual(P)).toBe(true)
+    })
+})

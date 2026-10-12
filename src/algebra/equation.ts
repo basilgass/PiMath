@@ -322,7 +322,8 @@ export class Equation implements IPiMathObject<Equation>,
 
     /**
      * Reorder the equation to keep a single variable on the left and the rest
-     * on the right. Atomic: on failure the receiver is left unchanged.
+     * on the right, with a coefficient of 1. For an inequality, a negative
+     * coefficient reverses the sign. Atomic: on failure the receiver is left unchanged.
      * @throws {MathError} when the equation cannot be isolated (guard with canIsolate).
      */
     isolate(variable?: string): this {
@@ -356,6 +357,11 @@ export class Equation implements IPiMathObject<Equation>,
         const cMove: Fraction = clone.#left.monoms[0].coefficient.clone()
         clone.#left.divide(cMove)
         clone.#right.divide(cMove)
+
+        // Dividing an inequality by a negative coefficient reverses its direction.
+        if (clone.#sign !== '=' && cMove.isStrictlyNegative()) {
+            clone.#reverseSign()
+        }
         return this.#commit(clone)
     }
 
@@ -406,12 +412,16 @@ export class Equation implements IPiMathObject<Equation>,
         return this.variables.length
     }
 
+    /**
+     * Multiply both members by -1. For an inequality the direction is reversed
+     * (`x < 3` becomes `-x > -3`), so the equation keeps the same solutions.
+     */
     opposite(): this {
         const left = this.#left.clone().opposite()
         const right = this.#right.clone().opposite()
         this.#left = left
         this.#right = right
-        return this
+        return this.#reverseSign()
     }
 
     pow(value: number): this {

@@ -108,7 +108,7 @@ export interface RandomEquationConfig {
     /** Add a random polynom to both sides: `P = 0` becomes `P + Q = Q` (default `false`). */
     shuffle?: boolean,
     solution?: {
-        /** Exact number of distinct real solutions, from 0 to `degree`. Implies a factored construction. */
+        /** Exact number of distinct real solutions, from 0 to `degree`. Implies a factored construction (default: unset, the number is free). */
         count?: number,
         /**
          * Allow 0 as a solution (default `true`). It lives in `solution` rather than in `allow`: it constrains the
@@ -179,7 +179,7 @@ export interface RandomGeometryLine3Config {
     A?: Point | RandomGeometryPoint3Config,
     /**
      * Direction of the line: a non-null 3D `Vector` fixes it exactly (`new Vector(1, 0, 2)`; incompatible with an
-     * explicit `allow`); an object is the configuration of the random vector drawn by `rndVector3`. The
+     * explicit `allow`); an object is the configuration of the random vector drawn by `rndVector3` (default: its own defaults). The
      * direction is never null. Its `axis` and `plane` are overridden by the kind of line drawn (see `allow`),
      * and its `allow.zero` must not be `true`.
      */
@@ -323,7 +323,7 @@ export interface RandomGeometryCircleConfig {
      */
     radius?: FractionOrRandom,
     /**
-     * Squared radius of the circle (the radius is then its square root, possibly irrational: `5` gives
+     * Squared radius of the circle (default: a random integer, see `pointsOnCircle`; the radius is then its square root, possibly irrational: `5` gives
      * x² + y² = 5). Same forms as `radius`; the random integer ranges from 1 to 25 unless `max` is given.
      * An object `fraction` gives fractions unless it sets `relative: true`.
      */

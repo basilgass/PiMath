@@ -1,48 +1,41 @@
-import { Fraction } from "../coefficients/fraction";
+import { Root } from "../coefficients/root";
 import { Vector } from "./vector";
 import { Point } from "./point";
-import { Line3Property } from "../pimath.interface";
-export declare class Line3 {
+import { type IPiMathObject, type LineIntersection } from "../pimath.interface";
+export declare class Line3 implements IPiMathObject<Line3> {
     #private;
-    static PARALLEL: Line3Property;
-    static PERPENDICULAR: Line3Property;
+    constructor();
     constructor(A: Point, B: Point);
     constructor(A: Point, d: Vector);
-    clone: () => this;
-    get tex(): {
-        parametric: string;
-        system: string;
-        cartesian: string;
-    };
-    get display(): {
-        parametric: string;
-        system: string;
-        cartesian: string;
-    };
+    static fromPoints(A: Point, B: Point): Line3;
+    static fromPointAndDirection(A: Point, d: Vector): Line3;
+    parse(A: Point, B: Point): this;
+    parse(A: Point, d: Vector): this;
+    copy(value: Line3): this;
+    clone(): this;
+    get asParametric(): this;
+    get asSystem(): this;
+    get asCartesian(): this;
+    get tex(): string;
+    get display(): string;
     get OA(): Point;
     set OA(value: Point);
     get d(): Vector;
     set d(value: Vector);
     get direction(): Vector;
-    distanceTo(pt: Point): {
-        value: number;
-        fraction: Fraction;
-        tex: string;
-    };
-    hitSegment(A: Point, B: Point): boolean;
-    intersection: (line: Line3) => {
-        point: Vector;
-        hasIntersection: boolean;
-        isParallel: boolean;
-        isSame: boolean;
-    };
-    isOnLine: (pt: Point) => boolean;
-    isParallelTo: (line: Line3) => boolean;
-    isPerpendicularTo: (line: Line3) => boolean;
-    isSameAs: (line: Line3) => boolean;
-    isVertical: () => boolean;
     get point(): Point;
-    randomPoint: (max?: number) => Point;
-    simplify: () => this;
+    distanceTo(pt: Point): Root;
+    hitSegment(A: Point, B: Point): boolean;
+    intersection(line: Line3): LineIntersection;
+    isPointOnLine(pt: Point): boolean;
+    isEqual(line: Line3): boolean;
+    isParallelTo(line: Line3): boolean;
+    isOrthogonalTo(line: Line3): boolean;
+    isPerpendicularTo(line: Line3): boolean;
+    randomPoint(max?: number): Point;
+    randomNearPoint(k?: number): Point;
+    simplify(): this;
+    project(pt: Point): Point;
+    reflect(pt: Point): Point;
 }
 //# sourceMappingURL=line3.d.ts.map

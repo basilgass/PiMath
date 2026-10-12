@@ -240,3 +240,35 @@ describe('triangle remarquable lines', () => {
 describe.skip('triangle static functions')
 
 describe.skip('triangle generators')
+
+describe('Triangle bisectors', () => {
+    test('incenter of the 3-4-5 triangle is (1;1)', () => {
+        const T = Triangle.fromPoints(new Point(0, 0), new Point(3, 0), new Point(0, 4))
+        const I = T.getBisectors().intersection
+        expect(I).not.toBeNull()
+        expect(I!.x.value).toBeCloseTo(1, 2)
+        expect(I!.y.value).toBeCloseTo(1, 2)
+    })
+
+    test('incenter does not depend on the vertex order', () => {
+        const A = new Point(1, 5), B = new Point(-2, 5), C = new Point(-4, -1.5)
+        const I1 = Triangle.fromPoints(A, B, C).getBisectors().intersection
+        const I2 = Triangle.fromPoints(C, A, B).getBisectors().intersection
+        expect(I1!.x.value).toBeCloseTo(I2!.x.value, 2)
+        expect(I1!.y.value).toBeCloseTo(I2!.y.value, 2)
+        const a = Math.hypot(B.x.value - C.x.value, B.y.value - C.y.value)
+        const b = Math.hypot(A.x.value - C.x.value, A.y.value - C.y.value)
+        const c = Math.hypot(A.x.value - B.x.value, A.y.value - B.y.value)
+        const s = a + b + c
+        expect(I1!.x.value).toBeCloseTo((a * A.x.value + b * B.x.value + c * C.x.value) / s, 2)
+        expect(I1!.y.value).toBeCloseTo((a * A.y.value + b * B.y.value + c * C.y.value) / s, 2)
+    })
+
+    test('external bisectors of the two first vertices meet at the excenter opposite C', () => {
+        const T = Triangle.fromPoints(new Point(0, 0), new Point(3, 0), new Point(0, 4))
+        const E = T.getBisectors(false).intersection
+        expect(E).not.toBeNull()
+        expect(E!.x.value).toBeCloseTo(2, 2)
+        expect(E!.y.value).toBeCloseTo(-2, 2)
+    })
+})

@@ -11,6 +11,11 @@ interface RpnToken { token: string, tokenType: string }
  * Represents a logical set expression (e.g. `A & B | !C`), stored internally
  * as a Reverse Polish Notation sequence. Supports LaTeX and AsciiMath rendering,
  * boolean evaluation, and Venn diagram zone computation.
+ *
+ * Operator precedence (set by the `piexpression` parser, not by this class): `!` binds
+ * first, then `&` and `|` at the same level, applied from left to right, then `-`
+ * (set difference, also left to right). So `A|B&C` is `(A|B)&C`, not `A|(B&C)`, and
+ * `A-B&C` is `A-(B&C)`. Use parentheses to write any other grouping.
  */
 export class LogicalSet implements IPiMathObject<LogicalSet> {
     #rpn: RpnToken[]

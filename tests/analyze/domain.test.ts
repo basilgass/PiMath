@@ -241,3 +241,22 @@ describe("Domain — clone/copy", () => {
         expect(c.display).toBe(d.display)
     })
 })
+
+describe('Domain normalization of left-unbounded intervals', () => {
+    it('merges two intervals unbounded on the left', () => {
+        const d = new Domain(']-oo;6[uu]-oo;5[')
+        expect(d.length).toBe(1)
+        expect(d.contains(5.5)).toBe(true)
+        expect(d.contains(6)).toBe(false)
+    })
+
+    it('complement of a merged left-unbounded union starts at the largest bound', () => {
+        const c = new Domain(']-oo;5[uu]-oo;6[').complement()
+        expect(c.contains(5.5)).toBe(false)
+        expect(c.contains(6)).toBe(true)
+    })
+
+    it('merges a left-unbounded interval with an overlapping bounded one', () => {
+        expect(new Domain(']-oo;2[uu]1;3[').display).toBe(']-oo;3[')
+    })
+})

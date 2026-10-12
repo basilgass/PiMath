@@ -1,7 +1,5 @@
 export declare class PiMathError extends Error {
-    constructor(message: string, options?: {
-        cause?: unknown;
-    });
+    constructor(message: string, options?: ErrorOptions);
 }
 export declare class ParseError extends PiMathError {
 }

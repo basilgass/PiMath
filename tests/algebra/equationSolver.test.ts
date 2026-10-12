@@ -174,12 +174,16 @@ describe("Equation Solver", () => {
         const solutions = new EquationSolver(equation).solve()
 
         expect(solutions).toHaveLength(3)
-        expect(solutions[0].exact).toBeFalsy()
+        // the irrational roots come from the square-free factor x^2+x-1: exact quadratic radicals
+        expect(solutions[0].exact).toBe(true)
         expect(solutions[0].value).toBeCloseTo(-1.618, 3)
-        expect(solutions[1].exact).not.toBeFalsy()
+        expect(solutions[0].count).toBe(3)
+        expect(solutions[1].exact).toBe(true)
         expect(solutions[1].value).toBe(0)
-        expect(solutions[2].exact).toBeFalsy()
+        expect(solutions[1].count).toBe(5)
+        expect(solutions[2].exact).toBe(true)
         expect(solutions[2].value).toBeCloseTo(0.618, 3)
+        expect(solutions[2].count).toBe(3)
     })
 
     test('should solve complex equation', ()=>{

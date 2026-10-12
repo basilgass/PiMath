@@ -310,6 +310,124 @@ function bisect(coeffs: Fraction[], a: number, b: number, deltaX: number): numbe
     return (a + b) / 2
 }
 
+/** True when every coefficient is a finite fraction whose parts stay below 2^53 (arithmetic is still exact). */
+function isSafe(coeffs: Fraction[]): boolean {
+    return coeffs.every(c => Number.isSafeInteger(c.numerator) && Number.isSafeInteger(c.denominator))
+}
+
+/** Derivative of a coefficient vector (coeffs[i] = coefficient of x^i). */
+function derivativeCoeffs(coeffs: Fraction[]): Fraction[] {
+    return coeffs.slice(1).map((c, i) => c.clone().multiply(i + 1))
+}
+
+/** Euclidean division of two coefficient vectors; `null` when the arithmetic leaves the exact range. */
+function divmod(a: Fraction[], b: Fraction[]): { quotient: Fraction[], remainder: Fraction[] } | null {
+    const nb = normalize(b)
+    let rem = normalize(a).map(c => c.clone())
+    const quotient: Fraction[] = new Array<Fraction>(Math.max(rem.length - nb.length + 1, 0)).fill(new Fraction(0))
+    const lead = nb[nb.length - 1]
+
+    while (rem.length >= nb.length) {
+        const shift = rem.length - nb.length
+        const factor = rem[rem.length - 1].clone().divide(lead)
+        quotient[shift] = factor.clone()
+        for (let i = 0; i < nb.length; i++) {
+            rem[shift + i] = rem[shift + i].clone().subtract(factor.clone().multiply(nb[i]))
+        }
+        rem[rem.length - 1] = new Fraction(0)
+        rem = normalize(rem)
+        if (!isSafe(rem) || !isSafe(quotient)) {
+            return null
+        }
+    }
+
+    return {quotient, remainder: rem}
+}
+
+/** Monic greatest common divisor of two coefficient vectors; `null` when the arithmetic leaves the exact range. */
+function gcdCoeffs(a: Fraction[], b: Fraction[]): Fraction[] | null {
+    let x = normalize(a)
+    let y = normalize(b)
+    while (y.length > 0) {
+        const division = divmod(x, y)
+        if (division === null) {
+            return null
+        }
+        x = y
+        y = division.remainder
+    }
+    const lead = x[x.length - 1]
+    return x.map(c => c.clone().divide(lead))
+}
+
+/**
+ * Square-free decomposition (Yun): P = c · S1 · S2^2 · S3^3 ..., each Si square-free and
+ * pairwise coprime; returns the non-constant Si with their power. `null` when the exact
+ * arithmetic overflows, so the caller can fall back on a numeric scan.
+ */
+function squareFreeDecomposition(coeffs: Fraction[]): { factor: Fraction[], power: number }[] | null {
+    const derivative = derivativeCoeffs(coeffs)
+    const common = gcdCoeffs(coeffs, derivative)
+    if (common === null) {
+        return null
+    }
+
+    const wDiv = divmod(coeffs, common)
+    const yDiv = divmod(derivative, common)
+    if (wDiv === null || yDiv === null) {
+        return null
+    }
+
+    let w = wDiv.quotient
+    let y = yDiv.quotient
+    const parts: { factor: Fraction[], power: number }[] = []
+
+    for (let power = 1; normalize(w).length > 1; power++) {
+        const dw = derivativeCoeffs(w)
+        const size = Math.max(y.length, dw.length)
+        const z = Array.from({length: size}, (_, i) =>
+            (y[i] ?? new Fraction(0)).clone().subtract(dw[i] ?? new Fraction(0)))
+
+        const g = gcdCoeffs(w, z)
+        const nextW = g === null ? null : divmod(w, g)
+        const nextY = g === null ? null : divmod(z, g)
+        if (g === null || nextW === null || nextY === null) {
+            return null
+        }
+
+        if (g.length > 1) {
+            parts.push({factor: g, power})
+        }
+        w = nextW.quotient
+        y = nextY.quotient
+    }
+
+    return parts
+}
+
+/**
+ * Real roots of a residual polynom (degree >= 4, no rational root). A scan for sign changes
+ * misses roots of even multiplicity, so the residual is first split into square-free factors:
+ * each factor is solved on its own (closed form up to degree 3, numeric scan beyond) and its
+ * roots take the factor's power as multiplicity. A square-free residual, or an overflow of the
+ * exact arithmetic, goes straight to the scan.
+ */
+function solveResidual(residual: Fraction[], deltaX: number): PolynomRoot[] {
+    const parts = squareFreeDecomposition(residual)
+    if (parts === null || (parts.length === 1 && parts[0].power === 1)) {
+        return solveByBisection(residual, deltaX)
+    }
+
+    return parts.flatMap(({factor, power}) => {
+        const degree = factor.length - 1
+        const roots = degree === 1 ? solveLinear(factor)
+            : degree === 2 ? solveQuadratic(factor)
+            : degree === 3 ? solveCubicCardan(factor)
+            : solveByBisection(factor, deltaX)
+        return roots.map(r => ({...r, multiplicity: r.multiplicity * power}))
+    })
+}
+
 /**
  * Approximate the real roots of a residual polynom (degree >= 4) by scanning
  * [-B, B] (B = Cauchy bound) in 100 slices for sign changes, then bisecting. All
@@ -394,5 +512,5 @@ export function solvePolynom(coeffs: Fraction[], options?: { bisectionDeltaX?: n
         return sortByValue(solutions.concat(solveCubicCardan(residual)))
     }
 
-    return sortByValue(solutions.concat(solveByBisection(residual, deltaX)))
+    return sortByValue(solutions.concat(solveResidual(residual, deltaX)))
 }

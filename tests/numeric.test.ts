@@ -280,3 +280,42 @@ describe('Numeric', () => { // the tests container
         })
     })
 })
+
+describe('Numeric.greatestPower with exact integer roots', () => {
+    it('extracts perfect cubes whose floating cube root falls just below the integer', () => {
+        expect(Numeric.greatestPower(64, 3)).toBe(64)
+        expect(Numeric.greatestPower(-64, 3)).toBe(-64)
+        expect(Numeric.greatestPower(64 * 3, 3)).toBe(64)
+        expect(Numeric.greatestPower(1000, 3)).toBe(1000)
+    })
+})
+
+describe('Numeric edge cases', () => {
+    it('lcm of only zeros is 0, not NaN', () => {
+        expect(Numeric.lcm(0, 0)).to.equal(0)
+        expect(Numeric.lcm(0)).to.equal(0)
+        expect(Numeric.lcm(0, 0, 3)).to.equal(0)
+    })
+
+    it('round handles values written with an exponent', () => {
+        expect(Numeric.round(1e-7, 9)).to.equal(1e-7)
+        expect(Numeric.round(1.5e21, 2)).to.equal(1.5e21)
+        expect(Numeric.round(1.2345e-3, 4)).to.equal(0.0012)
+    })
+
+    it('round keeps the existing behaviour and passes non-finite values through', () => {
+        expect(Numeric.round(1.005, 2)).to.equal(1.01)
+        expect(Numeric.round(1234, -2)).to.equal(1200)
+        expect(Numeric.round(-2.5, 0)).to.equal(-2)
+        expect(Numeric.round(Infinity)).to.equal(Infinity)
+        expect(Number.isNaN(Numeric.round(NaN))).to.equal(true)
+    })
+
+    it('primes rejects a negative or non-integer count and caps an oversized one', () => {
+        expect(() => Numeric.primes(-3)).to.throw()
+        expect(() => Numeric.primes(2.5)).to.throw()
+        expect(Numeric.primes(0)).to.deep.equal([])
+        expect(Numeric.primes(3)).to.deep.equal([2, 3, 5])
+        expect(Numeric.primes(100000)).to.have.length(1229)
+    })
+})

@@ -7,7 +7,7 @@ import {Polynom} from "../algebra/polynom"
 import {Fraction} from "../coefficients"
 import {Numeric} from "../numeric"
 import {areVectorsColinears, areVectorsEquals, dotProduct} from "./geomMath"
-import {DimensionError, InvalidArgumentError, ParseError} from "../errors"
+import {DimensionError, InvalidArgumentError, MathError, ParseError} from "../errors"
 import {TupleN} from "./TupleN"
 import {type Point} from "./point"
 
@@ -93,7 +93,18 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
         return this
     }
 
+    /**
+     * Angle between two vectors, in degrees by default.
+     * @param sharp return the acute angle (absolute value of the dot product)
+     * @param radian return radians instead of degrees
+     * @throws {MathError} if one of the vectors is the zero vector (the angle is undefined)
+     */
     angle(V: Vector, sharp?: boolean, radian?: boolean): number {
+        const norms = this.norm * V.norm
+        if (norms === 0) {
+            throw new MathError('The angle with a zero vector is undefined')
+        }
+
         let scalar = this.dot(V).value
         if (sharp) {
             scalar = Math.abs(scalar)
@@ -101,7 +112,8 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
 
         const toDegree = radian ? 1 : 180 / Math.PI
 
-        return toDegree * Math.acos(scalar / (this.norm * V.norm))
+        // Rounding can push the ratio of colinear vectors just outside [-1; 1], where acos gives NaN.
+        return toDegree * Math.acos(Math.max(-1, Math.min(1, scalar / norms)))
     }
 
     /**

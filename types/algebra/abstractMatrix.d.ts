@@ -1,0 +1,56 @@
+import type { IMatrixElement, InputAlgebra, InputValue } from "../pimath.interface";
+import { Vector } from "../geometry/vector";
+export declare abstract class AbstractMatrix<T extends IMatrixElement<T>> {
+    #private;
+    protected abstract createElement(value?: InputValue<T>): T;
+    protected abstract createInstance(): this;
+    constructor(rowCount?: number, colCount?: number);
+    parse(value: string | InputAlgebra<T>[][] | Vector[]): this;
+    copy(value: AbstractMatrix<T>): this;
+    clone(): this;
+    get tex(): string;
+    get display(): string;
+    add(value: AbstractMatrix<T>): this;
+    aij(i: number, j: number): T | null;
+    get asBmatrix(): this;
+    get asBraceMatrix(): this;
+    canBeAdded(matrix: AbstractMatrix<T>): boolean;
+    canBeInverted(): boolean;
+    canBeMultiplied(matrix: AbstractMatrix<T>): boolean;
+    cofactor(row: number, column: number): T;
+    get cols(): T[][];
+    determinant(): T;
+    get dimension(): {
+        rows: number;
+        cols: number;
+    };
+    flat(): T[];
+    forEach(callback: (aij: T, row: number, column: number) => void): void;
+    inverse(): this;
+    isEqual(value: AbstractMatrix<T>): boolean;
+    isOne(): boolean;
+    isSquare(): boolean;
+    isZero(): boolean;
+    isConsistent(): boolean;
+    map<U>(callback: (aij: T, row: number, column: number) => U): U[][];
+    multiply(value: InputValue<T> | AbstractMatrix<T>): this;
+    one(): this;
+    opposite(): this;
+    get asPmatrix(): this;
+    get asVmatrix(): this;
+    get asDoubleVmatrix(): this;
+    pow(value: number): this;
+    rank(): number;
+    reduce(): this;
+    reducedRowEchelonForm(): this;
+    rowEchelonForm(): this;
+    get rows(): T[][];
+    setValue(row: number, column: number, value: InputValue<T>): this;
+    subtract(value: AbstractMatrix<T>): this;
+    toFixed(value: number): this;
+    transpose(): this;
+    get values(): T[][];
+    withPartition(col: number): this;
+    zero(): this;
+}
+//# sourceMappingURL=abstractMatrix.d.ts.map

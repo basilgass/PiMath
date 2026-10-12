@@ -549,3 +549,15 @@ describe('predicates, accessors and edge cases', ()=>{
         expect(() => { R.factor = new Fraction(NaN) }).toThrow()
     })
 })
+describe('Root.reduce with perfect cubes', () => {
+    test('root(3)(64) reduces to 4', () => {
+        const R = new Root('root(3)(64)').reduce()
+        expect(R.value).toBe(4)
+        expect(R.isRational()).toBe(true)
+    })
+
+    test('root(3)(-64*3) extracts the perfect cube and keeps the sign on the factor', () => {
+        const R = new Root('root(3)(-192)').reduce()
+        expect(R.display).toBe('-4root(3)(3)')
+    })
+})

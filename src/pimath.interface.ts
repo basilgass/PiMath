@@ -43,6 +43,26 @@ export interface PolynomRoot {
 }
 
 /**
+ * Display option of the objects that hold numeric values: show them as decimals
+ * with a fixed number of digits (`as***` / `with***` family: chainable, returns `this`).
+ *
+ * The option is persistent and copied by `clone()` (not by `copy()`, like every display
+ * state). It applies to the values the object holds when it is called: an operation that
+ * builds new values afterwards starts again from the default display, so call it last,
+ * right before `tex` / `display`.
+ */
+export interface IDisplayDigits {
+    /**
+     * Show every numeric value as a decimal with `digits` digits after the point (exact
+     * values included: `3/2` becomes `1.50` with 2 digits).
+     * @param digits integer from 0 to 100, or `null` to go back to the default display
+     *   (exact fractions, approximate values with 3 digits).
+     * @throws {InvalidArgumentError} if `digits` is neither `null` nor an integer from 0 to 100.
+     */
+    withDigits(digits: number | null): this
+}
+
+/**
  * Base contract of every PiMath value object: a displayable, duplicable
  * mathematical entity.
  *

@@ -1,16 +1,15 @@
 import { Fraction } from "../coefficients";
-import type { InputValue } from "../pimath.interface";
-export declare abstract class TupleN {
+import type { IPiMathObject } from "../pimath.interface";
+export declare abstract class TupleN implements IPiMathObject<TupleN> {
     #private;
-    constructor(...values: InputValue<Fraction>[]);
-    abstract clone(): void;
+    abstract clone(): TupleN;
     cloneCoordinates(): Fraction[];
     abstract get tex(): string;
     abstract get display(): string;
     get array(): Fraction[];
     set array(value: Fraction[]);
     get dimension(): number;
-    fromString(value: string): this;
+    protected static parseString(value: string): Fraction[];
     get onChange(): undefined | (() => void);
     set onChange(value: undefined | (() => void));
     setDimension(value?: number): this;
@@ -20,6 +19,11 @@ export declare abstract class TupleN {
     set y(value: Fraction | number | string);
     get z(): Fraction;
     set z(value: Fraction | number | string);
-    zero: () => this;
+    copy(value: TupleN): this;
+    isZero(): boolean;
+    get norm(): number;
+    get normSquare(): Fraction;
+    opposite(): this;
+    zero(): this;
 }
 //# sourceMappingURL=TupleN.d.ts.map

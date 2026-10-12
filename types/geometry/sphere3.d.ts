@@ -1,8 +1,8 @@
 import { Point } from "./point";
 import { Fraction } from "../coefficients";
 import { Equation } from "../algebra";
-import type { InputValue } from "../pimath.interface";
-export declare enum SPHERE3_RELATIVE_POSITION {
+import type { InputAlgebra, IPiMathObject, InputValue } from "../pimath.interface";
+export declare enum Sphere3RelativePosition {
     INTERIOR = 0,
     EXTERIOR = 1,
     SECANT = 2,
@@ -11,10 +11,18 @@ export declare enum SPHERE3_RELATIVE_POSITION {
     SUPERPOSED = 5,
     CONCENTRIC = 6
 }
-export declare class Sphere3 {
+export declare class Sphere3 implements IPiMathObject<Sphere3> {
     #private;
-    constructor(center?: Point, radius?: InputValue<Fraction>);
-    fromEquation(equation: Equation | string): this;
+    constructor();
+    constructor(equation: string | Equation);
+    constructor(sphere: Sphere3);
+    constructor(center: Point, radius: InputValue<Fraction>, square?: boolean);
+    parse(...values: unknown[]): this;
+    clone(): this;
+    copy(sphere: Sphere3): this;
+    static fromCenterRadius(center: Point, radius: InputValue<Fraction>, square?: boolean): Sphere3;
+    static fromEquation(value: InputAlgebra<Equation>): Sphere3;
+    static fromString(str: string): Sphere3;
     get center(): Point;
     get squareRadius(): Fraction;
     get radius(): {
@@ -23,13 +31,13 @@ export declare class Sphere3 {
         value: number;
     };
     get equation(): Equation;
-    makeUndefined(): this;
     get asCenterRadius(): this;
     get asDeveloped(): this;
     get tex(): string;
     get display(): string;
-    static RELATIVE_POSITION: typeof SPHERE3_RELATIVE_POSITION;
-    relativePosition: (S: Sphere3) => SPHERE3_RELATIVE_POSITION;
-    isPointOnSphere: (P: Point) => boolean;
+    static RELATIVE_POSITION: typeof Sphere3RelativePosition;
+    relativePosition(S: Sphere3): Sphere3RelativePosition;
+    isPointOnSphere(P: Point): boolean;
+    isEqual(S: Sphere3): boolean;
 }
 //# sourceMappingURL=sphere3.d.ts.map

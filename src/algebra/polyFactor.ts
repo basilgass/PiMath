@@ -114,7 +114,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             return new PolyFactor().one()
         }
         if (values.length === 1) {
-            return values[0]
+            return values[0].clone()
         }
         if (values.length === 2) {
             return PolyFactor.#gcdWith(values[0], values[1])
@@ -133,7 +133,7 @@ export class PolyFactor implements IPiMathObject<PolyFactor>,
             return new PolyFactor().one()
         }
         if (values.length === 1) {
-            return values[0]
+            return values[0].clone()
         }
 
         let PF = values[0]

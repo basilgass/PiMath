@@ -1,28 +1,46 @@
+import { Equation } from "../algebra/equation";
 import { Fraction } from "../coefficients/fraction";
+import { Root } from "../coefficients/root";
 import { Line3 } from "./line3";
 import { Point } from "./point";
 import { Vector } from "./vector";
-import type { Plane3Config } from "../pimath.interface";
-export declare class Plane3 {
+import type { InputAlgebra, IPiMathObject, Plane3Config, PlaneLineIntersection, PlanePlaneIntersection } from "../pimath.interface";
+export declare class Plane3 implements IPiMathObject<Plane3> {
     #private;
     constructor(config?: Plane3Config);
-    parse(config: Plane3Config): void;
+    static fromPointAndNormal(point: Point, normal: Vector): Plane3;
+    static fromPointAndDirections(point: Point, v1: Vector, v2: Vector): Plane3;
+    static fromEquation(value: InputAlgebra<Equation>): Plane3;
+    static fromString(str: string): Plane3;
+    static fromPoints(A: Point, B: Point, C: Point): Plane3;
+    static fromCoefficients(a: number, b: number, c: number, d: number): Plane3;
+    parse(config: Plane3Config): this;
+    copy(value: Plane3): this;
+    clone(): this;
     get tex(): string;
     get display(): string;
     get a(): Fraction;
-    angle(vector: Vector, sharp?: boolean, radian?: boolean): number;
-    angle(line: Line3, sharp?: boolean, radian?: boolean): number;
-    angle(plane: Plane3, sharp?: boolean, radian?: boolean): number;
     get b(): Fraction;
     get c(): Fraction;
     get d(): Fraction;
-    distanceTo(point: Point): number;
-    intersectWithLine(line: Line3): Point;
-    intersectWithPlane(plane: Plane3): Line3;
-    isPointOnPlane(pt: Point): boolean;
     get normal(): Vector;
-    set normal(value: Vector | Point);
+    set normal(value: Vector);
     get point(): Point;
     set point(value: Point | Vector);
+    angle(vector: Vector, sharp?: boolean, radian?: boolean): number;
+    angle(line: Line3, sharp?: boolean, radian?: boolean): number;
+    angle(plane: Plane3, sharp?: boolean, radian?: boolean): number;
+    distanceTo(point: Point): Root;
+    intersectWithLine(line: Line3): PlaneLineIntersection;
+    intersectWithPlane(plane: Plane3): PlanePlaneIntersection;
+    isPointOnPlane(pt: Point): boolean;
+    isParallelTo(plane: Plane3): boolean;
+    isParallelTo(line: Line3): boolean;
+    isPerpendicularTo(plane: Plane3): boolean;
+    isPerpendicularTo(line: Line3): boolean;
+    simplify(): this;
+    isEqual(plane: Plane3): boolean;
+    project(pt: Point): Point;
+    reflect(pt: Point): Point;
 }
 //# sourceMappingURL=plane3.d.ts.map

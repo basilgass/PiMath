@@ -1,5 +1,17 @@
 import {InvalidArgumentError} from "./errors"
 
+/**
+ * Validate the argument of a `withDigits` call: `null` (default display) or an integer
+ * from 0 to 100 (the range accepted by `Number.prototype.toFixed`).
+ * @throws {InvalidArgumentError} otherwise.
+ */
+export function assertDigits(digits: number | null): number | null {
+    if (digits !== null && (!Number.isInteger(digits) || digits < 0 || digits > 100)) {
+        throw new InvalidArgumentError(`withDigits expects null or an integer from 0 to 100, got: ${digits}`)
+    }
+    return digits
+}
+
 export function wrapParenthesis(str: string, tex = true): string {
     return tex ? `\\left( ${str} \\right)` : `(${str})`
 }

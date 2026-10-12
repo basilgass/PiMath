@@ -164,6 +164,11 @@ function greatestCommonDivisor(...values: number[]): number {
  * @param values - the integers to combine.
  */
 function leastCommonMultiple(...values: number[]): number {
+    // gcd(0, 0) is 0, which would turn the fold below into 0 / 0 = NaN.
+    if (values.includes(0)) {
+        return 0
+    }
+
     return values.reduce(function (a, b) {
         return Math.abs(a / greatestCommonDivisor(a, b) * b)
     }, 1)
@@ -184,13 +189,18 @@ function numberCorrection(value: number, number_of_digits = 3): number {
 
 /**
  * Get the list of the nth first prime numbers.
- * @param nb : number of primes to choose from
+ * @param nb : number of primes to choose from; capped by the sieve (the 1229 primes below 10000).
+ * @throws {InvalidArgumentError} if nb is negative or not an integer.
  */
 function primes(nb?: number): number[] {
     primeCache ??= sieve(PRIME_LIMIT)
 
     if (nb === undefined) {
         return [...primeCache]
+    }
+
+    if (!Number.isInteger(nb) || nb < 0) {
+        throw new InvalidArgumentError(`primes expects a non-negative integer, got: ${nb}`)
     }
 
     return primeCache.slice(0, Math.min(primeCache.length, nb))
@@ -241,10 +251,19 @@ function pythagoreanTripletsWithTarget(target: number, targetIsSquare?: boolean)
  * @param decimals - decimal places (truncated to an integer); may be negative.
  */
 function round(value: number, decimals = 2): number {
-    const d = Math.trunc(decimals)
-    const exp: number = Math.round(Number(`${value}e${d}`))
+    if (!Number.isFinite(value)) {
+        return value
+    }
 
-    return Number(`${exp}e${-d}`)
+    // Shift the decimal point through the exponent of the scientific notation: building
+    // `${value}e${d}` breaks on values already written with an exponent (1e-7, 1.5e21).
+    const shift = (v: number, by: number): number => {
+        const [mantissa, exponent] = v.toExponential().split('e')
+        return Number(`${mantissa}e${Number(exponent) + by}`)
+    }
+
+    const d = Math.trunc(decimals)
+    return shift(Math.round(shift(value, d)), -d)
 }
 
 /**
@@ -268,7 +287,12 @@ function greatestPower(value: number, index: number): number {
         return index % 2 === 1 ? -greatestPower(-value, index) : 1
     }
 
-    let search_value = Math.floor(Math.pow(value, 1 / index))
+    // Math.pow(value, 1 / index) can fall just below an exact root (pow(64, 1/3) = 3.9999999999999996),
+    // so round to the nearest integer, then step down until the power no longer exceeds value.
+    let search_value = Math.round(Math.pow(value, 1 / index))
+    while (search_value > 1 && Math.pow(search_value, index) > value) {
+        search_value--
+    }
 
     while (search_value > 1) {
         const pow = Math.pow(search_value, index)

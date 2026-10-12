@@ -29,6 +29,7 @@
     "build": "tsc --p ./tsconfig-build.json && vite build",
     "preview": "vite preview",
     "docs": "typedoc",
+    "api": "node scripts/api-sitemap.mjs",
     "dependency-cruise": "dependency-cruise -T dot -x node_modules -v -- src/index.ts  | dot -T svg > dependencies.svg"
   },
   "keywords": [

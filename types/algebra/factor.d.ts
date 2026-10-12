@@ -5,7 +5,7 @@ export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor
     #private;
     constructor(value?: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>);
     parse(value: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>): this;
-    fromString(value: string): this;
+    static fromString(value: string): Factor;
     copy(value: Factor): this;
     clone(): Factor;
     get tex(): string;
@@ -20,7 +20,7 @@ export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor
     evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric: true): number;
     evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: false): Fraction;
     evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction;
-    fromPolynom(polynom: InputAlgebra<Polynom>): this;
+    static fromPolynom(polynom: InputAlgebra<Polynom>): Factor;
     hasVariable(variable: string): boolean;
     inverse(): this;
     isEqual(value: Factor): boolean;

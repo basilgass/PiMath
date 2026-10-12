@@ -33,11 +33,11 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number;
     factorize(variable?: string): Polynom[];
     get factors(): Polynom[];
-    fromCoefficients(...values: InputValue<Fraction>[]): this;
-    fromConstant(value: InputValue<Fraction>): this;
-    fromLinear(variables: string, ...coefficients: InputValue<Fraction>[]): this;
-    fromMonoms(...monoms: InputAlgebra<Fraction>[]): this;
-    fromString(value: string): this;
+    static fromCoefficients(variable: string, ...values: InputValue<Fraction>[]): Polynom;
+    static fromConstant(value: InputValue<Fraction>): Polynom;
+    static fromLinear(variables: string, ...coefficients: InputValue<Fraction>[]): Polynom;
+    static fromMonoms(...monoms: InputAlgebra<Fraction>[]): Polynom;
+    static fromString(value: string): Polynom;
     gcdDenominator(): number;
     gcdNumerator(): number;
     getCoefficients(): Fraction[];
@@ -48,7 +48,6 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     inverse(): this;
     isDeveloped(polynomString: string): boolean;
     isDivisibleBy(div: Polynom): boolean;
-    isDividableBy(div: Polynom): boolean;
     isEqual(P: Polynom): boolean;
     hasCrossTerm(): boolean;
     isOne(): boolean;
@@ -61,7 +60,6 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     limitTo(value: InputValue<Fraction>, variable?: string): Fraction;
     monomByDegree(degree?: Fraction | number, variable?: string): Monom;
     monomByVariable(variable: string): Monom;
-    monomByLetter(variable: string): Monom;
     get monoms(): Monom[];
     set monoms(M: Monom[]);
     monomsByDegree(degree?: number | Fraction, variable?: string): Monom[];

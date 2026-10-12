@@ -16,6 +16,7 @@ function normalizeIntervals(raw: Interval[]): Interval[] {
         const c = cmpLeft(a.left, b.left)
         if (c !== 0) return c
         // Equal left: closed before open (wider first)
+        if (a.leftOpen === b.leftOpen) return 0
         return a.leftOpen ? 1 : -1
     })
 
@@ -25,7 +26,8 @@ function normalizeIntervals(raw: Interval[]): Interval[] {
         const last = merged[merged.length - 1]
         const curr = nonEmpty[i]
 
-        const cmp = cmpRight(last.right, curr.left)
+        // a left-unbounded interval (null = -∞) always overlaps the previous one: cmpRight would read null as +∞
+        const cmp = curr.left === null ? 1 : cmpRight(last.right, curr.left)
         const adjacent = cmp === 0 && (!last.rightOpen || !curr.leftOpen)
         const overlapping = cmp > 0
 

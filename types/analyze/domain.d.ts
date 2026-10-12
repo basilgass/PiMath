@@ -3,12 +3,13 @@ import type { Fraction } from "../coefficients";
 import { Interval } from "./interval";
 export declare class Domain implements IPiMathObject<Domain> {
     #private;
-    private constructor();
+    constructor(value?: string | Domain | Interval);
     static fromIntervals(intervals: Interval[]): Domain;
     static fromInterval(interval: Interval): Domain;
     static empty(): Domain;
     static real(): Domain;
     static fromString(value: string): Domain;
+    parse(value: string | Domain | Interval): this;
     get tex(): string;
     get display(): string;
     clone(): Domain;

@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Matrix, PolyMatrix, Vector} from "../../src"
+import {MathError, Matrix, PolyMatrix, Vector} from "../../src"
 
 describe('Matrix creation', () => {
     test('fromString parses single-row matrix', () => {
@@ -396,5 +396,24 @@ describe('Matrix operations', () => {
         expect(B.dimension).toEqual({rows: 3, cols: 2})
         expect(B.display).toBe('((1,4),(2,5),(3,6))')
         expect(A.dimension).toEqual({rows: 2, cols: 3})
+    })
+})
+
+describe('Matrix 1x1', () => {
+    test('determinant and cofactor of a 1x1 matrix', () => {
+        const M = new Matrix([[5]])
+        expect(M.determinant().display).toBe('5')
+        expect(M.cofactor(0, 0).display).toBe('1')
+    })
+
+    test('inverse of a 1x1 matrix is 1/a', () => {
+        const M = new Matrix([[4]]).inverse()
+        expect(M.values[0][0].display).toBe('1/4')
+        expect(new Matrix([[-2]]).inverse().values[0][0].display).toBe('-1/2')
+    })
+
+    test('a 1x1 zero matrix cannot be inverted', () => {
+        expect(new Matrix([[0]]).canBeInverted()).toBe(false)
+        expect(() => new Matrix([[0]]).inverse()).toThrow(MathError)
     })
 })

@@ -5,12 +5,13 @@ export declare function cmpLeft(a: Solution | null, b: Solution | null): number;
 export declare function cmpRight(a: Solution | null, b: Solution | null): number;
 export declare class Interval implements IPiMathObject<Interval> {
     #private;
-    private constructor();
+    constructor(value?: string | Interval);
     static fromBounds(left: Solution | null, right: Solution | null, leftOpen: boolean, rightOpen: boolean): Interval;
     static empty(): Interval;
     static real(): Interval;
     static point(x: Solution): Interval;
     static fromString(value: string): Interval;
+    parse(value: string | Interval): this;
     get tex(): string;
     get display(): string;
     clone(): Interval;

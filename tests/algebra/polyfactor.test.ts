@@ -828,3 +828,23 @@ describe('PolyFactor temporary tests', ()=>{
        console.log(PF.factors.length)
    })
 })
+
+describe('PolyFactor single-factor derivative and gcd/lcm', () => {
+    test('derivative of (x+2)^3 is 3(x+2)^2', () => {
+        const d = new PolyFactor(new Factor('x+2', 3)).derivative()
+        expect(d.evaluate({x: 3}, true)).toBe(75)
+    })
+
+    test('derivative of (x-2)^-2 is -2(x-2)^-3', () => {
+        const d = new PolyFactor(new Factor('x-2', -2)).derivative()
+        expect(d.evaluate({x: 3}, true)).toBe(-2)
+    })
+
+    test('gcd and lcm of a single value return a copy, not the argument', () => {
+        const pf = new PolyFactor(new Factor('x+2', 3))
+        expect(PolyFactor.gcd(pf)).not.toBe(pf)
+        expect(PolyFactor.lcm(pf)).not.toBe(pf)
+        PolyFactor.gcd(pf).multiply(new Factor('x-1', 1))
+        expect(pf.factors).toHaveLength(1)
+    })
+})
