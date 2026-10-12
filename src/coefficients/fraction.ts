@@ -14,6 +14,9 @@ export enum FracType {
     tfrac = 'tfrac'
 }
 
+/** Digits shown for an approximate (non exact) value when no `withDigits` is set. */
+const APPROXIMATE_DIGITS = 3
+
 /**
  * The fraction class make possible to handle
  * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
@@ -131,7 +134,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
                 return `${plus}\\${this.#type}{ ${this.#numerator} }{ ${this.#denominator} }`
             }
         } else {
-            return plus + this.value.toFixed(this.#digits ?? 3)
+            return plus + this.value.toFixed(APPROXIMATE_DIGITS)
         }
     }
 
@@ -153,7 +156,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
                 return `${plus}${this.#numerator}/${this.#denominator}`
             }
         } else {
-            return plus + this.value.toFixed(this.#digits ?? 3)
+            return plus + this.value.toFixed(APPROXIMATE_DIGITS)
         }
     }
 

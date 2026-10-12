@@ -519,7 +519,11 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
     /** @see IDisplayDigits.withDigits */
     withDigits(digits: number | null): this {
         assertDigits(digits)
-        this.#values.forEach(row => row.forEach(aij => aij.withDigits(digits)))
+        for (const row of this.#values) {
+            for (const aij of row) {
+                aij.withDigits(digits)
+            }
+        }
         return this
     }
 
