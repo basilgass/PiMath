@@ -3,7 +3,6 @@ import {Equation} from "../../src/algebra/equation"
 import {Polynom} from "../../src/algebra/polynom"
 import {Fraction} from "../../src/coefficients/fraction"
 import {MathError, ParseError} from "../../src/errors"
-import {Random} from "../../src/randomization/random"
 
 describe('Equation creation', () => {
     test('create Equation', () => {
@@ -376,39 +375,6 @@ describe('Equation evaluation', () => {
         expect(result).to.be.length(3)
         expect(result.map(x => x.display)).to.have.all.members(['1', '2', '3'])
     })
-})
-
-describe('Equation generators', () => {
-    test('generate random Equation of degree 1', () => {
-        const E = Random.equation({ degree: 1 })
-
-        expect(E).toBeDefined()
-        expect(E.degree().display).to.be.equal('1')
-    })
-
-    test('generate random Equation of degree 2', () => {
-        const E = Random.equation({
-            degree: 2,
-            unit: true,
-            solution: {
-                allowZero: true,
-                fraction: false,
-                nothing: false,
-                everything: false
-            }
-        })
-
-        expect(E).toBeDefined()
-        expect(E.degree().display).to.be.equal('2')
-
-        E.solve().forEach(sol => {
-            expect(sol.exact).to.not.be.false
-        })
-    })
-    test.todo('generate random Equation of degree 2 with integer solutions')
-
-    test.todo('generate random Equation of degree 2 with irrational solutions')
-
 })
 
 describe.skip('Equations tests', () => {

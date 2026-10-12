@@ -3,7 +3,7 @@ import type {Polynom} from "./polynom"
 import type {Equation} from "./equation"
 import {Solution} from "../analyze"
 import {InvalidArgumentError, MathError} from "../errors"
-import type {PolynomRoot} from "./polynomRoots"
+import type {PolynomRoot} from "../pimath.interface"
 import {solveCubicCardan, solvePolynom} from "./polynomRoots"
 
 /**

@@ -1,4 +1,4 @@
-import type {Fraction} from "./coefficients"
+import type {Fraction, Root} from "./coefficients"
 import type {Equation, Monom} from "./algebra"
 import type {Line, Line3, Point, Vector} from "./geometry"
 import type {Solution} from "./analyze/solution"
@@ -27,6 +27,20 @@ export type CompareSign =
 
 /** Selects between LaTeX and AsciiMath rendering in `#toOutput` helpers. */
 export type OutputStyle = 'tex' | 'display'
+
+/**
+ * A polynomial root as raw data (no display state, no Solution class).
+ * `fraction` is the rational part, `root` the radical part (a zero Root when
+ * there is none). `exact` is faithful to the contract: true for an exact
+ * rational or a quadratic irrational carried by an index-2 Root, false for a
+ * Cardan / bisection (floating) value. `multiplicity` is always >= 1.
+ */
+export interface PolynomRoot {
+    readonly fraction: Fraction
+    readonly root: Root
+    readonly exact: boolean
+    readonly multiplicity: number
+}
 
 /**
  * Base contract of every PiMath value object: a displayable, duplicable
@@ -119,6 +133,11 @@ export interface IEvaluable {
     evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric?: false): Fraction;
 
     evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number;
+}
+
+export interface IMatrixElement<T> extends IPiMathObject<T>, IExpressionMultiply<T> {
+    divide(value: InputValue<T>): T
+    readonly value: number | undefined
 }
 
 export interface IAnalyse<T> {

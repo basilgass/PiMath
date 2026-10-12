@@ -110,8 +110,8 @@ describe('Plane3 geometric operations', () => {
     it('distanceTo returns correct distance from a point', () => {
         const plane = Plane3.fromCoefficients(0, 0, 1, -2)
 
-        expect(plane.distanceTo(new Point(0, 0, 5))).toBeCloseTo(3)
-        expect(plane.distanceTo(new Point(1, 1, 2))).toBeCloseTo(0)
+        expect(plane.distanceTo(new Point(0, 0, 5)).value).toBeCloseTo(3)
+        expect(plane.distanceTo(new Point(1, 1, 2)).value).toBeCloseTo(0)
     })
 
     it('isPointOnPlane returns true for a point on the plane', () => {
@@ -278,9 +278,9 @@ describe('Plane3 intersectWithPlane', () => {
         const result = xy.intersectWithPlane(yz)
 
         expect(result.hasIntersection).toBe(true)
-        expect(result.line!.isOnLine(new Point(0, 0, 0))).toBe(true)
-        expect(result.line!.isOnLine(new Point(0, 5, 0))).toBe(true)
-        expect(result.line!.isOnLine(new Point(1, 0, 0))).toBe(false)
+        expect(result.line!.isPointOnLine(new Point(0, 0, 0))).toBe(true)
+        expect(result.line!.isPointOnLine(new Point(0, 5, 0))).toBe(true)
+        expect(result.line!.isPointOnLine(new Point(1, 0, 0))).toBe(false)
     })
 
     it('intersection point lies on both planes', () => {

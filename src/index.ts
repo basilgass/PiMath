@@ -3,7 +3,10 @@
 import {Fraction, Root} from "./coefficients"
 
 // Algebra
-import {Equation, Factor, LinearSystem, LogicalSet, Matrix, Monom, PolyFactor, Polynom} from "./algebra"
+import {Equation, Factor, LinearSystem, LogicalSet, Matrix, Monom, PolyFactor, Polynom, PolyMatrix} from "./algebra"
+
+// Analyze
+import {Domain, Interval, Solution, TableOfSigns} from "./analyze"
 
 // Geometry
 import {Circle, Line, Line3, Plane3, Point, Sphere3, Triangle, Vector} from "./geometry"
@@ -44,7 +47,11 @@ export {Random}
 export type * from "./pimath.interface"
 export type * from "./randomization/rndTypes"
 
-// Make a global object
+/**
+ * Global PiMath object for non-module contexts (e.g. script tags).
+ * Named exports from this module cover the full public API, including
+ * types from `pimath.interface` and the `Random` / `Numeric` utilities.
+ */
 const PiMath = {
     Numeric,
     Fraction,
@@ -53,10 +60,15 @@ const PiMath = {
     Polynom,
     Equation,
     Matrix,
+    PolyMatrix,
     LinearSystem,
     Factor,
     PolyFactor,
     LogicalSet,
+    Solution,
+    TableOfSigns,
+    Interval,
+    Domain,
     Random,
     Geometry: {
         Vector,

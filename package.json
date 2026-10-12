@@ -22,6 +22,10 @@
   "scripts": {
     "dev": "vite serve",
     "test": "vitest",
+    "test:quick": "vitest run --mode quick",
+    "test:full": "vitest run --mode full",
+    "test:unit": "vitest run --exclude \"tests/randomization/**\"",
+    "test:random": "vitest run tests/randomization",
     "build": "tsc --p ./tsconfig-build.json && vite build",
     "preview": "vite preview",
     "docs": "typedoc",

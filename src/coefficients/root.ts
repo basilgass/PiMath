@@ -11,8 +11,8 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
 
     constructor(value?: InputValue<Root | Fraction>) {
         this.#index = 2
-        this.#factor = new Fraction().zero()
-        this.#radical = new Fraction().zero()
+        this.#factor = new Fraction(0)
+        this.#radical = new Fraction(0)
 
         // Test `!== undefined`, not truthiness: 0 and "" are legitimate inputs,
         // and a NaN must be rejected by parse (boundary strictness), not silently
@@ -192,7 +192,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
 
         // set the factor if provided; 0 is a valid factor, only `undefined` means omitted.
         if (factor === undefined) {
-            this.factor = new Fraction().one()
+            this.factor = new Fraction(1)
         } else {
             const f = new Fraction(factor)
             if (f.isNaN()) {

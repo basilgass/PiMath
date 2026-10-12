@@ -1,44 +1,39 @@
-/**
- * Random helpers
- */
 import {Numeric} from "../numeric"
 import {InvalidArgumentError} from "../errors"
 
-
 /**
- * Random boolean with a percent ratio
- * @param percent
+ * Random boolean with a percent ratio.
+ * @param percent - Probability of returning true (0–1). Default 0.5.
  */
 export function randomBool(percent = 0.5): boolean {
     return Math.random() < percent
 }
 
 /**
- * Random integer between two values.
- * @param a (number) : From this value to the second value. If the second is ommited, this value is the max value.
- * @param b (number) : To this value. If this is ommited.
+ * Random integer in [a, b]. If b is omitted, the range is [0, a] or [a, 0] when a < 0.
+ * Bounds are swapped automatically when a > b.
+ * @param a - Lower bound (or limit when b is omitted).
+ * @param b - Upper bound.
+ * @param exclude - Values to exclude from the result.
  */
 export function randomInt(a: number, b?: number, exclude?: number[]): number {
     if (b === undefined) {
-        if (a >= 0) {
-            return randomInt(0, a)
-        } else {
-            return randomInt(a, 0)
-        }
+        return a >= 0 ? randomInt(0, a) : randomInt(a, 0)
     }
 
-    // Same start and end values
+    if (a > b) {
+        [a, b] = [b, a]
+    }
+
     if (a === b) {
         return a
     }
 
-    // No exclusion
     if (exclude === undefined) {
         return Math.floor(Math.random() * (b - a + 1) + a)
     }
 
-    // With exclusion
-    if (Math.abs(b - a) <= exclude.length) {
+    if (Math.abs(b - a) + 1 <= exclude.length) {
         throw new InvalidArgumentError('The number of excluded values is too high.')
     }
 
@@ -50,12 +45,12 @@ export function randomInt(a: number, b?: number, exclude?: number[]): number {
 }
 
 /**
- * Random integer between -max and max value.
- * @param max (number) : determine the limits.
- * @param zero (bool) : determine if zero is allowed or not.
+ * Random integer in [-max, max].
+ * @param max - Bound of the symmetric range.
+ * @param allowZero - If false, zero is excluded. Default true.
  */
-export function randomIntSym(max: number, zero?: boolean): number {
-    if (zero === false) {
+export function randomIntSym(max: number, allowZero?: boolean): number {
+    if (allowZero === false) {
         return randomBool() ? randomInt(1, max) : -randomInt(1, max)
     } else {
         return randomInt(-max, max)
@@ -79,36 +74,29 @@ export function randomPrime(max?: number): number {
     return randomItem(primes)
 }
 
-export function randomArray<T>(arr: T[], number?: number): T[] {
-    if (number === undefined) {
-        number = 1
-    }
-
-    // Return a clone array
-    if (arr.length <= 0) {
-        return Object.values(arr)
-    }
-
-    // Randomize the array and return the n first elements.
+export function randomArray<T>(arr: T[], number = 1): T[] {
     return shuffleArray(arr).slice(0, number)
 }
 
+/**
+ * Returns a random element from arr.
+ * @throws {InvalidArgumentError} if arr is empty.
+ */
 export function randomItem<T>(arr: T[]): T {
     if (arr.length === 0) {
-        return null as T
+        throw new InvalidArgumentError('Cannot pick a random item from an empty array.')
     }
     return arr[randomInt(0, arr.length - 1)]
 }
 
 export function shuffleArray<T>(arr: T[]): T[] {
     // The Fisher-Yates algorithm
-    const shuffleArray = Object.values(arr)
-    for (let i = shuffleArray.length - 1; i > 0; i--) {
+    const result = Object.values(arr)
+    for (let i = result.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
-        const temp = shuffleArray[i]
-        shuffleArray[i] = shuffleArray[j]
-        shuffleArray[j] = temp
+        const temp = result[i]
+        result[i] = result[j]
+        result[j] = temp
     }
-
-    return shuffleArray
+    return result
 }

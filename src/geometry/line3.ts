@@ -12,7 +12,7 @@ import {Vector} from "./vector"
 import {Point} from "./point"
 import {type IPiMathObject, type LineIntersection, type OutputStyle} from "../pimath.interface"
 
-enum LINE3_DISPLAY {
+enum Line3Display {
     PARAMETRIC,
     SYSTEM,
     CARTESIAN
@@ -21,7 +21,7 @@ enum LINE3_DISPLAY {
 export class Line3 implements IPiMathObject<Line3>{
     #OA: Point = new Point()
     #d: Vector = new Vector()
-    #outputMode: LINE3_DISPLAY = LINE3_DISPLAY.PARAMETRIC
+    #outputMode: Line3Display = Line3Display.PARAMETRIC
 
     /** Creates an empty line, or a line through two points, or a line through a point with a direction. */
     constructor()
@@ -68,7 +68,7 @@ export class Line3 implements IPiMathObject<Line3>{
     copy(value: Line3): this {
         this.#OA = value.#OA.clone()
         this.#d = value.#d.clone()
-        this.#outputMode = LINE3_DISPLAY.PARAMETRIC
+        this.#outputMode = Line3Display.PARAMETRIC
         return this
     }
 
@@ -76,6 +76,7 @@ export class Line3 implements IPiMathObject<Line3>{
         const cloned = new Line3() as this
         cloned.#OA = this.#OA.clone()
         cloned.#d = this.#d.clone()
+        cloned.#outputMode = this.#outputMode
         return cloned
     }
 
@@ -83,17 +84,17 @@ export class Line3 implements IPiMathObject<Line3>{
     // Output mode selectors
 
     get asParametric(): this {
-        this.#outputMode = LINE3_DISPLAY.PARAMETRIC
+        this.#outputMode = Line3Display.PARAMETRIC
         return this
     }
 
     get asSystem(): this {
-        this.#outputMode = LINE3_DISPLAY.SYSTEM
+        this.#outputMode = Line3Display.SYSTEM
         return this
     }
 
     get asCartesian(): this {
-        this.#outputMode = LINE3_DISPLAY.CARTESIAN
+        this.#outputMode = Line3Display.CARTESIAN
         return this
     }
 
@@ -102,21 +103,21 @@ export class Line3 implements IPiMathObject<Line3>{
 
     get tex(): string {
         const mode = this.#outputMode
-        this.#outputMode = LINE3_DISPLAY.PARAMETRIC
+        this.#outputMode = Line3Display.PARAMETRIC
         return this.#toOutput('tex', mode)
     }
 
     get display(): string {
         const mode = this.#outputMode
-        this.#outputMode = LINE3_DISPLAY.PARAMETRIC
+        this.#outputMode = Line3Display.PARAMETRIC
         return this.#toOutput('display', mode)
     }
 
-    #toOutput(style: OutputStyle, mode: LINE3_DISPLAY): string {
+    #toOutput(style: OutputStyle, mode: Line3Display): string {
         switch (mode) {
-            case LINE3_DISPLAY.SYSTEM:
+            case Line3Display.SYSTEM:
                 return this.#toSystem(style)
-            case LINE3_DISPLAY.CARTESIAN:
+            case Line3Display.CARTESIAN:
                 return this.#toCartesian(style)
             default:
                 return this.#toParametric(style)
@@ -223,7 +224,7 @@ export class Line3 implements IPiMathObject<Line3>{
      * - all false: skew lines (non-coplanar, no intersection).
      */
     intersection(line: Line3): LineIntersection {
-        const isSame = this.isSameAs(line)
+        const isSame = this.isEqual(line)
         if (isSame) {
             return {point: null, hasIntersection: false, isParallel: false, isSame: true}
         }
@@ -250,20 +251,26 @@ export class Line3 implements IPiMathObject<Line3>{
         return {point: pt, hasIntersection: true, isParallel: false, isSame: false}
     }
 
-    isOnLine(pt: Point): boolean {
+    isPointOnLine(pt: Point): boolean {
         return new Vector(this.#OA, pt).isColinearTo(this.#d)
     }
 
-    isSameAs(line: Line3): boolean {
-        return this.#d.isColinearTo(line.#d) && this.isOnLine(line.#OA)
+    isEqual(line: Line3): boolean {
+        return this.#d.isColinearTo(line.#d) && this.isPointOnLine(line.#OA)
     }
 
     isParallelTo(line: Line3): boolean {
-        return this.#d.isColinearTo(line.#d) && !this.isSameAs(line)
+        return this.#d.isColinearTo(line.#d) && !this.isEqual(line)
     }
 
-    isPerpendicularTo(line: Line3): boolean {
+    /** Returns true when the direction vectors are orthogonal (90°), regardless of whether the lines intersect. */
+    isOrthogonalTo(line: Line3): boolean {
         return this.#d.isNormalTo(line.#d)
+    }
+
+    /** Returns true when the lines are both orthogonal and intersecting (strict perpendicularity). */
+    isPerpendicularTo(line: Line3): boolean {
+        return this.isOrthogonalTo(line) && this.intersection(line).hasIntersection
     }
 
     randomPoint(max = 5): Point {
@@ -281,7 +288,7 @@ export class Line3 implements IPiMathObject<Line3>{
         const pt = this.randomPoint(k)
 
         let maxIterationTest = 10
-        while (this.isOnLine(pt) && maxIterationTest > 0) {
+        while (this.isPointOnLine(pt) && maxIterationTest > 0) {
             pt.x.add(randomIntSym(1, false))
             pt.y.add(randomIntSym(1, false))
             pt.z.add(randomIntSym(1, false))

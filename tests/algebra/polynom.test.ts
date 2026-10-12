@@ -1,7 +1,5 @@
 import {describe, expect, it, test} from "vitest"
-import type {randomPolynomConfig} from "../../src"
 import {Monom, Polynom} from "../../src"
-import {rndPolynom} from "../../src/randomization/algebra/rndPolynom"
 import {TableOfSigns} from "../../src/analyze/tableOfSigns"
 
 describe('Polynom creation', () => {
@@ -625,46 +623,5 @@ describe('Polynom factorisation in an arbitrary variable', () => {
     test('explicit letter argument is honored', () => {
         expect(new Polynom('z^2-1').factorize('z').map(f => f.display))
             .toEqual(expect.arrayContaining(['z-1', 'z+1']))
-    })
-})
-
-describe('Polynom generators', () => {
-    test('should create factorable polynom of degree 2', () => {
-        const config = {
-            factorable: true,
-            degree: 2,
-            unit: true
-        }
-
-        for (let i = 0; i < 10; i++) {
-            const P = rndPolynom(config)
-            expect(P.factors.length).toBe(2)
-        }
-    })
-
-    test('should create factorable polynom of degree 2 with a common constant', () => {
-        const config: randomPolynomConfig = {
-            factorable: true,
-            commonConstant: true,
-            degree: 2,
-            unit: false
-        }
-
-        for (let i = 0; i < 10; i++) {
-            const P = rndPolynom(config)
-
-            const factors = P.factors
-
-            if (factors.length === 3) {
-                expect(factors[0].degree().value).toBe(0)
-                expect(factors[1].degree().value).toBe(1)
-                expect(factors[2].degree().value).toBe(1)
-            } else if (factors.length === 2) {
-                expect(factors[0].degree().value).toBe(1)
-                expect(factors[1].degree().value).toBe(1)
-            } else {
-                throw new Error('Unexpected number of factors')
-            }
-        }
     })
 })

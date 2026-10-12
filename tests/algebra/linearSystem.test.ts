@@ -25,8 +25,6 @@ describe('Linear System creation', () => {
         expect(LS.equations[1].display).to.be.equal('3x-7y=24')
     })
 
-    test.todo('parse string')
-
     test('clone Linear System', () => {
         const LS = new LinearSystem(
             '4x+5y=11',
@@ -42,8 +40,6 @@ describe('Linear System creation', () => {
         expect(LS2.equations[0].display).to.be.equal('4x+5y=11')
 
     })
-    test.todo('set to zero Linear System')
-    test.todo('set to one Linear System')
 })
 describe('Linear System output', () => {
     test('tex wraps system in \\left\\{...\\right.', () => {
@@ -67,7 +63,6 @@ describe('Linear System output', () => {
     })
 })
 describe('Linear System operations', () => {
-    test.todo('reduce Linear System')
     test('multiply all equations by an array of factors', () => {
         const LS = new LinearSystem('2x+3y=5', '4x+5y=7')
         LS.multiply([2, 3])
@@ -158,7 +153,7 @@ describe('Linear System algebra', () => {
             '7y-24=3x'
         )
         const [matrix, vector] = LS.matrix
-        expect(matrix.rows.map(row => row.map(p => p.monoms[0].coefficient.value)))
+        expect(matrix.rows.map(row => row.map(p => p.value)))
             .to.be.deep.equal([
             [4, 5],
             [-3, 7]
@@ -293,4 +288,17 @@ describe('isSolvable', () => {
     })
 })
 
-describe.todo('Linear System generators')
+describe('toAugmentedMatrix', () => {
+    test('produces a matrix with partition at variable count', () => {
+        const LS = new LinearSystem('2x+3y=5', '4x-5y=7')
+        const aug = LS.toAugmentedMatrix()
+        expect(aug.dimension).toEqual({rows: 2, cols: 3})
+        expect(aug.display).toBe('((2,3|5),(4,-5|7))')
+    })
+
+    test('augmented matrix of 3x3 system has correct dimensions', () => {
+        const LS = new LinearSystem('2x+7y-z=-3', '-3x+2y+3z=12', '-5x-3y+2z=5')
+        const aug = LS.toAugmentedMatrix()
+        expect(aug.dimension).toEqual({rows: 3, cols: 4})
+    })
+})

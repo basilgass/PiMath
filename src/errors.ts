@@ -9,7 +9,7 @@
  * standard ES2022 `cause` option.
  */
 export class PiMathError extends Error {
-    constructor(message: string, options?: { cause?: unknown }) {
+    constructor(message: string, options?: ErrorOptions) {
         super(message, options)
         // Use the concrete subclass name (ParseError, MathError, ...).
         this.name = new.target.name
@@ -32,11 +32,17 @@ export class MathError extends PiMathError {
 export class InvalidArgumentError extends PiMathError {
 }
 
-/** The called method is not implemented yet. */
+/**
+ * The called method is not implemented yet.
+ * @see {@link UnsupportedOperationError} for operations that are unsupported by design.
+ */
 export class NotImplementedError extends PiMathError {
 }
 
-/** The operation is not supported by this type — by design, not pending implementation. */
+/**
+ * The operation is not supported by this type — by design, not pending implementation.
+ * @see {@link NotImplementedError} for methods that are merely not yet implemented.
+ */
 export class UnsupportedOperationError extends PiMathError {
 }
 

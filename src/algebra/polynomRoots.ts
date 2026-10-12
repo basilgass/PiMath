@@ -2,20 +2,9 @@ import {Fraction} from "../coefficients"
 import {Root} from "../coefficients/root"
 import {Numeric} from "../numeric"
 import {InvalidArgumentError, MathError} from "../errors"
+import type {PolynomRoot} from "../pimath.interface"
 
-/**
- * A polynomial root as raw data (no display state, no Solution class).
- * `fraction` is the rational part, `root` the radical part (a zero Root when
- * there is none). `exact` is faithful to the contract: true for an exact
- * rational or a quadratic irrational carried by an index-2 Root, false for a
- * Cardan / bisection (floating) value. `multiplicity` is always >= 1.
- */
-export interface PolynomRoot {
-    readonly fraction: Fraction
-    readonly root: Root
-    readonly exact: boolean
-    readonly multiplicity: number
-}
+export type {PolynomRoot}
 
 /** Numeric value of a root (rational + radical parts), used for sorting. */
 function rootValue(r: PolynomRoot): number {
@@ -103,11 +92,11 @@ export function solveQuadratic(coeffs: Fraction[]): PolynomRoot[] {
     // Irrational roots: exact via a Root of index 2, sign carried by the factor.
     const root1 = new Root()
     root1.radical = delta.clone()
-    root1.factor = new Fraction().one().divide(a2.clone())
+    root1.factor = new Fraction(1).divide(a2.clone())
 
     const root2 = new Root()
     root2.radical = delta.clone()
-    root2.factor = new Fraction().one().divide(a2.clone()).opposite()
+    root2.factor = new Fraction(1).divide(a2.clone()).opposite()
 
     const sol1: PolynomRoot = {
         fraction: b.clone().opposite().divide(a2.clone()),

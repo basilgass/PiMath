@@ -1,4 +1,4 @@
-// Export every files from the coefficients folder
+// Exports from the coefficients module
 
 export * from './fraction'
 export * from './root'

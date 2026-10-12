@@ -122,26 +122,26 @@ describe('Line3 tex/display output', () => {
 describe('Line3 geometric predicates', () => {
     const xAxis = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
 
-    it('isOnLine returns true for the base point', () => {
-        expect(xAxis.isOnLine(new Point(0, 0, 0))).toBe(true)
+    it('isPointOnLine returns true for the base point', () => {
+        expect(xAxis.isPointOnLine(new Point(0, 0, 0))).toBe(true)
     })
 
-    it('isOnLine returns true for a point on the line', () => {
-        expect(xAxis.isOnLine(new Point(3, 0, 0))).toBe(true)
+    it('isPointOnLine returns true for a point on the line', () => {
+        expect(xAxis.isPointOnLine(new Point(3, 0, 0))).toBe(true)
     })
 
-    it('isOnLine returns false for a point not on the line', () => {
-        expect(xAxis.isOnLine(new Point(3, 1, 0))).toBe(false)
+    it('isPointOnLine returns false for a point not on the line', () => {
+        expect(xAxis.isPointOnLine(new Point(3, 1, 0))).toBe(false)
     })
 
-    it('isSameAs returns true for the same geometric line (different OA)', () => {
+    it('isEqual returns true for the same geometric line (different OA)', () => {
         const L = new Line3(new Point(5, 0, 0), new Vector(2, 0, 0))
-        expect(xAxis.isSameAs(L)).toBe(true)
+        expect(xAxis.isEqual(L)).toBe(true)
     })
 
-    it('isSameAs returns false for a parallel but distinct line', () => {
+    it('isEqual returns false for a parallel but distinct line', () => {
         const L = new Line3(new Point(0, 1, 0), new Vector(1, 0, 0))
-        expect(xAxis.isSameAs(L)).toBe(false)
+        expect(xAxis.isEqual(L)).toBe(false)
     })
 
     it('isParallelTo returns true for a parallel line', () => {
@@ -159,12 +159,34 @@ describe('Line3 geometric predicates', () => {
         expect(xAxis.isParallelTo(L)).toBe(false)
     })
 
-    it('isPerpendicularTo returns true for a perpendicular line', () => {
+    it('isOrthogonalTo returns true for orthogonal intersecting lines', () => {
+        const L = new Line3(new Point(0, 0, 0), new Vector(0, 1, 0))
+        expect(xAxis.isOrthogonalTo(L)).toBe(true)
+    })
+
+    it('isOrthogonalTo returns true for skew lines with orthogonal directions', () => {
+        // x-axis and a line through (0,1,0) with z-direction: directions orthogonal, lines skew
+        const L = new Line3(new Point(0, 1, 0), new Vector(0, 0, 1))
+        expect(xAxis.isOrthogonalTo(L)).toBe(true)
+    })
+
+    it('isOrthogonalTo returns false for non-orthogonal directions', () => {
+        const L = new Line3(new Point(0, 0, 0), new Vector(1, 1, 0))
+        expect(xAxis.isOrthogonalTo(L)).toBe(false)
+    })
+
+    it('isPerpendicularTo returns true for orthogonal intersecting lines', () => {
         const L = new Line3(new Point(0, 0, 0), new Vector(0, 1, 0))
         expect(xAxis.isPerpendicularTo(L)).toBe(true)
     })
 
-    it('isPerpendicularTo returns false for a non-perpendicular line', () => {
+    it('isPerpendicularTo returns false for skew lines with orthogonal directions', () => {
+        // orthogonal directions but no intersection → not perpendicular
+        const L = new Line3(new Point(0, 1, 0), new Vector(0, 0, 1))
+        expect(xAxis.isPerpendicularTo(L)).toBe(false)
+    })
+
+    it('isPerpendicularTo returns false for a non-orthogonal line', () => {
         const L = new Line3(new Point(0, 0, 0), new Vector(1, 1, 0))
         expect(xAxis.isPerpendicularTo(L)).toBe(false)
     })
@@ -238,7 +260,7 @@ describe('Line3 randomNearPoint', () => {
     it('returns a point not on the line', () => {
         const L = new Line3(new Point(0, 0, 0), new Vector(1, 0, 0))
         const P = L.randomNearPoint()
-        expect(L.isOnLine(P)).toBe(false)
+        expect(L.isPointOnLine(P)).toBe(false)
     })
 
     it('returns a 3D point', () => {
@@ -424,7 +446,7 @@ describe('Line3 project', () => {
     it('projected point lies on the line', () => {
         const L = new Line3(new Point(1, 2, 3), new Vector(2, 1, -1))
         const proj = L.project(new Point(5, 0, 4))
-        expect(L.isOnLine(proj)).toBe(true)
+        expect(L.isPointOnLine(proj)).toBe(true)
     })
 
     it('AP vector is perpendicular to the direction after projection', () => {
@@ -459,6 +481,6 @@ describe('Line3 reflect', () => {
             pt.y.clone().add(ref.y).divide(2),
             pt.z.clone().add(ref.z).divide(2)
         )
-        expect(L.isOnLine(mid)).toBe(true)
+        expect(L.isPointOnLine(mid)).toBe(true)
     })
 })

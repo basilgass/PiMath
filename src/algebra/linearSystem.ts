@@ -6,7 +6,7 @@ import {Polynom} from "./polynom"
 import {Numeric} from "../numeric"
 import {Solution} from "../analyze"
 import {Vector} from "../geometry"
-import {DimensionError, IndexError, MathError, NotImplementedError} from "../errors"
+import {DimensionError, IndexError, NotImplementedError} from "../errors"
 
 export class LinearSystem implements IPiMathObject<LinearSystem>,
     IEquation<LinearSystem>,
@@ -62,12 +62,11 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
     }
 
     fromMatrix(value: Matrix, variables = 'xyz'): this {
-        const rows = value.rows.map(row => row.map(p => p.monoms[0].coefficient))
-        return this.fromComponents(rows, variables)
+        return this.fromComponents(value.rows, variables)
     }
 
     fromVectors(...vectors: Vector[]): this {
-        return this.fromMatrix(new Matrix().fromVectors(...vectors))
+        return this.fromMatrix(Matrix.fromVectors(...vectors))
     }
 
     copy(): this {
@@ -165,16 +164,24 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
     }
 
     isSolvable(): boolean {
-        if (this.variables.length !== this.#equations.length) {
-            return false
-        }
-        const [M] = this.matrix
-        return !M.determinant().isZero()
+        const aug = this.toAugmentedMatrix()
+        return aug.isConsistent() && aug.rank() === this.#variables.length
     }
 
     get matrix(): [Matrix, Vector] {
         const [coeffs, vector] = this.#makeMatrix()
-        return [new Matrix().fromValues(coeffs), new Vector(...vector)]
+        return [Matrix.fromValues(coeffs), new Vector(...vector)]
+    }
+
+    /**
+     * Builds the augmented matrix `[A|b]` for this system and marks the
+     * partition at the variable count, enabling `isConsistent()` and
+     * `reducedRowEchelonForm()` to interpret the coefficient vs. constant parts.
+     */
+    toAugmentedMatrix(): Matrix {
+        const [coeffs, vector] = this.#makeMatrix()
+        return Matrix.fromValues(coeffs.map((row, i) => [...row, vector[i]]))
+            .withPartition(this.#variables.length)
     }
 
     mergeEquations(equation1: { id: number, factor: InputValue<Fraction> }, equation2: {
@@ -231,72 +238,15 @@ export class LinearSystem implements IPiMathObject<LinearSystem>,
      * Solves the system by Gauss-Jordan elimination on the augmented matrix.
      *
      * - Unique solution: one `Solution` per variable, in `variables` order.
-     * - Impossible (no solution): returns `[]`.
+     * - No solution: returns `[]`.
      * - Infinite solutions: one `Solution` per variable with `.value === Infinity`.
-     * @throws {MathError} if a zero pivot is found with no non-zero row below it.
      */
     solve(): Solution[] {
-        const [matrix, vector] = this.#makeMatrix()
-        // Solve the matrix
-
-        // Make the augmented matrix (matrix + vector)
-        const augmentedMatrix: Fraction[][] = matrix.map((row, index) => [...row, vector[index]])
-
-        // Reduce the matrix
-        for (let i = 0; i < matrix.length; i++) {
-            // Find the pivot (the first non-zero element in the row)
-            let pivot = augmentedMatrix[i][i].clone()
-            if (pivot.isZero()) {
-                // throw new Error('Divide by zero !')
-                // Search a line below that would add it.
-                const row_to_add = augmentedMatrix
-                    .find((row, index) => {
-                        return index > i && !row[i].isZero()
-                    })
-
-                if (row_to_add) {
-                    augmentedMatrix[i].forEach((value, index) => value.add(row_to_add[index]))
-                    pivot = augmentedMatrix[i][i].clone()
-                } else {
-                    throw new MathError('Unsolvable...')
-                }
-
-
-            }
-
-            // Normalize the row: divide all elements by the pivot
-            // the pivot is now 1
-            augmentedMatrix[i] = augmentedMatrix[i].map(x => x.divide(pivot))
-
-            // reduce the other rows using the pivot.
-            for (let j = 0; j < matrix.length; j++) {
-                if (j === i) {
-                    continue
-                }
-
-                const factor = augmentedMatrix[j][i].clone().opposite()
-                for (let k = 0; k < augmentedMatrix[j].length; k++) {
-                    augmentedMatrix[j][k].add(augmentedMatrix[i][k].clone().multiply(factor))
-                }
-
-                // Check if the asSystem is undetermined (no solution or infinite solutions)
-                // the j line must not be all zeros
-                // the last element must be zero => the asSystem is undetermined
-                // the last element must not be zero => the asSystem is impossible
-                if (augmentedMatrix[j].slice(0, augmentedMatrix[j].length - 1).every(x => x.isZero())) {
-                    if (augmentedMatrix[j][augmentedMatrix[j].length - 1].isZero()) {
-                        // Infinite solution
-                        return this.#mapMatrixSolutions()
-                    } else {
-                        // No solution
-                        return []
-                    }
-                }
-            }
-        }
-
-        return this.#mapMatrixSolutions(augmentedMatrix)
-
+        const aug = this.toAugmentedMatrix()
+        if (!aug.isConsistent()) return []
+        if (aug.rank() < this.#variables.length) return this.#mapMatrixSolutions()
+        const rref = aug.reducedRowEchelonForm()
+        return this.#mapMatrixSolutions(rref.rows.slice(0, this.#variables.length))
     }
 
     /**

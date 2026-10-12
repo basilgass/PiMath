@@ -1,4 +1,4 @@
-// Import / export every files from the geometry folder
+// Exports from the geometry module
 
 export * from './geomMath'
 export * from './circle'

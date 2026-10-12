@@ -2,13 +2,13 @@ import {Fraction} from "../coefficients"
 import {Line} from "./line"
 import {Vector} from "./vector"
 import {Point} from "./point"
-import type {InputValue, RemarquableLines} from "../pimath.interface"
+import type {IPiMathObject, InputValue, RemarquableLines} from "../pimath.interface"
 import {Numeric} from "../numeric"
-import {InvalidArgumentError, MathError} from "../errors"
+import {InvalidArgumentError, MathError, NotImplementedError} from "../errors"
 
 type TRIANGLE_SIDES = 'AB' | 'AC' | 'BC'
 
-export class Triangle {
+export class Triangle implements IPiMathObject<Triangle> {
     #A: Point = new Point()
     #B: Point = new Point()
     #C: Point = new Point()
@@ -63,14 +63,17 @@ export class Triangle {
         return this
     }
 
-    clone(): Triangle {
+    get tex(): string { throw new NotImplementedError('Triangle has no equation representation') }
+    get display(): string { throw new NotImplementedError('Triangle has no equation representation') }
+
+    clone(): this {
         const t = new Triangle()
         t.#A = this.#A.clone()
         t.#B = this.#B.clone()
         t.#C = this.#C.clone()
         t.#radians = this.#radians
         t.reset()
-        return t
+        return t as this
     }
 
     /**

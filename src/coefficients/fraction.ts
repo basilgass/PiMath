@@ -22,7 +22,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     #denominator = 1
     #digits = 3
     #exact = true
-    #numerator = 1
+    #numerator = 0
     #type: FracType = FracType.frac
     #withSign = false
 
@@ -153,7 +153,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     static average(...fractions: (InputValue<Fraction>)[]): Fraction {
-        const M = new Fraction().zero()
+        const M = new Fraction(0)
 
         for (const f of fractions) {
             M.add(f)
@@ -260,7 +260,7 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> 
     }
 
     static xMultiply(...values: (InputValue<Fraction>)[]): Fraction {
-        const R = new Fraction()
+        const R = new Fraction(1)
 
         values.forEach(f => R.multiply(f, false))
 

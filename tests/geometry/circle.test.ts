@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Circle, Equation, Fraction, Line, Point, Vector} from "../../src"
+import {Circle, CircleRelativePosition, Equation, Fraction, Line, Point, Vector} from "../../src"
 
 describe('Circle creation', () => {
     test('create Circle', () => {
@@ -118,8 +118,8 @@ describe('Circle operations', () => {
             new Point(3,1),
             new Vector(1,3)
         )
-        const IPT = C.lineIntersection(LT),
-            IPS = C.lineIntersection(LS)
+        const IPT = C.intersection(LT),
+            IPS = C.intersection(LS)
         expect(IPT[0].x.value).to.be.equal(12)
         expect(IPT[0].y.value).to.be.equal(8)
 
@@ -187,8 +187,8 @@ describe('Circle parse and construction', () => {
         expect(equ.display).toBe(original)
     })
 
-    test('clone preserves asCanonical output style', () => {
-        const C = new Circle(new Point(1, 2), 9, true).asCanonical
+    test('clone preserves asDeveloped output style', () => {
+        const C = new Circle(new Point(1, 2), 9, true).asDeveloped
         const D = C.clone()
         expect(D.tex).toBe(C.tex)
         expect(D.display).toBe(C.display)
@@ -196,10 +196,10 @@ describe('Circle parse and construction', () => {
 })
 
 describe('Circle edge cases', () => {
-    test('lineIntersection with no intersection returns empty array', () => {
+    test('intersection with no intersection returns empty array', () => {
         const C = new Circle(new Point(0, 0), 25, true)
         const L = new Line('x-10=0')
-        expect(C.lineIntersection(L)).toHaveLength(0)
+        expect(C.intersection(L)).toHaveLength(0)
     })
 
     test('getPointsOnCircle with non-integer squared radius returns empty array', () => {
@@ -216,6 +216,48 @@ describe('Circle edge cases', () => {
     })
 })
 
-describe.skip('Circle static functions')
+describe('Circle relative position (circle-circle)', () => {
+    test('circle inside another', () => {
+        const C1 = new Circle(new Point(0, 0), 25, true)
+        const C2 = new Circle(new Point(0, 2), 1)
+        expect(C1.relativePosition(C2)).toBe(CircleRelativePosition.INTERIOR)
+    })
 
-describe.skip('Circle generators')
+    test('circle exterior to another', () => {
+        const C1 = new Circle(new Point(0, 0), 25, true)
+        const C2 = new Circle(new Point(10, 0), 1)
+        expect(C1.relativePosition(C2)).toBe(CircleRelativePosition.EXTERIOR)
+    })
+
+    test('circle secant to another', () => {
+        const C1 = new Circle(new Point(0, 0), 25, true)
+        const C2 = new Circle(new Point(3, 0), 16, true)
+        expect(C1.relativePosition(C2)).toBe(CircleRelativePosition.SECANT)
+    })
+
+    test('circle internally tangent to another', () => {
+        // C1: center (0,0) r²=25, C2: center (2,0) r²=9 → d=2, r1=5, r2=3, r1=d+r2 → internally tangent
+        const C1 = new Circle(new Point(0, 0), 25, true)
+        const C2 = new Circle(new Point(2, 0), 9, true)
+        expect(C1.relativePosition(C2)).toBe(CircleRelativePosition.TANGENT_INSIDE)
+    })
+
+    test('circle externally tangent to another', () => {
+        // d=8, r1=5, r2=3, d=r1+r2 → externally tangent
+        const C1 = new Circle(new Point(0, 0), 25, true)
+        const C2 = new Circle(new Point(8, 0), 9, true)
+        expect(C1.relativePosition(C2)).toBe(CircleRelativePosition.TANGENT_OUTSIDE)
+    })
+
+    test('superposed circles', () => {
+        const C1 = new Circle(new Point(0, 0), 25, true)
+        const C2 = new Circle(new Point(0, 0), 25, true)
+        expect(C1.relativePosition(C2)).toBe(CircleRelativePosition.SUPERPOSED)
+    })
+
+    test('concentric circles', () => {
+        const C1 = new Circle(new Point(0, 0), 25, true)
+        const C2 = new Circle(new Point(0, 0), 9, true)
+        expect(C1.relativePosition(C2)).toBe(CircleRelativePosition.CONCENTRIC)
+    })
+})

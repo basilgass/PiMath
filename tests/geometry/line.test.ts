@@ -25,8 +25,8 @@ describe('Line creation', () => {
         const P1 = new Point(-2, 3)
         const P2 = new Point(-3, 4)
 
-        expect(L.isOnLine(P1)).toBe(false)
-        expect(L.isOnLine(P2)).toBe(true)
+        expect(L.isPointOnLine(P1)).toBe(false)
+        expect(L.isPointOnLine(P2)).toBe(true)
     })
     test('clone Line', () => {
         const L = Line.fromCoefficient(2, 3, 4)
@@ -105,8 +105,8 @@ describe('Line comparisons', () => {
         const L1 = Line.fromCoefficient(1, 2, 3)
         const L2 = Line.fromCoefficient(2, 4, 6)
 
-        expect(L1.isSameAs(L2)).toBe(true)
-        expect(L2.isSameAs(L1)).toBe(true)
+        expect(L1.isEqual(L2)).toBe(true)
+        expect(L2.isEqual(L1)).toBe(true)
     })
 
     test('is parallel to', () => {
@@ -157,13 +157,13 @@ describe('Vertical line comparisons', () => {
     })
 
     test('two distinct vertical lines are not the same', () => {
-        expect(x1.isSameAs(x2)).toBe(false)
-        expect(x2.isSameAs(x1)).toBe(false)
+        expect(x1.isEqual(x2)).toBe(false)
+        expect(x2.isEqual(x1)).toBe(false)
     })
 
     test('proportional vertical lines are the same', () => {
-        expect(x1.isSameAs(x1b)).toBe(true)
-        expect(x1b.isSameAs(x1)).toBe(true)
+        expect(x1.isEqual(x1b)).toBe(true)
+        expect(x1b.isEqual(x1)).toBe(true)
     })
 
     test('parallel vertical lines have no intersection', () => {
@@ -179,10 +179,6 @@ describe('Vertical line comparisons', () => {
         expect(result.point!.y.value).toBe(1)
     })
 })
-
-describe.todo('Line static functions')
-
-describe.todo('Line generators')
 
 describe('Operation with Lines', function () {
     test('should evaluate coordinates at x', function () {
@@ -277,14 +273,14 @@ describe('Line project', () => {
     test('returns the point itself when it lies on the line', () => {
         const L = Line.fromPoints(new Point(0, 0), new Point(1, 1))
         const pt = new Point(3, 3)
-        expect(L.isOnLine(pt)).toBe(true)
+        expect(L.isPointOnLine(pt)).toBe(true)
         expect(L.project(pt).display).toBe('(3;3)')
     })
 
     test('projected point lies on the line', () => {
         const L = Line.fromPoints(new Point(0, 0), new Point(3, 1))
         const proj = L.project(new Point(2, 5))
-        expect(L.isOnLine(proj)).toBe(true)
+        expect(L.isPointOnLine(proj)).toBe(true)
     })
 
     test('residual vector is perpendicular to the line direction', () => {
@@ -320,6 +316,6 @@ describe('Line reflect', () => {
             pt.x.clone().add(ref.x).divide(2),
             pt.y.clone().add(ref.y).divide(2)
         )
-        expect(L.isOnLine(mid)).toBe(true)
+        expect(L.isPointOnLine(mid)).toBe(true)
     })
 })

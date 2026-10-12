@@ -6,13 +6,13 @@ import {Numeric} from "../numeric"
 import {Fraction} from "../coefficients"
 import {Equation, Monom, Polynom} from "../algebra"
 import {Vector} from "./vector"
-import {type InputValue, type IPiMathObject, type LineIntersection, LineProperty, type OutputStyle} from "../pimath.interface"
+import {type InputAlgebra, type InputValue, type IPiMathObject, type LineIntersection, LineProperty, type OutputStyle} from "../pimath.interface"
 import {randomIntSym} from "../randomization/rndHelpers"
 import {Point} from "./point"
 import {Root} from "../coefficients/root"
 import {ParseError} from "../errors"
 
-enum LINE_DISPLAY {
+enum LineDisplay {
     CARTESIAN,
     CANONICAL,
     MXH,
@@ -20,7 +20,7 @@ enum LINE_DISPLAY {
     SYSTEM
 }
 
-enum LINE_DIRECTION {
+enum LineDirection {
     LEFT_TO_RIGHT = 'lr',
     RIGHT_TO_LEFT = 'rl'
 }
@@ -33,17 +33,17 @@ export class Line implements IPiMathObject<Line> {
     #a: Fraction
     #b: Fraction
     #c: Fraction
-    #orientation: LINE_DIRECTION
+    #orientation: LineDirection
     // output mode.
-    #outputMode: LINE_DISPLAY = LINE_DISPLAY.CANONICAL
+    #outputMode: LineDisplay = LineDisplay.CANONICAL
     #decimals: number | null = null
 
     constructor(...values: unknown[]) {
-        this.#a = new Fraction().zero()
-        this.#b = new Fraction().zero()
-        this.#c = new Fraction().zero()
+        this.#a = new Fraction(0)
+        this.#b = new Fraction(0)
+        this.#c = new Fraction(0)
         this.#OA = new Vector()
-        this.#orientation = LINE_DIRECTION.LEFT_TO_RIGHT
+        this.#orientation = LineDirection.LEFT_TO_RIGHT
 
         if (values.length > 0) {
             this.parse(...values)
@@ -69,7 +69,7 @@ export class Line implements IPiMathObject<Line> {
 
             if (typeof values[0] === 'string') {
                 try {
-                    return this.copy(Line.fromEquation(new Equation(values[0])))
+                    return this.copy(Line.fromEquation(values[0]))
                 } catch (e) {
                     throw new ParseError(`Cannot parse "${values[0]}" as a Line`, {cause: e})
                 }
@@ -106,7 +106,7 @@ export class Line implements IPiMathObject<Line> {
         this.#c = value.#c.clone()
         this.#OA = value.#OA.clone()
         this.#orientation = value.#orientation
-        this.#outputMode = LINE_DISPLAY.CANONICAL
+        this.#outputMode = LineDisplay.CANONICAL
         this.#decimals = null
         return this
     }
@@ -122,7 +122,7 @@ export class Line implements IPiMathObject<Line> {
     get tex(): string {
         const mode = this.#outputMode
         const decimals = this.#decimals
-        this.#outputMode = LINE_DISPLAY.CANONICAL
+        this.#outputMode = LineDisplay.CANONICAL
         this.#decimals = null
         return this.#toOutput('tex', mode, decimals)
     }
@@ -130,19 +130,19 @@ export class Line implements IPiMathObject<Line> {
     get display(): string {
         const mode = this.#outputMode
         const decimals = this.#decimals
-        this.#outputMode = LINE_DISPLAY.CANONICAL
+        this.#outputMode = LineDisplay.CANONICAL
         this.#decimals = null
         return this.#toOutput('display', mode, decimals)
     }
 
-    #toOutput(style: OutputStyle, mode: LINE_DISPLAY, decimals: number | null): string {
+    #toOutput(style: OutputStyle, mode: LineDisplay, decimals: number | null): string {
         if (decimals !== null) {
             switch (mode) {
-                case LINE_DISPLAY.CARTESIAN:
+                case LineDisplay.CARTESIAN:
                     return this.#decimalLHS(false, decimals) + '=' + (-this.#c.value).toFixed(decimals)
-                case LINE_DISPLAY.MXH:
+                case LineDisplay.MXH:
                     return this.#decimalMxh(decimals)
-                case LINE_DISPLAY.PARAMETRIC: {
+                case LineDisplay.PARAMETRIC: {
                     const d = this.d.clone().simplify()
                     const ox = this.#OA.x.value.toFixed(decimals)
                     const oy = this.#OA.y.value.toFixed(decimals)
@@ -153,7 +153,7 @@ export class Line implements IPiMathObject<Line> {
                     }
                     return `((x,y))=((${ox},${oy}))+k((${dx},${dy}))`
                 }
-                case LINE_DISPLAY.SYSTEM: {
+                case LineDisplay.SYSTEM: {
                     const d = this.d.clone().simplify()
                     const exprX = this.#decimalKExpr(this.#OA.x, d.x, decimals)
                     const exprY = this.#decimalKExpr(this.#OA.y, d.y, decimals)
@@ -168,20 +168,20 @@ export class Line implements IPiMathObject<Line> {
         }
 
         switch (mode) {
-            case LINE_DISPLAY.CARTESIAN:
+            case LineDisplay.CARTESIAN:
                 return this.getEquation().reorder()[style]
-            case LINE_DISPLAY.MXH:
+            case LineDisplay.MXH:
                 return this.slope.isInfinity() ?
                     'x=' + this.OA.x[style] :
                     'y=' + new Polynom().parse('x', this.slope, this.height)[style]
-            case LINE_DISPLAY.PARAMETRIC: {
+            case LineDisplay.PARAMETRIC: {
                 const d = this.d.clone().simplify()
                 if (style === 'tex') {
                     return `${Vector.asTex('x', 'y')} = ${Vector.asTex(this.#OA.x.tex, this.#OA.y.tex)} + k\\cdot ${Vector.asTex(d.x.tex, d.y.tex)}`
                 }
                 return `((x,y))=((${this.#OA.x.display},${this.#OA.y.display}))+k((${d.x.display},${d.y.display}))`
             }
-            case LINE_DISPLAY.SYSTEM: {
+            case LineDisplay.SYSTEM: {
                 const d = this.d.clone().simplify()
                 if (style === 'tex') {
                     return `\\left\\{\\begin{aligned}\n\tx &= ${(new Polynom(this.#OA.x)
@@ -278,27 +278,27 @@ export class Line implements IPiMathObject<Line> {
     }
 
     get asCanonical(): this {
-        this.#outputMode = LINE_DISPLAY.CANONICAL
+        this.#outputMode = LineDisplay.CANONICAL
         return this
     }
 
     get asCartesian(): this {
-        this.#outputMode = LINE_DISPLAY.CARTESIAN
+        this.#outputMode = LineDisplay.CARTESIAN
         return this
     }
 
     get asMxh(): this {
-        this.#outputMode = LINE_DISPLAY.MXH
+        this.#outputMode = LineDisplay.MXH
         return this
     }
 
     get asParametric(): this {
-        this.#outputMode = LINE_DISPLAY.PARAMETRIC
+        this.#outputMode = LineDisplay.PARAMETRIC
         return this
     }
 
     get asSystem(): this {
-        this.#outputMode = LINE_DISPLAY.SYSTEM
+        this.#outputMode = LineDisplay.SYSTEM
         return this
     }
 
@@ -331,8 +331,8 @@ export class Line implements IPiMathObject<Line> {
         const director = new Vector(this.#b.clone(), this.#a.clone().opposite())
 
         if (
-            this.#orientation === LINE_DIRECTION.LEFT_TO_RIGHT && director.x.isNegative() ||
-            this.#orientation === LINE_DIRECTION.RIGHT_TO_LEFT && director.x.isPositive()
+            this.#orientation === LineDirection.LEFT_TO_RIGHT && director.x.isNegative() ||
+            this.#orientation === LineDirection.RIGHT_TO_LEFT && director.x.isPositive()
         ) {
             director.opposite()
         }
@@ -410,9 +410,10 @@ export class Line implements IPiMathObject<Line> {
     }
 
     /**
-     * @throws {ParseError} if the equation has no x/y, contains unknown variables, or has degree > 1
+     * @throws {ParseError} if the input has no x/y, contains unknown variables, or has degree > 1
      */
-    static fromEquation(equ: Equation): Line {
+    static fromEquation(value: InputAlgebra<Equation>): Line {
+        const equ = new Equation(value)
         equ.reorder(true)
 
         const variables = new Set(equ.variables)
@@ -451,8 +452,8 @@ export class Line implements IPiMathObject<Line> {
     static fromPointAndDirection(P: Point | Vector, d: Vector): Line {
         const line = Line.fromPointAndNormal(P, d.clone().normal())
         line.#orientation = d.x.isPositive()
-            ? LINE_DIRECTION.LEFT_TO_RIGHT
-            : LINE_DIRECTION.RIGHT_TO_LEFT
+            ? LineDirection.LEFT_TO_RIGHT
+            : LineDirection.RIGHT_TO_LEFT
         return line
     }
 
@@ -532,7 +533,7 @@ export class Line implements IPiMathObject<Line> {
     }
 
     intersection(line: Line): LineIntersection {
-        if (this.isSameAs(line)) {
+        if (this.isEqual(line)) {
             return {point: null, hasIntersection: false, isParallel: false, isSame: true}
         }
 
@@ -555,7 +556,7 @@ export class Line implements IPiMathObject<Line> {
     }
 
     // ------------------------------------------
-    isOnLine(pt: Point): boolean {
+    isPointOnLine(pt: Point): boolean {
         return this.#a.clone()
             .multiply(pt.x)
             .add(
@@ -568,14 +569,14 @@ export class Line implements IPiMathObject<Line> {
 
     isParallelTo(line: Line): boolean {
         const crossAB = this.#a.clone().multiply(line.b).subtract(line.a.clone().multiply(this.#b))
-        return crossAB.isZero() && !this.isSameAs(line)
+        return crossAB.isZero() && !this.isEqual(line)
     }
 
     isPerpendicularTo(line: Line): boolean {
         return this.d.isNormalTo(line.d)
     }
 
-    isSameAs(line: Line): boolean {
+    isEqual(line: Line): boolean {
         const crossAB = this.#a.clone().multiply(line.b).subtract(line.a.clone().multiply(this.#b))
         if (!crossAB.isZero()) return false
         // Both vertical (b=0): same direction is guaranteed, check x-intercepts
@@ -603,7 +604,7 @@ export class Line implements IPiMathObject<Line> {
         const pt = this.randomPoint(k)
 
         let maxIterationTest = 10
-        while (this.isOnLine(pt) && maxIterationTest > 0) {
+        while (this.isPointOnLine(pt) && maxIterationTest > 0) {
             pt.x.add(randomIntSym(1, false))
             pt.y.add(randomIntSym(1, false))
             maxIterationTest--

@@ -2,7 +2,7 @@ import {Point} from "./point"
 import {Vector} from "./vector"
 import {Fraction} from "../coefficients"
 import {Equation, Polynom} from "../algebra"
-import type {IPiMathObject, InputValue, OutputStyle} from "../pimath.interface"
+import type {InputAlgebra, IPiMathObject, InputValue, OutputStyle} from "../pimath.interface"
 import {MathError, StateError} from "../errors"
 
 enum Sphere3Format {
@@ -58,16 +58,16 @@ export class Sphere3
         return this
     }
 
-    clone(): Sphere3 {
+    clone(): this {
         if (this.#center === undefined || this.#squareRadius === undefined) {
-            return new Sphere3()
+            return new Sphere3() as this
         }
         const s = new Sphere3()
         s.#center = this.#center.clone()
         s.#squareRadius = this.#squareRadius.clone()
         s.#equation = this.#equation?.clone()
         s.#format = this.#format
-        return s
+        return s as this
     }
 
     copy(sphere: Sphere3): this {
@@ -91,12 +91,12 @@ export class Sphere3
     }
 
     /**
-     * Does not mutate `equ`.
-     * @throws {MathError} if `equ` is not a valid sphere equation (degree ≠ 2 in x/y/z, or unequal leading coefficients)
+     * Does not mutate the input.
+     * @throws {MathError} if the input is not a valid sphere equation (degree ≠ 2 in x/y/z, or unequal leading coefficients)
      */
-    static fromEquation(equ: Equation): Sphere3 {
+    static fromEquation(value: InputAlgebra<Equation>): Sphere3 {
         const s = new Sphere3()
-        const eq = equ.clone().moveLeft().reduce()
+        const eq = new Equation(value).moveLeft().reduce()
         const variables = ['x', 'y', 'z']
 
         for (const variable of variables) {
@@ -131,7 +131,7 @@ export class Sphere3
     }
 
     static fromString(str: string): Sphere3 {
-        return Sphere3.fromEquation(new Equation(str))
+        return Sphere3.fromEquation(str)
     }
 
     get center(): Point {

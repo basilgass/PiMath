@@ -25,6 +25,7 @@ describe("Error hierarchy", () => {
         ["MathError", MathError],
         ["InvalidArgumentError", InvalidArgumentError],
         ["NotImplementedError", NotImplementedError],
+        ["UnsupportedOperationError", UnsupportedOperationError],
         ["IndexError", IndexError],
         ["StateError", StateError]
     ]
@@ -61,11 +62,11 @@ describe("Typed throws (first pass)", () => {
         }
     })
 
-    test("S1: malformed Line string throws a ParseError instead of a half-built Line", () => {
+    test("malformed Line string throws a ParseError instead of a half-built Line", () => {
         expect(() => new Line("this is not a line")).toThrow(ParseError)
     })
 
-    test("S2: isDeveloped propagates on invalid input instead of returning false", () => {
+    test("isDeveloped throws on malformed input instead of returning false", () => {
         const P = new Polynom("x^2+x")
 
         // Valid, developed

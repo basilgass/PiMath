@@ -578,8 +578,8 @@ function canOmitParens(f: Factor, index: number): boolean {
 }
 
 function keyFactors(value: PolyFactor): Record<string, Factor[]> {
-    const k_numerator = new Fraction().one()
-    const k_denominator = new Fraction().one()
+    const k_numerator = new Fraction(1)
+    const k_denominator = new Fraction(1)
 
     const kF = value.factors
         .reduce((acc: Record<string, Factor[]>, f) => {

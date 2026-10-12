@@ -4,23 +4,33 @@ import {Numeric} from "../numeric"
 import {Fraction, Root} from "../coefficients"
 import {Equation, Polynom} from "../algebra"
 import {MathError} from "../errors"
-import {type IPiMathObject, type OutputStyle} from "../pimath.interface"
+import {type InputAlgebra, type IPiMathObject, type OutputStyle} from "../pimath.interface"
 import {Point} from "./point"
 import {Triangle} from "./triangle"
 import {Solution} from "../analyze"
 
 enum CircleDisplay {
-    CANONICAL,
+    DEVELOPED,
     CENTER_RADIUS,
+}
+
+export enum CircleRelativePosition {
+    INTERIOR,
+    EXTERIOR,
+    SECANT,
+    TANGENT_INSIDE,
+    TANGENT_OUTSIDE,
+    SUPERPOSED,
+    CONCENTRIC
 }
 
 export class Circle
     implements IPiMathObject<Circle> {
 
-    #center: Point | null = null
-    #equation: Equation | null = null
+    #center: Point | undefined = undefined
+    #equation: Equation | undefined = undefined
     #output_style: CircleDisplay = CircleDisplay.CENTER_RADIUS
-    #squareRadius: Fraction | null = null
+    #squareRadius: Fraction | undefined = undefined
 
     constructor()
     constructor(equation: string | Equation)
@@ -63,22 +73,23 @@ export class Circle
         return this
     }
 
-    clone(): Circle {
-        if (this.#center === null || this.#squareRadius === null) {
-            return new Circle()
+    clone(): this {
+        if (this.#center === undefined || this.#squareRadius === undefined) {
+            return new Circle() as this
         }
         const c = Circle.fromCenterRadius(this.#center, this.#squareRadius, true)
         c.#output_style = this.#output_style
-        return c
+        return c as this
     }
 
     copy(circle: Circle): this {
-        if (circle.#center === null || circle.#squareRadius === null) {
+        if (circle.#center === undefined || circle.#squareRadius === undefined) {
             this.#reset()
             return this
         }
         this.#center = circle.#center.clone()
         this.#squareRadius = circle.#squareRadius.clone()
+        this.#output_style = CircleDisplay.CENTER_RADIUS
         this.#computeEquation()
         return this
     }
@@ -91,8 +102,8 @@ export class Circle
         return this.#toOutput('display')
     }
 
-    get asCanonical(): this {
-        this.#output_style = CircleDisplay.CANONICAL
+    get asDeveloped(): this {
+        this.#output_style = CircleDisplay.DEVELOPED
         return this
     }
 
@@ -129,12 +140,12 @@ export class Circle
     }
 
     /**
-     * Does not mutate `equ`.
-     * @throws {MathError} if `equ` is not a valid circle equation
+     * Does not mutate the input.
+     * @throws {MathError} if the input is not a valid circle equation
      */
-    static fromEquation(equ: Equation): Circle {
+    static fromEquation(value: InputAlgebra<Equation>): Circle {
         const c = new Circle()
-        const eq = equ.clone()
+        const eq = new Equation(value)
         eq.moveLeft()
 
         if (eq.degree('x').value !== 2 || eq.degree('y').value !== 2) {
@@ -185,7 +196,7 @@ export class Circle
     }
 
     static fromString(str: string): Circle {
-        return Circle.fromEquation(new Equation(str))
+        return Circle.fromEquation(str)
     }
 
     getPointsOnCircle(): Point[] {
@@ -233,10 +244,9 @@ export class Circle
     /**
      * Find the intersection points between the circle and a line. It can be 0, 1 or 2 points.
      * The points are sorted depending on the direction vector of the line.
-     * @param L
      */
-    lineIntersection(L: Line): Point[] {
-        if (this.#equation === null) return []
+    intersection(L: Line): Point[] {
+        if (this.#equation === undefined) return []
 
         const center = this.center
         const d = L.d
@@ -303,12 +313,50 @@ export class Circle
      * @returns 0 = external, 1 = tangent, 2 = secant
      * @throws {MathError} if the circle is uninitialized
      */
-    relativePosition(L: Line): 0 | 1 | 2 {
-        if (this.#center === null || this.#squareRadius === null) {
+    relativePosition(L: Line): 0 | 1 | 2
+    /**
+     * Returns the relative position between two circles.
+     * @throws {MathError} if the circle is uninitialized
+     */
+    relativePosition(C: Circle): CircleRelativePosition
+    relativePosition(other: Line | Circle): 0 | 1 | 2 | CircleRelativePosition {
+        if (this.#center === undefined || this.#squareRadius === undefined) {
             throw new MathError('Circle is not initialized')
         }
 
-        const distance = L.distanceTo(this.#center).pow(2).value
+        if (other instanceof Circle) {
+            const d2 = new Vector(this.center, other.center).normSquare
+            const SR1 = this.squareRadius
+            const SR2 = other.squareRadius
+
+            if (d2.isZero()) {
+                return SR1.isEqual(SR2)
+                    ? CircleRelativePosition.SUPERPOSED
+                    : CircleRelativePosition.CONCENTRIC
+            }
+
+            // A = d² − r1² − r2² ; equals +2r1r2 when d=r1+r2, −2r1r2 when d=|r1−r2|
+            // B = (2r1r2)² = 4·r1²·r2²  →  A²=B iff d is tangent
+            const A = d2.clone().subtract(SR1).subtract(SR2)
+            const B = SR1.clone().multiply(SR2).multiply(4)
+            const ASquaredMinusB = A.clone().pow(2).subtract(B)
+
+            if (ASquaredMinusB.isZero()) {
+                return A.isNegative()
+                    ? CircleRelativePosition.TANGENT_INSIDE
+                    : CircleRelativePosition.TANGENT_OUTSIDE
+            }
+
+            if (!ASquaredMinusB.isNegative()) {
+                return A.isNegative()
+                    ? CircleRelativePosition.INTERIOR
+                    : CircleRelativePosition.EXTERIOR
+            }
+
+            return CircleRelativePosition.SECANT
+        }
+
+        const distance = other.distanceTo(this.#center).pow(2).value
         const radius = this.#squareRadius.value
 
         if (distance - radius > 0.0000000001) {
@@ -321,6 +369,8 @@ export class Circle
 
         return 2
     }
+
+    static RELATIVE_POSITION = CircleRelativePosition
 
     setRadius(radius: Fraction | number, square?: boolean): this {
         if (square) {
@@ -353,7 +403,7 @@ export class Circle
             return this.#tangentsThroughOnePointOnTheCircle(P)
         }
 
-        if (this.#center !== null && this.#center.distanceTo(P).value > this.radius.value) {
+        if (this.#center !== undefined && this.#center.distanceTo(P).value > this.radius.value) {
             return this.#tangentsThroughOnePointOutsideTheCircle(P)
         }
 
@@ -361,7 +411,7 @@ export class Circle
     }
 
     #toOutput(style: OutputStyle): string {
-        if (this.#output_style === CircleDisplay.CANONICAL) {
+        if (this.#output_style === CircleDisplay.DEVELOPED) {
             const eq = this.equation.moveLeft().reduce()
             return style === 'tex' ? eq.tex : eq.display
         }
@@ -396,9 +446,9 @@ export class Circle
     }
 
     #reset() {
-        this.#center = null
-        this.#squareRadius = null
-        this.#equation = null
+        this.#center = undefined
+        this.#squareRadius = undefined
+        this.#equation = undefined
     }
 
     #tangentsThroughOnePointOnTheCircle(P: Point): Line[] {

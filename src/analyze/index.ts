@@ -1,4 +1,4 @@
-// Exports every files from the algebra folder
+// Exports from the analyze module
 
 export * from "./interval"
 export * from "./domain"

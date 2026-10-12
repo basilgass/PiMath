@@ -1,5 +1,5 @@
 import {describe, expect, test,} from "vitest"
-import {Fraction, Monom, ParseError, Random} from "../../src"
+import {Fraction, Monom, ParseError} from "../../src"
 
 describe('Monom creation', () => {
     test('create Monom', () => {
@@ -228,24 +228,6 @@ describe('Monom evaluation', () => {
         const M = new Monom('3x^2y^3')
         expect(M.evaluate({x: 2, y: 3}).value).toBe(324)
         expect(M.evaluate({x: 2, y: 3}, true)).toBe(324)
-    })
-})
-
-describe('Monom generators', () => {
-    test('random Monom', () => {
-        const M = Random.monom()
-        expect(M.coefficient.isZero()).toBeFalsy()
-        expect(M.degree().value).toBeGreaterThan(0)
-    })
-    test('random Monom with options', () => {
-        const M = Random.monom({
-            variables: 'xyz',
-            degree: 5,
-            fraction: false,
-            zero: false
-        })
-        expect(M.coefficient.isZero()).toBeFalsy()
-        expect(M.degree().value).toBeGreaterThan(0)
     })
 })
 

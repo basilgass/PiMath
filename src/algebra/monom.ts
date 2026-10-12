@@ -24,7 +24,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
     constructor(value?: InputValue<Fraction>)
     constructor(value?: Monom)
     constructor(value?: InputAlgebra<Fraction>) {
-        this.#coefficient = new Fraction().zero()
+        this.#coefficient = new Fraction(0)
         this.#literal = {}
 
         if (value !== undefined) {
@@ -226,14 +226,14 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      */
     degree(variable?: string): Fraction {
         if (this.variables.length === 0) {
-            return new Fraction().zero()
+            return new Fraction(0)
         }
         if (variable === undefined) {
             // No variable given -> we get the global monom degree (sum of all the variables).
             return Object.values(this.#literal).reduce((t, n) => t.clone().add(n))
         } else {
             // A variable is given -> get the corresponding power.
-            return !this.hasVariable(variable) ? new Fraction().zero() : this.#literal[variable].clone()
+            return !this.hasVariable(variable) ? new Fraction(0) : this.#literal[variable].clone()
         }
     }
 
@@ -527,7 +527,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         for (const v of [...inputStr.matchAll(/([a-z])\^([+-]?[0-9]+)/g)]) {
             // Create the default variable entry if necessary.
             if (!(v[1] in this.#literal)) {
-                this.#literal[v[1]] = new Fraction().zero()
+                this.#literal[v[1]] = new Fraction(0)
             }
 
             // Add the new value.
@@ -538,7 +538,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         for (const v of [...inputStr.matchAll(/([a-z](?!\^))/g)]) {
             // Match all single variables
             if (!(v[1] in this.#literal)) {
-                this.#literal[v[1]] = new Fraction().zero()
+                this.#literal[v[1]] = new Fraction(0)
             }
 
             // Add one to the value.
@@ -574,7 +574,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      * Create a one value monom
      */
     one(): this {
-        this.#coefficient = new Fraction().one()
+        this.#coefficient = new Fraction(1)
         this.#literal = {}
         return this
     }
@@ -618,7 +618,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
 
             // The coefficient might be zero (=> x) or a number a (=> ax)
             if (M.coefficient.isZero()) {
-                M.coefficient = new Fraction().one()
+                M.coefficient = new Fraction(1)
             }
             M.setExponent(variable, 1)
         }
@@ -743,7 +743,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
      * Create a zero value monom
      */
     zero(): this {
-        this.#coefficient = new Fraction().zero()
+        this.#coefficient = new Fraction(0)
         this.#literal = {}
         return this
     }
@@ -858,7 +858,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
                 case '^': {
                     // get the two last elements in the stack
                     const poppedCoefficient = stack.pop()?.coefficient
-                    pow = poppedCoefficient ?? new Fraction().one()
+                    pow = poppedCoefficient ?? new Fraction(1)
                     m = stack.pop() ?? new Monom().one()
 
                     variable = m.variables[0]

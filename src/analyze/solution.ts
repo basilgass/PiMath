@@ -2,7 +2,7 @@ import type {InputValue, IPiMathObject} from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Root} from "../coefficients/root"
 import {solveQuadratic} from "../algebra/polynomRoots"
-import type {PolynomRoot} from "../algebra/polynomRoots"
+import type {PolynomRoot} from "../pimath.interface"
 import {InvalidArgumentError, ParseError} from "../errors"
 
 /**
@@ -38,7 +38,7 @@ export class Solution implements IPiMathObject<Solution> {
         this.#display = null
         this.#tex = null
 
-        this.#fraction = new Fraction().zero()
+        this.#fraction = new Fraction(0)
         this.#root = new Root()
         this.#count = 1
 
@@ -186,7 +186,7 @@ export class Solution implements IPiMathObject<Solution> {
         // Pure radical: delegate entirely to Root.fromString
         if (s.includes('sqrt') || s.includes('root')) {
             const sol = new Solution()
-            sol.#fraction = new Fraction().zero()
+            sol.#fraction = new Fraction(0)
             sol.#root = Root.fromString(s)
             sol.#exact = true
             return sol

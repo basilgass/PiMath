@@ -1,10 +1,11 @@
 import {Equation} from "../algebra/equation"
 import {Polynom} from "../algebra/polynom"
 import {Fraction} from "../coefficients/fraction"
+import {Root} from "../coefficients/root"
 import {Line3} from "./line3"
 import {Point} from "./point"
 import {Vector} from "./vector"
-import type {IPiMathObject, OutputStyle, Plane3Config, PlaneLineIntersection, PlanePlaneIntersection} from "../pimath.interface"
+import type {InputAlgebra, IPiMathObject, OutputStyle, Plane3Config, PlaneLineIntersection, PlanePlaneIntersection} from "../pimath.interface"
 import {DimensionError, ParseError} from "../errors"
 
 
@@ -36,11 +37,10 @@ export class Plane3 implements IPiMathObject<Plane3> {
     }
 
     /**
-     * Builds a plane from a cartesian equation. The equation is cloned before
-     * being mutated by `moveLeft`.
+     * Builds a plane from a cartesian equation (string or Equation).
      */
-    static fromEquation(equation: Equation): Plane3 {
-        const cartesian = equation.clone().moveLeft().reduce().left
+    static fromEquation(value: InputAlgebra<Equation>): Plane3 {
+        const cartesian = new Equation(value).moveLeft().reduce().left
 
         const a = cartesian.monomByVariable('x').coefficient
         const b = cartesian.monomByVariable('y').coefficient
@@ -58,6 +58,10 @@ export class Plane3 implements IPiMathObject<Plane3> {
             p.#point = new Point(0, 0, d.clone().divide(c).opposite())
         }
         return p
+    }
+
+    static fromString(str: string): Plane3 {
+        return Plane3.fromEquation(str)
     }
 
     static fromPoints(A: Point, B: Point, C: Point): Plane3 {
@@ -209,9 +213,11 @@ export class Plane3 implements IPiMathObject<Plane3> {
         return a90 - this.normal.angle(direction, true, radian)
     }
 
-    /** Euclidean distance from a point to this plane. */
-    distanceTo(point: Point): number {
-        return this.normal.dot(point).add(this.d).abs().value / this.normal.norm
+    /** Euclidean distance from a point to this plane, as an exact `Root`. */
+    distanceTo(point: Point): Root {
+        const numer = this.normal.dot(point).add(this.d).abs()
+        const normSquare = this.#normal.normSquare
+        return new Root().from(2, normSquare.inverse(), numer).reduce()
     }
 
     /**

@@ -171,7 +171,7 @@ export class Polynom implements IPiMathObject<Polynom>,
     }
 
     degree(variable?: string): Fraction {
-        let d: Fraction = new Fraction().zero()
+        let d: Fraction = new Fraction(0)
         for (const m of this.#monoms) {
             d = Fraction.max(m.degree(variable).value, d)
         }
@@ -312,7 +312,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
 
         // Exact accumulation as a Fraction.
-        const r = new Fraction().zero()
+        const r = new Fraction(0)
         this.#monoms.forEach(monom => {
             r.add(monom.evaluate(values, false))
         })
@@ -646,7 +646,7 @@ export class Polynom implements IPiMathObject<Polynom>,
         }
 
         if (!degree.isStrictlyPositive()) {
-            return new Fraction().zero()
+            return new Fraction(0)
         }
 
         // Limit at +∞: determined by the leading coefficient sign
