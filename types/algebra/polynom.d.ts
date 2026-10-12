@@ -1,4 +1,4 @@
-import type { IAlgebra, IAnalyse, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
+import type { IDisplayDigits, IAlgebra, IAnalyse, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
 import { Fraction } from "../coefficients";
 import { Monom } from './monom';
 import { Solution } from "../analyze/solution";
@@ -7,7 +7,7 @@ export interface IEuclidean {
     quotient: Polynom;
     reminder: Polynom;
 }
-export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Polynom>, IAnalyse<Polynom>, IAlgebra, IEvaluable {
+export declare class Polynom implements IPiMathObject<Polynom>, IDisplayDigits, IExpression<Polynom>, IAnalyse<Polynom>, IAlgebra, IEvaluable {
     #private;
     constructor(value: InputValue<Fraction>);
     constructor(value: string);
@@ -18,6 +18,7 @@ export declare class Polynom implements IPiMathObject<Polynom>, IExpression<Poly
     parse(inputStr: PolynomParsingType, ...values: InputAlgebra<Monom>[]): this;
     copy(value: Polynom): this;
     clone(): Polynom;
+    withDigits(digits: number | null): this;
     get tex(): string;
     get display(): string;
     static xMultiply(...polynoms: InputValue<Polynom>[]): Polynom;

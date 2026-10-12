@@ -5,7 +5,7 @@ import {Matrix} from "./matrix"
 import {Polynom} from "./polynom"
 import {Numeric} from "../numeric"
 import {Solution} from "../analyze"
-import {Vector} from "../geometry"
+import {Vector} from "../geometry/vector"
 import {assertDigits} from "../helpers"
 import {DimensionError, IndexError, NotImplementedError} from "../errors"
 

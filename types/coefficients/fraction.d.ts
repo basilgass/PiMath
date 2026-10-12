@@ -1,10 +1,10 @@
-import type { CompareSign, IExpression, InputValue, IPiMathObject } from "../pimath.interface";
+import type { CompareSign, IDisplayDigits, IExpression, InputValue, IPiMathObject } from "../pimath.interface";
 export declare enum FracType {
     frac = "frac",
     dfrac = "dfrac",
     tfrac = "tfrac"
 }
-export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction> {
+export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>, IDisplayDigits {
     #private;
     constructor();
     constructor(value: InputValue<Fraction>);
@@ -30,7 +30,7 @@ export declare class Fraction implements IPiMathObject<Fraction>, IExpression<Fr
     get denominator(): number;
     set denominator(value: number);
     get asDfrac(): this;
-    digits(value: number): this;
+    withDigits(digits: number | null): this;
     divide(F: InputValue<Fraction>): this;
     get exact(): boolean;
     set exact(value: boolean);

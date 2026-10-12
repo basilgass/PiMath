@@ -1,7 +1,7 @@
 import { Line } from "./line";
 import { Fraction, Root } from "../coefficients";
 import { Equation } from "../algebra";
-import { type InputAlgebra, type IPiMathObject } from "../pimath.interface";
+import { type IDisplayDigits, type InputAlgebra, type IPiMathObject } from "../pimath.interface";
 import { Point } from "./point";
 export declare enum CircleRelativePosition {
     INTERIOR = 0,
@@ -12,7 +12,7 @@ export declare enum CircleRelativePosition {
     SUPERPOSED = 5,
     CONCENTRIC = 6
 }
-export declare class Circle implements IPiMathObject<Circle> {
+export declare class Circle implements IPiMathObject<Circle>, IDisplayDigits {
     #private;
     constructor();
     constructor(equation: string | Equation);
@@ -22,6 +22,7 @@ export declare class Circle implements IPiMathObject<Circle> {
     constructor(A: Point, B: Point, C: Point);
     parse(...values: unknown[]): this;
     clone(): this;
+    withDigits(digits: number | null): this;
     copy(circle: Circle): this;
     get tex(): string;
     get display(): string;

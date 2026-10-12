@@ -1,14 +1,15 @@
-import type { IAlgebra, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
+import type { IDisplayDigits, IAlgebra, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
 import { Fraction } from "../coefficients";
 import { Factor } from "./factor";
 import { Polynom } from "./polynom";
 import type { Solution } from "../analyze";
-export declare class PolyFactor implements IPiMathObject<PolyFactor>, IExpression<PolyFactor>, IAlgebra, IEvaluable {
+export declare class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits, IExpression<PolyFactor>, IAlgebra, IEvaluable {
     #private;
     constructor(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]);
     parse(value: InputAlgebra<Polynom> | Factor | PolyFactor | string): this;
     copy(value: PolyFactor): this;
     clone(): PolyFactor;
+    withDigits(digits: number | null): this;
     get tex(): string;
     get display(): string;
     static gcd(...values: PolyFactor[]): PolyFactor;

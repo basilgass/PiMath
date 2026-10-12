@@ -14,6 +14,9 @@ export interface PolynomRoot {
     readonly exact: boolean;
     readonly multiplicity: number;
 }
+export interface IDisplayDigits {
+    withDigits(digits: number | null): this;
+}
 export interface IPiMathObject<T> {
     readonly display: string;
     readonly tex: string;
@@ -55,7 +58,7 @@ export interface IEvaluable {
     evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric?: false): Fraction;
     evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number;
 }
-export interface IMatrixElement<T> extends IPiMathObject<T>, IExpressionMultiply<T> {
+export interface IMatrixElement<T> extends IPiMathObject<T>, IExpressionMultiply<T>, IDisplayDigits {
     divide(value: InputValue<T>): T;
     readonly value: number | undefined;
 }

@@ -1,6 +1,6 @@
-import type { IAlgebra, IAnalyse, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
+import type { IDisplayDigits, IAlgebra, IAnalyse, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
 import { Fraction } from "../coefficients";
-export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra, IEvaluable {
+export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra, IEvaluable, IDisplayDigits {
     #private;
     constructor(value?: InputValue<Fraction>);
     constructor(value?: Monom);
@@ -11,6 +11,7 @@ export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, 
     static fromString(value: string): Monom;
     copy(value: Monom): this;
     clone(): Monom;
+    withDigits(digits: number | null): this;
     get tex(): string;
     get display(): string;
     static gcd(...monoms: Monom[]): Monom;

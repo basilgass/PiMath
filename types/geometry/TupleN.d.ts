@@ -1,9 +1,10 @@
 import { Fraction } from "../coefficients";
-import type { IPiMathObject } from "../pimath.interface";
-export declare abstract class TupleN implements IPiMathObject<TupleN> {
+import type { IDisplayDigits, IPiMathObject } from "../pimath.interface";
+export declare abstract class TupleN implements IPiMathObject<TupleN>, IDisplayDigits {
     #private;
     abstract clone(): TupleN;
     cloneCoordinates(): Fraction[];
+    withDigits(digits: number | null): this;
     abstract get tex(): string;
     abstract get display(): string;
     get array(): Fraction[];

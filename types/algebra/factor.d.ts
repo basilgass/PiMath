@@ -1,13 +1,14 @@
-import type { IAlgebra, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
+import type { IDisplayDigits, IAlgebra, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
 import { Fraction } from "../coefficients/fraction";
 import { Polynom } from "./polynom";
-export declare class Factor implements IPiMathObject<Factor>, IExpression<Factor>, IAlgebra, IEvaluable {
+export declare class Factor implements IPiMathObject<Factor>, IDisplayDigits, IExpression<Factor>, IAlgebra, IEvaluable {
     #private;
     constructor(value?: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>);
     parse(value: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>): this;
     static fromString(value: string): Factor;
     copy(value: Factor): this;
     clone(): Factor;
+    withDigits(digits: number | null): this;
     get tex(): string;
     get display(): string;
     add(): this;

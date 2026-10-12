@@ -4,8 +4,8 @@ import { Root } from "../coefficients/root";
 import { Line3 } from "./line3";
 import { Point } from "./point";
 import { Vector } from "./vector";
-import type { InputAlgebra, IPiMathObject, Plane3Config, PlaneLineIntersection, PlanePlaneIntersection } from "../pimath.interface";
-export declare class Plane3 implements IPiMathObject<Plane3> {
+import type { IDisplayDigits, InputAlgebra, IPiMathObject, Plane3Config, PlaneLineIntersection, PlanePlaneIntersection } from "../pimath.interface";
+export declare class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
     #private;
     constructor(config?: Plane3Config);
     static fromPointAndNormal(point: Point, normal: Vector): Plane3;
@@ -17,6 +17,7 @@ export declare class Plane3 implements IPiMathObject<Plane3> {
     parse(config: Plane3Config): this;
     copy(value: Plane3): this;
     clone(): this;
+    withDigits(digits: number | null): this;
     get tex(): string;
     get display(): string;
     get a(): Fraction;

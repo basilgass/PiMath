@@ -1,7 +1,7 @@
 import { Point } from "./point";
 import { Fraction } from "../coefficients";
 import { Equation } from "../algebra";
-import type { InputAlgebra, IPiMathObject, InputValue } from "../pimath.interface";
+import type { IDisplayDigits, InputAlgebra, IPiMathObject, InputValue } from "../pimath.interface";
 export declare enum Sphere3RelativePosition {
     INTERIOR = 0,
     EXTERIOR = 1,
@@ -11,7 +11,7 @@ export declare enum Sphere3RelativePosition {
     SUPERPOSED = 5,
     CONCENTRIC = 6
 }
-export declare class Sphere3 implements IPiMathObject<Sphere3> {
+export declare class Sphere3 implements IPiMathObject<Sphere3>, IDisplayDigits {
     #private;
     constructor();
     constructor(equation: string | Equation);
@@ -19,6 +19,7 @@ export declare class Sphere3 implements IPiMathObject<Sphere3> {
     constructor(center: Point, radius: InputValue<Fraction>, square?: boolean);
     parse(...values: unknown[]): this;
     clone(): this;
+    withDigits(digits: number | null): this;
     copy(sphere: Sphere3): this;
     static fromCenterRadius(center: Point, radius: InputValue<Fraction>, square?: boolean): Sphere3;
     static fromEquation(value: InputAlgebra<Equation>): Sphere3;

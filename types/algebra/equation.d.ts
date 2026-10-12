@@ -1,8 +1,8 @@
-import type { EquationSign, IAlgebra, IEquation, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
+import type { IDisplayDigits, EquationSign, IAlgebra, IEquation, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
 import { Fraction } from "../coefficients";
 import { Polynom } from "./polynom";
 import type { Solution } from "../analyze";
-export declare class Equation implements IPiMathObject<Equation>, IEquation<Equation>, IAlgebra {
+export declare class Equation implements IPiMathObject<Equation>, IDisplayDigits, IEquation<Equation>, IAlgebra {
     #private;
     constructor();
     constructor(equation: InputAlgebra<Polynom> | Equation);
@@ -12,6 +12,7 @@ export declare class Equation implements IPiMathObject<Equation>, IEquation<Equa
     static fromPolynoms(left: InputAlgebra<Polynom>, right: InputAlgebra<Polynom>, sign?: EquationSign): Equation;
     copy(value: Equation): this;
     clone(): Equation;
+    withDigits(digits: number | null): this;
     get tex(): string;
     get display(): string;
     static isEquationString(equationString: string): boolean;

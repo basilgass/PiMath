@@ -1,6 +1,6 @@
-import type { IMatrixElement, InputAlgebra, InputValue } from "../pimath.interface";
+import type { IDisplayDigits, IMatrixElement, InputAlgebra, InputValue } from "../pimath.interface";
 import { Vector } from "../geometry/vector";
-export declare abstract class AbstractMatrix<T extends IMatrixElement<T>> {
+export declare abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDisplayDigits {
     #private;
     protected abstract createElement(value?: InputValue<T>): T;
     protected abstract createInstance(): this;
@@ -47,7 +47,7 @@ export declare abstract class AbstractMatrix<T extends IMatrixElement<T>> {
     get rows(): T[][];
     setValue(row: number, column: number, value: InputValue<T>): this;
     subtract(value: AbstractMatrix<T>): this;
-    toFixed(value: number): this;
+    withDigits(digits: number | null): this;
     transpose(): this;
     get values(): T[][];
     withPartition(col: number): this;

@@ -1,10 +1,11 @@
-import type { InputValue, IPiMathObject } from "../pimath.interface";
+import type { IDisplayDigits, InputValue, IPiMathObject } from "../pimath.interface";
 import { Fraction } from "../coefficients";
 import { Root } from "../coefficients/root";
 import type { PolynomRoot } from "../pimath.interface";
-export declare class Solution implements IPiMathObject<Solution> {
+export declare class Solution implements IPiMathObject<Solution>, IDisplayDigits {
     #private;
     constructor(value?: string | Fraction | Root | PolynomRoot | Solution);
+    withDigits(digits: number | null): this;
     get tex(): string;
     set tex(value: string | null);
     get display(): string;

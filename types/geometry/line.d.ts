@@ -1,10 +1,10 @@
 import { Fraction } from "../coefficients";
 import { Equation } from "../algebra";
 import { Vector } from "./vector";
-import { type InputAlgebra, type InputValue, type IPiMathObject, type LineIntersection, LineProperty } from "../pimath.interface";
+import { type IDisplayDigits, type InputAlgebra, type InputValue, type IPiMathObject, type LineIntersection, LineProperty } from "../pimath.interface";
 import { Point } from "./point";
 import { Root } from "../coefficients/root";
-export declare class Line implements IPiMathObject<Line> {
+export declare class Line implements IPiMathObject<Line>, IDisplayDigits {
     #private;
     static PARALLEL: LineProperty;
     static PERPENDICULAR: LineProperty;
@@ -23,7 +23,7 @@ export declare class Line implements IPiMathObject<Line> {
     get asMxh(): this;
     get asParametric(): this;
     get asSystem(): this;
-    withDecimals(n?: number): this;
+    withDigits(digits: number | null): this;
     get b(): Fraction;
     set b(value: Fraction);
     get c(): Fraction;

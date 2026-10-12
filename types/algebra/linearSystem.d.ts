@@ -1,11 +1,11 @@
-import type { IAlgebra, IEquation, InputValue, IPiMathObject } from "../pimath.interface";
+import type { IAlgebra, IDisplayDigits, IEquation, InputValue, IPiMathObject } from "../pimath.interface";
 import { Fraction } from "../coefficients";
 import { Equation } from "./equation";
 import { Matrix } from "./matrix";
 import { Polynom } from "./polynom";
 import { Solution } from "../analyze";
-import { Vector } from "../geometry";
-export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquation<LinearSystem>, IAlgebra {
+import { Vector } from "../geometry/vector";
+export declare class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits, IEquation<LinearSystem>, IAlgebra {
     #private;
     constructor(...values: (string | Equation)[]);
     parse(...inputs: (string | Equation)[]): this;
@@ -15,6 +15,7 @@ export declare class LinearSystem implements IPiMathObject<LinearSystem>, IEquat
     fromVectors(...vectors: Vector[]): this;
     copy(): this;
     clone(): LinearSystem;
+    withDigits(digits: number | null): this;
     get tex(): string;
     get display(): string;
     static solutionAsDisplay(value: Solution[]): string;

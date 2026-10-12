@@ -1,8 +1,8 @@
 import { Root } from "../coefficients/root";
 import { Vector } from "./vector";
 import { Point } from "./point";
-import { type IPiMathObject, type LineIntersection } from "../pimath.interface";
-export declare class Line3 implements IPiMathObject<Line3> {
+import { type IDisplayDigits, type IPiMathObject, type LineIntersection } from "../pimath.interface";
+export declare class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
     #private;
     constructor();
     constructor(A: Point, B: Point);
@@ -13,6 +13,7 @@ export declare class Line3 implements IPiMathObject<Line3> {
     parse(A: Point, d: Vector): this;
     copy(value: Line3): this;
     clone(): this;
+    withDigits(digits: number | null): this;
     get asParametric(): this;
     get asSystem(): this;
     get asCartesian(): this;
