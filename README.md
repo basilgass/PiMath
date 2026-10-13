@@ -2,6 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/pimath.svg)](https://www.npmjs.com/package/pimath)
 [![license](https://img.shields.io/github/license/basilgass/PiMath.svg)](LICENSE.md)
+[![tests](https://github.com/basilgass/PiMath/actions/workflows/ci.yml/badge.svg)](https://github.com/basilgass/PiMath/actions/workflows/ci.yml)
 [![docs](https://img.shields.io/badge/docs-online-blue.svg)](https://basilgass.github.io/PiMath/)
 
 **Math exercises in your hands.** PiMath is a TypeScript library to create, compute and display mathematics, and to generate random exercises, with LaTeX output.
