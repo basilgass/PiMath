@@ -79,13 +79,13 @@ export const completions: PiMathCompletions = {
             "label": "LogicalSet",
             "type": "class",
             "detail": "(value?: string)",
-            "info": "Represents a logical set expression (e.g. `A & B | !C`), stored internally\r\nas a Reverse Polish Notation sequence. Supports LaTeX and AsciiMath rendering,\r\nboolean evaluation, and Venn diagram zone computation.\r\n\r\nOperator precedence (set by the `piexpression` parser, not by this class): `!` binds\r\nfirst, then `&` and `|` at the same level, applied from left to right, then `-`\r\n(set difference, also left to right). So `A|B&C` is `(A|B)&C`, not `A|(B&C)`, and\r\n`A-B&C` is `A-(B&C)`. Use parentheses to write any other grouping."
+            "info": "Represents a logical set expression (e.g. `A & B | !C`), stored internally\nas a Reverse Polish Notation sequence. Supports LaTeX and AsciiMath rendering,\nboolean evaluation, and Venn diagram zone computation.\n\nOperator precedence (set by the `piexpression` parser, not by this class): `!` binds\nfirst, then `&` and `|` at the same level, applied from left to right, then `-`\n(set difference, also left to right). So `A|B&C` is `(A|B)&C`, not `A|(B&C)`, and\n`A-B&C` is `A-(B&C)`. Use parentheses to write any other grouping."
         },
         {
             "label": "Solution",
             "type": "class",
             "detail": "(value?: string | Fraction | Root | PolynomRoot | Solution)",
-            "info": "An equation / polynomial root as an exact decomposed value: a rational part\r\n(`#fraction`) plus a radical part (`#root`).\r\n\r\nInvariant (maintained by the producers, not enforced by the type): `#fraction`\r\ncarries every rational part, and `#root` is either zero or a *genuinely\r\nirrational* radical — never a perfect-power radical that would reduce to a\r\nrational. `EquationSolver` / `fromQuadratic` only build a radical on the\r\nnon-square-discriminant branch, so a non-zero `#root` always accompanies a\r\ntruly irrational value.\r\n\r\nThe `tex` / `display` composition relies on this: it runs the two-part\r\n`(numerator ± radical)/denominator` layout only when both parts are non-zero,\r\ni.e. on a real irrational. It does not re-simplify a manually built\r\nperfect-power radical (e.g. `#fraction = 1`, `#root = √4`), which would render\r\nas the unsimplified `1 +2` — an incoherent state the producers never create."
+            "info": "An equation / polynomial root as an exact decomposed value: a rational part\n(`#fraction`) plus a radical part (`#root`).\n\nInvariant (maintained by the producers, not enforced by the type): `#fraction`\ncarries every rational part, and `#root` is either zero or a *genuinely\nirrational* radical — never a perfect-power radical that would reduce to a\nrational. `EquationSolver` / `fromQuadratic` only build a radical on the\nnon-square-discriminant branch, so a non-zero `#root` always accompanies a\ntruly irrational value.\n\nThe `tex` / `display` composition relies on this: it runs the two-part\n`(numerator ± radical)/denominator` layout only when both parts are non-zero,\ni.e. on a real irrational. It does not re-simplify a manually built\nperfect-power radical (e.g. `#fraction = 1`, `#root = √4`), which would render\nas the unsimplified `1 +2` — an incoherent state the producers never create."
         },
         {
             "label": "TableOfSigns",
@@ -103,7 +103,7 @@ export const completions: PiMathCompletions = {
             "label": "Domain",
             "type": "class",
             "detail": "(value?: string | Domain | Interval)",
-            "info": "A (possibly empty) subset of ℝ represented as a finite union of intervals.\r\nThe internal interval list is always sorted and non-overlapping (normalized).\r\n\r\nConstruct via `new Domain()`, `new Domain(string)`, `new Domain(interval)`,\r\n`new Domain(domain)`, or the static factories `fromIntervals`, `fromInterval`,\r\n`empty`, `real`, `fromString`."
+            "info": "A (possibly empty) subset of ℝ represented as a finite union of intervals.\nThe internal interval list is always sorted and non-overlapping (normalized).\n\nConstruct via `new Domain()`, `new Domain(string)`, `new Domain(interval)`,\n`new Domain(domain)`, or the static factories `fromIntervals`, `fromInterval`,\n`empty`, `real`, `fromString`."
         },
         {
             "label": "Random",
@@ -132,13 +132,13 @@ export const completions: PiMathCompletions = {
             "label": "Triangle",
             "type": "class",
             "detail": "(...values: unknown[])",
-            "info": "A triangle `ABC` of the plane. Built from three points, three lines, or six coordinates. It gives the sides,\r\nthe angles and the remarkable lines (medians, heights, mediators, bisectors) with exact coordinates.\r\n`tex` and `display` are not available: describe a triangle through its vertices or its {@link lines}."
+            "info": "A triangle `ABC` of the plane. Built from three points, three lines, or six coordinates. It gives the sides,\nthe angles and the remarkable lines (medians, heights, mediators, bisectors) with exact coordinates.\n`tex` and `display` are not available: describe a triangle through its vertices or its {@link lines}."
         },
         {
             "label": "Circle",
             "type": "class",
             "detail": "() (+5)",
-            "info": "A circle of the plane, stored by its center and the square of its radius, so that everything stays exact.\r\nBuilt from an equation (`\"(x-1)^2+(y+2)^2=9\"`), from a center and a radius, from a center and a point of\r\nthe circle, or from three points."
+            "info": "A circle of the plane, stored by its center and the square of its radius, so that everything stays exact.\nBuilt from an equation (`\"(x-1)^2+(y+2)^2=9\"`), from a center and a radius, from a center and a point of\nthe circle, or from three points."
         },
         {
             "label": "Line3",
@@ -150,7 +150,7 @@ export const completions: PiMathCompletions = {
             "label": "Plane3",
             "type": "class",
             "detail": "(config?: Plane3Config)",
-            "info": "A plane of space, stored by a point and a normal vector. Built from a configuration object with one of:\r\n`point` and `normal`, `point` and two `directions`, an `equation`, three `points`, or four `coefficients`\r\n`[a, b, c, d]` of `ax + by + cz + d = 0`."
+            "info": "A plane of space, stored by a point and a normal vector. Built from a configuration object with one of:\n`point` and `normal`, `point` and two `directions`, an `equation`, three `points`, or four `coefficients`\n`[a, b, c, d]` of `ax + by + cz + d = 0`."
         },
         {
             "label": "Sphere3",
@@ -289,13 +289,13 @@ export const completions: PiMathCompletions = {
                 "label": "LogicalSet",
                 "type": "class",
                 "detail": "(value?: string)",
-                "info": "Represents a logical set expression (e.g. `A & B | !C`), stored internally\r\nas a Reverse Polish Notation sequence. Supports LaTeX and AsciiMath rendering,\r\nboolean evaluation, and Venn diagram zone computation.\r\n\r\nOperator precedence (set by the `piexpression` parser, not by this class): `!` binds\r\nfirst, then `&` and `|` at the same level, applied from left to right, then `-`\r\n(set difference, also left to right). So `A|B&C` is `(A|B)&C`, not `A|(B&C)`, and\r\n`A-B&C` is `A-(B&C)`. Use parentheses to write any other grouping."
+                "info": "Represents a logical set expression (e.g. `A & B | !C`), stored internally\nas a Reverse Polish Notation sequence. Supports LaTeX and AsciiMath rendering,\nboolean evaluation, and Venn diagram zone computation.\n\nOperator precedence (set by the `piexpression` parser, not by this class): `!` binds\nfirst, then `&` and `|` at the same level, applied from left to right, then `-`\n(set difference, also left to right). So `A|B&C` is `(A|B)&C`, not `A|(B&C)`, and\n`A-B&C` is `A-(B&C)`. Use parentheses to write any other grouping."
             },
             {
                 "label": "Solution",
                 "type": "class",
                 "detail": "(value?: string | Fraction | Root | PolynomRoot | Solution)",
-                "info": "An equation / polynomial root as an exact decomposed value: a rational part\r\n(`#fraction`) plus a radical part (`#root`).\r\n\r\nInvariant (maintained by the producers, not enforced by the type): `#fraction`\r\ncarries every rational part, and `#root` is either zero or a *genuinely\r\nirrational* radical — never a perfect-power radical that would reduce to a\r\nrational. `EquationSolver` / `fromQuadratic` only build a radical on the\r\nnon-square-discriminant branch, so a non-zero `#root` always accompanies a\r\ntruly irrational value.\r\n\r\nThe `tex` / `display` composition relies on this: it runs the two-part\r\n`(numerator ± radical)/denominator` layout only when both parts are non-zero,\r\ni.e. on a real irrational. It does not re-simplify a manually built\r\nperfect-power radical (e.g. `#fraction = 1`, `#root = √4`), which would render\r\nas the unsimplified `1 +2` — an incoherent state the producers never create."
+                "info": "An equation / polynomial root as an exact decomposed value: a rational part\n(`#fraction`) plus a radical part (`#root`).\n\nInvariant (maintained by the producers, not enforced by the type): `#fraction`\ncarries every rational part, and `#root` is either zero or a *genuinely\nirrational* radical — never a perfect-power radical that would reduce to a\nrational. `EquationSolver` / `fromQuadratic` only build a radical on the\nnon-square-discriminant branch, so a non-zero `#root` always accompanies a\ntruly irrational value.\n\nThe `tex` / `display` composition relies on this: it runs the two-part\n`(numerator ± radical)/denominator` layout only when both parts are non-zero,\ni.e. on a real irrational. It does not re-simplify a manually built\nperfect-power radical (e.g. `#fraction = 1`, `#root = √4`), which would render\nas the unsimplified `1 +2` — an incoherent state the producers never create."
             },
             {
                 "label": "TableOfSigns",
@@ -313,7 +313,7 @@ export const completions: PiMathCompletions = {
                 "label": "Domain",
                 "type": "class",
                 "detail": "(value?: string | Domain | Interval)",
-                "info": "A (possibly empty) subset of ℝ represented as a finite union of intervals.\r\nThe internal interval list is always sorted and non-overlapping (normalized).\r\n\r\nConstruct via `new Domain()`, `new Domain(string)`, `new Domain(interval)`,\r\n`new Domain(domain)`, or the static factories `fromIntervals`, `fromInterval`,\r\n`empty`, `real`, `fromString`."
+                "info": "A (possibly empty) subset of ℝ represented as a finite union of intervals.\nThe internal interval list is always sorted and non-overlapping (normalized).\n\nConstruct via `new Domain()`, `new Domain(string)`, `new Domain(interval)`,\n`new Domain(domain)`, or the static factories `fromIntervals`, `fromInterval`,\n`empty`, `real`, `fromString`."
             },
             {
                 "label": "Random",
@@ -359,13 +359,13 @@ export const completions: PiMathCompletions = {
                 "label": "Triangle",
                 "type": "class",
                 "detail": "(...values: unknown[])",
-                "info": "A triangle `ABC` of the plane. Built from three points, three lines, or six coordinates. It gives the sides,\r\nthe angles and the remarkable lines (medians, heights, mediators, bisectors) with exact coordinates.\r\n`tex` and `display` are not available: describe a triangle through its vertices or its {@link lines}."
+                "info": "A triangle `ABC` of the plane. Built from three points, three lines, or six coordinates. It gives the sides,\nthe angles and the remarkable lines (medians, heights, mediators, bisectors) with exact coordinates.\n`tex` and `display` are not available: describe a triangle through its vertices or its {@link lines}."
             },
             {
                 "label": "Circle",
                 "type": "class",
                 "detail": "() (+5)",
-                "info": "A circle of the plane, stored by its center and the square of its radius, so that everything stays exact.\r\nBuilt from an equation (`\"(x-1)^2+(y+2)^2=9\"`), from a center and a radius, from a center and a point of\r\nthe circle, or from three points."
+                "info": "A circle of the plane, stored by its center and the square of its radius, so that everything stays exact.\nBuilt from an equation (`\"(x-1)^2+(y+2)^2=9\"`), from a center and a radius, from a center and a point of\nthe circle, or from three points."
             },
             {
                 "label": "Line3",
@@ -377,7 +377,7 @@ export const completions: PiMathCompletions = {
                 "label": "Plane3",
                 "type": "class",
                 "detail": "(config?: Plane3Config)",
-                "info": "A plane of space, stored by a point and a normal vector. Built from a configuration object with one of:\r\n`point` and `normal`, `point` and two `directions`, an `equation`, three `points`, or four `coefficients`\r\n`[a, b, c, d]` of `ax + by + cz + d = 0`."
+                "info": "A plane of space, stored by a point and a normal vector. Built from a configuration object with one of:\n`point` and `normal`, `point` and two `directions`, an `equation`, three `points`, or four `coefficients`\n`[a, b, c, d]` of `ax + by + cz + d = 0`."
             },
             {
                 "label": "Sphere3",
@@ -773,7 +773,7 @@ export const completions: PiMathCompletions = {
                 "label": "fromString",
                 "type": "method",
                 "detail": "(value: string): LogicalSet",
-                "info": "Build a set expression from a string such as `\"A&B|!C\"` (`&` intersection, `|` union, `!` complement,\r\n`-` difference).\n\nThrows: {ParseError} if the expression is malformed."
+                "info": "Build a set expression from a string such as `\"A&B|!C\"` (`&` intersection, `|` union, `!` complement,\n`-` difference).\n\nThrows: {ParseError} if the expression is malformed."
             }
         ],
         "Solution": [
@@ -799,13 +799,13 @@ export const completions: PiMathCompletions = {
                 "label": "fromQuadratic",
                 "type": "method",
                 "detail": "(A: InputValue<Fraction>, B: InputValue<Fraction>, C: InputValue<Fraction>): Solution[]",
-                "info": "Solve A·x² + B·x + C = 0. Returns `[]` when the discriminant is negative,\r\na single solution (with `count === 2`) for a double root, otherwise the two\r\nsolutions. Irrational roots are kept exact (index-2 `Root`)."
+                "info": "Solve A·x² + B·x + C = 0. Returns `[]` when the discriminant is negative,\na single solution (with `count === 2`) for a double root, otherwise the two\nsolutions. Irrational roots are kept exact (index-2 `Root`)."
             },
             {
                 "label": "fromString",
                 "type": "method",
                 "detail": "(value: string): Solution",
-                "info": "Parse a string representation of a solution. Three strict forms:\r\n\r\n- Pure rational : `2/5`, `-3`, `1.23`\r\n- Pure radical  : `sqrt(5)`, `-2sqrt(3)`, `sqrt(5)/3`, `2sqrt(3)/5`\r\n- Combined      : `(-1+sqrt(5))/2`, `(3-2sqrt(7))/4`\n\nThrows: {ParseError} if the string matches none of the supported forms."
+                "info": "Parse a string representation of a solution. Three strict forms:\n\n- Pure rational : `2/5`, `-3`, `1.23`\n- Pure radical  : `sqrt(5)`, `-2sqrt(3)`, `sqrt(5)/3`, `2sqrt(3)/5`\n- Combined      : `(-1+sqrt(5))/2`, `(3-2sqrt(7))/4`\n\nThrows: {ParseError} if the string matches none of the supported forms."
             }
         ],
         "TableOfSigns": [
@@ -889,7 +889,7 @@ export const completions: PiMathCompletions = {
                 "label": "fromString",
                 "type": "method",
                 "detail": "(value: string): Domain",
-                "info": "Parse a French-notation domain string.\r\n\r\nSupported forms:\r\n- `O/`                          → ∅\r\n- `RR`                          → ℝ\r\n- `RR^**`                       → ℝ* = ]-∞;0[ ∪ ]0;+∞[\r\n- `RR\\{a;b;…}`                  → ℝ minus a finite set of points\r\n- `{a}`                          → closed singleton (delegated to Interval.fromString)\r\n- `{a;b;…}`                     → union of closed singletons\r\n- `I1uuI2uu…`                   → union of intervals (each parsed via Interval.fromString)\r\n- Any single-interval string    → delegated to Interval.fromString\n\nThrows: {ParseError} on unrecognised format."
+                "info": "Parse a French-notation domain string.\n\nSupported forms:\n- `O/`                          → ∅\n- `RR`                          → ℝ\n- `RR^**`                       → ℝ* = ]-∞;0[ ∪ ]0;+∞[\n- `RR\\{a;b;…}`                  → ℝ minus a finite set of points\n- `{a}`                          → closed singleton (delegated to Interval.fromString)\n- `{a;b;…}`                     → union of closed singletons\n- `I1uuI2uu…`                   → union of intervals (each parsed via Interval.fromString)\n- Any single-interval string    → delegated to Interval.fromString\n\nThrows: {ParseError} on unrecognised format."
             }
         ],
         "Vector": [
@@ -1098,7 +1098,7 @@ export const completions: PiMathCompletions = {
                 "label": "fromCoefficients",
                 "type": "method",
                 "detail": "(a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>, d: InputValue<Fraction>): Plane3",
-                "info": "Builds a plane from four cartesian coefficients `[a, b, c, d]` where the\r\nequation is `ax + by + cz + d = 0`."
+                "info": "Builds a plane from four cartesian coefficients `[a, b, c, d]` where the\nequation is `ax + by + cz + d = 0`."
             }
         ],
         "Sphere3": [
@@ -1247,13 +1247,13 @@ export const completions: PiMathCompletions = {
                 "label": "decompose",
                 "type": "function",
                 "detail": "(value: number): number[][]",
-                "info": "Split a value into all its factor pairs [u, v] such that u * v = value.\r\nPairs the smallest remaining divider with the largest; a perfect-square\r\nmiddle divider is paired with itself (e.g. 25 -> [[1, 25], [5, 5]]).\n\nThrows: {InvalidArgumentError} if value is not a finite integer (propagated from dividers)."
+                "info": "Split a value into all its factor pairs [u, v] such that u * v = value.\nPairs the smallest remaining divider with the largest; a perfect-square\nmiddle divider is paired with itself (e.g. 25 -> [[1, 25], [5, 5]]).\n\nThrows: {InvalidArgumentError} if value is not a finite integer (propagated from dividers)."
             },
             {
                 "label": "dividers",
                 "type": "function",
                 "detail": "(value: number): number[]",
-                "info": "Get the sorted list of all (unique) dividers of an integer. Returns [] for 0\r\n(every integer divides 0; there is no finite list to return).\n\nThrows: {InvalidArgumentError} if value is not a finite integer."
+                "info": "Get the sorted list of all (unique) dividers of an integer. Returns [] for 0\n(every integer divides 0; there is no finite list to return).\n\nThrows: {InvalidArgumentError} if value is not a finite integer."
             },
             {
                 "label": "divideNumbersByGCD",
@@ -1265,19 +1265,19 @@ export const completions: PiMathCompletions = {
                 "label": "gcd",
                 "type": "function",
                 "detail": "(...values: number[]): number",
-                "info": "Greatest common divisor of the given integers. Always positive; the gcd of an\r\nempty list, or of a single 0, is 1."
+                "info": "Greatest common divisor of the given integers. Always positive; the gcd of an\nempty list, or of a single 0, is 1."
             },
             {
                 "label": "lcm",
                 "type": "function",
                 "detail": "(...values: number[]): number",
-                "info": "Least common multiple of the given integers. Computed as a / gcd * b to avoid\r\noverflowing MAX_SAFE_INTEGER; returns 0 when any value is 0."
+                "info": "Least common multiple of the given integers. Computed as a / gcd * b to avoid\noverflowing MAX_SAFE_INTEGER; returns 0 when any value is 0."
             },
             {
                 "label": "numberCorrection",
                 "type": "function",
                 "detail": "(value: number, number_of_digits?: number): number",
-                "info": "Round away floating point representation noise (e.g. 0.1 + 0.2 -> 0.3).\r\nContrast with {@link round}, which rescales via `1e{n}` string exponents to\r\nsupport arbitrary (including negative) decimals; this one trims noise through\r\ntoFixed on a fixed [0, 100] digit range."
+                "info": "Round away floating point representation noise (e.g. 0.1 + 0.2 -> 0.3).\nContrast with {@link round}, which rescales via `1e{n}` string exponents to\nsupport arbitrary (including negative) decimals; this one trims noise through\ntoFixed on a fixed [0, 100] digit range."
             },
             {
                 "label": "primes",
@@ -1289,25 +1289,25 @@ export const completions: PiMathCompletions = {
                 "label": "pythagoreanTripletsWithTarget",
                 "type": "function",
                 "detail": "(target: number, targetIsSquare?: boolean): [number, number, number][]",
-                "info": "Find every pythagorean triplet [u, v, hypotenuse] with u^2 + v^2 = hypotenuse^2.\r\nBoth (u, v) and (v, u) orderings and zero legs are returned; callers filter them.\r\ntarget 0 yields the single triplet [0, 0, 0].\n\nThrows: {InvalidArgumentError} if target is negative or not a finite integer."
+                "info": "Find every pythagorean triplet [u, v, hypotenuse] with u^2 + v^2 = hypotenuse^2.\nBoth (u, v) and (v, u) orderings and zero legs are returned; callers filter them.\ntarget 0 yields the single triplet [0, 0, 0].\n\nThrows: {InvalidArgumentError} if target is negative or not a finite integer."
             },
             {
                 "label": "round",
                 "type": "function",
                 "detail": "(value: number, decimals?: number): number",
-                "info": "Round a value to a given number of decimals. Negative decimals round to\r\ntens, hundreds, etc. Contrast with {@link numberCorrection}, which trims\r\nfloating point noise through toFixed rather than rescaling."
+                "info": "Round a value to a given number of decimals. Negative decimals round to\ntens, hundreds, etc. Contrast with {@link numberCorrection}, which trims\nfloating point noise through toFixed rather than rescaling."
             },
             {
                 "label": "greatestPower",
                 "type": "function",
                 "detail": "(value: number, index: number): number",
-                "info": "Get the greatest perfect power of the given index that divides value\r\n(e.g. greatestPower(50, 2) = 25). Returns 1 when none exists, when\r\nindex <= 0, or for value 0 (nothing to extract).\r\n\r\nA negative value with an odd index propagates the sign so callers can pull\r\nit out of a radical (e.g. greatestPower(-8, 3) = -8, greatestPower(-40, 3)\r\n= -8). A negative value with an even index returns 1 (an even root of a\r\nnegative is not real, nothing to extract)."
+                "info": "Get the greatest perfect power of the given index that divides value\n(e.g. greatestPower(50, 2) = 25). Returns 1 when none exists, when\nindex <= 0, or for value 0 (nothing to extract).\n\nA negative value with an odd index propagates the sign so callers can pull\nit out of a radical (e.g. greatestPower(-8, 3) = -8, greatestPower(-40, 3)\n= -8). A negative value with an even index returns 1 (an even root of a\nnegative is not real, nothing to extract)."
             },
             {
                 "label": "nthRoot",
                 "type": "function",
                 "detail": "(value: number, index: number): number",
-                "info": "Exact integer nth root of a perfect index-th power (e.g. nthRoot(8, 3) = 2),\r\navoiding Math.pow floating-point noise. Falls back to the real root when\r\n`value` is not a perfect power. Handles negative values for odd indices;\r\nnthRoot(0, index) is 0. Returns NaN when index <= 0 or for an even root of a\r\nnegative value."
+                "info": "Exact integer nth root of a perfect index-th power (e.g. nthRoot(8, 3) = 2),\navoiding Math.pow floating-point noise. Falls back to the real root when\n`value` is not a perfect power. Handles negative values for odd indices;\nnthRoot(0, index) is 0. Returns NaN when index <= 0 or for an even root of a\nnegative value."
             }
         ]
     },
@@ -1867,7 +1867,7 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "fraction.reduced",
@@ -1879,19 +1879,19 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.allow.zero",
@@ -1939,7 +1939,7 @@ export const completions: PiMathCompletions = {
                 "path": "solution.allowZero",
                 "type": "boolean",
                 "default": "true",
-                "description": "Allow 0 as a solution (default `true`). It lives in `solution` rather than in `allow`: it constrains the\r\nsolutions of the equation, not its coefficients."
+                "description": "Allow 0 as a solution (default `true`). It lives in `solution` rather than in `allow`: it constrains the\nsolutions of the equation, not its coefficients."
             },
             {
                 "path": "solution.relative",
@@ -1951,7 +1951,7 @@ export const completions: PiMathCompletions = {
                 "path": "solution.range",
                 "type": "RandomRange",
                 "default": "5",
-                "description": "Interval of the solutions, and of the constant added by `nothing` (default `5`, i.e. `[-5, 5]`): a number\r\n`d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds. Fractional solutions follow the `fraction`\r\nconfiguration, within this interval."
+                "description": "Interval of the solutions, and of the constant added by `nothing` (default `5`, i.e. `[-5, 5]`): a number\n`d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds. Fractional solutions follow the `fraction`\nconfiguration, within this interval."
             },
             {
                 "path": "solution.nothing",
@@ -1983,7 +1983,7 @@ export const completions: PiMathCompletions = {
                 "path": "commonConstant",
                 "type": "boolean",
                 "default": "undefined",
-                "description": "Only for `factorable: true`. `undefined` (default): a non-unit integer constant factor is sometimes added;\r\n`false`: never; `true`: always, with an absolute value of at least 2. Contradicts `allow.commonFactor: false`\r\n(which asks for no common factor at all) and throws with it."
+                "description": "Only for `factorable: true`. `undefined` (default): a non-unit integer constant factor is sometimes added;\n`false`: never; `true`: always, with an absolute value of at least 2. Contradicts `allow.commonFactor: false`\n(which asks for no common factor at all) and throws with it."
             },
             {
                 "path": "degree",
@@ -2013,7 +2013,7 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "fraction.reduced",
@@ -2025,19 +2025,19 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.allow.zero",
@@ -2091,7 +2091,7 @@ export const completions: PiMathCompletions = {
                 "path": "allow.commonFactor",
                 "type": "boolean",
                 "default": "true",
-                "description": "Allow a common factor between the integer coefficients (default `true`); `false` divides it out, and with\r\n`factorable` also adds no constant factor. The division is skipped with fractions."
+                "description": "Allow a common factor between the integer coefficients (default `true`); `false` divides it out, and with\n`factorable` also adds no constant factor. The division is skipped with fractions."
             }
         ],
         "Random.monom": [
@@ -2105,7 +2105,7 @@ export const completions: PiMathCompletions = {
                 "path": "fraction",
                 "type": "boolean | RandomCoefficientConfig",
                 "default": "false",
-                "description": "Coefficient: `false` (default) gives an integer, `true` allows fractions,\r\nan object gives full control over the coefficient."
+                "description": "Coefficient: `false` (default) gives an integer, `true` allows fractions,\nan object gives full control over the coefficient."
             },
             {
                 "path": "fraction.max",
@@ -2117,7 +2117,7 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "fraction.reduced",
@@ -2129,19 +2129,19 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.allow.zero",
@@ -2185,7 +2185,7 @@ export const completions: PiMathCompletions = {
                 "path": "relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "reduced",
@@ -2197,19 +2197,19 @@ export const completions: PiMathCompletions = {
                 "path": "range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "allow.zero",
@@ -2235,7 +2235,7 @@ export const completions: PiMathCompletions = {
                 "path": "axis",
                 "type": "boolean | \"x\" | \"y\" | null",
                 "default": "null",
-                "description": "Where the point lies relative to the axes (default `null`).\r\n- `'x'`: on the x-axis (`y = 0`); `'y'`: on the y-axis (`x = 0`).\r\n- `true`: on one of the two axes, chosen at random.\r\n- `false`: on no axis (no coordinate is zero).\r\n- `null`: unconstrained (a coordinate may be zero)."
+                "description": "Where the point lies relative to the axes (default `null`).\n- `'x'`: on the x-axis (`y = 0`); `'y'`: on the y-axis (`x = 0`).\n- `true`: on one of the two axes, chosen at random.\n- `false`: on no axis (no coordinate is zero).\n- `null`: unconstrained (a coordinate may be zero)."
             },
             {
                 "path": "fraction",
@@ -2253,7 +2253,7 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "fraction.reduced",
@@ -2265,19 +2265,19 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.allow.zero",
@@ -2301,25 +2301,25 @@ export const completions: PiMathCompletions = {
                 "path": "range",
                 "type": "RandomRange",
                 "default": "10",
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "quadrant",
                 "type": "Quadrant | Quadrant[] | null",
                 "default": "null",
-                "description": "Restricts the point to one quadrant, or to a union of quadrants (default `null`).\r\nAxes belong to the quadrants: quadrant 1 means `x >= 0` and `y >= 0`.\r\nWith several quadrants, one of them is chosen uniformly, then the point is drawn in it."
+                "description": "Restricts the point to one quadrant, or to a union of quadrants (default `null`).\nAxes belong to the quadrants: quadrant 1 means `x >= 0` and `y >= 0`.\nWith several quadrants, one of them is chosen uniformly, then the point is drawn in it."
             },
             {
                 "path": "allow.origin",
@@ -2333,13 +2333,13 @@ export const completions: PiMathCompletions = {
                 "path": "axis",
                 "type": "boolean | \"x\" | \"y\" | \"z\" | null",
                 "default": "null",
-                "description": "Where the point lies relative to the axes (default `null`).\r\n- `'x'`, `'y'`, `'z'`: on that axis (the two other coordinates are zero).\r\n- `true`: on one of the three axes, chosen at random.\r\n- `false`: on no axis and in no coordinate plane (no coordinate is zero).\r\n- `null`: unconstrained (a coordinate may be zero).\r\n\r\nExclusive with `plane`."
+                "description": "Where the point lies relative to the axes (default `null`).\n- `'x'`, `'y'`, `'z'`: on that axis (the two other coordinates are zero).\n- `true`: on one of the three axes, chosen at random.\n- `false`: on no axis and in no coordinate plane (no coordinate is zero).\n- `null`: unconstrained (a coordinate may be zero).\n\nExclusive with `plane`."
             },
             {
                 "path": "plane",
                 "type": "boolean | \"xy\" | \"xz\" | \"yz\" | null",
                 "default": "null",
-                "description": "Coordinate plane containing the point (default `null`).\r\n- `'xy'` (`z = 0`), `'xz'` (`y = 0`), `'yz'` (`x = 0`): the other two coordinates are free.\r\n- `true`: in one of the three planes, chosen at random.\r\n- `false` / `null`: no constraint.\r\n\r\nExclusive with `axis`."
+                "description": "Coordinate plane containing the point (default `null`).\n- `'xy'` (`z = 0`), `'xz'` (`y = 0`), `'yz'` (`x = 0`): the other two coordinates are free.\n- `true`: in one of the three planes, chosen at random.\n- `false` / `null`: no constraint.\n\nExclusive with `axis`."
             },
             {
                 "path": "fraction",
@@ -2357,7 +2357,7 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "fraction.reduced",
@@ -2369,19 +2369,19 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.allow.zero",
@@ -2405,25 +2405,25 @@ export const completions: PiMathCompletions = {
                 "path": "range",
                 "type": "RandomRange",
                 "default": "10",
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "octant",
                 "type": "Octant | Octant[] | null",
                 "default": "null",
-                "description": "Restricts the point to one octant, or to a union of octants (default `null`).\r\nAxes and planes belong to the octants. With several octants, one of them is chosen uniformly,\r\nthen the point is drawn in it."
+                "description": "Restricts the point to one octant, or to a union of octants (default `null`).\nAxes and planes belong to the octants. With several octants, one of them is chosen uniformly,\nthen the point is drawn in it."
             },
             {
                 "path": "allow.origin",
@@ -2437,7 +2437,7 @@ export const completions: PiMathCompletions = {
                 "path": "axis",
                 "type": "boolean | \"x\" | \"y\" | null",
                 "default": "null",
-                "description": "Where the point lies relative to the axes (default `null`).\r\n- `'x'`: on the x-axis (`y = 0`); `'y'`: on the y-axis (`x = 0`).\r\n- `true`: on one of the two axes, chosen at random.\r\n- `false`: on no axis (no coordinate is zero).\r\n- `null`: unconstrained (a coordinate may be zero)."
+                "description": "Where the point lies relative to the axes (default `null`).\n- `'x'`: on the x-axis (`y = 0`); `'y'`: on the y-axis (`x = 0`).\n- `true`: on one of the two axes, chosen at random.\n- `false`: on no axis (no coordinate is zero).\n- `null`: unconstrained (a coordinate may be zero)."
             },
             {
                 "path": "fraction",
@@ -2455,7 +2455,7 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "fraction.reduced",
@@ -2467,19 +2467,19 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.allow.zero",
@@ -2503,25 +2503,25 @@ export const completions: PiMathCompletions = {
                 "path": "range",
                 "type": "RandomRange",
                 "default": "10",
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "quadrant",
                 "type": "Quadrant | Quadrant[] | null",
                 "default": "null",
-                "description": "Restricts the point to one quadrant, or to a union of quadrants (default `null`).\r\nAxes belong to the quadrants: quadrant 1 means `x >= 0` and `y >= 0`.\r\nWith several quadrants, one of them is chosen uniformly, then the point is drawn in it."
+                "description": "Restricts the point to one quadrant, or to a union of quadrants (default `null`).\nAxes belong to the quadrants: quadrant 1 means `x >= 0` and `y >= 0`.\nWith several quadrants, one of them is chosen uniformly, then the point is drawn in it."
             },
             {
                 "path": "primitive",
@@ -2541,7 +2541,7 @@ export const completions: PiMathCompletions = {
                 "path": "axis",
                 "type": "boolean | \"x\" | \"y\" | \"z\" | null",
                 "default": "null",
-                "description": "Where the point lies relative to the axes (default `null`).\r\n- `'x'`, `'y'`, `'z'`: on that axis (the two other coordinates are zero).\r\n- `true`: on one of the three axes, chosen at random.\r\n- `false`: on no axis and in no coordinate plane (no coordinate is zero).\r\n- `null`: unconstrained (a coordinate may be zero).\r\n\r\nExclusive with `plane`."
+                "description": "Where the point lies relative to the axes (default `null`).\n- `'x'`, `'y'`, `'z'`: on that axis (the two other coordinates are zero).\n- `true`: on one of the three axes, chosen at random.\n- `false`: on no axis and in no coordinate plane (no coordinate is zero).\n- `null`: unconstrained (a coordinate may be zero).\n\nExclusive with `plane`."
             },
             {
                 "path": "fraction",
@@ -2559,7 +2559,7 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "fraction.reduced",
@@ -2571,19 +2571,19 @@ export const completions: PiMathCompletions = {
                 "path": "fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "fraction.allow.zero",
@@ -2607,31 +2607,31 @@ export const completions: PiMathCompletions = {
                 "path": "range",
                 "type": "RandomRange",
                 "default": "10",
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "plane",
                 "type": "boolean | \"xy\" | \"xz\" | \"yz\" | null",
                 "default": "null",
-                "description": "Coordinate plane containing the point (default `null`).\r\n- `'xy'` (`z = 0`), `'xz'` (`y = 0`), `'yz'` (`x = 0`): the other two coordinates are free.\r\n- `true`: in one of the three planes, chosen at random.\r\n- `false` / `null`: no constraint.\r\n\r\nExclusive with `axis`."
+                "description": "Coordinate plane containing the point (default `null`).\n- `'xy'` (`z = 0`), `'xz'` (`y = 0`), `'yz'` (`x = 0`): the other two coordinates are free.\n- `true`: in one of the three planes, chosen at random.\n- `false` / `null`: no constraint.\n\nExclusive with `axis`."
             },
             {
                 "path": "octant",
                 "type": "Octant | Octant[] | null",
                 "default": "null",
-                "description": "Restricts the point to one octant, or to a union of octants (default `null`).\r\nAxes and planes belong to the octants. With several octants, one of them is chosen uniformly,\r\nthen the point is drawn in it."
+                "description": "Restricts the point to one octant, or to a union of octants (default `null`).\nAxes and planes belong to the octants. With several octants, one of them is chosen uniformly,\nthen the point is drawn in it."
             },
             {
                 "path": "primitive",
@@ -2651,13 +2651,13 @@ export const completions: PiMathCompletions = {
                 "path": "A",
                 "type": "RandomGeometryPointConfig | Point",
                 "default": "its own defaults",
-                "description": "Point on the line: a `Point` fixes it exactly (`new Point(1, 2)`); an object is the configuration\r\nof the random point drawn by `rndPoint` (default: its own defaults)."
+                "description": "Point on the line: a `Point` fixes it exactly (`new Point(1, 2)`); an object is the configuration\nof the random point drawn by `rndPoint` (default: its own defaults)."
             },
             {
                 "path": "A.axis",
                 "type": "boolean | \"x\" | \"y\" | null",
                 "default": "null",
-                "description": "Where the point lies relative to the axes (default `null`).\r\n- `'x'`: on the x-axis (`y = 0`); `'y'`: on the y-axis (`x = 0`).\r\n- `true`: on one of the two axes, chosen at random.\r\n- `false`: on no axis (no coordinate is zero).\r\n- `null`: unconstrained (a coordinate may be zero)."
+                "description": "Where the point lies relative to the axes (default `null`).\n- `'x'`: on the x-axis (`y = 0`); `'y'`: on the y-axis (`x = 0`).\n- `true`: on one of the two axes, chosen at random.\n- `false`: on no axis (no coordinate is zero).\n- `null`: unconstrained (a coordinate may be zero)."
             },
             {
                 "path": "A.fraction",
@@ -2675,7 +2675,7 @@ export const completions: PiMathCompletions = {
                 "path": "A.fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "A.fraction.reduced",
@@ -2687,19 +2687,19 @@ export const completions: PiMathCompletions = {
                 "path": "A.fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "A.fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "A.fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "A.fraction.allow.zero",
@@ -2723,25 +2723,25 @@ export const completions: PiMathCompletions = {
                 "path": "A.range",
                 "type": "RandomRange",
                 "default": "10",
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "A.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "A.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "A.quadrant",
                 "type": "Quadrant | Quadrant[] | null",
                 "default": "null",
-                "description": "Restricts the point to one quadrant, or to a union of quadrants (default `null`).\r\nAxes belong to the quadrants: quadrant 1 means `x >= 0` and `y >= 0`.\r\nWith several quadrants, one of them is chosen uniformly, then the point is drawn in it."
+                "description": "Restricts the point to one quadrant, or to a union of quadrants (default `null`).\nAxes belong to the quadrants: quadrant 1 means `x >= 0` and `y >= 0`.\nWith several quadrants, one of them is chosen uniformly, then the point is drawn in it."
             },
             {
                 "path": "A.allow.origin",
@@ -2753,13 +2753,13 @@ export const completions: PiMathCompletions = {
                 "path": "slope",
                 "type": "FractionOrRandom",
                 "default": "a random slope",
-                "description": "Slope of the line (default: a random slope, as with `{ fraction: true }`).\r\n- an exact value (`2`, `'-3/2'`, `new Fraction(1, 2)`): the line has exactly that slope. Prefer a string\r\n  for a non-terminating fraction (`'1/3'`, not `0.333`). Incompatible with an explicit `allow`.\r\n- `{ fraction }`: a random slope, `false` for an integer, `true` for a fraction, or a\r\n  `RandomCoefficientConfig` (e.g. `max`). The sign comes from `allow.positive` / `allow.negative`."
+                "description": "Slope of the line (default: a random slope, as with `{ fraction: true }`).\n- an exact value (`2`, `'-3/2'`, `new Fraction(1, 2)`): the line has exactly that slope. Prefer a string\n  for a non-terminating fraction (`'1/3'`, not `0.333`). Incompatible with an explicit `allow`.\n- `{ fraction }`: a random slope, `false` for an integer, `true` for a fraction, or a\n  `RandomCoefficientConfig` (e.g. `max`). The sign comes from `allow.positive` / `allow.negative`."
             },
             {
                 "path": "slope.fraction",
                 "type": "boolean | RandomCoefficientConfig",
                 "default": null,
-                "description": "Slope of the line (default: a random slope, as with `{ fraction: true }`).\r\n- an exact value (`2`, `'-3/2'`, `new Fraction(1, 2)`): the line has exactly that slope. Prefer a string\r\n  for a non-terminating fraction (`'1/3'`, not `0.333`). Incompatible with an explicit `allow`.\r\n- `{ fraction }`: a random slope, `false` for an integer, `true` for a fraction, or a\r\n  `RandomCoefficientConfig` (e.g. `max`). The sign comes from `allow.positive` / `allow.negative`."
+                "description": "Slope of the line (default: a random slope, as with `{ fraction: true }`).\n- an exact value (`2`, `'-3/2'`, `new Fraction(1, 2)`): the line has exactly that slope. Prefer a string\n  for a non-terminating fraction (`'1/3'`, not `0.333`). Incompatible with an explicit `allow`.\n- `{ fraction }`: a random slope, `false` for an integer, `true` for a fraction, or a\n  `RandomCoefficientConfig` (e.g. `max`). The sign comes from `allow.positive` / `allow.negative`."
             },
             {
                 "path": "slope.fraction.max",
@@ -2771,7 +2771,7 @@ export const completions: PiMathCompletions = {
                 "path": "slope.fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "slope.fraction.reduced",
@@ -2783,19 +2783,19 @@ export const completions: PiMathCompletions = {
                 "path": "slope.fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "slope.fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "slope.fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "slope.fraction.allow.zero",
@@ -2819,31 +2819,31 @@ export const completions: PiMathCompletions = {
                 "path": "allow",
                 "type": "{ vertical?: boolean | number; horizontal?: boolean | number; positive?: boolean | number; negative?: boolean | number; }",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random slope. Each entry is `false` (never), a number between\r\n0 and 1 (probability of that kind), or `true` (default):\r\n- `vertical` / `horizontal` (zero slope): `true` means a fixed probability of 5 %;\r\n- `positive` / `negative` (slope sign): `true` shares equally what the others leave.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nExamples: `{ negative: false, horizontal: false, vertical: false }` always gives a positive slope;\r\n`{ vertical: 1 }` always gives a vertical line."
+                "description": "Kind of line that may be drawn, for a random slope. Each entry is `false` (never), a number between\n0 and 1 (probability of that kind), or `true` (default):\n- `vertical` / `horizontal` (zero slope): `true` means a fixed probability of 5 %;\n- `positive` / `negative` (slope sign): `true` shares equally what the others leave.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nExamples: `{ negative: false, horizontal: false, vertical: false }` always gives a positive slope;\n`{ vertical: 1 }` always gives a vertical line."
             },
             {
                 "path": "allow.vertical",
                 "type": "number | boolean",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random slope. Each entry is `false` (never), a number between\r\n0 and 1 (probability of that kind), or `true` (default):\r\n- `vertical` / `horizontal` (zero slope): `true` means a fixed probability of 5 %;\r\n- `positive` / `negative` (slope sign): `true` shares equally what the others leave.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nExamples: `{ negative: false, horizontal: false, vertical: false }` always gives a positive slope;\r\n`{ vertical: 1 }` always gives a vertical line."
+                "description": "Kind of line that may be drawn, for a random slope. Each entry is `false` (never), a number between\n0 and 1 (probability of that kind), or `true` (default):\n- `vertical` / `horizontal` (zero slope): `true` means a fixed probability of 5 %;\n- `positive` / `negative` (slope sign): `true` shares equally what the others leave.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nExamples: `{ negative: false, horizontal: false, vertical: false }` always gives a positive slope;\n`{ vertical: 1 }` always gives a vertical line."
             },
             {
                 "path": "allow.horizontal",
                 "type": "number | boolean",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random slope. Each entry is `false` (never), a number between\r\n0 and 1 (probability of that kind), or `true` (default):\r\n- `vertical` / `horizontal` (zero slope): `true` means a fixed probability of 5 %;\r\n- `positive` / `negative` (slope sign): `true` shares equally what the others leave.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nExamples: `{ negative: false, horizontal: false, vertical: false }` always gives a positive slope;\r\n`{ vertical: 1 }` always gives a vertical line."
+                "description": "Kind of line that may be drawn, for a random slope. Each entry is `false` (never), a number between\n0 and 1 (probability of that kind), or `true` (default):\n- `vertical` / `horizontal` (zero slope): `true` means a fixed probability of 5 %;\n- `positive` / `negative` (slope sign): `true` shares equally what the others leave.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nExamples: `{ negative: false, horizontal: false, vertical: false }` always gives a positive slope;\n`{ vertical: 1 }` always gives a vertical line."
             },
             {
                 "path": "allow.positive",
                 "type": "number | boolean",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random slope. Each entry is `false` (never), a number between\r\n0 and 1 (probability of that kind), or `true` (default):\r\n- `vertical` / `horizontal` (zero slope): `true` means a fixed probability of 5 %;\r\n- `positive` / `negative` (slope sign): `true` shares equally what the others leave.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nExamples: `{ negative: false, horizontal: false, vertical: false }` always gives a positive slope;\r\n`{ vertical: 1 }` always gives a vertical line."
+                "description": "Kind of line that may be drawn, for a random slope. Each entry is `false` (never), a number between\n0 and 1 (probability of that kind), or `true` (default):\n- `vertical` / `horizontal` (zero slope): `true` means a fixed probability of 5 %;\n- `positive` / `negative` (slope sign): `true` shares equally what the others leave.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nExamples: `{ negative: false, horizontal: false, vertical: false }` always gives a positive slope;\n`{ vertical: 1 }` always gives a vertical line."
             },
             {
                 "path": "allow.negative",
                 "type": "number | boolean",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random slope. Each entry is `false` (never), a number between\r\n0 and 1 (probability of that kind), or `true` (default):\r\n- `vertical` / `horizontal` (zero slope): `true` means a fixed probability of 5 %;\r\n- `positive` / `negative` (slope sign): `true` shares equally what the others leave.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nExamples: `{ negative: false, horizontal: false, vertical: false }` always gives a positive slope;\r\n`{ vertical: 1 }` always gives a vertical line."
+                "description": "Kind of line that may be drawn, for a random slope. Each entry is `false` (never), a number between\n0 and 1 (probability of that kind), or `true` (default):\n- `vertical` / `horizontal` (zero slope): `true` means a fixed probability of 5 %;\n- `positive` / `negative` (slope sign): `true` shares equally what the others leave.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nExamples: `{ negative: false, horizontal: false, vertical: false }` always gives a positive slope;\n`{ vertical: 1 }` always gives a vertical line."
             }
         ],
         "Random.line3": [
@@ -2851,19 +2851,19 @@ export const completions: PiMathCompletions = {
                 "path": "A",
                 "type": "RandomGeometryPoint3Config | Point",
                 "default": "its own defaults",
-                "description": "Point on the line: a 3D `Point` fixes it exactly (`new Point(1, 2, 3)`); an object is the configuration\r\nof the random point drawn by `rndPoint3` (default: its own defaults)."
+                "description": "Point on the line: a 3D `Point` fixes it exactly (`new Point(1, 2, 3)`); an object is the configuration\nof the random point drawn by `rndPoint3` (default: its own defaults)."
             },
             {
                 "path": "A.axis",
                 "type": "boolean | \"x\" | \"y\" | \"z\" | null",
                 "default": "null",
-                "description": "Where the point lies relative to the axes (default `null`).\r\n- `'x'`, `'y'`, `'z'`: on that axis (the two other coordinates are zero).\r\n- `true`: on one of the three axes, chosen at random.\r\n- `false`: on no axis and in no coordinate plane (no coordinate is zero).\r\n- `null`: unconstrained (a coordinate may be zero).\r\n\r\nExclusive with `plane`."
+                "description": "Where the point lies relative to the axes (default `null`).\n- `'x'`, `'y'`, `'z'`: on that axis (the two other coordinates are zero).\n- `true`: on one of the three axes, chosen at random.\n- `false`: on no axis and in no coordinate plane (no coordinate is zero).\n- `null`: unconstrained (a coordinate may be zero).\n\nExclusive with `plane`."
             },
             {
                 "path": "A.plane",
                 "type": "boolean | \"xy\" | \"xz\" | \"yz\" | null",
                 "default": "null",
-                "description": "Coordinate plane containing the point (default `null`).\r\n- `'xy'` (`z = 0`), `'xz'` (`y = 0`), `'yz'` (`x = 0`): the other two coordinates are free.\r\n- `true`: in one of the three planes, chosen at random.\r\n- `false` / `null`: no constraint.\r\n\r\nExclusive with `axis`."
+                "description": "Coordinate plane containing the point (default `null`).\n- `'xy'` (`z = 0`), `'xz'` (`y = 0`), `'yz'` (`x = 0`): the other two coordinates are free.\n- `true`: in one of the three planes, chosen at random.\n- `false` / `null`: no constraint.\n\nExclusive with `axis`."
             },
             {
                 "path": "A.fraction",
@@ -2881,7 +2881,7 @@ export const completions: PiMathCompletions = {
                 "path": "A.fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "A.fraction.reduced",
@@ -2893,19 +2893,19 @@ export const completions: PiMathCompletions = {
                 "path": "A.fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "A.fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "A.fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "A.fraction.allow.zero",
@@ -2929,25 +2929,25 @@ export const completions: PiMathCompletions = {
                 "path": "A.range",
                 "type": "RandomRange",
                 "default": "10",
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "A.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "A.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "A.octant",
                 "type": "Octant | Octant[] | null",
                 "default": "null",
-                "description": "Restricts the point to one octant, or to a union of octants (default `null`).\r\nAxes and planes belong to the octants. With several octants, one of them is chosen uniformly,\r\nthen the point is drawn in it."
+                "description": "Restricts the point to one octant, or to a union of octants (default `null`).\nAxes and planes belong to the octants. With several octants, one of them is chosen uniformly,\nthen the point is drawn in it."
             },
             {
                 "path": "A.allow.origin",
@@ -2959,13 +2959,13 @@ export const completions: PiMathCompletions = {
                 "path": "direction",
                 "type": "RandomGeometryVector3Config | Vector",
                 "default": "its own defaults",
-                "description": "Direction of the line: a non-null 3D `Vector` fixes it exactly (`new Vector(1, 0, 2)`; incompatible with an\r\nexplicit `allow`); an object is the configuration of the random vector drawn by `rndVector3` (default: its own defaults). The\r\ndirection is never null. Its `axis` and `plane` are overridden by the kind of line drawn (see `allow`),\r\nand its `allow.zero` must not be `true`."
+                "description": "Direction of the line: a non-null 3D `Vector` fixes it exactly (`new Vector(1, 0, 2)`; incompatible with an\nexplicit `allow`); an object is the configuration of the random vector drawn by `rndVector3` (default: its own defaults). The\ndirection is never null. Its `axis` and `plane` are overridden by the kind of line drawn (see `allow`),\nand its `allow.zero` must not be `true`."
             },
             {
                 "path": "direction.axis",
                 "type": "boolean | \"x\" | \"y\" | \"z\" | null",
                 "default": "null",
-                "description": "Where the point lies relative to the axes (default `null`).\r\n- `'x'`, `'y'`, `'z'`: on that axis (the two other coordinates are zero).\r\n- `true`: on one of the three axes, chosen at random.\r\n- `false`: on no axis and in no coordinate plane (no coordinate is zero).\r\n- `null`: unconstrained (a coordinate may be zero).\r\n\r\nExclusive with `plane`."
+                "description": "Where the point lies relative to the axes (default `null`).\n- `'x'`, `'y'`, `'z'`: on that axis (the two other coordinates are zero).\n- `true`: on one of the three axes, chosen at random.\n- `false`: on no axis and in no coordinate plane (no coordinate is zero).\n- `null`: unconstrained (a coordinate may be zero).\n\nExclusive with `plane`."
             },
             {
                 "path": "direction.fraction",
@@ -2983,7 +2983,7 @@ export const completions: PiMathCompletions = {
                 "path": "direction.fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "direction.fraction.reduced",
@@ -2995,19 +2995,19 @@ export const completions: PiMathCompletions = {
                 "path": "direction.fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "direction.fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "direction.fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "direction.fraction.allow.zero",
@@ -3031,31 +3031,31 @@ export const completions: PiMathCompletions = {
                 "path": "direction.range",
                 "type": "RandomRange",
                 "default": "10",
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "direction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "direction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "direction.plane",
                 "type": "boolean | \"xy\" | \"xz\" | \"yz\" | null",
                 "default": "null",
-                "description": "Coordinate plane containing the point (default `null`).\r\n- `'xy'` (`z = 0`), `'xz'` (`y = 0`), `'yz'` (`x = 0`): the other two coordinates are free.\r\n- `true`: in one of the three planes, chosen at random.\r\n- `false` / `null`: no constraint.\r\n\r\nExclusive with `axis`."
+                "description": "Coordinate plane containing the point (default `null`).\n- `'xy'` (`z = 0`), `'xz'` (`y = 0`), `'yz'` (`x = 0`): the other two coordinates are free.\n- `true`: in one of the three planes, chosen at random.\n- `false` / `null`: no constraint.\n\nExclusive with `axis`."
             },
             {
                 "path": "direction.octant",
                 "type": "Octant | Octant[] | null",
                 "default": "null",
-                "description": "Restricts the point to one octant, or to a union of octants (default `null`).\r\nAxes and planes belong to the octants. With several octants, one of them is chosen uniformly,\r\nthen the point is drawn in it."
+                "description": "Restricts the point to one octant, or to a union of octants (default `null`).\nAxes and planes belong to the octants. With several octants, one of them is chosen uniformly,\nthen the point is drawn in it."
             },
             {
                 "path": "direction.primitive",
@@ -3073,49 +3073,49 @@ export const completions: PiMathCompletions = {
                 "path": "allow",
                 "type": "{ general?: boolean | number; parallelXY?: boolean | number; parallelXZ?: boolean | number; parallelYZ?: boolean | number; parallelX?: boolean | number; parallelY?: boolean | number; parallelZ?: boolean | number; }",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\r\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\r\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\r\n  other kinds leave;\r\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\r\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\r\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\r\n  `true` means 2 %.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\r\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
+                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\n  other kinds leave;\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\n  `true` means 2 %.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
             },
             {
                 "path": "allow.general",
                 "type": "number | boolean",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\r\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\r\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\r\n  other kinds leave;\r\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\r\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\r\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\r\n  `true` means 2 %.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\r\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
+                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\n  other kinds leave;\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\n  `true` means 2 %.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
             },
             {
                 "path": "allow.parallelXY",
                 "type": "number | boolean",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\r\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\r\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\r\n  other kinds leave;\r\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\r\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\r\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\r\n  `true` means 2 %.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\r\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
+                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\n  other kinds leave;\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\n  `true` means 2 %.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
             },
             {
                 "path": "allow.parallelXZ",
                 "type": "number | boolean",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\r\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\r\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\r\n  other kinds leave;\r\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\r\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\r\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\r\n  `true` means 2 %.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\r\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
+                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\n  other kinds leave;\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\n  `true` means 2 %.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
             },
             {
                 "path": "allow.parallelYZ",
                 "type": "number | boolean",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\r\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\r\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\r\n  other kinds leave;\r\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\r\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\r\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\r\n  `true` means 2 %.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\r\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
+                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\n  other kinds leave;\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\n  `true` means 2 %.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
             },
             {
                 "path": "allow.parallelX",
                 "type": "number | boolean",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\r\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\r\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\r\n  other kinds leave;\r\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\r\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\r\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\r\n  `true` means 2 %.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\r\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
+                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\n  other kinds leave;\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\n  `true` means 2 %.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
             },
             {
                 "path": "allow.parallelY",
                 "type": "number | boolean",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\r\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\r\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\r\n  other kinds leave;\r\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\r\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\r\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\r\n  `true` means 2 %.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\r\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
+                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\n  other kinds leave;\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\n  `true` means 2 %.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
             },
             {
                 "path": "allow.parallelZ",
                 "type": "number | boolean",
                 "default": "true",
-                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\r\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\r\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\r\n  other kinds leave;\r\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\r\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\r\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\r\n  `true` means 2 %.\r\n\r\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\r\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\r\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
+                "description": "Kind of line that may be drawn, for a random direction `(a, b, c)`. The kinds are exclusive; each entry is\n`false` (never), a number between 0 and 1 (probability of that kind), or `true` (default):\n- `general`: no zero component (the line is parallel to no coordinate plane). `true` shares what the\n  other kinds leave;\n- `parallelXY` (`c = 0`), `parallelXZ` (`b = 0`), `parallelYZ` (`a = 0`): exactly one zero component,\n  i.e. parallel to that coordinate plane but to no axis. `true` means 5 %;\n- `parallelX` (`b = c = 0`), `parallelY`, `parallelZ`: two zero components, i.e. parallel to that axis.\n  `true` means 2 %.\n\nProbabilities that do not add up are normalized, and an explicit number takes precedence over `true`.\nA kind allowed by `true` that the `direction` configuration makes impossible (e.g. a `range` excluding 0\nfor a kind that needs a zero) is skipped; the same kind asked by an explicit number throws."
             }
         ],
         "Random.circle": [
@@ -3129,7 +3129,7 @@ export const completions: PiMathCompletions = {
                 "path": "center.axis",
                 "type": "boolean | \"x\" | \"y\" | null",
                 "default": "null",
-                "description": "Where the point lies relative to the axes (default `null`).\r\n- `'x'`: on the x-axis (`y = 0`); `'y'`: on the y-axis (`x = 0`).\r\n- `true`: on one of the two axes, chosen at random.\r\n- `false`: on no axis (no coordinate is zero).\r\n- `null`: unconstrained (a coordinate may be zero)."
+                "description": "Where the point lies relative to the axes (default `null`).\n- `'x'`: on the x-axis (`y = 0`); `'y'`: on the y-axis (`x = 0`).\n- `true`: on one of the two axes, chosen at random.\n- `false`: on no axis (no coordinate is zero).\n- `null`: unconstrained (a coordinate may be zero)."
             },
             {
                 "path": "center.fraction",
@@ -3147,7 +3147,7 @@ export const completions: PiMathCompletions = {
                 "path": "center.fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "center.fraction.reduced",
@@ -3159,19 +3159,19 @@ export const completions: PiMathCompletions = {
                 "path": "center.fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "center.fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "center.fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "center.fraction.allow.zero",
@@ -3195,25 +3195,25 @@ export const completions: PiMathCompletions = {
                 "path": "center.range",
                 "type": "RandomRange",
                 "default": "10",
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "center.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "center.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\r\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
+                "description": "Interval of the coordinates (default `10`). A number `d` means `[-|d|, |d|]`\n(so `10` and `-10` are equivalent); `{min, max}` gives explicit bounds."
             },
             {
                 "path": "center.quadrant",
                 "type": "Quadrant | Quadrant[] | null",
                 "default": "null",
-                "description": "Restricts the point to one quadrant, or to a union of quadrants (default `null`).\r\nAxes belong to the quadrants: quadrant 1 means `x >= 0` and `y >= 0`.\r\nWith several quadrants, one of them is chosen uniformly, then the point is drawn in it."
+                "description": "Restricts the point to one quadrant, or to a union of quadrants (default `null`).\nAxes belong to the quadrants: quadrant 1 means `x >= 0` and `y >= 0`.\nWith several quadrants, one of them is chosen uniformly, then the point is drawn in it."
             },
             {
                 "path": "center.allow.origin",
@@ -3225,13 +3225,13 @@ export const completions: PiMathCompletions = {
                 "path": "radius",
                 "type": "FractionOrRandom",
                 "default": "is a random `squaredRadius",
-                "description": "Radius of the circle: an exact value (`5`, `'5/2'`), or `{ fraction }` for a random one\r\n(`fraction: false` gives an integer from 1 to 5 unless `max` is given, `true` a fraction). Exclusive with\r\n`squaredRadius`. The default is a random `squaredRadius`."
+                "description": "Radius of the circle: an exact value (`5`, `'5/2'`), or `{ fraction }` for a random one\n(`fraction: false` gives an integer from 1 to 5 unless `max` is given, `true` a fraction). Exclusive with\n`squaredRadius`. The default is a random `squaredRadius`."
             },
             {
                 "path": "radius.fraction",
                 "type": "boolean | RandomCoefficientConfig",
                 "default": null,
-                "description": "Radius of the circle: an exact value (`5`, `'5/2'`), or `{ fraction }` for a random one\r\n(`fraction: false` gives an integer from 1 to 5 unless `max` is given, `true` a fraction). Exclusive with\r\n`squaredRadius`. The default is a random `squaredRadius`."
+                "description": "Radius of the circle: an exact value (`5`, `'5/2'`), or `{ fraction }` for a random one\n(`fraction: false` gives an integer from 1 to 5 unless `max` is given, `true` a fraction). Exclusive with\n`squaredRadius`. The default is a random `squaredRadius`."
             },
             {
                 "path": "radius.fraction.max",
@@ -3243,7 +3243,7 @@ export const completions: PiMathCompletions = {
                 "path": "radius.fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "radius.fraction.reduced",
@@ -3255,19 +3255,19 @@ export const completions: PiMathCompletions = {
                 "path": "radius.fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "radius.fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "radius.fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "radius.fraction.allow.zero",
@@ -3291,13 +3291,13 @@ export const completions: PiMathCompletions = {
                 "path": "squaredRadius",
                 "type": "FractionOrRandom",
                 "default": "a random integer",
-                "description": "Squared radius of the circle (default: a random integer, see `pointsOnCircle`; the radius is then its square root, possibly irrational: `5` gives\r\nx² + y² = 5). Same forms as `radius`; the random integer ranges from 1 to 25 unless `max` is given.\r\nAn object `fraction` gives fractions unless it sets `relative: true`."
+                "description": "Squared radius of the circle (default: a random integer, see `pointsOnCircle`; the radius is then its square root, possibly irrational: `5` gives\nx² + y² = 5). Same forms as `radius`; the random integer ranges from 1 to 25 unless `max` is given.\nAn object `fraction` gives fractions unless it sets `relative: true`."
             },
             {
                 "path": "squaredRadius.fraction",
                 "type": "boolean | RandomCoefficientConfig",
                 "default": null,
-                "description": "Squared radius of the circle (default: a random integer, see `pointsOnCircle`; the radius is then its square root, possibly irrational: `5` gives\r\nx² + y² = 5). Same forms as `radius`; the random integer ranges from 1 to 25 unless `max` is given.\r\nAn object `fraction` gives fractions unless it sets `relative: true`."
+                "description": "Squared radius of the circle (default: a random integer, see `pointsOnCircle`; the radius is then its square root, possibly irrational: `5` gives\nx² + y² = 5). Same forms as `radius`; the random integer ranges from 1 to 25 unless `max` is given.\nAn object `fraction` gives fractions unless it sets `relative: true`."
             },
             {
                 "path": "squaredRadius.fraction.max",
@@ -3309,7 +3309,7 @@ export const completions: PiMathCompletions = {
                 "path": "squaredRadius.fraction.relative",
                 "type": "boolean",
                 "default": "false",
-                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\r\n(a \"natural\" number would be non-negative). Default `false`."
+                "description": "`true` forces an integer of either sign (denominator 1): the name follows `Fraction.isRelative()`\n(a \"natural\" number would be non-negative). Default `false`."
             },
             {
                 "path": "squaredRadius.fraction.reduced",
@@ -3321,19 +3321,19 @@ export const completions: PiMathCompletions = {
                 "path": "squaredRadius.fraction.range",
                 "type": "RandomRange",
                 "default": "none",
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "squaredRadius.fraction.range.min",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "squaredRadius.fraction.range.max",
                 "type": "number",
                 "default": null,
-                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\r\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\r\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\r\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\r\nradius…), its own interval replaces this one."
+                "description": "Interval of the value: a number `d` means `[-|d|, |d|]`, `{min, max}` gives explicit bounds (default: none, the\nvalue is only bounded by `max`). Combined with `allow`: a sign is possible only if the interval holds values\nof that sign. `max` then defaults to the largest bound of the interval, at least 2 (doubled when the interval\nstays at least 1 away from 0), so that a small interval still gets fractions. Where a generator drives the interval itself (the coordinates of a point, the\nradius…), its own interval replaces this one."
             },
             {
                 "path": "squaredRadius.fraction.allow.zero",
@@ -3357,19 +3357,19 @@ export const completions: PiMathCompletions = {
                 "path": "pointsOnCircle",
                 "type": "number | { min?: number; fraction?: boolean; }",
                 "default": "{ min: 8, fraction: false }",
-                "description": "Wanted number of points of the circle with exact coordinates: `n` is shorthand for `{ min: n }`.\r\n- `min`: the circle has **at least** that many points whose offsets from the center are integers (the\r\n  coordinates stay exact fractions when the center is fractional). A count is always a multiple of 4.\r\n- `fraction`: reserved for points with fractional offsets; `true` is not implemented yet.\r\n\r\nDefault `{ min: 8, fraction: false }`, applied only when neither `radius` nor `squaredRadius` is given;\r\nonce one of them is given, `pointsOnCircle` applies only if set explicitly (an exact radius that does not\r\nreach `min` then throws, and so does a fractional random radius, which has no integer points)."
+                "description": "Wanted number of points of the circle with exact coordinates: `n` is shorthand for `{ min: n }`.\n- `min`: the circle has **at least** that many points whose offsets from the center are integers (the\n  coordinates stay exact fractions when the center is fractional). A count is always a multiple of 4.\n- `fraction`: reserved for points with fractional offsets; `true` is not implemented yet.\n\nDefault `{ min: 8, fraction: false }`, applied only when neither `radius` nor `squaredRadius` is given;\nonce one of them is given, `pointsOnCircle` applies only if set explicitly (an exact radius that does not\nreach `min` then throws, and so does a fractional random radius, which has no integer points)."
             },
             {
                 "path": "pointsOnCircle.min",
                 "type": "number",
                 "default": null,
-                "description": "Wanted number of points of the circle with exact coordinates: `n` is shorthand for `{ min: n }`.\r\n- `min`: the circle has **at least** that many points whose offsets from the center are integers (the\r\n  coordinates stay exact fractions when the center is fractional). A count is always a multiple of 4.\r\n- `fraction`: reserved for points with fractional offsets; `true` is not implemented yet.\r\n\r\nDefault `{ min: 8, fraction: false }`, applied only when neither `radius` nor `squaredRadius` is given;\r\nonce one of them is given, `pointsOnCircle` applies only if set explicitly (an exact radius that does not\r\nreach `min` then throws, and so does a fractional random radius, which has no integer points)."
+                "description": "Wanted number of points of the circle with exact coordinates: `n` is shorthand for `{ min: n }`.\n- `min`: the circle has **at least** that many points whose offsets from the center are integers (the\n  coordinates stay exact fractions when the center is fractional). A count is always a multiple of 4.\n- `fraction`: reserved for points with fractional offsets; `true` is not implemented yet.\n\nDefault `{ min: 8, fraction: false }`, applied only when neither `radius` nor `squaredRadius` is given;\nonce one of them is given, `pointsOnCircle` applies only if set explicitly (an exact radius that does not\nreach `min` then throws, and so does a fractional random radius, which has no integer points)."
             },
             {
                 "path": "pointsOnCircle.fraction",
                 "type": "boolean",
                 "default": null,
-                "description": "Wanted number of points of the circle with exact coordinates: `n` is shorthand for `{ min: n }`.\r\n- `min`: the circle has **at least** that many points whose offsets from the center are integers (the\r\n  coordinates stay exact fractions when the center is fractional). A count is always a multiple of 4.\r\n- `fraction`: reserved for points with fractional offsets; `true` is not implemented yet.\r\n\r\nDefault `{ min: 8, fraction: false }`, applied only when neither `radius` nor `squaredRadius` is given;\r\nonce one of them is given, `pointsOnCircle` applies only if set explicitly (an exact radius that does not\r\nreach `min` then throws, and so does a fractional random radius, which has no integer points)."
+                "description": "Wanted number of points of the circle with exact coordinates: `n` is shorthand for `{ min: n }`.\n- `min`: the circle has **at least** that many points whose offsets from the center are integers (the\n  coordinates stay exact fractions when the center is fractional). A count is always a multiple of 4.\n- `fraction`: reserved for points with fractional offsets; `true` is not implemented yet.\n\nDefault `{ min: 8, fraction: false }`, applied only when neither `radius` nor `squaredRadius` is given;\nonce one of them is given, `pointsOnCircle` applies only if set explicitly (an exact radius that does not\nreach `min` then throws, and so does a fractional random radius, which has no integer points)."
             }
         ]
     }

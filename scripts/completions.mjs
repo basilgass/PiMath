@@ -126,7 +126,8 @@ const content = [
     '// Do not edit by hand.',
     "import type {PiMathCompletions} from './types'",
     '',
-    `export const completions: PiMathCompletions = ${JSON.stringify(data, null, 4)}`,
+    // A multi-line description keeps the line endings of the source: CRLF on Windows, LF on the CI. Same file everywhere.
+    `export const completions: PiMathCompletions = ${JSON.stringify(data, null, 4).replace(/\\r\\n/g, '\\n')}`,
     '',
 ].join('\n')
 
