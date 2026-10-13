@@ -31,12 +31,12 @@ describe('Point construction', () => {
     })
 
     test('throws when mixing a TupleN with scalars in multi-argument form', () => {
-        expect(() => new Point(new Point(1, 2) as unknown, 3 as unknown)).toThrow(InvalidArgumentError)
-        expect(() => new Point(new Vector(1, 2) as unknown, 3 as unknown)).toThrow(InvalidArgumentError)
+        expect(() => new Point(new Point(1, 2) as never, 3)).toThrow(InvalidArgumentError)
+        expect(() => new Point(new Vector(1, 2) as never, 3)).toThrow(InvalidArgumentError)
     })
 
     test('throws ParseError when multi-argument scalars are invalid', () => {
-        expect(() => new Point('x' as unknown, 'y' as unknown)).toThrow(ParseError)
+        expect(() => new Point('x', 'y')).toThrow(ParseError)
     })
 })
 

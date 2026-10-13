@@ -25,6 +25,13 @@ export enum CircleRelativePosition {
     CONCENTRIC
 }
 
+/**
+ * A circle of the plane, stored by its center and the square of its radius, so that everything stays exact.
+ * Built from an equation (`"(x-1)^2+(y+2)^2=9"`), from a center and a radius, from a center and a point of
+ * the circle, or from three points.
+ * @example
+ * new Circle("(x-1)^2+(y+2)^2=9").center.display // "(1;-2)"
+ */
 export class Circle
     implements IPiMathObject<Circle>, IDisplayDigits {
 
@@ -46,6 +53,10 @@ export class Circle
         }
     }
 
+    /**
+     * Replace the circle with an equation, another circle, a center and a radius, a center and a point, or three points.
+     * Arguments that do not match any form leave the circle unchanged.
+     */
     parse(...values: unknown[]): this {
         if (typeof values[0] === 'string') {
             return this.copy(Circle.fromString(values[0]))
@@ -114,24 +125,39 @@ export class Circle
         return this.#toOutput('display')
     }
 
+    /**
+     * Output option: the developed equation `x^2+y^2-2x+4y-4=0`. Chainable, persistent.
+     */
     get asDeveloped(): this {
         this.#output_style = CircleDisplay.DEVELOPED
         return this
     }
 
+    /**
+     * Output option: the form `(x-a)^2+(y-b)^2=r^2` (default). Chainable, persistent.
+     */
     get asCenterRadius(): this {
         this.#output_style = CircleDisplay.CENTER_RADIUS
         return this
     }
 
+    /**
+     * The center, as a point.
+     */
     get center(): Point {
         return this.#center ?? new Point()
     }
 
+    /**
+     * The equation `(x-a)^2+(y-b)^2-r^2=0`, as an {@link Equation} (a copy).
+     */
     get equation(): Equation {
         return this.#equation?.clone() ?? new Equation('0=0')
     }
 
+    /**
+     * The circle with the given center, through a point.
+     */
     static fromCenterPoint(center: Point, pointThrough: Point): Circle {
         const c = new Circle()
         c.#center = center.clone()
@@ -141,7 +167,8 @@ export class Circle
     }
 
     /**
-     * @param square if true, `radius` is already r² (avoids an extra squaring)
+     * The circle with the given center and radius.
+     * @param square - when true, `radius` is already the square of the radius.
      */
     static fromCenterRadius(center: Point, radius: Fraction | number, square?: boolean): Circle {
         const c = new Circle()
@@ -189,11 +216,14 @@ export class Circle
         return c
     }
 
-    /** @throws {MathError} if A, B, C are collinear or form a degenerate triangle */
+    /**
+     * The circle through three points.
+     * @throws {MathError} if the points are collinear or two of them are the same.
+     */
     static fromPoints(A: Point, B: Point, C: Point): Circle {
         const T = new Triangle(A, B, C)
 
-        if (!T.isValid || !T.remarquables) {
+        if (!T.isValid) {
             throw new MathError('Cannot create a Circle: points must form a non-degenerate triangle')
         }
 
@@ -207,10 +237,18 @@ export class Circle
         return Circle.fromCenterPoint(center.point, A)
     }
 
+    /**
+     * The circle of an equation written in a string.
+     * @throws {MathError} if the equation is not the one of a circle.
+     */
     static fromString(str: string): Circle {
         return Circle.fromEquation(str)
     }
 
+    /**
+     * The points of the circle with integer coordinates relative to the center. It is empty when the square of the
+     * radius is not an integer.
+     */
     getPointsOnCircle(): Point[] {
         // It means searching for pythagorician triples that make a perfect square.
         // (x-4)^2 + (y+3)^2 = 15
@@ -244,10 +282,16 @@ export class Circle
         return points
     }
 
+    /**
+     * True when the point satisfies the equation of the circle.
+     */
     isPointOnCircle(P: Point): boolean {
         return this.#equation?.test({x: P.x, y: P.y}) ?? false
     }
 
+    /**
+     * True when both circles have the same center and the same radius.
+     */
     isEqual(circ: Circle): boolean {
         return circ.center.isEqual(this.center)
             && circ.squareRadius.isEqual(this.squareRadius)
@@ -318,8 +362,11 @@ export class Circle
         })
     }
 
+    /**
+     * The radius, as an exact reduced {@link Root} (`3`, `2sqrt(2)`).
+     */
     get radius(): Root {
-        return new Root().from(2, this.#squareRadius ?? 0)
+        return new Root().from(2, this.#squareRadius ?? 0).reduce()
     }
 
     /**
@@ -384,8 +431,15 @@ export class Circle
         return 2
     }
 
+    /**
+     * The values returned by {@link relativePosition} for two circles.
+     */
     static RELATIVE_POSITION = CircleRelativePosition
 
+    /**
+     * Change the radius.
+     * @param square - when true, `radius` is the square of the radius.
+     */
     setRadius(radius: Fraction | number, square?: boolean): this {
         if (square) {
             this.#squareRadius = new Fraction(radius)
@@ -397,6 +451,9 @@ export class Circle
         return this
     }
 
+    /**
+     * The square of the radius, as an exact fraction. It is `-1` for a circle that has not been defined.
+     */
     get squareRadius(): Fraction {
         return this.#squareRadius?.clone() ?? new Fraction(-1)
     }

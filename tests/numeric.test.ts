@@ -11,7 +11,7 @@ describe('Numeric', () => { // the tests container
     })
 
     it('should simplify numbers by the gcd', () => {
-        let a = 12, b = 15, c = 33, d = 303;
+        let a = 12; let b = 15; let c = 33; let d = 303;
 
         [a, b, c, d] = Numeric.divideNumbersByGCD(a, b, c, d)
 
@@ -167,11 +167,11 @@ describe('Numeric', () => { // the tests container
 
         it('should support negative values for odd indices only', () => {
             expect(Numeric.nthRoot(-8, 3)).to.equal(-2)
-            expect(Numeric.nthRoot(-4, 2)).to.be.NaN
+            expect(Numeric.nthRoot(-4, 2)).toBeNaN()
         })
 
         it('should return NaN for an invalid index', () => {
-            expect(Numeric.nthRoot(8, 0)).to.be.NaN
+            expect(Numeric.nthRoot(8, 0)).toBeNaN()
         })
     })
 

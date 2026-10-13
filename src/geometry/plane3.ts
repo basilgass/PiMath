@@ -5,11 +5,18 @@ import {Root} from "../coefficients/root"
 import {Line3} from "./line3"
 import {Point} from "./point"
 import {Vector} from "./vector"
-import type {IDisplayDigits, InputAlgebra, IPiMathObject, OutputStyle, Plane3Config, PlaneLineIntersection, PlanePlaneIntersection} from "../pimath.interface"
+import type {IDisplayDigits, InputAlgebra, InputValue, IPiMathObject, OutputStyle, Plane3Config, PlaneLineIntersection, PlanePlaneIntersection} from "../pimath.interface"
 import {DimensionError, ParseError} from "../errors"
 import {assertDigits} from "../helpers"
 
 
+/**
+ * A plane of space, stored by a point and a normal vector. Built from a configuration object with one of:
+ * `point` and `normal`, `point` and two `directions`, an `equation`, three `points`, or four `coefficients`
+ * `[a, b, c, d]` of `ax + by + cz + d = 0`.
+ * @example
+ * new Plane3({equation: "x+2y+3z-6=0"}).normal.display // "((1,2,3))"
+ */
 export class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
     #normal: Vector = new Vector(0, 0, 1)
     #point: Point = new Point(0, 0, 0)
@@ -24,6 +31,9 @@ export class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
     // ------------------------------------------
     // Static factory methods
 
+    /**
+     * The plane through a point with a normal vector.
+     */
     static fromPointAndNormal(point: Point, normal: Vector): Plane3 {
         const p = new Plane3()
         p.#point = new Point(point)
@@ -31,6 +41,9 @@ export class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
         return p
     }
 
+    /**
+     * The plane through a point, spanned by two direction vectors (the normal is their cross product).
+     */
     static fromPointAndDirections(point: Point, v1: Vector, v2: Vector): Plane3 {
         const p = new Plane3()
         p.#point = new Point(point)
@@ -62,10 +75,16 @@ export class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
         return p
     }
 
+    /**
+     * The plane of a cartesian equation written in a string, such as `"x+2y+3z-6=0"`.
+     */
     static fromString(str: string): Plane3 {
         return Plane3.fromEquation(str)
     }
 
+    /**
+     * The plane through three points.
+     */
     static fromPoints(A: Point, B: Point, C: Point): Plane3 {
         const p = new Plane3()
         const AB = new Vector(A, B)
@@ -79,7 +98,7 @@ export class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
      * Builds a plane from four cartesian coefficients `[a, b, c, d]` where the
      * equation is `ax + by + cz + d = 0`.
      */
-    static fromCoefficients(a: number, b: number, c: number, d: number): Plane3 {
+    static fromCoefficients(a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>, d: InputValue<Fraction>): Plane3 {
         const fa = new Fraction(a)
         const fb = new Fraction(b)
         const fc = new Fraction(c)
@@ -172,10 +191,19 @@ export class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
     // ------------------------------------------
     // Coefficient accessors (cartesian equation: ax + by + cz + d = 0)
 
+    /**
+     * Coefficient of `x` in `ax + by + cz + d = 0`.
+     */
     get a(): Fraction { return this.#normal.x }
 
+    /**
+     * Coefficient of `y` in `ax + by + cz + d = 0`.
+     */
     get b(): Fraction { return this.#normal.y }
 
+    /**
+     * Coefficient of `z` in `ax + by + cz + d = 0`.
+     */
     get c(): Fraction { return this.#normal.z }
 
     /** `d` such that `n·p + d = 0` for any point `p` on the plane. */
@@ -184,10 +212,16 @@ export class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
     // ------------------------------------------
     // Geometric properties
 
+    /**
+     * The normal vector `(a, b, c)`. Setting it replaces the vector.
+     */
     get normal(): Vector { return this.#normal }
 
     set normal(value: Vector) { this.#normal = new Vector(value) }
 
+    /**
+     * A point of the plane. Setting it accepts a point or a vector.
+     */
     get point(): Point { return this.#point }
 
     set point(value: Point | Vector) { this.#point = new Point(value) }
@@ -298,10 +332,17 @@ export class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
         return {line: new Line3(pt, direction), hasIntersection: true, isParallel: false, isEqual: false}
     }
 
+    /**
+     * True when the point satisfies the equation of the plane.
+     */
     isPointOnPlane(pt: Point): boolean {
         return this.normal.dot(pt).add(this.d).isZero()
     }
 
+    /**
+     * True when the plane is parallel to another plane (the normals are parallel) or to a line (the direction is
+     * perpendicular to the normal). A plane is parallel to itself.
+     */
     isParallelTo(plane: Plane3): boolean
     isParallelTo(line: Line3): boolean
     isParallelTo(value: Plane3 | Line3): boolean {
@@ -309,6 +350,10 @@ export class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
         return this.normal.dot(value.direction).isZero()
     }
 
+    /**
+     * True when the plane is perpendicular to another plane (the normals are perpendicular) or to a line (the
+     * direction is parallel to the normal).
+     */
     isPerpendicularTo(plane: Plane3): boolean
     isPerpendicularTo(line: Line3): boolean
     isPerpendicularTo(value: Plane3 | Line3): boolean {
@@ -322,6 +367,9 @@ export class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
         return this
     }
 
+    /**
+     * True when both planes are the same plane, whatever their normal vector and reference point.
+     */
     isEqual(plane: Plane3): boolean {
         return this.normal.isColinearTo(plane.normal) && this.isPointOnPlane(plane.point)
     }

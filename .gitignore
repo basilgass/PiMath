@@ -6,3 +6,5 @@ CLAUDE.md
 # VitePress
 /docs/.vitepress/cache/
 /docs/.vitepress/dist/
+/docs/public/api/
+/docs/guide/_generated/

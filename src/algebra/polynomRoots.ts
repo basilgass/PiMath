@@ -98,15 +98,16 @@ export function solveQuadratic(coeffs: Fraction[]): PolynomRoot[] {
     root2.radical = delta.clone()
     root2.factor = new Fraction(1).divide(a2.clone()).opposite()
 
+    // Reduced, so that the same value is always written the same way (`sqrt(2)`, not `sqrt(8)/2`).
     const sol1: PolynomRoot = {
-        fraction: b.clone().opposite().divide(a2.clone()),
-        root: root1,
+        fraction: b.clone().opposite().divide(a2.clone()).reduce(),
+        root: root1.reduce(),
         exact: true,
         multiplicity: 1
     }
     const sol2: PolynomRoot = {
-        fraction: b.clone().opposite().divide(a2.clone()),
-        root: root2,
+        fraction: b.clone().opposite().divide(a2.clone()).reduce(),
+        root: root2.reduce(),
         exact: true,
         multiplicity: 1
     }

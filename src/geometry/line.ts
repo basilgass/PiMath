@@ -26,8 +26,22 @@ enum LineDirection {
     RIGHT_TO_LEFT = 'rl'
 }
 
+/**
+ * A line of the plane, stored by the coefficients of `ax + by + c = 0` and a point of the line.
+ * Built from an equation (`"2x+3y-6=0"`), two points, a point and a direction vector, or three coefficients.
+ * The output defaults to the canonical form; {@link asCartesian}, {@link asMxh}, {@link asParametric} and
+ * {@link asSystem} choose another one for the next `tex` or `display` only.
+ * @example
+ * new Line("2x+3y-6=0").slope.display // "-2/3"
+ */
 export class Line implements IPiMathObject<Line>, IDisplayDigits {
+    /**
+     * Constant to give to {@link fromPointAndLine}: build the parallel line.
+     */
     static PARALLEL = LineProperty.Parallel
+    /**
+     * Constant to give to {@link fromPointAndLine}: build the perpendicular line.
+     */
     static PERPENDICULAR = LineProperty.Perpendicular
     #OA: Vector
     // ax + by + c = 0
@@ -54,6 +68,10 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
     }
 
     // ------------------------------------------
+    /**
+     * Replace the line with an equation, another line, two points, a point and a vector, or three coefficients.
+     * @throws {ParseError} if the arguments do not describe a line.
+     */
     parse(...values: unknown[]): this {
         if (values.length === 0) {
             return this
@@ -258,6 +276,9 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         return expr || '0'
     }
 
+    /**
+     * A point of the line, as a vector. Setting it moves the line through that point and keeps its direction.
+     */
     get OA(): Vector {
         return this.#OA
     }
@@ -266,6 +287,9 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         this.copy(Line.fromPointAndNormal(value, this.n))
     }
 
+    /**
+     * Coefficient of `x` in `ax + by + c = 0`. Setting it does not update the reference point {@link OA}.
+     */
     get a(): Fraction {
         return this.#a
     }
@@ -274,26 +298,41 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         this.#a = value
     }
 
+    /**
+     * Output option for the next `tex` or `display`: `ax+by+c=0` (default). Chainable.
+     */
     get asCanonical(): this {
         this.#outputMode = LineDisplay.CANONICAL
         return this
     }
 
+    /**
+     * Output option for the next `tex` or `display`: `ax+by=-c`. Chainable.
+     */
     get asCartesian(): this {
         this.#outputMode = LineDisplay.CARTESIAN
         return this
     }
 
+    /**
+     * Output option for the next `tex` or `display`: `y=mx+h`, or `x=k` for a vertical line. Chainable.
+     */
     get asMxh(): this {
         this.#outputMode = LineDisplay.MXH
         return this
     }
 
+    /**
+     * Output option for the next `tex` or `display`: a point and a direction vector. Chainable.
+     */
     get asParametric(): this {
         this.#outputMode = LineDisplay.PARAMETRIC
         return this
     }
 
+    /**
+     * Output option for the next `tex` or `display`: the parametric system of `x` and `y`. Chainable.
+     */
     get asSystem(): this {
         this.#outputMode = LineDisplay.SYSTEM
         return this
@@ -309,6 +348,9 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         return this
     }
 
+    /**
+     * Coefficient of `y` in `ax + by + c = 0`. Setting it does not update the reference point {@link OA}.
+     */
     get b(): Fraction {
         return this.#b
     }
@@ -317,6 +359,9 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         this.#b = value
     }
 
+    /**
+     * Constant term in `ax + by + c = 0`. Setting it does not update the reference point {@link OA}.
+     */
     get c(): Fraction {
         return this.#c
     }
@@ -325,6 +370,10 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         this.#c = value
     }
 
+    /**
+     * Direction vector `(b, -a)`, oriented to the right unless the line was built from a direction pointing
+     * to the left. Setting it keeps the point {@link OA} and changes the direction.
+     */
     get d(): Vector {
         const director = new Vector(this.#b.clone(), this.#a.clone().opposite())
 
@@ -342,10 +391,16 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         this.copy(Line.fromPointAndDirection(this.OA, value))
     }
 
+    /**
+     * Same as {@link d}.
+     */
     get director(): Vector {
         return this.d
     }
 
+    /**
+     * Distance from a point to the line, as an exact reduced {@link Root}.
+     */
     distanceTo(pt: Point): Root {
         const numerator = pt.x.clone().multiply(this.#a)
             .add(pt.y.clone().multiply(this.#b))
@@ -363,6 +418,9 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
     // ------------------------------------------
     // Static construction methods
 
+    /**
+     * Build the line `ax + by + c = 0`. Fractional coefficients are multiplied to become integers.
+     */
     static fromCoefficient(a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>): Line {
         const line = new Line()
         line.#a = new Fraction(a)
@@ -408,7 +466,8 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
     }
 
     /**
-     * @throws {ParseError} if the input has no x/y, contains unknown variables, or has degree > 1
+     * Build a line from an equation in `x` and `y` of the first degree.
+     * @throws {ParseError} if the equation has no `x` or `y`, has another variable, or is not linear.
      */
     static fromEquation(value: InputAlgebra<Equation>): Line {
         const equ = new Equation(value)
@@ -439,14 +498,24 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         )
     }
 
+    /**
+     * The line through `point` parallel to `parallel`.
+     */
     static fromParallel(parallel: Line, point: Point): Line {
         return Line.fromPointAndNormal(point, parallel.n)
     }
 
+    /**
+     * The line through `point` perpendicular to `perpendicular`.
+     */
     static fromPerpendicular(perpendicular: Line, point: Point): Line {
         return Line.fromPointAndNormal(point, perpendicular.d)
     }
 
+    /**
+     * The line through a point with a direction vector.
+     * @throws {ParseError} if the vector is zero.
+     */
     static fromPointAndDirection(P: Point | Vector, d: Vector): Line {
         const line = Line.fromPointAndNormal(P, d.clone().normal())
         line.#orientation = d.x.isPositive()
@@ -455,6 +524,10 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         return line
     }
 
+    /**
+     * The line through a point, parallel (default) or perpendicular to a line.
+     * @param orientation - {@link Line.PARALLEL} or {@link Line.PERPENDICULAR}.
+     */
     static fromPointAndLine(P: Point | Vector, L: Line, orientation: LineProperty = LineProperty.Parallel): Line {
         if (orientation === LineProperty.Perpendicular) {
             return Line.fromPointAndNormal(P, L.director)
@@ -462,7 +535,10 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         return Line.fromPointAndNormal(P, L.normal)
     }
 
-    /** @throws {ParseError} if n is the zero vector */
+    /**
+     * The line through a point with a normal vector.
+     * @throws {ParseError} if the normal vector is zero.
+     */
     static fromPointAndNormal(P: Point | Vector, n: Vector): Line {
         if (n.isZero()) {
             throw new ParseError('Normal vector cannot be zero')
@@ -480,11 +556,18 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         return line
     }
 
+    /**
+     * The line through two points.
+     * @throws {ParseError} if the points are the same.
+     */
     static fromPoints(A: Point, B: Point): Line {
         return Line.fromPointAndNormal(A, new Vector(A, B).normal())
     }
 
     // ------------------------------------------
+    /**
+     * The equation `ax + by + c = 0` with integer coefficients, as an {@link Equation}.
+     */
     getEquation(): Equation {
         const equ = new Equation(new Polynom().parse('xy', this.#a, this.#b, this.#c), new Polynom('0'))
         return equ.simplify()
@@ -512,10 +595,16 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         return equ.isolate('x').right.evaluate({y: F})
     }
 
+    /**
+     * Intercept `h` of `y = mx + h`: `-c/b`. Infinite for a vertical line.
+     */
     get height(): Fraction {
         return this.#c.clone().opposite().divide(this.#b)
     }
 
+    /**
+     * True when the line crosses the segment `[AB]`, ends included.
+     */
     hitSegment(A: Point, B: Point): boolean {
         const iPt = this.intersection(
             Line.fromPoints(A, B)
@@ -530,6 +619,10 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         return false
     }
 
+    /**
+     * Intersection with another line, as `{point, hasIntersection, isParallel, isSame}`.
+     * The point is `null` when the lines are parallel or the same.
+     */
     intersection(line: Line): LineIntersection {
         if (this.isEqual(line)) {
             return {point: null, hasIntersection: false, isParallel: false, isSame: true}
@@ -549,11 +642,17 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         return {point: Pt, hasIntersection: true, isParallel: false, isSame: false}
     }
 
+    /**
+     * True when the slope is zero.
+     */
     isHorizontal(): boolean {
         return this.slope.value === 0
     }
 
     // ------------------------------------------
+    /**
+     * True when the point satisfies the equation of the line.
+     */
     isPointOnLine(pt: Point): boolean {
         return this.#a.clone()
             .multiply(pt.x)
@@ -565,15 +664,24 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
             .isZero()
     }
 
+    /**
+     * True when the lines have the same direction but are not the same line.
+     */
     isParallelTo(line: Line): boolean {
         const crossAB = this.#a.clone().multiply(line.b).subtract(line.a.clone().multiply(this.#b))
         return crossAB.isZero() && !this.isEqual(line)
     }
 
+    /**
+     * True when the directions are perpendicular.
+     */
     isPerpendicularTo(line: Line): boolean {
         return this.d.isNormalTo(line.d)
     }
 
+    /**
+     * True when both lines are the same line, whatever their coefficients.
+     */
     isEqual(line: Line): boolean {
         const crossAB = this.#a.clone().multiply(line.b).subtract(line.a.clone().multiply(this.#b))
         if (!crossAB.isZero()) return false
@@ -586,18 +694,32 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         return crossBC.isZero()
     }
 
+    /**
+     * True when the slope is infinite.
+     */
     isVertical(): boolean {
         return this.slope.isInfinity()
     }
 
+    /**
+     * Normal vector computed from the direction (the direction turned by 90 degrees). It can be the opposite of
+     * {@link normal}.
+     */
     get n(): Vector {
         return this.d.normal()
     }
 
+    /**
+     * Normal vector `(a, b)`.
+     */
     get normal(): Vector {
         return new Vector(this.#a, this.#b)
     }
 
+    /**
+     * A random point close to the line but not on it.
+     * @param k - same as in {@link randomPoint}.
+     */
     randomNearPoint(k?: number): Point {
         const pt = this.randomPoint(k)
 
@@ -612,6 +734,11 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         return pt
     }
 
+    /**
+     * A random point of the line: the point {@link OA} moved along the direction vector by a non-zero integer
+     * between `-k` and `k`.
+     * @param k - largest multiple of the direction vector (default 3).
+     */
     randomPoint(k?: number): Point {
         const pt = this.d
             .clone()
@@ -621,6 +748,9 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         return new Point(pt)
     }
 
+    /**
+     * Give the equation the smallest integer coefficients with no common divisor.
+     */
     simplify(): this {
         const lcm = Numeric.lcm(this.#a.denominator, this.#b.denominator, this.#c.denominator)
         const gcd = Numeric.gcd(this.#a.numerator, this.#b.numerator, this.#c.numerator)
@@ -650,6 +780,9 @@ export class Line implements IPiMathObject<Line>, IDisplayDigits {
         return new Point(new Vector(pt).add(displacement.multiplyByScalar(2)))
     }
 
+    /**
+     * Slope `m` of `y = mx + h`: `-a/b`. Infinite for a vertical line.
+     */
     get slope(): Fraction {
         return this.#a.clone().opposite().divide(this.#b)
     }

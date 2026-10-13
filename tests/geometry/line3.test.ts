@@ -4,6 +4,7 @@ import {Random} from "../../src/randomization/random"
 import {Vector} from "../../src/geometry/vector"
 import {Point} from "../../src/geometry/point"
 import {Root} from "../../src/coefficients/root"
+import {defined} from "../helpers/defined"
 
 // ─── Construction ────────────────────────────────────────────────────────────
 
@@ -106,7 +107,7 @@ describe('Line3 tex/display output', () => {
 
     it('mode resets to parametric after tex', () => {
         const L = new Line3(A, d)
-        L.asSystem.tex
+        void L.asSystem.tex
         expect(L.tex).toBe('\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} 1 \\\\ 2 \\\\ 3 \\end{pmatrix} + k\\cdot \\begin{pmatrix} 4 \\\\ 5 \\\\ 6 \\end{pmatrix}')
     })
 
@@ -220,9 +221,9 @@ describe('Line3 intersection', () => {
         expect(result.hasIntersection).toBe(true)
         expect(result.isParallel).toBe(false)
         expect(result.isSame).toBe(false)
-        expect(result.point!.x.display).toBe('2')
-        expect(result.point!.y.display).toBe('0')
-        expect(result.point!.z.display).toBe('0')
+        expect(defined(result.point).x.display).toBe('2')
+        expect(defined(result.point).y.display).toBe('0')
+        expect(defined(result.point).z.display).toBe('0')
     })
 
     it('returns isParallel true for parallel lines', () => {

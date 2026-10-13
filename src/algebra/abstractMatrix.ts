@@ -11,6 +11,12 @@ enum MatrixType {
     Vmatrix
 }
 
+/**
+ * Common behaviour of {@link Matrix} (fraction entries) and {@link PolyMatrix} (polynom entries): a rectangular
+ * array of values with arithmetic, determinant, inverse, row reduction and LaTeX output.
+ * Indices are zero-based. Operations modify the matrix and return it, unless their description says they return
+ * a new matrix; `clone()` keeps the original.
+ */
 export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDisplayDigits {
     #matrix_parenthesis: MatrixType = MatrixType.pmatrix
     #partition: number | null = null
@@ -26,18 +32,28 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         }
     }
 
+    /**
+     * Replace the content with a display string (`"((1,2),(3,4))"`), an array of rows, or vectors (one per column).
+     * @throws {DimensionError} if the rows (or the vectors) do not all have the same length.
+     */
     parse(value: string | InputAlgebra<T>[][] | Vector[]): this {
         if (typeof value === 'string') return this.#loadFromString(value)
         if (value.length > 0 && value[0] instanceof Vector) return this.#loadFromVectors(...(value as Vector[]))
         return this.#loadFromValues(value as InputAlgebra<T>[][])
     }
 
+    /**
+     * Copy the values and the partition of another matrix into this one.
+     */
     copy(value: AbstractMatrix<T>): this {
         this.#values = value.#values.map(row => row.map(v => v.clone()))
         this.#partition = value.#partition
         return this
     }
 
+    /**
+     * A full duplicate of the values and of the partition. The delimiter option (`asBmatrix`...) is not kept.
+     */
     clone(): this {
         const duplicates: T[][] = []
         this.#values.forEach(row => {
@@ -48,6 +64,10 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return result
     }
 
+    /**
+     * LaTeX output: a `pmatrix` environment by default, one row per line. With a partition ({@link withPartition}),
+     * an `array` with a vertical bar. An empty matrix gives an empty string.
+     */
     get tex(): string {
         if (this.#values.length === 0) return ""
 
@@ -100,6 +120,10 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return 'pmatrix'
     }
 
+    /**
+     * Text output such as `((1,2),(3,4))`. The outer brackets follow the delimiter option, and a partition adds a `|`.
+     * This is the format read by {@link parse}.
+     */
     get display(): string {
         if (this.#values.length === 0) return ""
 
@@ -119,7 +143,10 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return output
     }
 
-    /** @throws {DimensionError} if the dimensions don't match */
+    /**
+     * Add a matrix of the same dimensions, term by term.
+     * @throws {DimensionError} if the dimensions differ.
+     */
     add(value: AbstractMatrix<T>): this {
         if (!this.canBeAdded(value)) {
             throw new DimensionError("Cannot add a matrix with different dimensions.")
@@ -140,31 +167,50 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return this.#values[i][j]
     }
 
+    /**
+     * Delimiter option: square brackets. Chainable, persistent.
+     */
     get asBmatrix(): this {
         this.#matrix_parenthesis = MatrixType.bmatrix
         return this
     }
 
+    /**
+     * Delimiter option: braces. Chainable, persistent.
+     */
     get asBraceMatrix(): this {
         this.#matrix_parenthesis = MatrixType.Bmatrix
         return this
     }
 
+    /**
+     * True when both matrices have the same dimensions.
+     */
     canBeAdded(matrix: AbstractMatrix<T>): boolean {
         const {rows, cols} = this.dimension
         const {rows: rows2, cols: cols2} = matrix.dimension
         return rows === rows2 && cols === cols2
     }
 
+    /**
+     * True when the matrix is square and its determinant is not zero.
+     */
     canBeInverted(): boolean {
         if (!this.isSquare()) return false
         return !this.determinant().isZero()
     }
 
+    /**
+     * True when the number of columns of this matrix equals the number of rows of `matrix`.
+     */
     canBeMultiplied(matrix: AbstractMatrix<T>): boolean {
         return this.dimension.cols === matrix.dimension.rows
     }
 
+    /**
+     * The cofactor of the entry at `row`, `column`: the determinant of the matrix without that row and column,
+     * times `(-1)^(row+column)`.
+     */
     cofactor(row: number, column: number): T {
         // The minor of a 1x1 matrix is the empty matrix, whose determinant is 1.
         if (this.#values.length === 1) {
@@ -179,13 +225,19 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return coMatrix.determinant().multiply((-1) ** (row + column))
     }
 
+    /**
+     * The columns, as an array of arrays (copies of the values).
+     */
     get cols(): T[][] {
         return Array.from({length: this.dimension.cols}, (_, j) =>
             Array.from({length: this.dimension.rows}, (_, i) => this.#values[i][j].clone())
         )
     }
 
-    /** @throws {DimensionError} if the matrix is not square */
+    /**
+     * Determinant, by cofactor expansion along the first row.
+     * @throws {DimensionError} if the matrix is not square.
+     */
     determinant(): T {
         if (!this.isSquare()) {
             throw new DimensionError('Matrix is not square')
@@ -201,6 +253,9 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return det
     }
 
+    /**
+     * Number of rows and columns, as `{rows, cols}`.
+     */
     get dimension(): {rows: number, cols: number} {
         return {
             rows: this.#values.length,
@@ -208,10 +263,16 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         }
     }
 
+    /**
+     * All the values in a single array, row by row.
+     */
     flat(): T[] {
         return this.#values.flat()
     }
 
+    /**
+     * Call `callback(value, row, column)` for each entry. The entries are the real objects: they can be modified.
+     */
     forEach(callback: (aij: T, row: number, column: number) => void): void {
         this.#values.forEach((row, i) => {
             row.forEach((aij, j) => {
@@ -337,6 +398,9 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return this
     }
 
+    /**
+     * True when both matrices have the same dimensions and equal entries.
+     */
     isEqual(value: AbstractMatrix<T>): boolean {
         if (!this.canBeAdded(value)) return false
         let aij_are_equals = true
@@ -346,6 +410,9 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return aij_are_equals
     }
 
+    /**
+     * True for an identity matrix.
+     */
     isOne(): boolean {
         if (!this.isSquare()) return false
         for (let row = 0; row < this.#values.length; row++) {
@@ -357,10 +424,16 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return true
     }
 
+    /**
+     * True when there are as many rows as columns.
+     */
     isSquare(): boolean {
         return this.dimension.cols === this.dimension.rows
     }
 
+    /**
+     * True when every entry is zero.
+     */
     isZero(): boolean {
         return this.flat().every(v => v.isZero())
     }
@@ -380,6 +453,9 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         )
     }
 
+    /**
+     * Build an array of rows from `callback(value, row, column)`.
+     */
     map<U>(callback: (aij: T, row: number, column: number) => U): U[][] {
         const {rows, cols} = this.dimension
         const arr = Array.from({length: rows}, () =>
@@ -393,7 +469,10 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return arr
     }
 
-    /** @throws {DimensionError} if dimensions are incompatible for matrix multiplication */
+    /**
+     * Multiply by a scalar (every entry), or by a matrix (`this × value`, which replaces the content).
+     * @throws {DimensionError} if the dimensions are incompatible for a matrix product.
+     */
     multiply(value: InputValue<T> | AbstractMatrix<T>): this {
         if (value instanceof AbstractMatrix) {
             if (!this.canBeMultiplied(value)) {
@@ -416,6 +495,9 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return this
     }
 
+    /**
+     * Set the diagonal to one and every other entry to zero.
+     */
     one(): this {
         this.forEach((aij, row, column) => {
             if (row === column) aij.one()
@@ -424,27 +506,43 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return this
     }
 
+    /**
+     * Change the sign of every entry.
+     */
     opposite(): this {
         this.forEach(aij => aij.opposite())
         return this
     }
 
+    /**
+     * Delimiter option: round brackets (default). Chainable, persistent.
+     */
     get asPmatrix(): this {
         this.#matrix_parenthesis = MatrixType.pmatrix
         return this
     }
 
+    /**
+     * Delimiter option: single vertical bars, as for a determinant. Chainable, persistent.
+     */
     get asVmatrix(): this {
         this.#matrix_parenthesis = MatrixType.vmatrix
         return this
     }
 
+    /**
+     * Delimiter option: double vertical bars. Chainable, persistent.
+     */
     get asDoubleVmatrix(): this {
         this.#matrix_parenthesis = MatrixType.Vmatrix
         return this
     }
 
-    /** @throws {InvalidArgumentError} if the exponent is not a non-negative integer */
+    /**
+     * Raise to a non-negative integer power. The power 0 gives the identity.
+     * @throws {InvalidArgumentError} if `value` is negative or not an integer.
+     * @throws {DimensionError} if the matrix is not square and the power is 2 or more.
+     */
     pow(value: number): this {
         if (!Number.isSafeInteger(value)) {
             throw new InvalidArgumentError('Can only raise item by an integer')
@@ -469,6 +567,9 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return ref.rows.filter(row => row.some(v => !v.isZero())).length
     }
 
+    /**
+     * Reduce every entry.
+     */
     reduce(): this {
         this.forEach(aij => aij.reduce())
         return this
@@ -492,10 +593,17 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return this.clone().#gaussReduce(false)
     }
 
+    /**
+     * The rows, as an array of arrays (copies of the values).
+     */
     get rows(): T[][] {
         return this.#values.map(row => row.map(v => v.clone()))
     }
 
+    /**
+     * Replace the entry at `row`, `column`.
+     * @throws {IndexError} if the position is outside of the matrix.
+     */
     setValue(row: number, column: number, value: InputValue<T>): this {
         const {rows, cols} = this.dimension
         if ((row < 0 || row >= rows) || column < 0 || column >= cols) {
@@ -505,7 +613,10 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return this
     }
 
-    /** @throws {DimensionError} if the dimensions don't match */
+    /**
+     * Subtract a matrix of the same dimensions, term by term.
+     * @throws {DimensionError} if the dimensions differ.
+     */
     subtract(value: AbstractMatrix<T>): this {
         if (!this.canBeAdded(value)) {
             throw new DimensionError("Cannot subtract a matrix with different dimensions.")
@@ -540,6 +651,9 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return result
     }
 
+    /**
+     * The entries, as an array of rows (copies of the values).
+     */
     get values(): T[][] {
         return this.#values.map(row => row.map(v => v.clone()))
     }
@@ -559,6 +673,9 @@ export abstract class AbstractMatrix<T extends IMatrixElement<T>> implements IDi
         return this
     }
 
+    /**
+     * Set every entry to zero.
+     */
     zero(): this {
         this.forEach(aij => aij.zero())
         return this

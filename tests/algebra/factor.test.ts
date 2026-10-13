@@ -1,7 +1,6 @@
 import {describe, expect, test} from "vitest"
 import {Factor} from "../../src/algebra/factor"
 import {Polynom} from "../../src/algebra/polynom"
-import {Fraction} from "../../src/coefficients/fraction"
 import {MathError} from "../../src/errors"
 import {TableOfSigns} from "../../src/analyze/tableOfSigns"
 
@@ -349,3 +348,29 @@ describe('Table of signs of Factors', ()=>{
 })
 
 
+
+describe('Factor asRoot with a negative power', () => {
+    test.each([
+        ['(x+1)^(-1)', '1/(x+1)', '\\frac{ 1 }{ x+1 }'],
+        ['(x+1)^(-2)', '1/((x+1)^(2))', '\\frac{ 1 }{ \\left( x+1 \\right)^{ 2 } }'],
+        ['(x+1)^(-1/2)', '1/(sqrt(x+1))', '\\frac{ 1 }{ \\sqrt{ x+1 } }'],
+        ['(x+1)^(-3/2)', '1/(sqrt(x+1)^(3))', '\\frac{ 1 }{ \\sqrt{ x+1 }^{ 3 } }'],
+    ])('%s is written with a positive power under the fraction bar', (input, display, tex) => {
+        const F = new Factor(input).asRoot
+
+        expect(F.display).toBe(display)
+        expect(F.tex).toBe(tex)
+    })
+
+    test('a positive power and the default output are unchanged', () => {
+        expect(new Factor('(x+1)^(1/2)').asRoot.display).toBe('sqrt(x+1)')
+        expect(new Factor('(x+1)^(-2)').display).toBe('(x+1)^(-2)')
+    })
+
+    test('the factor keeps its power after being displayed', () => {
+        const F = new Factor('(x+1)^(-2)').asRoot
+
+        void F.display
+        expect(F.power.display).toBe('-2')
+    })
+})

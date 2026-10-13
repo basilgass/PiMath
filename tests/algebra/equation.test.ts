@@ -113,8 +113,8 @@ describe('Equation operations', () => {
     })
 
     test('add two Equations', () => {
-        const E1 = new Equation('3x+5=0'),
-            E2 = new Equation('2x-1=x+3')
+        const E1 = new Equation('3x+5=0')
+            const E2 = new Equation('2x-1=x+3')
 
         const E = E1.add(E2)
         expect(E.display).to.be.equal('5x+4=x+3')
@@ -127,8 +127,8 @@ describe('Equation operations', () => {
         expect(E.display).to.be.equal('5x+5=2x')
     })
     test('subtract two Equations', () => {
-        const E1 = new Equation('3x+5=0'),
-            E2 = new Equation('2x-1=x+3')
+        const E1 = new Equation('3x+5=0')
+            const E2 = new Equation('2x-1=x+3')
 
         const E = E1.subtract(E2)
         expect(E.display).to.be.equal('x+6=-x-3')
@@ -427,9 +427,9 @@ describe.skip('Equations tests', () => {
     })
 
     it('should detect if two equations are equal or linear', function () {
-        const P = new Equation('3x+2y=5'),
-            Q = new Equation('5-3x=2y'),
-            R = new Equation('6x+4y-10=0')
+        const P = new Equation('3x+2y=5')
+            const Q = new Equation('5-3x=2y')
+            const R = new Equation('6x+4y-10=0')
 
         expect(P.isEqual(P)).toBe(true)
         expect(P.isEquivalentTo(Q)).toBe(true)

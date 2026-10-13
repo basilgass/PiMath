@@ -19,6 +19,13 @@ enum Line3Display {
     CARTESIAN
 }
 
+/**
+ * A line of space, stored by a point `OA` and a direction vector `d`. Built from two points or from a point and
+ * a direction vector. The output defaults to the parametric form; {@link asSystem} and {@link asCartesian} choose
+ * another one for the next `tex` or `display` only.
+ * @example
+ * new Line3(new Point(0, 0, 0), new Vector(1, 2, 3)).display // "((x,y,z)) = ((0,0,0)) + k\\cdot ((1,2,3))"
+ */
 export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
     #OA: Point = new Point()
     #d: Vector = new Vector()
@@ -43,6 +50,9 @@ export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
     // ------------------------------------------
     // Static factories
 
+    /**
+     * The line through two points.
+     */
     static fromPoints(A: Point, B: Point): Line3 {
         const line = new Line3()
         line.#OA = A.clone()
@@ -50,6 +60,9 @@ export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
         return line
     }
 
+    /**
+     * The line through a point with a direction vector.
+     */
     static fromPointAndDirection(A: Point, d: Vector): Line3 {
         const line = new Line3()
         line.#OA = A.clone()
@@ -60,6 +73,9 @@ export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
     // ------------------------------------------
     // parse / copy / clone
 
+    /**
+     * Replace the line with the line through two points, or through a point with a direction vector.
+     */
     parse(A: Point, B: Point): this
     parse(A: Point, d: Vector): this
     parse(A: Point, Bd: Point | Vector): this {
@@ -94,16 +110,25 @@ export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
     // ------------------------------------------
     // Output mode selectors
 
+    /**
+     * Output option for the next `tex` or `display`: a point and a direction vector (default). Chainable.
+     */
     get asParametric(): this {
         this.#outputMode = Line3Display.PARAMETRIC
         return this
     }
 
+    /**
+     * Output option for the next `tex` or `display`: the parametric system of `x`, `y` and `z`. Chainable.
+     */
     get asSystem(): this {
         this.#outputMode = Line3Display.SYSTEM
         return this
     }
 
+    /**
+     * Output option for the next `tex` or `display`: the symmetric form `(x-a)/p = (y-b)/q = (z-c)/r`. Chainable.
+     */
     get asCartesian(): this {
         this.#outputMode = Line3Display.CARTESIAN
         return this
@@ -174,6 +199,9 @@ export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
     // ------------------------------------------
     // Getters and setters
 
+    /**
+     * The reference point of the line. The getter returns the point itself, not a copy.
+     */
     get OA(): Point {
         return this.#OA
     }
@@ -182,6 +210,9 @@ export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
         this.#OA = value
     }
 
+    /**
+     * The direction vector (a copy, see {@link direction}). Setting it replaces the direction.
+     */
     get d(): Vector {
         return this.direction
     }
@@ -190,10 +221,16 @@ export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
         this.#d = value
     }
 
+    /**
+     * The direction vector, as a copy.
+     */
     get direction(): Vector {
         return this.#d.clone()
     }
 
+    /**
+     * The reference point, as a copy.
+     */
     get point(): Point {
         return this.#OA.clone()
     }
@@ -262,14 +299,23 @@ export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
         return {point: pt, hasIntersection: true, isParallel: false, isSame: false}
     }
 
+    /**
+     * True when the point is on the line.
+     */
     isPointOnLine(pt: Point): boolean {
         return new Vector(this.#OA, pt).isColinearTo(this.#d)
     }
 
+    /**
+     * True when both lines are the same line, whatever their reference point and direction vector.
+     */
     isEqual(line: Line3): boolean {
         return this.#d.isColinearTo(line.#d) && this.isPointOnLine(line.#OA)
     }
 
+    /**
+     * True when the directions are parallel and the lines are not the same.
+     */
     isParallelTo(line: Line3): boolean {
         return this.#d.isColinearTo(line.#d) && !this.isEqual(line)
     }
@@ -284,6 +330,10 @@ export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
         return this.isOrthogonalTo(line) && this.intersection(line).hasIntersection
     }
 
+    /**
+     * A random point of the line: the reference point moved along the direction vector by a non-zero integer
+     * between `-max` and `max`.
+     */
     randomPoint(max = 5): Point {
         const A = this.#OA.clone()
         const k = new Fraction(randomIntSym(max, false))
@@ -295,6 +345,10 @@ export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
         )
     }
 
+    /**
+     * A random point close to the line but not on it.
+     * @param k - same as `max` in {@link randomPoint}.
+     */
     randomNearPoint(k?: number): Point {
         const pt = this.randomPoint(k)
 
@@ -309,6 +363,9 @@ export class Line3 implements IPiMathObject<Line3>, IDisplayDigits {
         return pt
     }
 
+    /**
+     * Give the direction vector the smallest integer coordinates, with a positive first coordinate.
+     */
     simplify(): this {
         this.#d.simplify()
         return this

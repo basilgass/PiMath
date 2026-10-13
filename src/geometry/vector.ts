@@ -11,6 +11,12 @@ import {DimensionError, InvalidArgumentError, MathError, ParseError} from "../er
 import {TupleN} from "./TupleN"
 import {type Point} from "./point"
 
+/**
+ * A vector of the plane or of space, with exact coordinates. Built from numbers (`new Vector(3, 4)`), from a
+ * string (`"(3;4)"`), from another vector or point, or from two points: `new Vector(A, B)` is the vector `AB`.
+ * @example
+ * new Vector(new Point(1, 2), new Point(4, 6)).display // "((3,4))"
+ */
 export class Vector extends TupleN implements IPiMathObject<Vector> {
     constructor(...values: (Vector | Point)[] | InputValue<Fraction>[]) {
         super()
@@ -25,6 +31,13 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
     // ------------------------------------------
     // Getter and setter
 
+    /**
+     * Replace the coordinates with numbers, a string, a vector or a point, or with the vector from one point
+     * to another.
+     * @throws {InvalidArgumentError} if the arguments are not valid.
+     * @throws {DimensionError} if two points have different dimensions.
+     * @throws {ParseError} if a value is not a number.
+     */
     parse(...values: (Vector | Point)[] | InputValue<Fraction>[]): this {
         if (values.length === 0) {
             throw new InvalidArgumentError(`Invalid value`)
@@ -83,14 +96,23 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
         return `((${this.array.map(x => x.display).join(',')}))`
     }
 
+    /**
+     * Text form of a vector from already written coordinates: `asDisplay("x", "y")` is `((x,y))`.
+     */
     static asDisplay(...values: string[]): string {
         return `((${values.join(',')}))`
     }
 
+    /**
+     * LaTeX form of a vector from already written coordinates.
+     */
     static asTex(...values: string[]): string {
         return `\\begin{pmatrix} ${values.join(' \\\\ ')} \\end{pmatrix}`
     }
 
+    /**
+     * Add a vector of the same dimension.
+     */
     add(V: Vector): this {
         this.array = this.cloneCoordinates().map((x, index) => x.add(V.array[index]))
         return this
@@ -120,7 +142,8 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
     }
 
     /**
-     * @throws {DimensionError} if either vector is not 3-dimensional
+     * Cross product, as a new vector.
+     * @throws {DimensionError} if either vector is not 3-dimensional.
      */
     cross(value: Vector): Vector {
         if (this.dimension !== 3 || value.dimension !== 3) {
@@ -137,10 +160,16 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
     // ------------------------------------------
     // Creation / parsing functions
 
+    /**
+     * Divide every coordinate by a number.
+     */
     divideByScalar(k: InputValue<Fraction>): this {
         return this.multiplyByScalar(new Fraction(k).inverse())
     }
 
+    /**
+     * Dot product, as an exact fraction.
+     */
     dot(V: Vector | Point): Fraction {
         return dotProduct(this, V)
     }
@@ -159,6 +188,12 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
         return v
     }
 
+    /**
+     * Build the linear combination written by a polynom: `fromPolynom("2a-b", {a: "(1;0)", b: "(0;1)"})` is `(2;-1)`.
+     * @param vectors - the vector (or its string) of each variable.
+     * @throws {InvalidArgumentError} if the polynom has a constant term, a term that is not linear, or a variable without vector.
+     * @throws {DimensionError} if the vectors have different dimensions.
+     */
     static fromPolynom(expr: InputAlgebra<Polynom>, vectors: Record<string, Vector | string>): Vector {
         const poly = expr instanceof Polynom ? expr : new Polynom(expr)
 
@@ -194,23 +229,38 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
         return result
     }
 
+    /**
+     * True when both vectors are parallel (one is a multiple of the other).
+     */
     isColinearTo(v: Vector): boolean {
         return areVectorsColinears(this, v)
     }
 
+    /**
+     * True when both vectors have the same coordinates.
+     */
     isEqual(v: Vector): boolean {
         return areVectorsEquals(this, v)
     }
 
+    /**
+     * True when the vectors are perpendicular: their dot product is zero.
+     */
     isNormalTo(v: Vector): boolean {
         return this.dot(v).isZero()
     }
 
     // ------------------------------------------
+    /**
+     * True for the vector `(1, 0, ...)`, which {@link one} produces.
+     */
     isOne(): boolean {
         return this.array.every((x, index) => index === 0 ? x.isOne() : x.isZero())
     }
 
+    /**
+     * Multiply every coordinate by a number.
+     */
     multiplyByScalar(k: InputValue<Fraction>): this {
         const scalar = new Fraction(k)
         this.array = this.cloneCoordinates().map(x => x.multiply(scalar))
@@ -234,12 +284,19 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
         return this
     }
 
+    /**
+     * Set the vector to `(1, 0, ...)`.
+     */
     one(): this {
         this.zero()
         this.x.one()
         return this
     }
 
+    /**
+     * Scale the vector to the smallest integer coordinates with no common divisor, and make the first coordinate
+     * positive. The direction is kept.
+     */
     simplify(): this {
         const lcm = Numeric.lcm(...this.array.map(x => x.denominator))
         const gcd = Numeric.gcd(...this.array.map(x => x.numerator))
@@ -251,15 +308,25 @@ export class Vector extends TupleN implements IPiMathObject<Vector> {
         return this
     }
 
+    /**
+     * Subtract a vector of the same dimension.
+     */
     subtract(V: Vector): this {
         return this.add(V.clone().opposite())
     }
 
+    /**
+     * Add the given values to the coordinates, one per coordinate.
+     */
     translate(...values: Fraction[]): this {
         this.array = this.cloneCoordinates().map((x, index) => x.add(values[index]))
         return this
     }
 
+    /**
+     * Divide by the norm. The norm is a decimal number, so the result is exact only when it is rational.
+     * The zero vector is left as it is.
+     */
     unit(): this {
         const norm = this.norm
         if (norm === 0) {

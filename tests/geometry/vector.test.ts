@@ -61,19 +61,19 @@ describe('Vector output', () => {
 })
 describe('Vector.parse errors', () => {
     test('throws InvalidArgumentError when called with no arguments', () => {
-        expect(() => new Vector(undefined as unknown)).toThrow(InvalidArgumentError)
+        expect(() => new Vector(undefined as never)).toThrow(InvalidArgumentError)
     })
 
     test('throws InvalidArgumentError for a single non-string scalar', () => {
-        expect(() => new Vector(42 as unknown)).toThrow(InvalidArgumentError)
+        expect(() => new Vector(42)).toThrow(InvalidArgumentError)
     })
 
     test('throws InvalidArgumentError when mixing TupleN with scalars', () => {
-        expect(() => new Vector(new Point(1, 2) as unknown, 3 as unknown)).toThrow(InvalidArgumentError)
+        expect(() => new Vector(new Point(1, 2) as never, 3)).toThrow(InvalidArgumentError)
     })
 
     test('throws ParseError for invalid scalar coordinates', () => {
-        expect(() => new Vector('x' as unknown, 'y' as unknown)).toThrow(ParseError)
+        expect(() => new Vector('x', 'y')).toThrow(ParseError)
     })
 
     test('throws DimensionError when building AB from vectors of different dimension', () => {

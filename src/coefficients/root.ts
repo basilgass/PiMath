@@ -3,6 +3,13 @@ import type {IExpression, InputValue, IPiMathObject} from "../pimath.interface"
 import {Numeric} from "../numeric"
 import {InvalidArgumentError, MathError, ParseError} from "../errors"
 
+/**
+ * A real root `factor · ⁿ√radical`, where the factor and the radical are {@link Fraction}s and the index `n`
+ * is a strictly positive integer (2 by default). Built from a string (`"3sqrt(5)"`, `"root(3)(10)"`), a number
+ * or a fraction. `Root` is strict: a malformed input throws a `ParseError`.
+ * @example
+ * new Root("sqrt(12)").reduce().display // "2sqrt(3)"
+ */
 export class Root implements IPiMathObject<Root>, IExpression<Root> {
     #factor: Fraction
     #index: number
@@ -68,6 +75,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this
     }
 
+    /**
+     * Build a new root of index 2 equal to the fraction (`factor = value`, `radical = 1`).
+     */
     static fromFraction(value: Fraction): Root {
         const r = new Root()
         r.index = 2
@@ -162,6 +172,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this.multiply(new Root(value).inverse())
     }
 
+    /**
+     * Fraction multiplying the radical. Never an invalid (`NaN`) fraction.
+     */
     get factor(): Fraction {
         return this.#factor
     }
@@ -186,7 +199,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         // set the radical; reject an invalid (NaN) primitive at Root's boundary (A6).
         const rad = new Fraction(radical)
         if (rad.isNaN()) {
-            throw new ParseError(`Cannot build a root from an invalid radical: "${radical}"`)
+            throw new ParseError(`Cannot build a root from an invalid radical: "${radical instanceof Fraction ? radical.display : radical}"`)
         }
         this.radical = rad
 
@@ -196,7 +209,7 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         } else {
             const f = new Fraction(factor)
             if (f.isNaN()) {
-                throw new ParseError(`Cannot build a root from an invalid factor: "${factor}"`)
+                throw new ParseError(`Cannot build a root from an invalid factor: "${factor instanceof Fraction ? factor.display : factor}"`)
             }
             this.factor = f
         }
@@ -214,6 +227,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this
     }
 
+    /**
+     * Index of the root: 2 for a square root, 3 for a cube root...
+     */
     get index(): number {
         return this.#index
     }
@@ -244,6 +260,10 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this
     }
 
+    /**
+     * True when both roots have the same real value, compared exactly (no floating point):
+     * `sqrt(8)` equals `2sqrt(2)`. An even root of a negative radical is not real and equals nothing.
+     */
     isEqual(root: Root): boolean {
         if (this.isZero() && root.isZero()) {
             return true
@@ -280,10 +300,16 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return (this.factor.sign() * radicalSign) as 1 | -1
     }
 
+    /**
+     * True when factor and radical are both `1`. Reduce the root first to detect `sqrt(4)`.
+     */
     isOne(): boolean {
         return this.factor.isOne() && this.radical.isOne()
     }
 
+    /**
+     * True when the value is a rational number once reduced (`sqrt(9)`, `root(3)(-8)`), false for `sqrt(2)`.
+     */
     isRational(): boolean {
         const reduced = this.clone().reduce()
 
@@ -294,6 +320,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return false
     }
 
+    /**
+     * True when the factor or the radical is zero.
+     */
     isZero(): boolean {
         return this.factor.isZero() || this.radical.isZero()
     }
@@ -327,6 +356,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this.parse(a)
     }
 
+    /**
+     * Set the value to `1`.
+     */
     one(): this {
         this.radical.one()
         this.factor.one()
@@ -334,6 +366,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this
     }
 
+    /**
+     * Change the sign of the root (the sign is carried by the factor).
+     */
     opposite(): this {
         this.factor.opposite()
         return this
@@ -357,6 +392,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this.parse(a)
     }
 
+    /**
+     * Fraction under the root sign. Never an invalid (`NaN`) fraction.
+     */
     get radical(): Fraction {
         return this.#radical
     }
@@ -369,6 +407,14 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         this.#radical = value
     }
 
+    /**
+     * Put the root in simplified form: no root in the denominator, and the greatest perfect power extracted
+     * from the radical (`sqrt(12)` becomes `2sqrt(3)`).
+     * For an odd index, the sign always ends up on the factor and the radical becomes positive
+     * (`root(3)(-40)` becomes `-2root(3)(5)`). For an even index, a negative radical is left unchanged.
+     * @example
+     * new Root("sqrt(12)").reduce().tex // "2 \sqrt{ 3 }"
+     */
     reduce(): this {
         // 1. extract roots
         // 2. avoid roots at denominator.
@@ -409,6 +455,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this.parse(a)
     }
 
+    /**
+     * Square root of the root, same as `root(2)`.
+     */
     sqrt(): this {
         return this.root(2)
     }
@@ -473,6 +522,9 @@ export class Root implements IPiMathObject<Root>, IExpression<Root> {
         return this
     }
 
+    /**
+     * Set the value to `0`.
+     */
     zero(): this {
         this.radical.zero()
         this.factor.zero()

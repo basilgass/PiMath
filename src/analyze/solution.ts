@@ -48,12 +48,6 @@ export class Solution implements IPiMathObject<Solution>, IDisplayDigits {
     }
 
     /**
-     * LaTeX rendering. An explicit override (`set tex`) takes precedence;
-     * otherwise the value is composed from its parts (see `#compose`): the
-     * fraction or radical alone in the degenerate cases, else
-     * `(numerator ± radical)/denominator` over a common denominator.
-     */
-    /**
      * Show the numeric value as a decimal with `digits` digits, whatever the exact form (a
      * radical included: `(1+sqrt(2))/2` becomes `1.21`). `null` goes back to the exact form.
      * Takes precedence over a `tex` / `display` override.
@@ -64,6 +58,11 @@ export class Solution implements IPiMathObject<Solution>, IDisplayDigits {
         return this
     }
 
+    /**
+     * LaTeX rendering. An explicit override (`set tex`) takes precedence; otherwise the value is composed from its
+     * parts: the fraction or the radical alone in the simple cases, else `(numerator ± radical)/denominator`.
+     * With {@link withDigits}, the decimal value.
+     */
     get tex(): string {
         if (this.#digits !== null) return this.value.toFixed(this.#digits)
         if (this.#tex) return this.#tex
@@ -126,6 +125,9 @@ export class Solution implements IPiMathObject<Solution>, IDisplayDigits {
         return wrap(num, f.denominator)
     }
 
+    /**
+     * Build an exact solution from a rational value.
+     */
     static fromFraction(value: InputValue<Fraction>): Solution {
         const sol = new Solution()
         sol.setExact()
@@ -140,6 +142,9 @@ export class Solution implements IPiMathObject<Solution>, IDisplayDigits {
         return sol
     }
 
+    /**
+     * Build an exact solution from a radical value.
+     */
     static fromRoot(value: InputValue<Root>): Solution {
         const sol = new Solution()
         sol.#root = new Root(value)
@@ -272,10 +277,16 @@ export class Solution implements IPiMathObject<Solution>, IDisplayDigits {
         return this.#exact
     }
 
+    /**
+     * Rational part of the value.
+     */
     get fraction(): Fraction {
         return this.#fraction
     }
 
+    /**
+     * True when both the rational part and the radical part are zero.
+     */
     isZero(): boolean {
         return this.#fraction.isZero() && this.#root.isZero()
     }
@@ -293,19 +304,32 @@ export class Solution implements IPiMathObject<Solution>, IDisplayDigits {
         return this
     }
 
+    /**
+     * Radical part of the value: zero for a rational solution.
+     */
     get root(): Root {
         return this.#root
     }
 
+    /**
+     * Flag the solution as exact (default) or approximate.
+     */
     setExact(value = true): this {
         this.#exact = value
         return this
     }
 
+    /**
+     * Decimal value: the rational part plus the radical part.
+     */
     get value(): number {
         return this.fraction.value + this.root.value
     }
 
+    /**
+     * Variable the solution belongs to (`x` by default). The setter accepts a single lowercase letter.
+     * @throws {InvalidArgumentError} when setting anything else.
+     */
     get variable(): string {
         return this.#variable
     }

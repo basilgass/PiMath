@@ -7,21 +7,53 @@ import {DimensionError} from "../errors"
 
 export type IPolyMatrixValues = InputAlgebra<Polynom>[][]
 
+/**
+ * A matrix of {@link Polynom}s: the same operations as {@link Matrix}, with polynomial entries. It is the
+ * tool for the characteristic polynomial of a matrix. Built like a `Matrix`: from an array of rows, a display
+ * string, or a number of rows and columns.
+ */
 export class PolyMatrix extends AbstractMatrix<Polynom>
     implements IPiMathObject<PolyMatrix> {
 
+    constructor()
+    constructor(rows: number, cols?: number)
+    constructor(value: string)
+    constructor(values: InputAlgebra<Polynom>[][])
+    constructor(valueOrRows?: string | number | InputAlgebra<Polynom>[][], cols?: number) {
+        if (typeof valueOrRows === 'number' || valueOrRows === undefined) {
+            super(valueOrRows, cols)
+        } else {
+            super()
+            this.parse(valueOrRows)
+        }
+    }
+
+    /**
+     * Build a matrix from its display string, such as `"((x,1),(2,x+1))"`.
+     */
     static fromString(value: string): PolyMatrix {
         return new PolyMatrix().parse(value)
     }
 
+    /**
+     * Build a matrix from an array of rows.
+     * @throws {DimensionError} if the rows do not all have the same length.
+     */
     static fromValues(values: InputAlgebra<Polynom>[][]): PolyMatrix {
         return new PolyMatrix().parse(values)
     }
 
+    /**
+     * Build a zero matrix. Without `cols`, the matrix is square.
+     */
     static fromDimensions(rows: number, cols?: number): PolyMatrix {
         return new PolyMatrix(rows, cols)
     }
 
+    /**
+     * Build a matrix whose columns are the given vectors.
+     * @throws {DimensionError} if the vectors do not all have the same dimension.
+     */
     static fromVectors(...vectors: Vector[]): PolyMatrix {
         return new PolyMatrix().parse(vectors)
     }

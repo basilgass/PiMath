@@ -11,6 +11,12 @@ describe('Circle creation', () => {
         expect(C.radius.value).toBe(+Math.sqrt(20).toFixed(3))
     })
 
+    test('the radius is a reduced root', () => {
+        expect(new Circle(new Point(0, 0), 9, true).radius.display).toBe('3')
+        expect(new Circle(new Point(0, 0), 8, true).radius.display).toBe('2sqrt(2)')
+        expect(new Circle(new Point(0, 0), 5, true).radius.display).toBe('sqrt(5)')
+    })
+
     test('parse string', () => {
         const C = new Circle('(x-3)^2+(y+4)^2=16')
         expect(C.center.x.value).toBe(3)
@@ -30,7 +36,7 @@ describe('Circle creation', () => {
     })
 
     test('create circle from three points', () => {
-        const A = new Point(4, 4), B = new Point(6, 10), C = new Point(10, 2)
+        const A = new Point(4, 4); const B = new Point(6, 10); const C = new Point(10, 2)
         const c = new Circle(A, B, C)
         expect(c.center.x.value).toBe(8)
         expect(c.center.y.value).toBe(6)
@@ -85,8 +91,8 @@ describe('Circle operations', () => {
 
     test('tangents with a slope on a Circle', () => {
         // With a slope
-        const D = new Circle('x^2+y^2+10x=2y-6'),
-            slope = new Fraction(-2, 1)
+        const D = new Circle('x^2+y^2+10x=2y-6')
+            const slope = new Fraction(-2, 1)
 
         expect(D.tangents(slope).map(x => x.display))
             .to.have.all.members(['2x+y-1=0', '2x+y+19=0'])
@@ -111,15 +117,15 @@ describe('Circle operations', () => {
                 new Point(8, 6),
                 20,
                 true
-            ),
-            LT = new Line('2x+y-32=0')
+            )
+            const LT = new Line('2x+y-32=0')
         // const LSe = new Line('3x-y-8=0')
         const LS = Line.fromPointAndDirection(
             new Point(3,1),
             new Vector(1,3)
         )
-        const IPT = C.intersection(LT),
-            IPS = C.intersection(LS)
+        const IPT = C.intersection(LT)
+            const IPS = C.intersection(LS)
         expect(IPT[0].x.value).to.be.equal(12)
         expect(IPT[0].y.value).to.be.equal(8)
 
@@ -173,7 +179,7 @@ describe('Circle relative position', () => {
 
 describe('Circle parse and construction', () => {
     test('constructor with 3 points delegates to fromPoints', () => {
-        const A = new Point(4, 4), B = new Point(6, 10), C = new Point(10, 2)
+        const A = new Point(4, 4); const B = new Point(6, 10); const C = new Point(10, 2)
         const c1 = new Circle(A, B, C)
         const c2 = Circle.fromPoints(A, B, C)
         expect(c1.center.x.value).toBe(c2.center.x.value)

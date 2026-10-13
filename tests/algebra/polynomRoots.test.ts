@@ -54,7 +54,7 @@ describe("polynomRoots — solveQuadratic", () => {
         const roots = solveQuadratic([F(-2), F(0), F(1)])
 
         expect(roots).toHaveLength(2)
-        expect(roots.every(r => r.exact === true)).toBe(true)
+        expect(roots.every(r => r.exact)).toBe(true)
         expect(roots.every(r => !r.root.isZero())).toBe(true)
         expect(roots[0].root.value).toBeCloseTo(-Math.SQRT2, 3)
         expect(roots[1].root.value).toBeCloseTo(Math.SQRT2, 3)
@@ -83,7 +83,7 @@ describe("polynomRoots — solveCubicCardan", () => {
         expect(roots.map(r => r.fraction.value)[0]).toBeCloseTo(-3, 6)
         expect(roots.map(r => r.fraction.value)[1]).toBeCloseTo(-1, 6)
         expect(roots.map(r => r.fraction.value)[2]).toBeCloseTo(2, 6)
-        expect(roots.every(r => r.exact === false)).toBe(true)
+        expect(roots.every(r => !r.exact)).toBe(true)
     })
 
     test("throws on a wrong-length vector", () => {
@@ -136,7 +136,7 @@ describe("polynomRoots — solvePolynom", () => {
         const roots = solvePolynom([F(-1), F(-3), F(0), F(1)])
 
         expect(roots).toHaveLength(3)
-        expect(roots.every(r => r.exact === false)).toBe(true)
+        expect(roots.every(r => !r.exact)).toBe(true)
     })
 
     test("bisects a degree-4+ residual with a negative leading term", () => {

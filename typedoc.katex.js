@@ -1,11 +1,36 @@
-const { JSX } = require("typedoc");
+// Renders the LaTeX written in the JSDoc (`\(...\)`, `\[...\]`, `$...$`, `$$...$$`) with KaTeX.
+// Same engine and version as the documentation site (`katex` in package.json); the integrity
+// hashes are those of the files published by that version.
+import { JSX } from "typedoc";
 
-exports.load = function (app) {
-    app.renderer.hooks.on("head.end", () => {
-        return JSX.createElement(JSX.Fragment, null,
-            JSX.createElement("link", { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css", integrity: "sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs", crossorigin: "anonymous" },
-                JSX.createElement("script", { defer: true, src: "https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js", integrity: "sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx", crossorigin: "anonymous" }),
-                JSX.createElement("script", { defer: true, src: "https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js", integrity: "sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR", crossorigin: "anonymous", onload: "renderMathInElement(document.body);" })),
-            "}); }");
-    });
+const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist";
+
+export function load(app) {
+    app.renderer.hooks.on("head.end", () =>
+        JSX.createElement(JSX.Fragment, null,
+            JSX.createElement("link", {
+                rel: "stylesheet",
+                href: `${KATEX}/katex.min.css`,
+                integrity: "sha384-3rdsX6e5mueWyoweR9NIVmtEsUkokpBT/0ALqKKIBMr9j4qhHkaIkAcGgsE6uVlp",
+                crossorigin: "anonymous"
+            }),
+            JSX.createElement("script", {
+                defer: true,
+                src: `${KATEX}/katex.min.js`,
+                integrity: "sha384-QFFtAGzvvj+bfgCGxXJlNZZR1nXEZgvG8tDLCCY1F19xl20WlfTYgguB4VcNdxYk",
+                crossorigin: "anonymous"
+            }),
+            JSX.createElement("script", {
+                defer: true,
+                src: `${KATEX}/contrib/auto-render.min.js`,
+                integrity: "sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz",
+                crossorigin: "anonymous",
+                onload: "renderMathInElement(document.body, {delimiters: [" +
+                    "{left: '$$', right: '$$', display: true}," +
+                    "{left: '\\\\[', right: '\\\\]', display: true}," +
+                    "{left: '\\\\(', right: '\\\\)', display: false}," +
+                    "{left: '$', right: '$', display: false}]});"
+            })
+        )
+    );
 }

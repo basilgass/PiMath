@@ -37,6 +37,10 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
         if (value !== undefined) this.parse(value, power)
     }
 
+    /**
+     * Replace the factor by a factor, a polynom or a string. When `power` is given, the power of the result is
+     * multiplied by it.
+     */
     parse(value: InputAlgebra<Polynom> | Factor, power?: InputValue<Fraction>): this {
         if (value instanceof Factor) {
             this.copy(value)
@@ -49,6 +53,10 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
         return this
     }
 
+    /**
+     * Build a factor from a string such as `"(x+1)^2"`. Only the first factor of a product is kept: use
+     * {@link factorsFromString} to get all of them.
+     */
     static fromString(value: string): Factor {
         return Factor.factorsFromString(value)[0]
     }
@@ -73,6 +81,11 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
     }
 
     get tex(): string {
+        // A negative power is written as a fraction of the factor with the opposite (positive) power.
+        if (this.#displayMode === FACTOR_DISPLAY.ROOT && this.#power.isNegative()) {
+            return `\\frac{ 1 }{ ${this.#positiveCounterpart().tex} }`
+        }
+
         const num = this.power.numerator
         const den = this.power.denominator
 
@@ -90,16 +103,15 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
         // Add the power if it's not 1 or -1
         base = `${base}${power}`
 
-        // If the power is negative, make it as a fraction.
-        if (this.#displayMode === FACTOR_DISPLAY.ROOT && num < 0) {
-            base = `\\frac{ 1 }{ ${base} }`
-        }
-
 
         return base
     }
 
     get display(): string {
+        if (this.#displayMode === FACTOR_DISPLAY.ROOT && this.#power.isNegative()) {
+            return `1/(${this.#positiveCounterpart().display})`
+        }
+
         const num = this.power.numerator
         const den = this.power.denominator
 
@@ -117,30 +129,44 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
         // Add the power if it's not 1 or -1
         base = `${base}${power}`
 
-        // If the power is negative, make it as a fraction.
-        if (this.#displayMode === FACTOR_DISPLAY.ROOT && num < 0) {
-            base = `1/(${base})`
-        }
-
 
         return base
     }
 
-    /** @throws {MathError} always — adding two factors is not defined. */
+    /** The same factor with the opposite power; a power of 1 needs no parentheses under the fraction bar. */
+    #positiveCounterpart(): Factor {
+        const positive = this.clone().inverse()
+        return positive.power.isOne() ? positive.asSingle : positive
+    }
+
+    /**
+     * Adding two factors is not defined.
+     * @throws {MathError} always.
+     */
     add(): this {
         throw new MathError("Adding two factors is not possible")
     }
 
+    /**
+     * Display option: do not wrap the polynom in parentheses when the power is 1. {@link PolyFactor} sets it
+     * on a lone factor. Chainable, kept by {@link clone}.
+     */
     get asSingle(): this {
         this.#singleMode = true
         return this
     }
 
+    /**
+     * Degree of the polynom multiplied by the power.
+     */
     degree(variable?: string): Fraction {
         return this.polynom.degree(variable).multiply(this.power)
     }
 
-    /** @throws {UnsupportedOperationError} always — use {@link getDerivativeFactors} and compose via PolyFactor. */
+    /**
+     * Not available on a single factor: use {@link getDerivativeFactors} and compose through {@link PolyFactor}.
+     * @throws {UnsupportedOperationError} always.
+     */
     derivative(): this {
         throw new UnsupportedOperationError("Factor.derivative() is not supported — use getDerivativeFactors() and compose via PolyFactor")
     }
@@ -171,6 +197,10 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
         ]
     }
 
+    /**
+     * Expand the factor into a polynom (`P^n` with `n` a natural number).
+     * @throws {MathError} if the power is not a natural number.
+     */
     develop(): Polynom {
         if (this.power.isNatural()) {
             return this.polynom.clone().pow(this.power.value)
@@ -179,11 +209,19 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
         throw new MathError("The power must be a natural number")
     }
 
-    /** @throws {MathError} when the two factors do not share the same base polynomial. */
+    /**
+     * Divide by a factor or a polynom: multiply by its inverse.
+     * @throws {MathError} when the two factors do not share the same base polynomial.
+     */
     divide(value: InputAlgebra<Factor | Polynom>): this {
         return this.multiply(new Factor(value).inverse())
     }
 
+    /**
+     * Value of the factor for given values of its variables: the polynom evaluated, then raised to the power.
+     * @param values - a dictionary `{x: 2}`, or one value for a single-variable polynom.
+     * @param asNumeric - `true` returns a `number`, otherwise the exact `Fraction`.
+     */
     evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric: true): number
     evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: false): Fraction
     evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction
@@ -196,6 +234,9 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
         return this.polynom.evaluate(values).pow(this.power)
     }
 
+    /**
+     * Build a factor of power 1 from a polynom, or from anything a polynom accepts.
+     */
     static fromPolynom(polynom: InputAlgebra<Polynom>): Factor {
         const f = new Factor()
         f.#polynom = new Polynom(polynom)
@@ -203,15 +244,24 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
         return f
     }
 
+    /**
+     * True when the base polynom contains the variable.
+     */
     hasVariable(variable: string): boolean {
         return this.polynom.hasVariable(variable)
     }
 
+    /**
+     * Negate the power (`P^n` becomes `P^-n`).
+     */
     inverse(): this {
         this.#power.opposite()
         return this
     }
 
+    /**
+     * True when both factors have the same base polynom and the same power.
+     */
     isEqual(value: Factor): boolean {
         // Must have the same polynom and the same reduce power
 
@@ -219,10 +269,16 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
             this.power.isEqual(value.power)
     }
 
+    /**
+     * True when the base polynom is `1`, or the power is zero.
+     */
     isOne(): boolean {
         return this.polynom.isOne() || this.power.isZero()
     }
 
+    /**
+     * True when the base polynom is the same; the power is ignored.
+     */
     isSameAs(value: InputAlgebra<Factor | Polynom>) {
         let P: Polynom
         if (value instanceof Factor) {
@@ -237,6 +293,9 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
         return this.polynom.isEqual(P)
     }
 
+    /**
+     * True when the base polynom is zero.
+     */
     isZero(): boolean {
         return this.polynom.isZero()
     }
@@ -275,16 +334,26 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
         throw new MathError("The two factors must be the same")
     }
 
+    /**
+     * Set the factor to `1`.
+     */
     one(): this {
         this.#polynom.one()
         this.#power.one()
         return this
     }
 
+    /**
+     * A factor has no sign: use {@link PolyFactor}, which adds a factor `-1`.
+     * @throws {UnsupportedOperationError} always.
+     */
     opposite(): this {
         throw new UnsupportedOperationError("Factor has no sign: use PolyFactor to represent the negation")
     }
 
+    /**
+     * Base polynom. The getter returns a copy: modify the factor through its methods or the setter.
+     */
     get polynom(): Polynom {
         return this.#polynom.clone()
     }
@@ -293,11 +362,17 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
         this.#polynom = value
     }
 
+    /**
+     * Multiply the power by `value`.
+     */
     pow(value: number | Fraction): this {
         this.#power.multiply(value)
         return this
     }
 
+    /**
+     * Power of the factor, as a fraction (a copy). A negative power is a denominator in a {@link PolyFactor}.
+     */
     get power(): Fraction {
         return this.#power.clone()
     }
@@ -306,48 +381,82 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
         this.#power = new Fraction(value)
     }
 
+    /**
+     * Not available on a single factor.
+     * @throws {UnsupportedOperationError} always.
+     */
     primitive(): Factor {
         throw new UnsupportedOperationError("Factor.primitive() is not applicable in the general case — use PolyFactor")
     }
 
+    /**
+     * Not available on a single factor: use {@link PolyFactor.reduce}.
+     * @throws {UnsupportedOperationError} always.
+     */
     reduce(): Factor {
         throw new UnsupportedOperationError("Factor.reduce() is not applicable — use PolyFactor.reduce()")
     }
 
+    /**
+     * Divide the power by `value` (the square root of `P^2` is `P^1`).
+     */
     root(value: number): this {
         this.#power.divide(value)
         return this
     }
 
+    /**
+     * Square root: divide the power by 2.
+     */
     sqrt(): this {
         return this.root(2)
     }
 
-    /** @throws {MathError} always — subtracting two factors is not defined. */
+    /**
+     * Subtracting two factors is not defined.
+     * @throws {MathError} always.
+     */
     subtract(): this {
         throw new MathError("Subtracting two factors is not possible")
     }
 
+    /**
+     * Variables of the base polynom, sorted.
+     */
     get variables(): string[] {
         return this.polynom.variables
     }
 
+    /**
+     * Display option (default): a power is written `(P)^{n}`, a negative one with a negative exponent.
+     * Chainable, kept by {@link clone}.
+     */
     get asPower(): this {
         this.#displayMode = FACTOR_DISPLAY.POWER
         return this
     }
 
+    /**
+     * Display option: a fractional power is written as a radical (`sqrt(P)`) and a negative power as a fraction (`1/(P)`).
+     * Chainable, kept by {@link clone}.
+     */
     get asRoot(): this {
         this.#displayMode = FACTOR_DISPLAY.ROOT
         return this
     }
 
+    /**
+     * Set the factor to `0`.
+     */
     zero(): this {
         this.#polynom.zero()
         this.#power.one()
         return this
     }
 
+    /**
+     * True when the string has no `+` or `-` outside the parentheses, so it reads as a product of factors.
+     */
     static checkParseAsFactors(str: string): boolean {
         const splitPlus = splitIfOutsideParentheses(str, "+")
         if(splitPlus[0]==='') splitPlus.shift()
@@ -386,18 +495,22 @@ export class Factor implements IPiMathObject<Factor>, IDisplayDigits,
             /\(([^)]+)\)(?:\^(-?[0-9]+(?:\/[0-9]+)?|\(-?[0-9]+(?:\/[0-9]+)?\)))?|([^(]+)/g
 
         for (const match of value.matchAll(regex)) {
-            if (match[1] !== undefined) {
+            // Optional groups are undefined at runtime; `.at()` is typed `string | undefined`, unlike indexed access.
+            const parenthesised = match.at(1)
+            const bare = match.at(3)?.trim()
+
+            if (parenthesised !== undefined) {
                 // Case: (expr)^power
-                const powStr = (match[2] ?? '1')
+                const powStr = (match.at(2) ?? '1')
                     .replace(/[()]/g, '')
 
                 factors.push(new Factor(
-                    new Polynom(match[1]),
+                    new Polynom(parenthesised),
                     new Fraction(powStr).multiply(sign))
                 )
-            } else if (match[3]?.trim()) {
+            } else if (bare) {
                 // Case: monomial or constant outside parentheses (e.g. 3x^2, 3)
-                factors.push(new Factor(new Polynom(match[3].trim()), new Fraction(sign)))
+                factors.push(new Factor(new Polynom(bare), new Fraction(sign)))
             }
         }
 

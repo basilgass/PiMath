@@ -317,11 +317,11 @@ describe('Matrix operations', () => {
         const A = new Matrix(2, 3)
         const B = new Matrix(3, 2)
 
-        expect(() => A.add(B)).toThrowError()
+        expect(() => A.add(B)).toThrow()
 
         const C = new Matrix(2, 3)
 
-        expect(() => A.add(C)).not.toThrowError()
+        expect(() => A.add(C)).not.toThrow()
     })
     test('add two Matrix', () => {
         const A = Matrix.fromString('((1,2,3),(4,5,6))')
@@ -343,10 +343,10 @@ describe('Matrix operations', () => {
         const C = new Matrix(3, 2)
         const D = new Matrix(3, 6)
 
-        expect(() => A.multiply(B)).toThrowError('Cannot multiply a matrix with incompatibles dimensions')
-        expect(() => A.clone().multiply(C)).not.toThrowError()
-        expect(() => A.clone().multiply(D)).not.toThrowError()
-        expect(() => C.multiply(A)).not.toThrowError()
+        expect(() => A.multiply(B)).toThrow('Cannot multiply a matrix with incompatibles dimensions')
+        expect(() => A.clone().multiply(C)).not.toThrow()
+        expect(() => A.clone().multiply(D)).not.toThrow()
+        expect(() => C.multiply(A)).not.toThrow()
     })
     test('multiply two Matrix', () => {
         const A = Matrix.fromString('((1,2,3),(4,5,6))')
@@ -416,5 +416,28 @@ describe('Matrix 1x1', () => {
     test('a 1x1 zero matrix cannot be inverted', () => {
         expect(new Matrix([[0]]).canBeInverted()).toBe(false)
         expect(() => new Matrix([[0]]).inverse()).toThrow(MathError)
+    })
+})
+
+describe('PolyMatrix constructor', () => {
+    test('builds a matrix from an array of rows', () => {
+        expect(new PolyMatrix([['x', 1], [2, 'x+1']]).display).toBe('((x,1),(2,x+1))')
+    })
+    test('builds a matrix from its display string', () => {
+        expect(new PolyMatrix('((x,1),(2,3))').display).toBe('((x,1),(2,3))')
+    })
+    test('builds a zero matrix from dimensions', () => {
+        expect(new PolyMatrix(2, 3).dimension).toEqual({rows: 2, cols: 3})
+        expect(new PolyMatrix(2).dimension).toEqual({rows: 2, cols: 2})
+    })
+    test('builds an empty matrix without argument', () => {
+        expect(new PolyMatrix().dimension).toEqual({rows: 0, cols: 0})
+    })
+    test('is the same as fromValues', () => {
+        const values = [['x', 1], [2, 3]]
+        expect(new PolyMatrix(values).isEqual(PolyMatrix.fromValues(values))).toBe(true)
+    })
+    test('rows of different lengths throw a DimensionError', () => {
+        expect(() => new PolyMatrix([['x', 1], [2]])).toThrow()
     })
 })

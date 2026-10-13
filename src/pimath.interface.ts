@@ -227,7 +227,7 @@ export enum Line3Property {
 }
 
 export interface Plane3Config {
-    coefficients?: number[]
+    coefficients?: InputValue<Fraction>[]
     directions?: Vector[],
     equation?: Equation,
     normal?: Vector,
@@ -238,7 +238,7 @@ export interface Plane3Config {
 
 // A triad of triangle lines keyed by vertices (A/B/C — cevians) or by
 // sides (a/b/c — mediators), plus their common intersection point.
-type TriangleLineTriad<K extends string> = Record<K, Line> & {
+export type TriangleLineTriad<K extends string> = Record<K, Line> & {
     intersection: Point | null
 }
 

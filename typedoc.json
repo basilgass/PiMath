@@ -1,0 +1,11 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "PiMath API",
+  "entryPoints": ["src/index.ts"],
+  "tsconfig": "tsconfig-build.json",
+  "out": "docs/public/api",
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "plugin": ["./typedoc.katex.js"]
+}

@@ -29,10 +29,12 @@ export interface IEuclidean {
 }
 
 /**
- * Polynom class can handle polynoms, reorder, resolve, ...
- * ```
- * let P = new Polynom('3x-4')
- * ```
+ * A polynomial in one or several variables: a list of {@link Monom}s kept reduced and sorted by decreasing
+ * degree. Built from a string (`"x^2-5x+6"`, `"(x+1)^2"`), a number, a monom, or from coefficients
+ * (`new Polynom("x", 1, -5, 6)`). A malformed string throws a `ParseError`.
+ * Operations modify the polynom and return it; `clone()` keeps the original. A failing operation leaves it unchanged.
+ * @example
+ * new Polynom("x^2-5x+6").factorize().map(f => f.display) // [ "x-2", "x-3" ]
  */
 export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
     IExpression<Polynom>,
@@ -127,6 +129,9 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return this.#genDisplay()
     }
 
+    /**
+     * Product of the given values, as a new polynom.
+     */
     static xMultiply(...polynoms: InputValue<Polynom>[]): Polynom {
         const result = new Polynom().one()
 
@@ -137,26 +142,24 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return result
     }
 
+    /**
+     * Add polynoms, monoms, numbers or strings, then reduce. Modifies and returns the receiver.
+     * A string is read as a polynom (`"2x+1"`).
+     * Every operand is built before the receiver is touched: an invalid value throws and leaves it unchanged.
+     * @throws {ParseError} if a string operand is malformed.
+     * @throws {InvalidArgumentError} if an operand is `undefined`.
+     */
     add(...values: InputAlgebra<Polynom>[]): this {
-        // Build every new monom first: a malformed value throws here, before any
-        // mutation of the receiver, so a failure leaves the polynom unchanged.
-        const monoms: Monom[] = []
-        for (const value of values) {
-            if (value instanceof Polynom) {
-                monoms.push(...value.monoms.map(m => m.clone()))
-            } else if (value instanceof Monom) {
-                monoms.push(value.clone())
-            } else if (typeof value === "number" && Number.isSafeInteger(value)) {
-                monoms.push(new Monom(value.toString()))
-            } else {
-                monoms.push(new Monom(value))
-            }
-        }
+        const monoms = values.flatMap(value => Polynom.#toPolynom(value).monoms)
 
         this.#monoms = this.#monoms.concat(monoms)
         return this.reduce()
     }
 
+    /**
+     * Greatest monom dividing every term: gcd of the numerators over gcd of the denominators, and the lowest
+     * exponent of each variable (`2x^3+6x^2` gives `2x^2`).
+     */
     commonMonom(): Monom {
         const M = new Monom().one()
         const numerator: number = this.gcdNumerator()
@@ -177,6 +180,10 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return M
     }
 
+    /**
+     * Degree of the polynom as a fraction. Without `variable`, the highest total degree of a term; with one, the
+     * highest exponent of that variable.
+     */
     degree(variable?: string): Fraction {
         let d: Fraction = new Fraction(0)
         for (const m of this.#monoms) {
@@ -186,6 +193,9 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return d
     }
 
+    /**
+     * Derivative with respect to `variable` (default `x`), as a new reduced polynom.
+     */
     derivative(variable?: string): Polynom {
         const dP = new Polynom()
 
@@ -241,6 +251,9 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         throw new MathError(`Cannot divide "${this.display}" by "${String(value)}"`)
     }
 
+    /**
+     * Remove every monom. Unlike {@link zero}, which holds the monom `0`, the polynom then has no term at all.
+     */
     empty(): this {
         this.#monoms = []
         this.#invalidateCache()
@@ -305,6 +318,14 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return {quotient, reminder}
     }
 
+    /**
+     * Value of the polynom for given values of its variables.
+     * @param values - a dictionary `{x: 2, y: 3}`, or one value for a single-variable polynom.
+     * @param asNumeric - `true` returns a `number`, otherwise the exact `Fraction`.
+     * @throws {MathError} if a variable of the polynom has no value.
+     * @example
+     * new Polynom("x^2-5x+6").evaluate({x: 3}).display // "0"
+     */
     evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric: true): number
     evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric?: false): Fraction
     evaluate(values: LiteralType<Fraction | number> | InputValue<Fraction>, asNumeric?: boolean): Fraction | number
@@ -329,9 +350,8 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
     // -------------------------------------
     /**
      * Factorize a polynom with respect to a single variable and store the best
-     * results in factors. The variable is resolved by {@link #resolveVariable}
-     * (explicit `variable` → the sole variable if single-variable → default
-     * variable). Multi-variable factorization (treating other variables as
+     * results in factors. The variable is the explicit `variable`, else the sole
+     * variable of a single-variable polynom, else the default variable. Multi-variable factorization (treating other variables as
      * symbolic constants) is not supported — the numeric solver cannot represent
      * roots that depend on other variables.
      */
@@ -396,6 +416,10 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return this.#factors
     }
 
+    /**
+     * Factors of the polynom, computed by {@link factorize} on first access and kept until the polynom changes.
+     * The zero polynom has none.
+     */
     get factors(): Polynom[] {
         if (this.#factors.length === 0 && !this.isZero()) {
             return this.factorize()
@@ -425,6 +449,9 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return p.reorder()
     }
 
+    /**
+     * Build a constant polynom.
+     */
     static fromConstant(value: InputValue<Fraction>): Polynom {
         return Polynom.fromMonoms(new Fraction(value))
     }
@@ -454,6 +481,10 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return p
     }
 
+    /**
+     * Build a polynom from monoms, or from anything a monom accepts (numbers, strings, fractions).
+     * The result is neither reduced nor sorted: call {@link reduce}.
+     */
     static fromMonoms(...monoms: InputAlgebra<Fraction>[]): Polynom {
         const p = new Polynom()
         p.#monoms = monoms.map(m => m instanceof Monom ? m.clone() : new Monom(m))
@@ -461,6 +492,11 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return p
     }
 
+    /**
+     * Build a polynom from an expression: sums, products, integer powers, and division by a constant.
+     * @throws {ParseError} if the string is malformed.
+     * @throws {MathError} for a division by a polynom of degree 1 or more, or a fractional power of a sum.
+     */
     static fromString(value: string): Polynom {
         if (value !== '' && !isNaN(Number(value))) return Polynom.fromConstant(Number(value))
         const p = new Polynom()
@@ -468,10 +504,16 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return p
     }
 
+    /**
+     * Greatest common divisor of the denominators of the coefficients.
+     */
     gcdDenominator(): number {
         return Numeric.gcd(...this.getDenominators())
     }
 
+    /**
+     * Greatest common divisor of the numerators of the coefficients.
+     */
     gcdNumerator(): number {
         return Numeric.gcd(...this.getNumerators())
     }
@@ -501,6 +543,9 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
     }
 
     // Next functions are used for for commonMonom, which is used in the factorize method.
+    /**
+     * Denominator of the coefficient of each monom, in the order of the monoms.
+     */
     getDenominators(): number[] {
         const denominators: number[] = []
         for (const m of this.#monoms) {
@@ -510,6 +555,9 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return denominators
     }
 
+    /**
+     * Numerator of the coefficient of each monom, in the order of the monoms.
+     */
     getNumerators(): number[] {
         const numerators: number[] = []
         for (const m of this.#monoms) {
@@ -519,10 +567,18 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return numerators
     }
 
+    /**
+     * True when the variable appears in a term with a non-zero exponent.
+     */
     hasVariable(variable: string): boolean {
         return this.variables.includes(variable)
     }
 
+    /**
+     * Definite integral between `a` and `b`, as a fraction. The variable is resolved like in {@link limitTo}:
+     * the one passed, else the only variable of the polynom, else the default variable.
+     * @throws {MathError} if a term has a power of -1 of the variable.
+     */
     integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, variable?: string): Fraction {
         const l = this.#resolveVariable(variable)
         const primitive = this.primitive(l)
@@ -537,8 +593,8 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
     }
 
     /**
-     * @throws {MathError} always — 1/P is not a polynom. The `IExpression`
-     * contract returns `Polynom` (never null), so impossibility is a throw.
+     * 1/P is not a polynom: the operation is not available.
+     * @throws {MathError} always. The `IExpression` contract returns a polynom, never `null`, so impossibility is a throw.
      */
     inverse(): this {
         throw new MathError('Cannot invert a polynom')
@@ -573,6 +629,9 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return true
     }
 
+    /**
+     * True when the division by `div` leaves no remainder. A degree-1 divisor is tested through its root.
+     */
     isDivisibleBy(div: Polynom): boolean {
         // Quick evaluation.
         if (div.degree().isOne()) {
@@ -590,6 +649,9 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         }
     }
 
+    /**
+     * True when both polynoms are equal once reduced and sorted: same terms, same coefficients.
+     */
     isEqual(P: Polynom): boolean {
         return this.#compare(P, '=')
     }
@@ -602,30 +664,51 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return this.#monoms.some(m => m.variables.length > 1)
     }
 
+    /**
+     * True for the constant polynom `1`.
+     */
     isOne(): boolean {
         return this.#monoms.length === 1 && this.#monoms[0].coefficient.isOne() && this.degree().isZero()
     }
 
+    /**
+     * True when `P` is the opposite polynom (`x+1` and `-x-1`).
+     */
     isOppositeAt(P: Polynom): boolean {
         return this.#compare(P.clone().opposite(), '=')
     }
 
+    /**
+     * True when both polynoms have the same terms, whatever their coefficients (`x^2+x` and `3x^2-5x`).
+     */
     isSameAs(P: Polynom): boolean {
         return this.#compare(P, 'same')
     }
 
+    /**
+     * True for the zero polynom (no term, or the single term `0`).
+     */
     isZero(): boolean {
         return (this.#monoms.length === 1 && this.#monoms[0].coefficient.isZero()) || this.#monoms.length === 0
     }
 
+    /**
+     * Least common multiple of the denominators of the coefficients.
+     */
     lcmDenominator(): number {
         return Numeric.lcm(...this.getDenominators())
     }
 
+    /**
+     * Least common multiple of the numerators of the coefficients.
+     */
     lcmNumerator(): number {
         return Numeric.lcm(...this.getNumerators())
     }
 
+    /**
+     * Number of monoms.
+     */
     get length() {
         return this.#monoms.length
     }
@@ -672,6 +755,10 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
             : new Fraction().infinite().opposite()
     }
 
+    /**
+     * Monom of the given degree for `variable`, or the monom of highest degree when `degree` is omitted.
+     * Returns the zero monom when none matches.
+     */
     monomByDegree(degree?: Fraction | number, variable?: string): Monom {
         // return the highest degree monom.
         if (degree === undefined) {
@@ -691,6 +778,9 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
     }
 
     // Used in LinearSystem.tex
+    /**
+     * First monom that contains `variable`, or the zero monom when none does.
+     */
     monomByVariable(variable: string): Monom {
         const M = this.clone().reduce()
         for (const m of M.#monoms) {
@@ -717,6 +807,9 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         this.#invalidateCache()
     }
 
+    /**
+     * Every monom of the given degree for `variable`, or of the highest degree when `degree` is omitted.
+     */
     monomsByDegree(degree?: number | Fraction, variable?: string): Monom[] {
         // return the highest degree monom.
         if (degree === undefined) {
@@ -736,54 +829,32 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return Ms
     }
 
-    /** @throws {MathError} when a value cannot be interpreted as a multiplier. */
+    /**
+     * Multiply by polynoms, monoms, fractions, numbers or strings, then reduce. Modifies and returns the receiver.
+     * A string is read as a polynom (`"x+3"`).
+     * Every operand is built before the receiver is touched: an invalid value throws and leaves it unchanged.
+     * @throws {ParseError} if a string operand is malformed.
+     * @throws {InvalidArgumentError} if an operand is `undefined`.
+     */
     multiply(...values: InputAlgebra<Polynom>[]): this {
-        if (values.length === 1) {
-            return this.#multiplyOne(values[0])
-        }
+        const factors = values.map(value => Polynom.#toPolynom(value))
 
-        // Multiply successively by each value on a clone; commit only on success.
-        const clone = this.clone()
-        for (const value of values) {
-            clone.#multiplyOne(value)
+        for (const factor of factors) {
+            this.#multiplyByPolynom(factor)
         }
-        return this.copy(clone)
+        return this
     }
 
-    #multiplyOne(value: InputAlgebra<Polynom>): this {
-        if (value instanceof Polynom) {
-            return this.#multiplyByPolynom(value)
-        }
-
-        if (value instanceof Fraction) {
-            return this.#multiplyByFraction(value)
-        }
-
-        if (value instanceof Monom) {
-            return this.#multiplyByMonom(value)
-        }
-
-        if (Number.isSafeInteger(value) && typeof value === 'number') {
-            return this.#multiplyByInteger(value)
-        }
-
-        if (typeof value === 'string') {
-            try {
-                const k = new Fraction(value)
-                return this.#multiplyByFraction(k)
-            } catch (e) {
-                throw new MathError('Cannot multiply by this value.', {cause: e})
-            }
-        }
-
-        // Something went wrong...
-        throw new MathError(`Cannot multiply by this value: ${value as unknown as string}`)
-    }
-
+    /**
+     * Number of distinct variables.
+     */
     get numberOfVars(): number {
         return this.variables.length
     }
 
+    /**
+     * Set the polynom to the constant `1`.
+     */
     one(): this {
         this.#monoms = []
         this.#monoms.push(new Monom().one())
@@ -792,16 +863,26 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
     }
 
     // ------------------------------------------
+    /**
+     * Change the sign of every term.
+     */
     opposite(): this {
         this.#monoms = this.#monoms.map(m => m.opposite())
         this.#invalidateCache()
         return this
     }
 
+    /**
+     * Expression to give to a plotting tool: explicit `*` between a coefficient and its variables.
+     */
     get plotFunction(): string {
         return this.#genDisplay('tex', false, false, true)
     }
 
+    /**
+     * Raise to a non-negative integer power; the power 0 gives `1`.
+     * @throws {InvalidArgumentError} if `nb` is negative or not a safe integer.
+     */
     pow(nb: number): this {
         if (!Number.isSafeInteger(nb)) {
             throw new InvalidArgumentError('Can only raise item by an integer')
@@ -819,6 +900,10 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return this.reduce()
     }
 
+    /**
+     * A primitive with respect to `variable` (default `x`), without integration constant.
+     * @throws {MathError} if a term has a power of -1 of the variable.
+     */
     primitive(variable?: string): Polynom {
         const dP = new Polynom()
 
@@ -829,31 +914,26 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return dP
     }
 
+    /**
+     * Add the similar terms, remove the zero terms, reduce the coefficients and sort by decreasing degree.
+     */
     reduce(): this {
-        // Reduce the polynom
+        // Group the monoms by similarity. A zero monom is similar to every monom (see Monom.isSameAs), so it
+        // is never used as a group: it would absorb a term that belongs to another group.
+        const groups: Monom[] = []
+        for (const m of this.#monoms) {
+            if (m.isZero()) continue
 
-        // Group the monoms by similarity
-        let i = 0
-        while (i < this.#monoms.length) {
-            for (let j = i + 1; j < this.#monoms.length; j++) {
-                if (this.#monoms[i].isSameAs(this.#monoms[j])) {
-                    this.#monoms[i].add(this.#monoms[j])
-                    this.#monoms.splice(j, 1)
-                    if (this.#monoms[i].isZero()) {
-                        this.#monoms[i] = new Monom().zero()
-                    }
-
-                    j--
-                }
+            const group = groups.find(g => !g.isZero() && g.isSameAs(m))
+            if (group) {
+                group.add(m)
+            } else {
+                groups.push(m)
             }
-
-            i++
         }
 
-        // Remove all null monoms
-        this.#monoms = this.#monoms.filter((m) => {
-            return !m.coefficient.isZero()
-        })
+        // Remove all null monoms (a group can cancel out)
+        this.#monoms = groups.filter(m => !m.isZero())
 
         // Reduce all monoms coefficient.
         for (const m of this.#monoms) {
@@ -868,6 +948,10 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return this.reorder()
     }
 
+    /**
+     * Sort the monoms by decreasing degree of `variable` (default: the default variable of the polynom), or by
+     * increasing degree when `revert` is true. The other variables break the ties.
+     */
     reorder(variable?: string, revert = false): this {
         variable ??= this.#defaultVariable
         const otherLetters = this.variables.filter(x => x !== variable)
@@ -937,11 +1021,19 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
 
     // ------------------------------------------
 
-    /** @throws {MathError} always — the n-th root of a polynom is not a polynom. */
+    /**
+     * The n-th root of a polynom is not a polynom: the operation is not available.
+     * @throws {MathError} always.
+     */
     root(): this {
         throw new MathError('Cannot take the root from a polynom')
     }
 
+    /**
+     * Roots of the polynom, as {@link Solution}s sorted by value. A constant polynom has none.
+     * The result is kept until the polynom changes.
+     * @throws {MathError} if a degree is not a natural number.
+     */
     get roots(): Solution[] {
         if (!this.#rootsCache) {
             this.#roots = this.degree().isZero()
@@ -952,6 +1044,10 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return this.#roots
     }
 
+    /**
+     * Set the default variable, used when a method needs one and the polynom does not decide it.
+     * @throws {InvalidArgumentError} if `value` is not a single lowercase letter.
+     */
     setVariable(value: string): this {
         if (!/^[a-z]$/.test(value)) {
             throw new InvalidArgumentError(`setVariable expects a single lowercase variable, got "${value}"`)
@@ -961,24 +1057,23 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return this
     }
 
-    /** @throws {MathError} always — the square root of a polynom is not a polynom. */
+    /**
+     * The square root of a polynom is not a polynom: the operation is not available.
+     * @throws {MathError} always.
+     */
     sqrt(): this {
         throw new MathError('Cannot take the square root from a polynom')
     }
 
+    /**
+     * Subtract polynoms, monoms, numbers or strings, then reduce. Modifies and returns the receiver.
+     * A string is read as a polynom (`"x-1"`).
+     * Every operand is built before the receiver is touched: an invalid value throws and leaves it unchanged.
+     * @throws {ParseError} if a string operand is malformed.
+     * @throws {InvalidArgumentError} if an operand is `undefined`.
+     */
     subtract(...values: InputAlgebra<Polynom>[]): this {
-        // Same atomicity guarantee as add: every monom is built (and negated)
-        // before the receiver is touched.
-        const monoms: Monom[] = []
-        for (const value of values) {
-            if (value instanceof Polynom) {
-                monoms.push(...value.monoms.map(m => m.clone().opposite()))
-            } else if (value instanceof Monom) {
-                monoms.push(value.clone().opposite())
-            } else {
-                monoms.push(new Monom(value).opposite())
-            }
-        }
+        const monoms = values.flatMap(value => Polynom.#toPolynom(value).opposite().monoms)
 
         this.#monoms = this.#monoms.concat(monoms)
         return this.reduce()
@@ -993,6 +1088,9 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return undefined
     }
 
+    /**
+     * The variables of the polynom, sorted alphabetically.
+     */
     get variables(): string[] {
         return [...new Set(this.#monoms.flatMap(m => m.variables))].sort()
     }
@@ -1106,24 +1204,16 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         return this.variables.length === 1 ? this.variables[0] : this.#defaultVariable
     }
 
-    #multiplyByFraction(F: Fraction): this {
-        for (const m of this.#monoms) {
-            m.coefficient.multiply(F)
+    /**
+     * The polynom an operand stands for. A `new Polynom(undefined)` would silently be empty, which is never
+     * a meaningful operand, so it is rejected here.
+     */
+    static #toPolynom(value: InputAlgebra<Polynom>): Polynom {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- untyped JS callers can pass undefined
+        if (value === undefined) {
+            throw new InvalidArgumentError('An operand is required')
         }
-
-        return this.reduce()
-    }
-
-    #multiplyByInteger(nb: number): this {
-        return this.#multiplyByFraction(new Fraction(nb))
-    }
-
-    #multiplyByMonom(M: Monom): this {
-        for (const m of this.#monoms) {
-            m.multiply(M)
-        }
-
-        return this.reduce()
+        return new Polynom(value)
     }
 
     #multiplyByPolynom(P: Polynom): this {

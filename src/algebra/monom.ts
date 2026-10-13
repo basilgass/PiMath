@@ -2,9 +2,9 @@
  * Monom class
  */
 import type {
-    IDisplayDigits,
     IAlgebra,
     IAnalyse,
+    IDisplayDigits,
     IEvaluable,
     IExpression,
     InputAlgebra,
@@ -18,6 +18,14 @@ import {Numeric} from "../numeric"
 import {ShutingYard, ShutingyardType, type Token} from "piexpression"
 import {MathError, NotImplementedError, ParseError} from "../errors"
 
+/**
+ * A term `k · x^a · y^b`: a {@link Fraction} coefficient and a literal part, a dictionary from each variable to its
+ * exponent (a `Fraction` too, so `x^(1/2)` is allowed). Built from a string (`"3x^2y"`), a number or a fraction.
+ * A string must be a single term: spaces are ignored, but a sum or a difference (`"3x+2"`), a missing operand
+ * (`"3x*"`) or a negative exponent without parentheses (`"x^-1"`, write `"x^(-1)"`) throws a `ParseError`.
+ * @example
+ * new Monom("3x^2y").tex // "3x^{ 2 }y"
+ */
 export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra, IEvaluable, IDisplayDigits {
     #coefficient: Fraction
     #literal: LiteralType<Fraction>
@@ -132,6 +140,11 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return this.#format('display')
     }
 
+    /**
+     * Greatest common divisor of monoms: the gcd of the numerators over the lcm of the denominators, times each
+     * variable shared by all the monoms at its lowest exponent.
+     * @throws {MathError} if a monom has a non-integer exponent.
+     */
     static gcd(...monoms: Monom[]): Monom {
         // All the monoms must be with natural powers...
         for (const m of monoms) {
@@ -211,19 +224,22 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
     }
 
     /**
-     * Get the coefficient \\(k\\) of the Monom \\(k\\cdot x^{n}\\)
+     * Get the coefficient `k` of the monom `k·x^n`
      */
     get coefficient(): Fraction {
         return this.#coefficient
     }
 
     /**
-     * Set the coefficient \\(k\\) value of the monom
+     * Set the coefficient `k` of the monom
      */
     set coefficient(F: InputValue<Fraction>) {
         this.#coefficient = new Fraction(F)
     }
 
+    /**
+     * True when an exponent is not an integer (`x^(1/2)`).
+     */
     containsRationalPower(): boolean {
         return Object.values(this.#literal).some((value) => value.hasFractionalPart())
     }
@@ -295,6 +311,11 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return this
     }
 
+    /**
+     * Every divisor of the monom: each divisor of the absolute value of the coefficient, combined with every
+     * exponent from 0 up to the exponent of each variable. A monom with a non-integer coefficient or exponent,
+     * or a numerator above 1 000 000, is returned alone.
+     */
     get dividers(): Monom[] {
         // Decompose only if the coefficient is a natural number
         if (!this.coefficient.isRelative()) {
@@ -390,6 +411,11 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return Object.hasOwn(this.#literal, variable)
     }
 
+    /**
+     * Definite integral between `a` and `b`, as a fraction: `primitive(b) - primitive(a)`.
+     * @param variable - integration variable (default `x`).
+     * @throws {MathError} for a power of -1 of the variable (see {@link primitive}).
+     */
     integrate(a: InputValue<Fraction>, b: InputValue<Fraction>, variable?: string): Fraction {
         const primitive = this.primitive(variable)
 
@@ -397,6 +423,10 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
             .subtract(primitive.evaluate(a, false))
     }
 
+    /**
+     * Replace the monom by its inverse: inverse the coefficient and negate every exponent.
+     * The inverse of zero has an infinite coefficient; it does not throw.
+     */
     inverse(): this {
         this.#coefficient.inverse()
         for (const variable in this.#literal) {
@@ -405,6 +435,10 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return this
     }
 
+    /**
+     * True when `div` divides the monom: each variable of `div` has at least the same exponent here, and the
+     * quotient of the coefficients is an integer (a coefficient with a fractional part is not checked).
+     */
     isDivisibleBy(div: Monom): boolean {
         // For all variables, the current monom must have a degree higher than the divider
         if (div.degree().isStrictlyPositive()) {
@@ -430,6 +464,9 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return this.isSameAs(M) && this.#coefficient.isEqual(M.coefficient)
     }
 
+    /**
+     * True when every exponent is an even integer (`x^4y^2`).
+     */
     isLiteralSquare(): boolean {
         for (const variable in this.literal) {
             // A literal square must have a natural power
@@ -498,6 +535,9 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return true
     }
 
+    /**
+     * True when the coefficient is a perfect square and every exponent is an even integer.
+     */
     isSquare(): boolean {
         if (!this.coefficient.isSquare()) {
             return false
@@ -513,7 +553,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
     }
 
     /**
-     * Get the literal part of \\(x^{n_1}y^{n_2}\\) as dictionary \\[\\begin{array}{ll}x&=n_1\\\\y&=n_2\\end{array}\\]
+     * Get the literal part of `x^a·y^b` as a dictionary from each variable to its exponent: `{x: a, y: b}`
      */
     get literal(): LiteralType<Fraction> {
         return this.#literal
@@ -596,6 +636,9 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return this
     }
 
+    /**
+     * Expression to give to a plotting tool: explicit `*` between the coefficient and the variables.
+     */
     get plotFunction(): string {
         return this.#format('plot')
     }
@@ -642,6 +685,9 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return M
     }
 
+    /**
+     * Reduce the coefficient and remove the variables whose exponent is zero.
+     */
     reduce(): this {
         // Reduce the coefficient
         this.coefficient.reduce()
@@ -655,6 +701,9 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return this
     }
 
+    /**
+     * Remove a variable from the literal part. Nothing happens when the variable is absent.
+     */
     removeVariable(variable: string) {
         /* eslint-disable */
         delete this.#literal[variable]
@@ -664,7 +713,6 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
     /**
      * Get the nth-root of the monom
      * @throws {NotImplementedError} Always: the nth-root of a monom is not yet implemented.
-     * @todo Not yet implemented
      */
     root(): this {
         // TODO: implement nth-root for monoms
@@ -838,58 +886,64 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         return tmpList
     }
 
-    #shutingYardAddToken(stack: Monom[], element: Token): void {
-        let q1: Monom; let q2: Monom; let m: Monom; let variable: string; let pow: Fraction
+    /**
+     * Apply one token of the reverse Polish notation to the stack. A monom is a single term: sums and
+     * differences of terms, missing operands and unknown tokens are rejected instead of being dropped.
+     * @throws {ParseError} when the token cannot be applied.
+     */
+    #shutingYardAddToken(stack: Monom[], element: Token, inputStr: string): void {
+        const invalid = (reason: string) => new ParseError(`Cannot parse "${inputStr}" as a Monom: ${reason}`)
 
-        if (element.tokenType === ShutingyardType.COEFFICIENT) {
-            stack.push(new Monom(new Fraction(element.token)))
+        switch (element.tokenType) {
+            case ShutingyardType.COEFFICIENT:
+                stack.push(new Monom(new Fraction(element.token)))
+                return
 
-        } else if (element.tokenType === ShutingyardType.VARIABLE) {
-            const M = new Monom().one()
-            M.setExponent(element.token, 1)
-            stack.push(M.clone())
+            case ShutingyardType.VARIABLE: {
+                const M = new Monom().one()
+                M.setExponent(element.token, 1)
+                stack.push(M)
+                return
+            }
 
-        } else if (element.tokenType === ShutingyardType.OPERATION) {
-            switch (element.token) {
-                case '-':
-                    // this should only happen for negative powers or for negative coefficient.
-                    q2 = (stack.pop()) ?? new Monom().zero()
-                    q1 = (stack.pop()) ?? new Monom().zero()
+            case ShutingyardType.OPERATION: {
+                const q2 = stack.pop()
+                const q1 = stack.pop()
+                if (q1 === undefined || q2 === undefined) {
+                    throw invalid('an operator is missing an operand')
+                }
 
-                    stack.push(q1.subtract(q2))
-
-                    break
-                case '*':
-                    // Get the last element in the stack
-                    q2 = (stack.pop()) ?? new Monom().one()
-                    q1 = (stack.pop()) ?? new Monom().one()
-
-                    stack.push(q1.multiply(q2))
-                    break
-                case '/':
-                    // Get the last element in the stack
-                    q2 = (stack.pop()) ?? new Monom().one()
-                    q1 = (stack.pop()) ?? new Monom().one()
-
-                    stack.push(q1.divide(q2))
-                    break
-                case '^': {
-                    // get the two last elements in the stack
-                    const poppedCoefficient = stack.pop()?.coefficient
-                    pow = poppedCoefficient ?? new Fraction(1)
-                    m = stack.pop() ?? new Monom().one()
-
-                    variable = m.variables[0]
-
-                    if (variable) {
-                        m.setExponent(variable, pow)
-                    }
-
-                    stack.push(m)
-                    // this.multiply(m.clone())
-                    break
+                switch (element.token) {
+                    case '+':
+                    case '-':
+                        // The parser writes a sign as `0 + term` or `0 - term`.
+                        if (q1.isZero()) {
+                            stack.push(element.token === '-' ? q2.opposite() : q2)
+                        } else if (q2.isZero()) {
+                            stack.push(q1)
+                        } else {
+                            throw invalid('a sum or a difference of terms is not a monom, use a Polynom')
+                        }
+                        return
+                    case '*':
+                        stack.push(q1.multiply(q2))
+                        return
+                    case '/':
+                        stack.push(q1.divide(q2))
+                        return
+                    case '^':
+                        if (q2.variables.length > 0) {
+                            throw invalid('the exponent must be a number')
+                        }
+                        stack.push(q1.pow(q2.coefficient))
+                        return
+                    default:
+                        throw invalid(`unsupported operator "${element.token}"`)
                 }
             }
+
+            default:
+                throw invalid(`unsupported element "${element.token}"`)
         }
     }
 
@@ -903,26 +957,18 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         }
         const rpn: { token: string, tokenType: ShutingyardType }[] = SY.rpn
 
-        const stack: Monom[] = []
-
         if (rpn.length === 0) {
             this.zero()
             return this
-        } else if (rpn.length === 1) {
-            const element = rpn[0]
+        }
 
-            this.one()
-            if (element.tokenType === ShutingyardType.COEFFICIENT) {
-                this.coefficient = new Fraction(element.token)
-            } else if (element.tokenType === ShutingyardType.VARIABLE) {
-                this.setExponent(element.token, 1)
-            }
-            return this
-        } else {
-            // Reset the monom
-            for (const element of rpn) {
-                this.#shutingYardAddToken(stack, element)
-            }
+        const stack: Monom[] = []
+        for (const element of rpn) {
+            this.#shutingYardAddToken(stack, element, inputStr)
+        }
+
+        if (stack.length !== 1) {
+            throw new ParseError(`Cannot parse "${inputStr}" as a Monom: it must be a single term`)
         }
 
         this.one()

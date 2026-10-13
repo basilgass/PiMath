@@ -9,6 +9,13 @@ import {Vector} from "../geometry/vector"
 import {assertDigits} from "../helpers"
 import {DimensionError, IndexError, NotImplementedError} from "../errors"
 
+/**
+ * A system of linear equations. Built from equations or strings (`new LinearSystem("x+y=3", "x-y=1")`).
+ * The variables are found in the equations; {@link solve} uses Gauss-Jordan elimination.
+ * Operations modify the system and return it; `clone()` keeps the original.
+ * @example
+ * new LinearSystem("x+y=3", "x-y=1").solve().map(s => s.display) // [ "2", "1" ]
+ */
 export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits,
     IEquation<LinearSystem>,
     IAlgebra {
@@ -30,10 +37,17 @@ export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits
         return this
     }
 
+    /**
+     * Replace the equations with strings or equations.
+     * @throws {ParseError} if a string has no equation sign.
+     */
     parse(...inputs: (string | Equation)[]): this {
         return this.fromEquations(...inputs.map(v => new Equation(v)))
     }
 
+    /**
+     * Replace the equations. The variables are those found in them, in alphabetical order.
+     */
     fromEquations(...equations: Equation[]): this {
         const vars = [...new Set(equations.flatMap(e => e.variables))].sort()
         const matrix = equations.map(equ => {
@@ -45,6 +59,12 @@ export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits
         return this.fromComponents(matrix, vars.join(''))
     }
 
+    /**
+     * Replace the equations from rows of numbers: the coefficients of the variables, then the constant of the right
+     * member. `[[1, 1, 3], [1, -1, 1]]` is `x+y=3` and `x-y=1`.
+     * @param variables - the names given to the columns (default `xyz`).
+     * @throws {DimensionError} if there is no row, or the rows have different lengths.
+     */
     fromComponents(matrix: InputValue<Fraction>[][], variables = 'xyz'): this {
         if (matrix.length === 0) {
             throw new DimensionError("Matrix must have at least one row")
@@ -63,10 +83,16 @@ export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits
         return this
     }
 
+    /**
+     * Replace the equations from a matrix, read as in {@link fromComponents}.
+     */
     fromMatrix(value: Matrix, variables = 'xyz'): this {
         return this.fromComponents(value.rows, variables)
     }
 
+    /**
+     * Replace the equations from vectors: each vector is a column, the last one holds the constants.
+     */
     fromVectors(...vectors: Vector[]): this {
         return this.fromMatrix(Matrix.fromVectors(...vectors))
     }
@@ -107,12 +133,24 @@ export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits
         return this.#toOutput(LS.equations, 'display')
     }
 
+    /**
+     * Text form of a solution of a system: `(2;1)`.
+     */
     static solutionAsDisplay(value: Solution[]): string {
         return `(${value.map(x=>x.display).join(";")})`
     }
+    /**
+     * LaTeX form of a solution of a system: `\left( 2 ; 1 \right)`.
+     */
     static solutionAsTex(value: Solution[]): string {
         return `\\left( ${value.map(x=>x.tex).join(" ; ")} \\right)`
     }
+    /**
+     * Add a system to this one, equation by equation. With an equation, a polynom or a number, add it to the
+     * equation at position `index`.
+     * @throws {DimensionError} if the systems do not have the same number of equations.
+     * @throws {IndexError} if `index` is missing or out of range.
+     */
     add(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this {
         if (value instanceof LinearSystem) {
             const length = value.equations.length
@@ -149,11 +187,17 @@ export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits
         return this.#toOutput(equations, 'tex', operators)
     }
 
+    /**
+     * Highest degree of the equations.
+     */
     degree(variable?: string): Fraction {
         return Fraction.max(...this.#equations.map(equ => equ.degree(variable)))
     }
 
     // ------------------------------------------
+    /**
+     * The equations, as copies. Setting the property replaces them and updates the variables.
+     */
     get equations(): Equation[] {
         return this.#equations.map(e => e.clone())
     }
@@ -165,23 +209,39 @@ export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits
         this.#findLetters()
     }
 
+    /**
+     * Not implemented.
+     * @throws {NotImplementedError} always.
+     */
     evaluate(): number | Fraction {
         throw new NotImplementedError("Method not implemented.")
     }
 
+    /**
+     * True when the variable appears in the system.
+     */
     hasVariable(variable: string): boolean {
         return this.#variables.includes(variable)
     }
 
+    /**
+     * True when both systems have the same equations, in the same order.
+     */
     isEqual(value: LinearSystem): boolean {
         return this.equations.every((equ, index) => equ.isEqual(value.equations[index]))
     }
 
+    /**
+     * True when the system has exactly one solution: it is consistent and its rank equals the number of variables.
+     */
     isSolvable(): boolean {
         const aug = this.toAugmentedMatrix()
         return aug.isConsistent() && aug.rank() === this.#variables.length
     }
 
+    /**
+     * The system as `[A, b]`: the matrix of the coefficients and the vector of the constants.
+     */
     get matrix(): [Matrix, Vector] {
         const [coeffs, vector] = this.#makeMatrix()
         return [Matrix.fromValues(coeffs), new Vector(...vector)]
@@ -198,6 +258,11 @@ export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits
             .withPartition(this.#variables.length)
     }
 
+    /**
+     * A new equation: the first equation times its factor, plus the second equation times its factor. The system
+     * is not modified.
+     * @param equation1 - `id` is the position of the equation, `factor` its multiplier.
+     */
     mergeEquations(equation1: { id: number, factor: InputValue<Fraction> }, equation2: {
         id: number,
         factor: number
@@ -210,6 +275,11 @@ export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits
         return eq1multiplied.add(eq2multiplied)
     }
 
+    /**
+     * Multiply the equation at position `index` by a number, or every equation by the matching number of an array.
+     * @throws {DimensionError} if the array does not have one value per equation.
+     * @throws {IndexError} if a single value is given without a valid `index`.
+     */
     multiply(value: InputValue<Fraction> | InputValue<Fraction>[], index?: number): this {
         // Multiply the asSystem by a number
         // the value can be an array of numbers
@@ -234,12 +304,18 @@ export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits
         return this
     }
 
+    /**
+     * Reduce every equation.
+     */
     reduce(): this {
         this.#equations.forEach(equ => equ.reduce())
         return this
     }
 
     // ------------------------------------------
+    /**
+     * Put the variables on the left and the constant on the right in every equation.
+     */
     reorder(): this {
         for (const E of this.#equations) {
             E.reorder()
@@ -298,6 +374,12 @@ export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits
         })
     }
 
+    /**
+     * Subtract a system from this one, equation by equation. With an equation, a polynom or a number, subtract it
+     * from the equation at position `index`.
+     * @throws {DimensionError} if the systems do not have the same number of equations.
+     * @throws {IndexError} if `index` is missing or out of range.
+     */
     subtract(value: InputValue<LinearSystem | Equation | Polynom>, index?: number): this {
         if (value instanceof LinearSystem) {
             const length = value.equations.length
@@ -319,6 +401,9 @@ export class LinearSystem implements IPiMathObject<LinearSystem>, IDisplayDigits
         return this
     }
 
+    /**
+     * The variables of the system, sorted. Setting the property accepts a string of letters or an array.
+     */
     get variables(): string[] {
         return this.#variables
     }

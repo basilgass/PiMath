@@ -6,14 +6,21 @@ import type {IPiMathObject, InputValue, RemarquableLines} from "../pimath.interf
 import {Numeric} from "../numeric"
 import {InvalidArgumentError, MathError, NotImplementedError} from "../errors"
 
-type TRIANGLE_SIDES = 'AB' | 'AC' | 'BC'
+export type TriangleSide = 'AB' | 'AC' | 'BC'
 
+/**
+ * A triangle `ABC` of the plane. Built from three points, three lines, or six coordinates. It gives the sides,
+ * the angles and the remarkable lines (medians, heights, mediators, bisectors) with exact coordinates.
+ * `tex` and `display` are not available: describe a triangle through its vertices or its {@link lines}.
+ * @example
+ * new Triangle(new Point(0, 0), new Point(4, 0), new Point(0, 3)).isRectangle() // true
+ */
 export class Triangle implements IPiMathObject<Triangle> {
     #A: Point = new Point()
     #B: Point = new Point()
     #C: Point = new Point()
     #isValid = false
-    #lines: Record<TRIANGLE_SIDES, Line> | null = null
+    #lines: Record<TriangleSide, Line> | null = null
     #radians = true
     #remarquables: RemarquableLines = {
         mediators: null, medians: null, heights: null, externalBisectors: null, bisectors: null
@@ -27,6 +34,11 @@ export class Triangle implements IPiMathObject<Triangle> {
         return this
     }
 
+    /**
+     * Replace the triangle with a triangle, three lines (objects or equation strings), three points, or six coordinates.
+     * @throws {InvalidArgumentError} if one of six values is not a number.
+     * @throws {MathError} if the points are collinear or the lines do not form a triangle.
+     */
     parse(...values: unknown[]): this {
 
         if (values.length === 1) {
@@ -42,11 +54,11 @@ export class Triangle implements IPiMathObject<Triangle> {
             }
 
             if (values.every((x: unknown) => x instanceof Line)) {
-                return this.copy(Triangle.fromLines(values[0] as Line, values[1] as Line, values[2] as Line))
+                return this.copy(Triangle.fromLines(values[0], values[1], values[2]))
             }
 
             if (values.every((x: unknown) => (x instanceof Point))) {
-                return this.copy(Triangle.fromPoints(values[0] as Point, values[1] as Point, values[2] as Point))
+                return this.copy(Triangle.fromPoints(values[0], values[1], values[2]))
             }
         }
 
@@ -97,6 +109,9 @@ export class Triangle implements IPiMathObject<Triangle> {
         return this
     }
 
+    /**
+     * Vertex A. Setting a vertex refreshes the validity and the remarkable lines.
+     */
     get A(): Point {
         return this.#A
     }
@@ -107,14 +122,23 @@ export class Triangle implements IPiMathObject<Triangle> {
         this.reset()
     }
 
+    /**
+     * The vector from A to B.
+     */
     get AB(): Vector {
         return this.#getSegment('A', 'B')
     }
 
+    /**
+     * The vector from A to C.
+     */
     get AC(): Vector {
         return this.#getSegment('A', 'C')
     }
 
+    /**
+     * Vertex B. Setting a vertex refreshes the validity and the remarkable lines.
+     */
     get B(): Point {
         return this.#B
     }
@@ -125,14 +149,23 @@ export class Triangle implements IPiMathObject<Triangle> {
         this.reset()
     }
 
+    /**
+     * The vector from B to A.
+     */
     get BA(): Vector {
         return this.#getSegment('B', 'A')
     }
 
+    /**
+     * The vector from B to C.
+     */
     get BC(): Vector {
         return this.#getSegment('B', 'C')
     }
 
+    /**
+     * Vertex C. Setting a vertex refreshes the validity and the remarkable lines.
+     */
     get C(): Point {
         return this.#C
     }
@@ -143,26 +176,39 @@ export class Triangle implements IPiMathObject<Triangle> {
         this.reset()
     }
 
+    /**
+     * The vector from C to A.
+     */
     get CA(): Vector {
         return this.#getSegment('C', 'A')
     }
 
+    /**
+     * The vector from C to B.
+     */
     get CB(): Vector {
         return this.#getSegment('C', 'B')
     }
 
+    /**
+     * Output option: {@link getAngle} gives degrees. Chainable, persistent.
+     */
     get asDegree(): this {
         this.#radians = false
         return this
     }
 
+    /**
+     * Output option: {@link getAngle} gives radians (default). Chainable, persistent.
+     */
     get asRadians(): this {
         this.#radians = true
         return this
     }
 
     /**
-     * @throws {MathError} if the three points are collinear or any two are identical
+     * Build a triangle from the coordinates of its three vertices.
+     * @throws {MathError} if the points are collinear or two of them are the same.
      */
     static fromCoordinates(
         x1: InputValue<Fraction>, y1: InputValue<Fraction>,
@@ -177,7 +223,8 @@ export class Triangle implements IPiMathObject<Triangle> {
     }
 
     /**
-     * @throws {MathError} if any two lines are parallel or the lines form a degenerate triangle
+     * Build a triangle from the lines of its sides `AB`, `BC` and `AC`, given as lines or equation strings.
+     * @throws {MathError} if two lines are parallel or the lines do not form a triangle.
      */
     static fromLines(line1: Line | string, line2: Line | string, line3: Line | string): Triangle {
         const t = new Triangle()
@@ -214,7 +261,8 @@ export class Triangle implements IPiMathObject<Triangle> {
     }
 
     /**
-     * @throws {MathError} if the three points are collinear or any two are identical
+     * Build a triangle from its three vertices.
+     * @throws {MathError} if the points are collinear or two of them are the same.
      */
     static fromPoints(A: Point, B: Point, C: Point): Triangle {
         const t = new Triangle()
@@ -229,7 +277,7 @@ export class Triangle implements IPiMathObject<Triangle> {
     }
 
     /**
-     * @returns angle in radians by default; use {@link asDegree} to get degrees
+     * Angle at a vertex, as a decimal number: in radians by default, in degrees after {@link asDegree}.
      */
     getAngle(name: 'A' | 'B' | 'C'): number {
         const a = this.BC.norm
@@ -248,8 +296,9 @@ export class Triangle implements IPiMathObject<Triangle> {
     }
 
     /**
-     * @param internal `true` (default) for internal bisectors, `false` for external
-     * @throws {MathError} if the triangle is degenerate
+     * The bisectors of the angles, as `{A, B, C, intersection}`, where `intersection` is their common point.
+     * @param internal - `true` (default) for the internal bisectors, `false` for the external ones.
+     * @throws {MathError} if the triangle is degenerate.
      */
     getBisectors(internal = true): { 'A': Line, 'B': Line, 'C': Line, 'intersection': Point | null } {
 
@@ -273,7 +322,8 @@ export class Triangle implements IPiMathObject<Triangle> {
     }
 
     /**
-     * @throws {MathError} if the triangle is degenerate
+     * The heights, as `{A, B, C, intersection}`, where `intersection` is the orthocenter.
+     * @throws {MathError} if the triangle is degenerate.
      */
     getHeights(): { 'A': Line, 'B': Line, 'C': Line, 'intersection': Point | null } {
 
@@ -292,7 +342,8 @@ export class Triangle implements IPiMathObject<Triangle> {
     }
 
     /**
-     * @throws {MathError} if the triangle is degenerate
+     * The medians, as `{A, B, C, intersection}`, where `intersection` is the centroid.
+     * @throws {MathError} if the triangle is degenerate.
      */
     getMedians(): { 'A': Line, 'B': Line, 'C': Line, 'intersection': Point | null } {
 
@@ -312,7 +363,8 @@ export class Triangle implements IPiMathObject<Triangle> {
     }
 
     /**
-     * @throws {MathError} if the triangle is degenerate
+     * The perpendicular bisectors of the sides, as `{a, b, c, intersection}`, where `intersection` is the circumcenter.
+     * @throws {MathError} if the triangle is degenerate.
      */
     getMediators(): { 'a': Line, 'b': Line, 'c': Line, 'intersection': Point | null } {
 
@@ -331,6 +383,9 @@ export class Triangle implements IPiMathObject<Triangle> {
         return this.#remarquables.mediators
     }
 
+    /**
+     * The midpoints of the sides, as `{AB, AC, BC}`.
+     */
     getMiddles(): { AB: Point, AC: Point, BC: Point } {
         return {
             'AB': new Point().middleOf(this.#A, this.#B),
@@ -339,10 +394,16 @@ export class Triangle implements IPiMathObject<Triangle> {
         }
     }
 
+    /**
+     * The vertices `[A, B, C]`.
+     */
     getPoints(): Point[] {
         return [this.A, this.B, this.C]
     }
 
+    /**
+     * The vertices sorted by `x`, then by `y`.
+     */
     getSortedPoints(): Point[] {
         return this.getPoints().sort((a, b) => {
             return a.x.value === b.x.value
@@ -351,6 +412,9 @@ export class Triangle implements IPiMathObject<Triangle> {
         })
     }
 
+    /**
+     * True when both triangles have the same vertices, whatever their order.
+     */
     isEqual(T: Triangle): boolean {
         if (!this.#isValid || !T.isValid) return false
 
@@ -361,6 +425,9 @@ export class Triangle implements IPiMathObject<Triangle> {
 
     }
 
+    /**
+     * True when the three sides have the same length.
+     */
     isEquilateral(): boolean {
         if (!this.#isValid) return false
 
@@ -371,6 +438,9 @@ export class Triangle implements IPiMathObject<Triangle> {
         return (dAB === dBC) && (dAB === dAC)
     }
 
+    /**
+     * True when two sides have the same length.
+     */
     isIsocele(): boolean {
         if (!this.#isValid) return false
 
@@ -383,6 +453,9 @@ export class Triangle implements IPiMathObject<Triangle> {
             dBC === dAC
     }
 
+    /**
+     * True when two sides are perpendicular.
+     */
     isRectangle(): boolean {
         if (!this.#isValid) return false
 
@@ -391,11 +464,17 @@ export class Triangle implements IPiMathObject<Triangle> {
             this.BC.isNormalTo(this.AC)
     }
 
+    /**
+     * False when the three vertices are collinear.
+     */
     get isValid(): boolean {
         return this.#isValid
     }
 
-    get lines(): Record<TRIANGLE_SIDES, Line> {
+    /**
+     * The lines of the sides, as `{AB, BC, AC}`.
+     */
+    get lines(): Record<TriangleSide, Line> {
         if (this.#lines === null) {
             this.#lines = {
                 'AB': new Line(this.#A, this.#B),
@@ -407,10 +486,17 @@ export class Triangle implements IPiMathObject<Triangle> {
         return this.#lines
     }
 
+    /**
+     * The remarkable lines already computed. An entry is `null` until the matching `get***` method is called.
+     */
     get remarquables(): RemarquableLines {
         return this.#remarquables
     }
 
+    /**
+     * Recompute the validity and forget the cached lines and remarkable lines. This is done automatically when a
+     * vertex changes through its setter or its `x` and `y` coordinates.
+     */
     reset(): this {
         this.#isValid = !this.AB.isColinearTo(this.AC)
 

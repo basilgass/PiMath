@@ -1,5 +1,6 @@
 import {describe, expect, test} from "vitest"
 import {Equation, Line, ParseError, Point, Vector} from "../../src"
+import {defined} from "../helpers/defined"
 
 
 describe('Line creation', () => {
@@ -75,7 +76,7 @@ describe('Line creation', () => {
         expect(() => Line.fromEquation(new Equation('x^2+y=0'))).toThrow(ParseError)
     })
     test('parse throws ParseError on unrecognized input', () => {
-        expect(() => new Line(42 as unknown as string)).toThrow(ParseError)
+        expect(() => new Line(42)).toThrow(ParseError)
     })
 })
 describe('Line output', () => {
@@ -175,8 +176,8 @@ describe('Vertical line comparisons', () => {
         const diagonal = new Line('x-y=0') // y = x
         const result = x1.intersection(diagonal)
         expect(result.hasIntersection).toBe(true)
-        expect(result.point!.x.value).toBe(1)
-        expect(result.point!.y.value).toBe(1)
+        expect(defined(result.point).x.value).toBe(1)
+        expect(defined(result.point).y.value).toBe(1)
     })
 })
 
@@ -207,7 +208,7 @@ describe('Operation with Lines', function () {
         )
         const P = L1.intersection(L2)
         expect(P.hasIntersection).toBe(true)
-        expect(P.point!.display).toBe('(6;4)')
+        expect(defined(P.point).display).toBe('(6;4)')
     })
 
     test('should fail on intersection with parallel lines', () => {

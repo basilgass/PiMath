@@ -1,4 +1,4 @@
-import {describe, expect, it, test} from "vitest"
+import {describe, expect, it} from "vitest"
 import {Plane3} from "../../src/geometry/plane3"
 import {Line3} from "../../src/geometry/line3"
 import {Point} from "../../src/geometry/point"
@@ -6,6 +6,7 @@ import {Vector} from "../../src/geometry/vector"
 import {Equation} from "../../src/algebra/equation"
 import {Polynom} from "../../src/algebra/polynom"
 import {ParseError} from "../../src/errors"
+import {defined} from "../helpers/defined"
 
 describe('Plane3 construction', () => {
     it('builds from a point and a normal vector', () => {
@@ -127,7 +128,7 @@ describe('Plane3 geometric operations', () => {
         const result = plane.intersectWithLine(line)
 
         expect(result.hasIntersection).toBe(true)
-        expect(result.point!.display).toBe('(0;0;0)')
+        expect(defined(result.point).display).toBe('(0;0;0)')
     })
 
     it('intersectWithLine returns isParallel for a line parallel to the plane', () => {
@@ -278,9 +279,9 @@ describe('Plane3 intersectWithPlane', () => {
         const result = xy.intersectWithPlane(yz)
 
         expect(result.hasIntersection).toBe(true)
-        expect(result.line!.isPointOnLine(new Point(0, 0, 0))).toBe(true)
-        expect(result.line!.isPointOnLine(new Point(0, 5, 0))).toBe(true)
-        expect(result.line!.isPointOnLine(new Point(1, 0, 0))).toBe(false)
+        expect(defined(result.line).isPointOnLine(new Point(0, 0, 0))).toBe(true)
+        expect(defined(result.line).isPointOnLine(new Point(0, 5, 0))).toBe(true)
+        expect(defined(result.line).isPointOnLine(new Point(1, 0, 0))).toBe(false)
     })
 
     it('intersection point lies on both planes', () => {
@@ -289,8 +290,8 @@ describe('Plane3 intersectWithPlane', () => {
         const result = p1.intersectWithPlane(p2)
 
         expect(result.hasIntersection).toBe(true)
-        expect(p1.isPointOnPlane(result.line!.point)).toBe(true)
-        expect(p2.isPointOnPlane(result.line!.point)).toBe(true)
+        expect(p1.isPointOnPlane(defined(result.line).point)).toBe(true)
+        expect(p2.isPointOnPlane(defined(result.line).point)).toBe(true)
     })
 
     it('intersection line direction is perpendicular to both normals', () => {
@@ -299,8 +300,8 @@ describe('Plane3 intersectWithPlane', () => {
         const result = p1.intersectWithPlane(p2)
 
         expect(result.hasIntersection).toBe(true)
-        expect(result.line!.direction.dot(p1.normal).isZero()).toBe(true)
-        expect(result.line!.direction.dot(p2.normal).isZero()).toBe(true)
+        expect(defined(result.line).direction.dot(p1.normal).isZero()).toBe(true)
+        expect(defined(result.line).direction.dot(p2.normal).isZero()).toBe(true)
     })
 
     it('general case: x+y+z=1 and x-y=0', () => {
@@ -309,10 +310,10 @@ describe('Plane3 intersectWithPlane', () => {
         const result = p1.intersectWithPlane(p2)
 
         expect(result.hasIntersection).toBe(true)
-        expect(p1.isPointOnPlane(result.line!.point)).toBe(true)
-        expect(p2.isPointOnPlane(result.line!.point)).toBe(true)
-        expect(result.line!.direction.dot(p1.normal).isZero()).toBe(true)
-        expect(result.line!.direction.dot(p2.normal).isZero()).toBe(true)
+        expect(p1.isPointOnPlane(defined(result.line).point)).toBe(true)
+        expect(p2.isPointOnPlane(defined(result.line).point)).toBe(true)
+        expect(defined(result.line).direction.dot(p1.normal).isZero()).toBe(true)
+        expect(defined(result.line).direction.dot(p2.normal).isZero()).toBe(true)
     })
 })
 

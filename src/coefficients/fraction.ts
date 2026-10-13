@@ -18,8 +18,12 @@ export enum FracType {
 const APPROXIMATE_DIGITS = 3
 
 /**
- * The fraction class make possible to handle
- * \\(\frac{a}{b}\\) or \\[\frac{a}{b}\\]  values.
+ * An exact rational number such as `a/b`. A `Fraction` is exact: it stores an integer numerator and an integer denominator, and
+ * flags a value that had to be approximated (`exact` is then `false`). It is permissive like a JavaScript
+ * number: an impossible value is `NaN` or infinite (`isNaN()`, `isFinite()`) and does not throw.
+ * Operations modify the fraction and return it; `clone()` keeps the original.
+ * @example
+ * new Fraction("1/2").add("1/3").display // "5/6"
  */
 
 export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>, IDisplayDigits {
@@ -160,10 +164,16 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         }
     }
 
+    /**
+     * True when every given fraction has the same value as the first one (`2/4` equals `1/2`).
+     */
     static areEquals(...F: Fraction[]): boolean {
         return F.every(f => f.isEqual(F[0]))
     }
 
+    /**
+     * Arithmetic mean of the values, as a new fraction. Without any value the result is `+∞`.
+     */
     static average(...fractions: (InputValue<Fraction>)[]): Fraction {
         const M = new Fraction(0)
 
@@ -176,6 +186,10 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return M
     }
 
+    /**
+     * True when `new Fraction(value)` understands the value: a `Fraction`, a number, `"a/b"`, a decimal string,
+     * a periodic notation such as `"2.31(25)"`, or an empty string (zero).
+     */
     static isFraction(value: InputValue<Fraction>) {
         if (value instanceof Fraction ||
             (typeof value === "number" && !isNaN(value))
@@ -206,6 +220,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
 
     }
 
+    /**
+     * Largest of the values, as a new fraction.
+     */
     static max(...fractions: InputValue<Fraction>[]): Fraction {
         let M = new Fraction(fractions[0])
 
@@ -219,6 +236,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return M
     }
 
+    /**
+     * Smallest of the values, as a new fraction.
+     */
     static min(...fractions: (InputValue<Fraction>)[]): Fraction {
         let M = new Fraction(fractions[0])
 
@@ -232,6 +252,10 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return M
     }
 
+    /**
+     * Sort by value, ascending (descending when `reverse` is true). Returns a new array; the `Fraction`
+     * instances of the input are reused, not cloned.
+     */
     static sort(fractions: (InputValue<Fraction>)[], reverse?: boolean): Fraction[] {
         const fractionsObject: Fraction[] = fractions.map(f => f instanceof Fraction ? f : new Fraction(f))
 
@@ -244,6 +268,11 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return sorted
     }
 
+    /**
+     * New fractions sharing the least common denominator, without reducing them.
+     * @example
+     * Fraction.toSameDenominateur("1/2", "1/3").map(f => f.display) // [ "3/6", "2/6" ]
+     */
     static toSameDenominateur(...fractions: InputValue<Fraction>[]): Fraction[] {
         const F = fractions.map(x => new Fraction(x))
         const lcm = Numeric.lcm(...F.map(x => x.denominator))
@@ -253,6 +282,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return F
     }
 
+    /**
+     * Remove the duplicates by value (`2/4` and `1/2` are the same). Keeps the first occurrence, as a clone.
+     */
     static unique(fractions: (InputValue<Fraction>)[]): Fraction[] {
         const unique: Record<string, boolean> = {}
         const distinct: Fraction[] = []
@@ -271,6 +303,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return distinct
     }
 
+    /**
+     * Product of the values, as a new fraction that is not reduced (call {@link reduce} to simplify it).
+     */
     static xMultiply(...values: (InputValue<Fraction>)[]): Fraction {
         const R = new Fraction(1)
 
@@ -279,12 +314,21 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return R
     }
 
+    /**
+     * Replace the fraction by its absolute value.
+     */
     abs(): this {
         this.#numerator = Math.abs(this.#numerator)
         this.#denominator = Math.abs(this.#denominator)
         return this
     }
 
+    /**
+     * Add a value (fraction, number or string) and reduce the result. Modifies and returns the receiver.
+     * The result is flagged approximate (`exact` is false) when an operand is approximate or an integer part exceeds 2^53.
+     * @example
+     * new Fraction("1/2").add("1/3").display // "5/6"
+     */
     add(F: InputValue<Fraction>): this {
         if (F instanceof Fraction) {
             const N: number = this.#numerator
@@ -362,6 +406,10 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         }
     }
 
+    /**
+     * Denominator, as stored (it is not reduced automatically).
+     * Setting it to zero gives a signed infinity, or an invalid fraction when the numerator is zero too.
+     */
     get denominator(): number {
         return this.#denominator
     }
@@ -385,6 +433,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         this.#denominator = value
     }
 
+    /**
+     * Display option: `.tex` uses `\dfrac` instead of `\frac`. Chainable, persistent, kept by {@link clone}.
+     */
     get asDfrac(): this {
         this.#type = FracType.dfrac
         return this
@@ -427,6 +478,10 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return this.reduce()
     }
 
+    /**
+     * False when the value is an approximation (inexact root, very long decimal, integer part above 2^53).
+     * An approximate fraction is displayed as a decimal with 3 digits.
+     */
     get exact(): boolean {
         return this.#exact
     }
@@ -435,6 +490,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         this.#exact = value
     }
 
+    /**
+     * Display option: `.tex` uses `\frac` (default). Chainable, persistent, kept by {@link clone}.
+     */
     get asFrac(): this {
         this.#type = FracType.frac
         return this
@@ -479,6 +537,11 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return f
     }
 
+    /**
+     * Build a new fraction from a numerator and a denominator, without reducing it.
+     * A zero denominator gives a signed infinity (`3/0`), or an invalid fraction for `0/0`.
+     * Values that are not safe integers are converted through {@link fromNumber} and become approximate.
+     */
     static fromNumbers(numerator: number, denominator: number): Fraction {
         if (denominator === 0) {
             // Single, centralized handling of a zero denominator:
@@ -537,6 +600,10 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return f.reduce()
     }
 
+    /**
+     * Build a new fraction from a string: an integer, a decimal, `"a/b"` or a periodic decimal `"2.31(25)"`.
+     * A malformed string does not throw: the result is an invalid fraction (see {@link isNaN}).
+     */
     static fromString(value: string): Fraction {
         // Periodic decimal notation, e.g. "2.31(25)" = 2.31252525...
         const periodicMatch = /^([+-]?)(\d*)\.(\d*)\((\d+)\)$/.exec(value)
@@ -576,6 +643,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return Fraction.fromNumbers(S[0], S[1])
     }
 
+    /**
+     * Turn the receiver into `+∞`. Use {@link opposite} afterwards for `-∞`.
+     */
     infinite(): this {
         this.#numerator = Infinity
         this.#denominator = 1
@@ -583,6 +653,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return this
     }
 
+    /**
+     * Turn the receiver into an invalid fraction (`NaN`). Test it with {@link isNaN}.
+     */
     invalid(): this {
         this.#numerator = NaN
         this.#denominator = 1
@@ -618,66 +691,116 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         }
     }
 
+    /**
+     * True when both values are equal. Fractions are compared by cross product: `2/4` equals `1/2`.
+     * A `NaN` is equal to nothing.
+     */
     isEqual(than: Fraction | number): boolean {
         return this.compare(than, '=')
     }
 
+    /**
+     * True for an even integer. A fraction that is not an integer is neither even nor odd.
+     */
     isEven(): boolean {
         return this.isRelative() && this.value % 2 === 0
     }
 
+    /**
+     * True unless the fraction is infinite or invalid.
+     */
     isFinite(): boolean {
         return !this.isInfinity() && !this.isNaN()
     }
 
+    /**
+     * True when the receiver is greater than or equal to `than`.
+     */
     isGeq(than: Fraction | number): boolean {
         return this.compare(than, '>=')
     }
 
+    /**
+     * True when the receiver is strictly greater than `than`.
+     */
     isGreater(than: Fraction | number): boolean {
         return this.compare(than, '>')
     }
 
+    /**
+     * True for `+∞` and `-∞`.
+     */
     isInfinity(): boolean {
         return Math.abs(this.#numerator) === Infinity
     }
 
+    /**
+     * True when the receiver is less than or equal to `than`.
+     */
     isLeq(than: Fraction | number): boolean {
         return this.compare(than, '<=')
     }
 
+    /**
+     * True when the receiver is strictly less than `than`.
+     */
     isLesser(than: Fraction | number): boolean {
         return this.compare(than, '<')
     }
 
+    /**
+     * True for an invalid fraction (`0/0`, a malformed string, a failed parse).
+     */
     isNaN(): boolean {
         return isNaN(this.#numerator)
     }
 
+    /**
+     * True for a non-negative integer (zero included).
+     */
     isNatural(): boolean {
         return this.isRelative() && this.isPositive()
     }
 
+    /**
+     * True when the value is strictly negative. Zero and `NaN` are not negative (see {@link sign}).
+     */
     isNegative(): boolean {
         return this.sign() === -1
     }
 
+    /**
+     * True when the values differ. Unlike a negated {@link isEqual}, an invalid fraction is also considered different.
+     */
     isNotEqual(than: Fraction | number): boolean {
         return this.compare(than, '<>')
     }
 
+    /**
+     * True when the numerator is not zero.
+     */
     isNotZero(): boolean {
         return this.#numerator !== 0
     }
 
+    /**
+     * True for an odd integer, negative ones included.
+     */
     isOdd(): boolean {
         return this.isRelative() && Math.abs(this.value % 2) === 1
     }
 
+    /**
+     * True for the literal `1/1`. A non-reduced `2/2` is not "one": call {@link reduce} first.
+     */
     isOne(): boolean {
         return this.#numerator === 1 && this.#denominator === 1
     }
 
+    /**
+     * True when the decimal expansion of the exact fraction never stops (`1/3`, `1/7`), that is when the
+     * reduced denominator has a prime factor other than 2 and 5. False for an approximate or non finite value.
+     */
     isPeriodic(): boolean {
         if (!this.exact || !this.isFinite()) {
             return false
@@ -694,6 +817,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return d !== 1
     }
 
+    /**
+     * True when the value is positive or zero (see {@link sign}).
+     */
     isPositive(): boolean {
         return this.sign() === 1
     }
@@ -716,6 +842,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return this.exact && !this.isRelative()
     }
 
+    /**
+     * True when numerator and denominator have no common divisor other than 1.
+     */
     isReduced(): boolean {
         return Math.abs(Numeric.gcd(this.#numerator, this.#denominator)) === 1
     }
@@ -729,6 +858,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return this.exact && this.clone().reduce().denominator === 1
     }
 
+    /**
+     * True when the reduced fraction is the square of a rational (`4/9`). A negative value is never a square.
+     */
     isSquare(): boolean {
         const f = this.clone().reduce()
 
@@ -745,23 +877,41 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return rootN * rootN === n && rootD * rootD === d
     }
 
+    /**
+     * True when the value is below zero.
+     */
     isStrictlyNegative(): boolean {
         return this.value < 0
     }
 
+    /**
+     * True when the value is above zero.
+     */
     isStrictlyPositive(): boolean {
         return this.value > 0
     }
 
+    /**
+     * True for `1` and `-1`, as integers.
+     */
     isUnit(): boolean {
         return Math.abs(this.#numerator) === 1 && this.#denominator === 1
     }
 
-    // Mathematical operations specific to fractions
+    /**
+     * True when the numerator is zero.
+     */
     isZero(): boolean {
         return this.#numerator === 0
     }
 
+    /**
+     * Multiply by a value (fraction, number or string). Modifies and returns the receiver.
+     * @param F - the factor.
+     * @param reduce - reduce the result (default), or keep the product as it is when false.
+     * @example
+     * new Fraction("2/3").multiply("3/4").display // "1/2"
+     */
     multiply(F: InputValue<Fraction>, reduce = true): this {
         // Parse the value.
         // If it's a fraction, return a clone of it
@@ -778,6 +928,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
     }
 
     // ------------------------------------------
+    /**
+     * Numerator, as stored (it carries the sign unless the denominator is negative).
+     */
     get numerator(): number {
         return this.#numerator
     }
@@ -786,15 +939,28 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         this.#numerator = value
     }
 
+    /**
+     * Set the value to `1`. The display options are kept.
+     */
     one(): this {
         return this.copy(Fraction.fromNumber(1))
     }
 
+    /**
+     * Change the sign of the fraction (`-` times the numerator).
+     */
     opposite(): this {
         this.#numerator = -this.#numerator
         return this
     }
 
+    /**
+     * Raise to the power `p`. The fraction is reduced first; a negative `p` inverts it.
+     * An integer exponent gives an exact result. A fractional exponent is exact only when numerator and
+     * denominator are perfect powers (`(9/4)^0.5 = 3/2`); otherwise the result is approximate.
+     * A rejected call leaves the receiver intact.
+     * @throws {MathError} if the base is negative and the exponent is not an integer.
+     */
     pow(p: number | Fraction): this {
         if (p instanceof Fraction) {
             return this.pow(p.value)
@@ -846,6 +1012,11 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return this
     }
 
+    /**
+     * Divide numerator and denominator by their greatest common divisor, and keep the sign on the numerator.
+     * @example
+     * new Fraction(6, -4).reduce().display // "-3/2"
+     */
     reduce(): this {
         const g = Numeric.gcd(this.#numerator, this.#denominator)
         this.#numerator = this.#numerator / g
@@ -937,10 +1108,17 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return (this.#numerator * this.#denominator >= 0) ? 1 : -1
     }
 
+    /**
+     * Square root, same as `root(2)`. Exact for a perfect square, approximate otherwise.
+     * @throws {MathError} if the fraction is negative.
+     */
     sqrt(): this {
         return this.root(2)
     }
 
+    /**
+     * Subtract a value (fraction, number or string) and reduce the result. Modifies and returns the receiver.
+     */
     subtract(F: InputValue<Fraction>): this {
         if (F instanceof Fraction) {
             return this.add(F.clone().opposite())
@@ -950,6 +1128,9 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return this.add(new Fraction(F).opposite())
     }
 
+    /**
+     * Display option: `.tex` uses `\tfrac` instead of `\frac`. Chainable, persistent, kept by {@link clone}.
+     */
     get asTfrac(): this {
         this.#type = FracType.tfrac
         return this
@@ -1001,21 +1182,34 @@ export class Fraction implements IPiMathObject<Fraction>, IExpression<Fraction>,
         return {sign, integerPart, nonPeriodic, periodic, periodLength: periodic.length}
     }
 
+    /**
+     * Decimal value (`numerator / denominator`). Negative zero is returned as `0`.
+     */
     get value(): number {
         const result = this.#numerator / this.#denominator
         return result === 0 ? 0 : result
     }
 
+    /**
+     * Display option: show a `+` before a positive value (zero included). Chainable, persistent, kept by {@link clone}.
+     * Cancel it with {@link withoutSign}.
+     */
     get withSign(): this {
         this.#withSign = true
         return this
     }
 
+    /**
+     * Display option: cancel {@link withSign}. Chainable.
+     */
     get withoutSign(): this {
         this.#withSign = false
         return this
     }
 
+    /**
+     * Set the value to `0`. The display options are kept.
+     */
     zero(): this {
         return this.copy(Fraction.fromNumber(0))
     }

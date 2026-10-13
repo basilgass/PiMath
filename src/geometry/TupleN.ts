@@ -29,6 +29,9 @@ export abstract class TupleN implements IPiMathObject<TupleN>, IDisplayDigits {
 
     abstract get display(): string
 
+    /**
+     * The coordinates, as copies. Setting the property replaces them.
+     */
     get array(): Fraction[] {
         return this.#array.map(x => x.clone())
     }
@@ -37,6 +40,9 @@ export abstract class TupleN implements IPiMathObject<TupleN>, IDisplayDigits {
         this.#array = value
     }
 
+    /**
+     * Number of coordinates: 2 in the plane, 3 in space.
+     */
     get dimension(): number {
         return this.#array.length
     }
@@ -58,6 +64,10 @@ export abstract class TupleN implements IPiMathObject<TupleN>, IDisplayDigits {
         return components.map(x => new Fraction(x))
     }
 
+    /**
+     * Function called when a coordinate is set through `x`, `y` or `z`, or when the tuple is zeroed.
+     * {@link Triangle} uses it to refresh its remarkable lines.
+     */
     get onChange(): undefined | (() => void) {
         return this.#onChange
     }
@@ -66,7 +76,10 @@ export abstract class TupleN implements IPiMathObject<TupleN>, IDisplayDigits {
         this.#onChange = value
     }
 
-    /** @throws {DimensionError} if value < 2 */
+    /**
+     * Change the number of coordinates: new ones are zero, extra ones are removed.
+     * @throws {DimensionError} if `value` is less than 2.
+     */
     setDimension(value = 2): this {
         if (value < 2) {
             throw new DimensionError('Dimension must be at least 2')
@@ -83,6 +96,9 @@ export abstract class TupleN implements IPiMathObject<TupleN>, IDisplayDigits {
         return this
     }
 
+    /**
+     * First coordinate. Setting it accepts a fraction, a number or a string.
+     */
     get x(): Fraction {
         return this.#array[0]
     }
@@ -92,6 +108,9 @@ export abstract class TupleN implements IPiMathObject<TupleN>, IDisplayDigits {
         this.#onChange?.()
     }
 
+    /**
+     * Second coordinate. Setting it accepts a fraction, a number or a string.
+     */
     get y(): Fraction {
         return this.#array[1]
     }
@@ -101,7 +120,10 @@ export abstract class TupleN implements IPiMathObject<TupleN>, IDisplayDigits {
         this.#onChange?.()
     }
 
-    /** @throws {DimensionError} if dimension < 3 */
+    /**
+     * Third coordinate. Setting it accepts a fraction, a number or a string.
+     * @throws {DimensionError} if the tuple has fewer than 3 coordinates.
+     */
     get z(): Fraction {
         if (this.dimension < 3) {
             throw new DimensionError('Vector is not 3D')
@@ -123,23 +145,38 @@ export abstract class TupleN implements IPiMathObject<TupleN>, IDisplayDigits {
         return this
     }
 
+    /**
+     * True when every coordinate is zero.
+     */
     isZero(): boolean {
         return this.#array.every(x => x.isZero())
     }
 
+    /**
+     * Euclidean norm, as a decimal number.
+     */
     get norm(): number {
         return Math.sqrt(this.normSquare.value)
     }
 
+    /**
+     * Square of the norm, as an exact fraction.
+     */
     get normSquare(): Fraction {
         return this.#array.reduce((acc, x) => acc.add(x.clone().pow(2)), new Fraction(0))
     }
 
+    /**
+     * Change the sign of every coordinate.
+     */
     opposite(): this {
         this.array = this.cloneCoordinates().map(x => x.opposite())
         return this
     }
 
+    /**
+     * Set every coordinate to zero.
+     */
     zero(): this {
         this.#array.forEach(x => x.zero())
         this.#onChange?.()

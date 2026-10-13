@@ -13,7 +13,9 @@ import {fileURLToPath} from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const entry = path.join(root, 'src/index.ts')
-const outDir = path.join(root, '.claude/specs')
+// `--out <folder>` writes the files elsewhere (the documentation build reads them from a temporary folder).
+const outIndex = process.argv.indexOf('--out')
+const outDir = outIndex !== -1 ? path.resolve(process.argv[outIndex + 1]) : path.join(root, '.claude/specs')
 
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'))
 
@@ -228,6 +230,20 @@ function optionsOf(type, node, prefix = '', inheritedDoc = null, seen = [], inhe
     return options
 }
 
+/** The symbol called by a facade entry such as `equation: (config) => rndEquation(config)`, or null. */
+function calleeOf(property) {
+    const d = property.declarations?.[0]
+    if (!d || !ts.isPropertyAssignment(d) || !ts.isArrowFunction(d.initializer)) return null
+    let body = d.initializer.body
+    if (ts.isBlock(body)) {
+        const ret = body.statements.find(s => ts.isReturnStatement(s))
+        body = ret?.expression
+    }
+    if (!body || !ts.isCallExpression(body)) return null
+    const symbol = checker.getSymbolAtLocation(body.expression)
+    return symbol ? resolve(symbol) : null
+}
+
 function describeRandom(randomSymbol) {
     const declaration = randomSymbol.declarations[0]
     const type = checker.getTypeOfSymbolAtLocation(randomSymbol, declaration)
@@ -241,8 +257,10 @@ function describeRandom(randomSymbol) {
         if (!signature) continue
 
         const returns = typeText(signature.getReturnType(), d)
-        const description = doc(property)
-        const {throws} = tagsOf(property)
+        // A generator is documented on the `rnd***` function the facade forwards to.
+        const callee = calleeOf(property)
+        const description = (callee ? doc(callee) : '') || doc(property)
+        const throws = [...tagsOf(property).throws, ...(callee ? tagsOf(callee).throws : [])]
         const text = `${property.name}${checker.signatureToString(signature, d, NO_TRUNCATION)}`
 
         const first = signature.getParameters()[0]
@@ -256,6 +274,7 @@ function describeRandom(randomSymbol) {
                 returns,
                 config: firstType.symbol.name,
                 description,
+                throws,
                 options: optionsOf(firstType, d),
             }
         } else {
@@ -277,7 +296,11 @@ function describeFunctions(symbol, pathPrefix) {
         const propertyType = checker.getTypeOfSymbolAtLocation(property, pd)
         const signatures = propertyType.getCallSignatures().map(s => `${property.name}${checker.signatureToString(s, pd, NO_TRUNCATION)}`)
         if (signatures.length === 0) continue
-        out[property.name] = {path: `${pathPrefix}.${property.name}`, signatures, description: doc(property), throws: tagsOf(property).throws}
+        // A shorthand entry (`{gcd: greatestCommonDivisor}`) carries no JSDoc itself: it is on the function.
+        const callSignatures = propertyType.getCallSignatures()
+        const description = doc(property) || callSignatures.map(s => ts.displayPartsToString(s.getDocumentationComment(checker)).trim()).find(Boolean) || ''
+        const throws = callSignatures.flatMap(s => s.getJsDocTags(checker).filter(t => t.name === 'throws').map(t => ts.displayPartsToString(t.text ?? []).trim()))
+        out[property.name] = {path: `${pathPrefix}.${property.name}`, signatures, description, throws: throws.length > 0 ? throws : tagsOf(property).throws}
     }
     return out
 }

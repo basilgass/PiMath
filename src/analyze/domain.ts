@@ -74,12 +74,18 @@ export class Domain implements IPiMathObject<Domain> {
     // Static factories
     // -------------------------------------------------------------------------
 
+    /**
+     * Build a domain from intervals. They are sorted, and the overlapping or touching ones are merged.
+     */
     static fromIntervals(intervals: Interval[]): Domain {
         const d = new Domain()
         d.#intervals = normalizeIntervals(intervals)
         return d
     }
 
+    /**
+     * Build a domain from a single interval.
+     */
     static fromInterval(interval: Interval): Domain {
         return Domain.fromIntervals([interval])
     }
@@ -151,6 +157,10 @@ export class Domain implements IPiMathObject<Domain> {
     // Parse
     // -------------------------------------------------------------------------
 
+    /**
+     * Replace the domain with a string, an interval or another domain. See {@link fromString} for the notation.
+     * @throws {ParseError} if the string is not a domain.
+     */
     parse(value: string | Domain | Interval): this {
         if (value instanceof Domain) return this.copy(value)
         if (value instanceof Interval) return this.copy(Domain.fromInterval(value))
@@ -207,7 +217,7 @@ export class Domain implements IPiMathObject<Domain> {
     #detectRMinusPoints(): Solution[] | null {
         const ivs = this.#intervals
         if (ivs[0].left !== null) return null
-        if (ivs.at(-1)!.right !== null) return null
+        if (ivs[ivs.length - 1].right !== null) return null
 
         const pts: Solution[] = []
         for (let i = 0; i < ivs.length - 1; i++) {
@@ -252,10 +262,16 @@ export class Domain implements IPiMathObject<Domain> {
     // Predicates
     // -------------------------------------------------------------------------
 
+    /**
+     * True when the domain has no interval.
+     */
     isEmpty(): boolean {
         return this.#intervals.length === 0
     }
 
+    /**
+     * True when the number belongs to one of the intervals.
+     */
     contains(x: Fraction | number): boolean {
         return this.#intervals.some(iv => iv.contains(x))
     }
@@ -311,7 +327,7 @@ export class Domain implements IPiMathObject<Domain> {
         }
 
         // Gap after the last interval
-        const last = ivs.at(-1)!
+        const last = ivs[ivs.length - 1]
         if (last.right !== null) {
             gaps.push(Interval.fromBounds(last.right, null, !last.rightOpen, true))
         }
@@ -328,6 +344,9 @@ export class Domain implements IPiMathObject<Domain> {
         return this.#intervals.map(iv => iv.clone())
     }
 
+    /**
+     * Number of intervals, once merged.
+     */
     get length(): number {
         return this.#intervals.length
     }

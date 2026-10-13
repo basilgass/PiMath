@@ -13,7 +13,8 @@ function fractionEqual(a: Fraction, b: Fraction): boolean {
 
 function exactEqual(a: Solution, b: Solution): boolean {
     if (!fractionEqual(a.fraction, b.fraction)) return false
-    const ra = a.root, rb = b.root
+    const ra = a.root
+    const rb = b.root
     if (ra.isZero() && rb.isZero()) return true
     if (ra.isZero() !== rb.isZero()) return false
     return ra.index === rb.index
@@ -165,6 +166,10 @@ export class Interval implements IPiMathObject<Interval> {
     // Parse
     // -------------------------------------------------------------------------
 
+    /**
+     * Replace the interval with a string or another interval. See {@link fromString} for the notation.
+     * @throws {ParseError} if the string is not an interval.
+     */
     parse(value: string | Interval): this {
         if (value instanceof Interval) return this.copy(value)
         if (typeof value === 'string') return this.copy(Interval.fromString(value))
@@ -186,8 +191,9 @@ export class Interval implements IPiMathObject<Interval> {
     #toOutput(style: OutputStyle): string {
         if (this.#empty) return style === 'tex' ? '\\emptyset' : 'O/'
 
-        if (this.isPoint()) {
-            const v = style === 'tex' ? this.#left!.tex : this.#left!.display
+        const point = this.#left
+        if (point !== null && this.isPoint()) {
+            const v = style === 'tex' ? point.tex : point.display
             return style === 'tex' ? `\\left\\{${v}\\right\\}` : `{${v}}`
         }
 
@@ -228,6 +234,9 @@ export class Interval implements IPiMathObject<Interval> {
     // Predicates
     // -------------------------------------------------------------------------
 
+    /**
+     * True for the empty set, and for bounds that enclose nothing (`]2;2[`, `[3;1]`).
+     */
     isEmpty(): boolean {
         if (this.#empty) return true
         if (this.#left === null || this.#right === null) return false
@@ -247,6 +256,10 @@ export class Interval implements IPiMathObject<Interval> {
         return !this.#empty && this.#left === null && this.#right === null
     }
 
+    /**
+     * True when the number is in the interval. The bounds are compared by their decimal value, and an empty
+     * interval or a `NaN` contains nothing.
+     */
     contains(x: Fraction | number): boolean {
         if (this.isEmpty()) return false
         const v = typeof x === 'number' ? x : x.value
@@ -292,8 +305,20 @@ export class Interval implements IPiMathObject<Interval> {
     // Getters (read-only, for Domain's internal logic)
     // -------------------------------------------------------------------------
 
+    /**
+     * Left bound as a {@link Solution}, or `null` for -∞.
+     */
     get left(): Solution | null { return this.#left }
+    /**
+     * Right bound as a {@link Solution}, or `null` for +∞.
+     */
     get right(): Solution | null { return this.#right }
+    /**
+     * True when the left bound is excluded. An infinite bound is always open.
+     */
     get leftOpen(): boolean { return this.#leftOpen }
+    /**
+     * True when the right bound is excluded. An infinite bound is always open.
+     */
     get rightOpen(): boolean { return this.#rightOpen }
 }

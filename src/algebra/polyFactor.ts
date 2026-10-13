@@ -16,7 +16,14 @@ import type {Solution} from "../analyze"
 import {splitIfOutsideParentheses, stripParenthesis} from "../helpers"
 
 
-// PolyFactor is a class that represents a polynomial in factored form.
+/**
+ * A polynomial expression in factored form: a list of {@link Factor}s whose product is the value. A factor with
+ * a negative power belongs to the denominator. Built from a string (`"(x-1)(x+2)^2"`, `"(x+1)/(x-2)"`),
+ * a polynom or factors.
+ * Operations modify the object and return it; `clone()` keeps the original.
+ * @example
+ * new PolyFactor("(x-1)(x+2)^2").develop().display // "x^(3)+3x^(2)-4"
+ */
 export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
     IExpression<PolyFactor>,
     IAlgebra, IEvaluable {
@@ -33,6 +40,10 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         })
     }
 
+    /**
+     * Replace the content by a string, a polynom, a factor or another polyfactor.
+     * @throws {ParseError} if a string is malformed.
+     */
     parse(value: InputAlgebra<Polynom> | Factor | PolyFactor | string): this {
         if (typeof value === 'string')   return this.copy(PolyFactor.fromString(value))
         if (value instanceof PolyFactor) return this.copy(value)
@@ -116,6 +127,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return new PolyFactor(...factors)
     }
 
+    /**
+     * Greatest common divisor: every base shared by all the polyfactors, at its lowest power.
+     */
     static gcd(...values: PolyFactor[]): PolyFactor {
         if (values.length === 0) {
             return new PolyFactor().one()
@@ -135,6 +149,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return PF
     }
 
+    /**
+     * Least common multiple: every base found in one of the polyfactors, at its highest power.
+     */
     static lcm(...values: PolyFactor[]): PolyFactor {
         if (values.length === 0) {
             return new PolyFactor().one()
@@ -205,20 +222,34 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return this
     }
 
+    /**
+     * Display option (default): the factors are written one after the other, with their exponent.
+     * Chainable, kept by {@link clone}.
+     */
     get asPower(): this {
         this.#displayMode = FACTOR_DISPLAY.POWER
         return this
     }
 
+    /**
+     * Display option: the factors with a negative power are written in a fraction under the numerator.
+     * Chainable, kept by {@link clone}.
+     */
     get asRoot(): this {
         this.#displayMode = FACTOR_DISPLAY.ROOT
         return this
     }
 
+    /**
+     * Sum of the degrees of the factors; a denominator counts negatively.
+     */
     degree(variable?: string): Fraction {
         return this.#factors.reduce((acc, f) => acc.add(f.degree(variable)), new Fraction('0'))
     }
 
+    /**
+     * The factors with a negative power, as a new polyfactor with positive powers.
+     */
     get denominator(): PolyFactor {
         return new PolyFactor(...this.#factors
             .filter(f => f.power.isNegative())
@@ -226,6 +257,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         )
     }
 
+    /**
+     * Derivative, by the product rule. The result is added with {@link add}, so it is factored again.
+     */
     derivative(): this {
         // (fgh)' = f'gh+fg'h+fgh'
         // dPF = [f'gh, fg'h, fgh']
@@ -255,6 +289,10 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return this.add(...dPF)
     }
 
+    /**
+     * Expand the numerator and the denominator into polynoms. Returns a new polyfactor (numerator over denominator).
+     * @throws {MathError} if a power is not a natural number.
+     */
     develop(): PolyFactor {
         // Develop each factor and multiply them
         const N = new Polynom('1')
@@ -270,6 +308,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return PolyFactor.fromPolynom(N, D)
     }
 
+    /**
+     * Divide by polyfactors: append their inverted factors. The result is not reduced.
+     */
     divide(...values: PolyFactor[]): this {
         for (const value of values) {
             this.#factors = this.#factors.concat(value.factors.map(f => f.inverse()))
@@ -277,6 +318,11 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return this
     }
 
+    /**
+     * Value of the expression for given values of its variables.
+     * @param values - a dictionary `{x: 2}`, or one value for a single-variable expression.
+     * @param asNumeric - `true` returns a `number`, otherwise the exact `Fraction`.
+     */
     evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric: true): number
     evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: false): Fraction
     evaluate(values: InputValue<Fraction> | LiteralType<number | Fraction>, asNumeric?: boolean): number | Fraction
@@ -290,6 +336,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
             .reduce((acc, f) => acc.multiply(f.evaluate(values)), new Fraction('1'))
     }
 
+    /**
+     * Factor the polynom of each factor, and return the result as a new polyfactor.
+     */
     factorize(variable?: string): PolyFactor {
         // Go through each factors.
         // If it can be factorized, remove the factor (set its power to zero) and insert the new factors instead.
@@ -312,6 +361,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return numerator.divide(denominator)
     }
 
+    /**
+     * The factors, as copies. Setting the property replaces them.
+     */
     get factors(): Factor[] {
         return this.#factors.map(f=>f.clone())
     }
@@ -320,6 +372,10 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         this.#factors = value
     }
 
+    /**
+     * Build a polyfactor with one factor for the numerator and, when given, one for the denominator.
+     * @throws {MathError} if the denominator is zero.
+     */
     static fromPolynom(numerator: InputAlgebra<Polynom>, denominator?: InputAlgebra<Polynom>): PolyFactor {
         const pf = new PolyFactor()
         pf.#factors = [new Factor(new Polynom(numerator))]
@@ -332,12 +388,19 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return pf
     }
 
+    /**
+     * Build a polyfactor from factors, or from anything a factor accepts.
+     */
     static fromFactors(...values: (Factor | InputAlgebra<Polynom>)[]): PolyFactor {
         const pf = new PolyFactor()
         pf.#factors = values.map(v => new Factor(v))
         return pf
     }
 
+    /**
+     * Build a polyfactor from a product of parenthesised terms, with at most one `/` for the denominator.
+     * @throws {ParseError} if the numerator is empty or the string has more than one `/`.
+     */
     static fromString(value: string): PolyFactor {
         const pf = new PolyFactor()
         const [num, ...den] = splitIfOutsideParentheses(value, '/')
@@ -354,6 +417,10 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return pf
     }
 
+    /**
+     * Roots of every factor, sorted by value without duplicates. The roots of the denominator are included:
+     * they are the values where the expression is undefined.
+     */
     get roots(): Solution[] {
         const roots: Solution[] = ([] as Solution[])
             .concat(...this.#factors.map(x => x.polynom.roots))
@@ -363,15 +430,24 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         )
     }
 
+    /**
+     * True when a factor contains the variable.
+     */
     hasVariable(variable: string): boolean {
         return this.#factors.some(f => f.hasVariable(variable))
     }
 
+    /**
+     * Negate every power: numerator and denominator are swapped.
+     */
     inverse(): this {
         this.#factors = this.#factors.map(f => f.inverse())
         return this
     }
 
+    /**
+     * True when both expressions are equal: their quotient, once the common factors are removed, reduces to one.
+     */
     isEqual(value: PolyFactor): boolean {
         const gcd = PolyFactor.gcd(this, value)
 
@@ -381,29 +457,47 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return PF1.isOne() && PF2.isOne()
     }
 
+    /**
+     * True when every factor is one.
+     */
     isOne(): boolean {
         return this.#factors.every(f => f.isOne())
     }
 
+    /**
+     * True when a factor is zero.
+     */
     isZero(): boolean {
         return this.#factors.some(f => f.isZero())
     }
 
+    /**
+     * Multiply by polyfactors, factors, polynoms or strings: append their factors. The result is not reduced.
+     */
     multiply(...values: (InputAlgebra<Polynom> | Factor | PolyFactor)[]): this {
         const newFactors = values.flatMap(v => new PolyFactor(v).factors)
         this.#factors = this.#factors.concat(newFactors)
         return this
     }
 
+    /**
+     * The factors with a positive power, as a new polyfactor.
+     */
     get numerator(): PolyFactor {
         return new PolyFactor(...this.#factors.filter(f => f.power.isPositive()))
     }
 
+    /**
+     * Set the expression to `1`.
+     */
     one(): this {
         this.#factors = [new Factor('1', '1')]
         return this
     }
 
+    /**
+     * Change the sign: add a factor `-1`, or remove it when it is already there.
+     */
     opposite(): this {
         // Add the -1 factor or remove if it exists
         const minus1 = new Factor(-1)
@@ -418,15 +512,26 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return this
     }
 
+    /**
+     * Raise to a power: multiply the power of every factor.
+     */
     pow(value: number | Fraction): this {
         this.#factors = this.#factors.map(f => f.pow(value))
         return this
     }
 
+    /**
+     * Not implemented.
+     * @throws {NotImplementedError} always.
+     */
     primitive(): PolyFactor {
         throw new NotImplementedError("Method not implemented.")
     }
 
+    /**
+     * Group the factors with the same base by adding their powers, remove the factors of power zero, and merge the
+     * monomial factors with an integer power.
+     */
     reduce(): this {
         // Regroup the factors by their base
         const factors = keyFactors(this)
@@ -462,6 +567,9 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return this
     }
 
+    /**
+     * N-th root: divide every power by `value`.
+     */
     root(value: number): this {
         this.#factors = this.#factors.map(f => f.root(value))
         return this
@@ -518,21 +626,33 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
         return this
     }
 
+    /**
+     * Square root: divide every power by 2.
+     */
     sqrt(): this {
         this.#factors = this.#factors.map(f => f.sqrt())
         return this
     }
 
+    /**
+     * Subtract polyfactors. The operands are negated, so they are modified: pass clones to keep them.
+     */
     subtract(...values: PolyFactor[]): this {
         return this.add(...values.map(f => f.opposite()))
     }
 
+    /**
+     * Variables of all the factors.
+     */
     get variables(): string[] {
         return [...new Set(
             this.#factors.reduce((acc: string[], f: Factor) => acc.concat(f.variables), [])
         )]
     }
 
+    /**
+     * Set the expression to `0`.
+     */
     zero(): this {
         this.#factors = [new Factor('0', '1')]
         return this

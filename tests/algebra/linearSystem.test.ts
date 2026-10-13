@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Equation, LinearSystem} from "../../src"
+import {LinearSystem} from "../../src"
 
 
 describe('Linear System creation', () => {

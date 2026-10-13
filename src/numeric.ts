@@ -121,9 +121,6 @@ function greatestCommonDivisor(...values: number[]): number {
         return gcd2(b, a % b)
     }
 
-    let g = 1
-        let i = 2
-
     // Nothing is given
     if (values.length === 0) {
         return 1
@@ -139,7 +136,7 @@ function greatestCommonDivisor(...values: number[]): number {
     }
 
     // We have at least 2 numbers.
-    g = gcd2(values[0], values[1])
+    let g = gcd2(values[0], values[1])
 
     // The gcd of the two first value is one ? It's already finished.
     if (g === 1) {
@@ -147,7 +144,7 @@ function greatestCommonDivisor(...values: number[]): number {
     }
 
     // The current gcd isn't one. Continue with all next values.
-    for (i = 2; i < values.length; i++) {
+    for (let i = 2; i < values.length; i++) {
         g = gcd2(g, values[i])
         // Escape if gcd is already one.
         if (g === 1) {

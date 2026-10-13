@@ -3,7 +3,7 @@ import {defineConfig} from "eslint/config"
 import typescriptEslint from "typescript-eslint"
 
 export default defineConfig(
-	{ignores: ['*.d.ts', '**/coverage', '**/dist', 'scripts/**']},
+	{ignores: ['*.d.ts', '**/coverage', '**/dist', 'scripts/**', 'src/completions/data.ts']},
 	{
 		extends: [
 			eslint.configs.recommended,

@@ -10,6 +10,14 @@ import {Interval} from "./interval"
 interface TosRow { roots: Solution[], signs: TableOfSignsValues[] }
 type FactorTosRow = TosRow & { factor: Factor }
 
+/**
+ * The table of signs of a polynom, a factor or a factored expression: its roots, the sign of the value between
+ * them, and the `tkz-tab` LaTeX code to draw it. It also gives the intervals where the expression is positive or
+ * negative, its zeros and its poles.
+ * The signs are `+`, `-`, `z` (zero), `d` (pole), `h` (hatched interval, where the expression is not defined), and `t` (no root of the factor at that place).
+ * @example
+ * new TableOfSigns(new Polynom("x^2-1")).negative().display // "]-1;1["
+ */
 export class TableOfSigns implements IPiMathObject<TableOfSigns> {
     #roots: Solution[]
     #signs: TableOfSignsValues[]
@@ -32,6 +40,9 @@ export class TableOfSigns implements IPiMathObject<TableOfSigns> {
     // parse / Static factories
     // -------------------------------------------------------------------------
 
+    /**
+     * Replace the table with the one of a polyfactor, a factor, a polynom, or anything a factor accepts.
+     */
     parse(value: InputAlgebra<PolyFactor | Factor | Polynom>): this {
         if (value instanceof PolyFactor) return this.copy(TableOfSigns.fromPolyFactor(value))
         if (value instanceof Factor)     return this.copy(TableOfSigns.fromFactor(value))
@@ -39,6 +50,9 @@ export class TableOfSigns implements IPiMathObject<TableOfSigns> {
         return this.copy(TableOfSigns.fromFactor(new Factor(value)))
     }
 
+    /**
+     * Build the table of a polynom.
+     */
     static fromPolynom(p: Polynom): TableOfSigns {
         const tos = new TableOfSigns()
         const row = TableOfSigns.#computePolynomSigns(p)
@@ -47,6 +61,9 @@ export class TableOfSigns implements IPiMathObject<TableOfSigns> {
         return tos
     }
 
+    /**
+     * Build the table of a factor. A negative power makes its roots poles, and an even power removes the negative signs.
+     */
     static fromFactor(f: Factor): TableOfSigns {
         const tos = new TableOfSigns()
         const row = TableOfSigns.#computeFactorSigns(f)
@@ -55,6 +72,9 @@ export class TableOfSigns implements IPiMathObject<TableOfSigns> {
         return tos
     }
 
+    /**
+     * Build the table of a product of factors. The table keeps one row per factor, shown with {@link withFactors}.
+     */
     static fromPolyFactor(pf: PolyFactor): TableOfSigns {
         const tos = new TableOfSigns()
         const data = TableOfSigns.#computePolyFactorSigns(pf)

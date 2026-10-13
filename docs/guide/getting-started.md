@@ -52,8 +52,8 @@ The `Random` generators build a new object at each call.
 ```js
 const equation = PiMath.Random.equation({degree: 2, solution: {count: 2, relative: true}})
 
-console.log(equation.tex) // x^{ 2 }+3x-4=0
-console.log(equation.solve().map(s => s.tex)) // [ '-4', '1' ]
+console.log(equation.tex) // e.g. x^{ 2 }+3x-4=0
+console.log(equation.solve().map(s => s.tex)) // e.g. [ '-4', '1' ]
 ```
 
 Go on with [displaying results](./display) and the [random generators](./random).
@@ -71,3 +71,36 @@ console.log(b.display) // x+3
 ```
 
 If an operation throws, the object is left unchanged.
+
+## Editor support
+
+If your exercises are written in an editor of your own, PiMath provides the autocompletion for it. The suggestions are generated from the types and the documentation of the library, so they always match the version you install.
+
+- `pimath/completions` gives the data: names, static members, signatures, and the options of every `Random` generator.
+- `pimath/codemirror` turns them into a source for a [CodeMirror 6](https://codemirror.net) editor. `@codemirror/autocomplete`, `@codemirror/state` and `@codemirror/view` are optional peer dependencies: install them if you use this entry.
+
+```js no-run
+import {javascript, javascriptLanguage} from '@codemirror/lang-javascript'
+import {autocompletion} from '@codemirror/autocomplete'
+import {pimathCompletion, pimathSignatureHelp} from 'pimath/codemirror'
+
+const extensions = [
+    javascript(),
+    javascriptLanguage.data.of({autocomplete: pimathCompletion()}),
+    autocompletion(),
+    pimathSignatureHelp(),
+]
+```
+
+It suggests the names (`Fra` gives `Fraction`), what follows a dot for `Random`, `Numeric` and the static members of a class (`Line.fromPoints`), and the options of the configuration object of a generator: type `Random.equation({ de` and it offers `degree`. The [demo](../demo) uses it. It does not know the type of a variable, so nothing is suggested after `P.`.
+
+To add your own names, use the `extend` option, which takes the same shape as the data:
+
+```js no-run
+pimathCompletion({
+    extend: {
+        globals: [{label: 'iteration', type: 'property', detail: 'number'}],
+        members: {Random: [{label: 'points', type: 'function'}]},
+    },
+})
+```

@@ -1,5 +1,5 @@
 import {describe, expect, it, test} from "vitest"
-import {Monom, Polynom} from "../../src"
+import {Equation, InvalidArgumentError, Monom, ParseError, Polynom} from "../../src"
 import {TableOfSigns} from "../../src/analyze/tableOfSigns"
 
 describe('Polynom creation', () => {
@@ -369,6 +369,57 @@ describe('Polynom operation atomicity', () => {
     test('subtract leaves the receiver unchanged when an operand is malformed', () => {
         const P = new Polynom('3x+2')
         expect(() => P.subtract(new Monom('x'), '@')).toThrow()
+        expect(P.display).toBe('3x+2')
+    })
+})
+
+describe('Polynom reduce when the first term cancels', () => {
+    test.each([
+        ['x+1', 'x+2', '-1'],
+        ['x^2+x+1', 'x^2+x+2', '-1'],
+        ['x^2+x+5', 'x^2+x+4', '1'],
+        ['2x^2+3x+5', '2x^2+x+4', '2x+1'],
+        ['x^2+3x', 'x^2+x', '2x'],
+        ['x^2+8x+5', 'x^2+8x+5', '0'],
+    ])('(%s) - (%s) = %s', (a, b, expected) => {
+        expect(new Polynom(a).subtract(new Polynom(b)).display).toBe(expected)
+    })
+    test('terms of several variables are grouped after a cancellation', () => {
+        const P = new Polynom().zero()
+        P.monoms = [new Monom('x'), new Monom('y'), new Monom('3'), new Monom('-x'), new Monom('-y'), new Monom('-2')]
+        expect(P.reduce().display).toBe('1')
+    })
+    test('the roots of an equation whose members only differ by a constant', () => {
+        expect(new Equation('10x^2+8x+5=10x^2+8x+4').solve()).toHaveLength(0)
+    })
+})
+
+describe('Polynom operands given as strings', () => {
+    test('add reads a sum', () => {
+        expect(new Polynom('x').add('2x+1').display).toBe('3x+1')
+    })
+    test('subtract reads a sum', () => {
+        expect(new Polynom('x^2-1').subtract('x-1').display).toBe('x^(2)-x')
+    })
+    test('multiply reads a sum', () => {
+        expect(new Polynom('x-2').multiply('x+3').display).toBe('x^(2)+x-6')
+    })
+    test('multiply accepts a number, a fraction and a monom', () => {
+        expect(new Polynom('x+1').multiply(2).display).toBe('2x+2')
+        expect(new Polynom('x+1').multiply('1/2').display).toBe('1/2x+1/2')
+        expect(new Polynom('x+1').multiply(new Monom('x')).display).toBe('x^(2)+x')
+    })
+    test('several operands are applied in order', () => {
+        expect(new Polynom('1').multiply('x+1', 'x-1').display).toBe('x^(2)-1')
+    })
+    test.each(['add', 'subtract', 'multiply'] as const)('%s rejects a malformed string and keeps the receiver', (method) => {
+        const P = new Polynom('3x+2')
+        expect(() => P[method]('2', 'x+')).toThrow(ParseError)
+        expect(P.display).toBe('3x+2')
+    })
+    test.each(['add', 'subtract', 'multiply'] as const)('%s rejects an undefined operand', (method) => {
+        const P = new Polynom('3x+2')
+        expect(() => P[method](undefined as unknown as string)).toThrow(InvalidArgumentError)
         expect(P.display).toBe('3x+2')
     })
 })

@@ -44,6 +44,14 @@ const REVERSED_SIGN: Readonly<Record<EquationSign, EquationSign>> = {
     '>=': '<='
 }
 
+/**
+ * An equation or an inequality `left <sign> right`, where both members are {@link Polynom}s and the sign is
+ * `=`, `<`, `>`, `<=` or `>=`. Built from a string with a sign (`"2x+3=7"`), from two members, or from a `Polynom`
+ * read as `polynom = 0`.
+ * Operations modify the equation and return it; `clone()` keeps the original. A failing operation leaves it unchanged.
+ * @example
+ * new Equation("x^2-5x+6=0").solve().map(s => s.display) // [ "2", "3" ]
+ */
 export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
     IEquation<Equation>,
     IAlgebra {
@@ -138,6 +146,9 @@ export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
         return `${this.#left.display}${this.signAsTex}${this.#right.display}`
     }
 
+    /**
+     * True when the string contains an equation sign (`=`, `<` or `>`).
+     */
     static isEquationString(equationString: string): boolean {
         // The equation sign can be one of the following:
         // =, <, >, <=, >=
@@ -149,6 +160,9 @@ export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
             equationString.includes('>=')
     }
 
+    /**
+     * Remove the duplicated solutions (same `tex`), keeping the first one. With `sorted`, sort them by value.
+     */
     static makeSolutionsUnique(solutions: Solution[], sorted?: boolean): Solution[] {
         const solutionAsTex: string[] = []
         const uniqueSolutions = solutions.filter(sol => {
@@ -374,6 +388,9 @@ export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
     }
 
     // Getter and setter
+    /**
+     * Left member. This is the polynom itself, not a copy: use {@link split} for copies.
+     */
     get left(): Polynom {
         return this.#left
     }
@@ -416,6 +433,9 @@ export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
         return this.#commit(clone)
     }
 
+    /**
+     * Number of distinct variables in both members.
+     */
     get numberOfVars(): number {
         return this.variables.length
     }
@@ -432,6 +452,11 @@ export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
         return this.#reverseSign()
     }
 
+    /**
+     * Raise both members to the power `value`. The sign is left as it is, so squaring an inequality does not
+     * keep its solutions.
+     * @throws {InvalidArgumentError} if `value` is not a non-negative integer.
+     */
     pow(value: number): this {
         const left = this.#left.clone().pow(value)
         const right = this.#right.clone().pow(value)
@@ -440,6 +465,10 @@ export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
         return this
     }
 
+    /**
+     * Put the equation in a canonical form: every term on the left (the right member is zero), integer coefficients
+     * without common divisor, and a positive leading coefficient. A negative factor reverses the sign of an inequality.
+     */
     reduce(): this {
         // reduce means moving everything to the left
         // remove the fractions
@@ -466,6 +495,10 @@ export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
         return this.#commit(clone)
     }
 
+    /**
+     * Move the terms with a variable to the left and the constants to the right. With `allLeft`, move everything
+     * to the left instead. The sign does not change.
+     */
     reorder(allLeft?: boolean): this {
         // Move all monoms of degree greater than 0 to the left,
         // and all zero degree monoms to the right. Work on clones so a
@@ -499,12 +532,19 @@ export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
     }
 
     // ------------------------------------------
+    /**
+     * Replace a variable by a polynom in both members (in place).
+     * @throws {MathError} if the variable appears with a negative power.
+     */
     replaceBy(variable: string, P: Polynom): this {
         this.#left.replaceBy(variable, P)
         this.#right.replaceBy(variable, P)
         return this
     }
 
+    /**
+     * Right member. This is the polynom itself, not a copy: use {@link split} for copies.
+     */
     get right(): Polynom {
         return this.#right
     }
@@ -514,6 +554,9 @@ export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
     }
 
     // ------------------------------------------
+    /**
+     * Sign of the equation: `=`, `<`, `>`, `<=` or `>=`. Setting it accepts the other notations (`\leq`, `geq`, `=>`...).
+     */
     get sign(): string {
         return this.#sign
     }
@@ -522,6 +565,9 @@ export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
         this.#sign = Equation.#formatSign(value)
     }
     
+    /**
+     * The sign written for LaTeX: `\leq` and `\geq` for the non-strict inequalities.
+     */
     get signAsTex(): string {
         if (this.#sign === '>=') {
             return '\\geq'
@@ -545,11 +591,19 @@ export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
     }
 
     // -----------------------------------------------
+    /**
+     * Solve `left - right = 0`, whatever the sign, and return the roots as {@link Solution}s sorted by value.
+     * An inequality has the roots of its equality: use {@link TableOfSigns} to study its sign.
+     * @throws {MathError} if a degree is not a natural number.
+     */
     solve(): Solution[] {
         const solver = new EquationSolver(this.clone())
         return solver.solve()
     }
 
+    /**
+     * Copies of the left and right members, as `[left, right]`.
+     */
     split(): [Polynom, Polynom] {
         return [this.#left.clone(), this.#right.clone()]
     }
@@ -585,10 +639,18 @@ export class Equation implements IPiMathObject<Equation>, IDisplayDigits,
         this.#right.subtract(p)
     }
 
+    /**
+     * True when both members have the same value for the given values of the variables.
+     * The sign is ignored: use {@link evaluate} to test an inequality.
+     * @throws {MathError} if a variable has no value.
+     */
     test(values: LiteralType<Fraction>): boolean {
         return (this.left.evaluate(values)).isEqual(this.right.evaluate(values))
     }
 
+    /**
+     * The variables of both members, without duplicates.
+     */
     get variables(): string[] {
         return [...new Set(this.#right.variables.concat(this.#left.variables))]
     }

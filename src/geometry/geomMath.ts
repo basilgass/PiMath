@@ -3,8 +3,9 @@ import type {Vector} from "./vector"
 import type {Point} from "./point"
 import {DimensionError} from "../errors"
 
-type V = Vector | Point
-export function areVectorsEquals(v1: V, v2: V): boolean {
+/** A vector or a point: both are tuples of coordinates. */
+export type VectorOrPoint = Vector | Point
+export function areVectorsEquals(v1: VectorOrPoint, v2: VectorOrPoint): boolean {
     if (v1.dimension !== v2.dimension) return false
     const a = v1.array
     const b = v2.array
@@ -15,7 +16,7 @@ export function areVectorsEquals(v1: V, v2: V): boolean {
  * Two vectors are colinear iff every 2×2 minor aᵢbⱼ − aⱼbᵢ equals zero.
  * Returns false immediately when dimensions differ.
  */
-export function areVectorsColinears(v1: V, v2: V): boolean {
+export function areVectorsColinears(v1: VectorOrPoint, v2: VectorOrPoint): boolean {
     if (v1.dimension !== v2.dimension) return false
     const a = v1.array
     const b = v2.array
@@ -31,7 +32,7 @@ export function areVectorsColinears(v1: V, v2: V): boolean {
 
 
 /** @throws {DimensionError} if the vectors have different dimensions */
-export function dotProduct(v1: V, v2: V): Fraction {
+export function dotProduct(v1: VectorOrPoint, v2: VectorOrPoint): Fraction {
     if (v1.dimension !== v2.dimension) {
         throw new DimensionError('Vectors must have the same dimension')
     }
@@ -49,7 +50,7 @@ export function dotProduct(v1: V, v2: V): Fraction {
  * @throws {DimensionError} if no vectors are given, if dimensions are inconsistent,
  *   or if the number of vectors does not equal their dimension
  */
-export function determinantFromVectors(...values: V[]): Fraction {
+export function determinantFromVectors(...values: VectorOrPoint[]): Fraction {
     if (values.length === 0) {
         throw new DimensionError('At least one vector is required')
     }

@@ -42,7 +42,7 @@ export function createDraws(mode: TestMode) {
 
     return {
         /** Draws for a property test, `count` being the number used in normal mode. */
-        draws(count: number): number {
+        draws: (count: number): number => {
             return Math.max(Math.min(count, MIN_DRAWS), Math.ceil(count * SCALE[mode]))
         },
 
@@ -53,7 +53,7 @@ export function createDraws(mode: TestMode) {
         drawsToSee,
 
         /** Draws needed to see each of `outcomes` equally likely outcomes at least once. */
-        drawsToSeeAll(outcomes: number, risk?: number): number {
+        drawsToSeeAll: (outcomes: number, risk?: number): number => {
             if (!Number.isInteger(outcomes) || outcomes < 1) {
                 throw new RangeError(`outcomes must be a positive integer, got ${outcomes}`)
             }

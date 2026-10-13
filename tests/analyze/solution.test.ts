@@ -15,7 +15,7 @@ describe("Solution — fromQuadratic", () => {
         const sols = Solution.fromQuadratic(1, 7, 10)
 
         expect(sols.map(s => s.value)).to.have.all.members([-2, -5])
-        expect(sols.every(s => s.exact === true)).toBe(true)
+        expect(sols.every(s => s.exact)).toBe(true)
     })
 
     test("marks irrational quadratic roots exact (single source of truth)", () => {
@@ -23,7 +23,7 @@ describe("Solution — fromQuadratic", () => {
         const sols = Solution.fromQuadratic(1, 0, -2)
 
         expect(sols).toHaveLength(2)
-        expect(sols.every(s => s.exact === true)).toBe(true)
+        expect(sols.every(s => s.exact)).toBe(true)
     })
 })
 
@@ -192,10 +192,36 @@ describe("Solution — tex / display rendering", () => {
         // x^2 - 2 = 0 -> ±sqrt(2), fraction part is zero
         const [neg, pos] = Solution.fromQuadratic(1, 0, -2)
 
-        expect(neg.tex).toBe("\\frac{ - \\sqrt{ 8 } }{ 2 }")
-        expect(neg.display).toBe("(-sqrt(8))/2")
-        expect(pos.tex).toBe("\\frac{ \\sqrt{ 8 } }{ 2 }")
-        expect(pos.display).toBe("sqrt(8)/2")
+        expect(neg.tex).toBe("- \\sqrt{ 2 }")
+        expect(neg.display).toBe("-sqrt(2)")
+        expect(pos.tex).toBe("\\sqrt{ 2 }")
+        expect(pos.display).toBe("sqrt(2)")
+    })
+
+    test("renders a radical with a denominator as a fraction", () => {
+        const sol = Solution.fromRoot("sqrt(2)/3")
+
+        expect(sol.tex).toBe("\\frac{ \\sqrt{ 2 } }{ 3 }")
+        expect(sol.display).toBe("sqrt(2)/3")
+    })
+
+    test.each([
+        [1, 0, -2, ["-sqrt(2)", "sqrt(2)"]],
+        [1, -2, -1, ["1-sqrt(2)", "1+sqrt(2)"]],
+        [1, -1, -1, ["(1-sqrt(5))/2", "(1+sqrt(5))/2"]],
+        [2, -4, 1, ["(2-sqrt(2))/2", "(2+sqrt(2))/2"]],
+        [1, -4, 1, ["2-sqrt(3)", "2+sqrt(3)"]],
+    ])("solves %sx^2+(%s)x+(%s) with simplified roots", (a, b, c, expected) => {
+        expect(Solution.fromQuadratic(a, b, c).map(s => s.display)).toEqual(expected)
+    })
+
+    test("a solved radical is the same value as the one written by hand", () => {
+        const [, pos] = Solution.fromQuadratic(1, 0, -2)
+        const written = Solution.fromString("sqrt(2)")
+
+        expect(pos.root.isEqual(written.root)).toBe(true)
+        expect(pos.root.factor.isEqual(written.root.factor)).toBe(true)
+        expect(pos.root.radical.isEqual(written.root.radical)).toBe(true)
     })
 
     test("composes a mixed solution over a common denominator (denominator != 1)", () => {

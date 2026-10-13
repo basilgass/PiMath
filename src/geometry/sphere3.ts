@@ -21,6 +21,13 @@ export enum Sphere3RelativePosition {
     CONCENTRIC
 }
 
+/**
+ * A sphere of space, stored by its center and the square of its radius, so that everything stays exact.
+ * Built from an equation (`"(x-1)^2+y^2+z^2=9"`) or from a center and a radius.
+ * A sphere that has not been defined throws a `StateError` when it is read.
+ * @example
+ * new Sphere3(new Point(0, 0, 0), 3).squareRadius.display // "9"
+ */
 export class Sphere3
     implements IPiMathObject<Sphere3>, IDisplayDigits {
 
@@ -40,6 +47,10 @@ export class Sphere3
         }
     }
 
+    /**
+     * Replace the sphere with an equation, another sphere, or a center and a radius.
+     * Arguments that do not match any form leave the sphere unchanged.
+     */
     parse(...values: unknown[]): this {
         if (typeof values[0] === 'string') {
             return this.copy(Sphere3.fromString(values[0]))
@@ -95,6 +106,10 @@ export class Sphere3
         return this.withDigits(this.#digits)
     }
 
+    /**
+     * The sphere with the given center and radius.
+     * @param square - when true, `radius` is already the square of the radius.
+     */
     static fromCenterRadius(center: Point, radius: InputValue<Fraction>, square?: boolean): Sphere3 {
         const s = new Sphere3()
         s.#center = center.clone()
@@ -143,10 +158,18 @@ export class Sphere3
         return s
     }
 
+    /**
+     * The sphere of an equation written in a string.
+     * @throws {MathError} if the equation is not the one of a sphere.
+     */
     static fromString(str: string): Sphere3 {
         return Sphere3.fromEquation(str)
     }
 
+    /**
+     * The center, as a point.
+     * @throws {StateError} if the sphere is not defined.
+     */
     get center(): Point {
         if (this.#center === undefined) {
             throw new StateError('Sphere3 is undefined')
@@ -154,6 +177,10 @@ export class Sphere3
         return this.#center
     }
 
+    /**
+     * The square of the radius, as an exact fraction.
+     * @throws {StateError} if the sphere is not defined.
+     */
     get squareRadius(): Fraction {
         if (this.#squareRadius === undefined) {
             throw new StateError('Sphere3 is undefined')
@@ -161,6 +188,11 @@ export class Sphere3
         return this.#squareRadius
     }
 
+    /**
+     * The radius, as an object with its `tex`, its `display` and its decimal `value`. It is written as a number when
+     * the square of the radius is a perfect square, and as a root otherwise.
+     * @throws {StateError} if the sphere is not defined.
+     */
     get radius(): { tex: string, display: string, value: number } {
         if (this.#squareRadius === undefined) {
             throw new StateError('Sphere3 is undefined')
@@ -178,6 +210,10 @@ export class Sphere3
         }
     }
 
+    /**
+     * The equation `(x-a)^2+(y-b)^2+(z-c)^2-r^2=0`, as an {@link Equation}.
+     * @throws {StateError} if the sphere is not defined.
+     */
     get equation(): Equation {
         if (this.#equation === undefined) {
             throw new StateError('Sphere3 is undefined')
@@ -185,11 +221,17 @@ export class Sphere3
         return this.#equation
     }
 
+    /**
+     * Output option: the form `(x-a)^2+(y-b)^2+(z-c)^2=r^2` (default). Chainable, persistent.
+     */
     get asCenterRadius(): this {
         this.#format = Sphere3Format.CENTER_RADIUS
         return this
     }
 
+    /**
+     * Output option: the developed equation. Chainable, persistent.
+     */
     get asDeveloped(): this {
         this.#format = Sphere3Format.DEVELOPPED
         return this
@@ -245,7 +287,14 @@ export class Sphere3
         this.#equation = new Equation(x.add(y).add(z).subtract(k), 0)
     }
 
+    /**
+     * The values returned by {@link relativePosition}.
+     */
     static RELATIVE_POSITION = Sphere3RelativePosition
+    /**
+     * The relative position of two spheres, as a {@link Sphere3.RELATIVE_POSITION} value: interior, exterior,
+     * secant, tangent inside or outside, superposed, or concentric.
+     */
     relativePosition(S: Sphere3): Sphere3RelativePosition {
         const d2 = new Vector(this.center, S.center).normSquare
         const SR1 = this.squareRadius
@@ -278,6 +327,9 @@ export class Sphere3
         return Sphere3RelativePosition.SECANT
     }
 
+    /**
+     * True when the point satisfies the equation of the sphere.
+     */
     isPointOnSphere(P: Point): boolean {
         return this.#equation?.test({
             x: P.x,
@@ -286,6 +338,9 @@ export class Sphere3
         }) ?? false
     }
 
+    /**
+     * True when both spheres have the same center and the same radius.
+     */
     isEqual(S: Sphere3): boolean {
         return S.center.isEqual(this.center)
             && S.squareRadius.isEqual(this.squareRadius)

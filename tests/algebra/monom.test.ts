@@ -111,26 +111,26 @@ describe('Monom operations', () => {
         expect(M.display).toBe('15x^(6)')
     })
     test('add two Monoms', () => {
-        const M1 = new Monom('3x^2'),
-            M2 = new Monom('2x^2')
+        const M1 = new Monom('3x^2')
+            const M2 = new Monom('2x^2')
 
         expect(M1.add(M2).display).toBe('5x^(2)')
     })
     test('subtract two Monoms', () => {
-        const M1 = new Monom('3x^2'),
-            M2 = new Monom('2x^2')
+        const M1 = new Monom('3x^2')
+            const M2 = new Monom('2x^2')
 
         expect(M1.subtract(M2).display).toBe('x^(2)')
     })
     test('multiply two Monoms', () => {
-        const M1 = new Monom('3x^2'),
-            M2 = new Monom('2x^2')
+        const M1 = new Monom('3x^2')
+            const M2 = new Monom('2x^2')
 
         expect(M1.multiply(M2).display).toBe('6x^(4)')
     })
     test('divide by Monom', () => {
-        const M1 = new Monom('3x^3'),
-            M2 = new Monom('2x^2')
+        const M1 = new Monom('3x^3')
+            const M2 = new Monom('2x^2')
 
         expect(M1.divide(M2).display).toBe('3/2x')
     })
@@ -151,8 +151,8 @@ describe('Monom operations', () => {
         expect(M.display).toBe('x^(2)')
     })
     test('multiply Monom with fraction power', () => {
-        const M = new Monom('3x^(2/3)'),
-            N = new Monom('7x^(4/5)')
+        const M = new Monom('3x^(2/3)')
+            const N = new Monom('7x^(4/5)')
 
         M.multiply(N.clone())
 
@@ -162,18 +162,18 @@ describe('Monom operations', () => {
 
 describe('Monom comparisons', () => {
     test('same Monom', () => {
-        const M1 = new Monom('3x^2'),
-            M2 = new Monom('5x^2'),
-            M3 = new Monom('3x^5')
+        const M1 = new Monom('3x^2')
+            const M2 = new Monom('5x^2')
+            const M3 = new Monom('3x^5')
 
         expect(M1.isSameAs(M2)).toBeTruthy()
         expect(M1.isSameAs(M3)).toBeFalsy()
 
     })
     test('equal Monom', () => {
-        const M1 = new Monom('3x^2'),
-            M2 = new Monom('3x^2'),
-            M3 = new Monom('3x^5')
+        const M1 = new Monom('3x^2')
+            const M2 = new Monom('3x^2')
+            const M3 = new Monom('3x^5')
 
         expect(M1.isEqual(M2)).toBeTruthy()
         expect(M1.isEqual(M3)).toBeFalsy()
@@ -196,22 +196,22 @@ describe('Monom comparisons', () => {
 
 describe('Monom static functions', () => {
     test('gcd of Monoms', () => {
-        const M1 = new Monom('6x^2'),
-            M2 = new Monom('3x^3')
+        const M1 = new Monom('6x^2')
+            const M2 = new Monom('3x^3')
 
         expect(Monom.gcd(M1, M2).display).toBe('3x^(2)')
     })
 
     test('gcd of Monoms with fraction', () => {
-        const M1 = new Monom('6/5x^2'),
-            M2 = new Monom('3/2x^3')
+        const M1 = new Monom('6/5x^2')
+            const M2 = new Monom('3/2x^3')
 
         expect(Monom.gcd(M1, M2).display).toBe('3/10x^(2)')
     })
 
     test('multiply Monoms', () => {
-        const M1 = new Monom('6x^2'),
-            M2 = new Monom('3x^3')
+        const M1 = new Monom('6x^2')
+            const M2 = new Monom('3x^3')
 
         expect(Monom.xMultiply(M1, M2).display).toBe('18x^(5)')
     })
@@ -366,5 +366,41 @@ describe('Monom zero exponents and primitives', () => {
 
     test('the primitive of a regular power is unchanged', () => {
         expect(new Monom('3x^2').primitive().display).toBe('x^(3)')
+    })
+})
+
+describe('Monom string parsing is strict', () => {
+    test.each([
+        '3x+2', '3x-2', 'x+y', 'xy+1', '2x+3x',
+        '3x+', 'x+', '3x*', '*3x', 'x^', '--x', '+', '*',
+        'x^-1', 'x^y', 'pi',
+    ])('%s is rejected', (input) => {
+        expect(() => new Monom(input)).toThrow(ParseError)
+    })
+    test.each([
+        ['+x', 'x'],
+        ['-x', '-x'],
+        ['0+x', 'x'],
+        ['x-0', 'x'],
+        ['x y', 'xy'],
+        ['3*x', '3x'],
+        ['x^(-1)', 'x^(-1)'],
+        ['2x^(-2)', '2x^(-2)'],
+    ])('%s is read as %s', (input, expected) => {
+        expect(new Monom(input).display).toBe(expected)
+    })
+    test.each([
+        ['(3x)^2', '9x^(2)'],
+        ['(-x)^2', 'x^(2)'],
+        ['(x^2)^3', 'x^(6)'],
+        ['2^3', '8'],
+        ['(xy)^2', 'x^(2)y^(2)'],
+    ])('a power applies to the whole base: %s = %s', (input, expected) => {
+        expect(new Monom(input).display).toBe(expected)
+    })
+    test('add leaves the receiver unchanged when a string operand is a sum', () => {
+        const M = new Monom('3x')
+        expect(() => M.add('2x+1')).toThrow(ParseError)
+        expect(M.display).toBe('3x')
     })
 })

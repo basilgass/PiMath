@@ -124,7 +124,7 @@ describe("Equation Solver", () => {
             expect(result[0].value).toBeCloseTo(-3, 6)
             expect(result[1].value).toBeCloseTo(-1, 6)
             expect(result[2].value).toBeCloseTo(2, 6)
-            expect(result.every(s => s.exact === false)).toBe(true)
+            expect(result.every(s => !s.exact)).toBe(true)
         }
     )
 
@@ -212,7 +212,7 @@ describe("Equation Solver", () => {
         const result = new EquationSolver(equation).solve()
 
         expect(result).toHaveLength(3)
-        expect(result.every(s => s.exact === false)).toBe(true)
+        expect(result.every(s => !s.exact)).toBe(true)
         expect(result[0].value).toBeCloseTo(-1.532, 2)
         expect(result[1].value).toBeCloseTo(-0.347, 2)
         expect(result[2].value).toBeCloseTo(1.879, 2)
@@ -231,10 +231,10 @@ describe("Equation Solver", () => {
 
     test('marks quadratic-irrational solutions exact and cubic-irreducible solutions inexact', () => {
         const quad = new EquationSolver(new Equation("x^2-2=0")).solve()
-        expect(quad.every(s => s.exact === true)).toBe(true)
+        expect(quad.every(s => s.exact)).toBe(true)
 
         const cubic = new EquationSolver(new Equation("x^3-3x-1=0")).solve()
-        expect(cubic.every(s => s.exact === false)).toBe(true)
+        expect(cubic.every(s => !s.exact)).toBe(true)
     })
 
     test('finds all real roots when the leading term is negative', () => {

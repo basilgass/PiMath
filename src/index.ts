@@ -28,6 +28,7 @@ import {
     MathError,
     InvalidArgumentError,
     NotImplementedError,
+    UnsupportedOperationError,
     IndexError,
     StateError
 } from "./errors"
@@ -87,6 +88,7 @@ const PiMath = {
         MathError,
         InvalidArgumentError,
         NotImplementedError,
+        UnsupportedOperationError,
         IndexError,
         StateError
     },

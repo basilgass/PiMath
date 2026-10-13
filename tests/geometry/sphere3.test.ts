@@ -88,7 +88,7 @@ describe('Sphere clone and copy', () => {
 
     test('clone preserves display format', () => {
         const C = new Sphere3(new Point(1, 0, -3), 5)
-        C.asDeveloped
+        void C.asDeveloped
         const C2 = C.clone()
 
         expect(C2.display).toBe(C.display)
@@ -105,7 +105,7 @@ describe('Sphere clone and copy', () => {
 
     test('copy resets display format to default', () => {
         const C1 = new Sphere3(new Point(1, 0, 0), 5)
-        C1.asDeveloped
+        void C1.asDeveloped
 
         const C2 = new Sphere3(new Point(0, 0, 0), 3)
         C1.copy(C2)
@@ -131,7 +131,7 @@ describe('Sphere tex and display output', () => {
 
     test('developed format returns the expanded equation', () => {
         const C = new Sphere3(new Point(1, 0, -3), 5)
-        C.asDeveloped
+        void C.asDeveloped
 
         expect(C.display).not.toBe('(x-1)^2+y^2+(z+3)^2=25')
         // developed form should contain the expanded polynomial on the left
@@ -141,7 +141,7 @@ describe('Sphere tex and display output', () => {
     test('asCenterRadius restores center-radius format after asDeveloped', () => {
         const C = new Sphere3(new Point(1, 0, -3), 5)
         const defaultDisplay = C.display
-        C.asDeveloped.asCenterRadius
+        void C.asDeveloped.asCenterRadius
 
         expect(C.display).toBe(defaultDisplay)
     })

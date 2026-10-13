@@ -5,7 +5,7 @@ import {ShutingYard, ShutingyardMode} from "piexpression"
 import {InvalidArgumentError, ParseError} from "../errors"
 import type {IPiMathObject, OutputStyle} from "../pimath.interface"
 
-interface RpnToken { token: string, tokenType: string }
+export interface RpnToken { token: string, tokenType: string }
 
 /**
  * Represents a logical set expression (e.g. `A & B | !C`), stored internally
@@ -29,6 +29,11 @@ export class LogicalSet implements IPiMathObject<LogicalSet> {
         return this
     }
 
+    /**
+     * Build a set expression from a string such as `"A&B|!C"` (`&` intersection, `|` union, `!` complement,
+     * `-` difference).
+     * @throws {ParseError} if the expression is malformed.
+     */
     static fromString(value: string): LogicalSet {
         const obj = new LogicalSet()
         try {
@@ -39,6 +44,10 @@ export class LogicalSet implements IPiMathObject<LogicalSet> {
         return obj
     }
 
+    /**
+     * Replace the expression with a string.
+     * @throws {ParseError} if the expression is malformed.
+     */
     parse(value: string): this {
         return this.copy(LogicalSet.fromString(value))
     }
@@ -186,10 +195,16 @@ export class LogicalSet implements IPiMathObject<LogicalSet> {
         return stack.length === 1 && stack[0]
     }
 
+    /**
+     * The expression in reverse Polish notation, as the tokens produced by the parser.
+     */
     get rpn(): RpnToken[] {
         return this.#rpn
     }
 
+    /**
+     * The names of the sets used in the expression, without duplicates, in order of appearance.
+     */
     get variables(): string[] {
         return [...new Set(
             this.#rpn
