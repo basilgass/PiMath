@@ -5,7 +5,7 @@ import { Circle, Line, Line3, Plane3, Point, Sphere3, Triangle, Vector } from ".
 import { Numeric } from "./numeric";
 import { NumExp } from "piexpression";
 import { Random } from "./randomization/random";
-import { PiMathError, ParseError, DimensionError, MathError, InvalidArgumentError, NotImplementedError, IndexError, StateError } from "./errors";
+import { PiMathError, ParseError, DimensionError, MathError, InvalidArgumentError, NotImplementedError, UnsupportedOperationError, IndexError, StateError } from "./errors";
 export * from "./coefficients";
 export * from "./algebra";
 export * from "./geometry";
@@ -83,6 +83,7 @@ declare const PiMath: {
         MathError: typeof MathError;
         InvalidArgumentError: typeof InvalidArgumentError;
         NotImplementedError: typeof NotImplementedError;
+        UnsupportedOperationError: typeof UnsupportedOperationError;
         IndexError: typeof IndexError;
         StateError: typeof StateError;
     };

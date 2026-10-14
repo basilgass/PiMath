@@ -12,6 +12,12 @@ export type InputValue<T> = T | string | number | Fraction
 export type InputAlgebra<T> = InputValue<T> | Monom
 export type LiteralType<T> = Record<string, T>
 
+/** A point of the plane given by its coordinates, as consumed by `Polynom.fromThreePoints`. */
+export interface XY<T> {
+    x: T
+    y: T
+}
+
 // Canonical relational sign of an (in)equation, after normalization: exactly one
 // of =, <=, >=, <, >. No "not equal": an equation sign is purely relational.
 export type EquationSign = "=" | "<=" | ">=" | "<" | ">"

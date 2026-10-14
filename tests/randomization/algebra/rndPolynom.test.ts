@@ -156,6 +156,17 @@ describe('rndPolynom', () => {
             }
         })
 
+        it('keeps the leading coefficient positive when allow.negativeLeading is false, common constant included', () => {
+            for (const P of draw(draws(100), {factorable: true, degree: 2, commonConstant: true})) {
+                expect(P.monomByDegree().coefficient.isNegative()).toBe(false)
+            }
+        })
+
+        it('produces a negative leading coefficient when allow.negativeLeading is true', () => {
+            const polynoms = draw(Math.max(draws(100), drawsToSee(0.4)), {factorable: true, degree: 2, commonConstant: true, allow: {negativeLeading: true}})
+            expect(polynoms.some(P => P.monomByDegree().coefficient.isNegative())).toBe(true)
+        })
+
         it('has coefficients with no common divisor when allow.commonFactor is false, and no constant factor', () => {
             for (const degree of [1, 2, 3, 4]) {
                 for (const commonConstant of [undefined, false]) {

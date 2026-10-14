@@ -1,4 +1,5 @@
 export * from './geomMath';
+export * from './TupleN';
 export * from './circle';
 export * from './line';
 export * from './line3';

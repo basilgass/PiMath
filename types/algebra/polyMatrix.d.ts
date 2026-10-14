@@ -5,6 +5,10 @@ import { AbstractMatrix } from "./abstractMatrix";
 import { Matrix } from "./matrix";
 export type IPolyMatrixValues = InputAlgebra<Polynom>[][];
 export declare class PolyMatrix extends AbstractMatrix<Polynom> implements IPiMathObject<PolyMatrix> {
+    constructor();
+    constructor(rows: number, cols?: number);
+    constructor(value: string);
+    constructor(values: InputAlgebra<Polynom>[][]);
     static fromString(value: string): PolyMatrix;
     static fromValues(values: InputAlgebra<Polynom>[][]): PolyMatrix;
     static fromDimensions(rows: number, cols?: number): PolyMatrix;

@@ -1,5 +1,5 @@
 import type { IPiMathObject } from "../pimath.interface";
-interface RpnToken {
+export interface RpnToken {
     token: string;
     tokenType: string;
 }
@@ -20,5 +20,4 @@ export declare class LogicalSet implements IPiMathObject<LogicalSet> {
     vennAB(): string[];
     vennABC(): string[];
 }
-export {};
 //# sourceMappingURL=logicalset.d.ts.map

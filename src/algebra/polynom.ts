@@ -4,15 +4,15 @@
 import {ShutingYard, ShutingyardType, type Token} from "piexpression"
 import {InvalidArgumentError, MathError, ParseError} from "../errors"
 import type {
-    IDisplayDigits,
     IAlgebra,
     IAnalyse,
+    IDisplayDigits,
     IEvaluable,
     IExpression,
     InputAlgebra,
     InputValue,
     IPiMathObject,
-    LiteralType,
+    LiteralType, XY,
 } from "../pimath.interface"
 import {Fraction} from "../coefficients"
 import {Numeric} from '../numeric'
@@ -26,6 +26,20 @@ export type PolynomParsingType = InputValue<Polynom> | Monom
 export interface IEuclidean {
     quotient: Polynom,
     reminder: Polynom
+}
+
+/** Convert a point to exact fractions, rejecting NaN and infinite coordinates. */
+function toPoint({x, y}: XY<InputValue<Fraction>>): XY<Fraction> {
+    const point = {x: new Fraction(x), y: new Fraction(y)}
+    if (!point.x.isFinite() || !point.y.isFinite()) {
+        throw new InvalidArgumentError('fromThreePoints expects finite coordinates')
+    }
+    return point
+}
+
+/** Divided difference of order 1: the slope of the line through `A` and `B`. */
+function slope(A: XY<Fraction>, B: XY<Fraction>): Fraction {
+    return B.y.clone().subtract(A.y).divide(B.x.clone().subtract(A.x))
 }
 
 /**
@@ -490,6 +504,44 @@ export class Polynom implements IPiMathObject<Polynom>, IDisplayDigits,
         p.#monoms = monoms.map(m => m instanceof Monom ? m.clone() : new Monom(m))
         p.#invalidateCache()
         return p
+    }
+
+    /**
+     * Build the polynom of degree at most 2 passing through three points, using Newton divided differences.
+     * The result is exact (fractions). When the three points are aligned, the result is a line
+     * (degree 1), or a constant when the three `y` are equal.
+     *
+     * @param point1 - First point `{x, y}`.
+     * @param point2 - Second point `{x, y}`.
+     * @param point3 - Third point `{x, y}`.
+     * @param variable - Variable of the result, a single lowercase letter (default `'x'`).
+     * @throws {InvalidArgumentError} when a coordinate is not finite, or `variable` is not a single lowercase letter.
+     * @throws {MathError} when two points share the same `x` (no polynom is a function of that shape).
+     * @example
+     * Polynom.fromThreePoints({x: 1, y: 2}, {x: 2, y: 3}, {x: 4, y: 11}).display // "x^(2)-2x+3"
+     */
+    static fromThreePoints(
+        point1: XY<InputValue<Fraction>>,
+        point2: XY<InputValue<Fraction>>,
+        point3: XY<InputValue<Fraction>>,
+        variable = 'x',
+    ): Polynom {
+        const A = toPoint(point1)
+        const B = toPoint(point2)
+        const C = toPoint(point3)
+
+        if (A.x.isEqual(B.x) || A.x.isEqual(C.x) || B.x.isEqual(C.x)) {
+            throw new MathError('fromThreePoints needs three points with distinct x values')
+        }
+
+        // P(x) = y1 + d1 (x - x1) + a (x - x1)(x - x2), expanded into a x^2 + b x + c
+        const d1 = slope(A, B)
+        const d2 = slope(B, C)
+        const a = d2.clone().subtract(d1).divide(C.x.clone().subtract(A.x))
+        const b = d1.clone().subtract(a.clone().multiply(A.x.clone().add(B.x)))
+        const c = A.y.clone().subtract(d1.clone().multiply(A.x)).add(a.clone().multiply(A.x).multiply(B.x))
+
+        return Polynom.fromCoefficients(variable, a, b, c)
     }
 
     /**

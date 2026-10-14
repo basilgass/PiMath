@@ -1,5 +1,5 @@
 import {describe, expect, it, test} from "vitest"
-import {Equation, InvalidArgumentError, Monom, ParseError, Polynom} from "../../src"
+import {Equation, InvalidArgumentError, MathError, Monom, ParseError, Polynom} from "../../src"
 import {TableOfSigns} from "../../src/analyze/tableOfSigns"
 
 describe('Polynom creation', () => {
@@ -129,6 +129,40 @@ describe('Polynom from* builders', () => {
     })
     test('fromLinear rejects too many coefficients', () => {
         expect(() => Polynom.fromLinear('xy', 1, 2, 3, 4)).toThrow()
+    })
+    test('fromThreePoints passes through three points including the vertex', () => {
+        // vertex (1, 2) is one of the points
+        expect(Polynom.fromThreePoints({x: 1, y: 2}, {x: 0, y: 3}, {x: 2, y: 3}).display).toBe('x^(2)-2x+3')
+    })
+    test('fromThreePoints passes through three points without the vertex', () => {
+        expect(Polynom.fromThreePoints({x: 1, y: 2}, {x: 2, y: 3}, {x: 4, y: 11}).display).toBe('x^(2)-2x+3')
+    })
+    test('fromThreePoints gives fractional coefficients and accepts strings', () => {
+        const P = Polynom.fromThreePoints({x: 0, y: 0}, {x: '1', y: '1/2'}, {x: 2, y: 3})
+        expect(P.display).toBe('x^(2)-1/2x')
+        expect(P.evaluate({x: 1}, false).display).toBe('1/2')
+        expect(P.evaluate({x: 2}, false).display).toBe('3')
+    })
+    test('fromThreePoints returns a line for aligned points', () => {
+        expect(Polynom.fromThreePoints({x: 0, y: 1}, {x: 1, y: 3}, {x: 2, y: 5}).display).toBe('2x+1')
+    })
+    test('fromThreePoints returns a constant when the three y are equal', () => {
+        expect(Polynom.fromThreePoints({x: 0, y: 4}, {x: 1, y: 4}, {x: 2, y: 4}).display).toBe('4')
+    })
+    test('fromThreePoints respects a non-default variable', () => {
+        expect(Polynom.fromThreePoints({x: 1, y: 2}, {x: 0, y: 3}, {x: 2, y: 3}, 't').display).toBe('t^(2)-2t+3')
+    })
+    test('fromThreePoints rejects two points with the same x', () => {
+        expect(() => Polynom.fromThreePoints({x: 1, y: 2}, {x: 1, y: 3}, {x: 2, y: 3})).toThrow(MathError)
+        expect(() => Polynom.fromThreePoints({x: 1, y: 2}, {x: 2, y: 3}, {x: 1, y: 5})).toThrow(MathError)
+        expect(() => Polynom.fromThreePoints({x: 1, y: 2}, {x: 2, y: 3}, {x: 2, y: 5})).toThrow(MathError)
+    })
+    test('fromThreePoints rejects non finite coordinates', () => {
+        expect(() => Polynom.fromThreePoints({x: 'abc', y: 2}, {x: 2, y: 3}, {x: 4, y: 5})).toThrow(InvalidArgumentError)
+        expect(() => Polynom.fromThreePoints({x: 1, y: 2}, {x: 2, y: NaN}, {x: 4, y: 5})).toThrow(InvalidArgumentError)
+    })
+    test('fromThreePoints rejects an invalid variable', () => {
+        expect(() => Polynom.fromThreePoints({x: 1, y: 2}, {x: 0, y: 3}, {x: 2, y: 3}, 'xy')).toThrow(InvalidArgumentError)
     })
     test('fromMonoms sums the given monoms without reducing', () => {
         const P = Polynom.fromMonoms(new Monom('3x'), new Monom(2))

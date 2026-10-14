@@ -4,7 +4,7 @@ import { Root } from "../coefficients/root";
 import { Line3 } from "./line3";
 import { Point } from "./point";
 import { Vector } from "./vector";
-import type { IDisplayDigits, InputAlgebra, IPiMathObject, Plane3Config, PlaneLineIntersection, PlanePlaneIntersection } from "../pimath.interface";
+import type { IDisplayDigits, InputAlgebra, InputValue, IPiMathObject, Plane3Config, PlaneLineIntersection, PlanePlaneIntersection } from "../pimath.interface";
 export declare class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
     #private;
     constructor(config?: Plane3Config);
@@ -13,7 +13,7 @@ export declare class Plane3 implements IPiMathObject<Plane3>, IDisplayDigits {
     static fromEquation(value: InputAlgebra<Equation>): Plane3;
     static fromString(str: string): Plane3;
     static fromPoints(A: Point, B: Point, C: Point): Plane3;
-    static fromCoefficients(a: number, b: number, c: number, d: number): Plane3;
+    static fromCoefficients(a: InputValue<Fraction>, b: InputValue<Fraction>, c: InputValue<Fraction>, d: InputValue<Fraction>): Plane3;
     parse(config: Plane3Config): this;
     copy(value: Plane3): this;
     clone(): this;

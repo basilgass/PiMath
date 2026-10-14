@@ -1,4 +1,4 @@
-import type { IDisplayDigits, IAlgebra, IAnalyse, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
+import type { IAlgebra, IAnalyse, IDisplayDigits, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
 import { Fraction } from "../coefficients";
 export declare class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse<Monom>, IAlgebra, IEvaluable, IDisplayDigits {
     #private;

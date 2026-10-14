@@ -126,6 +126,9 @@ function rndFactorablePolynom(config: RandomPolynomConfig): Polynom {
     if (config.commonConstant !== false && !primitive) {
         let k = randomIntSym(COMMON_CONSTANT_BOUND, false)
 
+        // the linear factors already have a positive leading coefficient: only k can flip the sign
+        if (config.allow?.negativeLeading !== true) k = Math.abs(k)
+
         if (config.commonConstant === true && (k === 1 || k === -1)) {
             k *= randomInt(2, 5)
         }

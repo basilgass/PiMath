@@ -83,6 +83,14 @@ With a single letter and some numbers, the numbers are the coefficients from the
 new Polynom('x^2+') // throws ParseError
 ```
 
+`Polynom.fromThreePoints` builds the polynom of degree at most 2 through three points. The result is exact, and aligned points give a line.
+
+```js
+Polynom.fromThreePoints({x: 1, y: 2}, {x: 2, y: 3}, {x: 4, y: 11}).display // x^(2)-2x+3
+Polynom.fromThreePoints({x: 0, y: 1}, {x: 1, y: 3}, {x: 2, y: 5}).display // 2x+1
+Polynom.fromThreePoints({x: 1, y: 2}, {x: 1, y: 3}, {x: 2, y: 3}) // throws MathError
+```
+
 ### Display
 
 ```js

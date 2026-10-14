@@ -5,6 +5,10 @@ import type { Solution } from "./analyze/solution";
 export type InputValue<T> = T | string | number | Fraction;
 export type InputAlgebra<T> = InputValue<T> | Monom;
 export type LiteralType<T> = Record<string, T>;
+export interface XY<T> {
+    x: T;
+    y: T;
+}
 export type EquationSign = "=" | "<=" | ">=" | "<" | ">";
 export type CompareSign = EquationSign | "=>" | "geq" | "=<" | "leq" | "<>" | "neq" | "same";
 export type OutputStyle = 'tex' | 'display';
@@ -114,14 +118,14 @@ export declare enum Line3Property {
     Tangent = "tangent"
 }
 export interface Plane3Config {
-    coefficients?: number[];
+    coefficients?: InputValue<Fraction>[];
     directions?: Vector[];
     equation?: Equation;
     normal?: Vector;
     point?: Point;
     points?: Point[];
 }
-type TriangleLineTriad<K extends string> = Record<K, Line> & {
+export type TriangleLineTriad<K extends string> = Record<K, Line> & {
     intersection: Point | null;
 };
 export interface RemarquableLines {
@@ -131,5 +135,4 @@ export interface RemarquableLines {
     medians: TriangleLineTriad<'A' | 'B' | 'C'> | null;
     mediators: TriangleLineTriad<'a' | 'b' | 'c'> | null;
 }
-export {};
 //# sourceMappingURL=pimath.interface.d.ts.map

@@ -606,6 +606,12 @@ export const completions: PiMathCompletions = {
                 "info": "Build a polynom from monoms, or from anything a monom accepts (numbers, strings, fractions).\nThe result is neither reduced nor sorted: call {@link reduce}."
             },
             {
+                "label": "fromThreePoints",
+                "type": "method",
+                "detail": "(point1: XY<InputValue<Fraction>>, point2: XY<InputValue<Fraction>>, point3: XY<InputValue<Fraction>>, variable?: string): Polynom",
+                "info": "Build the polynom of degree at most 2 passing through three points, using Newton divided differences.\nThe result is exact (fractions). When the three points are aligned, the result is a line\n(degree 1), or a constant when the three `y` are equal.\n\nThrows: {InvalidArgumentError} when a coordinate is not finite, or `variable` is not a single lowercase letter.\n\nThrows: {MathError} when two points share the same `x` (no polynom is a function of that shape)."
+            },
+            {
                 "label": "fromString",
                 "type": "method",
                 "detail": "(value: string): Polynom",
@@ -1409,6 +1415,9 @@ export const completions: PiMathCompletions = {
         ],
         "Polynom.fromMonoms": [
             "fromMonoms(...monoms: InputAlgebra<Fraction>[]): Polynom"
+        ],
+        "Polynom.fromThreePoints": [
+            "fromThreePoints(point1: XY<InputValue<Fraction>>, point2: XY<InputValue<Fraction>>, point3: XY<InputValue<Fraction>>, variable?: string): Polynom"
         ],
         "Polynom.fromString": [
             "fromString(value: string): Polynom"

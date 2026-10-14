@@ -1,4 +1,4 @@
-import type { IDisplayDigits, IAlgebra, IAnalyse, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType } from "../pimath.interface";
+import type { IAlgebra, IAnalyse, IDisplayDigits, IEvaluable, IExpression, InputAlgebra, InputValue, IPiMathObject, LiteralType, XY } from "../pimath.interface";
 import { Fraction } from "../coefficients";
 import { Monom } from './monom';
 import { Solution } from "../analyze/solution";
@@ -38,6 +38,7 @@ export declare class Polynom implements IPiMathObject<Polynom>, IDisplayDigits, 
     static fromConstant(value: InputValue<Fraction>): Polynom;
     static fromLinear(variables: string, ...coefficients: InputValue<Fraction>[]): Polynom;
     static fromMonoms(...monoms: InputAlgebra<Fraction>[]): Polynom;
+    static fromThreePoints(point1: XY<InputValue<Fraction>>, point2: XY<InputValue<Fraction>>, point3: XY<InputValue<Fraction>>, variable?: string): Polynom;
     static fromString(value: string): Polynom;
     gcdDenominator(): number;
     gcdNumerator(): number;

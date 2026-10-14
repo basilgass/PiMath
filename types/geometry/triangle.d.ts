@@ -3,7 +3,7 @@ import { Line } from "./line";
 import { Vector } from "./vector";
 import { Point } from "./point";
 import type { IPiMathObject, InputValue, RemarquableLines } from "../pimath.interface";
-type TRIANGLE_SIDES = 'AB' | 'AC' | 'BC';
+export type TriangleSide = 'AB' | 'AC' | 'BC';
 export declare class Triangle implements IPiMathObject<Triangle> {
     #private;
     constructor(...values: unknown[]);
@@ -66,9 +66,8 @@ export declare class Triangle implements IPiMathObject<Triangle> {
     isIsocele(): boolean;
     isRectangle(): boolean;
     get isValid(): boolean;
-    get lines(): Record<TRIANGLE_SIDES, Line>;
+    get lines(): Record<TriangleSide, Line>;
     get remarquables(): RemarquableLines;
     reset(): this;
 }
-export {};
 //# sourceMappingURL=triangle.d.ts.map
