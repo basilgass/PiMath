@@ -5829,7 +5829,7 @@ function Vt(e) {
 	for (; a.length < r;) a.push(X(n));
 	if (e.commonConstant !== !1 && !t) {
 		let t = H(zt, !1);
-		e.commonConstant === !0 && (t === 1 || t === -1) && (t *= V(2, 5)), t !== 1 && t !== -1 && a.unshift(new M(t));
+		e.allow?.negativeLeading !== !0 && (t = Math.abs(t)), e.commonConstant === !0 && (t === 1 || t === -1) && (t *= V(2, 5)), t !== 1 && t !== -1 && a.unshift(new M(t));
 	}
 	let o = M.xMultiply(...a);
 	if (t && e.fraction === !1) {
