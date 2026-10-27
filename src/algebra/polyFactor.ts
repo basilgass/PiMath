@@ -11,6 +11,7 @@ import type {
 import {Fraction} from "../coefficients"
 import {MathError, NotImplementedError, ParseError} from "../errors"
 import {Factor, FACTOR_DISPLAY} from "./factor"
+import {Monom} from "./monom"
 import {Polynom} from "./polynom"
 import type {Solution} from "../analyze"
 import {splitIfOutsideParentheses, stripParenthesis} from "../helpers"
@@ -547,8 +548,8 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
             .filter(f => !f.power.isZero())
 
         // Everything is reduced - merge all monomial factors together.
-        const numfactor = new Factor(1)
-        const denfactor = new Factor(1)
+        let numfactor = new Factor(1)
+        let denfactor = new Factor(1)
         const monomials = this.#factors.filter(x=>x.polynom.monoms.length===1 && x.power.isRelative())
         if(monomials.length>0){
             monomials.forEach(m=> {
@@ -560,6 +561,18 @@ export class PolyFactor implements IPiMathObject<PolyFactor>, IDisplayDigits,
             })
 
             this.#factors = this.#factors.filter(x=>!(x.polynom.monoms.length===1 && x.power.isRelative()))
+
+            // Cancel what the merged numerator and denominator monomials have in common (12 / 2x -> 6 / x).
+            const [numMonom] = numfactor.polynom.monoms
+            const [denMonom] = denfactor.polynom.monoms
+            if (!numMonom.containsRationalPower() && !denMonom.containsRationalPower()) {
+                const common = Monom.gcd(numMonom, denMonom)
+                if (!common.isOne()) {
+                    numfactor = new Factor(Polynom.fromMonoms(numMonom.divide(common)))
+                    denfactor = new Factor(Polynom.fromMonoms(denMonom.divide(common)))
+                }
+            }
+
             if (!denfactor.polynom.isOne()){this.#factors.push(denfactor.inverse())}
             if (!numfactor.polynom.isOne()){this.#factors.push(numfactor)}
         }

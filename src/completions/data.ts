@@ -3,7 +3,7 @@
 import type {PiMathCompletions} from './types'
 
 export const completions: PiMathCompletions = {
-    "version": "0.3.0",
+    "version": "0.3.1",
     "globals": [
         {
             "label": "PiMath",

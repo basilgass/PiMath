@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Factor, PolyFactor} from "../../src"
+import {Factor, PolyFactor, Polynom} from "../../src"
 import {TableOfSigns} from "../../src/analyze/tableOfSigns"
 
 describe("PolyFactor creation", () => {
@@ -846,5 +846,28 @@ describe('PolyFactor single-factor derivative and gcd/lcm', () => {
         expect(PolyFactor.lcm(pf)).not.toBe(pf)
         PolyFactor.gcd(pf).multiply(new Factor('x-1', 1))
         expect(pf.factors).toHaveLength(1)
+    })
+})
+
+describe('PolyFactor reduce: numerator and denominator monomials', () => {
+    test('reduce cancels the common part of the merged monomials', () => {
+        const PF = new PolyFactor(
+            new Factor('5x+1'),
+            new Factor('12'),
+            new Factor('x', -1),
+            new Factor('2', -1)
+        )
+
+        expect(PF.reduce().sort().asRoot.display).toBe('(6(5x+1))/(x)')
+    })
+
+    test('reduce simplifies the derivative of P^3 divided by P^3', () => {
+        const factor = new Factor(Polynom.fromString('10x^2+4x'), 3)
+        const PF = PolyFactor.fromFactors(...factor.getDerivativeFactors())
+        PF.divide(PolyFactor.fromFactors(factor)).reduce()
+
+        const result = PF.factorize().reduce()
+
+        expect(result.develop().asRoot.display).toBe('(30x+6)/(5x^(2)+2x)')
     })
 })

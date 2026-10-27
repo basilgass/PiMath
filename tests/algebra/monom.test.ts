@@ -325,6 +325,10 @@ describe('Monom dividers and squares', () => {
         expect(new Monom('4x^3').isSquare()).toBeFalsy() // odd power
         expect(new Monom('3x^2').isSquare()).toBeFalsy() // coefficient not a square
     })
+    test('gcd drops a variable that is missing from the first monom', () => {
+        expect(Monom.gcd(new Monom('12'), new Monom('2x')).display).toBe('2')
+        expect(Monom.gcd(new Monom('2x'), new Monom('12')).display).toBe('2')
+    })
     test('gcd keeps the lowest power', () => {
         expect(Monom.gcd(new Monom('x^5'), new Monom('x^2')).display).toBe('x^(2)')
     })

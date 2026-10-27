@@ -2027,9 +2027,9 @@ var Qe = class e {
 		for (let e of t) if (e.containsRationalPower()) throw new r("Monom.gcd: all monomials must have integer powers");
 		let n = new e();
 		n.coefficient = new g(h.gcd(...t.map((e) => e.coefficient.numerator)), h.lcm(...t.map((e) => e.coefficient.denominator))).reduce();
-		for (let e of t) {
-			for (let t in n.literal) t in e.literal || n.removeVariable(t);
-			for (let t in e.literal) !n.hasVariable(t) && e.literal[t].isStrictlyPositive() ? n.literal[t] = e.literal[t].clone() : n.literal[t] = e.literal[t].isLeq(n.literal[t]) ? e.literal[t].clone() : n.literal[t].clone();
+		for (let [e, r] of t.entries()) {
+			for (let e in n.literal) e in r.literal || n.removeVariable(e);
+			for (let i in r.literal) t.slice(0, e).every((e) => i in e.literal) && (!n.hasVariable(i) && r.literal[i].isStrictlyPositive() ? n.literal[i] = r.literal[i].clone() : n.literal[i] = r.literal[i].isLeq(n.literal[i]) ? r.literal[i].clone() : n.literal[i].clone());
 		}
 		return n;
 	}
@@ -4348,9 +4348,18 @@ var N = class {
 			return new L(t, e.reduce((e, t) => e.add(t.power), new g("0")).reduce());
 		}).filter((e) => !e.power.isZero());
 		let t = new L(1), n = new L(1), r = this.#t.filter((e) => e.polynom.monoms.length === 1 && e.power.isRelative());
-		return r.length > 0 && (r.forEach((e) => {
-			e.power.isPositive() ? t.multiply(new L(e.polynom.clone().pow(e.power.value))) : n.multiply(new L(e.polynom.clone().pow(-e.power.value)));
-		}), this.#t = this.#t.filter((e) => !(e.polynom.monoms.length === 1 && e.power.isRelative())), n.polynom.isOne() || this.#t.push(n.inverse()), t.polynom.isOne() || this.#t.push(t)), this;
+		if (r.length > 0) {
+			r.forEach((e) => {
+				e.power.isPositive() ? t.multiply(new L(e.polynom.clone().pow(e.power.value))) : n.multiply(new L(e.polynom.clone().pow(-e.power.value)));
+			}), this.#t = this.#t.filter((e) => !(e.polynom.monoms.length === 1 && e.power.isRelative()));
+			let [e] = t.polynom.monoms, [i] = n.polynom.monoms;
+			if (!e.containsRationalPower() && !i.containsRationalPower()) {
+				let r = j.gcd(e, i);
+				r.isOne() || (t = new L(M.fromMonoms(e.divide(r))), n = new L(M.fromMonoms(i.divide(r))));
+			}
+			n.polynom.isOne() || this.#t.push(n.inverse()), t.polynom.isOne() || this.#t.push(t);
+		}
+		return this;
 	}
 	root(e) {
 		return this.#t = this.#t.map((t) => t.root(e)), this;

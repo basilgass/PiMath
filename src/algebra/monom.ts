@@ -161,7 +161,7 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
         M.coefficient = new Fraction(n, d).reduce()
 
         // Set the literal parts - go through each monoms literal parts and get only the lowest degree of each variables.
-        for (const m of monoms) {
+        for (const [index, m] of monoms.entries()) {
             // Remove the inexistant variables from the resulting monom
             for (const variable in M.literal) {
                 if (!(variable in m.literal)) {
@@ -169,6 +169,10 @@ export class Monom implements IPiMathObject<Monom>, IExpression<Monom>, IAnalyse
                 }
             }
             for (const variable in m.literal) {
+                // A variable missing from an earlier monom is not common: it must not be (re)introduced.
+                if (!monoms.slice(0, index).every(previous => variable in previous.literal)) {
+                    continue
+                }
                 if (!M.hasVariable(variable) && m.literal[variable].isStrictlyPositive()) {
                     M.literal[variable] = m.literal[variable].clone()
                 } else {
